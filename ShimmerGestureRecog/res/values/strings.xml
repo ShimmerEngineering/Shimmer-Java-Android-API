@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">ShimmerGesture</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Shimmer Gesture Recognition</string>
+    <string name="connect">Connect</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Devices</string>
+    <string name="button_scan">Scan</string>
+    <string name="select_device">select a Shimmer to connect</string>
+    <string name="scanning">scanning for devices</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+</resources>

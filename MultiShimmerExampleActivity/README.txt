@@ -1,0 +1,1 @@
+Connects two Shimmer units. Calibrated accelerometer data can be seen on the LogCat. 

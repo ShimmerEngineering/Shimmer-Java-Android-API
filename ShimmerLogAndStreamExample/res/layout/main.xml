@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        
+        <TextView 
+        android:id="@+id/textDevice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/shimmer_grey"
+        android:textSize="@dimen/medium"
+        android:text="Device: "/>
+        
+        <TextView 
+        android:id="@+id/textDeviceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/shimmer_grey"
+        android:textSize="@dimen/medium"
+        android:text="Unknown"/>
+        
+        <TextView 
+        android:id="@+id/textState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/medium"
+        android:textColor="@color/shimmer_grey"
+        android:layout_marginLeft="10dp"
+        android:text="Device state: "/>
+        
+        <TextView 
+        android:id="@+id/textDeviceState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/shimmer_grey"
+        android:textSize="@dimen/medium"
+        android:text="Disconnected"/>
+
+    
+    </LinearLayout>
+    
+    
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        
+        <TextView 
+        android:id="@+id/textDocked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/shimmer_grey"
+        android:textSize="@dimen/medium"
+        android:text="Docked: "/>
+        
+        <TextView 
+        android:id="@+id/textDockedStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/shimmer_grey"
+        android:textSize="@dimen/medium"
+        android:text="Yes "/>
+        
+        <TextView 
+        android:id="@+id/textSensing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/medium"
+        android:textColor="@color/shimmer_grey"
+        android:layout_marginLeft="10dp"
+        android:text="Sensing: "/>
+        
+        <TextView 
+        android:id="@+id/textSensingStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/medium"
+        android:textColor="@color/shimmer_grey"
+        android:layout_marginLeft="10dp"
+        android:text="Yes "/>
+ 
+    </LinearLayout>
+    
+    
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        
+        <TextView 
+	        android:id="@+id/textDirectory"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textStyle="bold"
+	        android:textColor="@color/shimmer_grey"
+	        android:textSize="@dimen/medium"
+	        android:text="Directory Name: "/>
+	        
+	   <TextView 
+	        android:id="@+id/textDirectoryName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/shimmer_grey"
+	        android:textSize="@dimen/medium"
+        	android:text="default/device000/tmp000/"/>   
+   
+    </LinearLayout>
+    
+     <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:layout_weight="0.5"
+        android:orientation="vertical" >
+    	
+         <Button 
+	        android:id="@+id/buttonStreaming"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginBottom="5dp"
+	        android:textColor="@color/shimmer_grey"
+	        android:background="@drawable/selector_grey"
+	        android:text="Start Streaming"/>
+         
+         <Button 
+	        android:id="@+id/buttonStreamingAndLogging"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginBottom="5dp"
+	        android:textColor="@color/shimmer_grey"
+	        android:background="@drawable/selector_grey"
+	        android:text="Start Streaming+Logging"/>
+         
+         <Button 
+	        android:id="@+id/buttonStopStreaming"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginBottom="5dp"
+	        android:textColor="@color/shimmer_grey"
+	        android:background="@drawable/selector_grey"
+	        android:text="Stop"/>
+         
+         
+         <Button 
+	        android:id="@+id/buttonDirectory"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginBottom="5dp"
+	        android:textColor="@color/shimmer_grey"
+	        android:background="@drawable/selector_grey"
+	        android:text="Get Directory Name"/>
+         
+         <Button 
+	        android:id="@+id/buttonStatus"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginBottom="5dp"
+	        android:textColor="@color/shimmer_grey"
+	        android:background="@drawable/selector_grey"
+	        android:text="Read Status"/>
+         
+         <Button 
+	        android:id="@+id/buttonConnect"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginBottom="5dp"
+	        android:textColor="@color/shimmer_grey"
+	        android:background="@drawable/selector_grey"
+	        android:text="Connect"/>
+
+         
+     </LinearLayout>
+    
+
+
+</LinearLayout>

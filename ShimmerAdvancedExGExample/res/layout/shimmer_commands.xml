@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+        
+      
+     <LinearLayout 
+         android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+              
+        <TextView
+            android:id="@+id/textViewConfigurationTitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/large"
+            android:textStyle="bold"
+            android:textColor="@color/shimmer_grey"
+            android:text="Configuration options" />
+        
+        <View 
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_height="1dp"/>
+        
+     </LinearLayout>
+      
+     <Button
+            android:id="@+id/buttonRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_grey"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="Sampling Rate" />
+     
+         
+
+        
+     	 <Button
+            android:id="@+id/buttonGain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_grey"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="Exg Gain" />
+
+        <Button
+            android:id="@+id/buttonReferenceElectrode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_grey"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="Ref. Electrode" />
+        
+
+        <Button
+            android:id="@+id/buttonLeadOffCurrent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_grey"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="Lead-Off Current" />
+   		
+
+        <Button
+            android:id="@+id/buttonLeadOffDetection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_grey"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="Lead-Off Detection" />
+
+        
+        <Button
+            android:id="@+id/buttonLeadOffComparator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_grey"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="Lead-Off Comparator" />
+
+
+
+     
+     <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp" 
+        android:layout_weight="0.12" >
+         
+         <Button
+       	     android:id="@+id/buttonDone"
+       	     android:layout_width="match_parent"
+       	     android:layout_height="wrap_content"
+       	     android:background="@drawable/selector_orange"
+             android:layout_marginLeft="5dp"
+             android:layout_marginRight="5dp"
+             android:layout_marginBottom="5dp"
+             android:layout_gravity="bottom"
+       	     android:text="DONE" />
+         
+     </LinearLayout>
+     
+      
+
+
+</LinearLayout>

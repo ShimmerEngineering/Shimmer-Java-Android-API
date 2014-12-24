@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/stream" android:title="@string/startstream" android:icon="@drawable/ic_menu_play_clip"></item><item android:id="@+id/scan" 
+    	  android:icon="@android:drawable/ic_menu_search" android:title="@string/connect">
+    </item>
+    <item android:title="@string/settings" android:icon="@android:drawable/ic_menu_preferences" android:id="@+id/settings"></item>
+    <item android:id="@+id/viewsensor" android:title="@string/viewsensor"></item>
+
+    
+</menu>

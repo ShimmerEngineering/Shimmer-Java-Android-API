@@ -1,0 +1,2 @@
+-Logs time stamp and accelerometer data unto the sd card
+-If the log file does not show unmount and mount the sd card, this is due to the filesystem not refreshing itself, when connected to the PC, post logging, this causes the file not to be seen
