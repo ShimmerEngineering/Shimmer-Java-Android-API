@@ -69,7 +69,7 @@ public class MultiShimmerGraph extends Activity {
     Dialog mDialog;
     private String mSensorView1 = ""; //The sensor device which should be viewed on the graph
     private String mSensorView2 = ""; //The sensor device which should be viewed on the graph
-    int dialogEnabledSensors=0;
+    long dialogEnabledSensors=0;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -556,7 +556,7 @@ public class MultiShimmerGraph extends Activity {
 		}
 	}
 	
-	public void showEnableSensors(final String[] sensorNames, int enabledSensors, final int deviceID){
+	public void showEnableSensors(final String[] sensorNames, long enabledSensors, final int deviceID){
 		dialogEnabledSensors=enabledSensors;
 		mDialog.setContentView(R.layout.dialog_enable_sensor_view);
 		TextView title = (TextView) mDialog.findViewById(android.R.id.title);

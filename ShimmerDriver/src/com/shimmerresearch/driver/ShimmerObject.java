@@ -1,4 +1,4 @@
-//Rev_1.8
+//Rev_1.9
 /*
  * Copyright (c) 2010 - 2014, Shimmer Research, Ltd.
  * All rights reserved
@@ -30,9 +30,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @author Jong Chern Lim, Ruaidhri Molloy, Alejandro Saez 
+ * @author Jong Chern Lim, Ruaidhri Molloy, Alejandro Saez, Mark Nolan 
  * 
- *  * Changes since 1.7
+ * Changes since 1.8
+ * - updated to work with SDLOG
+ * - change method formatdatapacketreverse to protected
+ * - added i32r to parsed data
+ * - mSignalNameArray changed to protected
+ * - fix twos complement for long numbers (32bit>=)
+ * - fix 6dof calculation ~ long 
+ * - fix intiali time stamp ~ long
+ * 
+ * 
+ * Changes since 1.7
  * - remove multiplying factor (2.8) from the gain in the calculation of the Bridge Amplifier calibrated data
  * 
  * @date   September, 2014
@@ -58,7 +68,7 @@
  * - fix null pointer graddes algo when using Shimmer2
  * - converted to abstract class , and added checkbattery abstract method for the Shimmer2r
  * - updated gsr calibrate command parameters for Shimmer3
- * - removed mSamplingRate decimal formatter, decimal formatter should be done on the UI
+ * - removed mShimmerSamplingRate decimal formatter, decimal formatter should be done on the UI
  * - fixed a GSR Shimmer2 problem when using autorange
  * - added VSense Batt and VSense Reg and Timestamp to getListOfEnabledSensorSignals
  * - added getSamplingRate()
@@ -81,31 +91,67 @@ import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.vecmath.Quat4d;
 import javax.vecmath.Vector3d;
 
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
+import sun.util.calendar.BaseCalendar.Date;
+import sun.util.calendar.CalendarDate;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
+import com.shimmerresearch.driver.ChannelDetails;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 import com.sun.org.apache.bcel.internal.generic.ISUB;
 
 public abstract class ShimmerObject {
 
-	public static final int SHIMMER_1=0;
-	public static final int SHIMMER_2=1;
-	public static final int SHIMMER_2R=2;
-	public static final int SHIMMER_3=3;
-	public static final int SHIMMER_SR30=4;
+	public static final String ACCEL_CAL_UNIT = "m/s^2";
+	public static final String ACCEL_DEFAULT_CAL_UNIT = "m/s^2";
+	public static final String ADC_CAL_UNIT = "mV";
+	public static final String GSR_CAL_UNIT = "kOhms";
+	public static final String GYRO_CAL_UNIT = "deg/s";
+	public static final String GYRO_DEFAULT_CAL_UNIT = "deg/s";
+	public static final String MAG_CAL_UNIT = "local flux";
+	public static final String MAG_DEFAULT_CAL_UNIT = "local flux";
+	public static final String TEMP_CAL_UNIT = "Degrees Celsius";
+	public static final String PRESSURE_CAL_UNIT = "kPa";
+	public static final String HEARTRATE_CAL_UNIT = "bpm";
+	
+	public static final String NO_UNIT = "No Units";
+	public static final String CLOCK_UNIT = "Ticks";
+	
+//	public static final int SHIMMER_1=0;
+//	public static final int SHIMMER_2=1;
+//	public static final int SHIMMER_2R=2;
+//	public static final int SHIMMER_3=3;
+//	public static final int SHIMMER_SR30=4;
+	
+	public final static int HW_ID_SHIMMER_1 = 0;
+	public final static int HW_ID_SHIMMER_2 = 1;
+	public final static int HW_ID_SHIMMER_2R = 2;
+	public final static int HW_ID_SHIMMER_3 = 3;
+	public final static int HW_ID_SHIMMER_SR30 = 4;
+	
+	public final static int FW_ID_SHIMMER3_BOILER_PLATE = 0;
+	public final static int FW_ID_SHIMMER3_BTSTREAM = 1;
+	public final static int FW_ID_SHIMMER3_SDLOG = 2;
+	public final static int FW_ID_SHIMMER3_LOGANDSTREAM = 3;
 
+	protected boolean mFirstTime = true;
+	double mFirstRawTS = 0;
+	public int OFFSET_LENGTH = 9;
+	
 	//Sensor Bitmap for ID ; for the purpose of forward compatibility the sensor bitmap and the ID and the sensor bitmap for the Shimmer firmware has been kept separate, 
 	public static final int SENSOR_ACCEL				   = 0x80; 
 	public static final int SENSOR_DACCEL				   = 0x1000; //only 
@@ -136,6 +182,85 @@ public abstract class ShimmerObject {
 	public static final int SENSOR_EXG1_16BIT			   = 0x100000; //only applicable for Shimmer3
 	public static final int SENSOR_EXG2_16BIT			   = 0x080000; //only applicable for Shimmer3
 	public BiMap<String, String> mSensorBitmaptoName;  
+	
+	public class SDLogHeader{
+		public final static int ACCEL_LN = 1<<7;
+		public final static int GYRO = 1<<6;
+		public final static int MAG = 1<<5;
+		public final static int EXG1_24BIT = 1<<4;
+		public final static int EXG2_24BIT = 1<<3;
+		public final static int GSR = 1<<2;
+		public final static int EXT_EXP_A7 = 1<<1;
+		public final static int EXT_EXP_A6 = 1<<0;
+		public final static int BRIDGE_AMP = 1<<15;
+		// 1<<9 NONE 
+		public final static int BATTERY = 1<<13;
+		public final static int ACCEL_WR = 1<<12;
+		public final static int EXT_EXP_A15 = 1<<11;
+		public final static int INT_EXP_A1 = 1<<10;
+		public final static int INT_EXP_A12 = 1<<9;
+		public final static int INT_EXP_A13 = 1<<8;
+		public final static int INT_EXP_A14 = 1<<23;
+		public final static int ACCEL_MPU = 1<<22;
+		public final static int MAG_MPU = 1<<21;
+		public final static int EXG1_16BIT = 1<<20;
+		public final static int EXG2_16BIT = 1<<19;
+		public final static int BMP180 = 1<<18;
+		public final static int MPL_TEMPERATURE = 1<<17;
+		// 1<<23
+		public final static int MPL_QUAT_6DOF = 1<<31;
+		public final static int MPL_QUAT_9DOF = 1<<30;
+		public final static int MPL_EULER_6DOF = 1<<29;
+		public final static int MPL_EULER_9DOF = 1<<28;
+		public final static int MPL_HEADING = 1<<27;
+		public final static int MPL_PEDOMETER = 1<<26;
+		public final static int MPL_TAP = 1<<25;
+		public final static int MPL_MOTION_ORIENT = 1<<24;
+		public final static long GYRO_MPU_MPL = (long)1<<39;
+		public final static long ACCEL_MPU_MPL = (long)1<<38;
+		public final static long MAG_MPU_MPL = (long)1<<37;
+		public final static long SD_SENSOR_MPL_QUAT_6DOF_RAW = (long)1<<36;
+	}
+	public class BTStream{
+		public final static int ACCEL_LN = 0x80; 
+		public final static int GYRO = 0x40;
+		public final static int MAG = 0x20;
+		public final static int EXG1_24BIT = 0x10;
+		public final static int EXG2_24BIT = 0x08;
+		public final static int GSR = 0x04;
+		public final static int EXT_EXP_A7 = 0x02;
+		public final static int EXT_EXP_A6 = 0x01;
+		public final static int BRIDGE_AMP = 0x8000;
+		// 1<<9 NONE 
+		public final static int BATTERY = 0x2000;
+		public final static int ACCEL_WR = 0x1000;
+		public final static int EXT_EXP_A15 = 0x0800;
+		public final static int INT_EXP_A1 = 0x0400;
+		public final static int INT_EXP_A12 = 0x0200;
+		public final static int INT_EXP_A13 = 0x0100;
+		public final static int INT_EXP_A14 = 0x800000;
+		public final static int ACCEL_MPU = 0x400000;
+		public final static int MAG_MPU = 0x200000;
+		public final static int EXG1_16BIT = 0x100000;
+		public final static int EXG2_16BIT = 0x080000;
+		public final static int BMP180 = 0x40000;
+		public final static int MPL_TEMPERATURE = 1<<22;
+		// 1<<23
+		//public final static int MPL_QUAT_6DOF = 1<<24;
+		//public final static int MPL_QUAT_9DOF = 1<<25;
+		//public final static int MPL_EULER_6DOF = 1<<26;
+		//public final static int MPL_EULER_9DOF = 1<<27;
+		//public final static int MPL_HEADING = 1<<28;
+		//public final static int MPL_PEDOMETER = 1<<29;
+		//public final static int MPL_TAP = 1<<30;
+		//public final static int MPL_MOTION_ORIENT = 1<<31;
+		//public final static long GYRO_MPU_MPL = 1<<32;
+		//public final static long ACCEL_MPU_MPL = 1<<33;
+		//public final static long MAG_MPU_MPL = 1<<34;
+		//public final static long SD_SENSOR_MPL_QUAT_6DOF_RAW = 1<<35;
+	}
+	
+	
 	/*
 		{  
 		final Map<String, String> tempSensorBMtoName = new HashMap<String, String>();  
@@ -265,54 +390,122 @@ public abstract class ShimmerObject {
 	public static final byte DIR_RESPONSE		 					= (byte) 0x88;
 	public static final byte GET_DIR_COMMAND 						= (byte) 0x89;
 	public static final byte INSTREAM_CMD_RESPONSE 					= (byte) 0x8A;
-	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xff;
-
-	protected String mMyName;														// This stores the user assigned name
+	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
+	protected String mMyName="";														// This stores the user assigned name
 	protected String mMyBluetoothAddress="";
 	public static final int MAX_NUMBER_OF_SIGNALS = 40; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
-	protected int mFWCode=0;
+//	protected int mFWCode=0;
+
+	public final static int MSP430_5XX_INFOMEM_D_ADDRESS = 0x001800; 
+	public final static int MSP430_5XX_INFOMEM_C_ADDRESS = 0x001880; 
+	public final static int MSP430_5XX_INFOMEM_B_ADDRESS = 0x001900;
+	public final static int MSP430_5XX_INFOMEM_A_ADDRESS = 0x001980; 
+	public final static int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
+//	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
+	
+	public int mHardwareVersion = 0;
+	public String mHardwareVersionParsed = "";
+	
+	public int mFirmwareVersionCode = 0;
+	public int mFirmwareIndentifier = 0;
+	public int mFirmwareVersionMajor = 0;
+	public int mFirmwareVersionMinor = 0;
+	public int mFirmwareVersionRelease = 0;
+	public String mFirmwareVersionParsed = "";
 	//		protected double mFWVersion;
-	protected int mFWMajorVersion;
-	protected int mFWMinorVersion;
-	protected int mFWInternal;
-	protected double mFWIdentifier;
-	protected String mFWVersionFullName="";
+//	protected int mFWMajorVersion;
+//	protected int mFWMinorVersion;
+//	protected int mFWInternal;
+//	protected double mFWIdentifier;
+//	protected String mFWVersionFullName="";
+	
 	protected String mClassName="Shimmer";
 	private double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
 	protected double mSamplingRate; 	                                        	// 51.2Hz is the default sampling rate 
-	protected int mEnabledSensors;												// This stores the enabled sensors
+	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 
 
 	protected int mPacketSize=0; 													// Default 2 bytes for time stamp and 6 bytes for accelerometer 
 	protected int mAccelRange=0;													// This stores the current accelerometer range being used. The accelerometer range is stored during two instances, once an ack packet is received after a writeAccelRange(), and after a response packet has been received after readAccelRange()  	
-	protected int mMagSamplingRate=4;												// This stores the current Mag Sampling rate, it is a value between 0 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz
-	protected int mAccelSamplingRate=0;
-	protected int mMPU9150SamplingRate=0;
-	protected int mMagGain=1;														// Currently not supported on Shimmer2. This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga
-	protected int mGyroRange=1;													// This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga
+	protected boolean mLSM303DigitalAccelLPM = false; //TODO: add comment and set from BT command
+	protected boolean mLSM303DigitalAccelHRM = false; //TODO: add comment and set from BT command
+	protected int mLSM303MagRate=4;												// This stores the current Mag Sampling rate, it is a value between 0 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz
+	protected int mLSM303DigitalAccelRate=0;
+	protected int mMPU9150GyroAccelRate=0;
+	protected int mMagRange=1;														// Currently not supported on Shimmer2. This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga
+	protected int mGyroRange=1;													// This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps 
+	protected int mMPU9150AccelRange=0;											// This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
 	protected int mGSRRange=4;													// This stores the current GSR range being used.
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	protected long mConfigByte0;
 	protected int mNChannels=0;	                                                // Default number of sensor channels set to three because of the on board accelerometer 
 	protected int mBufferSize;                   							
-	protected int mShimmerVersion=-1;
-	private String[] mSignalNameArray=new String[MAX_NUMBER_OF_SIGNALS];							// 19 is the maximum number of signal thus far
+	protected int mShimmerVersion=-1; //TODO: this seems to be a duplicate of mHardwareVersion
+	protected String[] mSignalNameArray=new String[MAX_NUMBER_OF_SIGNALS];							// 19 is the maximum number of signal thus far
 	protected String[] mSignalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];						// 19 is the maximum number of signal thus far
 	protected boolean mDefaultCalibrationParametersECG = true;
 	protected boolean mDefaultCalibrationParametersEMG = true;
 	protected boolean mDefaultCalibrationParametersAccel = true;
 	protected boolean mDefaultCalibrationParametersDigitalAccel = true; //Also known as the wide range accelerometer
-	protected int mPressureResolution;
+	protected int mPressureResolution = 0;
+	
+	//TODO add comments and default values
+	//protected int mDigitalAccelRange = 0;
+	//protected int mAccelRange = 0;
+//	protected int mAccelLPM = 0;
+//	protected int mAccelHPM = 0;
+//	protected int mMPU9150GyroRate = 0;
+//	protected int mMPUAccelRange = 0;
+	protected int mMPU9150DMP = 0;
+	protected int mMPU9150LPF = 0;
+	protected int mMPU9150MotCalCfg = 0;
+	protected int mMPU9150MPLSamplingRate = 0;
+	protected int mMPU9150MagSamplingRate = 0;
+	protected int mMPLSensorFusion = 0;
+	protected int mMPLGyroCalTC = 0;
+	protected int mMPLVectCompCal = 0;
+	protected int mMPLMagDistCal = 0;
+	protected int mMPLEnable = 0;
+	protected int mButtonStart = 0;
+	protected int mMasterShimmer = 0;
+	protected int mSingleTouch = 0;
+	protected int mTCXO = 0;
+	protected long mConfigTime; //this is in milliseconds, utc
+	protected long mRTCDifference; //this is in ticks
+	protected int mSyncTimeWhenLogging = 0;
+	protected int mSyncBroadcastInterval = 0;
+
+	protected long mInitialTimeStamp;
+
+	
+	//TODO: ASK JC ABOUT BELOW, indexes wrong? Can we just use new ones above like (FW_ID_SHIMMER3_BTSTREAM)
+	protected final static int FW_IDEN_BTSTREAM=0;
+	protected final static int FW_IDEN_SD=1;
+
+	
+	protected String mShimmerUserAssignedName = "";  //TODO: this seems to be a duplicate of mMyName and ?devicename?
+	protected String mExperimentName = ""; //TODO: this seems to be a duplicate of mMyTrial
+	protected int mExperimentId = 0;
+	protected int mExperimentNumberOfShimmers = 0;
+	protected int mExperimentDurationEstimated = 0;
+	protected int mExperimentDurationMaximum = 0;
+	protected String mMacIdFromInfoMem = "";
+	protected boolean mConfigFileCreationFlag = false;
+	protected List<String> syncNodesList = new ArrayList<String>();
+	
+	protected byte[] mShimmerInfoMemBytes = new byte[512];
+
+
 	//
-	protected double[][] AlignmentMatrixAccel = {{-1,0,0},{0,-1,0},{0,0,1}}; 			
-	protected double[][] SensitivityMatrixAccel = {{38,0,0},{0,38,0},{0,0,38}}; 	
-	protected double[][] OffsetVectorAccel = {{2048},{2048},{2048}};				
+	protected double[][] mAlignmentMatrixAnalogAccel = {{-1,0,0},{0,-1,0},{0,0,1}}; 			
+	protected double[][] mSensitivityMatrixAnalogAccel = {{38,0,0},{0,38,0},{0,0,38}}; 	
+	protected double[][] mOffsetVectorAnalogAccel = {{2048},{2048},{2048}};				
 	protected abstract void checkBattery();
-	protected double[][] AlignmentMatrixAccel2 = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	protected double[][] SensitivityMatrixAccel2 = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-	protected double[][] OffsetVectorAccel2 = {{0},{0},{0}};	
+	protected double[][] mAlignmentMatrixWRAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] mSensitivityMatrixWRAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] mOffsetVectorWRAccel = {{0},{0},{0}};	
 
 	//Default values Shimmer2 
 	protected static double[][] SensitivityMatrixAccel1p5gShimmer2 = {{101,0,0},{0,101,0},{0,0,101}};
@@ -342,9 +535,9 @@ public abstract class ShimmerObject {
 	protected double GainEMG=750;
 
 	protected boolean mDefaultCalibrationParametersGyro = true;
-	protected double[][] AlignmentMatrixGyro = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	protected double[][] SensitivityMatrixGyro = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
-	protected double[][] OffsetVectorGyro = {{1843},{1843},{1843}};						
+	protected double[][] mAlignmentMatrixGyroscope = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+	protected double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
+	protected double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};						
 
 	//Default values Shimmer2
 	protected static double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
@@ -360,9 +553,9 @@ public abstract class ShimmerObject {
 
 	protected int mCurrentLEDStatus=0;
 	protected boolean mDefaultCalibrationParametersMag = true;
-	protected double[][] AlignmentMatrixMag = {{1,0,0},{0,1,0},{0,0,-1}}; 				
-	protected double[][] SensitivityMatrixMag = {{580,0,0},{0,580,0},{0,0,580}}; 		
-	protected double[][] OffsetVectorMag = {{0},{0},{0}};								
+	protected double[][] mAlignmentMatrixMagnetometer = {{1,0,0},{0,1,0},{0,0,-1}}; 				
+	protected double[][] mSensitivityMatrixMagnetometer = {{580,0,0},{0,580,0},{0,0,580}}; 		
+	protected double[][] mOffsetVectorMagnetometer = {{0},{0},{0}};								
 
 	//Default values Shimmer2 and Shimmer3
 	protected static double[][] AlignmentMatrixMagShimmer2 = {{1,0,0},{0,1,0},{0,0,-1}};
@@ -373,6 +566,22 @@ public abstract class ShimmerObject {
 	protected static double[][] SensitivityMatrixMagShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}}; 		
 	protected static double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
 
+	
+	protected double[][] AlignmentMatrixMPLAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLAccel = {{0},{0},{0}};
+	
+	protected double[][] AlignmentMatrixMPLMag = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLMag = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLMag = {{0},{0},{0}};
+	
+	protected double[][] AlignmentMatrixMPLGyro = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLGyro = {{0},{0},{0}};
+	
+	
+	
+	
 	protected static double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
 	protected static double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
 	protected static double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
@@ -466,7 +675,7 @@ public abstract class ShimmerObject {
 	protected int mLeadOffDetectionCurrent;
 	protected int mLeadOffComparatorTreshold;	
 	
-	protected int mBaudRate=-1;
+	protected int mBluetoothBaudRate=-1;
 	protected byte[] mExpBoardArray; // Array where the expansion board response is stored
 	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
 	
@@ -477,6 +686,914 @@ public abstract class ShimmerObject {
 	protected boolean mDockedStatus;
 	private List<String[]> mExtraSignalProperties = null;
 
+	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) {
+		ObjectCluster objectCluster = new ObjectCluster();
+		objectCluster.mMyName = mMyName;
+		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
+		double [] calibratedData;
+		double [] uncalibratedData;
+		String [] uncalibratedDataUnits;
+		String [] calibratedDataUnits;
+		String [] sensorNames;
+		if (fwIdentifier == FW_IDEN_BTSTREAM){
+			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
+			calibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp
+			uncalibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp	
+			uncalibratedDataUnits = new String[mNChannels + 1];
+			calibratedDataUnits = new String[mNChannels + 1];
+			sensorNames = new String[mNChannels + 1];
+		} else {
+			if (mRTCDifference == 0){
+				calibratedData=new double[mNChannels]; //sd log time stamp already included in mnChannels
+				uncalibratedData=new double[mNChannels];
+				uncalibratedDataUnits = new String[mNChannels];
+				calibratedDataUnits = new String[mNChannels];
+				sensorNames = new String[mNChannels];
+			} else {
+				calibratedData=new double[mNChannels+1]; //for RTC
+				uncalibratedData=new double[mNChannels+1];
+				uncalibratedDataUnits = new String[mNChannels+1];
+				calibratedDataUnits = new String[mNChannels+1];
+				sensorNames = new String[mNChannels+1];
+			}
+		}
+		
+		System.arraycopy(mSignalNameArray, 0, sensorNames, 0, sensorNames.length);
+		
+		//PARSE DATA
+		long[] newPacketInt=parsedData(newPacket,mSignalDataTypeArray);
+		
+		double[] tempData=new double[3];
+		Vector3d accelerometer = new Vector3d();
+		Vector3d magnetometer = new Vector3d();
+		Vector3d gyroscope = new Vector3d();
+		
+		
+		
+		int iTimeStamp=getSignalIndex("TimeStamp"); //find index
+		if(mFirstTime && fwIdentifier == FW_IDEN_SD){
+			//this is to make sure the Raw starts from zero
+			mFirstRawTS = (double)newPacketInt[iTimeStamp];
+			mFirstTime = false;
+		}
+		double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
+		
+		//TIMESTAMP
+		if (fwIdentifier == FW_IDEN_SD){
+			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
+			double unwrappedrawtimestamp = calibratedTS*32768/1000;
+			unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
+			long sdlograwtimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp;
+			objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("RAW",CLOCK_UNIT,(double)sdlograwtimestamp));
+			uncalibratedData[iTimeStamp] = (double)sdlograwtimestamp;
+			uncalibratedDataUnits[iTimeStamp] = CLOCK_UNIT;
+			
+			if (mEnableCalibration){
+				double sdlogcaltimestamp = (double)sdlograwtimestamp/32768*1000;
+				objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("CAL","mSecs",sdlogcaltimestamp));
+				calibratedData[iTimeStamp] = sdlogcaltimestamp;
+				calibratedDataUnits[iTimeStamp] = "mSecs";
+			}
+		} else if (fwIdentifier == FW_IDEN_BTSTREAM){
+			objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iTimeStamp]));
+			uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
+			uncalibratedDataUnits[iTimeStamp] = NO_UNIT;
+			if (mEnableCalibration){
+				objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("CAL","mSecs",calibratedTS));
+				calibratedData[iTimeStamp] = calibratedTS;
+				calibratedDataUnits[iTimeStamp] = "mSecs";
+			}
+		}
+		
+		//RAW RTC
+		if ((fwIdentifier == FW_IDEN_SD) && mRTCDifference!=0)
+		{
+			double unwrappedrawtimestamp = calibratedTS*32768/1000;
+			unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
+			long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCDifference;
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.REAL_TIME_CLOCK_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",CLOCK_UNIT,(double)rtctimestamp));
+			uncalibratedData[sensorNames.length-1] = (double)rtctimestamp;
+			uncalibratedDataUnits[sensorNames.length-1] = CLOCK_UNIT;
+			sensorNames[sensorNames.length-1]= Shimmer3Configuration.REAL_TIME_CLOCK_OBJECTCLUSTER_SENSORNAME;
+			if (mEnableCalibration){
+				double rtctimestampcal = (mInitialTimeStamp/32768*1000) + calibratedTS + (mRTCDifference/32768*1000) - (mFirstRawTS/32768*1000);
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.REAL_TIME_CLOCK_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL","mSecs",rtctimestampcal));
+				calibratedData[sensorNames.length-1] = rtctimestampcal;
+				calibratedDataUnits[sensorNames.length-1] = "mSecs";
+			}
+		}
+		
+		//OFFSET
+		if(timeSync==1 && (fwIdentifier == FW_IDEN_SD)){
+			int iOffset=getSignalIndex("Offset"); //find index
+			double offsetValue = Double.NaN;
+			if (OFFSET_LENGTH==9){
+				if(newPacketInt[iOffset] == 1152921504606846975L){
+					offsetValue=Double.NaN;
+				} else {
+					offsetValue=(double)newPacketInt[iOffset];
+				}	
+			}
+			else{
+				if(newPacketInt[iOffset] == 4294967295L){
+					offsetValue=Double.NaN;
+				} else {
+					offsetValue=(double)newPacketInt[iOffset];
+				}
+			}
+			
+			objectCluster.mPropertyCluster.put("Offset",new FormatCluster("RAW",NO_UNIT,offsetValue));
+			uncalibratedData[iOffset] = offsetValue;
+			calibratedData[iOffset] = Double.NaN;
+			uncalibratedDataUnits[iOffset] = NO_UNIT;
+			calibratedDataUnits[iOffset] = NO_UNIT;
+		} 
+		
+		
+		objectCluster = callAdditionalServices(objectCluster);
+		
+		
+		//first get raw and calibrated data, this is data derived from the Shimmer device and involves no involvement from the API
+		
+
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.ACCEL_LN) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.ACCEL_LN) > 0)
+				){
+			int iAccelX=getSignalIndex(Shimmer3Configuration.ACCEL_LN_X_OBJECTCLUSTER_SENSORNAME); //find index
+			int iAccelY=getSignalIndex(Shimmer3Configuration.ACCEL_LN_Y_OBJECTCLUSTER_SENSORNAME); //find index
+			int iAccelZ=getSignalIndex(Shimmer3Configuration.ACCEL_LN_Z_OBJECTCLUSTER_SENSORNAME); //find index
+			tempData[0]=(double)newPacketInt[iAccelX];
+			tempData[1]=(double)newPacketInt[iAccelY];
+			tempData[2]=(double)newPacketInt[iAccelZ];
+
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelX]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelY]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelZ]));
+			uncalibratedData[iAccelX]=(double)newPacketInt[iAccelX];
+			uncalibratedData[iAccelY]=(double)newPacketInt[iAccelY];
+			uncalibratedData[iAccelZ]=(double)newPacketInt[iAccelZ];
+			uncalibratedDataUnits[iAccelX]=NO_UNIT;
+			uncalibratedDataUnits[iAccelY]=NO_UNIT;
+			uncalibratedDataUnits[iAccelZ]=NO_UNIT;
+			
+			
+			if (mEnableCalibration){
+				double[] accelCalibratedData;
+				accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+				calibratedData[iAccelX]=accelCalibratedData[0];
+				calibratedData[iAccelY]=accelCalibratedData[1];
+				calibratedData[iAccelZ]=accelCalibratedData[2];
+				
+				if (mDefaultCalibrationParametersAccel == true) {
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_DEFAULT_CAL_UNIT,accelCalibratedData[0]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_DEFAULT_CAL_UNIT,accelCalibratedData[1]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_DEFAULT_CAL_UNIT,accelCalibratedData[2]));
+					calibratedDataUnits[iAccelX]=ACCEL_DEFAULT_CAL_UNIT;
+					calibratedDataUnits[iAccelY]=ACCEL_DEFAULT_CAL_UNIT;
+					calibratedDataUnits[iAccelZ]=ACCEL_DEFAULT_CAL_UNIT;
+					accelerometer.x=accelCalibratedData[0];
+					accelerometer.y=accelCalibratedData[1];
+					accelerometer.z=accelCalibratedData[2];
+
+				} else {
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_CAL_UNIT,accelCalibratedData[0]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_CAL_UNIT,accelCalibratedData[1]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_LN_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_CAL_UNIT,accelCalibratedData[2]));
+					calibratedDataUnits[iAccelX] = ACCEL_CAL_UNIT;
+					calibratedDataUnits[iAccelY] = ACCEL_CAL_UNIT;
+					calibratedDataUnits[iAccelZ] = ACCEL_CAL_UNIT;
+					accelerometer.x=accelCalibratedData[0];
+					accelerometer.y=accelCalibratedData[1];
+					accelerometer.z=accelCalibratedData[2];
+
+				}
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.ACCEL_WR) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0)
+				){
+			int iAccelX=getSignalIndex(Shimmer3Configuration.ACCEL_WR_X_OBJECTCLUSTER_SENSORNAME); //find index
+			int iAccelY=getSignalIndex(Shimmer3Configuration.ACCEL_WR_Y_OBJECTCLUSTER_SENSORNAME); //find index
+			int iAccelZ=getSignalIndex(Shimmer3Configuration.ACCEL_WR_Z_OBJECTCLUSTER_SENSORNAME); //find index
+			//check range
+
+			tempData[0]=(double)newPacketInt[iAccelX];
+			tempData[1]=(double)newPacketInt[iAccelY];
+			tempData[2]=(double)newPacketInt[iAccelZ];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelX]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelY]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelZ]));
+			uncalibratedData[iAccelX]=(double)newPacketInt[iAccelX];
+			uncalibratedData[iAccelY]=(double)newPacketInt[iAccelY];
+			uncalibratedData[iAccelZ]=(double)newPacketInt[iAccelZ];
+			uncalibratedDataUnits[iAccelX]=NO_UNIT;
+			uncalibratedDataUnits[iAccelY]=NO_UNIT;
+			uncalibratedDataUnits[iAccelZ]=NO_UNIT;
+
+			if (mEnableCalibration){
+				double[] accelCalibratedData;
+				accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
+				calibratedData[iAccelX]=accelCalibratedData[0];
+				calibratedData[iAccelY]=accelCalibratedData[1];
+				calibratedData[iAccelZ]=accelCalibratedData[2];
+				if (mDefaultCalibrationParametersDigitalAccel == true) {
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_DEFAULT_CAL_UNIT,calibratedData[iAccelX]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_DEFAULT_CAL_UNIT,calibratedData[iAccelY]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_DEFAULT_CAL_UNIT,calibratedData[iAccelZ]));
+					calibratedDataUnits[iAccelX]=ACCEL_DEFAULT_CAL_UNIT;
+					calibratedDataUnits[iAccelY]=ACCEL_DEFAULT_CAL_UNIT;
+					calibratedDataUnits[iAccelZ]=ACCEL_DEFAULT_CAL_UNIT;
+					if (((mEnabledSensors & SENSOR_ACCEL) == 0)){
+						accelerometer.x=accelCalibratedData[0]; //this is used to calculate quaternions // skip if Low noise is enabled
+						accelerometer.y=accelCalibratedData[1];
+						accelerometer.z=accelCalibratedData[2];
+					}
+				} else {
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_CAL_UNIT,calibratedData[iAccelX]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_CAL_UNIT,calibratedData[iAccelY]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ACCEL_WR_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ACCEL_CAL_UNIT,calibratedData[iAccelZ]));
+					calibratedDataUnits[iAccelX]=ACCEL_CAL_UNIT;
+					calibratedDataUnits[iAccelY]=ACCEL_CAL_UNIT;
+					calibratedDataUnits[iAccelZ]=ACCEL_CAL_UNIT;
+					if (((mEnabledSensors & SENSOR_ACCEL) == 0)){
+						accelerometer.x=accelCalibratedData[0];
+						accelerometer.y=accelCalibratedData[1];
+						accelerometer.z=accelCalibratedData[2];
+					}
+
+				}	
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.GYRO) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.GYRO) > 0)
+				) {
+			int iGyroX=getSignalIndex(Shimmer3Configuration.GYRO_X_OBJECTCLUSTER_SENSORNAME);
+			int iGyroY=getSignalIndex(Shimmer3Configuration.GYRO_Y_OBJECTCLUSTER_SENSORNAME);
+			int iGyroZ=getSignalIndex(Shimmer3Configuration.GYRO_Z_OBJECTCLUSTER_SENSORNAME);
+			tempData[0]=(double)newPacketInt[iGyroX];
+			tempData[1]=(double)newPacketInt[iGyroY];
+			tempData[2]=(double)newPacketInt[iGyroZ];
+
+
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroX]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroY]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroZ]));
+			uncalibratedData[iGyroX]=(double)newPacketInt[iGyroX];
+			uncalibratedData[iGyroY]=(double)newPacketInt[iGyroY];
+			uncalibratedData[iGyroZ]=(double)newPacketInt[iGyroZ];
+			uncalibratedDataUnits[iGyroX]=NO_UNIT;
+			uncalibratedDataUnits[iGyroY]=NO_UNIT;
+			uncalibratedDataUnits[iGyroZ]=NO_UNIT;
+			if (mEnableCalibration){
+				double[] gyroCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+				calibratedData[iGyroX]=gyroCalibratedData[0];
+				calibratedData[iGyroY]=gyroCalibratedData[1];
+				calibratedData[iGyroZ]=gyroCalibratedData[2];
+				if (mDefaultCalibrationParametersGyro == true) {
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",GYRO_DEFAULT_CAL_UNIT,gyroCalibratedData[0]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",GYRO_DEFAULT_CAL_UNIT,gyroCalibratedData[1]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",GYRO_DEFAULT_CAL_UNIT,gyroCalibratedData[2]));
+					gyroscope.x=gyroCalibratedData[0]*Math.PI/180;
+					gyroscope.y=gyroCalibratedData[1]*Math.PI/180;
+					gyroscope.z=gyroCalibratedData[2]*Math.PI/180;
+					calibratedDataUnits[iGyroX]=GYRO_DEFAULT_CAL_UNIT;
+					calibratedDataUnits[iGyroY]=GYRO_DEFAULT_CAL_UNIT;
+					calibratedDataUnits[iGyroZ]=GYRO_DEFAULT_CAL_UNIT;
+				} else {
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",GYRO_CAL_UNIT,gyroCalibratedData[0]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",GYRO_CAL_UNIT,gyroCalibratedData[1]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.GYRO_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",GYRO_CAL_UNIT,gyroCalibratedData[2]));
+					gyroscope.x=gyroCalibratedData[0]*Math.PI/180;
+					gyroscope.y=gyroCalibratedData[1]*Math.PI/180;
+					gyroscope.z=gyroCalibratedData[2]*Math.PI/180;
+					calibratedDataUnits[iGyroX]=GYRO_CAL_UNIT;
+					calibratedDataUnits[iGyroY]=GYRO_CAL_UNIT;
+					calibratedDataUnits[iGyroZ]=GYRO_CAL_UNIT;
+					
+				} 
+				if (mEnableOntheFlyGyroOVCal){
+					mGyroX.addValue(gyroCalibratedData[0]);
+					mGyroY.addValue(gyroCalibratedData[1]);
+					mGyroZ.addValue(gyroCalibratedData[2]);
+					mGyroXRaw.addValue((double)newPacketInt[iGyroX]);
+					mGyroYRaw.addValue((double)newPacketInt[iGyroY]);
+					mGyroZRaw.addValue((double)newPacketInt[iGyroZ]);
+					if (mGyroX.getStandardDeviation()<mGyroOVCalThreshold && mGyroY.getStandardDeviation()<mGyroOVCalThreshold && mGyroZ.getStandardDeviation()<mGyroOVCalThreshold){
+						mOffsetVectorGyroscope[0][0]=mGyroXRaw.getMean();
+						mOffsetVectorGyroscope[1][0]=mGyroYRaw.getMean();
+						mOffsetVectorGyroscope[2][0]=mGyroZRaw.getMean();
+					}
+				}
+			}
+
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.MAG) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.MAG) > 0)
+				) {
+			int iMagX=getSignalIndex(Shimmer3Configuration.MAG_X_OBJECTCLUSTER_SENSORNAME);
+			int iMagY=getSignalIndex(Shimmer3Configuration.MAG_Y_OBJECTCLUSTER_SENSORNAME);
+			int iMagZ=getSignalIndex(Shimmer3Configuration.MAG_Z_OBJECTCLUSTER_SENSORNAME);
+			tempData[0]=(double)newPacketInt[iMagX];
+			tempData[1]=(double)newPacketInt[iMagY];
+			tempData[2]=(double)newPacketInt[iMagZ];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagX]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagY]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagZ]));
+			uncalibratedData[iMagX]=(double)newPacketInt[iMagX];
+			uncalibratedData[iMagY]=(double)newPacketInt[iMagY];
+			uncalibratedData[iMagZ]=(double)newPacketInt[iMagZ];
+			uncalibratedDataUnits[iMagX]=NO_UNIT;
+			uncalibratedDataUnits[iMagY]=NO_UNIT;
+			uncalibratedDataUnits[iMagZ]=NO_UNIT;
+			if (mEnableCalibration){
+				double[] magCalibratedData;
+				magCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+				calibratedData[iMagX]=magCalibratedData[0];
+				calibratedData[iMagY]=magCalibratedData[1];
+				calibratedData[iMagZ]=magCalibratedData[2];
+				if (mDefaultCalibrationParametersMag == true) {
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",MAG_DEFAULT_CAL_UNIT,magCalibratedData[0]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",MAG_DEFAULT_CAL_UNIT,magCalibratedData[1]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",MAG_DEFAULT_CAL_UNIT,magCalibratedData[2]));
+					magnetometer.x=magCalibratedData[0];
+					magnetometer.y=magCalibratedData[1];
+					magnetometer.z=magCalibratedData[2];
+					calibratedDataUnits[iMagX]=MAG_DEFAULT_CAL_UNIT;
+					calibratedDataUnits[iMagY]=MAG_DEFAULT_CAL_UNIT;
+					calibratedDataUnits[iMagZ]=MAG_DEFAULT_CAL_UNIT;
+				} else {
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",MAG_CAL_UNIT,magCalibratedData[0]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",MAG_CAL_UNIT,magCalibratedData[1]));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.MAG_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",MAG_CAL_UNIT,magCalibratedData[2]));
+					magnetometer.x=magCalibratedData[0];
+					magnetometer.y=magCalibratedData[1];
+					magnetometer.z=magCalibratedData[2];
+					calibratedDataUnits[iMagX]=MAG_CAL_UNIT;
+					calibratedDataUnits[iMagY]=MAG_CAL_UNIT;
+					calibratedDataUnits[iMagZ]=MAG_CAL_UNIT;
+				}
+			}
+		}
+
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.BATTERY) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.BATTERY) > 0)
+				) {
+			int iBatt = getSignalIndex(Shimmer3Configuration.BATTERY_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iBatt];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.BATTERY_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iBatt]));
+			uncalibratedData[iBatt]=(double)newPacketInt[iBatt];
+			uncalibratedDataUnits[iBatt]=NO_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iBatt]=calibrateU12AdcValue(tempData[0],0,3,1)*1.988;
+				calibratedDataUnits[iBatt] = ADC_CAL_UNIT;
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.BATTERY_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iBatt]));
+				mVSenseBattMA.addValue(calibratedData[iBatt]);
+				checkBattery();
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.EXT_EXP_A7) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A7) > 0)
+				) {
+			int iA7 = getSignalIndex(Shimmer3Configuration.EXT_EXP_A7_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iA7];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXT_EXP_A7_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA7]));
+			uncalibratedData[iA7]=(double)newPacketInt[iA7];
+			uncalibratedDataUnits[iA7]=NO_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iA7]=calibrateU12AdcValue(tempData[0],0,3,1);
+				calibratedDataUnits[iA7] = ADC_CAL_UNIT;
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXT_EXP_A7_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA7]));
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.EXT_EXP_A6) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A6) > 0)
+				) {
+			int iA6 = getSignalIndex(Shimmer3Configuration.EXT_EXP_A6_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iA6];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXT_EXP_A6_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA6]));
+			uncalibratedData[iA6]=(double)newPacketInt[iA6];
+			uncalibratedDataUnits[iA6]=NO_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iA6]=calibrateU12AdcValue(tempData[0],0,3,1);
+				calibratedDataUnits[iA6] = ADC_CAL_UNIT;
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXT_EXP_A6_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA6]));
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.EXT_EXP_A15) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A15) > 0)
+				) {
+			int iA15 = getSignalIndex(Shimmer3Configuration.EXT_EXP_A15_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iA15];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXT_EXP_A15_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA15]));
+			uncalibratedData[iA15]=(double)newPacketInt[iA15];
+			uncalibratedDataUnits[iA15]=NO_UNIT;
+			
+			if (mEnableCalibration){
+				calibratedData[iA15]=calibrateU12AdcValue(tempData[0],0,3,1);
+				calibratedDataUnits[iA15] = ADC_CAL_UNIT;
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXT_EXP_A15_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA15]));
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.INT_EXP_A1) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A1) > 0)
+				) {
+			int iA1 = getSignalIndex(Shimmer3Configuration.INT_EXP_A1_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iA1];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.INT_EXP_A1_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA1]));
+			uncalibratedData[iA1]=(double)newPacketInt[iA1];
+			uncalibratedDataUnits[iA1]=NO_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iA1]=calibrateU12AdcValue(tempData[0],0,3,1);
+				calibratedDataUnits[iA1] = ADC_CAL_UNIT;
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.INT_EXP_A1_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA1]));
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.INT_EXP_A12) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A12) > 0)
+				) {
+			int iA12 = getSignalIndex(Shimmer3Configuration.INT_EXP_A1_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iA12];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.INT_EXP_A12_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA12]));
+			uncalibratedData[iA12]=(double)newPacketInt[iA12];
+			uncalibratedDataUnits[iA12]=NO_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iA12]=calibrateU12AdcValue(tempData[0],0,3,1);
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.INT_EXP_A12_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA12]));
+				calibratedDataUnits[iA12] = ADC_CAL_UNIT;
+				
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.INT_EXP_A13) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A13) > 0)
+				) {
+			int iA13 = getSignalIndex(Shimmer3Configuration.INT_EXP_A13_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iA13];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.INT_EXP_A13_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA13]));
+			uncalibratedData[iA13]=(double)newPacketInt[iA13];
+			uncalibratedDataUnits[iA13]=NO_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iA13]=calibrateU12AdcValue(tempData[0],0,3,1);
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.INT_EXP_A13_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA13]));
+				calibratedDataUnits[iA13] = ADC_CAL_UNIT;
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.INT_EXP_A14) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A14) > 0)
+				) {
+			int iA14 = getSignalIndex(Shimmer3Configuration.INT_EXP_A14_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iA14];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.INT_EXP_A14_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA14]));
+			uncalibratedData[iA14]=(double)newPacketInt[iA14];
+			uncalibratedDataUnits[iA14]=NO_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iA14]=calibrateU12AdcValue(tempData[0],0,3,1);
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.INT_EXP_A14_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA14]));
+				calibratedDataUnits[iA14] = ADC_CAL_UNIT;
+			}
+		}
+		//((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.ACCEL_WR) > 0) 
+		//|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0)
+		
+		
+		
+		
+		if (((fwIdentifier == FW_IDEN_BTSTREAM)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && mOrientationEnabled )
+				||((fwIdentifier == FW_IDEN_SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && mOrientationEnabled )){
+			if (mEnableCalibration){
+				if (mOrientationAlgo==null){
+					mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/mSamplingRate, 1, 0, 0,0);
+				}
+				Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);					double theta, Rx, Ry, Rz, rho;
+				rho = Math.acos(q.q1);
+				theta = rho * 2;
+				Rx = q.q2 / Math.sin(rho);
+				Ry = q.q3 / Math.sin(rho);
+				Rz = q.q4 / Math.sin(rho);
+				objectCluster.mPropertyCluster.put("Axis Angle A",new FormatCluster("CAL","local",theta));
+				objectCluster.mPropertyCluster.put("Axis Angle X",new FormatCluster("CAL","local",Rx));
+				objectCluster.mPropertyCluster.put("Axis Angle Y",new FormatCluster("CAL","local",Ry));
+				objectCluster.mPropertyCluster.put("Axis Angle Z",new FormatCluster("CAL","local",Rz));
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.QUAT_MADGE_9DOF_W_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL","local",q.q1));
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.QUAT_MADGE_9DOF_X_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL","local",q.q2));
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.QUAT_MADGE_9DOF_Y_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL","local",q.q3));
+				objectCluster.mPropertyCluster.put(Shimmer3Configuration.QUAT_MADGE_9DOF_Z_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL","local",q.q4));
+			}
+		}
+
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.EXG1_24BIT) > 0)
+				){
+			int iexg1ch1 = getSignalIndex(Shimmer3Configuration.EXG1_CH1_24BIT_OBJECTCLUSTER_SENSORNAME);
+			int iexg1ch2 = getSignalIndex(Shimmer3Configuration.EXG1_CH2_24BIT_OBJECTCLUSTER_SENSORNAME);
+			int iexg1sta = getSignalIndex(Shimmer3Configuration.EXG1_STATUS_OBJECTCLUSTER_SENSORNAME);
+			double exg1ch1 = (double)newPacketInt[iexg1ch1];
+			double exg1ch2 = (double)newPacketInt[iexg1ch2];
+			double exg1sta = (double)newPacketInt[iexg1sta];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_STATUS_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1sta));
+			uncalibratedData[iexg1sta]=(double)newPacketInt[iexg1sta];
+			uncalibratedData[iexg1ch1]=(double)newPacketInt[iexg1ch1];
+			uncalibratedData[iexg1ch2]=(double)newPacketInt[iexg1ch2];
+			uncalibratedDataUnits[iexg1sta]=NO_UNIT;
+			uncalibratedDataUnits[iexg1ch1]=NO_UNIT;
+			uncalibratedDataUnits[iexg1ch2]=NO_UNIT;
+			if (mEnableCalibration){
+				double calexg1ch1 = exg1ch1 *(((2.42*1000)/mEXG1CH1GainValue)/(Math.pow(2,23)-1));
+				double calexg1ch2 = exg1ch2 *(((2.42*1000)/mEXG1CH2GainValue)/(Math.pow(2,23)-1));
+				calibratedData[iexg1ch1]=calexg1ch1;
+				calibratedData[iexg1ch2]=calexg1ch2;
+				calibratedData[iexg1sta]=(double)newPacketInt[iexg1sta];
+				calibratedDataUnits[iexg1sta]=NO_UNIT;
+				calibratedDataUnits[iexg1ch1]=ADC_CAL_UNIT;
+				calibratedDataUnits[iexg1ch2]=ADC_CAL_UNIT;
+				if (isEXGUsingDefaultECGConfiguration()){
+					sensorNames[iexg1ch1]=Shimmer3Configuration.ECG_LL_RA_24BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg1ch2]=Shimmer3Configuration.ECG_LA_RA_24BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_LL_RA_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_LA_RA_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch2));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_LL_RA_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_LA_RA_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch2));
+				} else if (isEXGUsingDefaultEMGConfiguration()){
+					sensorNames[iexg1ch1]=Shimmer3Configuration.EMG_CH1_24BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg1ch2]=Shimmer3Configuration.EMG_CH2_24BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EMG_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EMG_CH2_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch2));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EMG_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EMG_CH2_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch2));
+				} else {
+					sensorNames[iexg1ch1]=Shimmer3Configuration.EXG1_CH1_24BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg1ch2]=Shimmer3Configuration.EXG1_CH2_24BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_CH2_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch2));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_CH2_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch2));
+				}
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.EXG2_24BIT) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.EXG2_24BIT) > 0)
+				){
+			int iexg2ch1 = getSignalIndex(Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME);
+			int iexg2ch2 = getSignalIndex(Shimmer3Configuration.EXG2_CH2_24BIT_OBJECTCLUSTER_SENSORNAME);
+			int iexg2sta = getSignalIndex(Shimmer3Configuration.EXG2_STATUS_OBJECTCLUSTER_SENSORNAME);
+			double exg2ch1 = (double)newPacketInt[iexg2ch1];
+			double exg2ch2 = (double)newPacketInt[iexg2ch2];
+			double exg2sta = (double)newPacketInt[iexg2sta];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_STATUS_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg2sta));
+			uncalibratedData[iexg2sta]=(double)newPacketInt[iexg2sta];
+			uncalibratedData[iexg2ch1]=(double)newPacketInt[iexg2ch1];
+			uncalibratedData[iexg2ch2]=(double)newPacketInt[iexg2ch2];
+			uncalibratedDataUnits[iexg2sta]=NO_UNIT;
+			uncalibratedDataUnits[iexg2ch1]=NO_UNIT;
+			uncalibratedDataUnits[iexg2ch2]=NO_UNIT;
+			if (mEnableCalibration){
+				double calexg2ch1 = exg2ch1 *(((2.42*1000)/mEXG2CH1GainValue)/(Math.pow(2,23)-1));
+				double calexg2ch2 = exg2ch2 *(((2.42*1000)/mEXG2CH2GainValue)/(Math.pow(2,23)-1));
+				calibratedData[iexg2ch1]=calexg2ch1;
+				calibratedData[iexg2ch2]=calexg2ch2;
+				calibratedData[iexg2sta]=(double)newPacketInt[iexg2sta];
+				calibratedDataUnits[iexg2sta]=NO_UNIT;
+				calibratedDataUnits[iexg2ch1]=ADC_CAL_UNIT;
+				calibratedDataUnits[iexg2ch2]=ADC_CAL_UNIT;
+				if (isEXGUsingDefaultECGConfiguration()){
+					sensorNames[iexg2ch1]=Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg2ch2]=Shimmer3Configuration.ECG_VX_RL_24BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg2ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_VX_RL_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg2ch2));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg2ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_VX_RL_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg2ch2));
+				}
+				else if (isEXGUsingDefaultEMGConfiguration()){
+					sensorNames[iexg2ch1]=Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg2ch2]=Shimmer3Configuration.EXG2_CH2_24BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH2_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH2_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,0));
+				} else {
+					sensorNames[iexg2ch1]=Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg2ch2]=Shimmer3Configuration.EXG2_CH2_24BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH2_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH2_24BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,0));	
+				}
+			}
+		}
+
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)
+				){
+			int iexg1ch1 = getSignalIndex(Shimmer3Configuration.EXG1_CH1_16BIT_OBJECTCLUSTER_SENSORNAME);
+			int iexg1ch2 = getSignalIndex(Shimmer3Configuration.EXG1_CH2_16BIT_OBJECTCLUSTER_SENSORNAME);
+			int iexg1sta = getSignalIndex(Shimmer3Configuration.EXG1_STATUS_OBJECTCLUSTER_SENSORNAME);
+			double exg1ch1 = (double)newPacketInt[iexg1ch1];
+			double exg1ch2 = (double)newPacketInt[iexg1ch2];
+			double exg1sta = (double)newPacketInt[iexg1sta];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_STATUS_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1sta));
+			uncalibratedData[iexg1sta]=(double)newPacketInt[iexg1sta];
+			uncalibratedData[iexg1ch1]=(double)newPacketInt[iexg1ch1];
+			uncalibratedData[iexg1ch2]=(double)newPacketInt[iexg1ch2];
+			uncalibratedDataUnits[iexg1sta]=NO_UNIT;
+			uncalibratedDataUnits[iexg1ch1]=NO_UNIT;
+			uncalibratedDataUnits[iexg1ch2]=NO_UNIT;
+			if (mEnableCalibration){
+				double calexg1ch1 = exg1ch1 *(((2.42*1000)/(mEXG1CH1GainValue*2))/(Math.pow(2,15)-1));
+				double calexg1ch2 = exg1ch2 *(((2.42*1000)/(mEXG1CH2GainValue*2))/(Math.pow(2,15)-1));
+				calibratedData[iexg1ch1]=calexg1ch1;
+				calibratedData[iexg1ch2]=calexg1ch2;
+				calibratedData[iexg1sta]=(double)newPacketInt[iexg1sta];
+				calibratedDataUnits[iexg1sta]=NO_UNIT;
+				calibratedDataUnits[iexg1ch1]=ADC_CAL_UNIT;
+				calibratedDataUnits[iexg1ch2]=ADC_CAL_UNIT;
+				if (isEXGUsingDefaultECGConfiguration()){
+					sensorNames[iexg1ch1]=Shimmer3Configuration.ECG_LL_RA_16BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg1ch2]=Shimmer3Configuration.ECG_LA_RA_16BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_LL_RA_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_LA_RA_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch2));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_LL_RA_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_LA_RA_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch2));
+				} else if (isEXGUsingDefaultEMGConfiguration()){
+					sensorNames[iexg1ch1]=Shimmer3Configuration.EMG_CH1_16BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg1ch2]=Shimmer3Configuration.EMG_CH2_16BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EMG_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EMG_CH2_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch2));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EMG_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EMG_CH2_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch2));
+				} else {
+					sensorNames[iexg1ch1]=Shimmer3Configuration.EXG1_CH1_16BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg1ch2]=Shimmer3Configuration.EXG1_CH2_16BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_CH2_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg1ch2));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG1_CH2_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg1ch2));
+				}
+			}
+		}
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.EXG2_16BIT) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.EXG2_16BIT) > 0)
+				){
+			int iexg2ch1 = getSignalIndex(Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME);
+			int iexg2ch2 = getSignalIndex(Shimmer3Configuration.EXG2_CH2_16BIT_OBJECTCLUSTER_SENSORNAME);
+			int iexg2sta = getSignalIndex(Shimmer3Configuration.EXG2_STATUS_OBJECTCLUSTER_SENSORNAME);
+			double exg2ch1 = (double)newPacketInt[iexg2ch1];
+			double exg2ch2 = (double)newPacketInt[iexg2ch2];
+			double exg2sta = (double)newPacketInt[iexg2sta];
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_STATUS_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg2sta));
+			uncalibratedData[iexg2sta]=(double)newPacketInt[iexg2sta];
+			uncalibratedData[iexg2ch1]=(double)newPacketInt[iexg2ch1];
+			uncalibratedData[iexg2ch2]=(double)newPacketInt[iexg2ch2];
+			uncalibratedDataUnits[iexg2sta]=NO_UNIT;
+			uncalibratedDataUnits[iexg2ch1]=NO_UNIT;
+			uncalibratedDataUnits[iexg2ch2]=NO_UNIT;
+			if (mEnableCalibration){
+				double calexg2ch1 = ((exg2ch1)) *(((2.42*1000)/(mEXG2CH1GainValue*2))/(Math.pow(2,15)-1));
+				double calexg2ch2 = ((exg2ch2)) *(((2.42*1000)/(mEXG2CH2GainValue*2))/(Math.pow(2,15)-1));
+				calibratedData[iexg2ch1]=calexg2ch1;
+				calibratedData[iexg2ch2]=calexg2ch2;
+				calibratedData[iexg2sta]=(double)newPacketInt[iexg2sta];
+				calibratedDataUnits[iexg2sta]=NO_UNIT;
+				calibratedDataUnits[iexg2ch1]=ADC_CAL_UNIT;
+				calibratedDataUnits[iexg2ch2]=ADC_CAL_UNIT;
+				if (isEXGUsingDefaultECGConfiguration()){
+					sensorNames[iexg2ch1]=Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg2ch2]=Shimmer3Configuration.ECG_VX_RL_16BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg2ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_VX_RL_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,exg2ch2));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg2ch1));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.ECG_VX_RL_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,calexg2ch2));
+				}
+				else if (isEXGUsingDefaultEMGConfiguration()){
+					sensorNames[iexg2ch1]=Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg2ch2]=Shimmer3Configuration.EXG2_CH2_16BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH2_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH2_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,0));
+				} else {
+					sensorNames[iexg2ch1]=Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME;
+					sensorNames[iexg2ch2]=Shimmer3Configuration.EXG2_CH2_16BIT_OBJECTCLUSTER_SENSORNAME;
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH2_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,0));
+					objectCluster.mPropertyCluster.put(Shimmer3Configuration.EXG2_CH2_16BIT_OBJECTCLUSTER_SENSORNAME,new FormatCluster("CAL",ADC_CAL_UNIT,0));	
+				}
+			}
+		}
+
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.BMP180) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.BMP180) > 0)
+				){
+			int iUT = getSignalIndex(Shimmer3Configuration.TEMPERATURE_BMP180_OBJECTCLUSTER_SENSORNAME);
+			int iUP = getSignalIndex(Shimmer3Configuration.PRESSURE_BMP180_OBJECTCLUSTER_SENSORNAME);
+			double UT = (double)newPacketInt[iUT];
+			double UP = (double)newPacketInt[iUP];
+			UP=UP/Math.pow(2,8-mPressureResolution);
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.PRESSURE_BMP180_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,UP));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.TEMPERATURE_BMP180_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,UT));
+			uncalibratedData[iUT]=(double)newPacketInt[iUT];
+			uncalibratedData[iUP]=(double)newPacketInt[iUP];
+			uncalibratedDataUnits[iUT]=NO_UNIT;
+			uncalibratedDataUnits[iUP]=NO_UNIT;
+			if (mEnableCalibration){
+				double[] bmp180caldata= calibratePressureSensorData(UP,UT);
+				objectCluster.mPropertyCluster.put("Pressure",new FormatCluster("CAL",PRESSURE_CAL_UNIT,bmp180caldata[0]/1000));
+				objectCluster.mPropertyCluster.put("Temperature",new FormatCluster("CAL",TEMP_CAL_UNIT,bmp180caldata[1]));
+				calibratedData[iUT]=bmp180caldata[1];
+				calibratedData[iUP]=bmp180caldata[0]/1000;
+				calibratedDataUnits[iUT]=TEMP_CAL_UNIT;
+				calibratedDataUnits[iUP]=PRESSURE_CAL_UNIT;
+			}
+		}
+
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.BRIDGE_AMP) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.BRIDGE_AMP) > 0)
+				) {
+			int iBAHigh = getSignalIndex(Shimmer3Configuration.BRIDGE_AMP_HIGH_OBJECTCLUSTER_SENSORNAME);
+			int iBALow = getSignalIndex(Shimmer3Configuration.BRIDGE_AMP_LOW_OBJECTCLUSTER_SENSORNAME);
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.BRIDGE_AMP_HIGH_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iBAHigh]));
+			objectCluster.mPropertyCluster.put(Shimmer3Configuration.BRIDGE_AMP_LOW_OBJECTCLUSTER_SENSORNAME,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iBALow]));
+			uncalibratedData[iBAHigh]=(double)newPacketInt[iBAHigh];
+			uncalibratedData[iBALow]=(double)newPacketInt[iBALow];
+			uncalibratedDataUnits[iBAHigh]=NO_UNIT;
+			uncalibratedDataUnits[iBALow]=NO_UNIT;
+			if (mEnableCalibration){
+				tempData[0] = (double)newPacketInt[iBAHigh];
+				tempData[1] = (double)newPacketInt[iBALow];
+				calibratedData[iBAHigh]=calibrateU12AdcValue(tempData[0],60,3,551);
+				calibratedData[iBALow]=calibrateU12AdcValue(tempData[1],1950,3,183.7);
+				calibratedDataUnits[iBAHigh]=ADC_CAL_UNIT;
+				calibratedDataUnits[iBALow]=ADC_CAL_UNIT;
+				objectCluster.mPropertyCluster.put("Bridge Amplifier High",new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iBAHigh]));
+				objectCluster.mPropertyCluster.put("Bridge Amplifier Low",new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iBALow]));	
+			}
+		}
+
+		if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.GSR) > 0) 
+				|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.GSR) > 0)
+				) {
+			int iGSR = getSignalIndex(Shimmer3Configuration.GSR_OBJECTCLUSTER_SENSORNAME);
+			tempData[0] = (double)newPacketInt[iGSR];
+			int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+
+			double p1=0,p2=0;//,p3=0,p4=0,p5=0;
+			if (mGSRRange==4){
+				newGSRRange=(49152 & (int)tempData[0])>>14; 
+			}
+			if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+				// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+				/* p1 = 6.5995E-9;
+	                    p2 = -6.895E-5;
+	                    p3 = 2.699E-1;
+	                    p4 = -4.769835E+2;
+	                    p5 = 3.403513341E+5;*/
+				if (mShimmerVersion!=HW_ID_SHIMMER_3){
+					p1 = 0.0373;
+					p2 = -24.9915;
+				} else {
+					p1 = 0.0363;
+					p2 = -24.8617;
+				}
+			} else if (mGSRRange==1 || newGSRRange==1) {
+				/*p1 = 1.3569627E-8;
+	                    p2 = -1.650399E-4;
+	                    p3 = 7.54199E-1;
+	                    p4 = -1.5726287856E+3;
+	                    p5 = 1.367507927E+6;*/
+				if (mShimmerVersion!=HW_ID_SHIMMER_3){
+					p1 = 0.0054;
+					p2 = -3.5194;
+				} else {
+					p1 = 0.0051;
+					p2 = -3.8357;
+				}
+			} else if (mGSRRange==2 || newGSRRange==2) {
+				/*p1 = 2.550036498E-8;
+	                    p2 = -3.3136E-4;
+	                    p3 = 1.6509426597E+0;
+	                    p4 = -3.833348044E+3;
+	                    p5 = 3.8063176947E+6;*/
+				if (mShimmerVersion!=HW_ID_SHIMMER_3){
+					p1 = 0.0015;
+					p2 = -1.0163;
+				} else {
+					p1 = 0.0015;
+					p2 = -1.0067;
+				}
+			} else if (mGSRRange==3  || newGSRRange==3) {
+				/*p1 = 3.7153627E-7;
+	                    p2 = -4.239437E-3;
+	                    p3 = 1.7905709E+1;
+	                    p4 = -3.37238657E+4;
+	                    p5 = 2.53680446279E+7;*/
+				if (mShimmerVersion!=HW_ID_SHIMMER_3){
+					p1 = 4.5580e-04;
+					p2 = -0.3014;
+				} else {
+					p1 = 4.4513e-04;
+					p2 = -0.3193;
+				}
+			}
+			objectCluster.mPropertyCluster.put("GSR",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGSR]));
+			uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
+			uncalibratedDataUnits[iGSR]=NO_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+				calibratedDataUnits[iGSR]=GSR_CAL_UNIT;
+				objectCluster.mPropertyCluster.put("GSR",new FormatCluster("CAL",GSR_CAL_UNIT,calibratedData[iGSR]));
+			}
+		}
+		
+		if (((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.GYRO_MPU_MPL) > 0)){
+			int iGyroX = getSignalIndex(Shimmer3Configuration.GYRO_MPU_MPL_X_OBJECTCLUSTER_SENSORNAME);
+			int iGyroY = getSignalIndex(Shimmer3Configuration.GYRO_MPU_MPL_Y_OBJECTCLUSTER_SENSORNAME);
+			int iGyroZ = getSignalIndex(Shimmer3Configuration.GYRO_MPU_MPL_Z_OBJECTCLUSTER_SENSORNAME);
+			calibratedData[iGyroX] = (double)newPacketInt[iGyroX]/Math.pow(2, 16);
+			calibratedData[iGyroY] = (double)newPacketInt[iGyroY]/Math.pow(2, 16);
+			calibratedData[iGyroZ] = (double)newPacketInt[iGyroZ]/Math.pow(2, 16);
+			calibratedDataUnits[iGyroX] = GYRO_CAL_UNIT;
+			calibratedDataUnits[iGyroY] = GYRO_CAL_UNIT;
+			calibratedDataUnits[iGyroZ] = GYRO_CAL_UNIT;
+			uncalibratedData[iGyroX] = (double)newPacketInt[iGyroX];
+			uncalibratedData[iGyroY] = (double)newPacketInt[iGyroY];
+			uncalibratedData[iGyroZ] = (double)newPacketInt[iGyroZ];
+			uncalibratedDataUnits[iGyroX] = NO_UNIT;
+			uncalibratedDataUnits[iGyroY] = NO_UNIT;
+			uncalibratedDataUnits[iGyroZ] = NO_UNIT;
+		}
+		
+		if (((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.ACCEL_MPU_MPL) > 0)){
+			int iAccelX = getSignalIndex(Shimmer3Configuration.ACCEL_MPU_MPL_X_OBJECTCLUSTER_SENSORNAME);
+			int iAccelY = getSignalIndex(Shimmer3Configuration.ACCEL_MPU_MPL_Y_OBJECTCLUSTER_SENSORNAME);
+			int iAccelZ = getSignalIndex(Shimmer3Configuration.ACCEL_MPU_MPL_Z_OBJECTCLUSTER_SENSORNAME);
+			calibratedData[iAccelX] = (double)newPacketInt[iAccelX]/Math.pow(2, 16);
+			calibratedData[iAccelY] = (double)newPacketInt[iAccelY]/Math.pow(2, 16);
+			calibratedData[iAccelZ] = (double)newPacketInt[iAccelZ]/Math.pow(2, 16);
+			calibratedDataUnits[iAccelX] = ACCEL_CAL_UNIT;
+			calibratedDataUnits[iAccelY] = ACCEL_CAL_UNIT;
+			calibratedDataUnits[iAccelZ] = ACCEL_CAL_UNIT;
+			uncalibratedData[iAccelX] = (double)newPacketInt[iAccelX];
+			uncalibratedData[iAccelY] = (double)newPacketInt[iAccelX];
+			uncalibratedData[iAccelZ] = (double)newPacketInt[iAccelX];
+			uncalibratedDataUnits[iAccelX] = NO_UNIT;
+			uncalibratedDataUnits[iAccelY] = NO_UNIT;
+			uncalibratedDataUnits[iAccelZ] = NO_UNIT;
+		}
+		
+		if (((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.MAG_MPU_MPL) > 0)){
+			int iMagX = getSignalIndex(Shimmer3Configuration.MAG_MPU_MPL_X_OBJECTCLUSTER_SENSORNAME);
+			int iMagY = getSignalIndex(Shimmer3Configuration.MAG_MPU_MPL_Y_OBJECTCLUSTER_SENSORNAME);
+			int iMagZ = getSignalIndex(Shimmer3Configuration.MAG_MPU_MPL_Z_OBJECTCLUSTER_SENSORNAME);
+			calibratedData[iMagX] = (double)newPacketInt[iMagX]/Math.pow(2, 16);
+			calibratedData[iMagY] = (double)newPacketInt[iMagY]/Math.pow(2, 16);
+			calibratedData[iMagZ] = (double)newPacketInt[iMagZ]/Math.pow(2, 16);
+			calibratedDataUnits[iMagX] = MAG_CAL_UNIT;
+			calibratedDataUnits[iMagY] = MAG_CAL_UNIT;
+			calibratedDataUnits[iMagZ] = MAG_CAL_UNIT;
+			uncalibratedData[iMagX] = (double)newPacketInt[iMagX];
+			uncalibratedData[iMagY] = (double)newPacketInt[iMagY];
+			uncalibratedData[iMagZ] = (double)newPacketInt[iMagZ];
+			uncalibratedDataUnits[iMagX] = NO_UNIT;
+			uncalibratedDataUnits[iMagY] = NO_UNIT;
+			uncalibratedDataUnits[iMagZ] = NO_UNIT;
+		}
+		
+		if (((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.MPL_QUAT_6DOF) > 0)){
+			int iQW = getSignalIndex(Shimmer3Configuration.QUAT_MPL_6DOF_W_OBJECTCLUSTER_SENSORNAME);
+			int iQX = getSignalIndex(Shimmer3Configuration.QUAT_MPL_6DOF_X_OBJECTCLUSTER_SENSORNAME);
+			int iQY = getSignalIndex(Shimmer3Configuration.QUAT_MPL_6DOF_Y_OBJECTCLUSTER_SENSORNAME);
+			int iQZ = getSignalIndex(Shimmer3Configuration.QUAT_MPL_6DOF_Z_OBJECTCLUSTER_SENSORNAME);
+			calibratedData[iQW] = (double)newPacketInt[iQW]/Math.pow(2, 30);
+			calibratedData[iQX] = (double)newPacketInt[iQX]/Math.pow(2, 30);
+			calibratedData[iQY] = (double)newPacketInt[iQY]/Math.pow(2, 30);
+			calibratedData[iQZ] = (double)newPacketInt[iQZ]/Math.pow(2, 30);
+			calibratedDataUnits[iQW] = NO_UNIT;
+			calibratedDataUnits[iQX] = NO_UNIT;
+			calibratedDataUnits[iQY] = NO_UNIT;
+			calibratedDataUnits[iQZ] = NO_UNIT;
+			uncalibratedData[iQW] = (double)newPacketInt[iQW];
+			uncalibratedData[iQX] = (double)newPacketInt[iQX];
+			uncalibratedData[iQY] = (double)newPacketInt[iQY];
+			uncalibratedData[iQZ] = (double)newPacketInt[iQZ];
+			uncalibratedDataUnits[iQW] = NO_UNIT;
+			uncalibratedDataUnits[iQX] = NO_UNIT;
+			uncalibratedDataUnits[iQY] = NO_UNIT;
+			calibratedDataUnits[iQZ] = NO_UNIT;
+		}
+		if (((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.MPL_TEMPERATURE) > 0)){
+			int iT = getSignalIndex(Shimmer3Configuration.MPL_TEMPERATURE_OBJECTCLUSTER_SENSORNAME);
+			calibratedData[iT] = (double)newPacketInt[iT]/Math.pow(2, 16);
+			calibratedDataUnits[iT] = TEMP_CAL_UNIT;
+			uncalibratedData[iT] = (double)newPacketInt[iT];
+			uncalibratedDataUnits[iT] = NO_UNIT;
+		}
+		objectCluster.mCalData = calibratedData;
+		objectCluster.mUncalData = uncalibratedData;
+		objectCluster.mUnitCal = calibratedDataUnits;
+		objectCluster.mUnitUncal = uncalibratedDataUnits;
+		objectCluster.mSensorNames = sensorNames;
+		return objectCluster; 
+	}
+	
 	
 	protected Object buildMsg(byte[] newPacket, Object object) {
 		ObjectCluster objectCluster = (ObjectCluster) object;
@@ -491,14 +1608,14 @@ public abstract class ShimmerObject {
 
 		int iTimeStamp=getSignalIndex("TimeStamp"); //find index
 		tempData[0]=(double)newPacketInt[1];
-		objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("RAW","no units",(double)newPacketInt[iTimeStamp]));
+		objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iTimeStamp]));
 		if (mEnableCalibration){
 			objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("CAL","mSecs",calibrateTimeStamp((double)newPacketInt[iTimeStamp])));
 		}
 		objectCluster = callAdditionalServices(objectCluster);
 
 
-		if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3){
+		if (mShimmerVersion==HW_ID_SHIMMER_SR30 || mShimmerVersion==HW_ID_SHIMMER_3){
 			if (((mEnabledSensors & SENSOR_ACCEL) > 0)){
 				int iAccelX=getSignalIndex("Low Noise Accelerometer X"); //find index
 				int iAccelY=getSignalIndex("Low Noise Accelerometer Y"); //find index
@@ -507,13 +1624,13 @@ public abstract class ShimmerObject {
 				tempData[1]=(double)newPacketInt[iAccelY];
 				tempData[2]=(double)newPacketInt[iAccelZ];
 
-				objectCluster.mPropertyCluster.put("Low Noise Accelerometer X",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelX]));
-				objectCluster.mPropertyCluster.put("Low Noise Accelerometer Y",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelY]));
-				objectCluster.mPropertyCluster.put("Low Noise Accelerometer Z",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelZ]));
+				objectCluster.mPropertyCluster.put("Low Noise Accelerometer X",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelX]));
+				objectCluster.mPropertyCluster.put("Low Noise Accelerometer Y",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelY]));
+				objectCluster.mPropertyCluster.put("Low Noise Accelerometer Z",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelZ]));
 
 				if (mEnableCalibration){
 					double[] accelCalibratedData;
-					accelCalibratedData=calibrateInertialSensorData(tempData, AlignmentMatrixAccel, SensitivityMatrixAccel, OffsetVectorAccel);
+					accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -545,14 +1662,14 @@ public abstract class ShimmerObject {
 				tempData[0]=(double)newPacketInt[iAccelX];
 				tempData[1]=(double)newPacketInt[iAccelY];
 				tempData[2]=(double)newPacketInt[iAccelZ];
-				objectCluster.mPropertyCluster.put("Wide Range Accelerometer X",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelX]));
-				objectCluster.mPropertyCluster.put("Wide Range Accelerometer Y",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelY]));
-				objectCluster.mPropertyCluster.put("Wide Range Accelerometer Z",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelZ]));
+				objectCluster.mPropertyCluster.put("Wide Range Accelerometer X",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelX]));
+				objectCluster.mPropertyCluster.put("Wide Range Accelerometer Y",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelY]));
+				objectCluster.mPropertyCluster.put("Wide Range Accelerometer Z",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelZ]));
 
 
 				if (mEnableCalibration){
 					double[] accelCalibratedData;
-					accelCalibratedData=calibrateInertialSensorData(tempData, AlignmentMatrixAccel2, SensitivityMatrixAccel2, OffsetVectorAccel2);
+					accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -587,12 +1704,12 @@ public abstract class ShimmerObject {
 				tempData[2]=(double)newPacketInt[iGyroZ];
 
 
-				objectCluster.mPropertyCluster.put("Gyroscope X",new FormatCluster("RAW","no units",(double)newPacketInt[iGyroX]));
-				objectCluster.mPropertyCluster.put("Gyroscope Y",new FormatCluster("RAW","no units",(double)newPacketInt[iGyroY]));
-				objectCluster.mPropertyCluster.put("Gyroscope Z",new FormatCluster("RAW","no units",(double)newPacketInt[iGyroZ]));
+				objectCluster.mPropertyCluster.put("Gyroscope X",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroX]));
+				objectCluster.mPropertyCluster.put("Gyroscope Y",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroY]));
+				objectCluster.mPropertyCluster.put("Gyroscope Z",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroZ]));
 
 				if (mEnableCalibration){
-					double[] gyroCalibratedData=calibrateInertialSensorData(tempData, AlignmentMatrixGyro, SensitivityMatrixGyro, OffsetVectorGyro);
+					double[] gyroCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 					calibratedData[iGyroX]=gyroCalibratedData[0];
 					calibratedData[iGyroY]=gyroCalibratedData[1];
 					calibratedData[iGyroZ]=gyroCalibratedData[2];
@@ -618,9 +1735,9 @@ public abstract class ShimmerObject {
 							mGyroYRaw.addValue((double)newPacketInt[iGyroY]);
 							mGyroZRaw.addValue((double)newPacketInt[iGyroZ]);
 							if (mGyroX.getStandardDeviation()<mGyroOVCalThreshold && mGyroY.getStandardDeviation()<mGyroOVCalThreshold && mGyroZ.getStandardDeviation()<mGyroOVCalThreshold){
-								OffsetVectorGyro[0][0]=mGyroXRaw.getMean();
-								OffsetVectorGyro[1][0]=mGyroYRaw.getMean();
-								OffsetVectorGyro[2][0]=mGyroZRaw.getMean();
+								mOffsetVectorGyroscope[0][0]=mGyroXRaw.getMean();
+								mOffsetVectorGyroscope[1][0]=mGyroYRaw.getMean();
+								mOffsetVectorGyroscope[2][0]=mGyroZRaw.getMean();
 							}
 						}
 					} 
@@ -634,11 +1751,11 @@ public abstract class ShimmerObject {
 				tempData[0]=(double)newPacketInt[iMagX];
 				tempData[1]=(double)newPacketInt[iMagY];
 				tempData[2]=(double)newPacketInt[iMagZ];
-				objectCluster.mPropertyCluster.put("Magnetometer X",new FormatCluster("RAW","no units",(double)newPacketInt[iMagX]));
-				objectCluster.mPropertyCluster.put("Magnetometer Y",new FormatCluster("RAW","no units",(double)newPacketInt[iMagY]));
-				objectCluster.mPropertyCluster.put("Magnetometer Z",new FormatCluster("RAW","no units",(double)newPacketInt[iMagZ]));
+				objectCluster.mPropertyCluster.put("Magnetometer X",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagX]));
+				objectCluster.mPropertyCluster.put("Magnetometer Y",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagY]));
+				objectCluster.mPropertyCluster.put("Magnetometer Z",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagZ]));
 				if (mEnableCalibration){
-					double[] magCalibratedData=calibrateInertialSensorData(tempData, AlignmentMatrixMag, SensitivityMatrixMag, OffsetVectorMag);
+					double[] magCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
 					calibratedData[iMagX]=magCalibratedData[0];
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
@@ -663,7 +1780,7 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_BATT) > 0) {
 				int iA0 = getSignalIndex("VSenseBatt");
 				tempData[0] = (double)newPacketInt[iA0];
-				objectCluster.mPropertyCluster.put("VSenseBatt",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("VSenseBatt",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 				if (mEnableCalibration){
 					calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1)*1.988;
 					objectCluster.mPropertyCluster.put("VSenseBatt",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -674,7 +1791,7 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_EXT_ADC_A7) > 0) {
 				int iA0 = getSignalIndex("External ADC A7");
 				tempData[0] = (double)newPacketInt[iA0];
-				objectCluster.mPropertyCluster.put("External ADC A7",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("External ADC A7",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 				if (mEnableCalibration){
 					calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1);
 					objectCluster.mPropertyCluster.put("External ADC A7",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -683,7 +1800,7 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_EXT_ADC_A6) > 0) {
 				int iA0 = getSignalIndex("External ADC A6");
 				tempData[0] = (double)newPacketInt[iA0];
-				objectCluster.mPropertyCluster.put("External ADC A6",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("External ADC A6",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 				if (mEnableCalibration){
 					calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1);
 					objectCluster.mPropertyCluster.put("External ADC A6",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -692,7 +1809,7 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_EXT_ADC_A15) > 0) {
 				int iA0 = getSignalIndex("External ADC A15");
 				tempData[0] = (double)newPacketInt[iA0];
-				objectCluster.mPropertyCluster.put("External ADC A15",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("External ADC A15",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 				if (mEnableCalibration){
 					calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1);
 					objectCluster.mPropertyCluster.put("External ADC A15",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -701,7 +1818,7 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_INT_ADC_A1) > 0) {
 				int iA0 = getSignalIndex("Internal ADC A1");
 				tempData[0] = (double)newPacketInt[iA0];
-				objectCluster.mPropertyCluster.put("Internal ADC A1",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("Internal ADC A1",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 				if (mEnableCalibration){
 					calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1);
 					objectCluster.mPropertyCluster.put("Internal ADC A1",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -710,7 +1827,7 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_INT_ADC_A12) > 0) {
 				int iA0 = getSignalIndex("Internal ADC A12");
 				tempData[0] = (double)newPacketInt[iA0];
-				objectCluster.mPropertyCluster.put("Internal ADC A12",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("Internal ADC A12",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 				if (mEnableCalibration){
 					calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1);
 					objectCluster.mPropertyCluster.put("Internal ADC A12",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -719,7 +1836,7 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_INT_ADC_A13) > 0) {
 				int iA0 = getSignalIndex("Internal ADC A13");
 				tempData[0] = (double)newPacketInt[iA0];
-				objectCluster.mPropertyCluster.put("Internal ADC A13",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("Internal ADC A13",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 				if (mEnableCalibration){
 					calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1);
 					objectCluster.mPropertyCluster.put("Internal ADC A13",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -728,7 +1845,7 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_INT_ADC_A14) > 0) {
 				int iA0 = getSignalIndex("Internal ADC A14");
 				tempData[0] = (double)newPacketInt[iA0];
-				objectCluster.mPropertyCluster.put("Internal ADC A14",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("Internal ADC A14",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 				if (mEnableCalibration){
 					calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1);
 					objectCluster.mPropertyCluster.put("Internal ADC A14",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -763,23 +1880,23 @@ public abstract class ShimmerObject {
 				double exg1ch1 = (double)newPacketInt[iexg1ch1];
 				double exg1ch2 = (double)newPacketInt[iexg1ch2];
 				double exg1sta = (double)newPacketInt[iexg1sta];
-				objectCluster.mPropertyCluster.put("EXG1 STATUS",new FormatCluster("RAW","no units",exg1sta));
+				objectCluster.mPropertyCluster.put("EXG1 STATUS",new FormatCluster("RAW",NO_UNIT,exg1sta));
 				if (mEnableCalibration){
 					double calexg1ch1 = exg1ch1 *(((2.42*1000)/mEXG1CH1GainValue)/(Math.pow(2,23)-1));
 					double calexg1ch2 = exg1ch2 *(((2.42*1000)/mEXG1CH2GainValue)/(Math.pow(2,23)-1));
 					if (isEXGUsingDefaultECGConfiguration()){
-						objectCluster.mPropertyCluster.put("ECG LL-RA",new FormatCluster("RAW","no units",exg1ch1));
-						objectCluster.mPropertyCluster.put("ECG LA-RA",new FormatCluster("RAW","no units",exg1ch2));
+						objectCluster.mPropertyCluster.put("ECG LL-RA",new FormatCluster("RAW",NO_UNIT,exg1ch1));
+						objectCluster.mPropertyCluster.put("ECG LA-RA",new FormatCluster("RAW",NO_UNIT,exg1ch2));
 						objectCluster.mPropertyCluster.put("ECG LL-RA",new FormatCluster("CAL","mVolts",calexg1ch1));
 						objectCluster.mPropertyCluster.put("ECG LA-RA",new FormatCluster("CAL","mVolts",calexg1ch2));
 					} else if (isEXGUsingDefaultEMGConfiguration()){
-						objectCluster.mPropertyCluster.put("EMG CH1",new FormatCluster("RAW","no units",exg1ch1));
-						objectCluster.mPropertyCluster.put("EMG CH2",new FormatCluster("RAW","no units",exg1ch2));
+						objectCluster.mPropertyCluster.put("EMG CH1",new FormatCluster("RAW",NO_UNIT,exg1ch1));
+						objectCluster.mPropertyCluster.put("EMG CH2",new FormatCluster("RAW",NO_UNIT,exg1ch2));
 						objectCluster.mPropertyCluster.put("EMG CH1",new FormatCluster("CAL","mVolts",calexg1ch1));
 						objectCluster.mPropertyCluster.put("EMG CH2",new FormatCluster("CAL","mVolts",calexg1ch2));
 					} else {
-						objectCluster.mPropertyCluster.put("EXG1 CH1",new FormatCluster("RAW","no units",exg1ch1));
-						objectCluster.mPropertyCluster.put("EXG1 CH2",new FormatCluster("RAW","no units",exg1ch2));
+						objectCluster.mPropertyCluster.put("EXG1 CH1",new FormatCluster("RAW",NO_UNIT,exg1ch1));
+						objectCluster.mPropertyCluster.put("EXG1 CH2",new FormatCluster("RAW",NO_UNIT,exg1ch2));
 						objectCluster.mPropertyCluster.put("EXG1 CH1",new FormatCluster("CAL","mVolts",calexg1ch1));
 						objectCluster.mPropertyCluster.put("EXG1 CH2",new FormatCluster("CAL","mVolts",calexg1ch2));
 					}
@@ -793,24 +1910,24 @@ public abstract class ShimmerObject {
 				double exg2ch2 = (double)newPacketInt[iexg2ch2];
 				double exg2sta = (double)newPacketInt[iexg2sta];
 
-				objectCluster.mPropertyCluster.put("EXG2 STATUS",new FormatCluster("RAW","no units",exg2sta));
+				objectCluster.mPropertyCluster.put("EXG2 STATUS",new FormatCluster("RAW",NO_UNIT,exg2sta));
 				if (mEnableCalibration){
 					double calexg2ch1 = exg2ch1 *(((2.42*1000)/mEXG2CH1GainValue)/(Math.pow(2,23)-1));
 					double calexg2ch2 = exg2ch2 *(((2.42*1000)/mEXG2CH2GainValue)/(Math.pow(2,23)-1));
 					if (isEXGUsingDefaultECGConfiguration()){
-						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW","no units",exg2ch1));
-						objectCluster.mPropertyCluster.put("ECG Vx-RL",new FormatCluster("RAW","no units",exg2ch2));
+						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW",NO_UNIT,exg2ch1));
+						objectCluster.mPropertyCluster.put("ECG Vx-RL",new FormatCluster("RAW",NO_UNIT,exg2ch2));
 						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("CAL","mVolts",calexg2ch1));
 						objectCluster.mPropertyCluster.put("ECG Vx-RL",new FormatCluster("CAL","mVolts",calexg2ch2));
 					}
 					else if (isEXGUsingDefaultEMGConfiguration()){
-						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW","no units",0));
-						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("RAW","no units",0));
+						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW",NO_UNIT,0));
+						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("RAW",NO_UNIT,0));
 						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("CAL","mVolts",0));
 						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("CAL","mVolts",0));
 					} else {
-						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW","no units",exg2ch1));
-						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("RAW","no units",exg2ch2));
+						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW",NO_UNIT,exg2ch1));
+						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("RAW",NO_UNIT,exg2ch2));
 						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("CAL","mVolts",calexg2ch1));
 						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("CAL","mVolts",calexg2ch2));	
 					}
@@ -824,23 +1941,23 @@ public abstract class ShimmerObject {
 				double exg1ch1 = (double)newPacketInt[iexg1ch1];
 				double exg1ch2 = (double)newPacketInt[iexg1ch2];
 				double exg1sta = (double)newPacketInt[iexg1sta];
-				objectCluster.mPropertyCluster.put("EXG1 STATUS",new FormatCluster("RAW","no units",exg1sta));
+				objectCluster.mPropertyCluster.put("EXG1 STATUS",new FormatCluster("RAW",NO_UNIT,exg1sta));
 				if (mEnableCalibration){
 					double calexg1ch1 = exg1ch1 *(((2.42*1000)/(mEXG1CH1GainValue*2))/(Math.pow(2,15)-1));
 					double calexg1ch2 = exg1ch2 *(((2.42*1000)/(mEXG1CH2GainValue*2))/(Math.pow(2,15)-1));
 					if (isEXGUsingDefaultECGConfiguration()){
-						objectCluster.mPropertyCluster.put("ECG LL-RA",new FormatCluster("RAW","no units",exg1ch1));
-						objectCluster.mPropertyCluster.put("ECG LA-RA",new FormatCluster("RAW","no units",exg1ch2));
+						objectCluster.mPropertyCluster.put("ECG LL-RA",new FormatCluster("RAW",NO_UNIT,exg1ch1));
+						objectCluster.mPropertyCluster.put("ECG LA-RA",new FormatCluster("RAW",NO_UNIT,exg1ch2));
 						objectCluster.mPropertyCluster.put("ECG LL-RA",new FormatCluster("CAL","mVolts",calexg1ch1));
 						objectCluster.mPropertyCluster.put("ECG LA-RA",new FormatCluster("CAL","mVolts",calexg1ch2));
 					} else if (isEXGUsingDefaultEMGConfiguration()){
-						objectCluster.mPropertyCluster.put("EMG CH1",new FormatCluster("RAW","no units",exg1ch1));
-						objectCluster.mPropertyCluster.put("EMG CH2",new FormatCluster("RAW","no units",exg1ch2));
+						objectCluster.mPropertyCluster.put("EMG CH1",new FormatCluster("RAW",NO_UNIT,exg1ch1));
+						objectCluster.mPropertyCluster.put("EMG CH2",new FormatCluster("RAW",NO_UNIT,exg1ch2));
 						objectCluster.mPropertyCluster.put("EMG CH1",new FormatCluster("CAL","mVolts",calexg1ch1));
 						objectCluster.mPropertyCluster.put("EMG CH2",new FormatCluster("CAL","mVolts",calexg1ch2));
 					} else {
-						objectCluster.mPropertyCluster.put("EXG1 CH1 16Bit",new FormatCluster("RAW","no units",exg1ch1));
-						objectCluster.mPropertyCluster.put("EXG1 CH2 16Bit",new FormatCluster("RAW","no units",exg1ch2));
+						objectCluster.mPropertyCluster.put("EXG1 CH1 16Bit",new FormatCluster("RAW",NO_UNIT,exg1ch1));
+						objectCluster.mPropertyCluster.put("EXG1 CH2 16Bit",new FormatCluster("RAW",NO_UNIT,exg1ch2));
 						objectCluster.mPropertyCluster.put("EXG1 CH1 16Bit",new FormatCluster("CAL","mVolts",calexg1ch1));
 						objectCluster.mPropertyCluster.put("EXG1 CH2 16Bit",new FormatCluster("CAL","mVolts",calexg1ch2));
 					}
@@ -854,24 +1971,24 @@ public abstract class ShimmerObject {
 				double exg2ch2 = (double)newPacketInt[iexg2ch2];
 				double exg2sta = (double)newPacketInt[iexg2sta];
 
-				objectCluster.mPropertyCluster.put("EXG2 STATUS",new FormatCluster("RAW","no units",exg2sta));
+				objectCluster.mPropertyCluster.put("EXG2 STATUS",new FormatCluster("RAW",NO_UNIT,exg2sta));
 				if (mEnableCalibration){
 					double calexg2ch1 = ((exg2ch1)) *(((2.42*1000)/(mEXG2CH1GainValue*2))/(Math.pow(2,15)-1));
 					double calexg2ch2 = ((exg2ch2)) *(((2.42*1000)/(mEXG2CH2GainValue*2))/(Math.pow(2,15)-1));
 					if (isEXGUsingDefaultECGConfiguration()){
-						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW","no units",exg2ch1));
-						objectCluster.mPropertyCluster.put("ECG Vx-RL",new FormatCluster("RAW","no units",exg2ch2));
+						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW",NO_UNIT,exg2ch1));
+						objectCluster.mPropertyCluster.put("ECG Vx-RL",new FormatCluster("RAW",NO_UNIT,exg2ch2));
 						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("CAL","mVolts",calexg2ch1));
 						objectCluster.mPropertyCluster.put("ECG Vx-RL",new FormatCluster("CAL","mVolts",calexg2ch2));
 					}
 					else if (isEXGUsingDefaultEMGConfiguration()){
-						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW","no units",0));
-						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("RAW","no units",0));
+						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("RAW",NO_UNIT,0));
+						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("RAW",NO_UNIT,0));
 						objectCluster.mPropertyCluster.put("EXG2 CH1",new FormatCluster("CAL","mVolts",0));
 						objectCluster.mPropertyCluster.put("EXG2 CH2",new FormatCluster("CAL","mVolts",0));
 					} else {
-						objectCluster.mPropertyCluster.put("EXG2 CH1 16Bit",new FormatCluster("RAW","no units",exg2ch1));
-						objectCluster.mPropertyCluster.put("EXG2 CH2 16Bit",new FormatCluster("RAW","no units",exg2ch2));
+						objectCluster.mPropertyCluster.put("EXG2 CH1 16Bit",new FormatCluster("RAW",NO_UNIT,exg2ch1));
+						objectCluster.mPropertyCluster.put("EXG2 CH2 16Bit",new FormatCluster("RAW",NO_UNIT,exg2ch2));
 						objectCluster.mPropertyCluster.put("EXG2 CH1 16Bit",new FormatCluster("CAL","mVolts",calexg2ch1));
 						objectCluster.mPropertyCluster.put("EXG2 CH2 16Bit",new FormatCluster("CAL","mVolts",calexg2ch2));
 					}
@@ -884,8 +2001,8 @@ public abstract class ShimmerObject {
 				double UT = (double)newPacketInt[iUT];
 				double UP = (double)newPacketInt[iUP];
 				UP=UP/Math.pow(2,8-mPressureResolution);
-				objectCluster.mPropertyCluster.put("Pressure",new FormatCluster("RAW","no units",UP));
-				objectCluster.mPropertyCluster.put("Temperature",new FormatCluster("RAW","no units",UT));
+				objectCluster.mPropertyCluster.put("Pressure",new FormatCluster("RAW",NO_UNIT,UP));
+				objectCluster.mPropertyCluster.put("Temperature",new FormatCluster("RAW",NO_UNIT,UT));
 				if (mEnableCalibration){
 					double[] bmp180caldata= calibratePressureSensorData(UP,UT);
 					objectCluster.mPropertyCluster.put("Pressure",new FormatCluster("CAL","kPa",bmp180caldata[0]/1000));
@@ -896,8 +2013,8 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_BRIDGE_AMP) > 0) {
 				int iBAHigh = getSignalIndex("Bridge Amplifier High");
 				int iBALow = getSignalIndex("Bridge Amplifier Low");
-				objectCluster.mPropertyCluster.put("Bridge Amplifier High",new FormatCluster("RAW","no units",(double)newPacketInt[iBAHigh]));
-				objectCluster.mPropertyCluster.put("Bridge Amplifier Low",new FormatCluster("RAW","no units",(double)newPacketInt[iBALow]));
+				objectCluster.mPropertyCluster.put("Bridge Amplifier High",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iBAHigh]));
+				objectCluster.mPropertyCluster.put("Bridge Amplifier Low",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iBALow]));
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iBAHigh];
 					tempData[1] = (double)newPacketInt[iBALow];
@@ -924,7 +2041,7 @@ public abstract class ShimmerObject {
 		                    p3 = 2.699E-1;
 		                    p4 = -4.769835E+2;
 		                    p5 = 3.403513341E+5;*/
-					if (mShimmerVersion!=SHIMMER_3){
+					if (mShimmerVersion!=HW_ID_SHIMMER_3){
 						p1 = 0.0373;
 						p2 = -24.9915;
 					} else {
@@ -937,7 +2054,7 @@ public abstract class ShimmerObject {
 		                    p3 = 7.54199E-1;
 		                    p4 = -1.5726287856E+3;
 		                    p5 = 1.367507927E+6;*/
-					if (mShimmerVersion!=SHIMMER_3){
+					if (mShimmerVersion!=HW_ID_SHIMMER_3){
 						p1 = 0.0054;
 						p2 = -3.5194;
 					} else {
@@ -950,7 +2067,7 @@ public abstract class ShimmerObject {
 		                    p3 = 1.6509426597E+0;
 		                    p4 = -3.833348044E+3;
 		                    p5 = 3.8063176947E+6;*/
-					if (mShimmerVersion!=SHIMMER_3){
+					if (mShimmerVersion!=HW_ID_SHIMMER_3){
 						p1 = 0.0015;
 						p2 = -1.0163;
 					} else {
@@ -963,7 +2080,7 @@ public abstract class ShimmerObject {
 		                    p3 = 1.7905709E+1;
 		                    p4 = -3.37238657E+4;
 		                    p5 = 2.53680446279E+7;*/
-					if (mShimmerVersion!=SHIMMER_3){
+					if (mShimmerVersion!=HW_ID_SHIMMER_3){
 						p1 = 4.5580e-04;
 						p2 = -0.3014;
 					} else {
@@ -971,7 +2088,7 @@ public abstract class ShimmerObject {
 						p2 = -0.3193;
 					}
 				}
-				objectCluster.mPropertyCluster.put("GSR",new FormatCluster("RAW","no units",(double)newPacketInt[iGSR]));
+				objectCluster.mPropertyCluster.put("GSR",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGSR]));
 				if (mEnableCalibration){
 					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
 					objectCluster.mPropertyCluster.put("GSR",new FormatCluster("CAL","kOhms",calibratedData[iGSR]));
@@ -983,14 +2100,14 @@ public abstract class ShimmerObject {
 				int iAccelX=getSignalIndex("Accelerometer X"); //find index
 				int iAccelY=getSignalIndex("Accelerometer Y"); //find index
 				int iAccelZ=getSignalIndex("Accelerometer Z"); //find index
-				objectCluster.mPropertyCluster.put("Accelerometer X",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelX]));
-				objectCluster.mPropertyCluster.put("Accelerometer Y",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelY]));
-				objectCluster.mPropertyCluster.put("Accelerometer Z",new FormatCluster("RAW","no units",(double)newPacketInt[iAccelZ]));
+				objectCluster.mPropertyCluster.put("Accelerometer X",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelX]));
+				objectCluster.mPropertyCluster.put("Accelerometer Y",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelY]));
+				objectCluster.mPropertyCluster.put("Accelerometer Z",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iAccelZ]));
 				if (mEnableCalibration){
 					tempData[0]=(double)newPacketInt[iAccelX];
 					tempData[1]=(double)newPacketInt[iAccelY];
 					tempData[2]=(double)newPacketInt[iAccelZ];
-					double[] accelCalibratedData=calibrateInertialSensorData(tempData, AlignmentMatrixAccel, SensitivityMatrixAccel, OffsetVectorAccel);
+					double[] accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -1017,14 +2134,14 @@ public abstract class ShimmerObject {
 				int iGyroX=getSignalIndex("Gyroscope X");
 				int iGyroY=getSignalIndex("Gyroscope Y");
 				int iGyroZ=getSignalIndex("Gyroscope Z");					
-				objectCluster.mPropertyCluster.put("Gyroscope X",new FormatCluster("RAW","no units",(double)newPacketInt[iGyroX]));
-				objectCluster.mPropertyCluster.put("Gyroscope Y",new FormatCluster("RAW","no units",(double)newPacketInt[iGyroY]));
-				objectCluster.mPropertyCluster.put("Gyroscope Z",new FormatCluster("RAW","no units",(double)newPacketInt[iGyroZ]));
+				objectCluster.mPropertyCluster.put("Gyroscope X",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroX]));
+				objectCluster.mPropertyCluster.put("Gyroscope Y",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroY]));
+				objectCluster.mPropertyCluster.put("Gyroscope Z",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGyroZ]));
 				if (mEnableCalibration){
 					tempData[0]=(double)newPacketInt[iGyroX];
 					tempData[1]=(double)newPacketInt[iGyroY];
 					tempData[2]=(double)newPacketInt[iGyroZ];
-					double[] gyroCalibratedData=calibrateInertialSensorData(tempData, AlignmentMatrixGyro, SensitivityMatrixGyro, OffsetVectorGyro);
+					double[] gyroCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 					calibratedData[iGyroX]=gyroCalibratedData[0];
 					calibratedData[iGyroY]=gyroCalibratedData[1];
 					calibratedData[iGyroZ]=gyroCalibratedData[2];
@@ -1050,9 +2167,9 @@ public abstract class ShimmerObject {
 							mGyroYRaw.addValue((double)newPacketInt[iGyroY]);
 							mGyroZRaw.addValue((double)newPacketInt[iGyroZ]);
 							if (mGyroX.getStandardDeviation()<mGyroOVCalThreshold && mGyroY.getStandardDeviation()<mGyroOVCalThreshold && mGyroZ.getStandardDeviation()<mGyroOVCalThreshold){
-								OffsetVectorGyro[0][0]=mGyroXRaw.getMean();
-								OffsetVectorGyro[1][0]=mGyroYRaw.getMean();
-								OffsetVectorGyro[2][0]=mGyroZRaw.getMean();
+								mOffsetVectorGyroscope[0][0]=mGyroXRaw.getMean();
+								mOffsetVectorGyroscope[1][0]=mGyroYRaw.getMean();
+								mOffsetVectorGyroscope[2][0]=mGyroZRaw.getMean();
 							}
 						}
 					} 
@@ -1062,14 +2179,14 @@ public abstract class ShimmerObject {
 				int iMagX=getSignalIndex("Magnetometer X");
 				int iMagY=getSignalIndex("Magnetometer Y");
 				int iMagZ=getSignalIndex("Magnetometer Z");
-				objectCluster.mPropertyCluster.put("Magnetometer X",new FormatCluster("RAW","no units",(double)newPacketInt[iMagX]));
-				objectCluster.mPropertyCluster.put("Magnetometer Y",new FormatCluster("RAW","no units",(double)newPacketInt[iMagY]));
-				objectCluster.mPropertyCluster.put("Magnetometer Z",new FormatCluster("RAW","no units",(double)newPacketInt[iMagZ]));
+				objectCluster.mPropertyCluster.put("Magnetometer X",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagX]));
+				objectCluster.mPropertyCluster.put("Magnetometer Y",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagY]));
+				objectCluster.mPropertyCluster.put("Magnetometer Z",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iMagZ]));
 				if (mEnableCalibration){
 					tempData[0]=(double)newPacketInt[iMagX];
 					tempData[1]=(double)newPacketInt[iMagY];
 					tempData[2]=(double)newPacketInt[iMagZ];
-					double[] magCalibratedData=calibrateInertialSensorData(tempData, AlignmentMatrixMag, SensitivityMatrixMag, OffsetVectorMag);
+					double[] magCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
 					calibratedData[iMagX]=magCalibratedData[0];
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
@@ -1158,7 +2275,7 @@ public abstract class ShimmerObject {
 					p1 = 4.5580e-04;
 					p2 = -0.3014;
 				}
-				objectCluster.mPropertyCluster.put("GSR",new FormatCluster("RAW","no units",(double)newPacketInt[iGSR]));
+				objectCluster.mPropertyCluster.put("GSR",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGSR]));
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iGSR];
 					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
@@ -1168,8 +2285,8 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_ECG) > 0) {
 				int iECGRALL = getSignalIndex("ECG RA LL");
 				int iECGLALL = getSignalIndex("ECG LA LL");
-				objectCluster.mPropertyCluster.put("ECG RA-LL",new FormatCluster("RAW","no units",(double)newPacketInt[iECGRALL]));
-				objectCluster.mPropertyCluster.put("ECG LA-LL",new FormatCluster("RAW","no units",(double)newPacketInt[iECGLALL]));
+				objectCluster.mPropertyCluster.put("ECG RA-LL",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iECGRALL]));
+				objectCluster.mPropertyCluster.put("ECG LA-LL",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iECGLALL]));
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iECGRALL];
 					tempData[1] = (double)newPacketInt[iECGLALL];
@@ -1186,7 +2303,7 @@ public abstract class ShimmerObject {
 			}
 			if ((mEnabledSensors & SENSOR_EMG) > 0) {
 				int iEMG = getSignalIndex("EMG");
-				objectCluster.mPropertyCluster.put("EMG",new FormatCluster("RAW","no units",(double)newPacketInt[iEMG]));
+				objectCluster.mPropertyCluster.put("EMG",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iEMG]));
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iEMG];
 					calibratedData[iEMG]=calibrateU12AdcValue(tempData[0],OffsetEMG,3,GainEMG);
@@ -1200,8 +2317,8 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_BRIDGE_AMP) > 0) {
 				int iBAHigh = getSignalIndex("Bridge Amplifier High");
 				int iBALow = getSignalIndex("Bridge Amplifier Low");
-				objectCluster.mPropertyCluster.put("Bridge Amplifier High",new FormatCluster("RAW","no units",(double)newPacketInt[iBAHigh]));
-				objectCluster.mPropertyCluster.put("Bridge Amplifier Low",new FormatCluster("RAW","no units",(double)newPacketInt[iBALow]));
+				objectCluster.mPropertyCluster.put("Bridge Amplifier High",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iBAHigh]));
+				objectCluster.mPropertyCluster.put("Bridge Amplifier Low",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iBALow]));
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iBAHigh];
 					tempData[1] = (double)newPacketInt[iBALow];
@@ -1214,10 +2331,10 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_HEART) > 0) {
 				int iHeartRate = getSignalIndex("Heart Rate");
 				tempData[0] = (double)newPacketInt[iHeartRate];
-				objectCluster.mPropertyCluster.put("Heart Rate",new FormatCluster("RAW","no units",tempData[0]));
+				objectCluster.mPropertyCluster.put("Heart Rate",new FormatCluster("RAW",NO_UNIT,tempData[0]));
 				if (mEnableCalibration){
 					calibratedData[iHeartRate]=tempData[0];
-					if (mFWMajorVersion==0 && mFWMinorVersion==1){
+					if (mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1){
 
 					} else {
 						if (tempData[0]==0){
@@ -1234,13 +2351,13 @@ public abstract class ShimmerObject {
 				int iA0 = getSignalIndex("Exp Board A0");
 				tempData[0] = (double)newPacketInt[iA0];
 				if (getPMux()==0){
-					objectCluster.mPropertyCluster.put("ExpBoard A0",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+					objectCluster.mPropertyCluster.put("ExpBoard A0",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 					if (mEnableCalibration){
 						calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1);
 						objectCluster.mPropertyCluster.put("ExpBoard A0",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
 					}
 				} else {
-					objectCluster.mPropertyCluster.put("VSenseReg",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+					objectCluster.mPropertyCluster.put("VSenseReg",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 					if (mEnableCalibration){
 						calibratedData[iA0]=calibrateU12AdcValue(tempData[0],0,3,1)*1.988;
 						objectCluster.mPropertyCluster.put("VSenseReg",new FormatCluster("CAL","mVolts",calibratedData[iA0]));
@@ -1252,7 +2369,7 @@ public abstract class ShimmerObject {
 				int iA7 = getSignalIndex("Exp Board A7");
 				tempData[0] = (double)newPacketInt[iA7];
 				if (getPMux()==0){
-					objectCluster.mPropertyCluster.put("ExpBoard A7",new FormatCluster("RAW","no units",(double)newPacketInt[iA7]));
+					objectCluster.mPropertyCluster.put("ExpBoard A7",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA7]));
 					if (mEnableCalibration){
 						calibratedData[iA7]=calibrateU12AdcValue(tempData[0],0,3,1);
 						objectCluster.mPropertyCluster.put("ExpBoard A7",new FormatCluster("CAL","mVolts",calibratedData[iA7]));
@@ -1261,10 +2378,10 @@ public abstract class ShimmerObject {
 			}
 			if  ((mEnabledSensors & SENSOR_BATT) > 0) {
 				int iA0 = getSignalIndex("Exp Board A0");
-				objectCluster.mPropertyCluster.put("VSenseReg",new FormatCluster("RAW","no units",(double)newPacketInt[iA0]));
+				objectCluster.mPropertyCluster.put("VSenseReg",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
 
 				int iA7 = getSignalIndex("Exp Board A7");
-				objectCluster.mPropertyCluster.put("VSenseBatt",new FormatCluster("RAW","no units",(double)newPacketInt[iA7]));
+				objectCluster.mPropertyCluster.put("VSenseBatt",new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA7]));
 
 
 				if (mEnableCalibration){
@@ -1344,7 +2461,42 @@ public abstract class ShimmerObject {
 				long lsb =((long)(data[iData+2] & 0xFF));
 				formattedData[i]=calculatetwoscomplement((int)(xmsb + msb + lsb),24);
 				iData=iData+3;
-			} 
+			} else if (dataType[i]=="u32signed") {
+				long offset = (((long)data[iData] & 0xFF));
+				if (offset == 255){
+					offset = 0;
+				}
+				long xxmsb =(((long)data[iData+4] & 0xFF) << 24);
+				long xmsb =(((long)data[iData+3] & 0xFF) << 16);
+				long msb =(((long)data[iData+2] & 0xFF) << 8);
+				long lsb =(((long)data[iData+1] & 0xFF));
+				formattedData[i]=(1-2*offset)*(xxmsb + xmsb + msb + lsb);
+				iData=iData+5;
+			} else if (dataType[i]=="i32r") {
+				long xxmsb =((long)(data[iData+0] & 0xFF) << 24);
+				long xmsb =((long)(data[iData+1] & 0xFF) << 16);
+				long msb =((long)(data[iData+2] & 0xFF) << 8);
+				long lsb =((long)(data[iData+3] & 0xFF) << 0);
+				formattedData[i]=calculatetwoscomplement((long)(xxmsb + xmsb + msb + lsb),32);
+				iData=iData+4;
+			} else if (dataType[i]=="u72"){
+				// do something to parse the 9 byte data
+				long offset = (((long)data[iData] & 0xFF));
+				if (offset == 255){
+					offset = 0;
+				}
+				
+				long eigthmsb =(((long)data[iData+8] & 0x0FL) << 56);
+				long seventhmsb =(((long)data[iData+7] & 0xFFL) << 48);
+				long sixthmsb =(((long)data[iData+6] & 0xFFL) << 40);
+				long fifthmsb =(((long)data[iData+5] & 0xFFL) << 32);
+				long forthmsb =(((long)data[iData+4] & 0xFFL) << 24);
+				long thirdmsb =(((long)data[iData+3] & 0xFFL) << 16);
+				long msb =(((long)data[iData+2] & 0xFF) << 8);
+				long lsb =(((long)data[iData+1] & 0xFF));
+				formattedData[i]=(1-2*offset)*(eigthmsb + seventhmsb + sixthmsb + fifthmsb+ forthmsb+ thirdmsb + msb + lsb);
+				iData=iData+9;
+			}
 		return formattedData;
 	}
 	/*
@@ -1352,7 +2504,7 @@ public abstract class ShimmerObject {
 	 * */  
 
 
-	private int[] formatdatapacketreverse(byte[] data,String[] dataType)
+	protected int[] formatdatapacketreverse(byte[] data,String[] dataType)
 	{
 		int iData=0;
 		int[] formattedData=new int[dataType.length];
@@ -1394,6 +2546,16 @@ public abstract class ShimmerObject {
 		return newData;
 	}
 
+	private long calculatetwoscomplement(long signedData, int bitLength)
+	{
+		long newData=signedData;
+		if (signedData>=(1L<<(bitLength-1))) {
+			newData=-((signedData^(long)(Math.pow(2, bitLength)-1))+1);
+		}
+
+		return newData;
+	}
+	
 	protected int getSignalIndex(String signalName) {
 		int iSignal=0; //used to be -1, putting to zero ensure it works eventhough it might be wrong SR30
 		for (int i=0;i<mSignalNameArray.length;i++) {
@@ -1405,6 +2567,11 @@ public abstract class ShimmerObject {
 		return iSignal;
 	}
 
+	
+	/** Only for Bluetooth
+	 * @param nC
+	 * @param signalid
+	 */
 	protected void interpretdatapacketformat(int nC, byte[] signalid)
 	{
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
@@ -1416,7 +2583,7 @@ public abstract class ShimmerObject {
 		for (int i=0;i<nC;i++) {
 			if ((byte)signalid[i]==(byte)0x00)
 			{
-				if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_SR30 || mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Low Noise Accelerometer X";
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -1430,7 +2597,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x01)
 			{
-				if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_SR30 || mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Low Noise Accelerometer Y";
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2; 
@@ -1444,7 +2611,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x02)
 			{
-				if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_SR30 || mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Low Noise Accelerometer Z";
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -1459,12 +2626,12 @@ public abstract class ShimmerObject {
 			else if ((byte)signalid[i]==(byte)0x03)
 			{
 
-				if (mShimmerVersion==SHIMMER_SR30){
+				if (mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalNameArray[i+1]="Gyroscope X";
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
-				} else if (mShimmerVersion==SHIMMER_3){
+				} else if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="VSenseBatt"; //should be the battery but this will do for now
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -1479,12 +2646,12 @@ public abstract class ShimmerObject {
 			else if ((byte)signalid[i]==(byte)0x04)
 			{
 
-				if (mShimmerVersion==SHIMMER_SR30){
+				if (mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalNameArray[i+1]="Gyroscope Y";
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
-				} else if (mShimmerVersion==SHIMMER_3){
+				} else if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]="Wide Range Accelerometer X";
@@ -1498,12 +2665,12 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x05)
 			{
-				if (mShimmerVersion==SHIMMER_SR30){
+				if (mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalNameArray[i+1]="Gyroscope Z";
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
-				} else if (mShimmerVersion==SHIMMER_3){
+				} else if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]="Wide Range Accelerometer Y";
@@ -1517,12 +2684,12 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x06)
 			{
-				if(mShimmerVersion==SHIMMER_SR30){
+				if(mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalNameArray[i+1]="VSenseBatt"; //should be the battery but this will do for now
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT_S3);	
-				} else if (mShimmerVersion==SHIMMER_3){
+				} else if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]="Wide Range Accelerometer Z";
@@ -1538,12 +2705,12 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x07)
 			{
-				if(mShimmerVersion==SHIMMER_SR30){
+				if(mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]="Wide Range Accelerometer X";
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
-				} else if(mShimmerVersion==SHIMMER_3){
+				} else if(mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Magnetometer X";
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
@@ -1559,12 +2726,12 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x08)
 			{	
-				if(mShimmerVersion==SHIMMER_SR30){
+				if(mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]="Wide Range Accelerometer Y";
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
-				} else if(mShimmerVersion==SHIMMER_3){
+				} else if(mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Magnetometer Y";
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
@@ -1579,12 +2746,12 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x09)
 			{
-				if(mShimmerVersion==SHIMMER_SR30){
+				if(mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalNameArray[i+1]="Wide Range Accelerometer Z";
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
-				} else if(mShimmerVersion==SHIMMER_3){
+				} else if(mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Magnetometer Z";
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
@@ -1600,12 +2767,12 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x0A)
 			{
-				if(mShimmerVersion==SHIMMER_SR30){
+				if(mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalNameArray[i+1]="Magnetometer X";
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
-				} else if (mShimmerVersion==SHIMMER_3) {
+				} else if (mShimmerVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]="Gyroscope X";
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -1620,12 +2787,12 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x0B)
 			{
-				if(mShimmerVersion==SHIMMER_SR30){
+				if(mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalNameArray[i+1]="Magnetometer Y";
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
-				}  else if (mShimmerVersion==SHIMMER_3) {
+				}  else if (mShimmerVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]="Gyroscope Y";
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -1639,12 +2806,12 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x0C)
 			{
-				if(mShimmerVersion==SHIMMER_SR30){
+				if(mShimmerVersion==HW_ID_SHIMMER_SR30){
 					signalNameArray[i+1]="Magnetometer Z";
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
-				} else if (mShimmerVersion==SHIMMER_3) {
+				} else if (mShimmerVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]="Gyroscope Z";
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -1658,7 +2825,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x0D)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="External ADC A7";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -1672,7 +2839,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x0E)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="External ADC A6";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -1686,7 +2853,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x0F)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="External ADC A15";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -1700,7 +2867,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x10)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Internal ADC A1";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -1715,7 +2882,7 @@ public abstract class ShimmerObject {
 
 			else if ((byte)signalid[i]==(byte)0x11)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Internal ADC A12";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -1729,14 +2896,14 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x12)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Internal ADC A13";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|SENSOR_INT_ADC_A13);
 				} else {
 					signalNameArray[i+1]="Heart Rate";
-					if (mFWMajorVersion==0 && mFWMinorVersion==1){
+					if (mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1){
 						signalDataTypeArray[i+1] = "u8";
 						packetSize=packetSize+1;
 					} else {
@@ -1748,7 +2915,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x13)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Internal ADC A14";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -1756,7 +2923,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1A){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Temperature";
 					signalDataTypeArray[i+1] = "u16r";
 					packetSize=packetSize+2;
@@ -1764,7 +2931,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1B){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Pressure";
 					signalDataTypeArray[i+1] = "u24r";
 					packetSize=packetSize+3;
@@ -1772,7 +2939,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1C){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="GSR Raw";
 					signalDataTypeArray[i+1] = "u16";
 					packetSize=packetSize+2;
@@ -1780,7 +2947,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1D){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG1 STATUS";
 					signalDataTypeArray[i+1] = "u8";
 					packetSize=packetSize+1;
@@ -1788,7 +2955,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1E){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG1 24Bit CH1";
 					signalDataTypeArray[i+1] = "i24r";
 					packetSize=packetSize+3;
@@ -1796,7 +2963,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1F){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG1 24Bit CH2";
 					signalDataTypeArray[i+1] = "i24r";
 					packetSize=packetSize+3;
@@ -1805,7 +2972,7 @@ public abstract class ShimmerObject {
 			}
 
 			else if ((byte)signalid[i]==(byte)0x20){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG2 STATUS";
 					signalDataTypeArray[i+1] = "u8";
 					packetSize=packetSize+1;
@@ -1813,7 +2980,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x21){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG2 24Bit CH1";
 					signalDataTypeArray[i+1] = "i24r";
 					packetSize=packetSize+3;
@@ -1821,7 +2988,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x22){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG2 24Bit CH2";
 					signalDataTypeArray[i+1] = "i24r";
 					packetSize=packetSize+3;
@@ -1830,7 +2997,7 @@ public abstract class ShimmerObject {
 			}
 
 			else if ((byte)signalid[i]==(byte)0x23){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG1 16Bit CH1";
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -1838,7 +3005,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x24){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG1 16Bit CH2";
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -1847,7 +3014,7 @@ public abstract class ShimmerObject {
 			}
 
 			else if ((byte)signalid[i]==(byte)0x25){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG2 16Bit CH1";
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -1855,7 +3022,7 @@ public abstract class ShimmerObject {
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x26){
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="EXG2 16Bit CH2";
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -1864,7 +3031,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x27)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Bridge Amplifier High";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -1873,7 +3040,7 @@ public abstract class ShimmerObject {
 			}
 			else if ((byte)signalid[i]==(byte)0x28)
 			{
-				if (mShimmerVersion==SHIMMER_3){
+				if (mShimmerVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]="Bridge Amplifier Low";
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -1912,12 +3079,13 @@ public abstract class ShimmerObject {
 
 
 	}
+	
 	/**
 	 * Should only be used when Shimmer is Connected and Initialized
 	 */
 	public static BiMap<String,String> generateBiMapSensorIDtoSensorName(int shimmerVersion){
 		BiMap<String, String> sensorBitmaptoName =null;  
-		if (shimmerVersion != SHIMMER_2R){
+		if (shimmerVersion != HW_ID_SHIMMER_2R){
 			final Map<String, String> tempSensorBMtoName = new HashMap<String, String>();  
 			tempSensorBMtoName.put(Integer.toString(SENSOR_GYRO), "Gyroscope");  
 			tempSensorBMtoName.put(Integer.toString(SENSOR_MAG), "Magnetometer");  
@@ -1974,7 +3142,7 @@ public abstract class ShimmerObject {
 	 */
 	public void generateBiMapSensorIDtoSensorName(){
 		if (mShimmerVersion != -1){
-			if (mShimmerVersion != SHIMMER_2R){
+			if (mShimmerVersion != HW_ID_SHIMMER_2R){
 				final Map<String, String> tempSensorBMtoName = new HashMap<String, String>();  
 				tempSensorBMtoName.put(Integer.toString(SENSOR_BMP180), "Pressure");
 				tempSensorBMtoName.put(Integer.toString(SENSOR_GYRO), "Gyroscope");  
@@ -2032,7 +3200,7 @@ public abstract class ShimmerObject {
 	public String[] getListofEnabledSensorSignals(){
 		List<String> listofSignals = new ArrayList<String>();
 		String[] enabledSignals; 
-		if (mShimmerVersion!=SHIMMER_3){
+		if (mShimmerVersion!=HW_ID_SHIMMER_3){
 			listofSignals.add("Timestamp");
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				listofSignals.add("Accelerometer X");
@@ -2267,40 +3435,40 @@ public abstract class ShimmerObject {
 
 			if (packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
 				mDefaultCalibrationParametersAccel = false;
-				AlignmentMatrixAccel = AlignmentMatrix;
-				OffsetVectorAccel = OffsetVector;
-				SensitivityMatrixAccel = SensitivityMatrix;
+				mAlignmentMatrixAnalogAccel = AlignmentMatrix;
+				mOffsetVectorAnalogAccel = OffsetVector;
+				mSensitivityMatrixAnalogAccel = SensitivityMatrix;
 			} else if(packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
 				mDefaultCalibrationParametersAccel = true;
 				if (mShimmerVersion!=3){
-					AlignmentMatrixAccel = AlignmentMatrixAccelShimmer2;
-					OffsetVectorAccel = OffsetVectorAccelShimmer2;
+					mAlignmentMatrixAnalogAccel = AlignmentMatrixAccelShimmer2;
+					mOffsetVectorAnalogAccel = OffsetVectorAccelShimmer2;
 					if (getAccelRange()==0){
-						SensitivityMatrixAccel = SensitivityMatrixAccel1p5gShimmer2; 
+						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
 					} else if (getAccelRange()==1){
-						SensitivityMatrixAccel = SensitivityMatrixAccel2gShimmer2; 
+						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
 					} else if (getAccelRange()==2){
-						SensitivityMatrixAccel = SensitivityMatrixAccel4gShimmer2; 
+						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
 					} else if (getAccelRange()==3){
-						SensitivityMatrixAccel = SensitivityMatrixAccel6gShimmer2; 
+						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
 					}
 				} else {
 					if (getAccelRange()==0){
-						SensitivityMatrixAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-						AlignmentMatrixAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-						OffsetVectorAccel = OffsetVectorLowNoiseAccelShimmer3;
+						mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
+						mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
+						mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
 					} else if (getAccelRange()==1){
-						SensitivityMatrixAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-						AlignmentMatrixAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						OffsetVectorAccel = OffsetVectorWideRangeAccelShimmer3;
+						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
+						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
 					} else if (getAccelRange()==2){
-						SensitivityMatrixAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-						AlignmentMatrixAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						OffsetVectorAccel = OffsetVectorWideRangeAccelShimmer3;
+						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
+						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
 					} else if (getAccelRange()==3){
-						SensitivityMatrixAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-						AlignmentMatrixAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						OffsetVectorAccel = OffsetVectorWideRangeAccelShimmer3;
+						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
+						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
 					}
 
 
@@ -2309,106 +3477,106 @@ public abstract class ShimmerObject {
 
 			if (packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
 				mDefaultCalibrationParametersDigitalAccel = false;
-				AlignmentMatrixAccel2 = AlignmentMatrix;
-				OffsetVectorAccel2 = OffsetVector;
-				SensitivityMatrixAccel2 = SensitivityMatrix;
+				mAlignmentMatrixWRAccel = AlignmentMatrix;
+				mOffsetVectorWRAccel = OffsetVector;
+				mSensitivityMatrixWRAccel = SensitivityMatrix;
 			} else if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE  && SensitivityMatrix[0][0]==-1){
 				mDefaultCalibrationParametersDigitalAccel = true;
 				if (getAccelRange()==0){
-					SensitivityMatrixAccel2 = SensitivityMatrixWideRangeAccel2gShimmer3;
-					AlignmentMatrixAccel2 = AlignmentMatrixWideRangeAccelShimmer3;
-					OffsetVectorAccel2 = OffsetVectorWideRangeAccelShimmer3;
+					mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel2gShimmer3;
+					mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+					mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
 				} else if (getAccelRange()==1){
-					SensitivityMatrixAccel2 = SensitivityMatrixWideRangeAccel4gShimmer3;
-					AlignmentMatrixAccel2 = AlignmentMatrixWideRangeAccelShimmer3;
-					OffsetVectorAccel2 = OffsetVectorWideRangeAccelShimmer3;
+					mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
+					mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+					mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
 				} else if (getAccelRange()==2){
-					SensitivityMatrixAccel2 = SensitivityMatrixWideRangeAccel8gShimmer3;
-					AlignmentMatrixAccel2 = AlignmentMatrixWideRangeAccelShimmer3;
-					OffsetVectorAccel2 = OffsetVectorWideRangeAccelShimmer3;
+					mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
+					mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+					mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
 				} else if (getAccelRange()==3){
-					SensitivityMatrixAccel2 = SensitivityMatrixWideRangeAccel16gShimmer3;
-					AlignmentMatrixAccel2 = AlignmentMatrixWideRangeAccelShimmer3;
-					OffsetVectorAccel2 = OffsetVectorWideRangeAccelShimmer3;
+					mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
+					mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+					mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
 				}
 			}
 			if (packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
 				mDefaultCalibrationParametersGyro = false;
-				AlignmentMatrixGyro = AlignmentMatrix;
-				OffsetVectorGyro = OffsetVector;
-				SensitivityMatrixGyro = SensitivityMatrix;
-				SensitivityMatrixGyro[0][0] = SensitivityMatrixGyro[0][0]/100;
-				SensitivityMatrixGyro[1][1] = SensitivityMatrixGyro[1][1]/100;
-				SensitivityMatrixGyro[2][2] = SensitivityMatrixGyro[2][2]/100;
+				mAlignmentMatrixGyroscope = AlignmentMatrix;
+				mOffsetVectorGyroscope = OffsetVector;
+				mSensitivityMatrixGyroscope = SensitivityMatrix;
+				mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
+				mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
+				mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
 
 			} else if(packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
 				mDefaultCalibrationParametersGyro = true;
 				if (mShimmerVersion!=3){
-					AlignmentMatrixGyro = AlignmentMatrixGyroShimmer2;
-					OffsetVectorGyro = OffsetVectorGyroShimmer2;
-					SensitivityMatrixGyro = SensitivityMatrixGyroShimmer2;	
+					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
+					mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
+					mSensitivityMatrixGyroscope = SensitivityMatrixGyroShimmer2;	
 				} else {
 					if (mGyroRange==0){
-						SensitivityMatrixGyro = SensitivityMatrixGyro250dpsShimmer3;
+						mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
 
 					} else if (mGyroRange==1){
-						SensitivityMatrixGyro = SensitivityMatrixGyro500dpsShimmer3;
+						mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
 
 					} else if (mGyroRange==2){
-						SensitivityMatrixGyro = SensitivityMatrixGyro1000dpsShimmer3;
+						mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
 
 					} else if (mGyroRange==3){
-						SensitivityMatrixGyro = SensitivityMatrixGyro2000dpsShimmer3;
+						mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
 					}
-					AlignmentMatrixGyro = AlignmentMatrixGyroShimmer3;
-					OffsetVectorGyro = OffsetVectorGyroShimmer3;
+					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
+					mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
 				}
 			} 
 			if (packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
 				mDefaultCalibrationParametersMag = false;
-				AlignmentMatrixMag = AlignmentMatrix;
-				OffsetVectorMag = OffsetVector;
-				SensitivityMatrixMag = SensitivityMatrix;
+				mAlignmentMatrixMagnetometer = AlignmentMatrix;
+				mOffsetVectorMagnetometer = OffsetVector;
+				mSensitivityMatrixMagnetometer = SensitivityMatrix;
 
 			} else if(packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
 				mDefaultCalibrationParametersMag = true;
 				if (mShimmerVersion!=3){
-					AlignmentMatrixMag = AlignmentMatrixMagShimmer2;
-					OffsetVectorMag = OffsetVectorMagShimmer2;
-					if (mMagGain==0){
-						SensitivityMatrixMag = SensitivityMatrixMag0p8GaShimmer2;
-					} else if (mMagGain==1){
-						SensitivityMatrixMag = SensitivityMatrixMag1p3GaShimmer2;
-					} else if (mMagGain==2){
-						SensitivityMatrixMag = SensitivityMatrixMag1p9GaShimmer2;
-					} else if (mMagGain==3){
-						SensitivityMatrixMag = SensitivityMatrixMag2p5GaShimmer2;
-					} else if (mMagGain==4){
-						SensitivityMatrixMag = SensitivityMatrixMag4p0GaShimmer2;
-					} else if (mMagGain==5){
-						SensitivityMatrixMag = SensitivityMatrixMag4p7GaShimmer2;
-					} else if (mMagGain==6){
-						SensitivityMatrixMag = SensitivityMatrixMag5p6GaShimmer2;
-					} else if (mMagGain==7){
-						SensitivityMatrixMag = SensitivityMatrixMag8p1GaShimmer2;
+					mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer2;
+					mOffsetVectorMagnetometer = OffsetVectorMagShimmer2;
+					if (mMagRange==0){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag0p8GaShimmer2;
+					} else if (mMagRange==1){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer2;
+					} else if (mMagRange==2){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer2;
+					} else if (mMagRange==3){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer2;
+					} else if (mMagRange==4){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p0GaShimmer2;
+					} else if (mMagRange==5){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer2;
+					} else if (mMagRange==6){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer2;
+					} else if (mMagRange==7){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer2;
 					}
 				} else {
-					AlignmentMatrixMag = AlignmentMatrixMagShimmer3;
-					OffsetVectorMag = OffsetVectorMagShimmer3;
-					if (mMagGain==1){
-						SensitivityMatrixMag = SensitivityMatrixMag1p3GaShimmer3;
-					} else if (mMagGain==2){
-						SensitivityMatrixMag = SensitivityMatrixMag1p9GaShimmer3;
-					} else if (mMagGain==3){
-						SensitivityMatrixMag = SensitivityMatrixMag2p5GaShimmer3;
-					} else if (mMagGain==4){
-						SensitivityMatrixMag = SensitivityMatrixMag4GaShimmer3;
-					} else if (mMagGain==5){
-						SensitivityMatrixMag = SensitivityMatrixMag4p7GaShimmer3;
-					} else if (mMagGain==6){
-						SensitivityMatrixMag = SensitivityMatrixMag5p6GaShimmer3;
-					} else if (mMagGain==7){
-						SensitivityMatrixMag = SensitivityMatrixMag8p1GaShimmer3;
+					mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
+					mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
+					if (mMagRange==1){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer3;
+					} else if (mMagRange==2){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer3;
+					} else if (mMagRange==3){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer3;
+					} else if (mMagRange==4){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag4GaShimmer3;
+					} else if (mMagRange==5){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer3;
+					} else if (mMagRange==6){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer3;
+					} else if (mMagRange==7){
+						mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer3;
 					}
 				}
 			}
@@ -2583,7 +3751,7 @@ public abstract class ShimmerObject {
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
 		//the following is the new linear method see user GSR user guide for further details
-		double gsrCalibratedData = (1/(p1*gsrUncalibratedData+p2))*1000; //kohms 
+		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
 		return gsrCalibratedData;  
 	}
 
@@ -2600,7 +3768,7 @@ public abstract class ShimmerObject {
 	}
 
 	public int getMagRange(){
-		return mMagGain;
+		return mMagRange;
 	}
 
 	public int getGyroRange(){
@@ -2625,16 +3793,15 @@ public abstract class ShimmerObject {
 	}
 
 	protected ObjectCluster callAdditionalServices(ObjectCluster objectCluster) {
-		// TODO Auto-generated method stub
 		return objectCluster;
 	}
 
 	protected void interpretInqResponse(byte[] bufferInquiry){
-		if (mShimmerVersion==SHIMMER_2 || mShimmerVersion==SHIMMER_2R){
+		if (mShimmerVersion==HW_ID_SHIMMER_2 || mShimmerVersion==HW_ID_SHIMMER_2R){
 
 			mPacketSize = 2+bufferInquiry[3]*2; 
 			mSamplingRate = (double)1024/bufferInquiry[0];
-			if (mMagSamplingRate==3 && mSamplingRate>10){
+			if (mLSM303MagRate==3 && mSamplingRate>10){
 				mLowPowerMag = true;
 			}
 			mAccelRange = bufferInquiry[1];
@@ -2647,7 +3814,7 @@ public abstract class ShimmerObject {
 			interpretdatapacketformat(mNChannels,signalIdArray);
 			mInquiryResponseBytes = new byte[5+mNChannels];
 			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-		} else if (mShimmerVersion==SHIMMER_3) {
+		} else if (mShimmerVersion==HW_ID_SHIMMER_3) {
 			mPacketSize = 2+bufferInquiry[6]*2; 
 			mSamplingRate = (32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8)));
 			mNChannels = bufferInquiry[6];
@@ -2655,29 +3822,29 @@ public abstract class ShimmerObject {
 			mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
 			mAccelRange = ((int)(mConfigByte0 & 0xC))>>2;
 			mGyroRange = ((int)(mConfigByte0 & 196608))>>16;
-			mMagGain = ((int)(mConfigByte0 & 14680064))>>21;
-			mAccelSamplingRate = ((int)(mConfigByte0 & 0xF0))>>4;
-			mMPU9150SamplingRate = ((int)(mConfigByte0 & 65280))>>8;
-		mMagSamplingRate = ((int)(mConfigByte0 & 1835008))>>18; 
-		mPressureResolution = (((int)(mConfigByte0 >>28)) & 3);
-		mGSRRange  = (((int)(mConfigByte0 >>25)) & 7);
-		mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
-		mInquiryResponseBytes = new byte[8+mNChannels];
-		System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-		if ((mAccelSamplingRate==2 && mSamplingRate>10)){
-			mLowPowerAccel = true;
-		}
-		if ((mMPU9150SamplingRate==0xFF && mSamplingRate>10)){
-			mLowPowerGyro = true;
-		}
-		if ((mMagSamplingRate==4 && mSamplingRate>10)){
-			mLowPowerMag = true;
-		}
-		byte[] signalIdArray = new byte[mNChannels];
-		System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
-		updateEnabledSensorsFromChannels(signalIdArray);
-		interpretdatapacketformat(mNChannels,signalIdArray);
-		} else if (mShimmerVersion==SHIMMER_SR30) {
+			mMagRange = ((int)(mConfigByte0 & 14680064))>>21;
+			mLSM303DigitalAccelRate = ((int)(mConfigByte0 & 0xF0))>>4;
+			mMPU9150GyroAccelRate = ((int)(mConfigByte0 & 65280))>>8;
+			mLSM303MagRate = ((int)(mConfigByte0 & 1835008))>>18; 
+			mPressureResolution = (((int)(mConfigByte0 >>28)) & 3);
+			mGSRRange  = (((int)(mConfigByte0 >>25)) & 7);
+			mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
+			mInquiryResponseBytes = new byte[8+mNChannels];
+			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
+			if ((mLSM303DigitalAccelRate==2 && mSamplingRate>10)){
+				mLowPowerAccel = true;
+			}
+			if ((mMPU9150GyroAccelRate==0xFF && mSamplingRate>10)){
+				mLowPowerGyro = true;
+			}
+			if ((mLSM303MagRate==4 && mSamplingRate>10)){
+				mLowPowerMag = true;
+			}
+			byte[] signalIdArray = new byte[mNChannels];
+			System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
+			updateEnabledSensorsFromChannels(signalIdArray);
+			interpretdatapacketformat(mNChannels,signalIdArray);
+		} else if (mShimmerVersion==HW_ID_SHIMMER_SR30) {
 			mPacketSize = 2+bufferInquiry[2]*2; 
 			mSamplingRate = (double)1024/bufferInquiry[0];
 			mAccelRange = bufferInquiry[1];
@@ -2690,6 +3857,7 @@ public abstract class ShimmerObject {
 		}
 	}
 
+
 	protected void updateEnabledSensorsFromChannels(byte[] channels){
 		// set the sensors value
 		// crude way of getting this value, but allows for more customised firmware
@@ -2699,7 +3867,7 @@ public abstract class ShimmerObject {
 		int enabledSensors = 0;
 		for (int i=0;i<channels.length;i++)
 		{
-			if (mShimmerVersion==SHIMMER_3){
+			if (mShimmerVersion==HW_ID_SHIMMER_3){
 				if (channels[i]==Configuration.Shimmer3.Channel.XAAccel || channels[i]==Configuration.Shimmer3.Channel.YAAccel || channels[i]==Configuration.Shimmer3.Channel.ZAAccel){
 					enabledSensors = enabledSensors | SENSOR_ACCEL;
 				}
@@ -2780,7 +3948,7 @@ public abstract class ShimmerObject {
 					enabledSensors = enabledSensors | SENSOR_BRIDGE_AMP;
 				}
 
-			} else if(mShimmerVersion==SHIMMER_2R){
+			} else if(mShimmerVersion==HW_ID_SHIMMER_2R){
 				if (channels[i]==Configuration.Shimmer2.Channel.XAccel || channels[i]==Configuration.Shimmer2.Channel.YAccel||channels[i]==Configuration.Shimmer2.Channel.ZAccel){
 					enabledSensors = enabledSensors | SENSOR_ACCEL;
 				}
@@ -2836,7 +4004,6 @@ public abstract class ShimmerObject {
 		return  mMyBluetoothAddress;
 	}
 	public void setDeviceName(String deviceName) {
-		// TODO Auto-generated method stub
 		mMyName = deviceName;
 	}
 	public byte[] getRawInquiryResponse(){
@@ -2846,7 +4013,7 @@ public abstract class ShimmerObject {
 	public byte[] getRawCalibrationParameters(){
 
 		byte[] rawcal=new byte[1];
-		if (mShimmerVersion==SHIMMER_3)
+		if (mShimmerVersion==HW_ID_SHIMMER_3)
 		{
 			//Accel + Digi Accel + Gyro + Mag + Pressure
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -2864,11 +4031,10 @@ public abstract class ShimmerObject {
 				outputStream.write( mPressureCalRawParams );
 				rawcal = outputStream.toByteArray( );
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}			
 
-		} else if (mShimmerVersion==SHIMMER_2 ||mShimmerVersion==SHIMMER_2R)
+		} else if (mShimmerVersion==HW_ID_SHIMMER_2 ||mShimmerVersion==HW_ID_SHIMMER_2R)
 		{
 			//Accel + Digi Accel + Gyro + Mag + Pressure
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -2887,7 +4053,6 @@ public abstract class ShimmerObject {
 				outputStream.write( mEMGCalRawParams );
 				rawcal = outputStream.toByteArray( );
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
 
@@ -2902,7 +4067,7 @@ public abstract class ShimmerObject {
 
 	public List<String> getListofEnabledSensors(){
 		List<String> listofSensors = new ArrayList<String>();
-		if (mShimmerVersion==SHIMMER_3){
+		if (mShimmerVersion==HW_ID_SHIMMER_3){
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				listofSensors.add("Low Noise Accelerometer");
 			}
@@ -2935,49 +4100,49 @@ public abstract class ShimmerObject {
 		if (((mEnabledSensors & 0xFF00) & SENSOR_HEART) > 0) {
 			listofSensors.add("Heart Rate");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A0) > 0 && (mEnabledSensors & SENSOR_BATT) == 0 && mShimmerVersion != SHIMMER_3) {
+		if (((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A0) > 0 && (mEnabledSensors & SENSOR_BATT) == 0 && mShimmerVersion != HW_ID_SHIMMER_3) {
 			listofSensors.add("ExpBoard A0");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A7) > 0  && (mEnabledSensors & SENSOR_BATT) == 0 && mShimmerVersion != SHIMMER_3) {
+		if (((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A7) > 0  && (mEnabledSensors & SENSOR_BATT) == 0 && mShimmerVersion != HW_ID_SHIMMER_3) {
 			listofSensors.add("ExpBoard A7");
 		}
 		if ((mEnabledSensors & SENSOR_BATT) > 0) {
 			listofSensors.add("Battery Voltage");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EXT_ADC_A7) > 0  && mShimmerVersion == SHIMMER_3) {
+		if (((mEnabledSensors & 0xFF) & SENSOR_EXT_ADC_A7) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("External ADC A7");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EXT_ADC_A6) > 0  && mShimmerVersion == SHIMMER_3) {
+		if (((mEnabledSensors & 0xFF) & SENSOR_EXT_ADC_A6) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("External ADC A6");
 		}
-		if (((mEnabledSensors & 0xFFFF) & SENSOR_EXT_ADC_A15) > 0  && mShimmerVersion == SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFF) & SENSOR_EXT_ADC_A15) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("External ADC A15");
 		}
-		if (((mEnabledSensors & 0xFFFF) & SENSOR_INT_ADC_A1) > 0  && mShimmerVersion == SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFF) & SENSOR_INT_ADC_A1) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("Internal ADC A1");
 		}
-		if (((mEnabledSensors & 0xFFFF) & SENSOR_INT_ADC_A12) > 0  && mShimmerVersion == SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFF) & SENSOR_INT_ADC_A12) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("Internal ADC A12");
 		}
-		if (((mEnabledSensors & 0xFFFFFF) & SENSOR_INT_ADC_A13) > 0  && mShimmerVersion == SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFFFF) & SENSOR_INT_ADC_A13) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("Internal ADC A13");
 		}
-		if (((mEnabledSensors & 0xFFFFFF) & SENSOR_INT_ADC_A14) > 0  && mShimmerVersion == SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFFFF) & SENSOR_INT_ADC_A14) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("Internal ADC A14");
 		}
-		if ((mEnabledSensors & SENSOR_BMP180) > 0  && mShimmerVersion == SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_BMP180) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("Pressure");
 		}
-		if ((mEnabledSensors & SENSOR_EXG1_24BIT) > 0  && mShimmerVersion == SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("EXG1");
 		}
-		if ((mEnabledSensors & SENSOR_EXG2_24BIT) > 0  && mShimmerVersion == SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_EXG2_24BIT) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("EXG2");
 		}
-		if ((mEnabledSensors & SENSOR_EXG1_16BIT) > 0  && mShimmerVersion == SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("EXG1 16Bit");
 		}
-		if ((mEnabledSensors & SENSOR_EXG2_16BIT) > 0  && mShimmerVersion == SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_EXG2_16BIT) > 0  && mShimmerVersion == HW_ID_SHIMMER_3) {
 			listofSensors.add("EXG2 16Bit");
 		}
 
@@ -2990,10 +4155,10 @@ public abstract class ShimmerObject {
 	public List<String[]> getListofEnabledSensorSignalsandFormats(){
 		List<String[]> listofSignals = new ArrayList<String[]>();
 		 
-		if (mShimmerVersion!=SHIMMER_3){
+		if (mShimmerVersion!=HW_ID_SHIMMER_3){
 			String[] channel = new String[]{mMyName,"Timestamp","CAL","mSecs"};
 			listofSignals.add(channel);
-			channel = new String[]{mMyName,"Timestamp","RAW","no units"};
+			channel = new String[]{mMyName,"Timestamp","RAW",NO_UNIT};
 			listofSignals.add(channel);
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				String unit = "m/(sec^2)";
@@ -3003,17 +4168,17 @@ public abstract class ShimmerObject {
 				
 				channel = new String[]{mMyName,"Accelerometer X","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Accelerometer X","RAW","no units"};
+				channel = new String[]{mMyName,"Accelerometer X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Accelerometer Y","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Accelerometer Y","RAW","no units"};
+				channel = new String[]{mMyName,"Accelerometer Y","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Accelerometer Z","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Accelerometer Z","RAW","no units"};
+				channel = new String[]{mMyName,"Accelerometer Z","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 			}
@@ -3024,17 +4189,17 @@ public abstract class ShimmerObject {
 				} 
 				channel = new String[]{mMyName,"Gyroscope X","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Gyroscope X","RAW","no units"};
+				channel = new String[]{mMyName,"Gyroscope X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Gyroscope Y","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Gyroscope Y","RAW","no units"};
+				channel = new String[]{mMyName,"Gyroscope Y","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Gyroscope Z","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Gyroscope Z","RAW","no units"};
+				channel = new String[]{mMyName,"Gyroscope Z","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0) {
@@ -3044,23 +4209,23 @@ public abstract class ShimmerObject {
 				} 
 				channel = new String[]{mMyName,"Magnetometer X","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Magnetometer X","RAW","no units"};
+				channel = new String[]{mMyName,"Magnetometer X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Magnetometer Y","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Magnetometer Y","RAW","no units"};
+				channel = new String[]{mMyName,"Magnetometer Y","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Magnetometer Z","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Magnetometer Z","RAW","no units"};
+				channel = new String[]{mMyName,"Magnetometer Z","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF) & SENSOR_GSR) > 0) {
 				channel = new String[]{mMyName,"GSR","CAL","kOhms"};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Magnetometer X","RAW","no units"};
+				channel = new String[]{mMyName,"Magnetometer X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF) & SENSOR_ECG) > 0) {
@@ -3072,12 +4237,12 @@ public abstract class ShimmerObject {
 				
 				channel = new String[]{mMyName,"ECG RA-LL","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"ECG RA-LL","RAW","no units"};
+				channel = new String[]{mMyName,"ECG RA-LL","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"ECG LA-LL","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"ECG LA-LL","RAW","no units"};
+				channel = new String[]{mMyName,"ECG LA-LL","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 			}
@@ -3089,51 +4254,51 @@ public abstract class ShimmerObject {
 				
 				channel = new String[]{mMyName,"EMG","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"EMG","RAW","no units"};
+				channel = new String[]{mMyName,"EMG","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF00) & SENSOR_BRIDGE_AMP) > 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"Bridge Amplifier High","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Bridge Amplifier High","RAW","no units"};
+				channel = new String[]{mMyName,"Bridge Amplifier High","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Bridge Amplifier Low","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Bridge Amplifier Low","RAW","no units"};
+				channel = new String[]{mMyName,"Bridge Amplifier Low","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF00) & SENSOR_HEART) > 0) {
 				String unit = "BPM";
 				channel = new String[]{mMyName,"Heart Rate","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Heart Rate","RAW","no units"};
+				channel = new String[]{mMyName,"Heart Rate","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if ((((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A0) > 0) && getPMux() == 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"ExpBoard A0","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"ExpBoard A0","RAW","no units"};
+				channel = new String[]{mMyName,"ExpBoard A0","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if ((((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A7) > 0 && getPMux() == 0)) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"ExpBoard A7","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"ExpBoard A7","RAW","no units"};
+				channel = new String[]{mMyName,"ExpBoard A7","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFF) & SENSOR_BATT) > 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"VSenseReg","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"VSenseReg","RAW","no units"};
+				channel = new String[]{mMyName,"VSenseReg","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				channel = new String[]{mMyName,"VSenseBatt","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"VSenseBatt","RAW","no units"};
+				channel = new String[]{mMyName,"VSenseBatt","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
@@ -3171,7 +4336,7 @@ public abstract class ShimmerObject {
 
 			String[] channel = new String[]{mMyName,"Timestamp","CAL","mSecs"};
 			listofSignals.add(channel);
-			channel = new String[]{mMyName,"Timestamp","RAW","no units"};
+			channel = new String[]{mMyName,"Timestamp","RAW",NO_UNIT};
 			listofSignals.add(channel);
 			if ((mEnabledSensors & SENSOR_ACCEL) >0){
 
@@ -3182,17 +4347,17 @@ public abstract class ShimmerObject {
 				
 				channel = new String[]{mMyName,"Low Noise Accelerometer X","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Low Noise Accelerometer X","RAW","no units"};
+				channel = new String[]{mMyName,"Low Noise Accelerometer X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Low Noise Accelerometer Y","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Low Noise Accelerometer Y","RAW","no units"};
+				channel = new String[]{mMyName,"Low Noise Accelerometer Y","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Low Noise Accelerometer Z","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Low Noise Accelerometer Z","RAW","no units"};
+				channel = new String[]{mMyName,"Low Noise Accelerometer Z","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 			}
@@ -3206,17 +4371,17 @@ public abstract class ShimmerObject {
 				
 				channel = new String[]{mMyName,"Wide Range Accelerometer X","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Wide Range Accelerometer X","RAW","no units"};
+				channel = new String[]{mMyName,"Wide Range Accelerometer X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Wide Range Accelerometer Y","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Wide Range Accelerometer Y","RAW","no units"};
+				channel = new String[]{mMyName,"Wide Range Accelerometer Y","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Wide Range Accelerometer Z","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Wide Range Accelerometer Z","RAW","no units"};
+				channel = new String[]{mMyName,"Wide Range Accelerometer Z","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 			
@@ -3228,17 +4393,17 @@ public abstract class ShimmerObject {
 				} 
 				channel = new String[]{mMyName,"Gyroscope X","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Gyroscope X","RAW","no units"};
+				channel = new String[]{mMyName,"Gyroscope X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Gyroscope Y","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Gyroscope Y","RAW","no units"};
+				channel = new String[]{mMyName,"Gyroscope Y","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Gyroscope Z","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Gyroscope Z","RAW","no units"};
+				channel = new String[]{mMyName,"Gyroscope Z","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0) {
@@ -3248,24 +4413,24 @@ public abstract class ShimmerObject {
 				} 
 				channel = new String[]{mMyName,"Magnetometer X","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Magnetometer X","RAW","no units"};
+				channel = new String[]{mMyName,"Magnetometer X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Magnetometer Y","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Magnetometer Y","RAW","no units"};
+				channel = new String[]{mMyName,"Magnetometer Y","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Magnetometer Z","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Magnetometer Z","RAW","no units"};
+				channel = new String[]{mMyName,"Magnetometer Z","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			} 
 			if (((mEnabledSensors & 0xFFFF) & SENSOR_BATT) > 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"VSenseBatt","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"VSenseBatt","RAW","no units"};
+				channel = new String[]{mMyName,"VSenseBatt","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 			}
@@ -3273,7 +4438,7 @@ public abstract class ShimmerObject {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"External ADC A15","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"External ADC A15","RAW","no units"};
+				channel = new String[]{mMyName,"External ADC A15","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 			}
@@ -3281,42 +4446,42 @@ public abstract class ShimmerObject {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"External ADC A7","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"External ADC A7","RAW","no units"};
+				channel = new String[]{mMyName,"External ADC A7","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A6) > 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"External ADC A6","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"External ADC A6","RAW","no units"};
+				channel = new String[]{mMyName,"External ADC A6","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A1) > 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"Internal ADC A1","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Internal ADC A1","RAW","no units"};
+				channel = new String[]{mMyName,"Internal ADC A1","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A12) > 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"Internal ADC A12","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Internal ADC A12","RAW","no units"};
+				channel = new String[]{mMyName,"Internal ADC A12","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A13) > 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"Internal ADC A13","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Internal ADC A13","RAW","no units"};
+				channel = new String[]{mMyName,"Internal ADC A13","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A14) > 0) {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"Internal ADC A14","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Internal ADC A14","RAW","no units"};
+				channel = new String[]{mMyName,"Internal ADC A14","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if ((((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 || ((mEnabledSensors & 0xFFFF)& SENSOR_DACCEL) > 0)&& ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
@@ -3352,25 +4517,25 @@ public abstract class ShimmerObject {
 			if ((mEnabledSensors & SENSOR_BMP180)>0){
 				channel = new String[]{mMyName,"Pressure","CAL","kPa"};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Pressure","RAW","no units"};
+				channel = new String[]{mMyName,"Pressure","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				channel = new String[]{mMyName,"Temperature","CAL","Celsius"};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Temperature","RAW","no units"};
+				channel = new String[]{mMyName,"Temperature","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if ((mEnabledSensors & SENSOR_GSR)>0){
 				channel = new String[]{mMyName,"GSR","CAL","kOhms"};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Magnetometer X","RAW","no units"};
+				channel = new String[]{mMyName,"Magnetometer X","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & SENSOR_EXG1_24BIT)>0)|| ((mEnabledSensors & SENSOR_EXG1_16BIT)>0)){
-				channel = new String[]{mMyName,"EXG1 STATUS","RAW","no units"};
+				channel = new String[]{mMyName,"EXG1 STATUS","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & SENSOR_EXG2_24BIT)>0)|| ((mEnabledSensors & SENSOR_EXG2_16BIT)>0)){
-				channel = new String[]{mMyName,"EXG2 STATUS","RAW","no units"};
+				channel = new String[]{mMyName,"EXG2 STATUS","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 			if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0){
@@ -3378,33 +4543,33 @@ public abstract class ShimmerObject {
 				if (isEXGUsingDefaultECGConfiguration()){
 					channel = new String[]{mMyName,"ECG LL-RA","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"ECG LL-RA","RAW","no units"};
+					channel = new String[]{mMyName,"ECG LL-RA","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"ECG LL-RA","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"ECG LL-RA","RAW","no units"};
+					channel = new String[]{mMyName,"ECG LL-RA","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				}
 				else if (isEXGUsingDefaultEMGConfiguration()){
 					channel = new String[]{mMyName,"EMG CH1","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EMG CH1","RAW","no units"};
+					channel = new String[]{mMyName,"EMG CH1","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"EMG CH2","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EMG CH2","RAW","no units"};
+					channel = new String[]{mMyName,"EMG CH2","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				} else {
 					channel = new String[]{mMyName,"EXG1 CH1","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG1 CH1","RAW","no units"};
+					channel = new String[]{mMyName,"EXG1 CH1","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"EXG1 CH2","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG1 CH2","RAW","no units"};
+					channel = new String[]{mMyName,"EXG1 CH2","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				}
 
@@ -3414,34 +4579,34 @@ public abstract class ShimmerObject {
 				if (isEXGUsingDefaultECGConfiguration()){
 					channel = new String[]{mMyName,"EXG2 CH1","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH1","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH1","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"ECG Vx-RL","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"ECG Vx-RL","RAW","no units"};
+					channel = new String[]{mMyName,"ECG Vx-RL","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				}
 				else if (isEXGUsingDefaultEMGConfiguration()){
 					channel = new String[]{mMyName,"EXG2 CH1","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH1","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH1","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"EXG2 CH2","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH2","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH2","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				}
 				else {
 					channel = new String[]{mMyName,"EXG2 CH1","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH1","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH1","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"EXG2 CH2","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH2","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH2","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				
 				}
@@ -3451,33 +4616,33 @@ public abstract class ShimmerObject {
 				if (isEXGUsingDefaultECGConfiguration()){
 					channel = new String[]{mMyName,"ECG LL-RA","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"ECG LL-RA","RAW","no units"};
+					channel = new String[]{mMyName,"ECG LL-RA","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"ECG LL-RA","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"ECG LL-RA","RAW","no units"};
+					channel = new String[]{mMyName,"ECG LL-RA","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				}
 				else if (isEXGUsingDefaultEMGConfiguration()){
 					channel = new String[]{mMyName,"EMG CH1","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EMG CH1","RAW","no units"};
+					channel = new String[]{mMyName,"EMG CH1","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"EMG CH2","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EMG CH2","RAW","no units"};
+					channel = new String[]{mMyName,"EMG CH2","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				} else {
 					channel = new String[]{mMyName,"EXG1 CH1 16Bit","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG1 CH1 16Bit","RAW","no units"};
+					channel = new String[]{mMyName,"EXG1 CH1 16Bit","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"EXG1 CH2 16Bit","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG1 CH2 16Bit","RAW","no units"};
+					channel = new String[]{mMyName,"EXG1 CH2 16Bit","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				}
 
@@ -3487,34 +4652,34 @@ public abstract class ShimmerObject {
 				if (isEXGUsingDefaultECGConfiguration()){
 					channel = new String[]{mMyName,"EXG2 CH1","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH1","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH1","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"ECG Vx-RL","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"ECG Vx-RL","RAW","no units"};
+					channel = new String[]{mMyName,"ECG Vx-RL","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				}
 				else if (isEXGUsingDefaultEMGConfiguration()){
 					channel = new String[]{mMyName,"EXG2 CH1","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH1","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH1","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"EXG2 CH2","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH2","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH2","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				}
 				else {
 					channel = new String[]{mMyName,"EXG2 CH1 16Bit","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH1 16Bit","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH1 16Bit","RAW",NO_UNIT};
 					listofSignals.add(channel);
 					
 					channel = new String[]{mMyName,"EXG2 CH2 16Bit","CAL",unit};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,"EXG2 CH2 16Bit","RAW","no units"};
+					channel = new String[]{mMyName,"EXG2 CH2 16Bit","RAW",NO_UNIT};
 					listofSignals.add(channel);
 				
 				}
@@ -3523,12 +4688,12 @@ public abstract class ShimmerObject {
 				String unit = "mVolts";
 				channel = new String[]{mMyName,"Bridge Amplifier High","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Bridge Amplifier High","RAW","no units"};
+				channel = new String[]{mMyName,"Bridge Amplifier High","RAW",NO_UNIT};
 				listofSignals.add(channel);
 				
 				channel = new String[]{mMyName,"Bridge Amplifier Low","CAL",unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,"Bridge Amplifier Low","RAW","no units"};
+				channel = new String[]{mMyName,"Bridge Amplifier Low","RAW",NO_UNIT};
 				listofSignals.add(channel);
 			}
 		}
@@ -3560,63 +4725,63 @@ public abstract class ShimmerObject {
 	//AlignmentMatrixMag, SensitivityMatrixMag, OffsetVectorMag
 
 	public double[][] getAlignmentMatrixMag(){
-		return AlignmentMatrixMag;
+		return mAlignmentMatrixMagnetometer;
 	}
 
 	public double[][] getSensitivityMatrixMag(){
-		return SensitivityMatrixMag;
+		return mSensitivityMatrixMagnetometer;
 	}
 
 	public double[][] getOffsetVectorMatrixMag(){
-		return OffsetVectorMag;
+		return mOffsetVectorMagnetometer;
 	}
 
 	public double[][] getAlighmentMatrixGyro(){
-		return AlignmentMatrixGyro;
+		return mAlignmentMatrixGyroscope;
 	}
 
 	public double[][] getSensitivityMatrixGyro(){
-		return SensitivityMatrixGyro;
+		return mSensitivityMatrixGyroscope;
 	}
 
 	public double[][] getOffsetVectorMatrixGyro(){
-		return OffsetVectorGyro;
+		return mOffsetVectorGyroscope;
 	}
 
 	public double[][] getAlighmentMatrixAccel(){
-		return AlignmentMatrixAccel;
+		return mAlignmentMatrixAnalogAccel;
 	}
 
 	public double[][] getSensitivityMatrixAccel(){
-		return SensitivityMatrixAccel;
+		return mSensitivityMatrixAnalogAccel;
 	}
 
 	public double[][] getOffsetVectorMatrixAccel(){
-		return OffsetVectorAccel;
+		return mOffsetVectorAnalogAccel;
 	}
 
 	public double[][] getAlighmentMatrixWRAccel(){
-		return AlignmentMatrixAccel2;
+		return mAlignmentMatrixWRAccel;
 	}
 
 	public double[][] getSensitivityMatrixWRAccel(){
-		return SensitivityMatrixAccel2;
+		return mSensitivityMatrixWRAccel;
 	}
 
 	public double[][] getOffsetVectorMatrixWRAccel(){
-		return OffsetVectorAccel2;
+		return mOffsetVectorWRAccel;
 	}
 
 
-	public int getEnabledSensors() {
+	public long getEnabledSensors() {
 		return mEnabledSensors;
 	}
 
 	public String[] getListofSupportedSensors(){
 		String[] sensorNames = null;
-		if (mShimmerVersion==SHIMMER_2R || mShimmerVersion==SHIMMER_2){
+		if (mShimmerVersion==HW_ID_SHIMMER_2R || mShimmerVersion==HW_ID_SHIMMER_2){
 			sensorNames = Configuration.Shimmer2.ListofCompatibleSensors;
-		} else if  (mShimmerVersion==SHIMMER_3){
+		} else if  (mShimmerVersion==HW_ID_SHIMMER_3){
 			sensorNames = Configuration.Shimmer3.ListofCompatibleSensors;
 		}
 		return sensorNames;
@@ -3624,9 +4789,9 @@ public abstract class ShimmerObject {
 
 	public static String[] getListofSupportedSensors(int shimmerVersion){
 		String[] sensorNames = null;
-		if (shimmerVersion==SHIMMER_2R || shimmerVersion==SHIMMER_2){
+		if (shimmerVersion==HW_ID_SHIMMER_2R || shimmerVersion==HW_ID_SHIMMER_2){
 			sensorNames = Configuration.Shimmer2.ListofCompatibleSensors;
-		} else if  (shimmerVersion==SHIMMER_3){
+		} else if  (shimmerVersion==HW_ID_SHIMMER_3){
 			sensorNames = Configuration.Shimmer3.ListofCompatibleSensors;
 		}
 		return sensorNames;
@@ -3823,5 +4988,1133 @@ public abstract class ShimmerObject {
 		
 		return currentString;
 	}
+	
+	
+	public void exgBytesReadFrom(int mTempChipID, byte[] bufferAns) {
+		if (mTempChipID==1){
+			System.arraycopy(bufferAns, 0, mEXG1Register, 0, 10);
+//			System.arraycopy(bufferAns, 1, mEXG1Register, 0, 10);// MN removed
+			// retrieve the gain and rate from the the registers
+			mEXG1RateSetting = mEXG1Register[0] & 7;
+			mEXG1CH1GainSetting = (mEXG1Register[3] >> 4) & 7;
+			mEXG1CH1GainValue = convertEXGGainSettingToValue(mEXG1CH1GainSetting);
+			mEXG1CH2GainSetting = (mEXG1Register[4] >> 4) & 7;
+			mEXG1CH2GainValue = convertEXGGainSettingToValue(mEXG1CH2GainSetting);
+			mRefenceElectrode = mEXG1Register[5] & 0x0F;
+			mLeadOffCurrentModeChip1 = mEXG1Register[2] & 1;
+			mComparatorsChip1 = mEXG1Register[1] & 0x40;								
+			mRLDSense = mEXG1Register[5] & 0x10;
+			m2P1N1P = mEXG1Register[6] & 0x0f;
+			mLeadOffDetectionCurrent = (mEXG1Register[2] >> 2) & 3;
+			mLeadOffComparatorTreshold = (mEXG1Register[2] >> 5) & 7;
+		} else if (mTempChipID==2){
+			System.arraycopy(bufferAns, 0, mEXG2Register, 0, 10);
+			//System.arraycopy(bufferAns, 1, mEXG2Register, 0, 10); // MN removed
+			mEXG2RateSetting = mEXG2Register[0] & 7;
+			mEXG2CH1GainSetting = (mEXG2Register[3] >> 4) & 7;
+			mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
+			mEXG2CH2GainSetting = (mEXG2Register[4] >> 4) & 7;
+			mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
+			mLeadOffCurrentModeChip2 = mEXG2Register[2] & 1;
+			mComparatorsChip2 = mEXG2Register[1] & 0x40;
+			m2P = mEXG2Register[6] & 0x0f;
+		}
+	}
+
+//	public void exgBytesWriteTo() {
+////		System.arraycopy(bufferAns, 1, mEXG1Register, 0, 10);
+//		// retrieve the gain and rate from the the registers
+//		mEXG1RateSetting = mEXG1Register[0] & 7;
+//		mEXG1CH1GainSetting = (mEXG1Register[3] >> 4) & 7;
+//		mEXG1CH1GainValue = convertEXGGainSettingToValue(mEXG1CH1GainSetting);
+//		mEXG1CH2GainSetting = (mEXG1Register[4] >> 4) & 7;
+//		mEXG1CH2GainValue = convertEXGGainSettingToValue(mEXG1CH2GainSetting);
+//		mRefenceElectrode = mEXG1Register[5] & 0x0F;
+//		mLeadOffCurrentModeChip1 = mEXG1Register[2] & 1;
+//		mComparatorsChip1 = mEXG1Register[1] & 0x40;								
+//		mRLDSense = mEXG1Register[5] & 0x10;
+//		m2P1N1P = mEXG1Register[6] & 0x0f;
+//		mLeadOffDetectionCurrent = (mEXG1Register[2] >> 2) & 3;
+//		mLeadOffComparatorTreshold = (mEXG1Register[2] >> 5) & 7;
+//
+////		System.arraycopy(bufferAns, 1, mEXG2Register, 0, 10);						
+//		mEXG2RateSetting = mEXG2Register[0] & 7;
+//		mEXG2CH1GainSetting = (mEXG2Register[3] >> 4) & 7;
+//		mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
+//		mEXG2CH2GainSetting = (mEXG2Register[4] >> 4) & 7;
+//		mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
+//		mLeadOffCurrentModeChip2 = mEXG2Register[2] & 1;
+//		mComparatorsChip2 = mEXG2Register[1] & 0x40;
+//		m2P = mEXG2Register[6] & 0x0f;
+//	}
+	
+	
+	//region --------- ENABLE/DISABLE FUNCTIONS --------- 
+	/**
+	 *This can only be used for Shimmer3 devices (EXG) 
+	 *When a enable configuration is load, the advanced exg configuration is removed, so it needs to be set again
+	 * 
+	 */
+	 protected void setDefaultECGConfiguration() {
+		 if (mShimmerVersion==3){
+			byte[] mEXG1Register = {(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
+			byte[] mEXG2Register = {(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+			if (mSamplingRate<=128){
+				mEXG1Register[0]=0;
+				mEXG2Register[0]=0;
+			} else if (mSamplingRate<=256){
+				mEXG1Register[0]=1;
+				mEXG2Register[0]=1;
+			}
+			else if (mSamplingRate<=512){
+				mEXG1Register[0]=2;
+				mEXG2Register[0]=2;
+			}
+			exgBytesReadFrom(1, mEXG1Register);
+			exgBytesReadFrom(2, mEXG2Register);
+		 }
+	}
+
+	/**
+	 * This can only be used for Shimmer3 devices (EXG)
+	 * When a enable configuration is load, the advanced exg configuration is removed, so it needs to be set again
+	 */
+	 protected void setDefaultEMGConfiguration(){
+		if (mShimmerVersion==3){
+			mEXG1Register = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
+			mEXG2Register = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+			if (mSamplingRate<=128){
+				mEXG1Register[0]=0;
+				mEXG2Register[0]=0;
+			} else if (mSamplingRate<=256){
+				mEXG1Register[0]=1;
+				mEXG2Register[0]=1;
+			}
+			else if (mSamplingRate<=512){
+				mEXG1Register[0]=2;
+				mEXG2Register[0]=2;
+			}
+			exgBytesReadFrom(1, mEXG1Register);
+			exgBytesReadFrom(2, mEXG2Register);
+		}
+		
+	}
+
+	/**
+	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
+	 */
+	 protected void setEXGTestSignal(){
+		if (mShimmerVersion==3){
+			byte[] mEXG1Register = {(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+			byte[] mEXG2Register = {(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+			if (mSamplingRate<=128){
+				mEXG1Register[0]=0;
+				mEXG2Register[0]=0;
+			} else if (mSamplingRate<=256){
+				mEXG1Register[0]=1;
+				mEXG2Register[0]=1;
+			}
+			else if (mSamplingRate<=512){
+				mEXG1Register[0]=2;
+				mEXG2Register[0]=2;
+			}
+			exgBytesReadFrom(1, mEXG1Register);
+			exgBytesReadFrom(2, mEXG2Register);
+		}
+	}
+
+	//endregion
+	
+	//TODO set all defaults
+	protected void setDefaultShimmerConfiguration() {
+		if (mHardwareVersion != -1){
+			mShimmerUserAssignedName = "WhoDaMan";//"ShimmerA";
+			mExperimentName = "Trial";
+			mSamplingRate = 51.20;
+			
+			mExperimentNumberOfShimmers = 1;
+			mButtonStart = 1;
+			
+			createMapOfChannels();
+			if (mHardwareVersion == HW_ID_SHIMMER_2R){
+				
+			}
+			else {
+				mShimmerSensorsMap.get(SENSOR_SHIMMER3_A_ACCEL).mIslEnabled = true;
+				mShimmerSensorsMap.get(SENSOR_SHIMMER3_MPU9150_GYRO).mIslEnabled = true;
+				mShimmerSensorsMap.get(SENSOR_SHIMMER3_LSM303DLHC_MAG).mIslEnabled = true;
+				mShimmerSensorsMap.get(SENSOR_SHIMMER3_VBATT).mIslEnabled = true;
+			}
+		}
+	}
+	
+	protected void infoMemByteArrayParse(byte[] infoMemContents) {
+
+		// Check first 6 bytes of InfoMem for 0xFF to determine if contents are valid 
+		byte[] comparisonBuffer = new byte[]{-1,-1,-1,-1,-1,-1};
+		byte[] detectionBuffer = new byte[comparisonBuffer.length];
+		System.arraycopy(infoMemContents, 0, detectionBuffer, 0, detectionBuffer.length);
+		if(Arrays.equals(comparisonBuffer, detectionBuffer)) {
+			// InfoMem not valid
+			setDefaultShimmerConfiguration();
+//			mShimmerInfoMemBytes = infoMemByteArrayGenerate();
+			mShimmerInfoMemBytes = infoMemContents;
+		}
+		else {
+			// InfoMem valid
+			
+			mShimmerInfoMemBytes = infoMemContents;
+			InfoMemLayout iM = new InfoMemLayout(mFirmwareVersionCode, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionRelease);
+			
+	//		mRawSamplingRate = ((int)(infoMemContents[NV_SAMPLING_RATE] & 0xFF) + (((int)(infoMemContents[NV_SAMPLING_RATE+1] & 0xFF)) << 8));
+			
+			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
+			// Sampling Rate
+	//		double samplingRate = (32768/(double)((int)(infoMemContents[NV_SAMPLING_RATE] & 0xFF) + ((int)(infoMemContents[NV_SAMPLING_RATE+1] & 0xFF) << 8)));
+			mSamplingRate = (32768/(double)((int)(infoMemContents[iM.idxShimmerSamplingRate] & iM.maskShimmerSamplingRate) + ((int)(infoMemContents[iM.idxShimmerSamplingRate+1] & iM.maskShimmerSamplingRate) << 8)));
+	
+			mBufferSize = (int)(infoMemContents[iM.idxBufferSize] & iM.maskBufferSize);
+			
+			// Sensors
+			mEnabledSensors = ((long)infoMemContents[iM.idxSensors0] & iM.maskSensors) << iM.bitShiftSensors0;
+			mEnabledSensors += ((long)infoMemContents[iM.idxSensors1] & iM.maskSensors) << iM.bitShiftSensors1;
+			mEnabledSensors += ((long)infoMemContents[iM.idxSensors2] & iM.maskSensors) << iM.bitShiftSensors2;
+			
+			// Configuration
+			mLSM303DigitalAccelRate = (infoMemContents[iM.idxConfigSetupByte0] >> iM.bitShiftLSM303DLHCAccelSamplingRate) & iM.maskLSM303DLHCAccelSamplingRate; 
+			mAccelRange = (infoMemContents[iM.idxConfigSetupByte0] >> iM.bitShiftLSM303DLHCAccelRange) & iM.maskLSM303DLHCAccelRange;
+			if(((infoMemContents[iM.idxConfigSetupByte0] >> iM.bitShiftLSM303DLHCAccelLPM) & iM.maskLSM303DLHCAccelLPM) == iM.maskLSM303DLHCAccelLPM) {
+				mLSM303DigitalAccelLPM = true;
+			}
+			else {
+				mLSM303DigitalAccelLPM = false;
+			}
+			if(((infoMemContents[iM.idxConfigSetupByte0] >> iM.bitShiftLSM303DLHCAccelHRM) & iM.maskLSM303DLHCAccelHRM) == iM.maskLSM303DLHCAccelHRM) {
+				mLSM303DigitalAccelHRM = true;
+			}
+			else {
+				mLSM303DigitalAccelHRM = false;
+			}
+			mMPU9150GyroAccelRate = (infoMemContents[iM.idxConfigSetupByte1] >> iM.bitShiftMPU9150AccelGyroSamplingRate) & iM.maskMPU9150AccelGyroSamplingRate;
+			
+			mMagRange = (infoMemContents[iM.idxConfigSetupByte2] >> iM.bitShiftLSM303DLHCMagRange) & iM.maskLSM303DLHCMagRange;
+			mLSM303MagRate = (infoMemContents[iM.idxConfigSetupByte2] >> iM.bitShiftLSM303DLHCMagSamplingRate) & iM.maskLSM303DLHCMagSamplingRate;
+			mGyroRange = (infoMemContents[iM.idxConfigSetupByte2] >> iM.bitShiftMPU9150GyroRange) & iM.maskMPU9150GyroRange;
+			
+			mMPU9150AccelRange = (infoMemContents[iM.idxConfigSetupByte3] >> iM.bitShiftMPU9150AccelRange) & iM.maskMPU9150AccelRange;
+			mPressureResolution = (infoMemContents[iM.idxConfigSetupByte3] >> iM.bitShiftBMP180PressureResolution) & iM.maskBMP180PressureResolution;
+			mGSRRange = (infoMemContents[iM.idxConfigSetupByte3] >> iM.bitShiftGSRRange) & iM.maskGSRRange;
+			mInternalExpPower = (infoMemContents[iM.idxConfigSetupByte3] >> iM.bitShiftEXPPowerEnable) & iM.maskEXPPowerEnable;
+			
+			//EXG Configuration
+			System.arraycopy(infoMemContents, iM.idxEXGADS1292RChip1Config1, mEXG1Register, 0, 10);
+			mEXG1RateSetting = (mEXG1Register[iM.idxEXGADS1292RConfig1] >> iM.bitShiftEXGRateSetting) & iM.maskEXGRateSetting;
+			mEXG1CH1GainSetting = (mEXG1Register[iM.idxEXGADS1292RCH1Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
+			mEXG1CH1GainValue = convertEXGGainSettingToValue(mEXG1CH1GainSetting);
+			mEXG1CH2GainSetting = (mEXG1Register[iM.idxEXGADS1292RCH2Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
+			mEXG1CH2GainValue = convertEXGGainSettingToValue(mEXG1CH2GainSetting);
+			mRefenceElectrode = mEXG1Register[iM.idxEXGADS1292RRLDSens] & 0x0F;
+	
+			System.arraycopy(infoMemContents, iM.idxEXGADS1292RChip2Config1, mEXG2Register, 0, 10);
+			mEXG2RateSetting = (mEXG2Register[iM.idxEXGADS1292RConfig1] >> iM.bitShiftEXGRateSetting) & iM.maskEXGRateSetting;
+			mEXG2CH1GainSetting = (mEXG2Register[iM.idxEXGADS1292RCH1Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
+			mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
+			mEXG2CH2GainSetting = (mEXG2Register[iM.idxEXGADS1292RCH2Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
+			mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
+			
+			mBluetoothBaudRate =  infoMemContents[iM.idxBtCommBaudRate] & iM.maskBaudRate;
+			
+			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
+			// Analog Accel Calibration Parameters
+			byte[] bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+			System.arraycopy(infoMemContents, iM.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+			int[] formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+			double[] AM=new double[9];
+			for (int i=0;i<9;i++)
+			{
+				AM[i]=((double)formattedPacket[6+i])/100;
+			}
+			double[][] alignmentMatrixAA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+			double[][] sensitivityMatrixAA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+			double[][] offsetVectorAA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+			mAlignmentMatrixAnalogAccel = alignmentMatrixAA; 			
+			mSensitivityMatrixAnalogAccel = sensitivityMatrixAA; 	
+			mOffsetVectorAnalogAccel = offsetVectorAA;
+			
+			// MPU9150 Gyroscope Calibration Parameters
+			bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+			System.arraycopy(infoMemContents, iM.idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+			formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+			AM=new double[9];
+			for (int i=0;i<9;i++)
+			{
+				AM[i]=((double)formattedPacket[6+i])/100;
+			}
+			double[][] alignmentMatrixG = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+			double[][] sensitivityMatrixG = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+			double[][] offsetVectorG = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+			mAlignmentMatrixGyroscope = alignmentMatrixG; 			
+			mSensitivityMatrixGyroscope = sensitivityMatrixG; 	
+			mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
+			mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
+			mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
+			mOffsetVectorGyroscope = offsetVectorG;
+	
+			// LSM303DLHC Magnetometer Calibration Parameters
+			bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+			System.arraycopy(infoMemContents, iM.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+			formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+			AM=new double[9];
+			for (int i=0;i<9;i++)
+			{
+				AM[i]=((double)formattedPacket[6+i])/100;
+			}
+			double[][] alignmentMatrixM = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+			double[][] sensitivityMatrixM = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+			double[][] offsetVectorM = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+			mAlignmentMatrixMagnetometer = alignmentMatrixM; 			
+			mSensitivityMatrixMagnetometer = sensitivityMatrixM; 	
+			mOffsetVectorMagnetometer = offsetVectorM;
+	
+			// LSM303DLHC Digital Accel Calibration Parameters
+			bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+			System.arraycopy(infoMemContents, iM.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+			formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+			AM=new double[9];
+			for (int i=0;i<9;i++)
+			{
+				AM[i]=((double)formattedPacket[6+i])/100;
+			}
+			double[][] alignmentMatrixDA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+			double[][] sensitivityMatrixDA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+			double[][] offsetVectorDA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+			mAlignmentMatrixWRAccel = alignmentMatrixDA; 			
+			mSensitivityMatrixWRAccel = sensitivityMatrixDA; 	
+			mOffsetVectorWRAccel = offsetVectorDA;
+			
+			//TODO: decide what to do
+			// BMP180 Pressure Calibration Parameters
+	
+			// InfoMem D - End
+			
+			
+			//SDLog and LogAndStream
+			if(((mFirmwareIndentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIndentifier == FW_ID_SHIMMER3_LOGANDSTREAM))
+					&& infoMemContents.length >= 384) {
+				
+				// InfoMem C - Start - used by SdLog and LogAndStream
+				mMPU9150DMP = (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150DMP) & iM.maskMPU9150DMP;
+				mMPU9150LPF = (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150LPF) & iM.maskMPU9150LPF;
+				mMPU9150MotCalCfg =  (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150MotCalCfg) & iM.maskMPU9150MotCalCfg;
+				
+				mMPU9150MPLSamplingRate = (infoMemContents[iM.idxConfigSetupByte5] >> iM.bitShiftMPU9150MPLSamplingRate) & iM.maskMPU9150MPLSamplingRate;
+				mMPU9150MagSamplingRate = (infoMemContents[iM.idxConfigSetupByte5] >> iM.bitShiftMPU9150MagSamplingRate) & iM.maskMPU9150MagSamplingRate;
+				
+				mEnabledSensors += ((long)infoMemContents[iM.idxSensors3] & 0xFF) << iM.bitShiftSensors3;
+				mEnabledSensors += ((long)infoMemContents[iM.idxSensors4] & 0xFF) << iM.bitShiftSensors4;
+				
+				mMPLSensorFusion = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLSensorFusion) & iM.maskMPLSensorFusion;
+				mMPLGyroCalTC = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLGyroCalTC) & iM.maskMPLGyroCalTC;
+				mMPLVectCompCal = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLVectCompCal) & iM.maskMPLVectCompCal;
+				mMPLMagDistCal = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLMagDistCal) & iM.maskMPLMagDistCal;
+				mMPLEnable = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLEnable) & iM.maskMPLEnable;
+				
+				//MPL Accel Calibration Parameters
+				bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+				System.arraycopy(infoMemContents, iM.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+				formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+				AM=new double[9];
+				for (int i=0;i<9;i++)
+				{
+					AM[i]=((double)formattedPacket[6+i])/100;
+				}
+				double[][] alignmentMatrixMPLA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+				double[][] sensitivityMatrixMPLA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+				double[][] offsetVectorMPLA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+				AlignmentMatrixMPLAccel = alignmentMatrixMPLA; 			
+				SensitivityMatrixMPLAccel = sensitivityMatrixMPLA; 	
+				OffsetVectorMPLAccel = offsetVectorMPLA;
+		
+				//MPL Mag Calibration Configuration
+				bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+				System.arraycopy(infoMemContents, iM.idxMPLMagCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+				formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+				AM=new double[9];
+				for (int i=0;i<9;i++)
+				{
+					AM[i]=((double)formattedPacket[6+i])/100;
+				}
+				double[][] alignmentMatrixMPLMag = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+				double[][] sensitivityMatrixMPLMag = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+				double[][] offsetVectorMPLMag = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+				AlignmentMatrixMPLMag = alignmentMatrixMPLMag; 			
+				SensitivityMatrixMPLMag = sensitivityMatrixMPLMag; 	
+				OffsetVectorMPLMag = offsetVectorMPLMag;
+		
+				//MPL Gyro Calibration Configuration
+				bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+				System.arraycopy(infoMemContents, iM.idxMPLGyroCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+				formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+				AM=new double[9];
+				for (int i=0;i<9;i++)
+				{
+					AM[i]=((double)formattedPacket[6+i])/100;
+				}
+				double[][] alignmentMatrixMPLGyro = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+				double[][] sensitivityMatrixMPLGyro = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+				double[][] offsetVectorMPLGyro = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+				AlignmentMatrixMPLGyro = alignmentMatrixMPLGyro; 			
+				SensitivityMatrixMPLGyro = sensitivityMatrixMPLGyro; 	
+				OffsetVectorMPLGyro = offsetVectorMPLGyro;
+				
+				// Shimmer Name
+				byte[] shimmerNameBuffer = new byte[iM.lengthShimmerName];
+				System.arraycopy(infoMemContents, iM.idxSDShimmerName, shimmerNameBuffer, 0 , iM.lengthShimmerName);
+				String shimmerName = "";
+				for(byte b : shimmerNameBuffer) {
+					if(!isAsciiPrintable((char)b)) {
+						break;
+					}
+					shimmerName += (char)b;
+				}
+				mShimmerUserAssignedName = new String(shimmerName);
+				
+				// Experiment Name
+				byte[] experimentNameBuffer = new byte[iM.lengthExperimentName];
+				System.arraycopy(infoMemContents, iM.idxSDEXPIDName, experimentNameBuffer, 0 , iM.lengthExperimentName);
+				String experimentName = "";
+				for(byte b : experimentNameBuffer) {
+					if(!isAsciiPrintable((char)b)) {
+						break;
+					}
+					experimentName += (char)b;
+				}
+				mExperimentName = new String(experimentName);
+	
+				//Configuration Time
+//				mConfigTime = (((long)(infoMemContents[iM.idxSDConfigTime] & 0xFF))<<24)
+//								+((long)(infoMemContents[iM.idxSDConfigTime+1] & 0xFF)<<16)
+//								+((long)(infoMemContents[iM.idxSDConfigTime+2] & 0xFF)<<8)
+//								+((long)(infoMemContents[iM.idxSDConfigTime+3] & 0xFF));
+				
+				//Configuration Time
+				int bitShift = (iM.lengthConfigTimeBytes-1) * 8;
+				mConfigTime = 0;
+				for(int x=0; x<iM.lengthConfigTimeBytes; x++ ) {
+					mConfigTime += (((long)(infoMemContents[iM.idxSDConfigTime+x] & 0xFF)) << bitShift);
+					bitShift -= 8;
+				}
+				
+				mExperimentId = infoMemContents[iM.idxSDMyTrialID] & 0xFF;
+				mExperimentNumberOfShimmers = infoMemContents[iM.idxSDNumOfShimmers] & 0xFF;
+				
+				mButtonStart = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftButtonStart) & iM.maskButtonStart;
+				mSyncTimeWhenLogging = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftTimeSyncWhenLogging) & iM.maskTimeSyncWhenLogging;
+				mMasterShimmer = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftMasterShimmer) & iM.maskTimeMasterShimmer;
+				
+				mSingleTouch = (infoMemContents[iM.idxSDExperimentConfig1] >> iM.bitShiftSingleTouch) & iM.maskTimeSingleTouch;
+				mTCXO = (infoMemContents[iM.idxSDExperimentConfig1] >> iM.bitShiftTCX0) & iM.maskTimeTCX0;
+				
+				mSyncBroadcastInterval = (int)(infoMemContents[iM.idxSDBTInterval] & 0xFF);
+				
+				// Maximum and Estimated Length in minutes
+				mExperimentDurationEstimated =  ((int)(infoMemContents[iM.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemContents[iM.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
+				mExperimentDurationMaximum =  ((int)(infoMemContents[iM.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemContents[iM.idxMaxExpLengthMsb] & 0xFF)) << 8));
+	
+				byte[] macIdBytes = new byte[iM.lengthMacIdBytes];
+//				System.out.println(iM.idxMacAddress);
+				System.arraycopy(infoMemContents, iM.idxMacAddress, macIdBytes, 0 , iM.lengthMacIdBytes);
+				mMacIdFromInfoMem = bytesToHex(macIdBytes);
+//				System.out.println(mMacIdFromInfoMem);
+				
+				if(((infoMemContents[iM.idxSDConfigDelayFlag]>>1)&0x01) == 0x01) {
+					mConfigFileCreationFlag = true;
+				}
+				else {
+					mConfigFileCreationFlag = false;
+				}
+				// InfoMem C - End
+				
+				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
+				for (int i = 0; i < 21; i++) {
+					System.arraycopy(infoMemContents, iM.idxNode0 + (i*iM.lengthMacIdBytes), macIdBytes, 0 , iM.lengthMacIdBytes);
+					if(Arrays.equals(macIdBytes, new byte[]{-1,-1,-1,-1,-1,-1})) {
+						break;
+					}
+					else {
+						syncNodesList.add(bytesToHex(macIdBytes));
+					}
+				}
+				// InfoMem B End
+				
+			}
+			
+			createMapOfChannels();
+			for(Integer key :mShimmerSensorsMap.keySet()) {
+				if((mEnabledSensors & mShimmerSensorsMap.get(key).mSensorBitmapIDSDLogHeader) > 0) {
+					mShimmerSensorsMap.get(key).mIslEnabled = true;
+				}
+				else {
+					mShimmerSensorsMap.get(key).mIslEnabled = false;
+				}
+			}
+			
+		}
+
+	}
+
+	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+		
+		byte[] infoMemBackup = mShimmerInfoMemBytes.clone();
+		
+		if((mFirmwareIndentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIndentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
+			mShimmerInfoMemBytes = new byte[384];
+		}
+		else if(mFirmwareIndentifier == FW_ID_SHIMMER3_BTSTREAM) {
+			mShimmerInfoMemBytes = new byte[128];
+		}
+		else {
+			mShimmerInfoMemBytes = new byte[512]; 
+		}
+		
+		// InfoMem defaults to 0xFF on firmware flash
+		for(int i =0; i < mShimmerInfoMemBytes.length; i++) {
+			mShimmerInfoMemBytes[i] = (byte) 0xFF;
+		}
+		
+		// If not being generated from scratch then copy across exisiting InfoMem contents
+		if(!generateForWritingToShimmer) {
+			System.arraycopy(infoMemBackup, 0, mShimmerInfoMemBytes, 0, (infoMemBackup.length > mShimmerInfoMemBytes.length) ? mShimmerInfoMemBytes.length:infoMemBackup.length);
+		}	
+		
+		InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareVersionCode, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionRelease);
+		
+		// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
+		// Sampling Rate
+		int samplingRate = (int)(32768 / mSamplingRate);
+		mShimmerInfoMemBytes[infoMemMap.idxShimmerSamplingRate] = (byte) (samplingRate & 0xFF); 
+		mShimmerInfoMemBytes[infoMemMap.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8 ) & 0xFF); 
+
+		mShimmerInfoMemBytes[infoMemMap.idxBufferSize] = (byte) (mBufferSize & 0xFF); 
+		
+		// Sensors
+		mEnabledSensors = (long)0;
+		for(Integer key : mShimmerSensorsMap.keySet()) {
+			if(mShimmerSensorsMap.get(key).mIslEnabled) {
+				mEnabledSensors |= mShimmerSensorsMap.get(key).mSensorBitmapIDSDLogHeader;
+			}
+		}
+		mShimmerInfoMemBytes[infoMemMap.idxSensors0] = (byte) ((mEnabledSensors >> 0) & 0xFF);
+		mShimmerInfoMemBytes[infoMemMap.idxSensors1] = (byte) ((mEnabledSensors >> 8) & 0xFF);
+		mShimmerInfoMemBytes[infoMemMap.idxSensors2] = (byte) ((mEnabledSensors >> 16) & 0xFF);
+		
+		// Configuration
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & 0xF) << 4);
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (byte) ((mAccelRange & 0x03) << 2);
+		if(mLSM303DigitalAccelLPM) {
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= 0x02;
+		}
+		if(mLSM303DigitalAccelHRM) {
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= 0x01;
+		}
+
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte1] = (byte) ((mMPU9150GyroAccelRate & 0xFF) << 0);
+
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte2] = (byte) ((mMagRange & 0x07) << 5);
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte2] |= (byte) ((mLSM303MagRate & 0x07) << 2);
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte2] |= (byte) ((mGyroRange & 0x03) << 0);
+		
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & 0x03) << 6);
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mPressureResolution & 0x03) << 4);
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mGSRRange & 0x07) << 1);
+		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & 0x01) << 0);
+		
+		//EXG Configuration
+		System.arraycopy(mEXG1Register, 0, mShimmerInfoMemBytes, infoMemMap.idxEXGADS1292RChip1Config1, 10);
+		exgBytesReadFrom(1, mEXG1Register);
+		System.arraycopy(mEXG2Register, 0, mShimmerInfoMemBytes, infoMemMap.idxEXGADS1292RChip2Config1, 10);
+		exgBytesReadFrom(2, mEXG2Register);
+		
+		mShimmerInfoMemBytes[infoMemMap.idxBtCommBaudRate] = (byte) ((mBluetoothBaudRate & 0xFF) << 0);
+
+		// Analog Accel Calibration Parameters
+		byte[] bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 8) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 0) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 8) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
+		}
+		System.arraycopy(bufferCalibrationParameters, 0, mShimmerInfoMemBytes, infoMemMap.idxAnalogAccelCalibration, 21);
+
+		// MPU9150 Gyroscope Calibration Parameters
+		bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]) >> 0) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]) >> 8) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
+		}
+		System.arraycopy(bufferCalibrationParameters, 0, mShimmerInfoMemBytes, infoMemMap.idxMPU9150GyroCalibration, 21);
+
+		// LSM303DLHC Magnetometer Calibration Parameters
+		bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 0) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 8) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 0) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 8) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][2]*100)) & 0xFF);
+		}
+		System.arraycopy(bufferCalibrationParameters, 0, mShimmerInfoMemBytes, infoMemMap.idxLSM303DLHCMagCalibration, 21);
+
+		// LSM303DLHC Digital Accel Calibration Parameters
+		bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 0) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 8) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 0) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 8) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixWRAccel[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixWRAccel[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixWRAccel[i][2]*100)) & 0xFF);
+		}
+		System.arraycopy(bufferCalibrationParameters, 0, mShimmerInfoMemBytes, infoMemMap.idxLSM303DLHCAccelCalibration, 21);
+		
+		//TODO: decide what to do
+		// BMP180 Pressure Calibration Parameters
+
+		// InfoMem D - End
+		
+		
+		//SDLog and LogAndStream
+		if((mFirmwareIndentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIndentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
+
+			// InfoMem C - Start - used by SdLog and LogAndStream
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & 0x01) << 7);
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & 0x07) << 3);
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & 0x07) << 0);
+
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte5] = (byte) ((mMPU9150MPLSamplingRate & 0x07) << 5);
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & 0x07) << 2);
+
+			mShimmerInfoMemBytes[infoMemMap.idxSensors3] = (byte) ((mEnabledSensors >> 24) & 0xFF);
+			mShimmerInfoMemBytes[infoMemMap.idxSensors4] = (byte) ((mEnabledSensors >> 32) & 0xFF);
+
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte6] = (byte) ((mMPLSensorFusion & 0x01) << 7);
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & 0x01) << 6);
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & 0x01) << 5);
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & 0x01) << 4);
+			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLEnable & 0x01) << 3);
+			
+			//TODO: decide what to do
+			//MPL Accel Calibration Parameters
+			//MPL Mag Calibration Configuration
+			//MPL Gyro Calibration Configuration
+
+			// Shimmer Name
+			for (int i = 0; i < 12; i++) {
+				if (i < mShimmerUserAssignedName.length()) {
+					mShimmerInfoMemBytes[infoMemMap.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
+				}
+				else {
+					mShimmerInfoMemBytes[infoMemMap.idxSDShimmerName + i] = (byte) 0xFF;
+				}
+			}
+			
+			// Experiment Name
+			for (int i = 0; i < 12; i++) {
+				if (i < mExperimentName.length()) {
+					mShimmerInfoMemBytes[infoMemMap.idxSDEXPIDName + i] = (byte) mExperimentName.charAt(i);
+				}
+				else {
+					mShimmerInfoMemBytes[infoMemMap.idxSDEXPIDName + i] = (byte) 0xFF;
+				}
+			}
+
+			//Configuration Time
+			mShimmerInfoMemBytes[infoMemMap.idxSDConfigTime] = (byte) ((mConfigTime >> 24) & 0xFF);
+			mShimmerInfoMemBytes[infoMemMap.idxSDConfigTime+1] = (byte) ((mConfigTime >> 16) & 0xFF);
+			mShimmerInfoMemBytes[infoMemMap.idxSDConfigTime+2] = (byte) ((mConfigTime >> 8) & 0xFF);
+			mShimmerInfoMemBytes[infoMemMap.idxSDConfigTime+3] = (byte) ((mConfigTime >> 0) & 0xFF);
+			
+			mShimmerInfoMemBytes[infoMemMap.idxSDMyTrialID] = (byte) (mExperimentId & 0xFF);
+
+			mShimmerInfoMemBytes[infoMemMap.idxSDNumOfShimmers] = (byte) (mExperimentNumberOfShimmers & 0xFF);
+			
+			mShimmerInfoMemBytes[infoMemMap.idxSDExperimentConfig0] = (byte) ((mButtonStart & 0x01) << 5);
+			mShimmerInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mSyncTimeWhenLogging & 0x01) << 2);
+			mShimmerInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & 0x01) << 1);
+			
+			mShimmerInfoMemBytes[infoMemMap.idxSDExperimentConfig1] = (byte) ((mSingleTouch & 0x01) << 7);
+			mShimmerInfoMemBytes[infoMemMap.idxSDExperimentConfig1] |= (byte) ((mTCXO & 0x01) << 4);
+			
+			mShimmerInfoMemBytes[infoMemMap.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
+			
+			// Maximum and Estimated Length in minutes
+			mShimmerInfoMemBytes[infoMemMap.idxEstimatedExpLengthLsb] = (byte) ((mExperimentDurationEstimated >> 0) & 0xFF);
+			mShimmerInfoMemBytes[infoMemMap.idxEstimatedExpLengthMsb] = (byte) ((mExperimentDurationEstimated >> 8) & 0xFF);
+			mShimmerInfoMemBytes[infoMemMap.idxMaxExpLengthLsb] = (byte) ((mExperimentDurationMaximum >> 0) & 0xFF);
+			mShimmerInfoMemBytes[infoMemMap.idxMaxExpLengthMsb] = (byte) ((mExperimentDurationMaximum >> 8) & 0xFF);
+
+			byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+			if(generateForWritingToShimmer) {
+				// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
+				// (already set to 0xFF at start of method but just incase)
+				System.arraycopy(invalidMacId, 0, mShimmerInfoMemBytes, infoMemMap.idxMacAddress, 6);
+				
+				 // Tells the Shimmer to create a new config file on undock/power cycle
+				mShimmerInfoMemBytes[infoMemMap.idxSDConfigDelayFlag] = (byte) 0x01;
+			}
+			// InfoMem C - End
+			
+			// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
+			for (int i = 0; i < 21; i++) { // Limit of 21 nodes
+				byte[] macIdArray;
+				if(i < syncNodesList.size()) {
+					macIdArray = hexStringToByteArray(syncNodesList.get(i));
+				}
+				else {
+					macIdArray = invalidMacId;
+				}
+				System.arraycopy(macIdArray, 0, mShimmerInfoMemBytes, infoMemMap.idxNode0 + (i*6), 6);
+			}
+			// InfoMem B End
+		}
+		
+		return mShimmerInfoMemBytes;
+	}
+	
+	  /**
+	 * @return the mConfigTime
+	 */
+	public long getmConfigTime() {
+		return mConfigTime;
+	}
+
+
+
+
+	public static boolean isAsciiPrintable(char ch) {
+	      return ch >= 32 && ch < 127;
+	  }
+
+	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+	public static String bytesToHex(byte[] bytes) {
+	    char[] hexChars = new char[bytes.length * 2];
+	    for ( int j = 0; j < bytes.length; j++ ) {
+	        int v = bytes[j] & 0xFF;
+	        hexChars[j * 2] = hexArray[v >>> 4];
+	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+	    }
+	    return new String(hexChars);
+	}
+	
+	public static byte[] hexStringToByteArray(String s) {
+	    int len = s.length();
+	    byte[] data = new byte[len / 2];
+	    for (int i = 0; i < len; i += 2) {
+	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+	                             + Character.digit(s.charAt(i+1), 16));
+	    }
+	    return data;
+	}
+	
+	
+	/**
+	 * Shimmer3 Low-noise analog accelerometer
+	 */
+	public final static int SENSOR_SHIMMER3_A_ACCEL = 0;
+	/**
+	 * Shimmer3 Gyrocope
+	 */
+	public final static int SENSOR_SHIMMER3_MPU9150_GYRO = 1;
+	/**
+	 * Shimmer3 Primary Magnetometer
+	 */
+	public final static int SENSOR_SHIMMER3_LSM303DLHC_MAG = 2;
+	public final static int SENSOR_SHIMMER3_EXG1_24BIT = 3;
+	public final static int SENSOR_SHIMMER3_EXG2_24BIT = 4;
+	public final static int SENSOR_SHIMMER3_GSR = 5;
+	public final static int SENSOR_SHIMMER3_EXT_ADC_A7 = 6;
+	public final static int SENSOR_SHIMMER3_EXT_ADC_A6 = 7;
+
+	public final static int SENSOR_SHIMMER3_BRIDGE_AMP = 8;
+	//public final static int SENSOR_SHIMMER3_HR = 9;
+	public final static int SENSOR_SHIMMER3_VBATT = 10;
+	/**
+	 * Shimmer3 Wide-range digital accelerometer
+	 */
+	public final static int SENSOR_SHIMMER3_LSM303DLHC_ACCEL = 11;
+	public final static int SENSOR_SHIMMER3_EXT_ADC_A15 = 12;
+	public final static int SENSOR_SHIMMER3_INT_ADC_A1 = 13;
+	public final static int SENSOR_SHIMMER3_INT_ADC_A12 = 14;
+	public final static int SENSOR_SHIMMER3_INT_ADC_A13 = 15;
+
+	public final static int SENSOR_SHIMMER3_INT_ADC_A14 = 16;
+	/**
+	 * Shimmer3 Alternative accelerometer
+	 */
+	public final static int SENSOR_SHIMMER3_MPU9150_ACCEL = 17;
+	/**
+	 * Shimmer3 Alternative magnetometer
+	 */
+	public final static int SENSOR_SHIMMER3_MPU9150_MAG = 18;
+	public final static int SENSOR_SHIMMER3_EXG1_16BIT = 19;
+	public final static int SENSOR_SHIMMER3_EXG2_16BIT = 21;
+	public final static int SENSOR_SHIMMER3_BMP180_PRESSURE = 22;
+	//public final static int SENSOR_SHIMMER3_BMP180_TEMPERATURE = 23; // not yet implemented
+	//public final static int SENSOR_SHIMMER3_MSP430_TEMPERATURE = 24; // not yet implemented
+
+	public final static int SENSOR_SHIMMER3_MPU9150_TEMP = 25;
+	//public final static int SENSOR_SHIMMER3_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
+	
+	
+	//public final static int SENSOR_SHIMMER3_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
+	public final static int SENSOR_SHIMMER3_MPL_QUAT_6DOF = 27;
+	public final static int SENSOR_SHIMMER3_MPL_QUAT_9DOF = 28;
+	public final static int SENSOR_SHIMMER3_MPL_EULER_6DOF = 29;
+	public final static int SENSOR_SHIMMER3_MPL_EULER_9DOF = 30;
+	public final static int SENSOR_SHIMMER3_MPL_HEADING = 31;
+	public final static int SENSOR_SHIMMER3_MPL_PEDOMETER = 32;
+	public final static int SENSOR_SHIMMER3_MPL_TAP = 33;
+	public final static int SENSOR_SHIMMER3_MPL_MOTION_ORIENT = 34;
+	public final static int SENSOR_SHIMMER3_GYRO_MPU_MPL = 35;
+	public final static int SENSOR_SHIMMER3_ACCEL_MPU_MPL = 36;
+	public final static int SENSOR_SHIMMER3_MAG_MPU_MPL = 37;
+	public final static int SENSOR_SHIMMER3_MPL_QUAT_6DOF_RAW = 38;
+	
+	// Combination Channels
+	public final static int SENSOR_SHIMMER3_ECG = 100;
+	public final static int SENSOR_SHIMMER3_EMG = 101;
+	public final static int SENSOR_SHIMMER3_EXG_TEST = 102;
+	public final static int SENSOR_SHIMMER3_ALL_ADC = 103;
+	
+
+	
+	protected TreeMap<Integer,ChannelDetails> mShimmerSensorsMap = new TreeMap<Integer,ChannelDetails>();
+	
+	/**
+	 * Should only be used after the Shimmer HW and FW version information is set
+	 */
+	public void createMapOfChannels() {
+		//TODO: move bitshift values and masks to dedicated classes for infomem, btstream sensor enable and SD file header mapping (for version control)
+		
+		mShimmerSensorsMap.clear();
+		if (mHardwareVersion != -1){
+			if (mHardwareVersion == HW_ID_SHIMMER_2R){
+				mShimmerSensorsMap.put(SENSOR_ACCEL, new ChannelDetails(false, 0x80, 0, "Accelerometer"));
+				mShimmerSensorsMap.put(SENSOR_GYRO, new ChannelDetails(false, 0x40, 0, "Gyroscope"));
+				mShimmerSensorsMap.put(SENSOR_MAG, new ChannelDetails(false, 0x20, 0, "Magnetometer"));
+				mShimmerSensorsMap.put(SENSOR_EMG, new ChannelDetails(false, 0x08, 0, "EMG"));
+				mShimmerSensorsMap.put(SENSOR_ECG, new ChannelDetails(false, 0x10, 0, "ECG"));
+				mShimmerSensorsMap.put(SENSOR_GSR, new ChannelDetails(false, 0x04, 0, "GSR"));
+				mShimmerSensorsMap.put(SENSOR_EXP_BOARD_A7, new ChannelDetails(false, 0x02, 0, "Exp Board A7"));
+				mShimmerSensorsMap.put(SENSOR_EXP_BOARD_A0, new ChannelDetails(false, 0x01, 0, "Exp Board A0"));
+				
+				mShimmerSensorsMap.put(SENSOR_EXP_BOARD, new ChannelDetails(false, 0x02|0x01, 0, "Exp Board"));
+				mShimmerSensorsMap.put(SENSOR_BRIDGE_AMP, new ChannelDetails(false, 0x8000, 0, "Bridge Amplifier"));
+				mShimmerSensorsMap.put(SENSOR_HEART, new ChannelDetails(false, 0x4000, 0, "Heart Rate"));
+				mShimmerSensorsMap.put(SENSOR_BATT, new ChannelDetails(false, 0x2000, 0, "Battery Voltage"));
+				mShimmerSensorsMap.put(SENSOR_EXT_ADC_A15, new ChannelDetails(false, 0x0800, 0, "External ADC A15"));
+				mShimmerSensorsMap.put(SENSOR_INT_ADC_A1, new ChannelDetails(false, 0x0400, 0, "External ADC A1"));
+				mShimmerSensorsMap.put(SENSOR_INT_ADC_A12, new ChannelDetails(false, 0x0200, 0, "External ADC A12"));
+				mShimmerSensorsMap.put(SENSOR_INT_ADC_A13, new ChannelDetails(false, 0x0100, 0, "External ADC A13"));
+				mShimmerSensorsMap.put(SENSOR_INT_ADC_A14, new ChannelDetails(false, 0x800000, 0, "External ADC A14"));
+
+			} else {
+				long streamingByteIndex = 0;		// NV_SENSORS0
+				long loggingHeaderByteIndex = 0;
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_A_ACCEL, new ChannelDetails(false, 0x80<<(streamingByteIndex*8), 0x80<<(loggingHeaderByteIndex*8), Shimmer3Configuration.ACCEL_LN_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPU9150_GYRO, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(loggingHeaderByteIndex*8), Shimmer3Configuration.GYRO_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_LSM303DLHC_MAG, new ChannelDetails(false, 0x20<<(streamingByteIndex*8), 0x20<<(loggingHeaderByteIndex*8), Shimmer3Configuration.MAG_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EXG1_24BIT, new ChannelDetails(false, 0x10<<(streamingByteIndex*8), 0x10<<(loggingHeaderByteIndex*8), "EXG1 24BIT"));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EXG2_24BIT, new ChannelDetails(false, 0x08<<(streamingByteIndex*8), 0x08<<(loggingHeaderByteIndex*8), "EXG2 24BIT"));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_GSR, new ChannelDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(loggingHeaderByteIndex*8), Shimmer3Configuration.GSR_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EXT_ADC_A7, new ChannelDetails(false, 0x02<<(streamingByteIndex*8), 0x02<<(loggingHeaderByteIndex*8), Shimmer3Configuration.EXT_EXP_A7_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EXT_ADC_A6, new ChannelDetails(false, 0x01<<(streamingByteIndex*8), 0x01<<(loggingHeaderByteIndex*8), Shimmer3Configuration.EXT_EXP_A6_GUI));
+
+				streamingByteIndex = 1;			// NV_SENSORS1
+				loggingHeaderByteIndex = 1;
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_BRIDGE_AMP, new ChannelDetails(false, 0x80<<(streamingByteIndex*8), 0x80<<(loggingHeaderByteIndex*8), Shimmer3Configuration.BRIDGE_AMPLIFIER_GUI));
+				//shimmerChannels.put(, new ChannelDetails(false, 0x40<<(btStreamByteIndex*8), 0x40<<(sDHeaderByteIndex*8), "")); // unused
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_VBATT, new ChannelDetails(false, 0x20<<(streamingByteIndex*8), 0x20<<(loggingHeaderByteIndex*8), Shimmer3Configuration.BATTERY_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_LSM303DLHC_ACCEL, new ChannelDetails(false, 0x10<<(streamingByteIndex*8), 0x10<<(loggingHeaderByteIndex*8), Shimmer3Configuration.ACCEL_WR_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EXT_ADC_A15, new ChannelDetails(false, 0x08<<(streamingByteIndex*8), 0x08<<(loggingHeaderByteIndex*8), Shimmer3Configuration.EXT_EXP_A15_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_INT_ADC_A1, new ChannelDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(loggingHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A1_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_INT_ADC_A12, new ChannelDetails(false, 0x02<<(streamingByteIndex*8), 0x02<<(loggingHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A12_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_INT_ADC_A13, new ChannelDetails(false, 0x01<<(streamingByteIndex*8), 0x01<<(loggingHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A13_GUI));
+				
+				streamingByteIndex = 2;			// NV_SENSORS2
+				loggingHeaderByteIndex = 2;
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_INT_ADC_A14, new ChannelDetails(false, 0x80<<(streamingByteIndex*8), 0x80<<(loggingHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A14_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPU9150_ACCEL, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(loggingHeaderByteIndex*8), Shimmer3Configuration.ACCEL_MPU_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPU9150_MAG, new ChannelDetails(false, 0x20<<(streamingByteIndex*8), 0x20<<(loggingHeaderByteIndex*8), Shimmer3Configuration.MAG_MPU_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EXG1_16BIT, new ChannelDetails(false, 0x10<<(streamingByteIndex*8), 0x10<<(loggingHeaderByteIndex*8), "EXG1 16BIT"));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EXG2_16BIT, new ChannelDetails(false, 0x08<<(streamingByteIndex*8), 0x08<<(loggingHeaderByteIndex*8), "EXG2 16BIT"));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_BMP180_PRESSURE, new ChannelDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(loggingHeaderByteIndex*8), Shimmer3Configuration.PRESS_TEMP_BMP180_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPU9150_TEMP, new ChannelDetails(false, 0x20<<(streamingByteIndex*8), 0x20<<(loggingHeaderByteIndex*8), Shimmer3Configuration.MPL_TEMPERATURE_GUI));
+
+				//shimmerChannels.put(SENSOR_SHIMMER3_BMP180_TEMPERATURE, new ChannelDetails(false, 0x02<<(btStreamByteIndex*8), 0x02<<(sDHeaderByteIndex*8), "")); // not yet implemented
+				//shimmerChannels.put(SENSOR_SHIMMER3_MSP430_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
+				//shimmerChannels.put(SENSOR_SHIMMER3_LSM303DLHC_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
+				
+				streamingByteIndex = 3;			// NV_SENSORS3
+				loggingHeaderByteIndex = 3;
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_QUAT_6DOF, new ChannelDetails(false, (long)0, (long)0x80<<(loggingHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_6DOF_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_QUAT_9DOF, new ChannelDetails(false, (long)0, (long)0x40<<(loggingHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_9DOF_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_EULER_6DOF, new ChannelDetails(false, (long)0, (long)0x20<<(loggingHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_6DOF_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_EULER_9DOF, new ChannelDetails(false, (long)0, (long)0x10<<(loggingHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_9DOF_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_HEADING, new ChannelDetails(false, (long)0, (long)0x08<<(loggingHeaderByteIndex*8), Shimmer3Configuration.MPL_HEADING_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_PEDOMETER, new ChannelDetails(false, (long)0, (long)0x04<<(loggingHeaderByteIndex*8), Shimmer3Configuration.MPL_PEDOM_CNT_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_TAP, new ChannelDetails(false, (long)0, (long)0x02<<(loggingHeaderByteIndex*8), Shimmer3Configuration.MPL_TAPDIRANDTAPCNT_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_MOTION_ORIENT, new ChannelDetails(false, (long)0, (long)0x01<<(loggingHeaderByteIndex*8), Shimmer3Configuration.MPL_MOTIONANDORIENT_GUI));
+
+				streamingByteIndex = 4;			// NV_SENSORS4
+				loggingHeaderByteIndex = 4;
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_GYRO_MPU_MPL, new ChannelDetails(false, (long)0, (long)0x80<<(loggingHeaderByteIndex*8), Shimmer3Configuration.GYRO_MPU_MPL_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_ACCEL_MPU_MPL, new ChannelDetails(false, (long)0, (long)0x40<<(loggingHeaderByteIndex*8), Shimmer3Configuration.ACCEL_MPU_MPL_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MAG_MPU_MPL, new ChannelDetails(false, (long)0, (long)0x20<<(loggingHeaderByteIndex*8), Shimmer3Configuration.MAG_MPU_MPL_GUI));
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_MPL_QUAT_6DOF_RAW, new ChannelDetails(false, (long)0, (long)0x10<<(loggingHeaderByteIndex*8), Shimmer3Configuration.QUAT_DMP_6DOF_GUI));
+				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x08<<(loggingHeaderByteIndex*8), "")); // unused
+				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x04<<(loggingHeaderByteIndex*8), "")); // unused
+				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x02<<(loggingHeaderByteIndex*8), "")); // unused
+				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x01<<(loggingHeaderByteIndex*8), "")); // unused
+				
+				// Combination Sensors
+				long shimmer3Ecg = mShimmerSensorsMap.get(SENSOR_SHIMMER3_EXG1_24BIT).mSensorBitmapIDStreaming | mShimmerSensorsMap.get(SENSOR_SHIMMER3_EXG2_24BIT).mSensorBitmapIDStreaming;
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_ECG, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.ECG_GUI)); // SENSOR_EXG1_24BIT + SENSOR_EXG2_24BIT
+				long shimmer3Emg = mShimmerSensorsMap.get(SENSOR_SHIMMER3_EXG1_24BIT).mSensorBitmapIDStreaming;
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EMG, new ChannelDetails(false, shimmer3Emg, shimmer3Emg, Shimmer3Configuration.EMG_GUI)); // SENSOR_EXG1_24BIT
+				mShimmerSensorsMap.put(SENSOR_SHIMMER3_EXG_TEST, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.EXG_TEST_GUI)); // SENSOR_EXG1_24BIT
+//				long shimmer3AllAdc = mShimmerSensorsMap.get(SENSOR_SHIMMER3_EXT_ADC_A7).mSensorBitmapIDStreaming
+//						| mShimmerSensorsMap.get(SENSOR_SHIMMER3_EXT_ADC_A6).mSensorBitmapIDStreaming
+//						| mShimmerSensorsMap.get(SENSOR_SHIMMER3_EXT_ADC_A15).mSensorBitmapIDStreaming
+//						| mShimmerSensorsMap.get(SENSOR_SHIMMER3_INT_ADC_A1).mSensorBitmapIDStreaming
+//						| mShimmerSensorsMap.get(SENSOR_SHIMMER3_INT_ADC_A12).mSensorBitmapIDStreaming
+//						| mShimmerSensorsMap.get(SENSOR_SHIMMER3_INT_ADC_A13).mSensorBitmapIDStreaming;
+//				mShimmerSensorsMap.put(SENSOR_SHIMMER3_ALL_ADC, new ChannelDetails(false, shimmer3AllAdc, shimmer3AllAdc, Shimmer3Configuration.ADC_ALL)); // SENSOR_ALL_ADC_SHIMMER3
+
+			}
+		}		
+	}
+
+
+	/**
+	 * @return the mBufferSize
+	 */
+	public int getBufferSize() {
+		return mBufferSize;
+	}
+	
+	/**
+	 * @return the mMPU9150AccelRange
+	 */
+	public int getMPU9150AccelRange() {
+		return mMPU9150AccelRange;
+	}
+
+	/**
+	 * @return the mMPU9150GyroAccelRate
+	 */
+	public int getMPU9150GyroAccelRate() {
+		return mMPU9150GyroAccelRate;
+	}
+
+	/**
+	 * @return the mMPU9150MotCalCfg
+	 */
+	public int getMPU9150MotCalCfg() {
+		return mMPU9150MotCalCfg;
+	}
+	/**
+	 * @return the mMPU9150LPF
+	 */
+	public int getMPU9150LPF() {
+		return mMPU9150LPF;
+	}
+
+	/**
+	 * @return the mMPU9150MPLSamplingRate
+	 */
+	public int getMPU9150MPLSamplingRate() {
+		return mMPU9150MPLSamplingRate;
+	}
+
+	/**
+	 * @return the mMPU9150MagSamplingRate
+	 */
+	public int getMPU9150MagSamplingRate() {
+		return mMPU9150MagSamplingRate;
+	}
+
+	/**
+	 * @return the mMasterShimmer
+	 */
+	public int getMasterShimmer() {
+		return mMasterShimmer;
+	}
+
+	/**
+	 * @return the mSingleTouch
+	 */
+	public int getSingleTouch() {
+		return mSingleTouch;
+	}
+
+	/**
+	 * @return the mTCXO
+	 */
+	public int getTCXO() {
+		return mTCXO;
+	}
+
+	/**
+	 * @return the mExperimentName
+	 */
+	public String getExperimentName() {
+		return mExperimentName;
+	}
+
+	/**
+	 * @return the mExperimentNumberOfShimmers
+	 */
+	public int getExperimentNumberOfShimmers() {
+		return mExperimentNumberOfShimmers;
+	}
+	
+	/**
+	 * @return the mExperimentDurationEstimated
+	 */
+	public int getExperimentDurationEstimated() {
+		return mExperimentDurationEstimated;
+	}
+
+	/**
+	 * @return the mExperimentDurationMaximum
+	 */
+	public int getExperimentDurationMaximum() {
+		return mExperimentDurationMaximum;
+	}
+
+	/**
+	 * @return the mLSM303DigitalAccelLPM
+	 */
+	public boolean isLSM303DigitalAccelLPM() {
+		return mLSM303DigitalAccelLPM;
+	}
+
+	/**
+	 * @return the mLSM303DigitalAccelHRM
+	 */
+	public boolean isLSM303DigitalAccelHRM() {
+		return mLSM303DigitalAccelHRM;
+	}
+
+	/**
+	 * @return the mShimmerUserAssignedName
+	 */
+	public String getShimmerUserAssignedName() {
+		return mShimmerUserAssignedName;
+	}
+
+	/**
+	 * @return the mLSM303MagRate
+	 */
+	public int getmLSM303MagRate() {
+		return mLSM303MagRate;
+	}
+
+	/**
+	 * @return the mLSM303DigitalAccelRate
+	 */
+	public int getmLSM303DigitalAccelRate() {
+		return mLSM303DigitalAccelRate;
+	}
+
+	/**
+	 * @return the mMacIdFromInfoMem
+	 */
+	public String getMacIdFromInfoMem() {
+		return mMacIdFromInfoMem;
+	}
+
+	/**
+	 * @return the mExperimentId
+	 */
+	public int getExperimentId() {
+		return mExperimentId;
+	}
+
+	/**
+	 * @return the syncNodesList
+	 */
+	public List<String> getSyncNodesList() {
+		return syncNodesList;
+	}
+
+
+	/**
+	 * @return the mSyncBroadcastInterval
+	 */
+	public int getSyncBroadcastInterval() {
+		return mSyncBroadcastInterval;
+	}
+
+
+	/**
+	 * @return the mSyncTimeWhenLogging
+	 */
+	public int getSyncTimeWhenLogging() {
+		return mSyncTimeWhenLogging;
+	}
+
+
+	/**
+	 * @return the mBluetoothBaudRate
+	 */
+	public int getBluetoothBaudRate() {
+		return mBluetoothBaudRate;
+	}
+
+
+
+
 
 }

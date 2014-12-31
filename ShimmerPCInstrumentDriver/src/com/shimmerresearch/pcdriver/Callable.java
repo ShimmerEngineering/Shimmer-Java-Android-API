@@ -1,4 +1,4 @@
-//Rev0.2
+//Rev0.3
 
 /*
  * Copyright (c) 2010, Shimmer Research, Ltd.
@@ -33,8 +33,11 @@
  * @author Jong Chern Lim
  * @date   October, 2013
  * 
- *  Changes since 0.1
- *  - included object to callable
+ * Changes since 0.2
+ * - added callBackMethodQueue
+ * 
+ * Changes since 0.1
+ * - included object to callable
  * 
  */
 
@@ -44,5 +47,8 @@ import com.shimmerresearch.driver.ObjectCluster;
 
 public interface Callable  
 {  
-    public void callBackMethod(int i, Object ojc);  
+    public void callBackMethod(int i, Object ojc);
+
+	public void callBackMethod(ShimmerMSG s);
+	
 }  

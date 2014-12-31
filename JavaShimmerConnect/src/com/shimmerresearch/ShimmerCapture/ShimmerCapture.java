@@ -79,6 +79,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.pcdriver.CallbackObject;
+import com.shimmerresearch.pcdriver.ShimmerMSG;
 import com.shimmerresearch.pcdriver.ShimmerPC;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.tools.HighPassFilter;
@@ -1880,6 +1881,11 @@ public class ShimmerCapture {
 		public void directMethod()  
 		{  
 
+		}
+		@Override
+		public void callBackMethod(ShimmerMSG s) {
+			// TODO Auto-generated method stub
+			
 		}  
 	}
 	

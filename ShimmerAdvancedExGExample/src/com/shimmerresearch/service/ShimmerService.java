@@ -332,7 +332,7 @@ public class ShimmerService extends Service {
 	}
 	
 	
-	public void setEnabledSensors(int enabledSensors,String bluetoothAddress) {
+	public void setEnabledSensors(long enabledSensors,String bluetoothAddress) {
 		// TODO Auto-generated method stub
 		Collection<Object> colS=mMultiShimmer.values();
 		Iterator<Object> iterator = colS.iterator();
@@ -383,11 +383,11 @@ public class ShimmerService extends Service {
 
 	
 	
-	public int getEnabledSensors(String bluetoothAddress) {
+	public long getEnabledSensors(String bluetoothAddress) {
 		// TODO Auto-generated method stub
 		Collection<Object> colS=mMultiShimmer.values();
 		Iterator<Object> iterator = colS.iterator();
-		int enabledSensors=0;
+		long enabledSensors=0;
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getShimmerState()==Shimmer.STATE_CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
@@ -641,9 +641,9 @@ public class ShimmerService extends Service {
 				}
 	}
 
-	public int sensorConflictCheckandCorrection(String bluetoothAddress, int enabledSensors, int sensorToCheck) {
+	public long sensorConflictCheckandCorrection(String bluetoothAddress, long enabledSensors, long sensorToCheck) {
 		// TODO Auto-generated method stub
-		int newSensorBitmap = 0;
+		long newSensorBitmap = 0;
 		Collection<Object> colS=mMultiShimmer.values();
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
@@ -843,7 +843,7 @@ public class ShimmerService extends Service {
 		
 		int res = -1;
 		Shimmer tmp = (Shimmer) mMultiShimmer.get(bluetoothAddress);
-		int enabledSensors = tmp.getEnabledSensors();
+		long enabledSensors = tmp.getEnabledSensors();
 		if ((enabledSensors & Shimmer.SENSOR_EXG1_24BIT)>0 && (enabledSensors & Shimmer.SENSOR_EXG2_24BIT)>0){
 			res = 24;
 		}
@@ -1002,7 +1002,7 @@ public class ShimmerService extends Service {
 	
 	public int sensorConflictCheckandCorrection(int enabledSensors,int sensorToCheck, int shimmerVersion){
 			
-			if (shimmerVersion==Shimmer.SHIMMER_2R || shimmerVersion==Shimmer.SHIMMER_2){
+			if (shimmerVersion==Shimmer.HW_ID_SHIMMER_2 || shimmerVersion==Shimmer.HW_ID_SHIMMER_2R){
 				if ((sensorToCheck & Shimmer.SENSOR_GYRO) >0 || (sensorToCheck & Shimmer.SENSOR_MAG) >0){
 					enabledSensors = disableBit(enabledSensors,Shimmer.SENSOR_ECG);
 					enabledSensors = disableBit(enabledSensors,Shimmer.SENSOR_EMG);

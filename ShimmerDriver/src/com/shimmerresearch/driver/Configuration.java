@@ -123,7 +123,7 @@ public class Configuration {
 
 		public final static String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
 		public final static String[] ListofAccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-		public final static String[] ListofGyroRange={"250dps","500dps","1000dps","2000dps"}; 
+		public final static String[] ListofGyroRange={"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"}; 
 		public final static String[] ListofMagRange={"+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"}; 
 		public final static String[] ListofPressureResolution={"Low","Standard","High","Very High"};
 		public final static String[] ListofGSRRange={"10kOhm to 56kOhm","56kOhm to 220kOhm","220kOhm to 680kOhm","680kOhm to 4.7MOhm","Auto Range"};
@@ -134,8 +134,20 @@ public class Configuration {
 		public final static String[] ListOfExGLeadOffDetection={"Off","DC Current"};
 		public final static String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
 		public final static String[] ListOfExGLeadOffComparator={"Pos:95%-Neg:5%","Pos:92.5%-Neg:7.5%","Pos:90%-Neg:10%","Pos:87.5%-Neg:12.5%","Pos:85%-Neg:15%","Pos:80%-Neg:20%","Pos:75%-Neg:25%","Pos:70%-Neg:30%"};
+		public final static String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
+
+		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
+		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
 		
+		public final static String[] ListofLSM303DLHCAccelSamplingRates={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1.62kHz","1.344kHz/5.376kHz"};
+		public final static String[] ListofLSM303DLHCMagSamplingRates={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
+		public final static String[] ListofMPU9150MplSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public final static String[] ListofMPU9150MagSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		
+		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
+
 	}
+	
 	public static class Shimmer2{
 		public class Channel{
 			public final static int XAccel      = 0x00;

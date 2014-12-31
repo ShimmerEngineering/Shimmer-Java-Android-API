@@ -60,7 +60,7 @@ public class ShimmerGraph extends Activity {
     
     private static String mSensorView = ""; //The sensor device which should be viewed on the graph
     private static int mGraphSubSamplingCount = 0; 
-    int dialogEnabledSensors=0;
+    long dialogEnabledSensors=0;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -573,7 +573,7 @@ public class ShimmerGraph extends Activity {
 	mDialog.show();}
 	
 	
-	public void showEnableSensors(final String[] sensorNames, int enabledSensors){
+	public void showEnableSensors(final String[] sensorNames, long enabledSensors){
 		dialogEnabledSensors=enabledSensors;
 		mDialog.setContentView(R.layout.dialog_enable_sensor_view);
 		TextView title = (TextView) mDialog.findViewById(android.R.id.title);

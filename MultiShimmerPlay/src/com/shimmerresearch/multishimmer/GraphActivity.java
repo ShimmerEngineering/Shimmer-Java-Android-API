@@ -27,7 +27,7 @@ import com.shimmerresearch.service.MultiShimmerPlayService.LocalBinder;
 public class GraphActivity extends Activity{
 	   boolean mServiceBind=false;
 	   MultiShimmerPlayService mService;
-	   int mEnabledSensors=0;
+	   long mEnabledSensors=0;
 	   String BluetoothAddress="";
 		private static GraphView mGraphDisplay;
 	   private static String mSensorView = ""; //The sensor device which should be viewed on the graph

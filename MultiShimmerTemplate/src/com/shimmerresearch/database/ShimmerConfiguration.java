@@ -3,7 +3,7 @@ package com.shimmerresearch.database;
 public class ShimmerConfiguration {
 
 	private double mSamplingRate;
-	private int mEnabledSensors;
+	private long mEnabledSensors;
 	private int mAccelRange;
 	private int mShimmerRowNumber;
 	private int mGSRRange;
@@ -20,7 +20,7 @@ public class ShimmerConfiguration {
 
 
 
-	public ShimmerConfiguration(String deviceName, String bluetoothAddress, int shimmerRowNumber, int enabledSensors, double samplingRate,  int accelRange, int gsrRange, int shimmerVersion, int lowPowerAccel, int lowPowerGyro, int lowPowerMag, int gyroRange, int magRange, int pressureResolution, int intExpPower){
+	public ShimmerConfiguration(String deviceName, String bluetoothAddress, int shimmerRowNumber, long enabledSensors, double samplingRate,  int accelRange, int gsrRange, int shimmerVersion, int lowPowerAccel, int lowPowerGyro, int lowPowerMag, int gyroRange, int magRange, int pressureResolution, int intExpPower){
 		mDeviceName = deviceName;
 		mBluetoothAddress = bluetoothAddress;
 		mSamplingRate = samplingRate;
@@ -54,11 +54,11 @@ public class ShimmerConfiguration {
 		this.mSamplingRate = samplingRate;
 	}
 
-	public int getEnabledSensors() {
+	public long getEnabledSensors() {
 		return mEnabledSensors;
 	}
 
-	public void setEnabledSensors(int enabledSensors) {
+	public void setEnabledSensors(long enabledSensors) {
 		this.mEnabledSensors = enabledSensors;
 	}
 

@@ -92,7 +92,7 @@ public class ShimmerTCPExampleActivity extends Activity {
             	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
             	    if (objectCluster.mMyName=="RightArm"){
             	    	Collection<FormatCluster> accelXFormats = null;
-            	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.SHIMMER_3){
+            	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.HW_ID_SHIMMER_3){
             	    		accelXFormats = objectCluster.mPropertyCluster.get("Accelerometer X");  // first retrieve all the possible formats for the current sensor device
             	    	} else {
             	    		accelXFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer X");  // first retrieve all the possible formats for the current sensor device
@@ -110,7 +110,7 @@ public class ShimmerTCPExampleActivity extends Activity {
 			 	    	}
 			 	    	Collection<FormatCluster> accelYFormats = null;
 			 	    	
-			 	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.SHIMMER_3){
+			 	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.HW_ID_SHIMMER_3){
 			 	    		accelYFormats = objectCluster.mPropertyCluster.get("Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
 			 	    	} else{
 			 	    		accelYFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
@@ -129,7 +129,7 @@ public class ShimmerTCPExampleActivity extends Activity {
             	    }
 		 	    	Collection<FormatCluster> accelZFormats = null;
 		 	    	
-		 	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.SHIMMER_3){
+		 	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.HW_ID_SHIMMER_3){
 		 	    		accelZFormats = objectCluster.mPropertyCluster.get("Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
 		 	    	} else{
 		 	    		accelZFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Z");  // first retrieve all the possible formats for the current sensor device

@@ -131,7 +131,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		mLowPowerAccel = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
 		mGyroRange = gyroRange;
-		mMagGain = magRange;
+		mMagRange = magRange;
 		mSetupEXG = true;
 		mEXG1Register = exg1;
 		mEXG2Register = exg2;
@@ -150,7 +150,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		mState = STATE_NONE;
 		mSamplingRate = samplingRate;
 		mAccelRange = accelRange;
-		mMagGain = magGain;
+		mMagRange = magGain;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mMyName = myName;

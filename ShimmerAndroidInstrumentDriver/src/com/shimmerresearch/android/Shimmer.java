@@ -257,7 +257,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 * @param setEnabledSensors Defines the sensors to be enabled (e.g. 'Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO' enables the Accelerometer and Gyroscope)
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
-	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
+	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, long setEnabledSensors, boolean continousSync) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
@@ -281,13 +281,13 @@ public class Shimmer extends ShimmerBluetooth{
 	 * @param setEnabledSensors Defines the sensors to be enabled (e.g. 'Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO' enables the Accelerometer and Gyroscope)
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
-	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
+	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, long setEnabledSensors, boolean continousSync, int magGain) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
 		mSamplingRate = samplingRate;
 		mAccelRange = accelRange;
-		mMagGain = magGain;
+		mMagRange = magGain;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mMyName = myName;
@@ -307,7 +307,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 * @param setEnabledSensors Defines the sensors to be enabled (e.g. 'Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO' enables the Accelerometer and Gyroscope)
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
-	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange) {
+	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, long setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
@@ -322,7 +322,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mLowPowerAccel = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
 		mGyroRange = gyroRange;
-		mMagGain = magRange;
+		mMagRange = magRange;
 	}
 
 
@@ -337,7 +337,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 * @param setEnabledSensors Defines the sensors to be enabled (e.g. 'Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO' enables the Accelerometer and Gyroscope)
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
-	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
+	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, long setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
@@ -352,7 +352,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mLowPowerAccel = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
 		mGyroRange = gyroRange;
-		mMagGain = magRange;
+		mMagRange = magRange;
 		mSetupEXG = true;
 		mEXG1Register = exg1;
 		mEXG2Register = exg2;

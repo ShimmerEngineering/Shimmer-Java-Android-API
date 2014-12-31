@@ -328,7 +328,7 @@ public class ShimmerService extends Service {
 	}
 	
 	
-	public void setEnabledSensors(int enabledSensors,String bluetoothAddress) {
+	public void setEnabledSensors(long enabledSensors,String bluetoothAddress) {
 		// TODO Auto-generated method stub
 		Collection<Object> colS=mMultiShimmer.values();
 		Iterator<Object> iterator = colS.iterator();
@@ -379,11 +379,11 @@ public class ShimmerService extends Service {
 
 	
 	
-	public int getEnabledSensors(String bluetoothAddress) {
+	public long getEnabledSensors(String bluetoothAddress) {
 		// TODO Auto-generated method stub
 		Collection<Object> colS=mMultiShimmer.values();
 		Iterator<Object> iterator = colS.iterator();
-		int enabledSensors=0;
+		long enabledSensors=0;
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getShimmerState()==Shimmer.STATE_CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
@@ -579,9 +579,9 @@ public class ShimmerService extends Service {
 				}
 	}
 
-	public int sensorConflictCheckandCorrection(String bluetoothAddress, int enabledSensors, int sensorToCheck) {
+	public long sensorConflictCheckandCorrection(String bluetoothAddress, long enabledSensors, int sensorToCheck) {
 		// TODO Auto-generated method stub
-		int newSensorBitmap = 0;
+		long newSensorBitmap = 0;
 		Collection<Object> colS=mMultiShimmer.values();
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {

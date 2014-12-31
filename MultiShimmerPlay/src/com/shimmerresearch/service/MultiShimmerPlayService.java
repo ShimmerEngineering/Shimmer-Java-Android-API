@@ -189,7 +189,7 @@ public class MultiShimmerPlayService extends Service {
 	            	   
 	            	   //first get the position
 	            	   int mPosition = Integer.parseInt(objectCluster.mMyName);
-	            	   int enabledSensors = getEnabledSensors(objectCluster.mBluetoothAddress);
+	            	   long enabledSensors = getEnabledSensors(objectCluster.mBluetoothAddress);
 	            	   //Multiset<String> listofKeys = objectCluster.mPropertyCluster.keys();
 	            	   if ((enabledSensors & Shimmer.SENSOR_GYRO) >0){
 	            	   Collection<FormatCluster> ofFormats = objectCluster.mPropertyCluster.get(mActivatedSensorNamesArray[mPosition][0]);  // first retrieve all the possible formats for the current sensor device
@@ -461,7 +461,7 @@ public class MultiShimmerPlayService extends Service {
 			if (stemp.getShimmerState()==Shimmer.STATE_CONNECTED){
 				stemp.startStreaming();
 				int mPosition = Integer.parseInt(stemp.getDeviceName());
-				int mEnabledSensors = stemp.getEnabledSensors();
+				long mEnabledSensors = stemp.getEnabledSensors();
 				if ((mEnabledSensors & Shimmer.SENSOR_ACCEL)!=0){
         			mActivatedSensorNamesArray[mPosition][0] = "Accelerometer X";
         			mActivatedSensorNamesArray[mPosition][1] = "Accelerometer Y";
@@ -591,11 +591,11 @@ public class MultiShimmerPlayService extends Service {
 		}
 	}
 	
-	public int getEnabledSensors(String bluetoothAddress) {
+	public long getEnabledSensors(String bluetoothAddress) {
 		// TODO Auto-generated method stub
 		Collection<Object> colS=mMultiShimmer.values();
 		Iterator<Object> iterator = colS.iterator();
-		int enabledSensors=0;
+		long enabledSensors=0;
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getShimmerState()==Shimmer.STATE_CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
@@ -712,7 +712,7 @@ public class MultiShimmerPlayService extends Service {
 					if (stemp.getShimmerState()==Shimmer.STATE_CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 						stemp.startStreaming();
 						int mPosition = Integer.parseInt(stemp.getDeviceName());
-						int mEnabledSensors = stemp.getEnabledSensors();
+						long mEnabledSensors = stemp.getEnabledSensors();
 						if ((mEnabledSensors & Shimmer.SENSOR_ACCEL)!=0){
 		        			mActivatedSensorNamesArray[mPosition][0] = "Accelerometer X";
 		        			mActivatedSensorNamesArray[mPosition][1] = "Accelerometer Y";

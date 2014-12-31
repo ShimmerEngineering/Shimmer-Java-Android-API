@@ -45,7 +45,6 @@ import java.util.List;
 
 import pl.flex_it.androidplot.XYSeriesShimmer;
 
-import com.androidplot.xy.LineAndPointFormatter;
 import com.example.shimmeradvancedexgexample.R;
 import com.google.common.collect.BiMap;
 import com.shimmerresearch.android.Shimmer;
@@ -115,7 +114,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 	// Name of the connected device
 	private static String mBluetoothAddress = null;
 	
-	int dialogEnabledSensors;
+	long dialogEnabledSensors;
 	Dialog mDialog, deviceInfoDialog;
 	
 	 @Override
@@ -316,16 +315,16 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 					Shimmer shimmerTemp = mService.getShimmer(mBluetoothAddress);
 					String shimmerVersion="";
 					switch(shimmerTemp.getShimmerVersion()){
-						case Shimmer.SHIMMER_2:
+						case Shimmer.HW_ID_SHIMMER_2:
 							shimmerVersion = "Shimmer 2";
 						break;
-						case Shimmer.SHIMMER_2R:
+						case Shimmer.HW_ID_SHIMMER_2R:
 							shimmerVersion = "Shimmer 2R";
 						break;
-						case Shimmer.SHIMMER_3:
+						case Shimmer.HW_ID_SHIMMER_3:
 							shimmerVersion = "Shimmer 3";
 						break;
-						case Shimmer.SHIMMER_SR30:
+						case Shimmer.HW_ID_SHIMMER_SR30:
 							shimmerVersion = "Shimmer SR30";
 						break;
 					};
@@ -512,7 +511,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 	 		chip2Item10.setText(""+exgChip2Array[9]);
 	 	}
 	 
-		public void showEnableSensors(final String[] sensorNames, int enabledSensors){
+		public void showEnableSensors(final String[] sensorNames, long enabledSensors){
 			dialogEnabledSensors=enabledSensors;
 			mDialog.setContentView(R.layout.dialog_enable_sensor_view);
 			TextView title = (TextView) mDialog.findViewById(android.R.id.title);
@@ -524,7 +523,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 			final BiMap<String,String> sensorBitmaptoName;
 			sensorBitmaptoName = Shimmer.generateBiMapSensorIDtoSensorName(mService.getShimmerVersion(mBluetoothAddress));
 			for (int i=0;i<sensorNames.length;i++){
-				if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.SHIMMER_3 && 
+				if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.HW_ID_SHIMMER_3 && 
 						(sensorNames[i].equals("ECG") || sensorNames[i].equals("EMG") || sensorNames[i].equals("Test Signal") ||
 						sensorNames[i].equals("ECG 16Bit") || sensorNames[i].equals("EMG 16Bit") || sensorNames[i].equals("Test Signal 16Bit"))){
 					
@@ -555,7 +554,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 				public void onItemClick(AdapterView<?> arg0, View arg1, int clickIndex,
 						long arg3) {
 									
-					if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.SHIMMER_3 && sensorNames[clickIndex].equals("ECG")){
+					if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.HW_ID_SHIMMER_3 && sensorNames[clickIndex].equals("ECG")){
 						int iDBMValue1 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1"));
 						int iDBMValue3 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2"));
 						if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_24BIT)>0 && (dialogEnabledSensors & Shimmer.SENSOR_EXG2_24BIT)>0)){
@@ -579,7 +578,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 						if(listView.isItemChecked(clickIndex))
 							mService.writeEXGSetting(mBluetoothAddress, 0);
 					} 
-					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.SHIMMER_3 && sensorNames[clickIndex].equals("ECG 16Bit")){
+					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.HW_ID_SHIMMER_3 && sensorNames[clickIndex].equals("ECG 16Bit")){
 							int iDBMValue1 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1 16Bit"));
 							int iDBMValue3 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2 16Bit"));
 							if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_16BIT)>0 && (dialogEnabledSensors & Shimmer.SENSOR_EXG2_16BIT)>0)){
@@ -603,7 +602,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 							if(listView.isItemChecked(clickIndex))
 								mService.writeEXGSetting(mBluetoothAddress, 0);
 					}
-					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.SHIMMER_3 && sensorNames[clickIndex].equals("EMG")){
+					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.HW_ID_SHIMMER_3 && sensorNames[clickIndex].equals("EMG")){
 						int iDBMValue1 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1"));
 						int iDBMValue3 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2"));
 						if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_24BIT)>0 && (dialogEnabledSensors & Shimmer.SENSOR_EXG2_24BIT)>0)){
@@ -627,7 +626,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 						if(listView.isItemChecked(clickIndex))
 							mService.writeEXGSetting(mBluetoothAddress, 1);
 					}
-					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.SHIMMER_3 && sensorNames[clickIndex].equals("EMG 16Bit")){
+					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.HW_ID_SHIMMER_3 && sensorNames[clickIndex].equals("EMG 16Bit")){
 						int iDBMValue1 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1 16Bit"));
 						int iDBMValue3 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2 16Bit"));
 						if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_16BIT)>0 && (dialogEnabledSensors & Shimmer.SENSOR_EXG2_16BIT)>0)){
@@ -651,7 +650,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 						if(listView.isItemChecked(clickIndex))
 							mService.writeEXGSetting(mBluetoothAddress, 1);
 					}
-					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.SHIMMER_3 && sensorNames[clickIndex].equals("Test Signal")){
+					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.HW_ID_SHIMMER_3 && sensorNames[clickIndex].equals("Test Signal")){
 						int iDBMValue1 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1"));
 						int iDBMValue3 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2"));
 						if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_24BIT)>0 && (dialogEnabledSensors & Shimmer.SENSOR_EXG2_24BIT)>0)){
@@ -675,7 +674,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 						if(listView.isItemChecked(clickIndex))
 						mService.writeEXGSetting(mBluetoothAddress, 2);
 					}
-					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.SHIMMER_3 && sensorNames[clickIndex].equals("Test Signal 16Bit")){
+					else if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.HW_ID_SHIMMER_3 && sensorNames[clickIndex].equals("Test Signal 16Bit")){
 						int iDBMValue1 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1 16Bit"));
 						int iDBMValue3 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2 16Bit"));
 						if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_16BIT)>0 && (dialogEnabledSensors & Shimmer.SENSOR_EXG2_16BIT)>0)){
@@ -705,7 +704,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress,dialogEnabledSensors,sensorIdentifier);
 						//update the checkbox accordingly
 						int end=0;
-						if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.SHIMMER_3)
+						if(mService.getShimmerVersion(mBluetoothAddress)==Shimmer.HW_ID_SHIMMER_3)
 							end=sensorNames.length-6;
 						else
 							end=sensorNames.length;

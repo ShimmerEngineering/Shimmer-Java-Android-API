@@ -390,10 +390,10 @@ public class PlotFragment extends Fragment {
 	    
 	  
 	    
-	    public int getNumberofChildren(int enabledSensors, String bluetoothAddress){
+	    public int getNumberofChildren(long enabledSensors, String bluetoothAddress){
 	    	int count=1; //timestamp
 	    	int shimmerVersion = mService.getShimmerVersion(bluetoothAddress);
-	    	if (shimmerVersion==Shimmer.SHIMMER_SR30 || shimmerVersion==Shimmer.SHIMMER_3){
+	    	if (shimmerVersion==Shimmer.HW_ID_SHIMMER_3 || shimmerVersion==Shimmer.HW_ID_SHIMMER_SR30){
 	    		if (((enabledSensors & 0xFF)& Shimmer.SENSOR_ACCEL) > 0){
 	 		    	count=count+3;
 	 		    }

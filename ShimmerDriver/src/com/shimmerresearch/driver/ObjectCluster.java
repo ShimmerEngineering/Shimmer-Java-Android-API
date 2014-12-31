@@ -1,4 +1,4 @@
-/*Rev 0.2
+/*Rev 0.3
  * 
  *  Copyright (c) 2010, Shimmer Research, Ltd.
  * All rights reserved
@@ -32,6 +32,9 @@
  * @author Jong Chern Lim
  * @date   October, 2013
  * 
+ * Changes since 0.2
+ * - SDLog support
+ * 
  * Changes since 0.1
  * - Added method to remove a format 
  * 
@@ -44,12 +47,22 @@ import java.util.Iterator;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-public class ObjectCluster {
+final public class ObjectCluster {
 	public Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
 	public String mMyName;
 	public String mBluetoothAddress;
 	public byte[] mRawData;
+	public double[] mUncalData;
+	public double[] mCalData;
+	public String[] mSensorNames;
+	public String[] mUnitCal;
+	public String[] mUnitUncal;
+	
 	public byte[] mSystemTimeStamp = new byte[8];
+	
+	public ObjectCluster(){
+	}
+	
 	public ObjectCluster(String myName){
 		mMyName = myName;
 	}

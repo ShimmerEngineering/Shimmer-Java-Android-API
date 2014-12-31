@@ -130,7 +130,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
     static Logging log = new Logging(mFileName,"\t"); //insert file name
     private static boolean mEnableLogging = false;
     Dialog mDialog;
-    int dialogEnabledSensors=0;
+    long dialogEnabledSensors=0;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1013,7 +1013,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
 	}
 	
 	
-	public void showEnableSensors(final String[] sensorNames, int enabledSensors){
+	public void showEnableSensors(final String[] sensorNames, long enabledSensors){
 		dialogEnabledSensors=enabledSensors;
 		mDialog.setContentView(R.layout.dialog_enable_sensor_view);
 		TextView title = (TextView) mDialog.findViewById(android.R.id.title);

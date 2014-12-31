@@ -64,7 +64,7 @@ public class ShimmerExampleActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mShimmerDevice1 = new Shimmer(this, mHandler,"RightArm", 51.2, 0, 0, Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO|Shimmer.SENSOR_MAG, false);
-        String bluetoothAddress="00:06:66:46:B8:9E";
+        String bluetoothAddress="00:06:66:66:96:86";
         
         mShimmerDevice1.connect(bluetoothAddress,"default"); 
         Log.d("ConnectionStatus","Trying"); 
