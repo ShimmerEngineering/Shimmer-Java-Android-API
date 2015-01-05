@@ -1,4 +1,4 @@
-20 October 2010 (Beta 2.7)
+20 October 2014 (Beta 2.7)
 - support for LogAndStream Firmware
 - support for Baud Rate modification
 - support for reading the expansion board
