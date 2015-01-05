@@ -1455,9 +1455,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							bufferLogCommandType =	readBytes(2);
 							System.out.println("Instrucction received (113 = STATUS_RESPONSE) = "+bufferLogCommandType[0]);
 							if(bufferLogCommandType[0]==DIR_RESPONSE){
-								mDirectoryNameLenght = bufferLogCommandType[1];
-								byte[] bufferDirectoryName = new byte[mDirectoryNameLenght];
-								bufferDirectoryName = readBytes(mDirectoryNameLenght);
+								mDirectoryNameLength = bufferLogCommandType[1];
+								byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
+								bufferDirectoryName = readBytes(mDirectoryNameLength);
 								String tempDirectory = new String(bufferDirectoryName);
 								mDirectoryName = tempDirectory;
 								System.out.println("Directory Name = "+ mDirectoryName);
@@ -1496,9 +1496,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							System.out.println("INS CMD RESP");
 							byte[] command = readBytes(2);
 							if(command[0]==DIR_RESPONSE){
-								mDirectoryNameLenght = command[1];
-								byte[] bufferDirectoryName = new byte[mDirectoryNameLenght];
-								bufferDirectoryName = readBytes(mDirectoryNameLenght);
+								mDirectoryNameLength = command[1];
+								byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
+								bufferDirectoryName = readBytes(mDirectoryNameLength);
 								String tempDirectory = new String(bufferDirectoryName);
 								mDirectoryName = tempDirectory;
 
@@ -1563,9 +1563,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									System.out.println("INS CMD RESP");
 									byte[] command = readBytes(2);
 									if(command[0]==DIR_RESPONSE){
-										mDirectoryNameLenght = command[1];
-										byte[] bufferDirectoryName = new byte[mDirectoryNameLenght];
-										bufferDirectoryName = readBytes(mDirectoryNameLenght);
+										mDirectoryNameLength = command[1];
+										byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
+										bufferDirectoryName = readBytes(mDirectoryNameLength);
 										String tempDirectory = new String(bufferDirectoryName);
 										mDirectoryName = tempDirectory;
 
@@ -1632,9 +1632,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 										inStream = true;
 										byte[] command = readBytes(2);
 										if(command[0]==DIR_RESPONSE){
-											mDirectoryNameLenght = command[1];
-											byte[] bufferDirectoryName = new byte[mDirectoryNameLenght];
-											bufferDirectoryName = readBytes(mDirectoryNameLenght);
+											mDirectoryNameLength = command[1];
+											byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
+											bufferDirectoryName = readBytes(mDirectoryNameLength);
 											String tempDirectory = new String(bufferDirectoryName);
 											mDirectoryName = tempDirectory;
 
@@ -1714,9 +1714,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									System.out.println("INS CMD RESP");
 									byte[] command = readBytes(2);
 									if(command[0]==DIR_RESPONSE){
-										mDirectoryNameLenght = command[1];
-										byte[] bufferDirectoryName = new byte[mDirectoryNameLenght];
-										bufferDirectoryName = readBytes(mDirectoryNameLenght);
+										mDirectoryNameLength = command[1];
+										byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
+										bufferDirectoryName = readBytes(mDirectoryNameLength);
 										String tempDirectory = new String(bufferDirectoryName);
 										mDirectoryName = tempDirectory;
 
@@ -1766,9 +1766,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									System.out.println("INS CMD RESP");
 									byte[] command = readBytes(2);
 									if(command[0]==DIR_RESPONSE){
-										mDirectoryNameLenght = command[1];
-										byte[] bufferDirectoryName = new byte[mDirectoryNameLenght];
-										bufferDirectoryName = readBytes(mDirectoryNameLenght);
+										mDirectoryNameLength = command[1];
+										byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
+										bufferDirectoryName = readBytes(mDirectoryNameLength);
 										String tempDirectory = new String(bufferDirectoryName);
 										mDirectoryName = tempDirectory;
 

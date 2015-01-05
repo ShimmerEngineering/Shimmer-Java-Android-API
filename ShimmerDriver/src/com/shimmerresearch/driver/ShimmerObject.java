@@ -495,7 +495,9 @@ public abstract class ShimmerObject {
 	protected boolean mConfigFileCreationFlag = false;
 	protected List<String> syncNodesList = new ArrayList<String>();
 	
-	protected byte[] mShimmerInfoMemBytes = new byte[512];
+//	protected byte[] mShimmerInfoMemBytes = new byte[512];
+	protected byte[] mShimmerInfoMemBytes = createEmptyInfoMemByteArray(512);
+	
 
 
 	//
@@ -675,13 +677,13 @@ public abstract class ShimmerObject {
 	protected int mLeadOffDetectionCurrent;
 	protected int mLeadOffComparatorTreshold;	
 	
-	protected int mBluetoothBaudRate=-1;
+	protected int mBluetoothBaudRate=0;
 	protected byte[] mExpBoardArray; // Array where the expansion board response is stored
 	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
 	
 	//This features are only used in LogAndStream FW 
 	protected String mDirectoryName;
-	protected int mDirectoryNameLenght;
+	protected int mDirectoryNameLength;
 	protected boolean mSensingStatus;
 	protected boolean mDockedStatus;
 	private List<String[]> mExtraSignalProperties = null;
@@ -5128,8 +5130,8 @@ public abstract class ShimmerObject {
 	//TODO set all defaults
 	protected void setDefaultShimmerConfiguration() {
 		if (mHardwareVersion != -1){
-			mShimmerUserAssignedName = "WhoDaMan";//"ShimmerA";
-			mExperimentName = "Trial";
+			mShimmerUserAssignedName = "ShimmerA";
+			mExperimentName = "Trial001";
 			mSamplingRate = 51.20;
 			
 			mExperimentNumberOfShimmers = 1;
@@ -5222,7 +5224,11 @@ public abstract class ShimmerObject {
 			mEXG2CH2GainSetting = (mEXG2Register[iM.idxEXGADS1292RCH2Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
 			mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
 			
-			mBluetoothBaudRate =  infoMemContents[iM.idxBtCommBaudRate] & iM.maskBaudRate;
+			mBluetoothBaudRate = infoMemContents[iM.idxBtCommBaudRate] & iM.maskBaudRate;
+			
+			//TODO: hack below -> fix
+			if(mBluetoothBaudRate == -1)
+				mBluetoothBaudRate = 0; 
 			
 			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 			// Analog Accel Calibration Parameters
@@ -5436,6 +5442,7 @@ public abstract class ShimmerObject {
 				// InfoMem C - End
 				
 				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
+				syncNodesList.clear();
 				for (int i = 0; i < 21; i++) {
 					System.arraycopy(infoMemContents, iM.idxNode0 + (i*iM.lengthMacIdBytes), macIdBytes, 0 , iM.lengthMacIdBytes);
 					if(Arrays.equals(macIdBytes, new byte[]{-1,-1,-1,-1,-1,-1})) {
@@ -5468,19 +5475,22 @@ public abstract class ShimmerObject {
 		byte[] infoMemBackup = mShimmerInfoMemBytes.clone();
 		
 		if((mFirmwareIndentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIndentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
-			mShimmerInfoMemBytes = new byte[384];
+//			mShimmerInfoMemBytes = new byte[384];
+			mShimmerInfoMemBytes = createEmptyInfoMemByteArray(384);
 		}
 		else if(mFirmwareIndentifier == FW_ID_SHIMMER3_BTSTREAM) {
-			mShimmerInfoMemBytes = new byte[128];
+//			mShimmerInfoMemBytes = new byte[128];
+			mShimmerInfoMemBytes = createEmptyInfoMemByteArray(128);
 		}
 		else {
-			mShimmerInfoMemBytes = new byte[512]; 
+//			mShimmerInfoMemBytes = new byte[512]; 
+			mShimmerInfoMemBytes = createEmptyInfoMemByteArray(512);
 		}
 		
-		// InfoMem defaults to 0xFF on firmware flash
-		for(int i =0; i < mShimmerInfoMemBytes.length; i++) {
-			mShimmerInfoMemBytes[i] = (byte) 0xFF;
-		}
+//		// InfoMem defaults to 0xFF on firmware flash
+//		for(int i =0; i < mShimmerInfoMemBytes.length; i++) {
+//			mShimmerInfoMemBytes[i] = (byte) 0xFF;
+//		}
 		
 		// If not being generated from scratch then copy across exisiting InfoMem contents
 		if(!generateForWritingToShimmer) {
@@ -5730,6 +5740,13 @@ public abstract class ShimmerObject {
 
 
 
+	public byte[] createEmptyInfoMemByteArray(int size) {
+		byte[] newArray = new byte[size];
+		for(byte b:newArray) {
+			b = (byte)0xFF;
+		}
+		return newArray;
+	}
 
 	public static boolean isAsciiPrintable(char ch) {
 	      return ch >= 32 && ch < 127;
