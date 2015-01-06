@@ -5,7 +5,7 @@ public class ChannelDetails {
 	/**
 	 * Indicates if sensors channel is enabled.
 	 */
-	public boolean mIslEnabled = false;
+	public boolean mIsEnabled = false;
 	/**
 	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
 	 */
@@ -17,10 +17,14 @@ public class ChannelDetails {
 	public String mLabel = "";
 
 	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
-		mIslEnabled = isChannelEnabled;
+		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mLabel = label;
+	}
+	
+	public void setEnabledState(boolean state) {
+		mIsEnabled = state;
 	}
 
 }
