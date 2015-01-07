@@ -5838,7 +5838,9 @@ public abstract class ShimmerObject {
 	public void createMapOfChannels() {
 		//TODO: move bitshift values and masks to dedicated classes for infomem, btstream sensor enable and SD file header mapping (for version control)
 		
-		mShimmerSensorsMap.clear();
+//		mShimmerSensorsMap.clear();
+		mShimmerSensorsMap = new TreeMap<Integer,ChannelDetails>();
+
 		if (mHardwareVersion != -1){
 			if (mHardwareVersion == HW_ID_SHIMMER_2R){
 				mShimmerSensorsMap.put(SENSOR_ACCEL, new ChannelDetails(false, 0x80, 0, "Accelerometer"));
