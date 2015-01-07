@@ -124,7 +124,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 		mLowPowerMag = enableLowPowerMag;
-		mLowPowerAccel = enableLowPowerAccel;
+		mLowPowerAccelWR = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
 		mGyroRange = gyroRange;
 		mMagRange = magRange;

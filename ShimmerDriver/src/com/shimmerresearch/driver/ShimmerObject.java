@@ -502,8 +502,8 @@ public abstract class ShimmerObject implements Serializable {
 
 	protected int mPacketSize=0; 													// Default 2 bytes for time stamp and 6 bytes for accelerometer 
 	protected int mAccelRange=0;													// This stores the current accelerometer range being used. The accelerometer range is stored during two instances, once an ack packet is received after a writeAccelRange(), and after a response packet has been received after readAccelRange()  	
-	protected boolean mLSM303DigitalAccelLPM = false; //TODO: add comment and set from BT command
-	protected boolean mLSM303DigitalAccelHRM = false; //TODO: add comment and set from BT command
+//	protected boolean mLowPowerAccelWR = false; //TODO: add comment and set from BT command
+	protected boolean mHighRateAccelWR = false; //TODO: add comment and set from BT command
 	protected int mLSM303MagRate=4;												// This stores the current Mag Sampling rate, it is a value between 0 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz
 	protected int mLSM303DigitalAccelRate=0;
 	protected int mMPU9150GyroAccelRate=0;
@@ -688,8 +688,9 @@ public abstract class ShimmerObject implements Serializable {
 	protected double MD = 2868;
 
 	protected boolean mLowPowerMag = false;
-	protected boolean mLowPowerAccel = false;
+	protected boolean mLowPowerAccelWR = false;
 	protected boolean mLowPowerGyro = false;
+	
 	protected long mPacketLossCount=0;
 	protected double mPacketReceptionRate=100;
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
@@ -3907,7 +3908,7 @@ public abstract class ShimmerObject implements Serializable {
 			mInquiryResponseBytes = new byte[8+mNChannels];
 			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
 			if ((mLSM303DigitalAccelRate==2 && mSamplingRate>10)){
-				mLowPowerAccel = true;
+				mLowPowerAccelWR = true;
 			}
 			if ((mMPU9150GyroAccelRate==0xFF && mSamplingRate>10)){
 				mLowPowerGyro = true;
@@ -5066,8 +5067,14 @@ public abstract class ShimmerObject implements Serializable {
 	
 	
 	public void exgBytesReadFrom(int mTempChipID, byte[] bufferAns) {
+		// MN hack to overcome possible backward compatability issues
+		int index = 1;
+		if(bufferAns.length == 10) {
+			index = 0;
+		}
+		
 		if (mTempChipID==1){
-			System.arraycopy(bufferAns, 0, mEXG1Register, 0, 10);
+			System.arraycopy(bufferAns, index, mEXG1Register, 0, 10);
 //			System.arraycopy(bufferAns, 1, mEXG1Register, 0, 10);// MN removed
 			// retrieve the gain and rate from the the registers
 			mEXG1RateSetting = mEXG1Register[0] & 7;
@@ -5083,7 +5090,7 @@ public abstract class ShimmerObject implements Serializable {
 			mLeadOffDetectionCurrent = (mEXG1Register[2] >> 2) & 3;
 			mLeadOffComparatorTreshold = (mEXG1Register[2] >> 5) & 7;
 		} else if (mTempChipID==2){
-			System.arraycopy(bufferAns, 0, mEXG2Register, 0, 10);
+			System.arraycopy(bufferAns, index, mEXG2Register, 0, 10);
 			//System.arraycopy(bufferAns, 1, mEXG2Register, 0, 10); // MN removed
 			mEXG2RateSetting = mEXG2Register[0] & 7;
 			mEXG2CH1GainSetting = (mEXG2Register[3] >> 4) & 7;
@@ -5124,7 +5131,204 @@ public abstract class ShimmerObject implements Serializable {
 //	}
 	
 	
+	/**
+	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
+	 * @return true if 16 bit ECG is set
+	 */
+	public boolean isEXGUsingECG16Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+			if(isEXGUsingDefaultECGConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
+	 * @return true if 24 bit ECG is set
+	 */
+	public boolean isEXGUsingECG24Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+			if(isEXGUsingDefaultECGConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 16 bit EMG configuration is set on the Shimmer device.  Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received. 
+	 * @return true if 16 bit EMG is set
+	 */
+	public boolean isEXGUsingEMG16Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+			if(isEXGUsingDefaultEMGConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 24 bit EMG configuration is set on the Shimmer device.  Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
+	 * @return true if 24 bit EMG is set
+	 */
+	public boolean isEXGUsingEMG24Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+			if(isEXGUsingDefaultEMGConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 16 bit test signal configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
+	 * @return true if 24 bit test signal is set
+	 */
+	public boolean isEXGUsingTestSignal16Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+			if(isEXGUsingDefaultTestSignalConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 24 bit test signal configuration is set on the Shimmer device.
+	 * @return true if 24 bit test signal is set
+	 */
+	public boolean isEXGUsingTestSignal24Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+			if(isEXGUsingDefaultTestSignalConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}	
+	
+	
 	//region --------- ENABLE/DISABLE FUNCTIONS --------- 
+	/**** ENABLE FUNCTIONS *****/
+	
+	/**
+	 * This enables the calculation of 3D orientation through the use of the gradient descent algorithm, note that the user will have to ensure that mEnableCalibration has been set to true (see enableCalibration), and that the accel, gyro and mag has been enabled
+	 * @param enable
+	 */
+	public void set3DOrientation(boolean enable){
+		//enable the sensors if they have not been enabled 
+		mOrientationEnabled = enable;
+	}	
+	
+	/**
+	 * This enables the low power accel option. When not enabled the sampling rate of the accel is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz. Also and additional low power mode is used for the LSM303DLHC. This command will only supports the following Accel range +4g, +8g , +16g 
+	 * @param enable
+	 */
+	public void setLowPowerAccelWR(boolean enable){
+		mLowPowerAccelWR = enable;
+		if (!mLowPowerAccelWR){
+			if (mSamplingRate<=1){
+				mLSM303DigitalAccelRate = 1;
+			} else if (mSamplingRate<=10){
+				mLSM303DigitalAccelRate = 2;
+			} else if (mSamplingRate<=25){
+				mLSM303DigitalAccelRate = 3;
+			} else if (mSamplingRate<=50){
+				mLSM303DigitalAccelRate = 4;
+			} else if (mSamplingRate<=100){
+				mLSM303DigitalAccelRate = 5;
+			} else if (mSamplingRate<=200){
+				mLSM303DigitalAccelRate = 6;
+			} else {
+				mLSM303DigitalAccelRate = 7;
+			}
+		}
+		else {
+			mLSM303DigitalAccelRate = 2;
+		}
+	}
+
+	/**
+	 * This enables the low power accel option. When not enabled the sampling rate of the accel is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz. Also and additional low power mode is used for the LSM303DLHC. This command will only supports the following Accel range +4g, +8g , +16g 
+	 * @param enable
+	 */
+	public void setLowPowerGyro(boolean enable){
+		mLowPowerGyro = enable;
+		if (!mLowPowerGyro){
+			if (mSamplingRate<=51.28) {
+				mMPU9150GyroAccelRate = 0x9B;
+			} else if (mSamplingRate<=102.56) {
+				mMPU9150GyroAccelRate = 0x4D;
+			} else if (mSamplingRate<=129.03) {
+				mMPU9150GyroAccelRate = 0x3D;
+			} else if (mSamplingRate<=173.91) {
+				mMPU9150GyroAccelRate = 0x2D;
+			} else if (mSamplingRate<=205.13) {
+				mMPU9150GyroAccelRate = 0x26;
+			} else if (mSamplingRate<=258.06) {
+				mMPU9150GyroAccelRate = 0x1E;
+			} else if (mSamplingRate<=533.33) {
+				mMPU9150GyroAccelRate = 0x0E;
+			} else {
+				mMPU9150GyroAccelRate = 6;
+			}
+		}
+		else {
+			mMPU9150GyroAccelRate = 0xFF;
+		}
+	}
+	
+	/**
+	 * This enables the low power mag option. When not enabled the sampling rate of the mag is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz
+	 * @param enable
+	 */
+	public void setLowPowerMag(boolean enable){
+		mLowPowerMag = enable;
+		if (mShimmerVersion!=HW_ID_SHIMMER_3){
+			if (!mLowPowerMag){
+				if (mSamplingRate>=50){
+					mLSM303MagRate = 6;
+				} else if (mSamplingRate>=20) {
+					mLSM303MagRate = 5;
+				} else if (mSamplingRate>=10) {
+					mLSM303MagRate = 4;
+				} else {
+					mLSM303MagRate = 3;
+				}
+			} else {
+				mLSM303MagRate = 4;
+			}
+		} else {
+			if (!mLowPowerMag){
+				if (mSamplingRate<=1){
+					mLSM303MagRate = 1;
+				} else if (mSamplingRate<=15) {
+					mLSM303MagRate = 4;
+				} else if (mSamplingRate<=30) {
+					mLSM303MagRate = 5;
+				} else if (mSamplingRate<=75) {
+					mLSM303MagRate = 6;
+				} else {
+					mLSM303MagRate = 7;
+				}
+			} else {
+				if (mSamplingRate>=10){
+					mLSM303MagRate = 4;
+				} else {
+					mLSM303MagRate = 1;
+				}
+			}
+		}
+	}
+	
 	/**
 	 *This can only be used for Shimmer3 devices (EXG) 
 	 *When a enable configuration is load, the advanced exg configuration is removed, so it needs to be set again
@@ -5260,16 +5464,16 @@ public abstract class ShimmerObject implements Serializable {
 			mLSM303DigitalAccelRate = (infoMemContents[iM.idxConfigSetupByte0] >> iM.bitShiftLSM303DLHCAccelSamplingRate) & iM.maskLSM303DLHCAccelSamplingRate; 
 			mAccelRange = (infoMemContents[iM.idxConfigSetupByte0] >> iM.bitShiftLSM303DLHCAccelRange) & iM.maskLSM303DLHCAccelRange;
 			if(((infoMemContents[iM.idxConfigSetupByte0] >> iM.bitShiftLSM303DLHCAccelLPM) & iM.maskLSM303DLHCAccelLPM) == iM.maskLSM303DLHCAccelLPM) {
-				mLSM303DigitalAccelLPM = true;
+				mLowPowerAccelWR = true;
 			}
 			else {
-				mLSM303DigitalAccelLPM = false;
+				mLowPowerAccelWR = false;
 			}
 			if(((infoMemContents[iM.idxConfigSetupByte0] >> iM.bitShiftLSM303DLHCAccelHRM) & iM.maskLSM303DLHCAccelHRM) == iM.maskLSM303DLHCAccelHRM) {
-				mLSM303DigitalAccelHRM = true;
+				mHighRateAccelWR = true;
 			}
 			else {
-				mLSM303DigitalAccelHRM = false;
+				mHighRateAccelWR = false;
 			}
 			mMPU9150GyroAccelRate = (infoMemContents[iM.idxConfigSetupByte1] >> iM.bitShiftMPU9150AccelGyroSamplingRate) & iM.maskMPU9150AccelGyroSamplingRate;
 			
@@ -5301,8 +5505,11 @@ public abstract class ShimmerObject implements Serializable {
 			mBluetoothBaudRate = infoMemContents[iM.idxBtCommBaudRate] & iM.maskBaudRate;
 			
 			//TODO: hack below -> fix
-			if(mBluetoothBaudRate == -1)
+			if(!(mBluetoothBaudRate>=0 && mBluetoothBaudRate<=10)){
 				mBluetoothBaudRate = 0; 
+			}
+//			if(mBluetoothBaudRate == -1)
+//				mBluetoothBaudRate = 0; 
 			
 			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 			// Analog Accel Calibration Parameters
@@ -5595,10 +5802,10 @@ public abstract class ShimmerObject implements Serializable {
 		// Configuration
 		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & 0xF) << 4);
 		mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (byte) ((mAccelRange & 0x03) << 2);
-		if(mLSM303DigitalAccelLPM) {
+		if(mLowPowerAccelWR) {
 			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= 0x02;
 		}
-		if(mLSM303DigitalAccelHRM) {
+		if(mHighRateAccelWR) {
 			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= 0x01;
 		}
 
@@ -6054,14 +6261,14 @@ public abstract class ShimmerObject implements Serializable {
 	 * @return the mLSM303DigitalAccelLPM
 	 */
 	public boolean isLSM303DigitalAccelLPM() {
-		return mLSM303DigitalAccelLPM;
+		return mLowPowerAccelWR;
 	}
 
 	/**
 	 * @return the mLSM303DigitalAccelHRM
 	 */
 	public boolean isLSM303DigitalAccelHRM() {
-		return mLSM303DigitalAccelHRM;
+		return mHighRateAccelWR;
 	}
 
 	/**

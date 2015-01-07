@@ -2527,7 +2527,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 					}
 				}
 
-				if (!mLowPowerAccel){
+				if (!mLowPowerAccelWR){
 					if (rate<=1){
 						writeAccelSamplingRate(1);
 					} else if (rate<=10){
@@ -2902,6 +2902,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	public void writeBaudRate(int value) {
 		if (mFirmwareVersionCode>=5){ 
 			if(value>=0 && value<=10){
+				mBluetoothBaudRate = value;
 				mListofInstructions.add(new byte[]{SET_BAUD_RATE_COMMAND, (byte)value});
 				try {
 					Thread.sleep(200);
@@ -3001,7 +3002,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	
 	public int getLowPowerAccelEnabled(){
 		// TODO Auto-generated method stub
-		if ( mLowPowerAccel)
+		if (mLowPowerAccelWR)
 			return 1;
 		else
 			return 0;
@@ -3009,7 +3010,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 	public int getLowPowerGyroEnabled() {
 		// TODO Auto-generated method stub
-		if ( mLowPowerGyro)
+		if (mLowPowerGyro)
 			return 1;
 		else
 			return 0;
@@ -3017,7 +3018,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 	public int getLowPowerMagEnabled() {
 		// TODO Auto-generated method stub
-		if ( mLowPowerMag)
+		if (mLowPowerMag)
 			return 1;
 		else
 			return 0;
@@ -3299,7 +3300,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	
 	public boolean isLowPowerAccelEnabled() {
 		// TODO Auto-generated method stub
-		return mLowPowerAccel;
+		return mLowPowerAccelWR;
 	}
 
 	public boolean isLowPowerGyroEnabled() {
@@ -3335,96 +3336,67 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		return mDefaultCalibrationParametersEMG;
 	}
 	
+
+	
+	
 	/**
 	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
 	 * @return true if 16 bit ECG is set
 	 */
+	@Override
 	public boolean isEXGUsingECG16Configuration(){
-		boolean using = false;
 		while(!mListofInstructions.isEmpty());
-		
-			if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
-				if(isEXGUsingDefaultECGConfiguration()){
-					using = true;
-				}
-			}
-		 
-		return using;
+		return super.isEXGUsingECG16Configuration();
 	}
 	
 	/**
 	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
 	 * @return true if 24 bit ECG is set
 	 */
+	@Override
 	public boolean isEXGUsingECG24Configuration(){
-		boolean using = false;
 		while(!mListofInstructions.isEmpty());
-		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
-			if(isEXGUsingDefaultECGConfiguration()){
-				using = true;
-			}
-		}
-		return using;
+		return super.isEXGUsingECG24Configuration();
 	}
 	
 	/**
 	 * Checks if 16 bit EMG configuration is set on the Shimmer device.  Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received. 
 	 * @return true if 16 bit EMG is set
 	 */
+	@Override
 	public boolean isEXGUsingEMG16Configuration(){
-		boolean using = false;
 		while(!mListofInstructions.isEmpty());
-		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
-			if(isEXGUsingDefaultEMGConfiguration()){
-				using = true;
-			}
-		}
-		return using;
+		return super.isEXGUsingEMG16Configuration();
 	}
 	
 	/**
 	 * Checks if 24 bit EMG configuration is set on the Shimmer device.  Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
 	 * @return true if 24 bit EMG is set
 	 */
+	@Override
 	public boolean isEXGUsingEMG24Configuration(){
-		boolean using = false;
 		while(!mListofInstructions.isEmpty());
-		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
-			if(isEXGUsingDefaultEMGConfiguration()){
-				using = true;
-			}
-		}
-		return using;
+		return super.isEXGUsingEMG24Configuration();
 	}
 	
 	/**
 	 * Checks if 16 bit test signal configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
 	 * @return true if 24 bit test signal is set
 	 */
+	@Override
 	public boolean isEXGUsingTestSignal16Configuration(){
-		boolean using = false;
 		while(!mListofInstructions.isEmpty());
-		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
-			if(isEXGUsingDefaultTestSignalConfiguration()){
-				using = true;
-			}
-		}
-		return using;
+		return super.isEXGUsingTestSignal16Configuration();
 	}
 	
 	/**
 	 * Checks if 24 bit test signal configuration is set on the Shimmer device.
 	 * @return true if 24 bit test signal is set
 	 */
+	@Override
 	public boolean isEXGUsingTestSignal24Configuration(){
-		boolean using = false;
 		while(!mListofInstructions.isEmpty());
-		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
-			if(isEXGUsingDefaultTestSignalConfiguration()){
-				using = true;
-			}
-		}
-		return using;
+		return super.isEXGUsingTestSignal24Configuration();
 	}
 	
     //endregion
@@ -3434,6 +3406,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 	/**** ENABLE FUNCTIONS *****/
 	
+	//TODO: use set3DOrientation(enable) in ShimmerObject instead -> check that the "enable the sensors if they have not been enabled" comment is correct
 	/**
 	 * This enables the calculation of 3D orientation through the use of the gradient descent algorithm, note that the user will have to ensure that mEnableCalibration has been set to true (see enableCalibration), and that the accel, gyro and mag has been enabled
 	 * @param enable
@@ -3448,29 +3421,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param enable
 	 */
 	public void enableLowPowerAccel(boolean enable){
-		mLowPowerAccel = enable;
-		if (!mLowPowerAccel){
-			enableLowResolutionMode(false);
-			if (mSamplingRate<=1){
-				writeAccelSamplingRate(1);
-			} else if (mSamplingRate<=10){
-				writeAccelSamplingRate(2);
-			} else if (mSamplingRate<=25){
-				writeAccelSamplingRate(3);
-			} else if (mSamplingRate<=50){
-				writeAccelSamplingRate(4);
-			} else if (mSamplingRate<=100){
-				writeAccelSamplingRate(5);
-			} else if (mSamplingRate<=200){
-				writeAccelSamplingRate(6);
-			} else {
-				writeAccelSamplingRate(7);
-			}
-		}
-		else {
-			enableLowResolutionMode(true);
-			writeAccelSamplingRate(2);
-		}
+		setLowPowerAccelWR(enable);
+		enableLowResolutionMode(enable);
+		writeAccelSamplingRate(mLSM303DigitalAccelRate);
 	}
 
 	/**
@@ -3478,29 +3431,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param enable
 	 */
 	public void enableLowPowerGyro(boolean enable){
-		mLowPowerGyro = enable;
-		if (!mLowPowerGyro){
-			if (mSamplingRate<=51.28) {
-				writeGyroSamplingRate(0x9B);
-			} else if (mSamplingRate<=102.56) {
-				writeGyroSamplingRate(0x4D);
-			} else if (mSamplingRate<=129.03) {
-				writeGyroSamplingRate(0x3D);
-			} else if (mSamplingRate<=173.91) {
-				writeGyroSamplingRate(0x2D);
-			} else if (mSamplingRate<=205.13) {
-				writeGyroSamplingRate(0x26);
-			} else if (mSamplingRate<=258.06) {
-				writeGyroSamplingRate(0x1E);
-			} else if (mSamplingRate<=533.33) {
-				writeGyroSamplingRate(0xE);
-			} else {
-				writeGyroSamplingRate(6);
-			}
-		}
-		else {
-			writeGyroSamplingRate(0xFF);
-		}
+		setLowPowerGyro(enable);
+		writeGyroSamplingRate(mMPU9150GyroAccelRate);
 	}
 	
 	private void enableLowResolutionMode(boolean enable){
@@ -3515,9 +3447,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			} else {
 				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, (byte)0x01});
 				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, (byte)0x00});
-
 			}
-
 		}
 	}
 	
@@ -3526,42 +3456,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param enable
 	 */
 	public void enableLowPowerMag(boolean enable){
-		mLowPowerMag = enable;
-		if (mShimmerVersion!=HW_ID_SHIMMER_3){
-			if (!mLowPowerMag){
-				if (mSamplingRate>=50){
-					writeMagSamplingRate(6);
-				} else if (mSamplingRate>=20) {
-					writeMagSamplingRate(5);
-				} else if (mSamplingRate>=10) {
-					writeMagSamplingRate(4);
-				} else {
-					writeMagSamplingRate(3);
-				}
-			} else {
-				writeMagSamplingRate(4);
-			}
-		} else {
-			if (!mLowPowerMag){
-				if (mSamplingRate<=1){
-					writeMagSamplingRate(1);
-				} else if (mSamplingRate<=15) {
-					writeMagSamplingRate(4);
-				} else if (mSamplingRate<=30) {
-					writeMagSamplingRate(5);
-				} else if (mSamplingRate<=75) {
-					writeMagSamplingRate(6);
-				} else {
-					writeMagSamplingRate(7);
-				}
-			} else {
-				if (mSamplingRate>=10){
-					writeMagSamplingRate(4);
-				} else {
-					writeMagSamplingRate(1);
-				}
-			}
-		}
+		setLowPowerMag(enable);
+		writeMagSamplingRate(mLSM303MagRate);
 	}
 	
 	/**
@@ -3573,22 +3469,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			setDefaultECGConfiguration();
 			writeEXGConfiguration(mEXG1Register,1);
 			writeEXGConfiguration(mEXG2Register,2);
-			 
-//			byte[] reg1 = {2,(byte) 160,16,64,64,45,0,0,2,3};
-//			byte[] reg2 = {2,(byte) 160,16,64,71,0,0,0,2,1};
-//			if (mShimmerSamplingRate<=128){
-//				reg1[0]=0;
-//				reg2[0]=0;
-//			} else if (mShimmerSamplingRate<=256){
-//				reg1[0]=1;
-//				reg2[0]=1;
-//			}
-//			else if (mShimmerSamplingRate<=512){
-//				reg1[0]=2;
-//				reg2[0]=2;
-//			}
-//			writeEXGConfiguration(reg1,1);
-//			writeEXGConfiguration(reg2,2);
 		 }
 	}
 
@@ -3601,24 +3481,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			setDefaultEMGConfiguration();
 			writeEXGConfiguration(mEXG1Register,1);
 			writeEXGConfiguration(mEXG2Register,2);
-			
-//			byte[] reg1 = {2,(byte) 160,16,105,96,32,0,0,2,3};
-//			byte[] reg2 = {2,(byte) 160,16,(byte)129,(byte)129,0,0,0,2,1};
-//			if (mShimmerSamplingRate<=128){
-//				reg1[0]=0;
-//				reg2[0]=0;
-//			} else if (mShimmerSamplingRate<=256){
-//				reg1[0]=1;
-//				reg2[0]=1;
-//			}
-//			else if (mShimmerSamplingRate<=512){
-//				reg1[0]=2;
-//				reg2[0]=2;
-//			}
-//			writeEXGConfiguration(reg1,1);
-//			writeEXGConfiguration(reg2,2);
 		}
-		
 	}
 
 	/**
@@ -3629,22 +3492,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			setEXGTestSignal();
 			writeEXGConfiguration(mEXG1Register,1);
 			writeEXGConfiguration(mEXG2Register,2);
-			
-//			byte[] reg1 = {2,(byte) 163,16,5,5,0,0,0,2,1};
-//			byte[] reg2 = {2,(byte) 163,16,5,5,0,0,0,2,1};
-//			if (mShimmerSamplingRate<=128){
-//				reg1[0]=0;
-//				reg2[0]=0;
-//			} else if (mShimmerSamplingRate<=256){
-//				reg1[0]=1;
-//				reg2[0]=1;
-//			}
-//			else if (mShimmerSamplingRate<=512){
-//				reg1[0]=2;
-//				reg2[0]=2;
-//			}
-//			writeEXGConfiguration(reg1,1);
-//			writeEXGConfiguration(reg2,2);
 		}
 		
 	}

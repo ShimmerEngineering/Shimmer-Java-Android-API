@@ -124,10 +124,10 @@ public class Shimmer3Configuration {
 		public static final String INT_EXP_A12_GUI = "Int A12";
 		public static final String INT_EXP_A13_GUI = "Int A13";
 		public static final String INT_EXP_A14_GUI = "Int A14";
-		public static final String BRIDGE_AMPLIFIER_GUI = "Bridge amplifier";
+		public static final String BRIDGE_AMPLIFIER_GUI = "Bridge Amplifier";
 		public static final String GSR_GUI = "GSR";
 		public static final String INT_EXP_A1_GUI = "Int A1";
-		public static final String RESISTANCE_AMP_GUI = "Resistance amplifier";
+		public static final String RESISTANCE_AMP_GUI = "Resistance Amplifier";
 		public static final String GYRO_GUI = "Gyro";
 		public static final String ACCEL_WR_GUI = "Wide Range Accel";
 		public static final String MAG_GUI = "Mag";
