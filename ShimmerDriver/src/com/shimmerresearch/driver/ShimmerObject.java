@@ -87,6 +87,7 @@ package com.shimmerresearch.driver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -114,8 +115,13 @@ import com.shimmerresearch.driver.ChannelDetails;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 import com.sun.org.apache.bcel.internal.generic.ISUB;
 
-public abstract class ShimmerObject {
+public abstract class ShimmerObject implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1364568867018921219L;
+	
 	public static final String ACCEL_CAL_UNIT = "m/s^2";
 	public static final String ACCEL_DEFAULT_CAL_UNIT = "m/s^2";
 	public static final String ADC_CAL_UNIT = "mV";
@@ -183,7 +189,7 @@ public abstract class ShimmerObject {
 	public static final int SENSOR_EXG2_16BIT			   = 0x080000; //only applicable for Shimmer3
 	public BiMap<String, String> mSensorBitmaptoName;  
 	
-	public class SDLogHeader{
+	public class SDLogHeader {
 		public final static int ACCEL_LN = 1<<7;
 		public final static int GYRO = 1<<6;
 		public final static int MAG = 1<<5;
@@ -221,7 +227,7 @@ public abstract class ShimmerObject {
 		public final static long MAG_MPU_MPL = (long)1<<37;
 		public final static long SD_SENSOR_MPL_QUAT_6DOF_RAW = (long)1<<36;
 	}
-	public class BTStream{
+	public class BTStream {
 		public final static int ACCEL_LN = 0x80; 
 		public final static int GYRO = 0x40;
 		public final static int MAG = 0x20;
@@ -5227,6 +5233,7 @@ public abstract class ShimmerObject {
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
 //			mShimmerInfoMemBytes = infoMemByteArrayGenerate();
+//			mShimmerInfoMemBytes = new byte[infoMemContents.length];
 			mShimmerInfoMemBytes = infoMemContents;
 		}
 		else {
@@ -5942,7 +5949,7 @@ public abstract class ShimmerObject {
 	 /**
 	 * @return the mConfigTime
 	 */
-	public long getmConfigTime() {
+	public long getConfigTime() {
 		return mConfigTime;
 	}
 

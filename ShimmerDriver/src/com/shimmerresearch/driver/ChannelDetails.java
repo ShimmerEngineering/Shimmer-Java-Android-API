@@ -1,7 +1,14 @@
 package com.shimmerresearch.driver;
 
-public class ChannelDetails {
+import java.io.Serializable;
 
+public class ChannelDetails implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4567211941610864326L;
+	
 	/**
 	 * Indicates if sensors channel is enabled.
 	 */
