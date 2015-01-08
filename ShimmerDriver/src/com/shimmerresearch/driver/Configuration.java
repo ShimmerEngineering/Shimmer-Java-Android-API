@@ -139,7 +139,7 @@ public class Configuration {
 		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
 		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
 		
-		public final static String[] ListofLSM303DLHCAccelSamplingRates={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1.62kHz","1.344kHz/5.376kHz"};
+		public final static String[] ListofLSM303DLHCAccelSamplingRates={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz"};//,"1.62kHz","1.344kHz/5.376kHz"};
 		public final static String[] ListofLSM303DLHCMagSamplingRates={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
 		public final static String[] ListofMPU9150MplSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
 		public final static String[] ListofMPU9150MagSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};

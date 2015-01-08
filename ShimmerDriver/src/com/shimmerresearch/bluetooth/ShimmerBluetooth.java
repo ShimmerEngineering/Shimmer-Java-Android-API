@@ -30,7 +30,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @author Jong Chern Lim, Ruaidhri Molloy
+ * @author Jong Chern Lim, Ruaidhri Molloy, Mark Nolan
  * @date  September, 2014
  * 
  * Changes since 1.8
@@ -2491,100 +2491,119 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 */
 	public void writeSamplingRate(double rate) {
 		if (mInitialized=true) {
-
+			setShimmerSamplingRate(rate);
 			if (mShimmerVersion==HW_ID_SHIMMER_2 || mShimmerVersion==HW_ID_SHIMMER_2R){
-				if (!mLowPowerMag){
-					if (rate<=10) {
-						writeMagSamplingRate(4);
-					} else if (rate<=20) {
-						writeMagSamplingRate(5);
-					} else {
-						writeMagSamplingRate(6);
-					}
-				} else {
-					writeMagSamplingRate(4);
-				}
-				rate=1024/rate; //the equivalent hex setting
-				mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(rate), 0x00});
-			} else if (mShimmerVersion==HW_ID_SHIMMER_3) {
-				if (!mLowPowerMag){
-					if (rate<=1) {
-						writeMagSamplingRate(1);
-					} else if (rate<=15) {
-						writeMagSamplingRate(4);
-					} else if (rate<=30){
-						writeMagSamplingRate(5);
-					} else if (rate<=75){
-						writeMagSamplingRate(6);
-					} else {
-						writeMagSamplingRate(7);
-					}
-				} else {
-					if (rate >=10){
-						writeMagSamplingRate(4);
-					} else {
-						writeMagSamplingRate(1);
-					}
-				}
 
-				if (!mLowPowerAccelWR){
-					if (rate<=1){
-						writeAccelSamplingRate(1);
-					} else if (rate<=10){
-						writeAccelSamplingRate(2);
-					} else if (rate<=25){
-						writeAccelSamplingRate(3);
-					} else if (rate<=50){
-						writeAccelSamplingRate(4);
-					} else if (rate<=100){
-						writeAccelSamplingRate(5);
-					} else if (rate<=200){
-						writeAccelSamplingRate(6);
-					} else {
-						writeAccelSamplingRate(7);
-					}
-				}
-				else {
-					if (rate>=10){
-						writeAccelSamplingRate(2);
-					} else {
-						writeAccelSamplingRate(1);
-					}
-				}
-
-				if (!mLowPowerGyro){
-					if (rate<=51.28){
-						writeGyroSamplingRate(0x9B);
-					} else if (rate<=102.56){
-						writeGyroSamplingRate(0x4D);
-					} else if (rate<=129.03){
-						writeGyroSamplingRate(0x3D);
-					} else if (rate<=173.91){
-						writeGyroSamplingRate(0x2D);
-					} else if (rate<=205.13){
-						writeGyroSamplingRate(0x26);
-					} else if (rate<=258.06){
-						writeGyroSamplingRate(0x1E);
-					} else if (rate<=533.33){
-						writeGyroSamplingRate(0xE);
-					} else {
-						writeGyroSamplingRate(6);
-					}
-				}
-				else {
-					writeGyroSamplingRate(0xFF);
-				}
-
+				writeMagSamplingRate(mShimmer2MagRate);
 				
-
-				int samplingByteValue = (int) (32768/rate);
+				int samplingByteValue = (int) (1024/mSamplingRate); //the equivalent hex setting
+				mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(samplingByteValue), 0x00});
+			} else if (mShimmerVersion==HW_ID_SHIMMER_3) {
+	
+				writeMagSamplingRate(mLSM303MagRate);
+				writeAccelSamplingRate(mLSM303DigitalAccelRate);
+				writeGyroSamplingRate(mMPU9150GyroAccelRate);
+				
+				int samplingByteValue = (int) (32768/mSamplingRate);
 				mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
-
-
-
-
 			}
 		}
+		
+//		if (mInitialized=true) {
+//
+//			if (mShimmerVersion==HW_ID_SHIMMER_2 || mShimmerVersion==HW_ID_SHIMMER_2R){
+//				if (!mLowPowerMag){
+//					if (rate<=10) {
+//						writeMagSamplingRate(4);
+//					} else if (rate<=20) {
+//						writeMagSamplingRate(5);
+//					} else {
+//						writeMagSamplingRate(6);
+//					}
+//				} else {
+//					writeMagSamplingRate(4);
+//				}
+//				rate=1024/rate; //the equivalent hex setting
+//				mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(rate), 0x00});
+//			} else if (mShimmerVersion==HW_ID_SHIMMER_3) {
+//				if (!mLowPowerMag){
+//					if (rate<=1) {
+//						writeMagSamplingRate(1);
+//					} else if (rate<=15) {
+//						writeMagSamplingRate(4);
+//					} else if (rate<=30){
+//						writeMagSamplingRate(5);
+//					} else if (rate<=75){
+//						writeMagSamplingRate(6);
+//					} else {
+//						writeMagSamplingRate(7);
+//					}
+//				} else {
+//					if (rate >=10){
+//						writeMagSamplingRate(4);
+//					} else {
+//						writeMagSamplingRate(1);
+//					}
+//				}
+//
+//				if (!mLowPowerAccelWR){
+//					if (rate<=1){
+//						writeAccelSamplingRate(1);
+//					} else if (rate<=10){
+//						writeAccelSamplingRate(2);
+//					} else if (rate<=25){
+//						writeAccelSamplingRate(3);
+//					} else if (rate<=50){
+//						writeAccelSamplingRate(4);
+//					} else if (rate<=100){
+//						writeAccelSamplingRate(5);
+//					} else if (rate<=200){
+//						writeAccelSamplingRate(6);
+//					} else {
+//						writeAccelSamplingRate(7);
+//					}
+//				}
+//				else {
+//					if (rate>=10){
+//						writeAccelSamplingRate(2);
+//					} else {
+//						writeAccelSamplingRate(1);
+//					}
+//				}
+//
+//				if (!mLowPowerGyro){
+//					if (rate<=51.28){
+//						writeGyroSamplingRate(0x9B);
+//					} else if (rate<=102.56){
+//						writeGyroSamplingRate(0x4D);
+//					} else if (rate<=129.03){
+//						writeGyroSamplingRate(0x3D);
+//					} else if (rate<=173.91){
+//						writeGyroSamplingRate(0x2D);
+//					} else if (rate<=205.13){
+//						writeGyroSamplingRate(0x26);
+//					} else if (rate<=258.06){
+//						writeGyroSamplingRate(0x1E);
+//					} else if (rate<=533.33){
+//						writeGyroSamplingRate(0xE);
+//					} else {
+//						writeGyroSamplingRate(6);
+//					}
+//				}
+//				else {
+//					writeGyroSamplingRate(0xFF);
+//				}
+//
+//				
+//
+//				int samplingByteValue = (int) (32768/rate);
+//				mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
+//
+//
+//
+//
+//			}
+//		}
 	}
 	
 	/**
@@ -3421,11 +3440,45 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param enable
 	 */
 	public void enableLowPowerAccel(boolean enable){
-		setLowPowerAccelWR(enable);
-		enableLowResolutionMode(enable);
+		enableHighResolutionMode(!enable);
 		writeAccelSamplingRate(mLSM303DigitalAccelRate);
 	}
 
+	private void enableHighResolutionMode(boolean enable) {
+		while(getInstructionStatus()==false) {};
+		
+		if (mFirmwareVersionCode==1 && mFirmwareVersionRelease==0) {
+
+		} else if (mShimmerVersion == HW_ID_SHIMMER_3) {
+			setLowPowerAccelWR(!enable);
+//			setHighResAccelWR(enable);
+			if (enable) {
+				// High-Res = On, Low-power = Off
+				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, (byte)0x01});
+				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, (byte)0x00});
+			} else {
+				// High-Res = Off, Low-power = On
+				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, (byte)0x00});
+				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, (byte)0x01});
+			}
+		}
+	}
+	
+//	private void enableLowResolutionMode(boolean enable){
+//		while(getInstructionStatus()==false) {};
+//		if (mFirmwareVersionCode==1 && mFirmwareVersionRelease==0) {
+//
+//		} else if (mShimmerVersion == HW_ID_SHIMMER_3) {
+//			if (enable) {
+//				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, (byte)0x01});
+//				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, (byte)0x00});
+//			} else {
+//				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, (byte)0x01});
+//				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, (byte)0x00});
+//			}
+//		}
+//	}
+	
 	/**
 	 * This enables the low power accel option. When not enabled the sampling rate of the accel is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz. Also and additional low power mode is used for the LSM303DLHC. This command will only supports the following Accel range +4g, +8g , +16g 
 	 * @param enable
@@ -3433,22 +3486,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	public void enableLowPowerGyro(boolean enable){
 		setLowPowerGyro(enable);
 		writeGyroSamplingRate(mMPU9150GyroAccelRate);
-	}
-	
-	private void enableLowResolutionMode(boolean enable){
-		while(getInstructionStatus()==false) {};
-		if (mFirmwareVersionCode==1 && mFirmwareVersionRelease==0){
-
-		} else if (mShimmerVersion == HW_ID_SHIMMER_3){
-			if (enable){
-				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, (byte)0x01});
-				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, (byte)0x00});
-
-			} else {
-				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, (byte)0x01});
-				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, (byte)0x00});
-			}
-		}
 	}
 	
 	/**
@@ -3460,6 +3497,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		writeMagSamplingRate(mLSM303MagRate);
 	}
 	
+
 	/**
 	 *This can only be used for Shimmer3 devices (EXG) 
 	 *When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
@@ -3493,9 +3531,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			writeEXGConfiguration(mEXG1Register,1);
 			writeEXGConfiguration(mEXG2Register,2);
 		}
-		
 	}
-
 	
 	/**** DISABLE FUNCTIONS *****/
 	
