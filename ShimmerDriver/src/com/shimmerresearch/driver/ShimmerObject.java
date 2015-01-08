@@ -5099,9 +5099,9 @@ public abstract class ShimmerObject implements Serializable {
 //			mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(rate), 0x00});
 			
 		} else if (mShimmerVersion==HW_ID_SHIMMER_3) {
-			calculateLSM303MagRate();
-			calculateLSM303AccelRate();
-			calculateMPU9150GyroAccelRate();
+			setLSM303MagRateFromFreq(mSamplingRate);
+			setLSM303AccelRateFromFreq(mSamplingRate);
+			setMPU9150GyroAccelRateFromFreq(mSamplingRate);
 
 //			int samplingByteValue = (int) (32768/rate);
 //			mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
@@ -5109,9 +5109,9 @@ public abstract class ShimmerObject implements Serializable {
 		}
 	}
 	
-	private int calculateLSM303AccelRate() {
+	private int setLSM303AccelRateFromFreq(double freq) {
+		// Unused: 8 = 1.620kHz (only low-power mode), 9 = 1.344kHz (normal-mode) / 5.376kHz (low-power mode) 
 		if (!mLowPowerAccelWR){
-			// Unused: 8 = 1.620kHz (only low-power mode), 9 = 1.344kHz (normal-mode) / 5.376kHz (low-power mode) 
 			if (mSamplingRate<=1){
 				mLSM303DigitalAccelRate = 1; // 1Hz
 			} else if (mSamplingRate<=10){
@@ -5124,8 +5124,10 @@ public abstract class ShimmerObject implements Serializable {
 				mLSM303DigitalAccelRate = 5; // 100Hz
 			} else if (mSamplingRate<=200){
 				mLSM303DigitalAccelRate = 6; // 200Hz
-			} else {
+			} else if (mSamplingRate<=400){
 				mLSM303DigitalAccelRate = 7; // 400Hz
+			} else {
+				mLSM303DigitalAccelRate = 9; // 1344Hz
 			}
 		}
 		else {
@@ -5138,11 +5140,16 @@ public abstract class ShimmerObject implements Serializable {
 		return mLSM303DigitalAccelRate;
 	}
 	
-	private int calculateLSM303MagRate() {
+	private int setLSM303MagRateFromFreq(double freq) {
 		if (!mLowPowerMag){
-			// Unused: 0 = 0.75Hz, 2 = 3Hz, 3 = 7.5Hz
-			if (mSamplingRate<=1){
+			if (mSamplingRate<=0.75){
+				mLSM303MagRate = 0; // 0.75Hz
+			} else if (mSamplingRate<=1){
 				mLSM303MagRate = 1; // 1.5Hz
+			} else if (mSamplingRate<=3) {
+				mLSM303MagRate = 2; // 3Hz
+			} else if (mSamplingRate<=7.5) {
+				mLSM303MagRate = 3; // 7.5Hz
 			} else if (mSamplingRate<=15) {
 				mLSM303MagRate = 4; // 15Hz
 			} else if (mSamplingRate<=30) {
@@ -5158,29 +5165,45 @@ public abstract class ShimmerObject implements Serializable {
 			} else {
 				mLSM303MagRate = 1; // 1.5Hz
 			}
-		}
+		}		
 		return mLSM303MagRate;
 	}
 	
-	private int calculateMPU9150GyroAccelRate() {
+	public int setMPU9150GyroAccelRateFromFreq(double freq) {
 		if (!mLowPowerGyro){
-			if (mSamplingRate<=51.28) {
-				mMPU9150GyroAccelRate = 0x9B; // Dec. = 155, Freq. = 51.28Hz 
-			} else if (mSamplingRate<=102.56) {
-				mMPU9150GyroAccelRate = 0x4D; // Dec. = 77, Freq. = 102.56Hz
-			} else if (mSamplingRate<=129.03) {
-				mMPU9150GyroAccelRate = 0x3D; // Dec. = 61, Freq. = 129.03Hz
-			} else if (mSamplingRate<=173.91) {
-				mMPU9150GyroAccelRate = 0x2D; // Dec. = 45, Freq. = 173.91Hz
-			} else if (mSamplingRate<=205.13) {
-				mMPU9150GyroAccelRate = 0x26; // Dec. = 38, Freq. = 205.13Hz
-			} else if (mSamplingRate<=258.06) {
-				mMPU9150GyroAccelRate = 0x1E; // Dec. = 30, Freq. = 258.06Hz
-			} else if (mSamplingRate<=533.33) {
-				mMPU9150GyroAccelRate = 0x0E; // Dec. = 14, Freq. = 533.33Hz
-			} else {
-				mMPU9150GyroAccelRate = 0x06; // Dec. = 6, Freq. = 1142.86Hz
+			// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
+			double numerator = 1000;
+			if(mMPU9150LPF == 0) {
+				numerator = 8000;
 			}
+
+			if(freq<4) {
+				freq = 4;
+			}
+			else if(freq>numerator) {
+				freq = numerator;
+			}
+			int result = (int) (numerator / freq);
+			if(result>255) result = 255;
+			mMPU9150GyroAccelRate = result;
+
+//			if (mSamplingRate<=51.28) {
+//				mMPU9150GyroAccelRate = 0x9B; // Dec. = 155, Freq. = 51.28Hz 
+//			} else if (mSamplingRate<=102.56) {
+//				mMPU9150GyroAccelRate = 0x4D; // Dec. = 77, Freq. = 102.56Hz
+//			} else if (mSamplingRate<=129.03) {
+//				mMPU9150GyroAccelRate = 0x3D; // Dec. = 61, Freq. = 129.03Hz
+//			} else if (mSamplingRate<=173.91) {
+//				mMPU9150GyroAccelRate = 0x2D; // Dec. = 45, Freq. = 173.91Hz
+//			} else if (mSamplingRate<=205.13) {
+//				mMPU9150GyroAccelRate = 0x26; // Dec. = 38, Freq. = 205.13Hz
+//			} else if (mSamplingRate<=258.06) {
+//				mMPU9150GyroAccelRate = 0x1E; // Dec. = 30, Freq. = 258.06Hz
+//			} else if (mSamplingRate<=533.33) {
+//				mMPU9150GyroAccelRate = 0x0E; // Dec. = 14, Freq. = 533.33Hz
+//			} else {
+//				mMPU9150GyroAccelRate = 0x06; // Dec. = 6, Freq. = 1142.86Hz
+//			}
 		}
 		else {
 			mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz
@@ -5199,7 +5222,8 @@ public abstract class ShimmerObject implements Serializable {
 	}
 
 	public boolean isLowPowerMag() {
-		if((mLSM303MagRate == 4)||(mLSM303MagRate == 1)) {
+		if(mLSM303MagRate <= 4) {
+//		if((mLSM303MagRate == 4)||(mLSM303MagRate == 1)) {
 			mLowPowerMag = true;
 		}
 		else {
@@ -5379,7 +5403,7 @@ public abstract class ShimmerObject implements Serializable {
 		mLowPowerAccelWR = enable;
 		mHighResAccelWR = !enable;
 
-		calculateLSM303AccelRate();
+		setLSM303AccelRateFromFreq(mSamplingRate);
 	}
 	
 	
@@ -5389,7 +5413,7 @@ public abstract class ShimmerObject implements Serializable {
 	 */
 	protected void setLowPowerGyro(boolean enable){
 		mLowPowerGyro = enable;
-		calculateMPU9150GyroAccelRate();
+		setMPU9150GyroAccelRateFromFreq(mSamplingRate);
 	}
 	
 	/**
@@ -5413,7 +5437,7 @@ public abstract class ShimmerObject implements Serializable {
 				mShimmer2MagRate = 4;
 			}
 		} else {
-			calculateLSM303MagRate();
+			setLSM303MagRateFromFreq(mSamplingRate);
 		}
 	}
 	

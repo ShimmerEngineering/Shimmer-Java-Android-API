@@ -47,7 +47,9 @@
 
 package com.shimmerresearch.driver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Configuration {
@@ -138,8 +140,31 @@ public class Configuration {
 
 		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
 		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
+
+//		public class rateOrRangeOptions {
+//			int value = 0;
+//			String text = "";
+//			public rateOrRangeOptions(int myValue, String myString) {
+//				value = myValue;
+//				text = myString;
+//			}
+//		}
+//		
+//		public final static List<rateOrRangeOptions> ListofLSM303DLHCAccelSamplingRates= new ArrayList<rateOrRangeOptions>(
+//				new rateOrRangeOptions(0, "Power-down"),
+//				new rateOrRangeOptions(0, "1Hz"),
+//				new rateOrRangeOptions(0, "10Hz"),
+//				new rateOrRangeOptions(0, "25Hz"),
+//				new rateOrRangeOptions(0, "50Hz"),
+//				new rateOrRangeOptions(0, "100Hz"),
+//				new rateOrRangeOptions(0, "200Hz"),
+//				new rateOrRangeOptions(0, "400Hz"),
+//				new rateOrRangeOptions(0, "NA"),
+//				new rateOrRangeOptions(0, "1344Hz"));
 		
-		public final static String[] ListofLSM303DLHCAccelSamplingRates={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz"};//,"1.62kHz","1.344kHz/5.376kHz"};
+//		public final static String[] ListofLSM303DLHCAccelSamplingRates={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1344Hz"};//,"1620Hz","1344Hz/5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
+		public final static String[] ListofLSM303DLHCAccelSamplingRates={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","NA","1344Hz"};
+		public final static String[] ListofLSM303DLHCAccelSamplingRatesLPM={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
 		public final static String[] ListofLSM303DLHCMagSamplingRates={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
 		public final static String[] ListofMPU9150MplSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
 		public final static String[] ListofMPU9150MagSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
