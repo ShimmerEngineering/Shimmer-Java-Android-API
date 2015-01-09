@@ -295,6 +295,8 @@ public abstract class ShimmerObject implements Serializable {
 	
 	protected TreeMap<Integer,ChannelDetails> mShimmerSensorsMap = new TreeMap<Integer,ChannelDetails>();
 
+	//TODO: move sensor map keys to Configuration.Shimmer3
+	//TODO: create sensor map keys for Shimmer2 in Configuration.Shimmer2
 	/**
 	 * Shimmer3 Low-noise analog accelerometer
 	 */
@@ -359,7 +361,7 @@ public abstract class ShimmerObject implements Serializable {
 	public final static int SENSORMAP_KEY_SHIMMER3_EXG_TEST = 102;
 	public final static int SENSORMAP_KEY_SHIMMER3_ALL_ADC = 103;
 
-
+	
 	//Constants describing the packet type
 	public static final byte DATA_PACKET                      		= (byte) 0x00;
 	public static final byte INQUIRY_COMMAND                  		= (byte) 0x01;
@@ -5520,7 +5522,7 @@ public abstract class ShimmerObject implements Serializable {
 	//TODO set all defaults
 	protected void setDefaultShimmerConfiguration() {
 		if (mShimmerVersion != -1){
-			mShimmerUserAssignedName = "ShimmerA";
+			mShimmerUserAssignedName = "Default";
 			mExperimentName = "Trial001";
 			mSamplingRate = 51.20;
 			
@@ -6266,8 +6268,412 @@ public abstract class ShimmerObject implements Serializable {
 //				mShimmerSensorsMap.put(SENSOR_SHIMMER3_ALL_ADC, new ChannelDetails(false, shimmer3AllAdc, shimmer3AllAdc, Shimmer3Configuration.ADC_ALL)); // SENSOR_ALL_ADC_SHIMMER3
 
 			}
-		}		
+		}
 	}
+	
+	public boolean setSensorEnabledState(int key, boolean state) {
+		if(mShimmerSensorsMap!=null) {
+			mShimmerSensorsMap.get(key).mIsEnabled = state;
+			sensorMapConflictCheckandCorrection(key);
+		}
+		else {
+			return false;
+		}
+		
+		if(mShimmerSensorsMap.get(key).mIsEnabled == state) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * @param key This takes in a single sensor map key to check for conflicts and correct
+	 * @return enabledSensors This returns the new set of enabled sensors, where any sensors which conflicts with sensorToCheck is disabled on the bitmap, so sensorToCheck can be accomodated (e.g. for Shimmer2 using ECG will disable EMG,GSR,..basically any daughter board)
+	 * @return boolean 
+	 *  
+	 */
+	public void sensorMapConflictCheckandCorrection(int key){
+
+		if (mShimmerVersion==HW_ID_SHIMMER_2R || mShimmerVersion==HW_ID_SHIMMER_2){
+			if ((key==SENSOR_GYRO) || (key==SENSOR_MAG)){
+				mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled = false;
+			} else if (key==SENSOR_BRIDGE_AMP) {
+				mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled = false;
+			} else if (key==SENSOR_GSR) {
+				mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled = false;
+			} else if (key==SENSOR_ECG) {
+				mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled = false;
+			} else if (key==SENSOR_EMG) {
+				mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled = false;
+			} else if (key==SENSOR_HEART) {
+				mShimmerSensorsMap.get(SENSOR_EXP_BOARD_A0).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_EXP_BOARD_A7).mIsEnabled = false;
+			} else if ((key==SENSOR_EXP_BOARD_A0) || (key==SENSOR_EXP_BOARD_A7)){
+				mShimmerSensorsMap.get(SENSOR_HEART).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_BATT).mIsEnabled = false;
+			} else if (key==SENSOR_BATT) {
+				mShimmerSensorsMap.get(SENSOR_EXP_BOARD_A0).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSOR_EXP_BOARD_A7).mIsEnabled = false;
+			}
+		}
+
+		else if(mShimmerVersion==HW_ID_SHIMMER_3){
+			if (key==SENSORMAP_KEY_SHIMMER3_GSR){
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A1).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled = false;
+			} 
+			else if ((key==SENSORMAP_KEY_SHIMMER3_EXG1_16BIT) || (key==SENSORMAP_KEY_SHIMMER3_EXG2_16BIT)){
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A1).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A12).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A13).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled = false;
+			}
+			else if ((key==SENSORMAP_KEY_SHIMMER3_EXG1_24BIT) || (key==SENSORMAP_KEY_SHIMMER3_EXG2_24BIT)){
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A1).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A12).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A13).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled = false;
+			}
+			else if (key==SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP){
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A12).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A13).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled = false;
+			}
+			else if (key==SENSORMAP_KEY_SHIMMER3_INT_ADC_A1){
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled = false;
+			}
+			else if (key==SENSORMAP_KEY_SHIMMER3_INT_ADC_A12){
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled = false;
+			}
+			else if (key==SENSORMAP_KEY_SHIMMER3_INT_ADC_A13){
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled = false;
+			}
+			else if (key==SENSORMAP_KEY_SHIMMER3_INT_ADC_A14){
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled = false;
+				mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled = false;
+			}
+		}
+	}
+
+	public boolean sensorMapConflictCheck(){
+		boolean pass=true;
+		if (mShimmerVersion != HW_ID_SHIMMER_3){
+//			if (mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled == true){
+//					pass=false;
+//				}
+//			}
+//
+//			if (mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled == true){
+//					pass=false;
+//				}
+//			}
+//
+//			if (mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled == true){
+//					pass=false;
+//				}
+//			}
+//
+//			if (mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled == true){
+//					pass=false;
+//				}
+//			}
+//
+//			if (mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled == true){
+//					pass=false;
+//				}
+//			}
+//
+//			if (mShimmerSensorsMap.get(SENSOR_BRIDGE_AMP).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_GYRO).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_MAG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_EMG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_ECG).mIsEnabled == true){
+//					pass=false;
+//				} else if (mShimmerSensorsMap.get(SENSOR_GSR).mIsEnabled == true){
+//					pass=false;
+//				} else if (get5VReg()==1){ // if the 5volt reg is set 
+//					pass=false;
+//				}
+//			}
+//
+//			if (mShimmerSensorsMap.get(SENSOR_EXP_BOARD_A0).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_BATT).mIsEnabled == true){
+//					pass=false;
+//				} else if (getPMux()==1){
+//					writePMux(0);
+//				}
+//			}
+//
+//			if (mShimmerSensorsMap.get(SENSOR_EXP_BOARD_A7).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_BATT).mIsEnabled == true){
+//					pass=false;
+//				}else if (getPMux()==1){
+//					writePMux(0);
+//				}
+//			}
+//
+//			if (mShimmerSensorsMap.get(SENSOR_BATT).mIsEnabled == true){
+//				if (mShimmerSensorsMap.get(SENSOR_EXP_BOARD_A7).mIsEnabled == true){
+//					pass=false;
+//				} 
+//				if (mShimmerSensorsMap.get(SENSOR_EXP_BOARD_A0).mIsEnabled == true){
+//					pass=false;
+//				}
+//				if (mShimmerSensorsMap.get(SENSOR_BATT).mIsEnabled == true){
+//					if (getPMux()==0){
+//						writePMux(1);
+//					}
+//				}
+//			}
+//			if (!pass){
+//				
+//			}
+		}
+		
+		else{ // Shimmer3
+			if((mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled == true) 
+					|| (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled == true)){
+				if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A1).mIsEnabled == true){
+					pass=false; 
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A12).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A13).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled == true){
+					pass=false;
+				}
+			}
+			
+			if((mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled == true) 
+					|| (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled == true)){
+				if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A1).mIsEnabled == true){
+					pass=false; 
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A12).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A13).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled == true){
+					pass=false;
+				}
+			}
+			
+			if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled == true){
+				if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A1).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled == true){
+					pass=false;
+				}
+			}
+			
+			if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled == true){
+				if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A12).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A13).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled == true){
+					pass=false;		
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled == true){
+					pass=false;
+				}
+			}
+
+			if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A1).mIsEnabled == true){
+				if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled == true){
+					pass=false;
+				}
+			}
+			
+			if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A12).mIsEnabled == true){
+				if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled == true){
+					pass=false;
+				}
+			}
+			
+			if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A13).mIsEnabled == true){
+				if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled == true){
+					pass=false;
+				}
+			}
+			
+			if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_INT_ADC_A14).mIsEnabled == true){
+				if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_GSR).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_16BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG1_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_EXG2_24BIT).mIsEnabled == true){
+					pass=false;
+				} else if (mShimmerSensorsMap.get(SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP).mIsEnabled == true){
+					pass=false;
+				}
+			}
+		}
+		
+		return pass;
+	}
+
+	
 	
 	 /**
 	 * @return the mConfigTime

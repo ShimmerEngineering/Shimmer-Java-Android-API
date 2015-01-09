@@ -3623,6 +3623,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		else if(mShimmerVersion==HW_ID_SHIMMER_3){
 			
 			if((sensorToCheck & SENSOR_GSR) >0){
+				enabledSensors = disableBit(enabledSensors,SENSOR_INT_ADC_A1);
 				enabledSensors = disableBit(enabledSensors,SENSOR_INT_ADC_A14);
 				enabledSensors = disableBit(enabledSensors,SENSOR_EXG1_16BIT);
 				enabledSensors = disableBit(enabledSensors,SENSOR_EXG2_16BIT);
@@ -3654,6 +3655,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 				enabledSensors = disableBit(enabledSensors,SENSOR_INT_ADC_A12);
 				enabledSensors = disableBit(enabledSensors,SENSOR_INT_ADC_A13);
 				enabledSensors = disableBit(enabledSensors,SENSOR_INT_ADC_A14);
+				enabledSensors = disableBit(enabledSensors,SENSOR_GSR);
+				enabledSensors = disableBit(enabledSensors,SENSOR_EXG1_16BIT);
+				enabledSensors = disableBit(enabledSensors,SENSOR_EXG2_16BIT);
+				enabledSensors = disableBit(enabledSensors,SENSOR_EXG1_24BIT);
+				enabledSensors = disableBit(enabledSensors,SENSOR_EXG2_24BIT);
+			}
+			else if ((sensorToCheck & SENSOR_INT_ADC_A14) >0){
 				enabledSensors = disableBit(enabledSensors,SENSOR_GSR);
 				enabledSensors = disableBit(enabledSensors,SENSOR_EXG1_16BIT);
 				enabledSensors = disableBit(enabledSensors,SENSOR_EXG2_16BIT);
@@ -3832,9 +3840,33 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 				}
 			}
 			
+			if(((enabledSensors & 0xFF) & SENSOR_EXG1_24BIT) > 0 || ((enabledSensors & 0xFF) & SENSOR_EXG2_24BIT) > 0){
+				
+				if (((enabledSensors & 0xFF00) & SENSOR_INT_ADC_A1) > 0){
+					pass=false; 
+				} else if (((enabledSensors & 0xFF00) & SENSOR_INT_ADC_A12) > 0){
+					pass=false;
+				} else if (((enabledSensors & 0xFF00) & SENSOR_INT_ADC_A13) > 0){
+					pass=false;
+				} else if (((enabledSensors & 0xFF0000) & SENSOR_INT_ADC_A14) > 0){
+					pass=false;
+				} else if(((enabledSensors & 0xFF) & SENSOR_GSR) > 0){
+					pass=false;
+				} else if (((enabledSensors & 0xFF) & SENSOR_EXG1_16BIT) > 0){
+					pass=false;
+				} else if (((enabledSensors & 0xFF) & SENSOR_EXG2_16BIT) > 0){
+					pass=false;
+				} else if (((enabledSensors & 0xFF00) & SENSOR_BRIDGE_AMP) > 0){
+					pass=false;
+				}
+			}
+
+			
 			if(((enabledSensors & 0xFF) & SENSOR_GSR) > 0){
 				
-				if (((enabledSensors & 0xFF0000) & SENSOR_INT_ADC_A14) > 0){
+				if (((enabledSensors & 0xFF0000) & SENSOR_INT_ADC_A1) > 0){
+					pass=false;
+				} else if (((enabledSensors & 0xFF0000) & SENSOR_INT_ADC_A14) > 0){
 					pass=false;
 				} else if (((enabledSensors & 0xFF0000) & SENSOR_EXG1_16BIT) > 0){
 					pass=false;
@@ -3868,6 +3900,21 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 				} else if (((enabledSensors & 0xFF) & SENSOR_EXG2_24BIT) > 0){
 					pass=false;
 				}
+			}
+			
+			if (((enabledSensors & 0xFF00) & SENSOR_INT_ADC_A1) > 0){
+				  
+				 if(((enabledSensors & 0xFF) & SENSOR_GSR) > 0){
+					pass=false;
+				 } else if (((enabledSensors & 0xFF0000) & SENSOR_EXG1_16BIT) > 0){
+					pass=false;
+				 } else if (((enabledSensors & 0xFF0000) & SENSOR_EXG2_16BIT) > 0){
+					pass=false;
+				 } else if (((enabledSensors & 0xFF) & SENSOR_EXG1_24BIT) > 0){
+					pass=false;
+				 } else if (((enabledSensors & 0xFF) & SENSOR_EXG2_24BIT) > 0){
+					pass=false;
+				 }
 			}
 			
 			if (((enabledSensors & 0xFF00) & SENSOR_INT_ADC_A12) > 0){
