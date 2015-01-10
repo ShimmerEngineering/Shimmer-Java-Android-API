@@ -294,6 +294,7 @@ public abstract class ShimmerObject implements Serializable {
 	 */
 	
 	protected TreeMap<Integer,ChannelDetails> mShimmerSensorsMap = new TreeMap<Integer,ChannelDetails>();
+	protected TreeMap<Integer,Integer[]> mShimmerSensorsMapConflicts = new TreeMap<Integer,Integer[]>();
 
 	//TODO: move sensor map keys to Configuration.Shimmer3
 	//TODO: create sensor map keys for Shimmer2 in Configuration.Shimmer2
@@ -6267,6 +6268,21 @@ public abstract class ShimmerObject implements Serializable {
 //						| mShimmerSensorsMap.get(SENSOR_SHIMMER3_INT_ADC_A13).mSensorBitmapIDStreaming;
 //				mShimmerSensorsMap.put(SENSOR_SHIMMER3_ALL_ADC, new ChannelDetails(false, shimmer3AllAdc, shimmer3AllAdc, Shimmer3Configuration.ADC_ALL)); // SENSOR_ALL_ADC_SHIMMER3
 
+				
+				//TODO create map of sensor conflicts so that the conflict check method can be shortened to a loop.
+				//TODO add entries for conflicting sensors and also required sensors?
+				mShimmerSensorsMapConflicts = new TreeMap<Integer,Integer[]>();
+				mShimmerSensorsMapConflicts.put(SENSORMAP_KEY_SHIMMER3_GSR, new Integer[]{
+						SENSORMAP_KEY_SHIMMER3_INT_ADC_A1,
+						SENSORMAP_KEY_SHIMMER3_INT_ADC_A14,
+						SENSORMAP_KEY_SHIMMER3_EXG1_16BIT,
+						SENSORMAP_KEY_SHIMMER3_EXG2_16BIT,
+						SENSORMAP_KEY_SHIMMER3_EXG1_24BIT,
+						SENSORMAP_KEY_SHIMMER3_EXG2_24BIT,
+						SENSORMAP_KEY_SHIMMER3_BRIDGE_AMP
+				});
+
+				
 			}
 		}
 	}
@@ -6411,6 +6427,7 @@ public abstract class ShimmerObject implements Serializable {
 		}
 	}
 
+	//TODO: pass back an array of conflicting sensors map keys
 	public boolean sensorMapConflictCheck(){
 		boolean pass=true;
 		if (mShimmerVersion != HW_ID_SHIMMER_3){
