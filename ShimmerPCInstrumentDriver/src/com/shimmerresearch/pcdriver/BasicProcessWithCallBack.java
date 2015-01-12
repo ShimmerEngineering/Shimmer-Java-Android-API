@@ -1,15 +1,19 @@
 package com.shimmerresearch.pcdriver;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 
 public abstract class BasicProcessWithCallBack {
 
-	protected Callable mThread;
+	protected Callable mThread = null;
 	protected BlockingQueue<ShimmerMSG> mQueue = new ArrayBlockingQueue<ShimmerMSG>(1024);
 	protected ConsumerThread mGUIConsumerThread;
 	WaitForData mWaitForData = null;
+	List<Callable> mListOfThreads = new ArrayList<Callable>();
+	List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
 	public BasicProcessWithCallBack(){
 		mGUIConsumerThread = new ConsumerThread();
 		mGUIConsumerThread.start();
@@ -57,24 +61,38 @@ public abstract class BasicProcessWithCallBack {
 	}
 	
 	public void setWaitForData(BasicProcessWithCallBack b){
-		mWaitForData = new WaitForData(b);
+		if (mWaitForData!=null){
+			mListWaitForData.add(new WaitForData(b));
+		} else {
+			mWaitForData = new WaitForData(b);
+		}
 	};
 	
 	public void passCallback(Callable c) {
 		// TODO Auto-generated method stub
-		mThread = c;
+		if (mThread!=null){
+			mListOfThreads.add(c);
+		} else {
+			mThread = c;
+		}
 	}
 	
 	
     public void sendCallBackMsg(ShimmerMSG s){
     	if (mThread!=null){
     		mThread.callBackMethod(s);
+    	} 
+    	for (Callable c:mListOfThreads){
+    		c.callBackMethod(s);
     	}
     }
     
     public void sendCallBackMsg(int i, Object ojc){
     	if (mThread!=null){
     		mThread.callBackMethod( i, ojc);
+    	}
+    	for (Callable c:mListOfThreads){
+    		c.callBackMethod(i,ojc);
     	}
     }
     

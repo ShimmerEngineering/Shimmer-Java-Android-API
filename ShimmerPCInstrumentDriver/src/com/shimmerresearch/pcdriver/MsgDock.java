@@ -47,9 +47,10 @@ public class MsgDock {
 	public final static int MSG_IDENTIFIER_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_IDENTIFIER_DOCK_SD_SCAN_UPDATE = 101;
 	public final static int MSG_IDENTIFIER_DOCK_SD_COPY_UPDATE = 102;
-//	public final static int MSG_IDENTIFIER_DOCK_WRITE_INFOMEM_UPDATE = 103;
+	public final static int MSG_IDENTIFIER_DOCK_WRITE_INFOMEM_UPDATE = 103;
 	public final static int MSG_IDENTIFIER_DOCK_SD_SCAN_COMPLETED = 104;
 	public final static int MSG_IDENTIFIER_DOCK_SD_COPY_COMPLETED = 105;
+	public final static int MSG_IDENTIFIER_DOCK_SD_COPY_FAILED = 106;
 //	public final static int MSG_IDENTIFIER_DOCK_WRITE_INFOMEM_COMPLETED = 106;
 	
 	public final static int MSG_IDENTIFIER_SMARTDOCK_UART_ERR_NONE = 110;
@@ -86,6 +87,9 @@ public class MsgDock {
 	public float mFwImageWriteSpeed = 0;
 	public String mMessage = "";
 	public double mValue;
+	
+	public int mErrorCode;
+	public String mErrorMessage; //if needed, should probably have a list of strings each corresponding with an error code  
 	
 	public byte[] mSlotMap = new byte[]{};
 	
