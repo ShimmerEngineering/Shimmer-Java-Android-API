@@ -51,6 +51,7 @@ public class MsgDock {
 	public final static int MSG_IDENTIFIER_DOCK_SD_SCAN_COMPLETED = 104;
 	public final static int MSG_IDENTIFIER_DOCK_SD_COPY_COMPLETED = 105;
 	public final static int MSG_IDENTIFIER_DOCK_SD_COPY_FAILED = 106;
+	public final static int MSG_IDENTIFIER_DATA_SYNC_UPDATE = 107;
 //	public final static int MSG_IDENTIFIER_DOCK_WRITE_INFOMEM_COMPLETED = 106;
 	
 	public final static int MSG_IDENTIFIER_SMARTDOCK_UART_ERR_NONE = 110;
