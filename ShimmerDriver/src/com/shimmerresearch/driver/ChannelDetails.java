@@ -22,16 +22,29 @@ public class ChannelDetails implements Serializable {
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	public String mLabel = "";
+	public Integer[] mSensorMapKeysRequired = null;
+	public Integer[] mSensorMapKeysConflicting = null;
+	public boolean mIntExpBoardPowerRequired = false;
 
 	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
 		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mLabel = label;
+		mIntExpBoardPowerRequired = false;
+	}
+
+	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired) {
+		mIsEnabled = isChannelEnabled;
+		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
+		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
+		mLabel = label;
+		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
 	}
 	
 	public void setEnabledState(boolean state) {
 		mIsEnabled = state;
 	}
+	
 
 }
