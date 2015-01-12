@@ -1,6 +1,8 @@
 package com.shimmerresearch.pcdriver;
 
-public class ShimmerLogDetails {
+import java.io.Serializable;
+
+public class ShimmerLogDetails implements Serializable{
 
 	public String mAbsolutePath;
 	public String mFileName;
