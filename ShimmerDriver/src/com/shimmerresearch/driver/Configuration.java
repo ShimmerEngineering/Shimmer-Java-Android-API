@@ -149,11 +149,18 @@ public class Configuration {
 		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
 		
 		//TODO: Mark TESTING
-		public final static Integer[] ListOfExGGainValues={0,1,2,3,4,5,6};
-		public final static Integer[] ListofLSM303DLHCAccelSamplingRatesValues={0,1,2,3,4,5,6,7,9};
-		public final static Integer[] ListofLSM303DLHCAccelSamplingRatesLPMValues={0,1,2,3,4,5,6,7,8,9};
+		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
+		public final static Integer[] ListofLSM303DLHCAccelSamplingRatesConfigValues={0,1,2,3,4,5,6,7,9};
+		public final static Integer[] ListofLSM303DLHCAccelSamplingRatesLPMConfigValues={0,1,2,3,4,5,6,7,8,9};
 
-
+		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
+		public final static Integer[] ListOfExGResolutionsConfigValues={0,1};
+		
+		public final static Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
+		public final static Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
+		public final static Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
+		public final static Integer[] ListofMPU9150MplSamplingRatesConfigValues={0,1,2,3,4};
+		public final static Integer[] ListofMPU9150MagSamplingRatesConfigValues={0,1,2,3,4};
 
 	}
 	

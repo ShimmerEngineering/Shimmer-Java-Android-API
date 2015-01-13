@@ -158,8 +158,8 @@ public class Shimmer3Configuration {
 		public static final String EULER_ANGLES_6DOF_GUI = "Euler Angles (6DOF)";
 		public static final String EULER_ANGLES_9DOF_GUI = "Euler Angles (9DOF)";
 		
-		//public static final String ADC_ALL = "All ADCs";
 		
+		//public static final String ADC_ALL = "All ADCs";
 		
 		public static final String GUI_LABEL_CONFIG_WRACCEL_RATE = "Wide Range Accel Rate";
 		public static final String GUI_LABEL_CONFIG_WRACCEL_RANGE = "Wide Range Accel Range";
