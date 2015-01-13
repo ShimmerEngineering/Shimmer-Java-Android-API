@@ -295,6 +295,7 @@ public abstract class ShimmerObject implements Serializable {
 	 */
 	
 	protected TreeMap<Integer,ChannelDetails> mShimmerSensorsMap = new TreeMap<Integer,ChannelDetails>();
+	protected TreeMap<Integer,ChannelOptionDetails> mShimmerSensorsOptionsMap = new TreeMap<Integer,ChannelOptionDetails>();
 
 	//TODO: move sensor map keys to Configuration.Shimmer3
 	//TODO: create sensor map keys for Shimmer2 in Configuration.Shimmer2
@@ -381,6 +382,11 @@ public abstract class ShimmerObject implements Serializable {
 	public final static int SENSORMAPKEY_SHIMMER3_EMG = 101;
 	public final static int SENSORMAPKEY_SHIMMER3_EXG_TEST = 102;
 	public final static int SENSORMAPKEY_SHIMMER3_ALL_ADC = 103;
+	
+
+	// Sensor Options Map
+	public final static int SENSOROPTIONSMAPKEY_EXG_GAIN = 0;
+
 
 	
 	//Constants describing the packet type
@@ -6283,6 +6289,7 @@ public abstract class ShimmerObject implements Serializable {
 					SENSORMAPKEY_SHIMMER3_INT_ADC_A13,
 					SENSORMAPKEY_SHIMMER3_INT_ADC_A14,
 					SENSORMAPKEY_SHIMMER3_GSR,
+					SENSORMAPKEY_SHIMMER3_EMG,
 					SENSORMAPKEY_SHIMMER3_EXG1_16BIT,
 					SENSORMAPKEY_SHIMMER3_EXG2_16BIT,
 					SENSORMAPKEY_SHIMMER3_RESISTANCE_AMP,
@@ -6417,6 +6424,7 @@ public abstract class ShimmerObject implements Serializable {
 					SENSORMAPKEY_SHIMMER3_INT_ADC_A13,
 					SENSORMAPKEY_SHIMMER3_INT_ADC_A14,
 					SENSORMAPKEY_SHIMMER3_GSR,
+					SENSORMAPKEY_SHIMMER3_EMG,
 					SENSORMAPKEY_SHIMMER3_EXG1_24BIT,
 					SENSORMAPKEY_SHIMMER3_EXG2_24BIT,
 					SENSORMAPKEY_SHIMMER3_RESISTANCE_AMP,
@@ -6502,6 +6510,16 @@ public abstract class ShimmerObject implements Serializable {
 
 				
 			}
+			
+			
+			mShimmerSensorsOptionsMap = new TreeMap<Integer,ChannelOptionDetails>();
+			mShimmerSensorsOptionsMap.put(SENSOROPTIONSMAPKEY_EXG_GAIN, new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_GAIN, 
+																									Configuration.Shimmer3.ListOfExGGain, 
+																									Configuration.Shimmer3.ListOfExGGainValues, 
+																									ChannelOptionDetails.COMBOBOX));
+			
+
+
 		}
 	}
 	

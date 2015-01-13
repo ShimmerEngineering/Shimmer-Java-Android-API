@@ -2,6 +2,11 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * @author Mark Nolan
+ *
+ */
 public class ChannelDetails implements Serializable {
 
 	/**
