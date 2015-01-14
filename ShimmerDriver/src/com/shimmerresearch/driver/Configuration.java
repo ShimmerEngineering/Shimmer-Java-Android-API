@@ -140,20 +140,28 @@ public class Configuration {
 		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
 		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
 
-		public final static String[] ListofLSM303DLHCAccelSamplingRates={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","NA","1344Hz"};
-		public final static String[] ListofLSM303DLHCAccelSamplingRatesLPM={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
-		public final static String[] ListofLSM303DLHCMagSamplingRates={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
-		public final static String[] ListofMPU9150MplSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
-		public final static String[] ListofMPU9150MagSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		//TODO: From here onwards is is Mark TESTING, not finished
+		//TODO: check all indexes below
+		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","NA","1344Hz"};
+		public final static String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
+		public final static String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
+		public final static String[] ListofMPU9150MplRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public final static String[] ListofMPU9150MagRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
 		
 		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
 		
 		
-		//TODO: From here onwards is is Mark TESTING, not finished
+		public final static Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};
+		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
+		public final static Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
+		public final static Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4};
+		public final static Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
+		
+		public final static Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
+		public final static Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
+		public final static Integer[] ListofMagRangeConfigValues={0,1,2,3,4,5,6};
+		
 		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
-		public final static Integer[] ListofLSM303DLHCAccelSamplingRatesConfigValues={0,1,2,3,4,5,6,7,9};
-		public final static Integer[] ListofLSM303DLHCAccelSamplingRatesLPMConfigValues={0,1,2,3,4,5,6,7,8,9};
-
 		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
 		public final static Integer[] ListOfExGResolutionsConfigValues={0,1};
 		
@@ -177,11 +185,11 @@ public class Configuration {
 		public final static Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};//TODO
 		
 		// Sensor Options Map
-		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_RATE = 0;
-		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_RANGE = 1;
+		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_ACCEL_RATE = 0;
+		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_ACCEL_RANGE = 1;
 		public static final int SENSOROPTIONSMAPKEY_MPU9150_GYRO_RANGE = 2;
 		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_MAG_RANGE = 3;
-		public static final int SENSOROPTIONSMAPKEY_RESSURE_RESOLUTION = 4;
+		public static final int SENSOROPTIONSMAPKEY_PRESSURE_RESOLUTION = 4;
 		public static final int SENSOROPTIONSMAPKEY_GSR_RANGE = 5;
 		public static final int SENSOROPTIONSMAPKEY_EXG_RESOLUTION = 6;
 		public static final int SENSOROPTIONSMAPKEY_EXG_GAIN = 7;

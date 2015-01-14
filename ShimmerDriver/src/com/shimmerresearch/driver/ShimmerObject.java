@@ -6520,17 +6520,51 @@ public abstract class ShimmerObject implements Serializable {
 			}
 			
 			// Sensor Options Map
-//			public static final int SENSOROPTIONSMAPKEY_WRACCEL_RATE = 0;
-//			public static final int SENSOROPTIONSMAPKEY_WRACCEL_RANGE = 1;
-//			public static final int SENSOROPTIONSMAPKEY_GYRO_RANGE = 2;
-//			public static final int SENSOROPTIONSMAPKEY_MAG_RANGE = 3;
-//			public static final int SENSOROPTIONSMAPKEY_RESSURE_RESOLUTION = 4;
-//			public static final int SENSOROPTIONSMAPKEY_GSR_RANGE = 5;
-//			public static final int SENSOROPTIONSMAPKEY_MAG_RATE = 8;
-			
-
-
 			mShimmerSensorsOptionsMap = new TreeMap<Integer,ChannelOptionDetails>();
+			
+			//Standard Shimmer3 Options
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_LSM303DLHC_ACCEL_RANGE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE, 
+											Configuration.Shimmer3.ListofAccelRange, 
+											Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_LSM303DLHC_ACCEL_RATE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE, 
+											Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+											Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_GYRO_RANGE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE, 
+											Configuration.Shimmer3.ListofGyroRange, 
+											Configuration.Shimmer3.ListofMPU9150GyroRangeConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_LSM303DLHC_MAG_RANGE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_LSM303DLHC_MAG_RANGE, 
+											Configuration.Shimmer3.ListofMagRange, 
+											Configuration.Shimmer3.ListofMagRangeConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_LSM303DLHC_MAG_RATE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_LSM303DLHC_MAG_RATE, 
+											Configuration.Shimmer3.ListofLSM303DLHCMagRate, 
+											Configuration.Shimmer3.ListofLSM303DLHCMagRateConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_PRESSURE_RESOLUTION, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_PRESSURE_RESOLUTION, 
+											Configuration.Shimmer3.ListofPressureResolution, 
+											Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_GSR_RANGE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_GSR_RANGE, 
+											Configuration.Shimmer3.ListofGSRRange, 
+											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
 			
 			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_GAIN, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_GAIN, 
@@ -6543,14 +6577,8 @@ public abstract class ShimmerObject implements Serializable {
 											Configuration.Shimmer3.ListOfExGResolutions, 
 											Configuration.Shimmer3.ListOfExGResolutionsConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
-			
-			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MAG_RATE, 
-					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MAG_RATE, 
-											Configuration.Shimmer3.ListofMPU9150MagSamplingRates, 
-											Configuration.Shimmer3.ListofMPU9150MagSamplingRatesConfigValues, 
-											ChannelOptionDetails.COMBOBOX));
 
-			
+			//Advanced ExG		
 			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_ECG_REFERENCE_ELECTRODE, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE, 
 											Configuration.Shimmer3.ListOfECGReferenceElectrode, 
@@ -6593,7 +6621,12 @@ public abstract class ShimmerObject implements Serializable {
 											Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khzConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 			
-
+			//MPL Options
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_ACCEL_RANGE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE, 
+											Configuration.Shimmer3.ListofMPU9150AccelRange, 
+											Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
 			
 			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_GYRO_CAL, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_GYRO_CAL, 
@@ -6609,13 +6642,13 @@ public abstract class ShimmerObject implements Serializable {
 
 			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MPL_RATE, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPL_RATE, 
-											Configuration.Shimmer3.ListofMPU9150MplSamplingRates, 
+											Configuration.Shimmer3.ListofMPU9150MplRate, 
 											Configuration.Shimmer3.ListofMPU9150MplSamplingRatesConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 
 			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MAG_RATE, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MAG_RATE, 
-											Configuration.Shimmer3.ListofMPU9150MagSamplingRates, 
+											Configuration.Shimmer3.ListofMPU9150MagRate, 
 											Configuration.Shimmer3.ListofMPU9150MagSamplingRatesConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 

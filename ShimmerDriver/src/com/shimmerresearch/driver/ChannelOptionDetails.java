@@ -23,19 +23,19 @@ public class ChannelOptionDetails implements Serializable {
 	
 	public String mLabel = "";
 	public String[] mGuiValues;
-	public Integer[] mValues;
+	public Integer[] mConfigValues;
 	public int mOptionType;
 	
 	/**
 	 * @param label
 	 * @param guiValues
-	 * @param values
+	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(String label, String[] guiValues, Integer[] values, int optionType) {
+	public ChannelOptionDetails(String label, String[] guiValues, Integer[] configValues, int optionType) {
 		mLabel = label;
 		mGuiValues = guiValues;
-		mValues = values;
+		mConfigValues = configValues;
 		mOptionType = optionType;
 	}
 }
