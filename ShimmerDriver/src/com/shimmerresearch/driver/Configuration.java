@@ -148,7 +148,8 @@ public class Configuration {
 		
 		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
 		
-		//TODO: Mark TESTING
+		
+		//TODO: From here onwards is is Mark TESTING, not finished
 		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
 		public final static Integer[] ListofLSM303DLHCAccelSamplingRatesConfigValues={0,1,2,3,4,5,6,7,9};
 		public final static Integer[] ListofLSM303DLHCAccelSamplingRatesLPMConfigValues={0,1,2,3,4,5,6,7,8,9};
@@ -162,6 +163,44 @@ public class Configuration {
 		public final static Integer[] ListofMPU9150MplSamplingRatesConfigValues={0,1,2,3,4};
 		public final static Integer[] ListofMPU9150MagSamplingRatesConfigValues={0,1,2,3,4};
 
+		public final static Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
+		public final static Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
+		public final static Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
+		public final static Integer[] ListOfExGLeadOffCurrentConfigValues={0,1,2,3};
+		public final static Integer[] ListOfExGLeadOffComparatorConfigValues={0,1,2,3,4,5,6,7};
+		
+		public final static String[] ListOfExGRespirationDetectFreq={"Off","32 kHz","64 kHz"};
+		public final static Integer[] ListOfExGRespirationDetectFreqConfigValues={-1,0,1};//TODO
+		public final static String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
+		public final static Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};//TODO
+		public final static String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
+		public final static Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};//TODO
+		
+		// Sensor Options Map
+		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_RATE = 0;
+		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_RANGE = 1;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_GYRO_RANGE = 2;
+		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_MAG_RANGE = 3;
+		public static final int SENSOROPTIONSMAPKEY_RESSURE_RESOLUTION = 4;
+		public static final int SENSOROPTIONSMAPKEY_GSR_RANGE = 5;
+		public static final int SENSOROPTIONSMAPKEY_EXG_RESOLUTION = 6;
+		public static final int SENSOROPTIONSMAPKEY_EXG_GAIN = 7;
+		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_MAG_RATE = 8;
+		
+		public static final int SENSOROPTIONSMAPKEY_EXG_ECG_REFERENCE_ELECTRODE = 9;
+		public static final int SENSOROPTIONSMAPKEY_EXG_EMG_REFERENCE_ELECTRODE = 10;
+		public static final int SENSOROPTIONSMAPKEY_EXG_LEAD_OFF_DETECTION = 11;
+		public static final int SENSOROPTIONSMAPKEY_EXG_LEAD_OFF_CURRENT = 12;
+		public static final int SENSOROPTIONSMAPKEY_EXG_LEAD_OFF_COMPARATOR = 13;
+		public static final int SENSOROPTIONSMAPKEY_EXG_RESPIRATION_DETECT_FREQ = 14;
+		public static final int SENSOROPTIONSMAPKEY_EXG_RESPIRATION_DETECT_PHASE = 15;
+
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_ACCEL_RANGE = 20;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_GYRO_CAL = 21;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_LPF = 22;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_MPL_RATE = 23;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_MAG_RATE = 24;
+		
 	}
 	
 	public static class Shimmer2{

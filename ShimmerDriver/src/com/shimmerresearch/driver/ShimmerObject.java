@@ -384,22 +384,7 @@ public abstract class ShimmerObject implements Serializable {
 	public final static int SENSORMAPKEY_SHIMMER3_ALL_ADC = 103;
 	
 
-	// Sensor Options Map
-	public static final int SENSOROPTIONSMAPKEY_WRACCEL_RATE = 0;
-	public static final int SENSOROPTIONSMAPKEY_WRACCEL_RANGE = 1;
-	public static final int SENSOROPTIONSMAPKEY_GYRO_RANGE = 2;
-	public static final int SENSOROPTIONSMAPKEY_MAG_RANGE = 3;
-	public static final int SENSOROPTIONSMAPKEY_RESSURE_RESOLUTION = 4;
-	public static final int SENSOROPTIONSMAPKEY_GSR_RANGE = 5;
-	public static final int SENSOROPTIONSMAPKEY_EXG_RESOLUTION = 6;
-	public static final int SENSOROPTIONSMAPKEY_EXG_GAIN = 7;
-	public static final int SENSOROPTIONSMAPKEY_MAG_RATE = 8;
-	
-	public static final int SENSOROPTIONSMAPKEY_MPU9150_ACCEL_RANGE = 9;
-	public static final int SENSOROPTIONSMAPKEY_MPU9150_GYRO_CAL = 10;
-	public static final int SENSOROPTIONSMAPKEY_MPU9150_LPF = 11;
-	public static final int SENSOROPTIONSMAPKEY_MPL_RATE = 12;
-	public static final int SENSOROPTIONSMAPKEY_MPU9150_MAG_RATE = 13;
+
 
 
 
@@ -6543,45 +6528,92 @@ public abstract class ShimmerObject implements Serializable {
 //			public static final int SENSOROPTIONSMAPKEY_GSR_RANGE = 5;
 //			public static final int SENSOROPTIONSMAPKEY_MAG_RATE = 8;
 			
+
+
 			mShimmerSensorsOptionsMap = new TreeMap<Integer,ChannelOptionDetails>();
 			
-			mShimmerSensorsOptionsMap.put(SENSOROPTIONSMAPKEY_EXG_GAIN, 
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_GAIN, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_GAIN, 
 											Configuration.Shimmer3.ListOfExGGain, 
 											Configuration.Shimmer3.ListOfExGGainConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 			
-			mShimmerSensorsOptionsMap.put(SENSOROPTIONSMAPKEY_EXG_RESOLUTION, 
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_RESOLUTION, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_RESOLUTION, 
 											Configuration.Shimmer3.ListOfExGResolutions, 
 											Configuration.Shimmer3.ListOfExGResolutionsConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 			
-			mShimmerSensorsOptionsMap.put(SENSOROPTIONSMAPKEY_MPU9150_ACCEL_RANGE, 
-					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE, 
-											Configuration.Shimmer3.ListofMPU9150AccelRange, 
-											Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MAG_RATE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MAG_RATE, 
+											Configuration.Shimmer3.ListofMPU9150MagSamplingRates, 
+											Configuration.Shimmer3.ListofMPU9150MagSamplingRatesConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_ECG_REFERENCE_ELECTRODE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE, 
+											Configuration.Shimmer3.ListOfECGReferenceElectrode, 
+											Configuration.Shimmer3.ListOfECGReferenceElectrodeConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 			
-			mShimmerSensorsOptionsMap.put(SENSOROPTIONSMAPKEY_MPU9150_GYRO_CAL, 
+//			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_EMG_REFERENCE_ELECTRODE, 
+//					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE, 
+//											Configuration.Shimmer3.ListOfEMGReferenceElectrode, 
+//											Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues, 
+//											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_LEAD_OFF_DETECTION, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_LEAD_OFF_DETECTION, 
+											Configuration.Shimmer3.ListOfExGLeadOffDetection, 
+											Configuration.Shimmer3.ListOfExGLeadOffDetectionConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_LEAD_OFF_CURRENT, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_LEAD_OFF_CURRENT, 
+											Configuration.Shimmer3.ListOfExGLeadOffCurrent, 
+											Configuration.Shimmer3.ListOfExGLeadOffCurrentConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_LEAD_OFF_COMPARATOR, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_LEAD_OFF_COMPARATOR, 
+											Configuration.Shimmer3.ListOfExGLeadOffComparator, 
+											Configuration.Shimmer3.ListOfExGLeadOffComparatorConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_RESPIRATION_DETECT_FREQ, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_FREQ, 
+											Configuration.Shimmer3.ListOfExGRespirationDetectFreq, 
+											Configuration.Shimmer3.ListOfExGRespirationDetectFreqConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_EXG_RESPIRATION_DETECT_PHASE, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_PHASE, 
+											Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khz, 
+											Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khzConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
+
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_GYRO_CAL, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_GYRO_CAL, 
 											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
 											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 
-			mShimmerSensorsOptionsMap.put(SENSOROPTIONSMAPKEY_MPU9150_LPF, 
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_LPF, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_LPF, 
 											Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
 											Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 
-			mShimmerSensorsOptionsMap.put(SENSOROPTIONSMAPKEY_MPL_RATE, 
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MPL_RATE, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPL_RATE, 
 											Configuration.Shimmer3.ListofMPU9150MplSamplingRates, 
 											Configuration.Shimmer3.ListofMPU9150MplSamplingRatesConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 
-			mShimmerSensorsOptionsMap.put(SENSOROPTIONSMAPKEY_MPU9150_MAG_RATE, 
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MAG_RATE, 
 					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MAG_RATE, 
 											Configuration.Shimmer3.ListofMPU9150MagSamplingRates, 
 											Configuration.Shimmer3.ListofMPU9150MagSamplingRatesConfigValues, 
