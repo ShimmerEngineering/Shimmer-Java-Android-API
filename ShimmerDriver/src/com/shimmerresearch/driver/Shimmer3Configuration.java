@@ -184,7 +184,18 @@ public class Shimmer3Configuration {
 		public static final String GUI_LABEL_CONFIG_MPL_RATE = "MPL Rate";
 		public static final String GUI_LABEL_CONFIG_MPU9150_MAG_RATE = "MPU Mag Rate";
 		
-		
+		public static final String GUI_LABEL_CONFIG_MPU9150_DMP = "DMP";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL = "MPL";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_9DOF_SENSOR_FUSION = "9DOF Sensor Fusion";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_GYRO_CAL = "Gyro Calibration";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_VECTOR_CAL = "Vector Compensation Calibration";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL = "Magnetic Disturbance Calibration";
 
+		public static final String GUI_LABEL_CONFIG_KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";
+		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode";
+		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
+		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
+		public static final String GUI_LABEL_CONFIG_TCX0 = "TCX0";
+		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POW = "Internal Expansion Board Power";
 		
 }

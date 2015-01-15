@@ -209,6 +209,20 @@ public class Configuration {
 		public static final int SENSOROPTIONSMAPKEY_MPU9150_MPL_RATE = 23;
 		public static final int SENSOROPTIONSMAPKEY_MPU9150_MAG_RATE = 24;
 		
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_DMP = 30;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_MPL = 31;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_MPL_9DOF_SENSOR_FUSION = 32;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_MPL_GYRO_CAL = 33;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_MPL_VECTOR_CAL = 34;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_MPL_MAG_CAL = 35;
+
+		public static final int SENSOROPTIONSMAPKEY_KINEMATIC_LPM = 40;
+		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_ACCEL_LPM = 41;
+		public static final int SENSOROPTIONSMAPKEY_MPU9150_GYRO_LPM = 42;
+		public static final int SENSOROPTIONSMAPKEY_LSM303DLHC_MAG_LPM = 43;
+		public static final int SENSOROPTIONSMAPKEY_TCX0 = 44;
+		public static final int SENSOROPTIONSMAPKEY_INT_EXP_BRD_POW = 45;
+		
 	}
 	
 	public static class Shimmer2{

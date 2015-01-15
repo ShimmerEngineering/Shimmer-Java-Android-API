@@ -6652,7 +6652,46 @@ public abstract class ShimmerObject implements Serializable {
 											Configuration.Shimmer3.ListofMPU9150MagSamplingRatesConfigValues, 
 											ChannelOptionDetails.COMBOBOX));
 
-
+			//MPL CheckBoxes
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_DMP, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_DMP, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MPL, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MPL, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MPL_9DOF_SENSOR_FUSION, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MPL_9DOF_SENSOR_FUSION, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MPL_GYRO_CAL, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MPL_GYRO_CAL, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MPL_VECTOR_CAL, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MPL_VECTOR_CAL, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_MPL_MAG_CAL, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL, 
+											ChannelOptionDetails.CHECKBOX));
+			
+			
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_KINEMATIC_LPM, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_KINEMATIC_LPM, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_LSM303DLHC_ACCEL_LPM, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_MPU9150_GYRO_LPM, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_MPU9150_GYRO_LPM, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_LSM303DLHC_MAG_LPM, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_TCX0, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_TCX0, 
+											ChannelOptionDetails.CHECKBOX));
+			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.SENSOROPTIONSMAPKEY_INT_EXP_BRD_POW, 
+					new ChannelOptionDetails(Shimmer3Configuration.GUI_LABEL_CONFIG_INT_EXP_BRD_POW, 
+											ChannelOptionDetails.CHECKBOX));
+			
 		}
 	}
 	
