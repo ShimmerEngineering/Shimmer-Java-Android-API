@@ -142,8 +142,10 @@ public class Configuration {
 
 		//TODO: From here onwards is is Mark TESTING, not finished
 		//TODO: check all indexes below
-		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","NA","1344Hz"};
-		public final static String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
+		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","1344Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode, 1344Hz only available in full power mode
+
+//		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","NA","1344Hz"};
+//		public final static String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
 		public final static String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
 		public final static String[] ListofMPU9150MplRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
 		public final static String[] ListofMPU9150MagRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
@@ -152,14 +154,15 @@ public class Configuration {
 		
 		
 		public final static Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};
-		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
-		public final static Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
+		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,8,9,9};
+//		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
+//		public final static Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
 		public final static Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4};
 		public final static Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
 		
 		public final static Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
 		public final static Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
-		public final static Integer[] ListofMagRangeConfigValues={0,1,2,3,4,5,6};
+		public final static Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option
 		
 		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
 		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
