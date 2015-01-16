@@ -136,7 +136,8 @@ public class Configuration {
 		public final static String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
 		public final static String[] ListOfExGLeadOffComparator={"Pos:95%-Neg:5%","Pos:92.5%-Neg:7.5%","Pos:90%-Neg:10%","Pos:87.5%-Neg:12.5%","Pos:85%-Neg:15%","Pos:80%-Neg:20%","Pos:75%-Neg:25%","Pos:70%-Neg:30%"};
 		public final static String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-
+		public final static String[] ListOfBaudRate={"115200","1200", "2400", "4800", "9600", "19200", "38400", "57600", "230400", "460800", "921600"};
+		
 		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
 		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
 

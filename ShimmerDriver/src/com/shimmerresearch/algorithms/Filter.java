@@ -72,7 +72,8 @@ public class Filter {
     public static int BAND_PASS = 2;
     public static int BAND_STOP = 3;
 
-    // filter parameters    
+    // filter parameters   
+    private int filterType;
     private double samplingRate = Double.NaN;
     private double[] cornerFrequency;
     private int nTaps;
@@ -93,21 +94,28 @@ public class Filter {
     private int defaultNTaps = 200;
     
     public Filter() throws Exception{
-    	
+    	filterType=LOW_PASS;
+
     	SetFilterParameters(LOW_PASS, defaultSamplingRate, defaultCornerFrequency, defaultNTaps);
     }
      
     public Filter(int filterType) throws Exception{
-        
+    	
+    	this.filterType=filterType;
+
     	SetFilterParameters(filterType, defaultSamplingRate, defaultCornerFrequency, defaultNTaps);
     }
     
     public Filter(int filterType, double samplingRate, double[] cornerFrequency) throws Exception{
     	
+    	this.filterType=filterType;
+    	
         SetFilterParameters(filterType, samplingRate, cornerFrequency, defaultNTaps);
     }
 
     public Filter(int filterType, double samplingRate, double[] cornerFrequency, int nTaps) throws Exception{
+    	
+    	this.filterType=filterType;
     	
         SetFilterParameters(filterType, samplingRate, cornerFrequency, nTaps);
     }
@@ -316,4 +324,9 @@ public class Filter {
     	
     	bufferedX = null;
     }
+    
+	public int getFilterType() {
+		return filterType;
+	}    
+    
 }
