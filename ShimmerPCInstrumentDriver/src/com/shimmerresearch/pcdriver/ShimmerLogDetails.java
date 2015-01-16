@@ -9,6 +9,7 @@ public class ShimmerLogDetails implements Serializable{
 	public String mTrialName;
 	public String mConfigTime;
 	public String mFullTrialName;
+	public long mRTCDifference;
 	public String mSessionName;
 	public long mFileSize;
 	public long mConfigTimeStamp;
@@ -19,6 +20,7 @@ public class ShimmerLogDetails implements Serializable{
 	public String mDockID;
 	public String mAbsolutePathWhereFileWasCopied;
 	public String mNewSessionName;
+	public double mStartingRTC; // this is = (mInitialTimeStamp/32768*1000) + (mRTCDifference/32768*1000);
 	public ShimmerLogDetails(){};
 	public ShimmerLogDetails(String mAbolutePath, String mFileName,
 			String mTrialName, String mConfigTime,
