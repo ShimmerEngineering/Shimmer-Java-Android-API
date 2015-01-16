@@ -1,6 +1,8 @@
 package com.shimmerresearch.driver;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -30,13 +32,18 @@ public class ChannelDetails implements Serializable {
 	public Integer[] mSensorMapKeysRequired = null;
 	public Integer[] mSensorMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
+	
+	public List<HwFwExpBrdVersionDetails> mCompatibleVersionInfo = null;  
 
+	//Needed for Shimmer2?
 	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
 		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mLabel = label;
 		mIntExpBoardPowerRequired = false;
+		
+		mCompatibleVersionInfo = null;
 	}
 
 	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired) {
@@ -45,6 +52,18 @@ public class ChannelDetails implements Serializable {
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mLabel = label;
 		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
+		
+		mCompatibleVersionInfo = null;
+	}
+
+	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
+		mIsEnabled = isChannelEnabled;
+		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
+		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
+		mLabel = label;
+		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
+		
+		mCompatibleVersionInfo = compatibleVersionInfo;
 	}
 	
 	public void setEnabledState(boolean state) {
