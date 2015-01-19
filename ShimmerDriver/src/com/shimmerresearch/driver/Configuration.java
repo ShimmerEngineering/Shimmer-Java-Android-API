@@ -47,11 +47,6 @@
 
 package com.shimmerresearch.driver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class Configuration {
 	//Channel Contents
 	public static class Shimmer3{
@@ -136,40 +131,163 @@ public class Configuration {
 		public final static String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
 		public final static String[] ListOfExGLeadOffComparator={"Pos:95%-Neg:5%","Pos:92.5%-Neg:7.5%","Pos:90%-Neg:10%","Pos:87.5%-Neg:12.5%","Pos:85%-Neg:15%","Pos:80%-Neg:20%","Pos:75%-Neg:25%","Pos:70%-Neg:30%"};
 		public final static String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-		public final static String[] ListOfBaudRate={"115200","1200", "2400", "4800", "9600", "19200", "38400", "57600", "230400", "460800", "921600"};
+		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
 		
+
+		//TODO: From here onwards is is Mark TESTING - not finished
+		//TODO: check all indexes below
 		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
 		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
-
-		//TODO: Remove below when finished with it. First attempt to create a map for one of the sensor rate arrays  
-//		public class rateOrRangeOptions {
-//			int value = 0;
-//			String text = "";
-//			public rateOrRangeOptions(int myValue, String myString) {
-//				value = myValue;
-//				text = myString;
-//			}
-//		}
-//		public final static List<rateOrRangeOptions> ListofLSM303DLHCAccelSamplingRates= new ArrayList<rateOrRangeOptions>(
-//				new rateOrRangeOptions(0, "Power-down"),
-//				new rateOrRangeOptions(1, "1Hz"),
-//				new rateOrRangeOptions(2, "10Hz"),
-//				new rateOrRangeOptions(3, "25Hz"),
-//				new rateOrRangeOptions(4, "50Hz"),
-//				new rateOrRangeOptions(5, "100Hz"),
-//				new rateOrRangeOptions(6, "200Hz"),
-//				new rateOrRangeOptions(7, "400Hz"),
-//				new rateOrRangeOptions(8, "NA"),
-//				new rateOrRangeOptions(9, "1344Hz"));
 		
-		public final static String[] ListofLSM303DLHCAccelSamplingRates={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","NA","1344Hz"};
-		public final static String[] ListofLSM303DLHCAccelSamplingRatesLPM={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
-		public final static String[] ListofLSM303DLHCMagSamplingRates={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
-		public final static String[] ListofMPU9150MplSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
-		public final static String[] ListofMPU9150MagSamplingRates={"10Hz","20Hz","40Hz","50Hz","100Hz"};
-		
-		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
+		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","1344Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode, 1344Hz only available in full power mode
+//		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","NA","1344Hz"};
+//		public final static String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
 
+		public final static String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
+		public final static Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
+		public final static String[] ListofMPU9150MplRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public final static Integer[] ListofMPU9150MplRateConfigValues={0,1,2,3,4};
+		public final static String[] ListofMPU9150MagRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public final static Integer[] ListofMPU9150MagRateConfigValues={0,1,2,3,4};
+		
+		public final static Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};
+		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,8,9,9};
+//		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
+//		public final static Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
+		public final static Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
+		
+		public final static Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
+		public final static Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
+		public final static Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option
+		
+		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
+		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
+		public final static Integer[] ListOfExGResolutionsConfigValues={0,1};
+		
+		public final static Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
+		public final static Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
+		public final static Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
+
+		public final static Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
+		public final static Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
+		public final static Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
+		public final static Integer[] ListOfExGLeadOffCurrentConfigValues={0,1,2,3};
+		public final static Integer[] ListOfExGLeadOffComparatorConfigValues={0,1,2,3,4,5,6,7};
+		
+		public final static String[] ListOfExGRespirationDetectFreq={"Off","32 kHz","64 kHz"};
+		public final static Integer[] ListOfExGRespirationDetectFreqConfigValues={-1,0,1};//TODO
+		public final static String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
+		public final static Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};//TODO
+		public final static String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
+		public final static Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};//TODO
+		
+		
+
+		/**
+		 * Shimmer3 Low-noise analog accelerometer
+		 */
+		public final static int CHANNELMAPKEY_A_ACCEL = 0;
+		/**
+		 * Shimmer3 Gyroscope
+		 */
+		public final static int CHANNELMAPKEY_MPU9150_GYRO = 1;
+		/**
+		 * Shimmer3 Primary magnetometer
+		 */
+		public final static int CHANNELMAPKEY_LSM303DLHC_MAG = 2;
+		public final static int CHANNELMAPKEY_EXG1_24BIT = 3;
+		public final static int CHANNELMAPKEY_EXG2_24BIT = 4;
+		public final static int CHANNELMAPKEY_GSR = 5;
+		public final static int CHANNELMAPKEY_EXT_ADC_A7 = 6;
+		public final static int CHANNELMAPKEY_EXT_ADC_A6 = 7;
+		public final static int CHANNELMAPKEY_BRIDGE_AMP = 8;
+		public final static int CHANNELMAPKEY_RESISTANCE_AMP = 9;
+		//public final static int CHANNELMAPKEY_HR = 9;
+		public final static int CHANNELMAPKEY_VBATT = 10;
+		/**
+		 * Shimmer3 Wide-range digital accelerometer
+		 */
+		public final static int CHANNELMAPKEY_LSM303DLHC_ACCEL = 11;
+		public final static int CHANNELMAPKEY_EXT_ADC_A15 = 12;
+		public final static int CHANNELMAPKEY_INT_ADC_A1 = 13;
+		public final static int CHANNELMAPKEY_INT_ADC_A12 = 14;
+		public final static int CHANNELMAPKEY_INT_ADC_A13 = 15;
+		public final static int CHANNELMAPKEY_INT_ADC_A14 = 16;
+		/**
+		 * Shimmer3 Alternative accelerometer
+		 */
+		public final static int CHANNELMAPKEY_MPU9150_ACCEL = 17;
+		/**
+		 * Shimmer3 Alternative magnetometer
+		 */
+		public final static int CHANNELMAPKEY_MPU9150_MAG = 18;
+		public final static int CHANNELMAPKEY_EXG1_16BIT = 19;
+		public final static int CHANNELMAPKEY_EXG2_16BIT = 21;
+		public final static int CHANNELMAPKEY_BMP180_PRESSURE = 22;
+		//public final static int CHANNELMAPKEY_BMP180_TEMPERATURE = 23; // not yet implemented
+		//public final static int CHANNELMAPKEY_MSP430_TEMPERATURE = 24; // not yet implemented
+		public final static int CHANNELMAPKEY_MPU9150_TEMP = 25;
+		//public final static int CHANNELMAPKEY_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
+		//public final static int CHANNELMAPKEY_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
+		public final static int CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF = 27;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_QUAT_9DOF = 28;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_EULER_6DOF = 29;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_EULER_9DOF = 30;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_HEADING = 31;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_PEDOMETER = 32;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_TAP = 33;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_MOTION_ORIENT = 34;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_GYRO = 35;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_ACCEL = 36;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_MAG = 37;
+		public final static int CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF_RAW = 38;
+		
+		// Combination Channels
+		public final static int CHANNELMAPKEY_ECG = 100;
+		public final static int CHANNELMAPKEY_EMG = 101;
+		public final static int CHANNELMAPKEY_EXG_TEST = 102;
+		public final static int CHANNELMAPKEY_ALL_ADC = 103;
+
+		
+		// Sensor Options Map
+		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_RATE = 0;
+		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_RANGE = 1;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_RANGE = 2;
+		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_RANGE = 3;
+		public static final int CONFIGOPTIONSMAPKEY_PRESSURE_RESOLUTION = 4;
+		public static final int CONFIGOPTIONSMAPKEY_GSR_RANGE = 5;
+		public static final int CONFIGOPTIONSMAPKEY_EXG_RESOLUTION = 6;
+		public static final int CONFIGOPTIONSMAPKEY_EXG_GAIN = 7;
+		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_RATE = 8;
+		
+		public static final int CONFIGOPTIONSMAPKEY_EXG_ECG_REFERENCE_ELECTRODE = 9;
+		public static final int CONFIGOPTIONSMAPKEY_EXG_EMG_REFERENCE_ELECTRODE = 10;
+		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_DETECTION = 11;
+		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_CURRENT = 12;
+		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_COMPARATOR = 13;
+		public static final int CONFIGOPTIONSMAPKEY_EXG_RESPIRATION_DETECT_FREQ = 14;
+		public static final int CONFIGOPTIONSMAPKEY_EXG_RESPIRATION_DETECT_PHASE = 15;
+
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_ACCEL_RANGE = 20;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_CAL = 21;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_LPF = 22;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_RATE = 23;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MAG_RATE = 24;
+		
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_DMP = 30;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL = 31;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_9DOF_SENSOR_FUSION = 32;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_GYRO_CAL = 33;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_VECTOR_CAL = 34;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_MAG_CAL = 35;
+
+		public static final int CONFIGOPTIONSMAPKEY_KINEMATIC_LPM = 40;
+		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_LPM = 41;
+		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_LPM = 42;
+		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_LPM = 43;
+		public static final int CONFIGOPTIONSMAPKEY_TCX0 = 44;
+		public static final int CONFIGOPTIONSMAPKEY_INT_EXP_BRD_POW = 45;
+		
 	}
 	
 	public static class Shimmer2{
@@ -211,9 +329,27 @@ public class Configuration {
 		public final static String[] ListofAccelRange={"+/- 1.5g","+/- 6g"};
 		public final static String[] ListofMagRange={"+/- 0.8Ga","+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"};
 		public final static String[] ListofGSRRange={"10kOhm to 56kOhm","56kOhm to 220kOhm","220kOhm to 680kOhm","680kOhm to 4.7MOhm","Auto Range"};
+		
+		
+		public final static int CHANNELMAPKEY_ACCEL = 0;
+		public final static int CHANNELMAPKEY_GYRO = 1;
+		public final static int CHANNELMAPKEY_MAG = 2;
+		public final static int CHANNELMAPKEY_EMG = 3;
+		public final static int CHANNELMAPKEY_ECG = 4;
+		public final static int CHANNELMAPKEY_GSR = 5;
+		public final static int CHANNELMAPKEY_EXP_BOARD_A7 = 6;
+		public final static int CHANNELMAPKEY_EXP_BOARD_A0 = 7;
+		public final static int CHANNELMAPKEY_EXP_BOARD = 8;
+		public final static int CHANNELMAPKEY_BRIDGE_AMP = 9;
+		public final static int CHANNELMAPKEY_HEART = 10;
+		public final static int CHANNELMAPKEY_BATT = 11;
+		public final static int CHANNELMAPKEY_EXT_ADC_A15 = 12;
+		public final static int CHANNELMAPKEY_INT_ADC_A1 = 13;
+		public final static int CHANNELMAPKEY_INT_ADC_A12 = 14;
+		public final static int CHANNELMAPKEY_INT_ADC_A13 = 15;
+		public final static int CHANNELMAPKEY_INT_ADC_A14 = 16;
+
 	}
-
-
 
 }
 

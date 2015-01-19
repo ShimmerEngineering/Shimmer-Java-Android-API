@@ -6,6 +6,7 @@ import java.util.List;
 public class TrialDetails {
 	public String mTrialName;
 	public String mConfigTime;
+	public int mNShimmers;
 	public List<SessionDetails> mListofSessionsNames;
 	
 	
