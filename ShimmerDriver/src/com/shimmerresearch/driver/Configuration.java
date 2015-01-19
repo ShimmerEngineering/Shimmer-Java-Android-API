@@ -249,45 +249,82 @@ public class Configuration {
 		public final static int CHANNELMAPKEY_ALL_ADC = 103;
 
 		
-		// Sensor Options Map
-		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_RATE = 0;
-		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_RANGE = 1;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_RANGE = 2;
-		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_RANGE = 3;
-		public static final int CONFIGOPTIONSMAPKEY_PRESSURE_RESOLUTION = 4;
-		public static final int CONFIGOPTIONSMAPKEY_GSR_RANGE = 5;
-		public static final int CONFIGOPTIONSMAPKEY_EXG_RESOLUTION = 6;
-		public static final int CONFIGOPTIONSMAPKEY_EXG_GAIN = 7;
-		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_RATE = 8;
+//		// Sensor Options Map
+//		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_RATE = 0;
+//		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_RANGE = 1;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_RANGE = 2;
+//		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_RANGE = 3;
+//		public static final int CONFIGOPTIONSMAPKEY_PRESSURE_RESOLUTION = 4;
+//		public static final int CONFIGOPTIONSMAPKEY_GSR_RANGE = 5;
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_RESOLUTION = 6;
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_GAIN = 7;
+//		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_RATE = 8;
+//		
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_ECG_REFERENCE_ELECTRODE = 9;
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_EMG_REFERENCE_ELECTRODE = 10;
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_DETECTION = 11;
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_CURRENT = 12;
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_COMPARATOR = 13;
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_RESPIRATION_DETECT_FREQ = 14;
+//		public static final int CONFIGOPTIONSMAPKEY_EXG_RESPIRATION_DETECT_PHASE = 15;
+//
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_ACCEL_RANGE = 20;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_CAL = 21;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_LPF = 22;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_RATE = 23;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MAG_RATE = 24;
+//		
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_DMP = 30;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL = 31;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_9DOF_SENSOR_FUSION = 32;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_GYRO_CAL = 33;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_VECTOR_CAL = 34;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_MAG_CAL = 35;
+//
+//		public static final int CONFIGOPTIONSMAPKEY_KINEMATIC_LPM = 40;
+//		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_LPM = 41;
+//		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_LPM = 42;
+//		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_LPM = 43;
+//		public static final int CONFIGOPTIONSMAPKEY_TCX0 = 44;
+//		public static final int CONFIGOPTIONSMAPKEY_INT_EXP_BRD_POW = 45;
 		
-		public static final int CONFIGOPTIONSMAPKEY_EXG_ECG_REFERENCE_ELECTRODE = 9;
-		public static final int CONFIGOPTIONSMAPKEY_EXG_EMG_REFERENCE_ELECTRODE = 10;
-		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_DETECTION = 11;
-		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_CURRENT = 12;
-		public static final int CONFIGOPTIONSMAPKEY_EXG_LEAD_OFF_COMPARATOR = 13;
-		public static final int CONFIGOPTIONSMAPKEY_EXG_RESPIRATION_DETECT_FREQ = 14;
-		public static final int CONFIGOPTIONSMAPKEY_EXG_RESPIRATION_DETECT_PHASE = 15;
+		
+		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";
+		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range";
+		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE = "Gyro Range";
+		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_RANGE = "Mag Range";
+		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_RATE = "Mag Rate";
+		public static final String GUI_LABEL_CONFIG_PRESSURE_RESOLUTION = "Pressure Resolution";
+		public static final String GUI_LABEL_CONFIG_GSR_RANGE = "GSR Range";
+		public static final String GUI_LABEL_CONFIG_EXG_RESOLUTION = "ExG Resolution";
+		public static final String GUI_LABEL_CONFIG_EXG_GAIN = "ExG Gain";
 
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_ACCEL_RANGE = 20;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_CAL = 21;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_LPF = 22;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_RATE = 23;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MAG_RATE = 24;
-		
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_DMP = 30;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL = 31;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_9DOF_SENSOR_FUSION = 32;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_GYRO_CAL = 33;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_VECTOR_CAL = 34;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_MPL_MAG_CAL = 35;
+		public static final String GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE = "ExG Reference Electrode";
+		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_DETECTION = "ExG Lead-Off Detection";
+		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_CURRENT = "ExG Lead-Off Current";
+		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_COMPARATOR = "ExG Lead-Off Compartor Threshold";
+		public static final String GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_FREQ = "ExG Respiration Detection Freq.";
+		public static final String GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_PHASE = "ExG Respiration Detection Phase";
 
-		public static final int CONFIGOPTIONSMAPKEY_KINEMATIC_LPM = 40;
-		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_LPM = 41;
-		public static final int CONFIGOPTIONSMAPKEY_MPU9150_GYRO_LPM = 42;
-		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_MAG_LPM = 43;
-		public static final int CONFIGOPTIONSMAPKEY_TCX0 = 44;
-		public static final int CONFIGOPTIONSMAPKEY_INT_EXP_BRD_POW = 45;
+		public static final String GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE = "MPU Accel Range";
+		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_CAL = "MPU Gyro Cal";
+		public static final String GUI_LABEL_CONFIG_MPU9150_LPF = "MPU LPF";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_RATE = "MPL Rate";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MAG_RATE = "MPU Mag Rate";
 		
+		public static final String GUI_LABEL_CONFIG_MPU9150_DMP = "DMP";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL = "MPL";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_9DOF_SENSOR_FUSION = "9DOF Sensor Fusion";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_GYRO_CAL = "Gyro Calibration";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_VECTOR_CAL = "Vector Compensation Calibration";
+		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL = "Magnetic Disturbance Calibration";
+
+		public static final String GUI_LABEL_CONFIG_KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";
+		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode";
+		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
+		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
+		public static final String GUI_LABEL_CONFIG_TCX0 = "TCX0";
+		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POW = "Internal Expansion Board Power";
 	}
 	
 	public static class Shimmer2{

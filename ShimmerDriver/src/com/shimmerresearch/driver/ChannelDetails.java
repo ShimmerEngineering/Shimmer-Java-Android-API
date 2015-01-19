@@ -29,8 +29,8 @@ public class ChannelDetails implements Serializable {
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	public String mLabel = "";
-	public Integer[] mSensorMapKeysRequired = null;
-	public Integer[] mSensorMapKeysConflicting = null;
+	public Integer[] mChannelMapKeysRequired = null;
+	public Integer[] mChannelMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
 	
 	public List<HwFwExpBrdVersionDetails> mCompatibleVersionInfo = null;  
@@ -55,7 +55,7 @@ public class ChannelDetails implements Serializable {
 		
 		mCompatibleVersionInfo = null;
 	}
-
+	
 	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
 		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;

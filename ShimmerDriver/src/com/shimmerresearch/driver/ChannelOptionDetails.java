@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * 
- * @param label
  * @param guiValues
  * @param values
  * @param optionType
@@ -22,7 +21,6 @@ public class ChannelOptionDetails implements Serializable {
 	public static final int COMBOBOX = 0;
 	public static final int CHECKBOX = 1;
 	
-	public String mLabel = "";
 	public String[] mGuiValues;
 	public Integer[] mConfigValues;
 	public int mOptionType;
@@ -30,13 +28,11 @@ public class ChannelOptionDetails implements Serializable {
 	public List<HwFwExpBrdVersionDetails> mCompatibleVersionInfo = null;  
 	
 	/**ComboBox (compatible with all HW, FW and Expansion Boards)
-	 * @param label
 	 * @param guiValues
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(String label, String[] guiValues, Integer[] configValues, int optionType) {
-		mLabel = label;
+	public ChannelOptionDetails(String[] guiValues, Integer[] configValues, int optionType) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mOptionType = optionType;
@@ -45,13 +41,11 @@ public class ChannelOptionDetails implements Serializable {
 	}
 	
 	/**ComboBox (with compatible HW, FW, and Expansion Board information)
-	 * @param label
 	 * @param guiValues
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(String label, String[] guiValues, Integer[] configValues, int optionType, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
-		mLabel = label;
+	public ChannelOptionDetails(String[] guiValues, Integer[] configValues, int optionType, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mOptionType = optionType;
@@ -61,26 +55,22 @@ public class ChannelOptionDetails implements Serializable {
 
 	
 	/**CheckBox (compatible with all HW, FW and Expansion Boards)
-	 * @param label
 	 * @param guiValues
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(String label, int optionType) {
-		mLabel = label;
+	public ChannelOptionDetails(int optionType) {
 		mOptionType = optionType;
 		
 		mCompatibleVersionInfo = null;
 	}
 	
 	/**CheckBox (with compatible HW, FW, and Expansion Board information)
-	 * @param label
 	 * @param guiValues
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(String label, int optionType, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
-		mLabel = label;
+	public ChannelOptionDetails(int optionType, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
 		mOptionType = optionType;
 		
 		mCompatibleVersionInfo = compatibleVersionInfo;

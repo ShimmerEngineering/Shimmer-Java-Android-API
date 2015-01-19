@@ -161,41 +161,6 @@ public class Shimmer3Configuration {
 		
 		//public static final String ADC_ALL = "All ADCs";
 		
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range";
-		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE = "Gyro Range";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_RANGE = "Mag Range";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_RATE = "Mag Rate";
-		public static final String GUI_LABEL_CONFIG_PRESSURE_RESOLUTION = "Pressure Resolution";
-		public static final String GUI_LABEL_CONFIG_GSR_RANGE = "GSR Range";
-		public static final String GUI_LABEL_CONFIG_EXG_RESOLUTION = "ExG Resolution";
-		public static final String GUI_LABEL_CONFIG_EXG_GAIN = "ExG Gain";
 
-		public static final String GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE = "ExG Reference Electrode";
-		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_DETECTION = "ExG Lead-Off Detection";
-		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_CURRENT = "ExG Lead-Off Current";
-		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_COMPARATOR = "ExG Lead-Off Compartor Threshold";
-		public static final String GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_FREQ = "ExG Respiration Detection Freq.";
-		public static final String GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_PHASE = "ExG Respiration Detection Phase";
-
-		public static final String GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE = "MPU Accel Range";
-		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_CAL = "MPU Gyro Cal";
-		public static final String GUI_LABEL_CONFIG_MPU9150_LPF = "MPU LPF";
-		public static final String GUI_LABEL_CONFIG_MPL_RATE = "MPL Rate";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MAG_RATE = "MPU Mag Rate";
-		
-		public static final String GUI_LABEL_CONFIG_MPU9150_DMP = "DMP";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL = "MPL";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_9DOF_SENSOR_FUSION = "9DOF Sensor Fusion";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_GYRO_CAL = "Gyro Calibration";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_VECTOR_CAL = "Vector Compensation Calibration";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL = "Magnetic Disturbance Calibration";
-
-		public static final String GUI_LABEL_CONFIG_KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode";
-		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
-		public static final String GUI_LABEL_CONFIG_TCX0 = "TCX0";
-		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POW = "Internal Expansion Board Power";
 		
 }

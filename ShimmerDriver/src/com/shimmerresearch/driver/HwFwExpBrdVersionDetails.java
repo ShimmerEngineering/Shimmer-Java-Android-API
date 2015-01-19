@@ -11,21 +11,21 @@ public class HwFwExpBrdVersionDetails implements Serializable {
 	public int mFirmwareVersionMajor = 0;
 	public int mFirmwareVersionMinor = 0;
 	public int mFirmwareVersionRelease = 0;
-	public int mExpansionBoardVersion = 0;
+	public int mShimmerExpansionBoardId = 0;
 	
 	public HwFwExpBrdVersionDetails(int hardwareVersion, 
 			int firmwareIndentifier,
 			int firmwareVersionMajor, 
 			int firmwareVersionMinor, 
 			int firmwareVersionRelease,
-			int expansionBoardVersion) {
+			int shimmerExpansionBoardId) {
 		
 		mHardwareVersion = hardwareVersion;
 		mFirmwareIndentifier = firmwareIndentifier;
 		mFirmwareVersionMajor = firmwareVersionMajor;
 		mFirmwareVersionMinor = firmwareVersionMinor;
 		mFirmwareVersionRelease = firmwareVersionRelease;
-		mExpansionBoardVersion = expansionBoardVersion;
+		mShimmerExpansionBoardId = shimmerExpansionBoardId;
 		
 	}
 
