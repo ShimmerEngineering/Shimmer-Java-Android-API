@@ -6731,8 +6731,6 @@ public abstract class ShimmerObject implements Serializable {
 	public List<Integer> channelMapConflictCheck(Integer key){
 		List<Integer> listOfChannelConflicts = new ArrayList<Integer>();
 		
-//		boolean pass=true;
-		
 		if (mShimmerVersion != HW_ID_SHIMMER_3){
 			//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
 			
