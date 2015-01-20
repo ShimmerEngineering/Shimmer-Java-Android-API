@@ -5803,18 +5803,16 @@ public abstract class ShimmerObject implements Serializable {
 				mExperimentName = new String(experimentName);
 	
 				//Configuration Time
-//				mConfigTime = (((long)(infoMemContents[iM.idxSDConfigTime] & 0xFF))<<24)
-//								+((long)(infoMemContents[iM.idxSDConfigTime+1] & 0xFF)<<16)
-//								+((long)(infoMemContents[iM.idxSDConfigTime+2] & 0xFF)<<8)
-//								+((long)(infoMemContents[iM.idxSDConfigTime+3] & 0xFF));
-				
-				//Configuration Time
 				int bitShift = (iM.lengthConfigTimeBytes-1) * 8;
 				mConfigTime = 0;
 				for(int x=0; x<iM.lengthConfigTimeBytes; x++ ) {
 					mConfigTime += (((long)(infoMemContents[iM.idxSDConfigTime+x] & 0xFF)) << bitShift);
 					bitShift -= 8;
 				}
+//				//if ConfigTime is all F's, reset the time to 0 
+//				if((mConfigTime&(2^32)) == (2^32)) {
+//					mConfigTime = 0;
+//				}
 				
 				mExperimentId = infoMemContents[iM.idxSDMyTrialID] & 0xFF;
 				mExperimentNumberOfShimmers = infoMemContents[iM.idxSDNumOfShimmers] & 0xFF;
