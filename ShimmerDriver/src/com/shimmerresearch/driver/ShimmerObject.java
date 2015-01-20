@@ -6227,6 +6227,10 @@ public abstract class ShimmerObject implements Serializable {
 		HwFwExpBrdVersionDetails baseNoExpBoardSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_NONE);
 		HwFwExpBrdVersionDetails baseAnyExpBoardSdLog = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_ANY);
 		
+		HwFwExpBrdVersionDetails baseSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_ANY);
+		HwFwExpBrdVersionDetails baseBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_ANY);
+		HwFwExpBrdVersionDetails baseLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_ANY);
+		
 		HwFwExpBrdVersionDetails baseExgSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_EXG); 
 		HwFwExpBrdVersionDetails baseExgUnifiedSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
 		HwFwExpBrdVersionDetails baseExgBtStream = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_EXG);
@@ -6303,6 +6307,12 @@ public abstract class ShimmerObject implements Serializable {
 				baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
 				baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
 				baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
+
+		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoStreaming = Arrays.asList(
+				baseBtStream, baseLogAndStream);
+
+		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoLogging = Arrays.asList(
+				baseSdLog, baseLogAndStream);
 		
 		//TODO: move bitshift values and masks to dedicated classes for infomem, btstream sensor enable and SD file header mapping (for version control)
 		
@@ -6625,6 +6635,7 @@ public abstract class ShimmerObject implements Serializable {
 				
 			}
 			
+			//TODO: add incompatible firmware info for general config options 
 			// Sensor Options Map
 			mShimmerConfigOptionsMap = new TreeMap<String,ChannelOptionDetails>();
 			
@@ -6637,27 +6648,35 @@ public abstract class ShimmerObject implements Serializable {
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BUFFER_SIZE, 
 					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_CONFIG_TIME, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+					listOfCompatibleVersionInfoLogging));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_NAME, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+					listOfCompatibleVersionInfoLogging));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_ID, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+					listOfCompatibleVersionInfoLogging));
 
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_NUMBER_OF_SHIMMERS, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+							listOfCompatibleVersionInfoLogging));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_DURATION_ESTIMATED, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+							listOfCompatibleVersionInfoLogging));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_DURATION_MAXIMUM, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+							listOfCompatibleVersionInfoLogging));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BROADCAST_INTERVAL, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+							listOfCompatibleVersionInfoLogging));
 			
 			
 			
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BLUETOOTH_BAUD_RATE, 
 					new ChannelOptionDetails(Configuration.Shimmer3.ListofBluetoothBaudRates, 
 											Configuration.Shimmer3.ListofBluetoothBaudRatesConfigValues, 
-											ChannelOptionDetails.COMBOBOX));
+											ChannelOptionDetails.COMBOBOX,
+											listOfCompatibleVersionInfoStreaming));
 			
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE, 
 					new ChannelOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
@@ -6904,8 +6923,8 @@ public abstract class ShimmerObject implements Serializable {
 				
 				
 				// Automatically control internal expansion board power
-				for(Integer i:mShimmerChannelMap.keySet()) {
-					if(mShimmerChannelMap.get(i).mIsEnabled && mShimmerChannelMap.get(i).mIntExpBoardPowerRequired) {
+				for(Integer channelKey:mShimmerChannelMap.keySet()) {
+					if(mShimmerChannelMap.get(channelKey).mIsEnabled && mShimmerChannelMap.get(channelKey).mIntExpBoardPowerRequired) {
 						mInternalExpPower = 1;
 						break;
 					}
@@ -6939,6 +6958,7 @@ public abstract class ShimmerObject implements Serializable {
 			if((compatibleVersionInfo.mShimmerExpansionBoardId>=0)&&(compatibleVersionInfo.mShimmerExpansionBoardId<=255)) {
 				if((getHardwareVersion() == compatibleVersionInfo.mShimmerHardwareVersion)
 						&&(mShimmerExpansionBoardId == compatibleVersionInfo.mShimmerExpansionBoardId)
+						&&(mFirmwareIndentifier == compatibleVersionInfo.mFirmwareIndentifier)
 						&&(mFirmwareVersionMajor >= compatibleVersionInfo.mFirmwareVersionMajor)
 						&&(mFirmwareVersionMinor >= compatibleVersionInfo.mFirmwareVersionMinor)
 						&&(mFirmwareVersionInternal >= compatibleVersionInfo.mFirmwareVersionRelease)) {
@@ -6947,6 +6967,7 @@ public abstract class ShimmerObject implements Serializable {
 			}
 			else {
 				if((mShimmerHardwareVersion == compatibleVersionInfo.mShimmerHardwareVersion)
+						&&(mFirmwareIndentifier == compatibleVersionInfo.mFirmwareIndentifier)
 						&&(mFirmwareVersionMajor >= compatibleVersionInfo.mFirmwareVersionMajor)
 						&&(mFirmwareVersionMinor >= compatibleVersionInfo.mFirmwareVersionMinor)
 						&&(mFirmwareVersionInternal >= compatibleVersionInfo.mFirmwareVersionRelease)) {
