@@ -136,6 +136,8 @@ public class Configuration {
 
 		//TODO: From here onwards is is Mark TESTING - not finished
 		//TODO: check all indexes below
+		public final static Integer[] ListofBluetoothBaudRatesConfigValues={0,1,2,3,4,5,6,7,8,9,10};
+		
 		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
 		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
 		
@@ -288,7 +290,25 @@ public class Configuration {
 //		public static final int CONFIGOPTIONSMAPKEY_TCX0 = 44;
 //		public static final int CONFIGOPTIONSMAPKEY_INT_EXP_BRD_POW = 45;
 		
-		
+
+		public static final String GUI_LABEL_CONFIG_SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
+		public static final String GUI_LABEL_CONFIG_EXPERIMENT_NAME = "Experiment Name";
+		public static final String GUI_LABEL_CONFIG_SHIMMER_SAMPLING_RATE = "Sampling Rate";
+		public static final String GUI_LABEL_CONFIG_BUFFER_SIZE = "Buffer Size";
+		public static final String GUI_LABEL_CONFIG_CONFIG_TIME = "Config Time";
+		public static final String GUI_LABEL_CONFIG_EXPERIMENT_NUMBER_OF_SHIMMERS = "Number Of Shimmers";
+		public static final String GUI_LABEL_CONFIG_SHIMMER_MAC_FROM_INFOMEM = "InfoMem MAC";
+		public static final String GUI_LABEL_CONFIG_EXPERIMENT_ID = "Experiment ID";
+		public static final String GUI_LABEL_CONFIG_EXPERIMENT_DURATION_ESTIMATED = "Estimated Duration";
+		public static final String GUI_LABEL_CONFIG_EXPERIMENT_DURATION_MAXIMUM = "Maximum Duration";
+		public static final String GUI_LABEL_CONFIG_BROADCAST_INTERVAL = "Broadcast Interval";
+		public static final String GUI_LABEL_CONFIG_BLUETOOTH_BAUD_RATE = "Bluetooth Baud Rate";
+
+		public static final String GUI_LABEL_CONFIG_USER_BUTTON_START = "User Button Start";
+		public static final String GUI_LABEL_CONFIG_SINGLE_TOUCH_START = "Single Touch Start";
+		public static final String GUI_LABEL_CONFIG_EXPERIMENT_MASTER_SHIMMER = "Master Shimmer";
+		public static final String GUI_LABEL_CONFIG_EXPERIMENT_SYNC_WHEN_LOGGING = "Sync When Logging";
+			
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range";
 		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE = "Gyro Range";
@@ -309,6 +329,7 @@ public class Configuration {
 		public static final String GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE = "MPU Accel Range";
 		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_CAL = "MPU Gyro Cal";
 		public static final String GUI_LABEL_CONFIG_MPU9150_LPF = "MPU LPF";
+		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RATE = "Gyro Sampling Rate";
 		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_RATE = "MPL Rate";
 		public static final String GUI_LABEL_CONFIG_MPU9150_MAG_RATE = "MPU Mag Rate";
 		

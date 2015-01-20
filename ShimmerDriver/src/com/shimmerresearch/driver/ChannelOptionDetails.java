@@ -20,6 +20,7 @@ public class ChannelOptionDetails implements Serializable {
 
 	public static final int COMBOBOX = 0;
 	public static final int CHECKBOX = 1;
+	public static final int TEXTFIELD = 2;
 	
 	public String[] mGuiValues;
 	public Integer[] mConfigValues;

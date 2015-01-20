@@ -5530,10 +5530,52 @@ public abstract class ShimmerObject implements Serializable {
 		if (mShimmerHardwareVersion != -1){
 			mShimmerUserAssignedName = "Default";
 			mExperimentName = "Trial001";
-			mSamplingRate = 51.20;
 			
 			mExperimentNumberOfShimmers = 1;
 			mButtonStart = 1;
+			
+			mBluetoothBaudRate=0;
+
+			mAccelRange=0;  	
+			mHighResAccelWR = false;
+			mMagRange=1;
+			mGyroRange=1; 
+			mMPU9150AccelRange=0;
+			mGSRRange=4;
+			mInternalExpPower=-1;
+
+			mPressureResolution = 0;
+			mExGResolution = 0;
+			mShimmer2MagRate=0;
+			
+			mMPU9150DMP = 0;
+			mMPU9150LPF = 0;
+			mMPU9150MotCalCfg = 0;
+			mMPU9150MPLSamplingRate = 0;
+			mMPU9150MagSamplingRate = 0;
+			mMPLSensorFusion = 0;
+			mMPLGyroCalTC = 0;
+			mMPLVectCompCal = 0;
+			mMPLMagDistCal = 0;
+			mMPLEnable = 0;
+			mButtonStart = 0;
+			mMasterShimmer = 0;
+			mSingleTouch = 0;
+			mTCXO = 0;
+			
+			mPacketSize=0; 
+			mConfigByte0=0;
+			mNChannels=0; 
+			mBufferSize=0;                   							
+			mSyncBroadcastInterval = 0;
+			mInitialTimeStamp = 0;
+			
+
+//			mSamplingRate = 51.20;
+//			mLSM303DigitalAccelRate=0;
+//			mLSM303MagRate=4;
+//			mMPU9150GyroAccelRate=0;
+			setShimmerSamplingRate(51.2);
 			
 			createMapOfChannels();
 			if (mShimmerHardwareVersion == HW_ID_SHIMMER_2R){
@@ -6586,7 +6628,37 @@ public abstract class ShimmerObject implements Serializable {
 			// Sensor Options Map
 			mShimmerConfigOptionsMap = new TreeMap<String,ChannelOptionDetails>();
 			
-			//Standard Shimmer3 Options
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_USER_ASSIGNED_NAME, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_SAMPLING_RATE, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_MAC_FROM_INFOMEM, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BUFFER_SIZE, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_CONFIG_TIME, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_NAME, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_ID, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_NUMBER_OF_SHIMMERS, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_DURATION_ESTIMATED, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_DURATION_MAXIMUM, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BROADCAST_INTERVAL, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+			
+			
+			
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BLUETOOTH_BAUD_RATE, 
+					new ChannelOptionDetails(Configuration.Shimmer3.ListofBluetoothBaudRates, 
+											Configuration.Shimmer3.ListofBluetoothBaudRatesConfigValues, 
+											ChannelOptionDetails.COMBOBOX));
+			
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE, 
 					new ChannelOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
 											Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
@@ -6731,7 +6803,19 @@ public abstract class ShimmerObject implements Serializable {
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL, 
 					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
 			
+			//General Config
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_RATE, 
+					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
 			
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_USER_BUTTON_START, 
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SINGLE_TOUCH_START, 
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_MASTER_SHIMMER, 
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_SYNC_WHEN_LOGGING, 
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
+
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_KINEMATIC_LPM, 
 					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM, 
