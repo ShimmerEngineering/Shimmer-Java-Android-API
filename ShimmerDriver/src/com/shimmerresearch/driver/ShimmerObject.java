@@ -6224,10 +6224,10 @@ public abstract class ShimmerObject implements Serializable {
 	 */
 	public void createMapOfChannels() {
 		
-		HwFwExpBrdVersionDetails baseNoExpBoardSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_NONE);
-		HwFwExpBrdVersionDetails baseAnyExpBoardSdLog = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_ANY);
+		HwFwExpBrdVersionDetails baseNoIntExpBoardSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_NONE);
+		HwFwExpBrdVersionDetails baseAnyIntExpBoardSdLog = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_ANY);
 		
-		HwFwExpBrdVersionDetails baseSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_ANY);
+//		HwFwExpBrdVersionDetails baseSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_ANY);
 		HwFwExpBrdVersionDetails baseBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_ANY);
 		HwFwExpBrdVersionDetails baseLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_ANY);
 		
@@ -6268,7 +6268,7 @@ public abstract class ShimmerObject implements Serializable {
 				baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
 				baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
 		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoMpl = Arrays.asList(baseAnyExpBoardSdLog);
+		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseAnyIntExpBoardSdLog);
 		
 		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoGsr = Arrays.asList(
 				baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
@@ -6312,7 +6312,9 @@ public abstract class ShimmerObject implements Serializable {
 				baseBtStream, baseLogAndStream);
 
 		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoLogging = Arrays.asList(
-				baseSdLog, baseLogAndStream);
+				baseAnyIntExpBoardSdLog, baseLogAndStream);
+
+//		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
 		
 		//TODO: move bitshift values and masks to dedicated classes for infomem, btstream sensor enable and SD file header mapping (for version control)
 		
@@ -6561,21 +6563,21 @@ public abstract class ShimmerObject implements Serializable {
 				
 				streamingByteIndex = 3;			// NV_SENSORS3
 				logHeaderByteIndex = 3;
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF, new ChannelDetails(false, (long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_6DOF_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_9DOF, new ChannelDetails(false, (long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_9DOF_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_6DOF, new ChannelDetails(false, (long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_6DOF_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_9DOF, new ChannelDetails(false, (long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_9DOF_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_HEADING, new ChannelDetails(false, (long)0, (long)0x08<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_HEADING_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_PEDOMETER, new ChannelDetails(false, (long)0, (long)0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_PEDOM_CNT_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_TAP, new ChannelDetails(false, (long)0, (long)0x02<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_TAPDIRANDTAPCNT_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MOTION_ORIENT, new ChannelDetails(false, (long)0, (long)0x01<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_MOTIONANDORIENT_GUI, false, listOfCompatibleVersionInfoMpl));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF, new ChannelDetails(false, (long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_6DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_9DOF, new ChannelDetails(false, (long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_9DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_6DOF, new ChannelDetails(false, (long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_6DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_9DOF, new ChannelDetails(false, (long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_9DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_HEADING, new ChannelDetails(false, (long)0, (long)0x08<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_HEADING_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_PEDOMETER, new ChannelDetails(false, (long)0, (long)0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_PEDOM_CNT_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_TAP, new ChannelDetails(false, (long)0, (long)0x02<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_TAPDIRANDTAPCNT_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MOTION_ORIENT, new ChannelDetails(false, (long)0, (long)0x01<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_MOTIONANDORIENT_GUI, false, listOfCompatibleVersionInfoSdLog));
 
 				streamingByteIndex = 4;			// NV_SENSORS4
 				logHeaderByteIndex = 4;
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_GYRO, new ChannelDetails(false, (long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.GYRO_MPU_MPL_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_ACCEL, new ChannelDetails(false, (long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.ACCEL_MPU_MPL_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MAG, new ChannelDetails(false, (long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.MAG_MPU_MPL_GUI, false, listOfCompatibleVersionInfoMpl));
-				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF_RAW, new ChannelDetails(false, (long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_DMP_6DOF_GUI, false, listOfCompatibleVersionInfoMpl));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_GYRO, new ChannelDetails(false, (long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.GYRO_MPU_MPL_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_ACCEL, new ChannelDetails(false, (long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.ACCEL_MPU_MPL_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MAG, new ChannelDetails(false, (long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.MAG_MPU_MPL_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF_RAW, new ChannelDetails(false, (long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_DMP_6DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x08<<(loggingHeaderByteIndex*8), "")); // unused
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x04<<(loggingHeaderByteIndex*8), "")); // unused
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x02<<(loggingHeaderByteIndex*8), "")); // unused
@@ -6623,6 +6625,13 @@ public abstract class ShimmerObject implements Serializable {
 					Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP,
 					Configuration.Shimmer3.CHANNELMAPKEY_ECG,
 					Configuration.Shimmer3.CHANNELMAPKEY_EMG};
+
+
+				mShimmerChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXT_EXP_ADC, new ChannelDetails(false, 0, 0, Shimmer3Configuration.GUI_LABEL_EXT_EXP_ADC, false, listOfCompatibleVersionInfoSdLog)); // External Expansion ADCs
+				mShimmerChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXT_EXP_ADC).mChannelMapKeysRequired = new Integer[]{
+					Configuration.Shimmer3.CHANNELMAPKEY_EXT_ADC_A6,
+					Configuration.Shimmer3.CHANNELMAPKEY_EXT_ADC_A7,
+					Configuration.Shimmer3.CHANNELMAPKEY_EXT_ADC_A15};
 				
 //				long shimmer3AllAdc = mShimmerSensorsMap.get(SENSOR_SHIMMER3_EXT_ADC_A7).mSensorBitmapIDStreaming
 //						| mShimmerSensorsMap.get(SENSOR_SHIMMER3_EXT_ADC_A6).mSensorBitmapIDStreaming
@@ -6632,6 +6641,22 @@ public abstract class ShimmerObject implements Serializable {
 //						| mShimmerSensorsMap.get(SENSOR_SHIMMER3_INT_ADC_A13).mSensorBitmapIDStreaming;
 //				mShimmerSensorsMap.put(SENSOR_SHIMMER3_ALL_ADC, new ChannelDetails(false, shimmer3AllAdc, shimmer3AllAdc, Shimmer3Configuration.ADC_ALL)); // SENSOR_ALL_ADC_SHIMMER3
 
+				
+				// Associated config options for each channel 
+				mShimmerChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_LSM303DLHC_ACCEL).mAssociatedConfigurationOptions = new String[]{
+					Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE,
+					Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE};
+				mShimmerChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_LSM303DLHC_MAG).mAssociatedConfigurationOptions = new String[]{
+					Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_RANGE,
+					Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_RATE};
+				mShimmerChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_GYRO).mAssociatedConfigurationOptions = new String[]{
+					Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE,
+					Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_RATE};
+				mShimmerChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_BMP180_PRESSURE).mAssociatedConfigurationOptions = new String[]{
+					Configuration.Shimmer3.GUI_LABEL_CONFIG_PRESSURE_RESOLUTION};
+				mShimmerChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_GSR).mAssociatedConfigurationOptions = new String[]{
+					Configuration.Shimmer3.GUI_LABEL_CONFIG_GSR_RANGE};
+				
 				
 			}
 			
@@ -6782,45 +6807,45 @@ public abstract class ShimmerObject implements Serializable {
 					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150AccelRange, 
 											Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
 											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoMpl));
+											listOfCompatibleVersionInfoSdLog));
 			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_CAL, 
+			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_DMP_GYRO_CAL, 
 					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
 											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
 											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoMpl));
+											listOfCompatibleVersionInfoSdLog));
 
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_LPF, 
 					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
 											Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
 											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoMpl));
+											listOfCompatibleVersionInfoSdLog));
 
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_RATE, 
 					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplRate, 
 											Configuration.Shimmer3.ListofMPU9150MplRateConfigValues, 
 											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoMpl));
+											listOfCompatibleVersionInfoSdLog));
 
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MAG_RATE, 
 					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MagRate, 
 											Configuration.Shimmer3.ListofMPU9150MagRateConfigValues, 
 											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoMpl));
+											listOfCompatibleVersionInfoSdLog));
 
 			//MPL CheckBoxes
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_DMP, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_9DOF_SENSOR_FUSION, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_GYRO_CAL, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_VECTOR_CAL, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			
 			//General Config
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_RATE, 
@@ -6836,17 +6861,17 @@ public abstract class ShimmerObject implements Serializable {
 					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
 
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_KINEMATIC_LPM, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_LPM, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_TCX0, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_INT_EXP_BRD_POW, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoMpl));
+					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			
 		}
 	}
@@ -6862,6 +6887,9 @@ public abstract class ShimmerObject implements Serializable {
 						mShimmerChannelMap.get(i).mIsEnabled = state;
 					}
 				}
+				
+				//TODO need to handle setting master channel when any of the sub channels are selected, for example, Setting External Expansion ADC channel when ADC6 is selected
+				
 				
 				// Unique cases for Shimmer3 ExG
 				if((key == Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT) || (key == Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT)) {

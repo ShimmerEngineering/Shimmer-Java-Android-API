@@ -32,6 +32,7 @@ public class ChannelDetails implements Serializable {
 	public Integer[] mChannelMapKeysRequired = null;
 	public Integer[] mChannelMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
+	public String[] mAssociatedConfigurationOptions = null;
 	
 	public List<HwFwExpBrdVersionDetails> mCompatibleVersionInfo = null;  
 

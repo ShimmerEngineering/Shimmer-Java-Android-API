@@ -137,6 +137,7 @@ public class Shimmer3Configuration {
 		public static final String EMG_GUI = "EMG";
 		public static final String ECG_GUI = "ECG";
 		public static final String EXG_TEST_GUI = "ExG Test";
+		public static final String GUI_LABEL_EXT_EXP_ADC = "External Expansion";
 		public static final String QUAT_MPL_6DOF_GUI = "MPU Quat 6DOF";
 		public static final String QUAT_MPL_9DOF_GUI = "MPU Quat 9DOF";
 		public static final String EULER_MPL_6DOF_GUI = "MPU Euler 6DOF";

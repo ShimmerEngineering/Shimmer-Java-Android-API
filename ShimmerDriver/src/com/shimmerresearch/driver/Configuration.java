@@ -249,6 +249,7 @@ public class Configuration {
 		public final static int CHANNELMAPKEY_EMG = 101;
 		public final static int CHANNELMAPKEY_EXG_TEST = 102;
 		public final static int CHANNELMAPKEY_ALL_ADC = 103;
+		public final static int CHANNELMAPKEY_EXT_EXP_ADC = 104;
 
 		
 //		// Sensor Options Map
@@ -312,6 +313,7 @@ public class Configuration {
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range";
 		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE = "Gyro Range";
+		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RATE = "Gyro Sampling Rate";
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_RANGE = "Mag Range";
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_RATE = "Mag Rate";
 		public static final String GUI_LABEL_CONFIG_PRESSURE_RESOLUTION = "Pressure Resolution";
@@ -327,9 +329,8 @@ public class Configuration {
 		public static final String GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_PHASE = "ExG Respiration Detection Phase";
 
 		public static final String GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE = "MPU Accel Range";
-		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_CAL = "MPU Gyro Cal";
+		public static final String GUI_LABEL_CONFIG_MPU9150_DMP_GYRO_CAL = "MPU Gyro Cal";
 		public static final String GUI_LABEL_CONFIG_MPU9150_LPF = "MPU LPF";
-		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RATE = "Gyro Sampling Rate";
 		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_RATE = "MPL Rate";
 		public static final String GUI_LABEL_CONFIG_MPU9150_MAG_RATE = "MPU Mag Rate";
 		
