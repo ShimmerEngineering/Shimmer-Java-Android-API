@@ -158,7 +158,6 @@ public abstract class ShimmerObject implements Serializable {
 	
 	//TODO: temporarily copied from ShimmerExpansionBoardDetails 
 	public final static int HW_SHIMMER3_EXP_BRD_NONE = 255;
-	public final static int HW_SHIMMER3_EXP_BRD_ANY = 256;
 	public final static int HW_SHIMMER3_EXP_BRD_BR_AMP = 8;
 	public final static int HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED = 49;
 	public final static int HW_SHIMMER3_EXP_BRD_GSR = 14;
@@ -435,7 +434,7 @@ public abstract class ShimmerObject implements Serializable {
 	public String mShimmerHardwareParsed = "";
 
 	public int mFirmwareVersionCode = 0;
-	public int mFirmwareIndentifier = 0;
+	public int mFirmwareIdentifier = 0;
 	public int mFirmwareVersionMajor = 0;
 	public int mFirmwareVersionMinor = 0;
 	public int mFirmwareVersionInternal = 0;
@@ -446,6 +445,7 @@ public abstract class ShimmerObject implements Serializable {
 	public int mShimmerExpansionBoardSpecialRev = -1;
 	public String mShimmerExpansionBoardParsed = "";  
 	public String mShimmerExpansionBoardParsedWithVer = "";  
+	public static final int ANY_VERSION = -1;
 	
 	//TODO: change mExpBoardArray from ShimmerObject to mShimmerExpansionBoardId or are they different?
 	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
@@ -5754,7 +5754,7 @@ public abstract class ShimmerObject implements Serializable {
 			
 			
 			//SDLog and LogAndStream
-			if(((mFirmwareIndentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIndentifier == FW_ID_SHIMMER3_LOGANDSTREAM))
+			if(((mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM))
 					&& infoMemContents.length >= 384) {
 				
 				// InfoMem C - Start - used by SdLog and LogAndStream
@@ -5928,11 +5928,11 @@ public abstract class ShimmerObject implements Serializable {
 		
 		byte[] infoMemBackup = mShimmerInfoMemBytes.clone();
 		
-		if((mFirmwareIndentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIndentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
+		if((mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
 			mShimmerInfoMemBytes = new byte[384];
 //			mShimmerInfoMemBytes = createEmptyInfoMemByteArray(384);
 		}
-		else if(mFirmwareIndentifier == FW_ID_SHIMMER3_BTSTREAM) {
+		else if(mFirmwareIdentifier == FW_ID_SHIMMER3_BTSTREAM) {
 			mShimmerInfoMemBytes = new byte[128];
 //			mShimmerInfoMemBytes = createEmptyInfoMemByteArray(128);
 		}
@@ -6090,7 +6090,7 @@ public abstract class ShimmerObject implements Serializable {
 		
 		
 		//SDLog and LogAndStream
-		if((mFirmwareIndentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIndentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
+		if((mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
 
 			// InfoMem C - Start - used by SdLog and LogAndStream
 			mShimmerInfoMemBytes[infoMemMap.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & 0x01) << 7);
@@ -6226,104 +6226,6 @@ public abstract class ShimmerObject implements Serializable {
 	 */
 	public void createMapOfChannels() {
 		
-		HwFwExpBrdVersionDetails baseNoIntExpBoardSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_NONE);
-		HwFwExpBrdVersionDetails baseAnyIntExpBoardSdLog = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_ANY);
-		HwFwExpBrdVersionDetails baseAnyIntExpBoardAndFw = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,-1,-1,-1,-1,HW_SHIMMER3_EXP_BRD_ANY);
-		
-//		HwFwExpBrdVersionDetails baseSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_ANY);
-		HwFwExpBrdVersionDetails baseBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_ANY);
-		HwFwExpBrdVersionDetails baseLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_ANY);
-		
-		HwFwExpBrdVersionDetails baseExgSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_EXG); 
-		HwFwExpBrdVersionDetails baseExgUnifiedSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
-		HwFwExpBrdVersionDetails baseExgBtStream = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_EXG);
-		HwFwExpBrdVersionDetails baseExgUnifiedBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
-		HwFwExpBrdVersionDetails baseExgLogAndStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_EXG);
-		HwFwExpBrdVersionDetails baseExgUnifiedLogAndStream = new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
-		
-		HwFwExpBrdVersionDetails baseGsrSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_GSR);
-		HwFwExpBrdVersionDetails baseGsrUnifiedSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
-		HwFwExpBrdVersionDetails baseGsrBtStream = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_GSR);
-		HwFwExpBrdVersionDetails baseGsrUnifiedBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
-		HwFwExpBrdVersionDetails baseGsrLogAndStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_GSR);
-		HwFwExpBrdVersionDetails baseGsrUnifiedLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
-
-		HwFwExpBrdVersionDetails baseBrAmpSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
-		HwFwExpBrdVersionDetails baseBrAmpUnifiedSdLog = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
-		HwFwExpBrdVersionDetails baseBrAmpBtStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
-		HwFwExpBrdVersionDetails baseBrAmpUnifiedBtStream = new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
-		HwFwExpBrdVersionDetails baseBrAmpLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
-		HwFwExpBrdVersionDetails baseBrAmpUnifiedLogAndStream = new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
-		
-		HwFwExpBrdVersionDetails baseProto3MiniSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
-		HwFwExpBrdVersionDetails baseProto3MiniBtStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
-		HwFwExpBrdVersionDetails baseProto3MiniLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
-
-		HwFwExpBrdVersionDetails baseProto3DeluxeSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
-		HwFwExpBrdVersionDetails baseProto3DeluxeBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
-		HwFwExpBrdVersionDetails baseProto3DeluxeLogAndStream =	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
-
-		HwFwExpBrdVersionDetails baseHighGAccelSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
-		HwFwExpBrdVersionDetails baseHighGAccelBtStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
-		HwFwExpBrdVersionDetails baseHighGAccelLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoExg = Arrays.asList(
-				baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
-				baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseAnyIntExpBoardSdLog);
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoGsr = Arrays.asList(
-				baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
-				baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
-				baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
-				baseBrAmpUnifiedSdLog,  baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
-
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoProto3Mini = Arrays.asList(
-				baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoProto3Deluxe = Arrays.asList(
-				baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
-				baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
-				baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
-				baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
-				baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
-				baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
-				baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
-				baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
-				baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream,
-				baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
-				baseBrAmpUnifiedSdLog,  baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoIntExpA12 = Arrays.asList(
-				baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
-				baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
-				baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
-				baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
-				baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream);
-		
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoIntExpA13 = Arrays.asList(
-				baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
-				baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
-				baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
-				baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
-				baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
-				baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
-				baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
-
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoStreaming = Arrays.asList(
-				baseBtStream, baseLogAndStream);
-
-		List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoLogging = Arrays.asList(
-				baseAnyIntExpBoardSdLog, baseLogAndStream);
-
 		//TODO: move bitshift values and masks to dedicated classes for infomem, btstream sensor enable and SD file header mapping (for version control)
 		
 		mShimmerChannelMap = new TreeMap<Integer,ChannelDetails>();
@@ -6397,9 +6299,107 @@ public abstract class ShimmerObject implements Serializable {
 					Configuration.Shimmer2.CHANNELMAPKEY_EXP_BOARD_A0,
 					Configuration.Shimmer2.CHANNELMAPKEY_EXP_BOARD_A7);
 
-
 			} 
 			else if (mShimmerHardwareVersion == HW_ID_SHIMMER_3) {
+				
+				HwFwExpBrdVersionDetails baseAnyIntExpBoardAndFw = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+
+				HwFwExpBrdVersionDetails baseNoIntExpBoardSdLog = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_NONE);
+
+				HwFwExpBrdVersionDetails baseSdLog = 				new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,ANY_VERSION);
+				HwFwExpBrdVersionDetails baseBtStream = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,ANY_VERSION);
+				HwFwExpBrdVersionDetails baseLogAndStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,ANY_VERSION);
+				
+				HwFwExpBrdVersionDetails baseExgSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_EXG); 
+				HwFwExpBrdVersionDetails baseExgUnifiedSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
+				HwFwExpBrdVersionDetails baseExgBtStream = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_EXG);
+				HwFwExpBrdVersionDetails baseExgUnifiedBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
+				HwFwExpBrdVersionDetails baseExgLogAndStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_EXG);
+				HwFwExpBrdVersionDetails baseExgUnifiedLogAndStream = new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
+				
+				HwFwExpBrdVersionDetails baseGsrSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_GSR);
+				HwFwExpBrdVersionDetails baseGsrUnifiedSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
+				HwFwExpBrdVersionDetails baseGsrBtStream = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_GSR);
+				HwFwExpBrdVersionDetails baseGsrUnifiedBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
+				HwFwExpBrdVersionDetails baseGsrLogAndStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_GSR);
+				HwFwExpBrdVersionDetails baseGsrUnifiedLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
+
+				HwFwExpBrdVersionDetails baseBrAmpSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
+				HwFwExpBrdVersionDetails baseBrAmpUnifiedSdLog = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
+				HwFwExpBrdVersionDetails baseBrAmpBtStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
+				HwFwExpBrdVersionDetails baseBrAmpUnifiedBtStream = new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
+				HwFwExpBrdVersionDetails baseBrAmpLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
+				HwFwExpBrdVersionDetails baseBrAmpUnifiedLogAndStream = new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
+				
+				HwFwExpBrdVersionDetails baseProto3MiniSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
+				HwFwExpBrdVersionDetails baseProto3MiniBtStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
+				HwFwExpBrdVersionDetails baseProto3MiniLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
+
+				HwFwExpBrdVersionDetails baseProto3DeluxeSdLog = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
+				HwFwExpBrdVersionDetails baseProto3DeluxeBtStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
+				HwFwExpBrdVersionDetails baseProto3DeluxeLogAndStream =	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
+
+				HwFwExpBrdVersionDetails baseHighGAccelSdLog = 			new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
+				HwFwExpBrdVersionDetails baseHighGAccelBtStream = 		new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
+				HwFwExpBrdVersionDetails baseHighGAccelLogAndStream = 	new HwFwExpBrdVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoExg = Arrays.asList(
+						baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
+						baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoGsr = Arrays.asList(
+						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
+						baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
+						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
+						baseBrAmpUnifiedSdLog,  baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
+
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoProto3Mini = Arrays.asList(
+						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoProto3Deluxe = Arrays.asList(
+						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
+						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
+						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
+						baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
+						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream,
+						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
+						baseBrAmpUnifiedSdLog,  baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoIntExpA12 = Arrays.asList(
+						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
+						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
+						baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream);
+				
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoIntExpA13 = Arrays.asList(
+						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
+						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
+						baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
+						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
+						baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
+
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoStreaming = Arrays.asList(
+						baseBtStream, baseLogAndStream);
+
+				List<HwFwExpBrdVersionDetails> listOfCompatibleVersionInfoLogging = Arrays.asList(
+						baseSdLog, baseLogAndStream);
+
 				
 				long streamingByteIndex = 0;	// NV_SENSORS0
 				long logHeaderByteIndex = 0;
@@ -6735,14 +6735,15 @@ public abstract class ShimmerObject implements Serializable {
 				mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_PROTO_DELUXE).mCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Deluxe;
 				mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_BRIDE_AMPLIFIER).mCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
 
-				// Auto generate associated channel configuration options from channel map (does not add duplicates)
+				// Auto generate associated channel configuration options from channel map
 				for(String channelGroup:mShimmerChannelGroupingMap.keySet()){
+					// Ok to clear here because variable is initiated in the class
 					mShimmerChannelGroupingMap.get(channelGroup).mAssociatedConfigurationOptions.clear();
 					for(Integer channel:mShimmerChannelGroupingMap.get(channelGroup).mAssociatedChannels) {
 						List<String> associatedConfigOptions = mShimmerChannelMap.get(channel).mAssociatedConfigurationOptions;
-						
 						if(associatedConfigOptions!=null) {
 							for(String configOption:associatedConfigOptions) {
+								// do not add duplicates
 								if(!(mShimmerChannelGroupingMap.get(channelGroup).mAssociatedConfigurationOptions.contains(configOption))) {
 									mShimmerChannelGroupingMap.get(channelGroup).mAssociatedConfigurationOptions.add(configOption);
 								}
@@ -6758,219 +6759,219 @@ public abstract class ShimmerObject implements Serializable {
 //				}
 				
 
+				//TODO: add incompatible firmware info for general config options 
+				// Sensor Options Map
+				mShimmerConfigOptionsMap = new HashMap<String,ChannelOptionDetails>();
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_USER_ASSIGNED_NAME, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_SAMPLING_RATE, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_MAC_FROM_INFOMEM, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BUFFER_SIZE, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_CONFIG_TIME, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+												listOfCompatibleVersionInfoLogging));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_NAME, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+												listOfCompatibleVersionInfoLogging));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_ID, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+												listOfCompatibleVersionInfoLogging));
+
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_NUMBER_OF_SHIMMERS, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+												listOfCompatibleVersionInfoLogging));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_DURATION_ESTIMATED, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+												listOfCompatibleVersionInfoLogging));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_DURATION_MAXIMUM, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+												listOfCompatibleVersionInfoLogging));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BROADCAST_INTERVAL, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
+												listOfCompatibleVersionInfoLogging));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BLUETOOTH_BAUD_RATE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofBluetoothBaudRates, 
+												Configuration.Shimmer3.ListofBluetoothBaudRatesConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoStreaming));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
+												Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
+												ChannelOptionDetails.COMBOBOX));
+				if(mLowPowerAccelWR) {
+					mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE, 
+							new ChannelOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
+													Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
+													ChannelOptionDetails.COMBOBOX));
+				}
+				else {
+					mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE, 
+							new ChannelOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+													Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+													ChannelOptionDetails.COMBOBOX));
+				}
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofGyroRange, 
+												Configuration.Shimmer3.ListofMPU9150GyroRangeConfigValues, 
+												ChannelOptionDetails.COMBOBOX));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_RANGE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofMagRange, 
+												Configuration.Shimmer3.ListofMagRangeConfigValues, 
+												ChannelOptionDetails.COMBOBOX));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_RATE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCMagRate, 
+												Configuration.Shimmer3.ListofLSM303DLHCMagRateConfigValues, 
+												ChannelOptionDetails.COMBOBOX));
+
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_PRESSURE_RESOLUTION, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
+												Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
+												ChannelOptionDetails.COMBOBOX));
+
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_GSR_RANGE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
+												Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoGsr));
+				
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_GAIN, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGGain, 
+												Configuration.Shimmer3.ListOfExGGainConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESOLUTION, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGResolutions, 
+												Configuration.Shimmer3.ListOfExGResolutionsConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
+
+				//Advanced ExG		
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListOfECGReferenceElectrode, 
+												Configuration.Shimmer3.ListOfECGReferenceElectrodeConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
+				
+//				mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE, 
+//						new ChannelOptionDetails(Configuration.Shimmer3.ListOfEMGReferenceElectrode, 
+//												Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues, 
+//												ChannelOptionDetails.COMBOBOX,
+//												listOfCompatibleVersionInfoExG));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_LEAD_OFF_DETECTION, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffDetection, 
+												Configuration.Shimmer3.ListOfExGLeadOffDetectionConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_LEAD_OFF_CURRENT, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffCurrent, 
+												Configuration.Shimmer3.ListOfExGLeadOffCurrentConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_LEAD_OFF_COMPARATOR, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffComparator, 
+												Configuration.Shimmer3.ListOfExGLeadOffComparatorConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_FREQ, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGRespirationDetectFreq, 
+												Configuration.Shimmer3.ListOfExGRespirationDetectFreqConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_PHASE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khz, 
+												Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khzConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
+				
+				//MPL Options
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150AccelRange, 
+												Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoSdLog));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_DMP_GYRO_CAL, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
+												Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoSdLog));
+
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_LPF, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
+												Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoSdLog));
+
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_RATE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplRate, 
+												Configuration.Shimmer3.ListofMPU9150MplRateConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoSdLog));
+
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MAG_RATE, 
+						new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MagRate, 
+												Configuration.Shimmer3.ListofMPU9150MagRateConfigValues, 
+												ChannelOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoSdLog));
+
+				//MPL CheckBoxes
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_DMP, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_9DOF_SENSOR_FUSION, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_GYRO_CAL, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_VECTOR_CAL, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				
+				//General Config
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_RATE, 
+						new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
+				
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_USER_BUTTON_START, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SINGLE_TOUCH_START, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_MASTER_SHIMMER, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_SYNC_WHEN_LOGGING, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
+
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_KINEMATIC_LPM, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_LPM, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_TCX0, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_INT_EXP_BRD_POW, 
+						new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 				
 			}
 			
-			//TODO: add incompatible firmware info for general config options 
-			// Sensor Options Map
-			mShimmerConfigOptionsMap = new HashMap<String,ChannelOptionDetails>();
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_USER_ASSIGNED_NAME, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_SAMPLING_RATE, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_MAC_FROM_INFOMEM, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BUFFER_SIZE, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_CONFIG_TIME, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
-											listOfCompatibleVersionInfoLogging));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_NAME, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
-											listOfCompatibleVersionInfoLogging));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_ID, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
-											listOfCompatibleVersionInfoLogging));
-
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_NUMBER_OF_SHIMMERS, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
-											listOfCompatibleVersionInfoLogging));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_DURATION_ESTIMATED, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
-											listOfCompatibleVersionInfoLogging));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_DURATION_MAXIMUM, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
-											listOfCompatibleVersionInfoLogging));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BROADCAST_INTERVAL, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD,
-											listOfCompatibleVersionInfoLogging));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BLUETOOTH_BAUD_RATE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofBluetoothBaudRates, 
-											Configuration.Shimmer3.ListofBluetoothBaudRatesConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoStreaming));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
-											Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
-											ChannelOptionDetails.COMBOBOX));
-			if(mLowPowerAccelWR) {
-				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE, 
-						new ChannelOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
-												Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
-												ChannelOptionDetails.COMBOBOX));
-			}
-			else {
-				mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE, 
-						new ChannelOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-												Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
-												ChannelOptionDetails.COMBOBOX));
-			}
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofGyroRange, 
-											Configuration.Shimmer3.ListofMPU9150GyroRangeConfigValues, 
-											ChannelOptionDetails.COMBOBOX));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_RANGE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofMagRange, 
-											Configuration.Shimmer3.ListofMagRangeConfigValues, 
-											ChannelOptionDetails.COMBOBOX));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_RATE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCMagRate, 
-											Configuration.Shimmer3.ListofLSM303DLHCMagRateConfigValues, 
-											ChannelOptionDetails.COMBOBOX));
-
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_PRESSURE_RESOLUTION, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
-											Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
-											ChannelOptionDetails.COMBOBOX));
-
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_GSR_RANGE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
-											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoGsr));
-			
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_GAIN, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGGain, 
-											Configuration.Shimmer3.ListOfExGGainConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoExg));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESOLUTION, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGResolutions, 
-											Configuration.Shimmer3.ListOfExGResolutionsConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoExg));
-
-			//Advanced ExG		
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListOfECGReferenceElectrode, 
-											Configuration.Shimmer3.ListOfECGReferenceElectrodeConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoExg));
-			
-//			mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE, 
-//					new ChannelOptionDetails(Configuration.Shimmer3.ListOfEMGReferenceElectrode, 
-//											Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues, 
-//											ChannelOptionDetails.COMBOBOX,
-//											listOfCompatibleVersionInfoExG));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_LEAD_OFF_DETECTION, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffDetection, 
-											Configuration.Shimmer3.ListOfExGLeadOffDetectionConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoExg));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_LEAD_OFF_CURRENT, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffCurrent, 
-											Configuration.Shimmer3.ListOfExGLeadOffCurrentConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoExg));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_LEAD_OFF_COMPARATOR, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffComparator, 
-											Configuration.Shimmer3.ListOfExGLeadOffComparatorConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoExg));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_FREQ, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGRespirationDetectFreq, 
-											Configuration.Shimmer3.ListOfExGRespirationDetectFreqConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoExg));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_PHASE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khz, 
-											Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khzConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoExg));
-			
-			//MPL Options
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150AccelRange, 
-											Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoSdLog));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_DMP_GYRO_CAL, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
-											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoSdLog));
-
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_LPF, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
-											Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoSdLog));
-
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_RATE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MplRate, 
-											Configuration.Shimmer3.ListofMPU9150MplRateConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoSdLog));
-
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MAG_RATE, 
-					new ChannelOptionDetails(Configuration.Shimmer3.ListofMPU9150MagRate, 
-											Configuration.Shimmer3.ListofMPU9150MagRateConfigValues, 
-											ChannelOptionDetails.COMBOBOX,
-											listOfCompatibleVersionInfoSdLog));
-
-			//MPL CheckBoxes
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_DMP, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_9DOF_SENSOR_FUSION, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_GYRO_CAL, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_VECTOR_CAL, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			
-			//General Config
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_RATE, 
-					new ChannelOptionDetails(ChannelOptionDetails.TEXTFIELD));
-			
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_USER_BUTTON_START, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SINGLE_TOUCH_START, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_MASTER_SHIMMER, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_SYNC_WHEN_LOGGING, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX));
-
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_KINEMATIC_LPM, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_LPM, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_TCX0, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-			mShimmerConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_INT_EXP_BRD_POW, 
-					new ChannelOptionDetails(ChannelOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 			
 		}
 	}
@@ -7081,25 +7082,85 @@ public abstract class ShimmerObject implements Serializable {
 		}
 		
 		for(HwFwExpBrdVersionDetails compatibleVersionInfo:listOfCompatibleVersionInfo) {
+
+			boolean compatible = true;
 			
-			if((compatibleVersionInfo.mShimmerExpansionBoardId>=0)&&(compatibleVersionInfo.mShimmerExpansionBoardId<=255)) {
-				if((getHardwareVersion() == compatibleVersionInfo.mShimmerHardwareVersion)
-						&&(mShimmerExpansionBoardId == compatibleVersionInfo.mShimmerExpansionBoardId)
-						&&(mFirmwareIndentifier == compatibleVersionInfo.mFirmwareIndentifier)
-						&&(mFirmwareVersionMajor >= compatibleVersionInfo.mFirmwareVersionMajor)
-						&&(mFirmwareVersionMinor >= compatibleVersionInfo.mFirmwareVersionMinor)
-						&&(mFirmwareVersionInternal >= compatibleVersionInfo.mFirmwareVersionRelease)) {
-	    			return true;
+			boolean checkHardwareVersion = false;
+			boolean checkExpansionBoardId = false;
+			boolean checkFirmwareIdentifier = false;
+			boolean checkFirmwareVersionMajor = false;
+			boolean checkFirmwareVersionMinor = false;
+			boolean checkFirmwareVersionInternal = false;
+			
+			if(compatibleVersionInfo.mShimmerHardwareVersion!=ANY_VERSION) {
+				checkHardwareVersion = true;
+			}
+			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
+				checkExpansionBoardId = true;
+			}
+			if(compatibleVersionInfo.mFirmwareIdentifier!=ANY_VERSION) {
+				checkFirmwareIdentifier = true;
+			}
+			if(compatibleVersionInfo.mFirmwareVersionMajor!=ANY_VERSION) {
+				checkFirmwareVersionMajor = true;
+			}
+			if(compatibleVersionInfo.mFirmwareVersionMinor!=ANY_VERSION) {
+				checkFirmwareVersionMinor = true;
+			}
+			if(compatibleVersionInfo.mFirmwareVersionInternal!=ANY_VERSION) {
+				checkFirmwareVersionInternal = true;
+			}
+			
+			if((compatible)&&(checkHardwareVersion)) {
+				if(mShimmerHardwareVersion != compatibleVersionInfo.mShimmerHardwareVersion) {
+					compatible = false;
 				}
 			}
-			else {
-				if((mShimmerHardwareVersion == compatibleVersionInfo.mShimmerHardwareVersion)
-						&&(mFirmwareIndentifier == compatibleVersionInfo.mFirmwareIndentifier)
-						&&(mFirmwareVersionMajor >= compatibleVersionInfo.mFirmwareVersionMajor)
-						&&(mFirmwareVersionMinor >= compatibleVersionInfo.mFirmwareVersionMinor)
-						&&(mFirmwareVersionInternal >= compatibleVersionInfo.mFirmwareVersionRelease)) {
-	    			return true;
+			if((compatible)&&(checkExpansionBoardId)) {
+				if(mShimmerExpansionBoardId != compatibleVersionInfo.mShimmerExpansionBoardId) {
+					compatible = false;
 				}
+			}
+			if((compatible)&&(checkFirmwareIdentifier)) {
+				if(mFirmwareIdentifier != compatibleVersionInfo.mFirmwareIdentifier) {
+					compatible = false;
+				}
+			}
+			
+			// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored 
+			if((compatible)&&(checkFirmwareVersionMajor)) {
+				if(mFirmwareVersionMajor < compatibleVersionInfo.mFirmwareVersionMajor) {
+					compatible = false;
+				}
+				if((compatible)&&(checkFirmwareVersionMinor)) {
+					if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
+						compatible = false;
+					}
+				}
+				if((compatible)&&(checkFirmwareVersionInternal)) {
+					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+						compatible = false;
+					}
+				}
+			}
+			else if((compatible)&&(checkFirmwareVersionMinor)) {
+				if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
+					compatible = false;
+				}
+				if((compatible)&&(checkFirmwareVersionInternal)) {
+					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+						compatible = false;
+					}
+				}
+			}
+			else if((compatible)&&(checkFirmwareVersionInternal)) {
+				if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+					compatible = false;
+				}
+			}
+			
+			if(compatible) {
+				return true;
 			}
 		}
 		return false;

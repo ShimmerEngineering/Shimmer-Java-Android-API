@@ -7,24 +7,24 @@ public class HwFwExpBrdVersionDetails implements Serializable {
 	//TODO: use already defined ShimmerHwFwDetails and ShimmerExpansionBoardDetails instead
 	
 	public int mShimmerHardwareVersion = 0;
-	public int mFirmwareIndentifier = 0;
+	public int mFirmwareIdentifier = 0;
 	public int mFirmwareVersionMajor = 0;
 	public int mFirmwareVersionMinor = 0;
-	public int mFirmwareVersionRelease = 0;
+	public int mFirmwareVersionInternal = 0;
 	public int mShimmerExpansionBoardId = 0;
 	
 	public HwFwExpBrdVersionDetails(int hardwareVersion, 
-			int firmwareIndentifier,
+			int firmwareIdentifier,
 			int firmwareVersionMajor, 
 			int firmwareVersionMinor, 
-			int firmwareVersionRelease,
+			int firmwareVersionInternal,
 			int shimmerExpansionBoardId) {
 		
 		mShimmerHardwareVersion = hardwareVersion;
-		mFirmwareIndentifier = firmwareIndentifier;
+		mFirmwareIdentifier = firmwareIdentifier;
 		mFirmwareVersionMajor = firmwareVersionMajor;
 		mFirmwareVersionMinor = firmwareVersionMinor;
-		mFirmwareVersionRelease = firmwareVersionRelease;
+		mFirmwareVersionInternal = firmwareVersionInternal;
 		mShimmerExpansionBoardId = shimmerExpansionBoardId;
 		
 	}

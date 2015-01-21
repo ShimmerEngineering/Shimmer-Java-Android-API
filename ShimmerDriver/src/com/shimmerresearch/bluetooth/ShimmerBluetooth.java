@@ -847,7 +847,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							}
 							byte[] bufferInquiry = new byte[6]; 
 							bufferInquiry = readBytes(6);
-							mFirmwareIndentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
+							mFirmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
 //							mFWVersion=(double)((bufferInquiry[3]&0xFF)<<8)+(double)(bufferInquiry[2]&0xFF)+((double)((bufferInquiry[4]&0xFF))/10);
 							mFirmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
 							mFirmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
@@ -858,7 +858,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 //							} else {
 //								mFirmwareVersionParsed = "BtStream " + Double.toString(mFWVersion) + "."+ Integer.toString(mFirmwareVersionRelease);
 //							}
-							if(mFirmwareIndentifier==1){ //BTStream
+							if(mFirmwareIdentifier==1){ //BTStream
 								if((mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1) || (mFirmwareVersionMajor==1 && mFirmwareVersionMinor==2 && mShimmerHardwareVersion==HW_ID_SHIMMER_2R))
 									mFirmwareVersionCode = 1;
 								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
@@ -872,7 +872,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								
 								mFirmwareVersionParsed = "BtStream " + mFirmwareVersionMajor + "." + mFirmwareVersionMinor + "."+ mFirmwareVersionInternal;
 							}
-							else if(mFirmwareIndentifier==3){ //LogAndStream
+							else if(mFirmwareIdentifier==3){ //LogAndStream
 								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1)
 									mFirmwareVersionCode = 3;
 								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
@@ -1484,7 +1484,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							mInstructionStackLock=false;
 						}
 					}
-				} if (mWaitForAck==false && mWaitForResponse == false && mStreaming ==false && availableBytes()!=0 && mFirmwareIndentifier==3) {
+				} if (mWaitForAck==false && mWaitForResponse == false && mStreaming ==false && availableBytes()!=0 && mFirmwareIdentifier==3) {
 					tb=readBytes(1);
 					if(tb[0]==ACK_COMMAND_PROCESSED){
 						System.out.println("ACK RECEIVED , Connected State!!");
@@ -1556,7 +1556,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								mListofInstructions.remove(0);
 								mInstructionStackLock=false;
 								System.out.println("LED COMMAND ACK RECEIVED");
-							} else if (mFirmwareIndentifier == 3 ){ //this is for logandstream stupport, command is trasmitted and ack received
+							} else if (mFirmwareIdentifier == 3 ){ //this is for logandstream stupport, command is trasmitted and ack received
 								System.out.println("COMMAND TXed and ACK RECEIVED IN STREAM");
 								tb = readBytes(1);
 								if(tb[0]==INSTREAM_CMD_RESPONSE){
@@ -1621,7 +1621,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									}
 								} 
 								
-								else if(tb[0]==ACK_COMMAND_PROCESSED && mFirmwareIndentifier==3){ // this is for LogandStream support if the device is docked/undocked
+								else if(tb[0]==ACK_COMMAND_PROCESSED && mFirmwareIdentifier==3){ // this is for LogandStream support if the device is docked/undocked
 									System.out.println("ACK RECEIVED");
 									tb = readBytes(1);
 									if (tb[0]==ACK_COMMAND_PROCESSED){
@@ -1706,7 +1706,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								mListofInstructions.remove(0);
 								mInstructionStackLock=false;
 								System.out.println("LED COMMAND ACK RECEIVED");
-							} else if (mFirmwareIndentifier ==3 ){ //ack received for LogandStream commands
+							} else if (mFirmwareIdentifier ==3 ){ //ack received for LogandStream commands
 
 								System.out.println("COMMAND TXed and ACK RECEIVED IN STREAM");
 								tb = readBytes(1);
@@ -1756,7 +1756,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							boolean instream = false;
 							
 							//LogAndStream in stream ack command , without sending a command (e.g. dock/undock)
-							if( (byteStack.size()==1 && tb[0]==ACK_COMMAND_PROCESSED && mFirmwareIndentifier == 3) ){
+							if( (byteStack.size()==1 && tb[0]==ACK_COMMAND_PROCESSED && mFirmwareIdentifier == 3) ){
 								System.out.println("ACK RECEIVED");
 								tb = readBytes(1);
 								if (tb[0]==ACK_COMMAND_PROCESSED){
@@ -1991,7 +1991,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		mFirmwareVersionMajor = 0;
 		mFirmwareVersionMinor = 0;
 		mFirmwareVersionInternal = 0;
-		mFirmwareIndentifier = 0;
+		mFirmwareIdentifier = 0;
 		mFirmwareVersionParsed="";
 		
 	}
@@ -2095,7 +2095,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		}
 		
 		
-		if(mFirmwareIndentifier==3){ // if shimmer is using LogAndStream FW, read its status perdiocally
+		if(mFirmwareIdentifier==3){ // if shimmer is using LogAndStream FW, read its status perdiocally
 			if (mTimerToReadStatus!=null) {
 				mTimerToReadStatus.cancel();
 				mTimerToReadStatus.purge();
@@ -2121,7 +2121,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			//do nothing
 		}
 		
-		if(mFirmwareIndentifier==3){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+		if(mFirmwareIdentifier==3){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
 			if(mTimerToReadStatus!=null){
 				mTimerToReadStatus.cancel();
 				mTimerToReadStatus.purge();
@@ -2138,7 +2138,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	}
 	
 	public void startDataLogAndStreaming(){
-		if(mFirmwareIndentifier==3){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+		if(mFirmwareIdentifier==3){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
 
 			if (mDataProcessing!=null){
 				mDataProcessing.InitializeProcessData();
@@ -2166,7 +2166,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	
 	public void stopStreaming() {
 		mListofInstructions.add(new byte[]{STOP_STREAMING_COMMAND});
-		if(mFirmwareIndentifier==3){ // if shimmer is using LogAndStream FW, read its status perdiocally
+		if(mFirmwareIdentifier==3){ // if shimmer is using LogAndStream FW, read its status perdiocally
 			if(mTimerToReadStatus==null){ 
 				mTimerToReadStatus = new Timer();
 			}
@@ -2350,13 +2350,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	}
 	
 	public void readDirectoryName(){
-		if(mFirmwareIndentifier==3){ // check if Shimmer is using LogAndStream firmware
+		if(mFirmwareIdentifier==3){ // check if Shimmer is using LogAndStream firmware
 			mListofInstructions.add(new byte[]{GET_DIR_COMMAND});
 		}
 	}
 	
 	public void readStatusLogAndStream(){
-		if(mFirmwareIndentifier==3){ // check if Shimmer is using LogAndStream firmware
+		if(mFirmwareIdentifier==3){ // check if Shimmer is using LogAndStream firmware
 			mListofInstructions.add(new byte[]{GET_STATUS_COMMAND});
 			System.out.println("Instrucction added to the list");
 		}
@@ -3104,7 +3104,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @return The FW identifier
 	 */
 	public int getFWIdentifier(){
-		return (int) mFirmwareIndentifier;
+		return (int) mFirmwareIdentifier;
 	}
 	
 	public int getBaudRate(){
@@ -4056,7 +4056,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	@Override
 	protected void checkBattery(){
 		if (mStreaming ){
-			if(mShimmerHardwareVersion == HW_ID_SHIMMER_3 && mFirmwareIndentifier==3){
+			if(mShimmerHardwareVersion == HW_ID_SHIMMER_3 && mFirmwareIdentifier==3){
 				if (!mWaitForAck) {	
 					if (mVSenseBattMA.getMean()<mLowBattLimit*1000*0.8) {
 						if (mCurrentLEDStatus!=2) {
