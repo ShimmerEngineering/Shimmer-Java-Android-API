@@ -200,8 +200,8 @@ public class Configuration {
 		public final static int CHANNELMAPKEY_EXG1_24BIT = 3;
 		public final static int CHANNELMAPKEY_EXG2_24BIT = 4;
 		public final static int CHANNELMAPKEY_GSR = 5;
-		public final static int CHANNELMAPKEY_EXT_ADC_A7 = 6;
-		public final static int CHANNELMAPKEY_EXT_ADC_A6 = 7;
+		public final static int CHANNELMAPKEY_EXT_ADC_A6 = 6;
+		public final static int CHANNELMAPKEY_EXT_ADC_A7 = 7;
 		public final static int CHANNELMAPKEY_BRIDGE_AMP = 8;
 		public final static int CHANNELMAPKEY_RESISTANCE_AMP = 9;
 		//public final static int CHANNELMAPKEY_HR = 9;
@@ -347,6 +347,21 @@ public class Configuration {
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
 		public static final String GUI_LABEL_CONFIG_TCX0 = "TCX0";
 		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POW = "Internal Expansion Board Power";
+		
+		
+		public static final String GUI_LABEL_CHANNEL_GROUPING_LOW_NOISE_ACCEL = "Low Noise Accel";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_GYRO = "Gyro";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_MAG = "Mag";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_BATTERY_MONITORING = "Battery Monitoring";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_WIDE_RANGE_ACCEL = "Wide Range Accel";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_PRESSURE_TEMPERATURE = "Pressure/Temperature";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_EXTERNAL_EXPANSION_ADC = "External Expansion";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_GSR = "GSR+";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_EXG = "ExG";
+//		public static final String GUI_LABEL_CHANNEL_GROUPING_PROTO_MINI = "Proto Mini";
+		
+		
+		
 	}
 	
 	public static class Shimmer2{
