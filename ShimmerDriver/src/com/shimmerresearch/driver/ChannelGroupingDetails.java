@@ -2,6 +2,7 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,17 +24,17 @@ public class ChannelGroupingDetails implements Serializable {
 //	public Integer[] mChannelMapKeysRequired = null;
 //	public Integer[] mChannelMapKeysConflicting = null;
 //	public boolean mIntExpBoardPowerRequired = false;
-	public Integer[] mAssociatedChannels = null;
-//	public String[] mAssociatedConfigurationOptions = null;
+	public List<Integer> mAssociatedChannels = null;
+	public List<String> mAssociatedConfigurationOptions = new ArrayList<String>();
 	
 	public List<HwFwExpBrdVersionDetails> mCompatibleVersionInfo = null;  
 
-	public ChannelGroupingDetails(Integer[] associatedChannels) {
+	public ChannelGroupingDetails(List<Integer> associatedChannels) {
 		mAssociatedChannels = associatedChannels;
 		mCompatibleVersionInfo = null;
 	}
 
-	public ChannelGroupingDetails(Integer[] associatedChannels, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
+	public ChannelGroupingDetails(List<Integer> associatedChannels, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
 		mAssociatedChannels = associatedChannels;
 		mCompatibleVersionInfo = compatibleVersionInfo;
 	}

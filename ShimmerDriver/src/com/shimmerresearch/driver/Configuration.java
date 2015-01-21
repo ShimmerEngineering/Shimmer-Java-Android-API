@@ -349,6 +349,17 @@ public class Configuration {
 		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POW = "Internal Expansion Board Power";
 		
 		
+		// Combination Channels
+//		public final static int CHANNELGROUPINGMAPKEY_LOW_NOISE_ACCEL = 100;
+//		public final static int CHANNELGROUPINGMAPKEY_GYRO = 101;
+//		public final static int CHANNELGROUPINGMAPKEY_MAG = 101;
+//		public final static int CHANNELGROUPINGMAPKEY_BATTERY_MONITORING = 101;
+//		public final static int CHANNELGROUPINGMAPKEY_WIDE_RANGE_ACCEL = 101;
+//		public final static int CHANNELGROUPINGMAPKEY_PRESSURE_TEMPERATURE = 101;
+//		public final static int CHANNELGROUPINGMAPKEY_EXTERNAL_EXPANSION_ADC = 101;
+//		public final static int CHANNELGROUPINGMAPKEY_GYRO = 101;
+//		public final static int CHANNELGROUPINGMAPKEY_GYRO = 101;
+		
 		public static final String GUI_LABEL_CHANNEL_GROUPING_LOW_NOISE_ACCEL = "Low Noise Accel";
 		public static final String GUI_LABEL_CHANNEL_GROUPING_GYRO = "Gyro";
 		public static final String GUI_LABEL_CHANNEL_GROUPING_MAG = "Mag";
@@ -358,7 +369,9 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNEL_GROUPING_EXTERNAL_EXPANSION_ADC = "External Expansion";
 		public static final String GUI_LABEL_CHANNEL_GROUPING_GSR = "GSR+";
 		public static final String GUI_LABEL_CHANNEL_GROUPING_EXG = "ExG";
-//		public static final String GUI_LABEL_CHANNEL_GROUPING_PROTO_MINI = "Proto Mini";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_PROTO_MINI = "Proto Mini";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_PROTO_DELUXE = "Proto Deluxe";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_BRIDE_AMPLIFIER = "Bridge Amplifier";
 		
 		
 		

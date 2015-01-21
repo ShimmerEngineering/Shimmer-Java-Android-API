@@ -29,10 +29,10 @@ public class ChannelDetails implements Serializable {
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	public String mLabel = "";
-	public Integer[] mChannelMapKeysRequired = null;
-	public Integer[] mChannelMapKeysConflicting = null;
+	public List<Integer> mChannelMapKeysRequired = null;
+	public List<Integer> mChannelMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
-	public String[] mAssociatedConfigurationOptions = null;
+	public List<String> mAssociatedConfigurationOptions = null;
 	
 	public List<HwFwExpBrdVersionDetails> mCompatibleVersionInfo = null;  
 
