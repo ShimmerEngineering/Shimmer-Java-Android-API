@@ -116,7 +116,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 	 */
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
 		mState = STATE_NONE;
-		mSamplingRate = samplingRate;
+		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -129,8 +129,8 @@ public class ShimmerPC extends ShimmerBluetooth{
 		mGyroRange = gyroRange;
 		mMagRange = magRange;
 		mSetupEXG = true;
-		mEXG1Register = exg1;
-		mEXG2Register = exg2;
+		mEXG1RegisterArray = exg1;
+		mEXG2RegisterArray = exg2;
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 	 */
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
 		mState = STATE_NONE;
-		mSamplingRate = samplingRate;
+		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
@@ -162,7 +162,7 @@ public class ShimmerPC extends ShimmerBluetooth{
      */
     @Deprecated
 	public ShimmerPC( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
-    	mSamplingRate = samplingRate;
+    	mShimmerSamplingRate = samplingRate;
     	mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;

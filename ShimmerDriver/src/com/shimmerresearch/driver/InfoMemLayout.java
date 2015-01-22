@@ -121,6 +121,8 @@ public class InfoMemLayout {
 	public int bitShiftSensors1 =						8;
 	public int bitShiftSensors2 =						16;
 	
+	public int maskPpgMode = 							(0x40<<8);
+	
 	//Config Byte0
 	public int bitShiftLSM303DLHCAccelSamplingRate = 	4;
 	public int maskLSM303DLHCAccelSamplingRate =    	0x0F;
