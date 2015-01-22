@@ -6791,9 +6791,11 @@ public abstract class ShimmerObject implements Serializable {
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13,
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14)));
 				mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER, new ChannelTileDetails(
-						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13, //Bridge Amplifier High Gain
-									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14, //Bridge Amplifier Low Gain
-									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1))); //Resistance Amplifier
+						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP,
+									Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP)));
+//						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13, //Bridge Amplifier High Gain
+//								Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14, //Bridge Amplifier Low Gain
+//								Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1))); //Resistance Amplifier
 				mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL, new ChannelTileDetails(
 						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12, //X-axis
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13, //Y-axis
