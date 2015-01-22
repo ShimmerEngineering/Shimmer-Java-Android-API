@@ -120,7 +120,7 @@ public class ShimmerTCPExampleActivity extends Activity {
                 	 switch (msg.arg1) {
                      	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
                     	    if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
-                    	    	
+                    	    	mShimmerDevice1.writeEnabledSensors(ShimmerObject.SENSOR_DACCEL);
                     	    	Thread thread = new Thread()
                     			{
                     			    @Override

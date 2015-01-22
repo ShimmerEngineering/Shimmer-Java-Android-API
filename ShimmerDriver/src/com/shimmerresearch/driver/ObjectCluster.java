@@ -47,8 +47,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -67,6 +69,11 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public String[] mSensorNames;
 	public String[] mUnitCal;
 	public String[] mUnitUncal;
+	
+	
+	String[] mSensorFormats;
+	String[] mSensorUnits;
+	
 	
 	public byte[] mSystemTimeStamp = new byte[8];
 	
@@ -129,4 +136,55 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		}
 	}
 	
+	private List<String[]> getListofEnabledSensorSignalsandFormats(){
+		List<String[]> listofSignals = new ArrayList<String[]>();
+		for (int i=0;i<mSensorNames.length;i++){
+			String[] channel = new String[]{mMyName,mSensorNames[i],mSensorFormats[i],mSensorUnits[i]};
+			listofSignals.add(channel);
+		}
+		
+		return listofSignals;
+	}
+	
+	public List<String[]> generateArrayOfChannels(){
+		//First retrieve all the unique keys from the objectClusterLog
+		Multimap<String, FormatCluster> m = mPropertyCluster;
+
+		int size = m.size();
+		System.out.print(size);
+		mSensorNames=new String[size];
+		mSensorFormats=new String[size];
+		mSensorUnits=new String[size];
+		int i=0;
+		int p=0;
+		for(String key : m.keys()) {
+			//first check that there are no repeat entries
+
+			if(compareStringArray(mSensorNames, key) == true) {
+				for(FormatCluster formatCluster : m.get(key)) {
+					mSensorFormats[p]=formatCluster.mFormat;
+					mSensorUnits[p]=formatCluster.mUnits;
+					//Log.d("Shimmer",key + " " + mSensorFormats[p] + " " + mSensorUnits[p]);
+					p++;
+				}
+
+			}	
+
+			mSensorNames[i]=key;
+			i++;				 
+		}
+		return getListofEnabledSensorSignalsandFormats();
+	}
+	
+	private boolean compareStringArray(String[] stringArray, String string){
+		boolean uniqueString=true;
+		int size = stringArray.length;
+		for (int i=0;i<size;i++){
+			if (stringArray[i]==string){
+				uniqueString=false;
+			}	
+					
+		}
+		return uniqueString;
+	}
 }
