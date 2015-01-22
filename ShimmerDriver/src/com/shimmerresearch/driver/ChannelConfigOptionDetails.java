@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Mark Nolan
  */
-public class ChannelOptionDetails implements Serializable {
+public class ChannelConfigOptionDetails implements Serializable {
 
 	/**
 	 * 
@@ -33,7 +33,7 @@ public class ChannelOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(String[] guiValues, Integer[] configValues, int optionType) {
+	public ChannelConfigOptionDetails(String[] guiValues, Integer[] configValues, int optionType) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mOptionType = optionType;
@@ -46,7 +46,7 @@ public class ChannelOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(String[] guiValues, Integer[] configValues, int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
+	public ChannelConfigOptionDetails(String[] guiValues, Integer[] configValues, int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mOptionType = optionType;
@@ -60,7 +60,7 @@ public class ChannelOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(int optionType) {
+	public ChannelConfigOptionDetails(int optionType) {
 		mOptionType = optionType;
 		
 		mCompatibleVersionInfo = null;
@@ -71,7 +71,7 @@ public class ChannelOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
+	public ChannelConfigOptionDetails(int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
 		mOptionType = optionType;
 		
 		mCompatibleVersionInfo = compatibleVersionInfo;
