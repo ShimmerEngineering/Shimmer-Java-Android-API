@@ -33,8 +33,14 @@
  */
 package com.shimmerresearch.driver;
 
+import java.io.Serializable;
 
-public class FormatCluster {
+
+public class FormatCluster  implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5291610942413655763L;
 	public String mFormat;
 	public String mUnits;
 	public double mData;

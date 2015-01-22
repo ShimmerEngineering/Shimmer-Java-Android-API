@@ -45,8 +45,8 @@ import android.widget.Toast;
 import android.os.Bundle;
 import android.app.Activity;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
-
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -56,7 +56,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.shimmerresearch.ShimmerExample.R;
-
 import com.shimmerresearch.driver.*;
 import com.shimmerresearch.android.*;
 
@@ -66,7 +65,7 @@ public class ShimmerTCPExampleActivity extends Activity {
 
     Timer mTimer;
     private Shimmer mShimmerDevice1 = null;
-    PrintWriter outToServer=null;
+    DataOutputStream dOut = null;
     Socket clientSocket;
     String FromServer="";
     String ToServer;
@@ -74,7 +73,7 @@ public class ShimmerTCPExampleActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mShimmerDevice1 = new Shimmer(this, mHandler,"RightArm",false); 
-        String bluetoothAddress="00:06:66:46:B8:A2";
+        String bluetoothAddress="00:06:66:66:94:0E";
         mShimmerDevice1.connect(bluetoothAddress,"default"); 
         Log.d("ConnectionStatus","Trying"); 
         
@@ -89,62 +88,25 @@ public class ShimmerTCPExampleActivity extends Activity {
             switch (msg.what) { // handlers have a what identifier which is used to identify the type of msg
             case Shimmer.MESSAGE_READ:
             	if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
-            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
-            	    if (objectCluster.mMyName=="RightArm"){
-            	    	Collection<FormatCluster> accelXFormats = null;
-            	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.HW_ID_SHIMMER_3){
-            	    		accelXFormats = objectCluster.mPropertyCluster.get("Accelerometer X");  // first retrieve all the possible formats for the current sensor device
-            	    	} else {
-            	    		accelXFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer X");  // first retrieve all the possible formats for the current sensor device
-            	    	}
-			 	    	if (accelXFormats != null){
-			 	    		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
-			 	    		Log.d("CalibratedData","AccelX: " + formatCluster.mData + " "+ formatCluster.mUnits);
-			 	    		if (outToServer!=null){
-			 	    			DecimalFormat formatter = new java.text.DecimalFormat("0000.00");
-			 	    			if(formatCluster.mData<0){
-			 	    				 formatter = new java.text.DecimalFormat("000.00");
-			 	    			} 
-			 	    			outToServer.println ("Accel X=" + formatter.format(formatCluster.mData)) ;
-			 	    		}
-			 	    	}
-			 	    	Collection<FormatCluster> accelYFormats = null;
-			 	    	
-			 	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.HW_ID_SHIMMER_3){
-			 	    		accelYFormats = objectCluster.mPropertyCluster.get("Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
-			 	    	} else{
-			 	    		accelYFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
-				 	    }
-			 	    	if (accelYFormats != null){
-			 	    		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
-			 	    		Log.d("CalibratedData","AccelY: " + formatCluster.mData + " "+formatCluster.mUnits);
-			 	    		if (outToServer!=null){
-			 	    			DecimalFormat formatter = new java.text.DecimalFormat("0000.00");
-			 	    			if(formatCluster.mData<0){
-			 	    				 formatter = new java.text.DecimalFormat("000.00");
-			 	    			} 
-			 	    			outToServer.println ("Accel Y=" + formatter.format(formatCluster.mData)) ;
-			 	    		}
-			 	    	}
+            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj;
+            	    byte[] dataojc = objectCluster.serialize();
+            	    if(dOut!=null){
+            	    try {
+						dOut.writeInt(dataojc.length);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	    try {
+						dOut.write(dataojc);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	    } else {
+            	    	System.out.print("dout fail \n");
             	    }
-		 	    	Collection<FormatCluster> accelZFormats = null;
-		 	    	
-		 	    	if (mShimmerDevice1.getShimmerVersion()!=Shimmer.HW_ID_SHIMMER_3){
-		 	    		accelZFormats = objectCluster.mPropertyCluster.get("Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
-		 	    	} else{
-		 	    		accelZFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
-			 	    }
-			 	    	if (accelZFormats != null){
-			 	    		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
-			 	    		Log.d("CalibratedData","AccelZ: " + formatCluster.mData + " "+formatCluster.mUnits);
-			 	    		if (outToServer!=null){
-			 	    			DecimalFormat formatter = new java.text.DecimalFormat("0000.00");
-			 	    			if(formatCluster.mData<0){
-			 	    				 formatter = new java.text.DecimalFormat("000.00");
-			 	    			} 
-			 	    			outToServer.println ("Accel Z=" + formatter.format(formatCluster.mData)) ;
-			 	    		}
-			 	    	}
+
 		 	    	
             	}
                 break;
@@ -164,9 +126,8 @@ public class ShimmerTCPExampleActivity extends Activity {
                     			    @Override
                     			    public void run() {
                     			    	try {
-                    			    		clientSocket = new Socket("10.0.0.178", 5000);
-                    				        outToServer = new PrintWriter(clientSocket.getOutputStream(),true);
-                    				        
+                    			    		clientSocket = new Socket("192.168.0.6", 5000);
+                    				        dOut = new DataOutputStream(clientSocket.getOutputStream());
                     					} catch (UnknownHostException e) {
                     						// TODO Auto-generated catch block
                     						e.printStackTrace();
@@ -181,12 +142,8 @@ public class ShimmerTCPExampleActivity extends Activity {
                     	    	
                     	    	
                     	        Log.d("ConnectionStatus","Successful");
-                    	        mShimmerDevice1.writeEnabledSensors(Shimmer.SENSOR_ACCEL);
-                    	        mShimmerDevice1.writeAccelRange(2);
-                    	        mShimmerDevice1.readAccelRange();
-                    	        mShimmerDevice1.writeSamplingRate(51.2);
+                    	
                     	        mShimmerDevice1.startStreaming();
-                    	        shimmerTimer(5); //Disconnect in 30 seconds
                     	     }
                     	    break;
 	                    case Shimmer.STATE_CONNECTING:
@@ -211,9 +168,9 @@ public class ShimmerTCPExampleActivity extends Activity {
 	    
 	    class responseTask extends TimerTask {
 	        public void run() {
-	        	mShimmerDevice1.stopStreaming();
-	        	mShimmerDevice1.writeEnabledSensors(Shimmer.SENSOR_ACCEL);
-	        	mShimmerDevice1.startStreaming();
+	        	//mShimmerDevice1.stopStreaming();
+	        	//mShimmerDevice1.writeEnabledSensors(Shimmer.SENSOR_ACCEL);
+	        	//mShimmerDevice1.startStreaming();
 	        	shimmerTimer(5); //Disconnect in 30 seconds
 	        }
 	    }

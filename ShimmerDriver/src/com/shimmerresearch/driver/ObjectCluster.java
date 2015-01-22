@@ -41,13 +41,23 @@
  */
 package com.shimmerresearch.driver;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-final public class ObjectCluster {
+final public class ObjectCluster implements Cloneable,Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7601464501144773539L;
 	public Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
 	public String mMyName;
 	public String mBluetoothAddress;
@@ -102,4 +112,21 @@ final public class ObjectCluster {
 		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(colFormats,formatname)); // retrieve format;
 		mPropertyCluster.remove(propertyname, formatCluster);
 	}
+	
+	/**Serializes the object cluster into an array of bytes
+	 * @return byte[] an array of bytes
+	 * @see java.io.Serializable
+	 */
+	public byte[] serialize() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			return baos.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }
