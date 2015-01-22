@@ -2,7 +2,7 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 
-public class HwFwExpBrdVersionDetails implements Serializable {
+public class CompatibleVersionDetails implements Serializable {
 
 	//TODO: use already defined ShimmerHwFwDetails and ShimmerExpansionBoardDetails instead
 	
@@ -13,7 +13,7 @@ public class HwFwExpBrdVersionDetails implements Serializable {
 	public int mFirmwareVersionInternal = 0;
 	public int mShimmerExpansionBoardId = 0;
 	
-	public HwFwExpBrdVersionDetails(int hardwareVersion, 
+	public CompatibleVersionDetails(int hardwareVersion, 
 			int firmwareIdentifier,
 			int firmwareVersionMajor, 
 			int firmwareVersionMinor, 

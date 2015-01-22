@@ -29,12 +29,12 @@ public class ChannelDetails implements Serializable {
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	public String mLabel = "";
-	public List<Integer> mChannelMapKeysRequired = null;
-	public List<Integer> mChannelMapKeysConflicting = null;
+	public List<Integer> mListOfChannelMapKeysRequired = null;
+	public List<Integer> mListOfChannelMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
-	public List<String> mAssociatedConfigurationOptions = null;
+	public List<String> mListOfConfigOptionKeysAssociated = null;
 	
-	public List<HwFwExpBrdVersionDetails> mCompatibleVersionInfo = null;  
+	public List<CompatibleVersionDetails> mListOfCompatibleVersionInfo = null;  
 
 	//Needed for Shimmer2?
 	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
@@ -44,7 +44,7 @@ public class ChannelDetails implements Serializable {
 		mLabel = label;
 		mIntExpBoardPowerRequired = false;
 		
-		mCompatibleVersionInfo = null;
+		mListOfCompatibleVersionInfo = null;
 	}
 
 	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired) {
@@ -54,17 +54,17 @@ public class ChannelDetails implements Serializable {
 		mLabel = label;
 		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
 		
-		mCompatibleVersionInfo = null;
+		mListOfCompatibleVersionInfo = null;
 	}
 	
-	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
+	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired, List<CompatibleVersionDetails> listOfCompatibleVersionInfo) {
 		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mLabel = label;
 		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
 		
-		mCompatibleVersionInfo = compatibleVersionInfo;
+		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}
 	
 	public void setEnabledState(boolean state) {

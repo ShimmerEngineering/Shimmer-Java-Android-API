@@ -26,7 +26,7 @@ public class ChannelOptionDetails implements Serializable {
 	public Integer[] mConfigValues;
 	public int mOptionType;
 	
-	public List<HwFwExpBrdVersionDetails> mCompatibleVersionInfo = null;  
+	public List<CompatibleVersionDetails> mCompatibleVersionInfo = null;  
 	
 	/**ComboBox (compatible with all HW, FW and Expansion Boards)
 	 * @param guiValues
@@ -46,7 +46,7 @@ public class ChannelOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(String[] guiValues, Integer[] configValues, int optionType, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
+	public ChannelOptionDetails(String[] guiValues, Integer[] configValues, int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mOptionType = optionType;
@@ -71,7 +71,7 @@ public class ChannelOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelOptionDetails(int optionType, List<HwFwExpBrdVersionDetails> compatibleVersionInfo) {
+	public ChannelOptionDetails(int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
 		mOptionType = optionType;
 		
 		mCompatibleVersionInfo = compatibleVersionInfo;

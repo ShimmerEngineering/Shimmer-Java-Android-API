@@ -251,6 +251,9 @@ public class Configuration {
 		public final static int CHANNELMAPKEY_ALL_ADC = 103;
 		public final static int CHANNELMAPKEY_EXT_EXP_ADC = 104;
 
+		public final static int CHANNELMAPKEY_PPG_A12 = 105;
+		public final static int CHANNELMAPKEY_PPG_A13 = 106;
+
 		
 //		// Sensor Options Map
 //		public static final int CONFIGOPTIONSMAPKEY_LSM303DLHC_ACCEL_RATE = 0;
@@ -360,6 +363,10 @@ public class Configuration {
 //		public final static int CHANNELGROUPINGMAPKEY_GYRO = 101;
 //		public final static int CHANNELGROUPINGMAPKEY_GYRO = 101;
 		
+		//Channels
+		public static final String GUI_LABEL_PPG_A12 = "PPG A12";
+		public static final String GUI_LABEL_PPG_A13 = "PPG A13";
+		
 		public static final String GUI_LABEL_CHANNEL_GROUPING_LOW_NOISE_ACCEL = "Low Noise Accel";
 		public static final String GUI_LABEL_CHANNEL_GROUPING_GYRO = "Gyro";
 		public static final String GUI_LABEL_CHANNEL_GROUPING_MAG = "Mag";
@@ -371,9 +378,10 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNEL_GROUPING_EXG = "ExG";
 		public static final String GUI_LABEL_CHANNEL_GROUPING_PROTO_MINI = "Proto Mini";
 		public static final String GUI_LABEL_CHANNEL_GROUPING_PROTO_DELUXE = "Proto Deluxe";
-		public static final String GUI_LABEL_CHANNEL_GROUPING_BRIDE_AMPLIFIER = "Bridge Amplifier";
-		
-		
+		public static final String GUI_LABEL_CHANNEL_GROUPING_BRIDGE_AMPLIFIER = "Bridge Amplifier";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_RESPIRATION = "Respiration";
+		public static final String GUI_LABEL_CHANNEL_GROUPING_HIGH_G_ACCEL = "200g Accel";
+		//public static final String GUI_LABEL_CHANNEL_GROUPING_GPS = "GPS";
 		
 	}
 	
