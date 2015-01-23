@@ -57,15 +57,15 @@ public class ChannelDetails implements Serializable {
 		mListOfCompatibleVersionInfo = null;
 	}
 	
-	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired, List<CompatibleVersionDetails> listOfCompatibleVersionInfo) {
-		mIsEnabled = isChannelEnabled;
-		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
-		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
-		mLabel = label;
-		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
-		
-		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
-	}
+//	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired, List<CompatibleVersionDetails> listOfCompatibleVersionInfo) {
+//		mIsEnabled = isChannelEnabled;
+//		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
+//		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
+//		mLabel = label;
+//		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
+//		
+//		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
+//	}
 	
 	public void setEnabledState(boolean state) {
 		mIsEnabled = state;

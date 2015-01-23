@@ -6425,13 +6425,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoProto3Deluxe = Arrays.asList(
 						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream);
 				
-				List<CompatibleVersionDetails> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
-						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
-						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
-						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
-						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
-						baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
-				
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
 						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
@@ -6451,10 +6444,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
 						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
-						baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
-						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
-						baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
+						baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream 
+//						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
+//						baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream
+						);
 
+				List<CompatibleVersionDetails> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
+						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream 
+//						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
+//						baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream
+						);
+				
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoStreaming = Arrays.asList(
 						baseBtStream, baseLogAndStream);
 
@@ -6468,92 +6470,136 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						baseHighGAccelSdLog,baseHighGAccelBtStream,baseHighGAccelLogAndStream);
 				
 				
-				
-				long streamingByteIndex = 0;	// NV_SENSORS0
+				// Assemble the channel map
+				// NV_SENSORS0
+				long streamingByteIndex = 0;
 				long logHeaderByteIndex = 0;
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_A_ACCEL, new ChannelDetails(false, 0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.ACCEL_LN_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_GYRO, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.GYRO_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_LSM303DLHC_MAG, new ChannelDetails(false, 0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.MAG_GUI));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT, new ChannelDetails(false, 0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG1_24BIT, true, listOfCompatibleVersionInfoExg));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT, new ChannelDetails(false, 0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG2_24BIT, true, listOfCompatibleVersionInfoExg));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_GSR, new ChannelDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.GSR_GUI, false, listOfCompatibleVersionInfoGsr));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT, new ChannelDetails(false, 0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG1_24BIT));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT, new ChannelDetails(false, 0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG2_24BIT));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_GSR, new ChannelDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.GSR_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXT_EXP_ADC_A7, new ChannelDetails(false, 0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3Configuration.EXT_EXP_A7_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXT_EXP_ADC_A6, new ChannelDetails(false, 0x01<<(streamingByteIndex*8), 0x01<<(logHeaderByteIndex*8), Shimmer3Configuration.EXT_EXP_A6_GUI));
 
-				streamingByteIndex = 1;			// NV_SENSORS1
+				// NV_SENSORS1
+				streamingByteIndex = 1;
 				logHeaderByteIndex = 1;
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP, new ChannelDetails(false, 0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.BRIDGE_AMPLIFIER_GUI, true, listOfCompatibleVersionInfoBrAmp));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP, new ChannelDetails(false, 0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.BRIDGE_AMPLIFIER_GUI));
 				//shimmerChannels.put(, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), "")); // unused? - new PPG bit might be here now
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_VBATT, new ChannelDetails(false, 0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.BATTERY_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_LSM303DLHC_ACCEL, new ChannelDetails(false, 0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.ACCEL_WR_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXT_EXP_ADC_A15, new ChannelDetails(false, 0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Shimmer3Configuration.EXT_EXP_A15_GUI));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1, new ChannelDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A1_GUI, false, listOfCompatibleVersionInfoIntExpA1));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12, new ChannelDetails(false, 0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A12_GUI, false, listOfCompatibleVersionInfoIntExpA12));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13, new ChannelDetails(false, 0x01<<(streamingByteIndex*8), 0x01<<(logHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A13_GUI, false, listOfCompatibleVersionInfoIntExpA13));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1, new ChannelDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A1_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12, new ChannelDetails(false, 0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A12_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13, new ChannelDetails(false, 0x01<<(streamingByteIndex*8), 0x01<<(logHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A13_GUI));
 
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12, new ChannelDetails(false, 0, 0, Configuration.Shimmer3.GUI_LABEL_CHANNEL_PPG_A12, true, listOfCompatibleVersionInfoGsr));
-				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mSensorBitmapIDStreaming = (0x40<<(streamingByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12).mSensorBitmapIDStreaming);
-				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mSensorBitmapIDSDLogHeader = (0x40<<(logHeaderByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader);
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13, new ChannelDetails(false, 0, 0, Configuration.Shimmer3.GUI_LABEL_CHANNEL_PPG_A13, true, listOfCompatibleVersionInfoGsr));
-				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mSensorBitmapIDStreaming = (0x40<<(streamingByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13).mSensorBitmapIDStreaming);
-				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mSensorBitmapIDSDLogHeader = (0x40<<(logHeaderByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader);
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP, new ChannelDetails(false, 0, 0, Shimmer3Configuration.RESISTANCE_AMP_GUI));
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mSensorBitmapIDStreaming = (0x40<<(streamingByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1).mSensorBitmapIDStreaming);
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mSensorBitmapIDSDLogHeader = (0x40<<(logHeaderByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader);
 				
-				streamingByteIndex = 2;			// NV_SENSORS2
+				// NV_SENSORS2
+				streamingByteIndex = 2;
 				logHeaderByteIndex = 2;
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14, new ChannelDetails(false, 0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A14_GUI, false, listOfCompatibleVersionInfoIntExpA14));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14, new ChannelDetails(false, 0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.INT_EXP_A14_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_ACCEL, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.ACCEL_MPU_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MAG, new ChannelDetails(false, 0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.MAG_MPU_GUI));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT, new ChannelDetails(false, 0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG1_16BIT, true, listOfCompatibleVersionInfoExg));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT, new ChannelDetails(false, 0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG2_16BIT, true, listOfCompatibleVersionInfoExg));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT, new ChannelDetails(false, 0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG1_16BIT));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT, new ChannelDetails(false, 0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG2_16BIT));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_BMP180_PRESSURE, new ChannelDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.PRESS_TEMP_BMP180_GUI));
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_TEMP, new ChannelDetails(false, 0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_TEMPERATURE_GUI));
 				//shimmerChannels.put(SENSOR_SHIMMER3_MSP430_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
 				//shimmerChannels.put(SENSOR_SHIMMER3_LSM303DLHC_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
-				
-				streamingByteIndex = 3;			// NV_SENSORS3
-				logHeaderByteIndex = 3;
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF, new ChannelDetails(false, (long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_6DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_9DOF, new ChannelDetails(false, (long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_9DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_6DOF, new ChannelDetails(false, (long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_6DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_9DOF, new ChannelDetails(false, (long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_9DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_HEADING, new ChannelDetails(false, (long)0, (long)0x08<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_HEADING_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_PEDOMETER, new ChannelDetails(false, (long)0, (long)0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_PEDOM_CNT_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_TAP, new ChannelDetails(false, (long)0, (long)0x02<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_TAPDIRANDTAPCNT_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MOTION_ORIENT, new ChannelDetails(false, (long)0, (long)0x01<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_MOTIONANDORIENT_GUI, false, listOfCompatibleVersionInfoSdLog));
 
-				streamingByteIndex = 4;			// NV_SENSORS4
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12, new ChannelDetails(false, 0, 0, Configuration.Shimmer3.GUI_LABEL_CHANNEL_PPG_A12));
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mSensorBitmapIDStreaming = (0x01<<(streamingByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12).mSensorBitmapIDStreaming);
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mSensorBitmapIDSDLogHeader = (0x01<<(logHeaderByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader);
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13, new ChannelDetails(false, 0, 0, Configuration.Shimmer3.GUI_LABEL_CHANNEL_PPG_A13));
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mSensorBitmapIDStreaming = (0x01<<(streamingByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13).mSensorBitmapIDStreaming);
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mSensorBitmapIDSDLogHeader = (0x01<<(logHeaderByteIndex*8)) | (mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader);
+
+				// NV_SENSORS3				
+				streamingByteIndex = 3;
+				logHeaderByteIndex = 3;
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF, new ChannelDetails(false, (long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_6DOF_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_9DOF, new ChannelDetails(false, (long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_MPL_9DOF_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_6DOF, new ChannelDetails(false, (long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_6DOF_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_9DOF, new ChannelDetails(false, (long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.EULER_ANGLES_9DOF_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_HEADING, new ChannelDetails(false, (long)0, (long)0x08<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_HEADING_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_PEDOMETER, new ChannelDetails(false, (long)0, (long)0x04<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_PEDOM_CNT_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_TAP, new ChannelDetails(false, (long)0, (long)0x02<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_TAPDIRANDTAPCNT_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MOTION_ORIENT, new ChannelDetails(false, (long)0, (long)0x01<<(logHeaderByteIndex*8), Shimmer3Configuration.MPL_MOTIONANDORIENT_GUI));
+
+				// NV_SENSORS4
+				streamingByteIndex = 4;
 				logHeaderByteIndex = 4;
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_GYRO, new ChannelDetails(false, (long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.GYRO_MPU_MPL_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_ACCEL, new ChannelDetails(false, (long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.ACCEL_MPU_MPL_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MAG, new ChannelDetails(false, (long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.MAG_MPU_MPL_GUI, false, listOfCompatibleVersionInfoSdLog));
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF_RAW, new ChannelDetails(false, (long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_DMP_6DOF_GUI, false, listOfCompatibleVersionInfoSdLog));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_GYRO, new ChannelDetails(false, (long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3Configuration.GYRO_MPU_MPL_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_ACCEL, new ChannelDetails(false, (long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3Configuration.ACCEL_MPU_MPL_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MAG, new ChannelDetails(false, (long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3Configuration.MAG_MPU_MPL_GUI));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF_RAW, new ChannelDetails(false, (long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3Configuration.QUAT_DMP_6DOF_GUI));
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x08<<(loggingHeaderByteIndex*8), "")); // unused
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x04<<(loggingHeaderByteIndex*8), "")); // unused
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x02<<(loggingHeaderByteIndex*8), "")); // unused
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x01<<(loggingHeaderByteIndex*8), "")); // unused
 				
-				
 				// Combination Sensors
 				long shimmer3Ecg = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mSensorBitmapIDStreaming | mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mSensorBitmapIDStreaming;
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_ECG, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.ECG_GUI, false, listOfCompatibleVersionInfoExg)); // SENSOR_EXG1_24BIT + SENSOR_EXG2_24BIT
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_ECG, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.ECG_GUI)); // SENSOR_EXG1_24BIT + SENSOR_EXG2_24BIT
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.EXG_TEST_GUI)); // SENSOR_EXG1_24BIT
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG_RESPIRATION));
 				long shimmer3Emg = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mSensorBitmapIDStreaming;
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EMG, new ChannelDetails(false, shimmer3Emg, shimmer3Emg, Shimmer3Configuration.EMG_GUI, false, listOfCompatibleVersionInfoExg)); // SENSOR_EXG1_24BIT
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.EXG_TEST_GUI, false, listOfCompatibleVersionInfoExg)); // SENSOR_EXG1_24BIT
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG_RESPIRATION, false, listOfCompatibleVersionInfoRespiration));
-
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG_RESPIRATION, false, listOfCompatibleVersionInfoRespiration));
-				
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP, new ChannelDetails(false, 0, 0, Shimmer3Configuration.RESISTANCE_AMP_GUI,true, listOfCompatibleVersionInfoBrAmp));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EMG, new ChannelDetails(false, shimmer3Emg, shimmer3Emg, Shimmer3Configuration.EMG_GUI)); // SENSOR_EXG1_24BIT
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP, new ChannelDetails(false, 0, 0, Shimmer3Configuration.RESISTANCE_AMP_GUI));
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mSensorBitmapIDSDLogHeader = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mSensorBitmapIDStreaming = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
 
+
+				//Now that channel map is assembled we can add compatiblity information, internal expansion board power requirements, associated required channels, conflicting channels and associated configuration options.
+				
+				// Channels that have compatibility considerations (used to auto-hide/disable channels/config options in GUI)
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_GSR).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoIntExpA1;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoIntExpA12;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoIntExpA13;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoIntExpA14;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_9DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_6DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_9DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_HEADING).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_PEDOMETER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_TAP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MOTION_ORIENT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_GYRO).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF_RAW).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoRespiration;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoRespiration;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
+				
+				// Channels that require Internal Expansion board power (automatically enabled internal expansion board power when each Channel is enabled)
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP).mIntExpBoardPowerRequired = true;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mIntExpBoardPowerRequired = true;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mIntExpBoardPowerRequired = true;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mIntExpBoardPowerRequired = true;
 				
 				// Required Channels - these get auto enabled/disabled when the parent channel is enabled/disabled
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mListOfChannelMapKeysRequired = Arrays.asList(
 					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1);
-
 				
-				// Conflicting Channels
+				// Conflicting Channels (stop two conflicting channels from being enabled and the same time)
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mListOfChannelMapKeysConflicting = Arrays.asList(
 					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12,
@@ -6685,7 +6731,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP,
 					Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP,
 					Configuration.Shimmer3.CHANNELMAPKEY_EMG,
-					Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST);
+					Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST,
+					Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION);
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mListOfChannelMapKeysConflicting = Arrays.asList(
 					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12,
@@ -6697,7 +6744,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT,
 					Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT,
 					Configuration.Shimmer3.CHANNELMAPKEY_ECG,
-					Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST);
+					Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST,
+					Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION);
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mListOfChannelMapKeysConflicting = Arrays.asList(
 					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12,
@@ -6707,8 +6755,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP,
 					Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP,
 					Configuration.Shimmer3.CHANNELMAPKEY_ECG,
-					Configuration.Shimmer3.CHANNELMAPKEY_EMG);
-				//The A12 and A13 based PPG channels have same channel exceptions as GSR with the addition of their counterpart channel 
+					Configuration.Shimmer3.CHANNELMAPKEY_EMG,
+					Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION);
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mListOfChannelMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.CHANNELMAPKEY_GSR,
+					Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP,
+					Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP,
+					Configuration.Shimmer3.CHANNELMAPKEY_ECG,
+					Configuration.Shimmer3.CHANNELMAPKEY_EMG,
+					Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST);
+				//The A12 and A13 based PPG channels have the same channel exceptions as GSR with the addition of their counterpart channel 
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mListOfChannelMapKeysConflicting = new ArrayList<Integer>(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_GSR).mListOfChannelMapKeysConflicting);
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mListOfChannelMapKeysConflicting.add(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13);
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A12).mListOfChannelMapKeysConflicting.add(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13);
@@ -6719,7 +6779,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mListOfChannelMapKeysConflicting.add(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13);
 
 				
-				// Associated config options for each channel 
+				// Associated config options for each channel (currently used for the ChannelTileMap)
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_LSM303DLHC_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
 					Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE,
 					Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE);
@@ -6793,16 +6853,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER, new ChannelTileDetails(
 						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_BRIDGE_AMP,
 									Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP)));
-//						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13, //Bridge Amplifier High Gain
-//								Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14, //Bridge Amplifier Low Gain
-//								Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1))); //Resistance Amplifier
 				mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL, new ChannelTileDetails(
 						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12, //X-axis
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13, //Y-axis
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14, //Z-axis
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1))); //unused but accessible
+				mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC, new ChannelTileDetails(
+						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1,
+									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12,
+									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13,
+									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14)));
 				//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
 				
+				// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_LOW_NOISE_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_GYRO).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
@@ -6816,9 +6879,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_PROTO_DELUXE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Deluxe;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoHighGAccel;
+				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
 //				mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = listOfCompatibleVersionInfoGps;
 				
-				// Auto generate associated channel configuration options from channel map
+				// For loop to automatically inherit associated channel configuration options from ChannelMap in the ChannelTileMap
 				for(String channelGroup:mChannelTileMap.keySet()){
 					// Ok to clear here because variable is initiated in the class
 					mChannelTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
@@ -6841,7 +6905,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //					System.out.println(channelGroup);
 //				}
 
-				// Sensor Options Map
+				
+				// Assemble the channel configuration options map
 				mConfigOptionsMap = new HashMap<String,ChannelConfigOptionDetails>();
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SHIMMER_USER_ASSIGNED_NAME, 
@@ -6938,7 +7003,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												Configuration.Shimmer3.ListOfECGReferenceElectrodeConfigValues, 
 												ChannelConfigOptionDetails.COMBOBOX,
 												listOfCompatibleVersionInfoExg));
-				//TODO and ExG Test
+				//TODO EMG vs. ECG vs. ExG Test vs. Respiration
 //				mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE, 
 //						new ChannelOptionDetails(Configuration.Shimmer3.ListOfEMGReferenceElectrode, 
 //												Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues, 

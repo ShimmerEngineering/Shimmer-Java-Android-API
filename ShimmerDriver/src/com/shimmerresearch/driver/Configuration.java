@@ -315,6 +315,7 @@ public class Configuration {
 		//Channels
 		public static final String GUI_LABEL_CHANNEL_PPG_A12 = "PPG A12";
 		public static final String GUI_LABEL_CHANNEL_PPG_A13 = "PPG A13";
+		public static final String GUI_LABEL_CHANNEL_EXG_RESPIRATION = "Respiration";
 		public static final String GUI_LABEL_CHANNEL_BRAMP_HIGHGAIN = "High Gain";
 		public static final String GUI_LABEL_CHANNEL_BRAMP_LOWGAIN = "Low Gain";
 
@@ -322,9 +323,8 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNEL_EXG2_24BIT = "EXG2 24BIT";
 		public static final String GUI_LABEL_CHANNEL_EXG1_16BIT = "EXG1 16BIT";
 		public static final String GUI_LABEL_CHANNEL_EXG2_16BIT = "EXG2 16BIT";
-		public static final String GUI_LABEL_CHANNEL_EXG_RESPIRATION = "Respiration";
 
-		
+		//ChannelTiles
 		public static final String GUI_LABEL_CHANNELTILE_LOW_NOISE_ACCEL = "Low Noise Accel";
 		public static final String GUI_LABEL_CHANNELTILE_GYRO = "Gyro";
 		public static final String GUI_LABEL_CHANNELTILE_MAG = "Mag";
@@ -338,6 +338,7 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNELTILE_PROTO_DELUXE = "Proto Deluxe";
 		public static final String GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 		public static final String GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL = "200g Accel";
+		public static final String GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC = "Internal Expansion";
 		//public static final String GUI_LABEL_CHANNELTILE_GPS = "GPS";
 		
 	}
