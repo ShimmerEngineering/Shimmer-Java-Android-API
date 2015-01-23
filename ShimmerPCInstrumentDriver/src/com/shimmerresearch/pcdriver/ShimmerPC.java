@@ -76,9 +76,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
-	Callable myUIThread;
-
-
+	
 	public final static int MSG_IDENTIFIER_STATE_CHANGE = 0;
 	public final static int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
 	public final static int MSG_IDENTIFIER_DATA_PACKET = 2;
@@ -281,9 +279,9 @@ public class ShimmerPC extends ShimmerBluetooth{
 		// TODO Auto-generated method stub
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 		// Do something here
-
+		
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_START_STREAMING, getBluetoothAddress());
-		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
 
 	@Override
@@ -296,7 +294,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 	protected void inquiryDone() {
 		// TODO Auto-generated method stub
 		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress());
-		myUIThread.callBackMethod(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 		isReadyForStreaming();
 	}
 
@@ -307,14 +305,14 @@ public class ShimmerPC extends ShimmerBluetooth{
 		// DO Something here
         mInitialized = true;
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress());
-		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
 
 	@Override
 	protected void dataHandler(ObjectCluster ojc) {
 		// TODO Auto-generated method stub
-		myUIThread.callBackMethod(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getPacketReceptionRate());
-		myUIThread.callBackMethod(MSG_IDENTIFIER_DATA_PACKET, ojc);
+		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getPacketReceptionRate());
+		sendCallBackMsg(MSG_IDENTIFIER_DATA_PACKET, ojc);
 	}
 
 	public byte[] returnRawData(){
@@ -326,11 +324,6 @@ public class ShimmerPC extends ShimmerBluetooth{
 		}
 		else 
 			return null;
-	}
-
-	public void passCallback(Callable c) {
-		// TODO Auto-generated method stub
-		myUIThread = c;
 	}
 	
 	public synchronized void disconnect(){
@@ -365,7 +358,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 			e.printStackTrace();
 		}
 		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress());
-		myUIThread.callBackMethod(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 
 	@Override
@@ -429,7 +422,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 				// Do something here
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress());
-		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 
 	}
 

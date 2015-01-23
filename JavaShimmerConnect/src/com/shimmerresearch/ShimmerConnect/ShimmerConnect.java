@@ -88,11 +88,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.collect.Multimap;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerMSG;
 import com.shimmerresearch.pcdriver.CallbackObject;
-import com.shimmerresearch.pcdriver.ShimmerMSG;
 import com.shimmerresearch.pcdriver.ShimmerPC;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.tools.HighPassFilter;
@@ -101,7 +102,7 @@ import com.shimmerresearch.tools.LowPassFilter;
 import com.shimmerresearch.algorithms.*;
 import com.shimmerresearch.algorithms.ShimmerPPG.PpgSignalProcessing;
 
-public class ShimmerConnect {
+public class ShimmerConnect extends BasicProcessWithCallBack {
 	
 	public static final int SHIMMER_1=0;
 	public static final int SHIMMER_2=1;
@@ -313,6 +314,7 @@ public class ShimmerConnect {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {	
+		setWaitForData(mShimmer);
 		frame = new JFrame("Shimmer Connect");
 		frame.setBounds(100, 100, 720, 592);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -336,7 +338,7 @@ public class ShimmerConnect {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Connect");
 				mShimmer.connect(textFieldComPort.getText(),"");
-				WaitForData waitForData= new WaitForData(mShimmer);
+				
 			}
 		});
 		btnConnect.setBounds(140, 45, 116, 25);
@@ -1567,306 +1569,7 @@ public class ShimmerConnect {
 	}
 
 	
-	class WaitForData implements com.shimmerresearch.pcdriver.Callable  
-	{   
-		public WaitForData(ShimmerPC shimmer)  
-		{  
-			shimmer.passCallback(this);
-		}  
-		public void callBackMethod(int ind, Object objectCluster)  
-		{  
-			if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
-				CallbackObject callbackObject = (CallbackObject)objectCluster;
-				int state = callbackObject.mIndicator;
-				if (state == ShimmerBluetooth.STATE_CONNECTING) {	//Never called
-					textFieldState.setText("Shimmer Connecting");
-				} else if (state == ShimmerBluetooth.STATE_CONNECTED) {
-					textFieldState.setText("Shimmer Connected");
-					btnConnect.setEnabled(false);
-					btnDisconnect.setEnabled(true);
-					connected();
-				} else {
-					textFieldState.setText("Shimmer Disconnected");
-					textFieldMessage.setText("");
-					btnDisconnect.setEnabled(false);
-					btnConnect.setEnabled(true);
-					btnStartStreaming.setEnabled(false);
-					btnStopStreaming.setEnabled(false);
-					menuItemConfigure.setEnabled(false);
-					menuItemExgSettings.setEnabled(false);
-					onDisconnect();
-				}
-			} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
-				CallbackObject callbackObject = (CallbackObject)objectCluster;
-				int msg = callbackObject.mIndicator;
-				if (msg == ShimmerPC.NOTIFICATION_STOP_STREAMING) {
-					menuItemConfigure.setEnabled(true);
-					if (mShimmer.getShimmerVersion()==SHIMMER_3 || mShimmer.getShimmerVersion()==SHIMMER_SR30) {
-						menuItemExgSettings.setEnabled(true);
-					}
-					btnStopStreaming.setEnabled(false);
-					btnStartStreaming.setEnabled(true);
-				} else if (msg == ShimmerPC.NOTIFICATION_START_STREAMING) {
-					menuItemConfigure.setEnabled(false);
-					menuItemExgSettings.setEnabled(false);
-					btnStopStreaming.setEnabled(true);
-					btnStartStreaming.setEnabled(false);
-				} else {	//Ready for Streaming
-					setupListOfEnabledSensors();
-					btnStartStreaming.setEnabled(true);
-				}
-			} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
-				ObjectCluster objc = (ObjectCluster)objectCluster;
-				String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
-				//Filter signals
-				if (highPassFilterEnabled || bandStopFilterEnabled){
-				for (int indexgnames=0;indexgnames<exgnames.length;indexgnames++){
-					Collection<FormatCluster> cf = objc.mPropertyCluster.get(exgnames[indexgnames]);
-					if (cf.size()!=0){
-						double data =((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData;
-						if (exgnames[indexgnames].equals("EXG1 CH1")) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals("EXG1 CH2")) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals("EXG2 CH1")) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch1.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch1Data=data;
-						} else if (exgnames[indexgnames].equals("EXG2 CH2")) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						} else if (exgnames[indexgnames].equals("ECG LL-RA")) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data); 
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals("ECG LA-RA")) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals("ECG Vx-RL")) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						} else if (exgnames[indexgnames].equals("EMG CH1")) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data); 
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals("EMG CH2")) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals("EXG1 CH1 16Bit")) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals("EXG1 CH2 16Bit")) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals("EXG2 CH2 16Bit")) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch1Data=data;
-						} else if (exgnames[indexgnames].equals("EXG2 CH2 16Bit")) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						}
-					}
-				}
-				}
-				
-				String[] selectedSensorSignals = selectSignalsToView();
-				int numberOfSelectedSignals = selectedSensorSignals.length;
-				if (numberOfSelectedSignals>maxTraces) {
-					numberOfSelectedSignals=maxTraces;
-				}
-				double dataArrayPPG = 0;
-				double heartRate = Double.NaN;
-				
-				if (numberOfSelectedSignals > 0 || calculateHeartRate) {
-					chart.removeAllTraces();
-					Collection<FormatCluster> formats[] = new Collection[numberOfSelectedSignals];
-					FormatCluster cal[] = new FormatCluster[numberOfSelectedSignals];
-					double[] dataArray = new double[numberOfSelectedSignals];
-					for (int count=0; count<numberOfSelectedSignals; count++) {
-						chart.addTrace(traces[count]);
-						traces[count].setVisible(true);
-						traces[count].setName(selectedSensorSignals[count]);
-						formats[count] = objc.mPropertyCluster.get(selectedSensorSignals[count]);
-						cal[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"CAL"));
-						if (cal[count]!=null) {
-							if (calibrated[count]) {
-								dataArray[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"CAL")).mData;
-							} else {
-								dataArray[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"RAW")).mData;
-							}
-						}
-					}
-					
-					Multimap<String, FormatCluster> m = objc.mPropertyCluster;
-					for(String key : m.keys()) {
-						if (key.equals("Internal ADC A13")){
-							
-							Collection<FormatCluster> format;
-							FormatCluster calPPG;
-							format = objc.mPropertyCluster.get("Internal ADC A13");
-							calPPG = ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL"));
-							if (calPPG!=null) {
-								dataArrayPPG = (int) ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL")).mData;
-								dataArrayPPG = lpf.filterData(dataArrayPPG);
-								dataArrayPPG = hpf.filterData(dataArrayPPG);
-							}
-						}
-					}
-					
-					if (calculateHeartRate){
-						heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG);
-						if (heartRate == INVALID_RESULT){
-							heartRate = Double.NaN;
-						}
-						objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
-						if (chckbxHeartRate.isSelected()) {
-							chart.addTrace(traceHR);
-						}
-					}
-					
-					//Plotting data
-		    		int numberOfTraces = dataArray.length;
-		    		for (int i=0; i<numberOfTraces; i++){
-			    		float newX = mLastX + mSpeed;
-			    		if (chckbxHeartRate.isSelected()){
-			    			traceHR.addPoint(newX, heartRate);
-			    		}
-			    		for (int count=0; count<numberOfTraces; count++) {
-			    			traces[count].addPoint(newX, dataArray[count]);
-			    			if (count==0) {
-			    				mLastX += mSpeed;
-			    			}
-			    		}
-		    		}
-		    		if (numberOfTraces == 0 && chckbxHeartRate.isSelected()){
-			    		float newX = mLastX + mSpeed;
-			    		traceHR.addPoint(newX, heartRate);
-			    		mLastX += mSpeed;
-			    		minDataPoint=-5;
-			    		maxDataPoint=215;
-			    		Range range = new Range(minDataPoint, maxDataPoint);
-			    		IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
-			    		yAxis.setRangePolicy(rangePolicy);
-		    		} else {
-			    		//Scaling Y Axis
-			    		for (int count=0; count<numberOfTraces; count++){
-			    			if (dataArray[count] > maxDataPoint) {
-			    				maxDataPoint = (int) Math.ceil(dataArray[count]);
-			    			}
-			    			if (heartRate > maxDataPoint){
-			    				maxDataPoint = (int) Math.ceil(heartRate);
-			    			}
-			    			if (dataArray[count] < minDataPoint) {
-			    				minDataPoint = (int) Math.floor(dataArray[count]);
-			    			}
-			    			if (heartRate < minDataPoint) {
-			    				minDataPoint = (int) Math.floor(heartRate);
-			    			}
-			    		}
-			    		Range range = new Range(minDataPoint, maxDataPoint);
-			    		IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
-			    		yAxis.setRangePolicy(rangePolicy);
-		    		}
-				}
-				
-				if (returnVal == JFileChooser.APPROVE_OPTION && loggingData) {
-						log.logData(objc);
-				}
-				
-				
-			} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
-				double packetReceptionRate = (Double) objectCluster;
-				textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
-			}
-		}
-
-		public void directMethod()  
-		{  
-
-		}
-		@Override
-		public void callBackMethod(ShimmerMSG s) {
-			// TODO Auto-generated method stub
-			
-		}  
-	}
+	
 	
 	
 	private void exgConfiguration() {
@@ -2334,6 +2037,294 @@ public class ShimmerConnect {
 		for (int count=0; count<listofCompatibleSensorsShimmer2.length; count++) {
 			configFrame.getContentPane().remove(listOfSensorsShimmer2[count]);
 		}
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMSG shimmerMSG) {
+		// TODO Auto-generated method stub
+		  int ind = shimmerMSG.mIdentifier;
+		  Object objectCluster = shimmerMSG.mB;
+		if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
+			CallbackObject callbackObject = (CallbackObject)objectCluster;
+			int state = callbackObject.mIndicator;
+			if (state == ShimmerBluetooth.STATE_CONNECTING) {	//Never called
+				textFieldState.setText("Shimmer Connecting");
+			} else if (state == ShimmerBluetooth.STATE_CONNECTED) {
+				textFieldState.setText("Shimmer Connected");
+				btnConnect.setEnabled(false);
+				btnDisconnect.setEnabled(true);
+				connected();
+			} else {
+				textFieldState.setText("Shimmer Disconnected");
+				textFieldMessage.setText("");
+				btnDisconnect.setEnabled(false);
+				btnConnect.setEnabled(true);
+				btnStartStreaming.setEnabled(false);
+				btnStopStreaming.setEnabled(false);
+				menuItemConfigure.setEnabled(false);
+				menuItemExgSettings.setEnabled(false);
+				onDisconnect();
+			}
+		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
+			CallbackObject callbackObject = (CallbackObject)objectCluster;
+			int msg = callbackObject.mIndicator;
+			if (msg == ShimmerPC.NOTIFICATION_STOP_STREAMING) {
+				menuItemConfigure.setEnabled(true);
+				if (mShimmer.getShimmerVersion()==SHIMMER_3 || mShimmer.getShimmerVersion()==SHIMMER_SR30) {
+					menuItemExgSettings.setEnabled(true);
+				}
+				btnStopStreaming.setEnabled(false);
+				btnStartStreaming.setEnabled(true);
+			} else if (msg == ShimmerPC.NOTIFICATION_START_STREAMING) {
+				menuItemConfigure.setEnabled(false);
+				menuItemExgSettings.setEnabled(false);
+				btnStopStreaming.setEnabled(true);
+				btnStartStreaming.setEnabled(false);
+			} else {	//Ready for Streaming
+				setupListOfEnabledSensors();
+				btnStartStreaming.setEnabled(true);
+			}
+		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
+			ObjectCluster objc = (ObjectCluster)objectCluster;
+			String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
+			//Filter signals
+			if (highPassFilterEnabled || bandStopFilterEnabled){
+			for (int indexgnames=0;indexgnames<exgnames.length;indexgnames++){
+				Collection<FormatCluster> cf = objc.mPropertyCluster.get(exgnames[indexgnames]);
+				if (cf.size()!=0){
+					double data =((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData;
+					if (exgnames[indexgnames].equals("EXG1 CH1")) {
+						if (highPassFilterEnabled){
+							data = hpfexg1ch1.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg1ch1.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg1Ch1Data=data;
+					} else if (exgnames[indexgnames].equals("EXG1 CH2")) {
+						if (highPassFilterEnabled){
+							data = hpfexg1ch2.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg1ch2.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg1Ch2Data=data;
+					} else if (exgnames[indexgnames].equals("EXG2 CH1")) {
+						if (highPassFilterEnabled){
+							data = hpfexg2ch1.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg2ch1.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg2Ch1Data=data;
+					} else if (exgnames[indexgnames].equals("EXG2 CH2")) {
+						if (highPassFilterEnabled){
+							data = hpfexg2ch2.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg2ch2.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg2Ch2Data=data;
+					} else if (exgnames[indexgnames].equals("ECG LL-RA")) {
+						if (highPassFilterEnabled){
+							data = hpfexg1ch1.filterData(data); 
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg1ch1.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg1Ch1Data=data;
+					} else if (exgnames[indexgnames].equals("ECG LA-RA")) {
+						if (highPassFilterEnabled){
+							data = hpfexg1ch2.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg1ch2.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg1Ch2Data=data;
+					} else if (exgnames[indexgnames].equals("ECG Vx-RL")) {
+						if (highPassFilterEnabled){
+							data = hpfexg2ch2.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg2ch2.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg2Ch2Data=data;
+					} else if (exgnames[indexgnames].equals("EMG CH1")) {
+						if (highPassFilterEnabled){
+							data = hpfexg1ch1.filterData(data); 
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg1ch1.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg1Ch1Data=data;
+					} else if (exgnames[indexgnames].equals("EMG CH2")) {
+						if (highPassFilterEnabled){
+							data = hpfexg1ch2.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg1ch2.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg1Ch2Data=data;
+					} else if (exgnames[indexgnames].equals("EXG1 CH1 16Bit")) {
+						if (highPassFilterEnabled){
+							data = hpfexg1ch1.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg1ch1.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg1Ch1Data=data;
+					} else if (exgnames[indexgnames].equals("EXG1 CH2 16Bit")) {
+						if (highPassFilterEnabled){
+							data = hpfexg1ch2.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg1ch2.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg1Ch2Data=data;
+					} else if (exgnames[indexgnames].equals("EXG2 CH2 16Bit")) {
+						if (highPassFilterEnabled){
+							data = hpfexg2ch2.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg2ch1.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg2Ch1Data=data;
+					} else if (exgnames[indexgnames].equals("EXG2 CH2 16Bit")) {
+						if (highPassFilterEnabled){
+							data = hpfexg2ch2.filterData(data);
+						}
+						if (bandStopFilterEnabled){
+							data = bsfexg2ch2.filterData(data);
+						}
+						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+						exg2Ch2Data=data;
+					}
+				}
+			}
+			}
+			
+			String[] selectedSensorSignals = selectSignalsToView();
+			int numberOfSelectedSignals = selectedSensorSignals.length;
+			if (numberOfSelectedSignals>maxTraces) {
+				numberOfSelectedSignals=maxTraces;
+			}
+			double dataArrayPPG = 0;
+			double heartRate = Double.NaN;
+			
+			if (numberOfSelectedSignals > 0 || calculateHeartRate) {
+				chart.removeAllTraces();
+				Collection<FormatCluster> formats[] = new Collection[numberOfSelectedSignals];
+				FormatCluster cal[] = new FormatCluster[numberOfSelectedSignals];
+				double[] dataArray = new double[numberOfSelectedSignals];
+				for (int count=0; count<numberOfSelectedSignals; count++) {
+					chart.addTrace(traces[count]);
+					traces[count].setVisible(true);
+					traces[count].setName(selectedSensorSignals[count]);
+					formats[count] = objc.mPropertyCluster.get(selectedSensorSignals[count]);
+					cal[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"CAL"));
+					if (cal[count]!=null) {
+						if (calibrated[count]) {
+							dataArray[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"CAL")).mData;
+						} else {
+							dataArray[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"RAW")).mData;
+						}
+					}
+				}
+				
+				Multimap<String, FormatCluster> m = objc.mPropertyCluster;
+				for(String key : m.keys()) {
+					if (key.equals("Internal ADC A13")){
+						
+						Collection<FormatCluster> format;
+						FormatCluster calPPG;
+						format = objc.mPropertyCluster.get("Internal ADC A13");
+						calPPG = ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL"));
+						if (calPPG!=null) {
+							dataArrayPPG = (int) ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL")).mData;
+							dataArrayPPG = lpf.filterData(dataArrayPPG);
+							dataArrayPPG = hpf.filterData(dataArrayPPG);
+						}
+					}
+				}
+				
+				if (calculateHeartRate){
+					heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG);
+					if (heartRate == INVALID_RESULT){
+						heartRate = Double.NaN;
+					}
+					objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
+					if (chckbxHeartRate.isSelected()) {
+						chart.addTrace(traceHR);
+					}
+				}
+				
+				//Plotting data
+	    		int numberOfTraces = dataArray.length;
+	    		for (int i=0; i<numberOfTraces; i++){
+		    		float newX = mLastX + mSpeed;
+		    		if (chckbxHeartRate.isSelected()){
+		    			traceHR.addPoint(newX, heartRate);
+		    		}
+		    		for (int count=0; count<numberOfTraces; count++) {
+		    			traces[count].addPoint(newX, dataArray[count]);
+		    			if (count==0) {
+		    				mLastX += mSpeed;
+		    			}
+		    		}
+	    		}
+	    		if (numberOfTraces == 0 && chckbxHeartRate.isSelected()){
+		    		float newX = mLastX + mSpeed;
+		    		traceHR.addPoint(newX, heartRate);
+		    		mLastX += mSpeed;
+		    		minDataPoint=-5;
+		    		maxDataPoint=215;
+		    		Range range = new Range(minDataPoint, maxDataPoint);
+		    		IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
+		    		yAxis.setRangePolicy(rangePolicy);
+	    		} else {
+		    		//Scaling Y Axis
+		    		for (int count=0; count<numberOfTraces; count++){
+		    			if (dataArray[count] > maxDataPoint) {
+		    				maxDataPoint = (int) Math.ceil(dataArray[count]);
+		    			}
+		    			if (heartRate > maxDataPoint){
+		    				maxDataPoint = (int) Math.ceil(heartRate);
+		    			}
+		    			if (dataArray[count] < minDataPoint) {
+		    				minDataPoint = (int) Math.floor(dataArray[count]);
+		    			}
+		    			if (heartRate < minDataPoint) {
+		    				minDataPoint = (int) Math.floor(heartRate);
+		    			}
+		    		}
+		    		Range range = new Range(minDataPoint, maxDataPoint);
+		    		IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
+		    		yAxis.setRangePolicy(rangePolicy);
+	    		}
+			}
+			
+			if (returnVal == JFileChooser.APPROVE_OPTION && loggingData) {
+					log.logData(objc);
+			}
+			
+			
+		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
+			double packetReceptionRate = (Double) objectCluster;
+			textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
+		}
+	
 	}
 }
 
