@@ -121,6 +121,8 @@ public class InfoMemLayout {
 	public int bitShiftSensors1 =						8;
 	public int bitShiftSensors2 =						16;
 	
+	public int maskPpgMode = 							(0x40<<8);
+	
 	//Config Byte0
 	public int bitShiftLSM303DLHCAccelSamplingRate = 	4;
 	public int maskLSM303DLHCAccelSamplingRate =    	0x0F;
@@ -167,14 +169,14 @@ public class InfoMemLayout {
 	public int idxEXGADS1292RResp1 = 			8;
 	public int idxEXGADS1292RResp2 = 			9;
 	
-	public int bitShiftEXGRateSetting = 		0;
-	public int maskEXGRateSetting = 			0x07;
-	
-	public int bitShiftEXGGainSetting = 		4;
-	public int maskEXGGainSetting = 			0x07;
-
-	public int bitShiftEXGReferenceElectrode = 	0;
-	public int maskEXGReferenceElectrode = 		0x07;
+//	public int bitShiftEXGRateSetting = 		0;
+//	public int maskEXGRateSetting = 			0x07;
+//	
+//	public int bitShiftEXGGainSetting = 		4;
+//	public int maskEXGGainSetting = 			0x07;
+//
+//	public int bitShiftEXGReferenceElectrode = 	0;
+//	public int maskEXGReferenceElectrode = 		0x07;
 	
 	public int maskBaudRate = 					0xFF;
 	

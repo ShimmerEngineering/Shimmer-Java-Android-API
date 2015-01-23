@@ -261,7 +261,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
-		mSamplingRate = samplingRate;
+		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -285,7 +285,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
-		mSamplingRate = samplingRate;
+		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
@@ -311,7 +311,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
-		mSamplingRate = samplingRate;
+		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -341,7 +341,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
-		mSamplingRate = samplingRate;
+		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -354,8 +354,8 @@ public class Shimmer extends ShimmerBluetooth{
 		mGyroRange = gyroRange;
 		mMagRange = magRange;
 		mSetupEXG = true;
-		mEXG1Register = exg1;
-		mEXG2Register = exg2;
+		mEXG1RegisterArray = exg1;
+		mEXG2RegisterArray = exg2;
 	}
 	
 
@@ -861,7 +861,7 @@ public class Shimmer extends ShimmerBluetooth{
 	}
 
 	public double getSamplingRate(){
-		return mSamplingRate;
+		return mShimmerSamplingRate;
 	}
 
 	/**
