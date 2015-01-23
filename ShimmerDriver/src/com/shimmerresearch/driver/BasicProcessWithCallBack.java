@@ -10,13 +10,12 @@ public abstract class BasicProcessWithCallBack {
 
 	protected Callable mThread = null;
 	protected BlockingQueue<ShimmerMSG> mQueue = new ArrayBlockingQueue<ShimmerMSG>(1024);
-	protected ConsumerThread mGUIConsumerThread;
+	protected ConsumerThread mGUIConsumerThread = null;
 	WaitForData mWaitForData = null;
 	List<Callable> mListOfThreads = new ArrayList<Callable>();
 	List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
 	public BasicProcessWithCallBack(){
-		mGUIConsumerThread = new ConsumerThread();
-		mGUIConsumerThread.start();
+		
 	}
 	
 	public void queueMethod(int i,Object ojc){
@@ -61,6 +60,10 @@ public abstract class BasicProcessWithCallBack {
 	}
 	
 	public void setWaitForData(BasicProcessWithCallBack b){
+		if (mGUIConsumerThread==null){
+			mGUIConsumerThread = new ConsumerThread();
+			mGUIConsumerThread.start();
+		}
 		if (mWaitForData!=null){
 			mListWaitForData.add(new WaitForData(b));
 		} else {
