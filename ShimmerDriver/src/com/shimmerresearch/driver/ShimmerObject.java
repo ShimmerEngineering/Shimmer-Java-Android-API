@@ -117,7 +117,7 @@ import com.shimmerresearch.driver.ChannelDetails;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 import com.sun.org.apache.bcel.internal.generic.ISUB;
 
-public abstract class ShimmerObject implements Serializable {
+public abstract class ShimmerObject extends BasicProcessWithCallBack implements Serializable {
 
 	/**
 	 * 

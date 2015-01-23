@@ -41,9 +41,8 @@
  * 
  */
 
-package com.shimmerresearch.pcdriver;
+package com.shimmerresearch.driver;
 
-import com.shimmerresearch.driver.ObjectCluster;
 
 public interface Callable  
 {  

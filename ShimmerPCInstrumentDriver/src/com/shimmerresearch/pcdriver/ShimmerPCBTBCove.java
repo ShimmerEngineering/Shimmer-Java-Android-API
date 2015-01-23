@@ -60,11 +60,15 @@ import java.util.TimerTask;
 
 
 
+
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerMSG;
 
 
 public class ShimmerPCBTBCove extends ShimmerBluetooth{
@@ -401,6 +405,12 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 
 	@Override
 	protected void logAndStreamStatusChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMSG shimmerMSG) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -64,7 +64,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerMSG;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -433,6 +435,12 @@ public class ShimmerPC extends ShimmerBluetooth{
 
 	@Override
 	protected void logAndStreamStatusChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMSG shimmerMSG) {
 		// TODO Auto-generated method stub
 		
 	}

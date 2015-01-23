@@ -157,13 +157,16 @@ import java.util.UUID;
 
 
 
+
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerMSG;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
+
 
 
 
@@ -1023,6 +1026,12 @@ public class Shimmer extends ShimmerBluetooth{
 		
 		mHandler.obtainMessage(Shimmer.MESSAGE_LOG_AND_STREAM_STATUS_CHANGED, docked, sensing).sendToTarget();
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" Status has changed. Docked: "+docked+" Sensing: "+sensing);
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMSG shimmerMSG) {
+		// TODO Auto-generated method stub
+		
 	}
 
 //	@Override

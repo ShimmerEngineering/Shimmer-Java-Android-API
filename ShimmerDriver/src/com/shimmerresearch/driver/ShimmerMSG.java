@@ -1,4 +1,4 @@
-package com.shimmerresearch.pcdriver;
+package com.shimmerresearch.driver;
 
 public class ShimmerMSG {
 	public int mIdentifier;

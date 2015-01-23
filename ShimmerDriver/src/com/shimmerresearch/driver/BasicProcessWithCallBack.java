@@ -1,4 +1,4 @@
-package com.shimmerresearch.pcdriver;
+package com.shimmerresearch.driver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +97,7 @@ public abstract class BasicProcessWithCallBack {
     }
     
     //this is for the upper layer
-	public class WaitForData implements com.shimmerresearch.pcdriver.Callable  
+	public class WaitForData implements com.shimmerresearch.driver.Callable  
 	{
 
 		public WaitForData(BasicProcessWithCallBack bpwcb)  
