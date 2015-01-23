@@ -5030,14 +5030,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public void setShimmerSamplingRate(double rate){
 		
 		double maxRate = 0.0;
-		if (mHardwareVersion==HW_ID_SHIMMER_2 || mHardwareVersion==HW_ID_SHIMMER_2R){
+		if (mHardwareVersion==HW_ID_SHIMMER_2 || mHardwareVersion==HW_ID_SHIMMER_2R) {
 			maxRate = 1024.0;
 		} else if (mHardwareVersion==HW_ID_SHIMMER_3) {
 			maxRate = 32768.0;
 		}		
     	// don't let sampling rate < 0 OR > maxRate
-    	if(rate <= 0) rate = 1.0;
-    	else if (rate > maxRate) rate = maxRate;
+    	if(rate <= 0) {
+    		rate = 1.0;
+    	}
+    	else if (rate > maxRate) {
+    		rate = maxRate;
+    	}
     	
     	 // get Shimmer compatible sampling rate
     	Double actualSamplingRate = maxRate/Math.floor(maxRate/rate);
@@ -5045,29 +5049,27 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
     	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
 		mShimmerSamplingRate = actualSamplingRate;
 		
-		if (mHardwareVersion==HW_ID_SHIMMER_2 || mHardwareVersion==HW_ID_SHIMMER_2R){
-			if (!mLowPowerMag){
-				if (rate<=10) {
+		if(mHardwareVersion==HW_ID_SHIMMER_2 || mHardwareVersion==HW_ID_SHIMMER_2R) {
+			if(!mLowPowerMag){
+				if(rate<=10) {
 					mShimmer2MagRate = 4;
-				} else if (rate<=20) {
+				} 
+				else if (rate<=20) {
 					mShimmer2MagRate = 5;
-				} else {
+				} 
+				else {
 					mShimmer2MagRate = 6;
 				}
-			} else {
+			} 
+			else {
 				mShimmer2MagRate = 4;
 			}
-//			rate=1024/rate; //the equivalent hex setting
-//			mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(rate), 0x00});
-			
-		} else if (mHardwareVersion==HW_ID_SHIMMER_3) {
+		} 
+		else if (mHardwareVersion==HW_ID_SHIMMER_3) {
 			setLSM303MagRateFromFreq(mShimmerSamplingRate);
 			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-
-//			int samplingByteValue = (int) (32768/rate);
-//			mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
-
+			setExGRateFromFreq(mShimmerSamplingRate);
 		}
 	}
 	
@@ -5083,26 +5085,26 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		
 		if (!mLowPowerAccelWR){
-			if (mShimmerSamplingRate<=1){
+			if (freq<=1){
 				mLSM303DigitalAccelRate = 1; // 1Hz
-			} else if (mShimmerSamplingRate<=10){
+			} else if (freq<=10){
 				mLSM303DigitalAccelRate = 2; // 10Hz
-			} else if (mShimmerSamplingRate<=25){
+			} else if (freq<=25){
 				mLSM303DigitalAccelRate = 3; // 25Hz
-			} else if (mShimmerSamplingRate<=50){
+			} else if (freq<=50){
 				mLSM303DigitalAccelRate = 4; // 50Hz
-			} else if (mShimmerSamplingRate<=100){
+			} else if (freq<=100){
 				mLSM303DigitalAccelRate = 5; // 100Hz
-			} else if (mShimmerSamplingRate<=200){
+			} else if (freq<=200){
 				mLSM303DigitalAccelRate = 6; // 200Hz
-			} else if (mShimmerSamplingRate<=400){
+			} else if (freq<=400){
 				mLSM303DigitalAccelRate = 7; // 400Hz
 			} else {
 				mLSM303DigitalAccelRate = 9; // 1344Hz
 			}
 		}
 		else {
-			if (mShimmerSamplingRate>=10){
+			if (freq>=10){
 				mLSM303DigitalAccelRate = 2; // 10Hz
 			} else {
 				mLSM303DigitalAccelRate = 1; // 1Hz
@@ -5121,25 +5123,25 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		
 		if (!mLowPowerMag){
-			if (mShimmerSamplingRate<=0.75){
+			if (freq<=0.75){
 				mLSM303MagRate = 0; // 0.75Hz
-			} else if (mShimmerSamplingRate<=1){
+			} else if (freq<=1){
 				mLSM303MagRate = 1; // 1.5Hz
-			} else if (mShimmerSamplingRate<=3) {
+			} else if (freq<=3) {
 				mLSM303MagRate = 2; // 3Hz
-			} else if (mShimmerSamplingRate<=7.5) {
+			} else if (freq<=7.5) {
 				mLSM303MagRate = 3; // 7.5Hz
-			} else if (mShimmerSamplingRate<=15) {
+			} else if (freq<=15) {
 				mLSM303MagRate = 4; // 15Hz
-			} else if (mShimmerSamplingRate<=30) {
+			} else if (freq<=30) {
 				mLSM303MagRate = 5; // 30Hz
-			} else if (mShimmerSamplingRate<=75) {
+			} else if (freq<=75) {
 				mLSM303MagRate = 6; // 75Hz
 			} else {
 				mLSM303MagRate = 7; // 220Hz
 			}
 		} else {
-			if (mShimmerSamplingRate>=10){
+			if (freq>=10){
 				mLSM303MagRate = 4; // 15Hz
 			} else {
 				mLSM303MagRate = 1; // 1.5Hz
@@ -5196,6 +5198,28 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz
 		}
 		return mMPU9150GyroAccelRate;
+	}
+	
+	public int setExGRateFromFreq(double freq) {
+		if (freq<=125) {
+			mEXG1RateSetting = 0x00; // 125Hz
+		} else if (freq<=250) {
+			mEXG1RateSetting = 0x01; // 250Hz
+		} else if (freq<=500) {
+			mEXG1RateSetting = 0x02; // 500Hz
+		} else if (freq<=1000) {
+			mEXG1RateSetting = 0x03; // 1000Hz
+		} else if (freq<=2000) {
+			mEXG1RateSetting = 0x04; // 2000Hz
+		} else if (freq<=4000) {
+			mEXG1RateSetting = 0x05; // 4000Hz
+		} else if (freq<=8000) {
+			mEXG1RateSetting = 0x06; // 8000Hz
+		} else {
+			mEXG1RateSetting = 0x02; // 500Hz
+		}
+		mEXG2RateSetting = mEXG1RateSetting;
+		return mEXG1RateSetting;
 	}
 	
 	public boolean isLowPowerGyro() {
@@ -6873,13 +6897,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_WIDE_RANGE_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_EXTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
+				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_GSR).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_EXG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_PROTO_MINI).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Mini;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_PROTO_DELUXE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Deluxe;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
 				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoHighGAccel;
-				mChannelTileMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
 //				mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = listOfCompatibleVersionInfoGps;
 				
 				// For loop to automatically inherit associated channel configuration options from ChannelMap in the ChannelTileMap
@@ -7010,6 +7034,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //												ChannelOptionDetails.COMBOBOX,
 //												listOfCompatibleVersionInfoExG));
 				
+				
+				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RATE, 
+						new ChannelConfigOptionDetails(Configuration.Shimmer3.ListOfExGRate, 
+												Configuration.Shimmer3.ListOfExGRateConfigValues, 
+												ChannelConfigOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoExg));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_LEAD_OFF_DETECTION, 
 						new ChannelConfigOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffDetection, 
 												Configuration.Shimmer3.ListOfExGLeadOffDetectionConfigValues, 
@@ -7927,10 +7957,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mEXG2RespirationDetectPhase;
 	}
 
-
-
-	
-	
+	public double getShimmerSamplingRate(){
+		return mShimmerSamplingRate; 
+	}
 
 
 }
