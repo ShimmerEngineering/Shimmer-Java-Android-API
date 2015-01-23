@@ -69,6 +69,7 @@ public class ShimmerTCPExampleActivity extends Activity {
     Socket clientSocket;
     String FromServer="";
     String ToServer;
+    boolean firstTime = true;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -120,6 +121,7 @@ public class ShimmerTCPExampleActivity extends Activity {
                 	 switch (msg.arg1) {
                      	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
                     	    if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
+                    	    	if (firstTime){
                     	    	mShimmerDevice1.writeEnabledSensors(ShimmerObject.SENSOR_DACCEL);
                     	    	Thread thread = new Thread()
                     			{
@@ -144,6 +146,8 @@ public class ShimmerTCPExampleActivity extends Activity {
                     	        Log.d("ConnectionStatus","Successful");
                     	
                     	        mShimmerDevice1.startStreaming();
+                    	        firstTime = false;
+                    	    	}
                     	     }
                     	    break;
 	                    case Shimmer.STATE_CONNECTING:
