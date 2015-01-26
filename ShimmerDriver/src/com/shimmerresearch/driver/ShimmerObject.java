@@ -4892,9 +4892,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mEXG2RegisterArray;
 	}
 
+	protected boolean isEXGUsingDefaultRespirationConfiguration(){
+		boolean using = false;
+		if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&&((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)&&((mEXG2RegisterArray[8] & 0xC0)==0xC0)){
+			using = true;
+		}
+		return using;
+	}
+	
 	protected boolean isEXGUsingDefaultECGConfiguration(){
 		boolean using = false;
-		if(((mEXG1RegisterArray[3] & 15)==0)&&((mEXG1RegisterArray[4] & 15)==0)&& ((mEXG2RegisterArray[3] & 15)==0)&&((mEXG2RegisterArray[4] & 15)==7)){
+		if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
 			using = true;
 		}
 		return using;
@@ -4902,7 +4910,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	protected boolean isEXGUsingDefaultTestSignalConfiguration(){
 		boolean using = false;
-		if(((mEXG1RegisterArray[3] & 15)==5)&&((mEXG1RegisterArray[4] & 15)==5)&& ((mEXG2RegisterArray[3] & 15)==5)&&((mEXG2RegisterArray[4] & 15)==5)){
+		if(((mEXG1RegisterArray[3] & 0x0F)==5)&&((mEXG1RegisterArray[4] & 0x0F)==5)&& ((mEXG2RegisterArray[3] & 0x0F)==5)&&((mEXG2RegisterArray[4] & 0x0F)==5)){
 			using = true;
 		}
 		return using;
@@ -4910,7 +4918,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	protected boolean isEXGUsingDefaultEMGConfiguration(){
 		boolean using = false;
-		if(((mEXG1RegisterArray[3] & 15)==9)&&((mEXG1RegisterArray[4] & 15)==0)&& ((mEXG2RegisterArray[3] & 15)==1)&&((mEXG2RegisterArray[4] & 15)==1)){
+		if(((mEXG1RegisterArray[3] & 0x0F)==9)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==1)&&((mEXG2RegisterArray[4] & 0x0F)==1)){
 			using = true;
 		}
 		return using;
@@ -5200,6 +5208,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mMPU9150GyroAccelRate;
 	}
 	
+	//TODO decide whether to include exgBytesGetFromConfig() here or not
 	public int setExGRateFromFreq(double freq) {
 		if (freq<=125) {
 			mEXG1RateSetting = 0x00; // 125Hz
@@ -5219,6 +5228,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mEXG1RateSetting = 0x02; // 500Hz
 		}
 		mEXG2RateSetting = mEXG1RateSetting;
+		
+		mEXG1RegisterArray[0] = (byte) ((mEXG1RegisterArray[0] & ~0x07) | mEXG1RateSetting);
+		mEXG2RegisterArray[0] = (byte) ((mEXG2RegisterArray[0] & ~0x07) | mEXG2RateSetting);
+		
+//		exgBytesGetFromConfig();
 		return mEXG1RateSetting;
 	}
 	
@@ -5267,9 +5281,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mEXGRLDSense = mEXG1RegisterArray[5] & 0x10;
 			mEXG1LeadOffSenseSelection = mEXG1RegisterArray[6] & 0x0f; //2P1N1P
 			
-			mEXG2RespirationDetectState = (mEXG1RegisterArray[8] >> 6) & 0x03;
-			mEXG2RespirationDetectPhase = (mEXG1RegisterArray[8] >> 2) & 0x03;
-			mEXG2RespirationDetectFreq = (mEXG1RegisterArray[9] >> 2) & 0x01;
 			
 		} else if (mTempChipID==2){
 			System.arraycopy(bufferAns, index, mEXG2RegisterArray, 0, 10);
@@ -5281,6 +5292,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mEXG2LeadOffCurrentMode = mEXG2RegisterArray[2] & 1;
 			mEXG2Comparators = mEXG2RegisterArray[1] & 0x40;
 			mEXG2LeadOffSenseSelection = mEXG2RegisterArray[6] & 0x0f; //2P
+			
+			mEXG2RespirationDetectState = (mEXG2RegisterArray[8] >> 6) & 0x03;
+			mEXG2RespirationDetectPhase = (mEXG2RegisterArray[8] >> 2) & 0x0F;
+			mEXG2RespirationDetectFreq = (mEXG2RegisterArray[9] >> 2) & 0x01;
+
 		}
 
 	}
@@ -5289,10 +5305,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public void exgBytesGetFromConfig() {
 		//TODO: Default ECG vs EMG vs Test bytes?
 
-		byte[] baseBytes = {(byte) 0x00,(byte) 0x80,(byte) 0x10,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x01};
+//		byte[] baseBytes = {(byte) 0x00,(byte) 0x80,(byte) 0x10,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x01};
 		
 		//ExG Chip1
-		mEXG1RegisterArray = baseBytes; 
+//		mEXG1RegisterArray = baseBytes; 
 		mEXG1RegisterArray[0] &= ~(0x07 << 0);
 		mEXG1RegisterArray[0] |= (mEXG1RateSetting & 7) << 0;
 		
@@ -5321,7 +5337,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mEXG1RegisterArray[6] |= ((mEXG1LeadOffSenseSelection & 0x0F) << 0);
 
 		//ExG Chip2
-		mEXG2RegisterArray = baseBytes; 
+//		mEXG2RegisterArray = baseBytes; 
 		mEXG2RegisterArray[0] &= (~(0x07 << 0));
 		mEXG2RegisterArray[0] |= ((mEXG2RateSetting & 0x07) << 0);
 		
@@ -5346,7 +5362,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mEXG2RegisterArray[8] &= (~(0x03 << 6));
 		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectState & 0x03) << 6);
 		mEXG2RegisterArray[8] &= (~(0x03 << 2));
-		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectPhase & 0x03) << 2);
+		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectPhase & 0x0F) << 2);
 		mEXG2RegisterArray[9] &= (~(0x01 << 2));
 		mEXG2RegisterArray[9] |= ((mEXG2RespirationDetectFreq & 0x01) << 2);
 
@@ -5514,6 +5530,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	/**
+	 *This can only be used for Shimmer3 devices (EXG) 
+	 *When a enable configuration is load, the advanced exg configuration is removed, so it needs to be set again
+	 * 
+	 */
+	 protected void setDefaultRespirationConfiguration() {
+		 if (mHardwareVersion==HW_ID_SHIMMER_3){
+			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 0x20,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
+			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 0xEA,(byte) 1};
+			setExGRateFromFreq(mShimmerSamplingRate);
+			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		 }
+	}
 	
 	/**
 	 *This can only be used for Shimmer3 devices (EXG) 
@@ -5521,22 +5551,23 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * 
 	 */
 	 protected void setDefaultECGConfiguration() {
-		 if (mHardwareVersion==3){
-			byte[] mEXG1Register = {(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
-			byte[] mEXG2Register = {(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-			if (mShimmerSamplingRate<=128){
-				mEXG1Register[0]=0;
-				mEXG2Register[0]=0;
-			} else if (mShimmerSamplingRate<=256){
-				mEXG1Register[0]=1;
-				mEXG2Register[0]=1;
-			}
-			else if (mShimmerSamplingRate<=512){
-				mEXG1Register[0]=2;
-				mEXG2Register[0]=2;
-			}
-			exgBytesGetConfigFrom(1, mEXG1Register);
-			exgBytesGetConfigFrom(2, mEXG2Register);
+		 if (mHardwareVersion==HW_ID_SHIMMER_3){
+			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
+			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+//			if (mShimmerSamplingRate<=128){
+//				mEXG1RegisterArray[0]=0;
+//				mEXG2RegisterArray[0]=0;
+//			} else if (mShimmerSamplingRate<=256){
+//				mEXG1RegisterArray[0]=1;
+//				mEXG2RegisterArray[0]=1;
+//			}
+//			else if (mShimmerSamplingRate<=512){
+//				mEXG1RegisterArray[0]=2;
+//				mEXG2RegisterArray[0]=2;
+//			}
+			setExGRateFromFreq(mShimmerSamplingRate);
+			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 		 }
 	}
 
@@ -5545,20 +5576,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * When a enable configuration is load, the advanced exg configuration is removed, so it needs to be set again
 	 */
 	 protected void setDefaultEMGConfiguration(){
-		if (mHardwareVersion==3){
+		if (mHardwareVersion==HW_ID_SHIMMER_3){
 			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-			if (mShimmerSamplingRate<=128){
-				mEXG1RegisterArray[0]=0;
-				mEXG2RegisterArray[0]=0;
-			} else if (mShimmerSamplingRate<=256){
-				mEXG1RegisterArray[0]=1;
-				mEXG2RegisterArray[0]=1;
-			}
-			else if (mShimmerSamplingRate<=512){
-				mEXG1RegisterArray[0]=2;
-				mEXG2RegisterArray[0]=2;
-			}
+//			if (mShimmerSamplingRate<=128){
+//				mEXG1RegisterArray[0]=0;
+//				mEXG2RegisterArray[0]=0;
+//			} else if (mShimmerSamplingRate<=256){
+//				mEXG1RegisterArray[0]=1;
+//				mEXG2RegisterArray[0]=1;
+//			}
+//			else if (mShimmerSamplingRate<=512){
+//				mEXG1RegisterArray[0]=2;
+//				mEXG2RegisterArray[0]=2;
+//			}
+			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 		}
@@ -5569,22 +5601,23 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
 	 */
 	 protected void setEXGTestSignal(){
-		if (mHardwareVersion==3){
-			byte[] mEXG1Register = {(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-			byte[] mEXG2Register = {(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-			if (mShimmerSamplingRate<=128){
-				mEXG1Register[0]=0;
-				mEXG2Register[0]=0;
-			} else if (mShimmerSamplingRate<=256){
-				mEXG1Register[0]=1;
-				mEXG2Register[0]=1;
-			}
-			else if (mShimmerSamplingRate<=512){
-				mEXG1Register[0]=2;
-				mEXG2Register[0]=2;
-			}
-			exgBytesGetConfigFrom(1, mEXG1Register);
-			exgBytesGetConfigFrom(2, mEXG2Register);
+		if (mHardwareVersion==HW_ID_SHIMMER_3){
+			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+//			if (mShimmerSamplingRate<=128){
+//				mEXG1RegisterArray[0]=0;
+//				mEXG2RegisterArray[0]=0;
+//			} else if (mShimmerSamplingRate<=256){
+//				mEXG1RegisterArray[0]=1;
+//				mEXG2RegisterArray[0]=1;
+//			}
+//			else if (mShimmerSamplingRate<=512){
+//				mEXG1RegisterArray[0]=2;
+//				mEXG2RegisterArray[0]=2;
+//			}
+			setExGRateFromFreq(mShimmerSamplingRate);
+			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 		}
 	}
 
@@ -5722,7 +5755,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //			mRefenceElectrode = mEXG1Register[iM.idxEXGADS1292RRLDSens] & 0x0F;
 	
 			System.arraycopy(infoMemContents, iM.idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
-			exgBytesGetConfigFrom(2,mEXG1RegisterArray);
+			exgBytesGetConfigFrom(2,mEXG2RegisterArray);
 //			mEXG2RateSetting = (mEXG2Register[iM.idxEXGADS1292RConfig1] >> iM.bitShiftEXGRateSetting) & iM.maskEXGRateSetting;
 //			mEXG2CH1GainSetting = (mEXG2Register[iM.idxEXGADS1292RCH1Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
 //			mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
@@ -5962,16 +5995,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 			}
 			
+			
 			//TODO Complete and tidy below
 			channelMapCreate();
 			channelMapUpdateWithEnabledSensors(mEnabledSensors);
-			
-			if((mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT).mIsEnabled)||(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT).mIsEnabled)) {
-				mExGResolution = 0;
-			}
-			else if((mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mIsEnabled)||(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mIsEnabled)) {
-				mExGResolution = 1;
-			}
 			
 //			channelMapCheckandCorrectSensorDependencies();
 			
@@ -5990,6 +6017,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				if(((key==Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12)||(key==Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13))&&((mEnabledSensors&mMaskPpgMode)>0)) {
 					// Catch if in PPG mode BIT high along with either A12 or A13
 				}
+				else if((key==Configuration.Shimmer3.CHANNELMAPKEY_ECG)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EMG)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION)) {
+					// Catch if ExG channel
+				}
 				else {
 					if((mEnabledSensors & mChannelMap.get(key).mSensorBitmapIDSDLogHeader) == mChannelMap.get(key).mSensorBitmapIDSDLogHeader) {
 						mChannelMap.get(key).mIsEnabled = true;
@@ -6000,7 +6033,52 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 					
 				
+				if((key==Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT)) {
+					if(isEXGUsingDefaultRespirationConfiguration()) {
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = true;
+					}
+					else if(isEXGUsingDefaultECGConfiguration()) {
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = true;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else if(isEXGUsingDefaultEMGConfiguration()) {
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = true;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else if(isEXGUsingDefaultTestSignalConfiguration()){
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = true;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else {
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
+					}
+				}
+
+				
 			}
+			
+			if((mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT).mIsEnabled)||(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT).mIsEnabled)) {
+				mExGResolution = 0;
+			}
+			else if((mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mIsEnabled)||(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mIsEnabled)) {
+				mExGResolution = 1;
+			}
+
 		}
 		
 	}
@@ -6568,16 +6646,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x01<<(loggingHeaderByteIndex*8), "")); // unused
 				
 				// Combination Sensors
-				long shimmer3Ecg = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mSensorBitmapIDStreaming | mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mSensorBitmapIDStreaming;
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_ECG, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.ECG_GUI)); // SENSOR_EXG1_24BIT + SENSOR_EXG2_24BIT
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.EXG_TEST_GUI)); // SENSOR_EXG1_24BIT
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG_RESPIRATION));
-				long shimmer3Emg = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mSensorBitmapIDStreaming;
-				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EMG, new ChannelDetails(false, shimmer3Emg, shimmer3Emg, Shimmer3Configuration.EMG_GUI)); // SENSOR_EXG1_24BIT
+//				long shimmer3Ecg = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mSensorBitmapIDStreaming | mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mSensorBitmapIDStreaming;
+//				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_ECG, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.ECG_GUI)); // SENSOR_EXG1_24BIT + SENSOR_EXG2_24BIT
+//				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.EXG_TEST_GUI)); // SENSOR_EXG1_24BIT
+//				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG_RESPIRATION));
+//				long shimmer3Emg = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mSensorBitmapIDStreaming;
+//				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EMG, new ChannelDetails(false, shimmer3Emg, shimmer3Emg, Shimmer3Configuration.EMG_GUI)); // SENSOR_EXG1_24BIT
 				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP, new ChannelDetails(false, 0, 0, Shimmer3Configuration.RESISTANCE_AMP_GUI));
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mSensorBitmapIDSDLogHeader = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_RESISTANCE_AMP).mSensorBitmapIDStreaming = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
 
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_ECG, new ChannelDetails(false, 0, 0, Shimmer3Configuration.ECG_GUI)); // SENSOR_EXG1_24BIT + SENSOR_EXG2_24BIT
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST, new ChannelDetails(false, 0, 0, Shimmer3Configuration.EXG_TEST_GUI)); // SENSOR_EXG1_24BIT
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION, new ChannelDetails(false, 0, 0, Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG_RESPIRATION));
+				mChannelMap.put(Configuration.Shimmer3.CHANNELMAPKEY_EMG, new ChannelDetails(false, 0, 0, Shimmer3Configuration.EMG_GUI)); // SENSOR_EXG1_24BIT
+				
 
 				//Now that channel map is assembled we can add compatiblity information, internal expansion board power requirements, associated required channels, conflicting channels and associated configuration options.
 				
@@ -6836,6 +6919,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mListOfConfigOptionKeysAssociated = Arrays.asList(
 						Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_GAIN,
 						Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESOLUTION);
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mListOfConfigOptionKeysAssociated = Arrays.asList(
+						Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_GAIN,
+						Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESOLUTION,
+						Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_FREQ,
+						Configuration.Shimmer3.GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_PHASE);
+				
 
 				
 				//Sensor Grouping for Configuration Panel 'tile' generation. 
@@ -7152,7 +7241,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				//TODO need to handle setting master channel when any of the sub channels are selected, for example, Setting External Expansion ADC channel when ADC6 is selected
 				
-				
 				// Unique cases for Shimmer3 ExG
 				if((key == Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT) || (key == Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT)) {
 					mExGResolution = 0;
@@ -7161,10 +7249,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mExGResolution = 1;
 				}
 				
-				//TODO add respiration below
-				if((key == Configuration.Shimmer3.CHANNELMAPKEY_ECG) || (key == Configuration.Shimmer3.CHANNELMAPKEY_EMG) || (key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)) {
+				if((key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION) || (key == Configuration.Shimmer3.CHANNELMAPKEY_ECG) || (key == Configuration.Shimmer3.CHANNELMAPKEY_EMG) || (key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)) {
 					if(state) { // Set default settings
-						if(key == Configuration.Shimmer3.CHANNELMAPKEY_ECG) {
+						if(key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION) {
+							setDefaultRespirationConfiguration();
+						}
+						else if(key == Configuration.Shimmer3.CHANNELMAPKEY_ECG) {
 							setDefaultECGConfiguration();
 						}
 						else if(key == Configuration.Shimmer3.CHANNELMAPKEY_EMG) {
@@ -7176,21 +7266,23 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 					
 					if(mExGResolution == 0) {// 16-bit
-						if((key == Configuration.Shimmer3.CHANNELMAPKEY_ECG)||(key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)) {
+						if((key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION)||(key == Configuration.Shimmer3.CHANNELMAPKEY_ECG)||(key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)) {
 							mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT).mIsEnabled = state;
 							mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT).mIsEnabled = state;
 						}
 						else if(key == Configuration.Shimmer3.CHANNELMAPKEY_EMG) {
 							mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT).mIsEnabled = state;
+							mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT).mIsEnabled = false;
 						}
 					}
 					else { // 24-bit
-						if((key == Configuration.Shimmer3.CHANNELMAPKEY_ECG)||(key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)) {
+						if((key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION)||(key == Configuration.Shimmer3.CHANNELMAPKEY_ECG)||(key == Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)) {
 							mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mIsEnabled = state;
 							mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mIsEnabled = state;
 						}
 						else if(key == Configuration.Shimmer3.CHANNELMAPKEY_EMG) {
 							mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mIsEnabled = state;
+							mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mIsEnabled = false;
 						}
 					}
 				}
@@ -7679,6 +7771,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public boolean isLSM303DigitalAccelLPM() {
 		return mLowPowerAccelWR;
+	}
+	
+	/**
+	 * @return true if ExG respiration detection frequency is 32kHz and false if 64kHz
+	 */
+	public boolean isExgRespirationDetectFreq32kHz() {
+		if(mEXG2RespirationDetectFreq==0)
+			return true;
+		else
+			return false;
 	}
 
 	/**

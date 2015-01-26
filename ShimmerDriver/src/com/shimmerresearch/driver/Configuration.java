@@ -186,7 +186,6 @@ public class Configuration {
 		public final static String[] ListOfExGRate={"125Hz","250Hz","500Hz","1kHz","2kHz","4kHz","8kHz"};
 		public final static Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
 		
-
 		/**
 		 * Shimmer3 Low-noise analog accelerometer
 		 */
