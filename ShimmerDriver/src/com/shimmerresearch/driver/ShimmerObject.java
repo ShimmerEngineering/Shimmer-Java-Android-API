@@ -509,7 +509,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mTCXO = 0;
 	protected long mConfigTime; //this is in milliseconds, utc
 	protected long mRTCDifference; //this is in ticks
-	protected int mSyncTimeWhenLogging = 0;
+	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
 
 	protected long mInitialTimeStamp;
@@ -5963,7 +5963,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mButtonStart = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftButtonStart) & iM.maskButtonStart;
 
 				if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
-					mSyncTimeWhenLogging = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftTimeSyncWhenLogging) & iM.maskTimeSyncWhenLogging;
+					mSyncWhenLogging = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftTimeSyncWhenLogging) & iM.maskTimeSyncWhenLogging;
 					mMasterShimmer = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftMasterShimmer) & iM.maskTimeMasterShimmer;
 					mSingleTouch = (infoMemContents[iM.idxSDExperimentConfig1] >> iM.bitShiftSingleTouch) & iM.maskTimeSingleTouch;
 					mTCXO = (infoMemContents[iM.idxSDExperimentConfig1] >> iM.bitShiftTCX0) & iM.maskTimeTCX0;
@@ -6231,7 +6231,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] = (byte) ((mButtonStart & 0x01) << 5);
 			
 			if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
-				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mSyncTimeWhenLogging & 0x01) << 2);
+				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & 0x01) << 2);
 				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & 0x01) << 1);
 				
 				mInfoMemBytes[infoMemMap.idxSDExperimentConfig1] = (byte) ((mSingleTouch & 0x01) << 7);
@@ -7076,7 +7076,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												listOfCompatibleVersionInfoSdLog));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BROADCAST_INTERVAL, 
 						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.TEXTFIELD,
-												listOfCompatibleVersionInfoSdLog));
+												new ArrayList(){}));
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_BLUETOOTH_BAUD_RATE, 
 						new ChannelConfigOptionDetails(Configuration.Shimmer3.ListofBluetoothBaudRates, 
@@ -7881,10 +7881,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 
 	/**
-	 * @return the mSyncTimeWhenLogging
+	 * @return the mSyncWhenLogging
 	 */
-	public int getSyncTimeWhenLogging() {
-		return mSyncTimeWhenLogging;
+	public int getSyncWhenLogging() {
+		return mSyncWhenLogging;
 	}
 
 
