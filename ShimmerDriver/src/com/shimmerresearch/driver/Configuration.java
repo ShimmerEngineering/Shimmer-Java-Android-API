@@ -311,7 +311,7 @@ public class Configuration {
 		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
 		public static final String GUI_LABEL_CONFIG_TCX0 = "TCX0";
-		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POW = "Internal Expansion Board Power";
+		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POWER = "Internal Expansion Board Power";
 		
 		
 		//Channels

@@ -5166,14 +5166,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				return mMPU9150GyroAccelRate;
 			}
 		}
+		
+		// Gyroscope Output Rate = 8kHz when the DLPF (Digital Low-pass filter) is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
+		double numerator = 1000;
+		if(mMPU9150LPF == 0) {
+			numerator = 8000;
+		}
+		System.out.println("Numerator is :" + numerator);
 
 		if (!mLowPowerGyro){
-			// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
-			double numerator = 1000;
-			if(mMPU9150LPF == 0) {
-				numerator = 8000;
-			}
-
 			if(freq<4) {
 				freq = 4;
 			}
@@ -5181,7 +5182,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				freq = numerator;
 			}
 			int result = (int) (numerator / freq);
-			if(result>255) result = 255;
+			if(result>255) {
+				result = 255;
+			}
 			mMPU9150GyroAccelRate = result;
 
 //			if (mSamplingRate<=51.28) {
@@ -5846,75 +5849,75 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			// InfoMem D - End
 			
 			
-			//TODO: Add full FW version checking here to support future changes to FW
 			//SDLog and LogAndStream
-			if(((mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM))
-					&& infoMemContents.length >= 384) {
+			if(((mFirmwareIdentifier==FW_ID_SHIMMER3_LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG))&&(mInfoMemBytes.length >=384)) {
 				
 				// InfoMem C - Start - used by SdLog and LogAndStream
-				mMPU9150DMP = (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150DMP) & iM.maskMPU9150DMP;
-				mMPU9150LPF = (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150LPF) & iM.maskMPU9150LPF;
-				mMPU9150MotCalCfg =  (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150MotCalCfg) & iM.maskMPU9150MotCalCfg;
-				
-				mMPU9150MPLSamplingRate = (infoMemContents[iM.idxConfigSetupByte5] >> iM.bitShiftMPU9150MPLSamplingRate) & iM.maskMPU9150MPLSamplingRate;
-				mMPU9150MagSamplingRate = (infoMemContents[iM.idxConfigSetupByte5] >> iM.bitShiftMPU9150MagSamplingRate) & iM.maskMPU9150MagSamplingRate;
-				
-				mEnabledSensors += ((long)infoMemContents[iM.idxSensors3] & 0xFF) << iM.bitShiftSensors3;
-				mEnabledSensors += ((long)infoMemContents[iM.idxSensors4] & 0xFF) << iM.bitShiftSensors4;
-				
-				mMPLSensorFusion = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLSensorFusion) & iM.maskMPLSensorFusion;
-				mMPLGyroCalTC = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLGyroCalTC) & iM.maskMPLGyroCalTC;
-				mMPLVectCompCal = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLVectCompCal) & iM.maskMPLVectCompCal;
-				mMPLMagDistCal = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLMagDistCal) & iM.maskMPLMagDistCal;
-				mMPLEnable = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLEnable) & iM.maskMPLEnable;
-				
-				//MPL Accel Calibration Parameters
-				bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
-				System.arraycopy(infoMemContents, iM.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
-				formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
-				AM=new double[9];
-				for (int i=0;i<9;i++)
-				{
-					AM[i]=((double)formattedPacket[6+i])/100;
+				if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
+					mMPU9150DMP = (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150DMP) & iM.maskMPU9150DMP;
+					mMPU9150LPF = (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150LPF) & iM.maskMPU9150LPF;
+					mMPU9150MotCalCfg =  (infoMemContents[iM.idxConfigSetupByte4] >> iM.bitShiftMPU9150MotCalCfg) & iM.maskMPU9150MotCalCfg;
+					
+					mMPU9150MPLSamplingRate = (infoMemContents[iM.idxConfigSetupByte5] >> iM.bitShiftMPU9150MPLSamplingRate) & iM.maskMPU9150MPLSamplingRate;
+					mMPU9150MagSamplingRate = (infoMemContents[iM.idxConfigSetupByte5] >> iM.bitShiftMPU9150MagSamplingRate) & iM.maskMPU9150MagSamplingRate;
+					
+					mEnabledSensors += ((long)infoMemContents[iM.idxSensors3] & 0xFF) << iM.bitShiftSensors3;
+					mEnabledSensors += ((long)infoMemContents[iM.idxSensors4] & 0xFF) << iM.bitShiftSensors4;
+					
+					mMPLSensorFusion = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLSensorFusion) & iM.maskMPLSensorFusion;
+					mMPLGyroCalTC = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLGyroCalTC) & iM.maskMPLGyroCalTC;
+					mMPLVectCompCal = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLVectCompCal) & iM.maskMPLVectCompCal;
+					mMPLMagDistCal = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLMagDistCal) & iM.maskMPLMagDistCal;
+					mMPLEnable = (infoMemContents[iM.idxConfigSetupByte6] >> iM.bitShiftMPLEnable) & iM.maskMPLEnable;
+					
+					//MPL Accel Calibration Parameters
+					bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+					System.arraycopy(infoMemContents, iM.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+					formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+					AM=new double[9];
+					for (int i=0;i<9;i++)
+					{
+						AM[i]=((double)formattedPacket[6+i])/100;
+					}
+					double[][] alignmentMatrixMPLA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+					double[][] sensitivityMatrixMPLA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+					double[][] offsetVectorMPLA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+					AlignmentMatrixMPLAccel = alignmentMatrixMPLA; 			
+					SensitivityMatrixMPLAccel = sensitivityMatrixMPLA; 	
+					OffsetVectorMPLAccel = offsetVectorMPLA;
+			
+					//MPL Mag Calibration Configuration
+					bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+					System.arraycopy(infoMemContents, iM.idxMPLMagCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+					formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+					AM=new double[9];
+					for (int i=0;i<9;i++)
+					{
+						AM[i]=((double)formattedPacket[6+i])/100;
+					}
+					double[][] alignmentMatrixMPLMag = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+					double[][] sensitivityMatrixMPLMag = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+					double[][] offsetVectorMPLMag = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+					AlignmentMatrixMPLMag = alignmentMatrixMPLMag; 			
+					SensitivityMatrixMPLMag = sensitivityMatrixMPLMag; 	
+					OffsetVectorMPLMag = offsetVectorMPLMag;
+			
+					//MPL Gyro Calibration Configuration
+					bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
+					System.arraycopy(infoMemContents, iM.idxMPLGyroCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
+					formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+					AM=new double[9];
+					for (int i=0;i<9;i++)
+					{
+						AM[i]=((double)formattedPacket[6+i])/100;
+					}
+					double[][] alignmentMatrixMPLGyro = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+					double[][] sensitivityMatrixMPLGyro = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+					double[][] offsetVectorMPLGyro = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+					AlignmentMatrixMPLGyro = alignmentMatrixMPLGyro; 			
+					SensitivityMatrixMPLGyro = sensitivityMatrixMPLGyro; 	
+					OffsetVectorMPLGyro = offsetVectorMPLGyro;
 				}
-				double[][] alignmentMatrixMPLA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-				double[][] sensitivityMatrixMPLA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-				double[][] offsetVectorMPLA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-				AlignmentMatrixMPLAccel = alignmentMatrixMPLA; 			
-				SensitivityMatrixMPLAccel = sensitivityMatrixMPLA; 	
-				OffsetVectorMPLAccel = offsetVectorMPLA;
-		
-				//MPL Mag Calibration Configuration
-				bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
-				System.arraycopy(infoMemContents, iM.idxMPLMagCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
-				formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
-				AM=new double[9];
-				for (int i=0;i<9;i++)
-				{
-					AM[i]=((double)formattedPacket[6+i])/100;
-				}
-				double[][] alignmentMatrixMPLMag = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-				double[][] sensitivityMatrixMPLMag = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-				double[][] offsetVectorMPLMag = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-				AlignmentMatrixMPLMag = alignmentMatrixMPLMag; 			
-				SensitivityMatrixMPLMag = sensitivityMatrixMPLMag; 	
-				OffsetVectorMPLMag = offsetVectorMPLMag;
-		
-				//MPL Gyro Calibration Configuration
-				bufferCalibrationParameters = new byte[iM.lengthGeneralCalibrationBytes];
-				System.arraycopy(infoMemContents, iM.idxMPLGyroCalibration, bufferCalibrationParameters, 0 , iM.lengthGeneralCalibrationBytes);
-				formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
-				AM=new double[9];
-				for (int i=0;i<9;i++)
-				{
-					AM[i]=((double)formattedPacket[6+i])/100;
-				}
-				double[][] alignmentMatrixMPLGyro = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-				double[][] sensitivityMatrixMPLGyro = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-				double[][] offsetVectorMPLGyro = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-				AlignmentMatrixMPLGyro = alignmentMatrixMPLGyro; 			
-				SensitivityMatrixMPLGyro = sensitivityMatrixMPLGyro; 	
-				OffsetVectorMPLGyro = offsetVectorMPLGyro;
 				
 				// Shimmer Name
 				byte[] shimmerNameBuffer = new byte[iM.lengthShimmerName];
@@ -5951,23 +5954,27 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				if((mConfigTime&(2^32)) == (2^32)) {
 //					mConfigTime = 0;
 //				}
-				
-				mExperimentId = infoMemContents[iM.idxSDMyTrialID] & 0xFF;
-				mExperimentNumberOfShimmers = infoMemContents[iM.idxSDNumOfShimmers] & 0xFF;
+
+				if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
+					mExperimentId = infoMemContents[iM.idxSDMyTrialID] & 0xFF;
+					mExperimentNumberOfShimmers = infoMemContents[iM.idxSDNumOfShimmers] & 0xFF;
+				}
 				
 				mButtonStart = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftButtonStart) & iM.maskButtonStart;
-				mSyncTimeWhenLogging = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftTimeSyncWhenLogging) & iM.maskTimeSyncWhenLogging;
-				mMasterShimmer = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftMasterShimmer) & iM.maskTimeMasterShimmer;
-				
-				mSingleTouch = (infoMemContents[iM.idxSDExperimentConfig1] >> iM.bitShiftSingleTouch) & iM.maskTimeSingleTouch;
-				mTCXO = (infoMemContents[iM.idxSDExperimentConfig1] >> iM.bitShiftTCX0) & iM.maskTimeTCX0;
-				
-				mSyncBroadcastInterval = (int)(infoMemContents[iM.idxSDBTInterval] & 0xFF);
-				
-				// Maximum and Estimated Length in minutes
-				mExperimentDurationEstimated =  ((int)(infoMemContents[iM.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemContents[iM.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
-				mExperimentDurationMaximum =  ((int)(infoMemContents[iM.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemContents[iM.idxMaxExpLengthMsb] & 0xFF)) << 8));
-	
+
+				if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
+					mSyncTimeWhenLogging = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftTimeSyncWhenLogging) & iM.maskTimeSyncWhenLogging;
+					mMasterShimmer = (infoMemContents[iM.idxSDExperimentConfig0] >> iM.bitShiftMasterShimmer) & iM.maskTimeMasterShimmer;
+					mSingleTouch = (infoMemContents[iM.idxSDExperimentConfig1] >> iM.bitShiftSingleTouch) & iM.maskTimeSingleTouch;
+					mTCXO = (infoMemContents[iM.idxSDExperimentConfig1] >> iM.bitShiftTCX0) & iM.maskTimeTCX0;
+					
+					mSyncBroadcastInterval = (int)(infoMemContents[iM.idxSDBTInterval] & 0xFF);
+					
+					// Maximum and Estimated Length in minutes
+					mExperimentDurationEstimated =  ((int)(infoMemContents[iM.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemContents[iM.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
+					mExperimentDurationMaximum =  ((int)(infoMemContents[iM.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemContents[iM.idxMaxExpLengthMsb] & 0xFF)) << 8));
+				}
+					
 				byte[] macIdBytes = new byte[iM.lengthMacIdBytes];
 				System.arraycopy(infoMemContents, iM.idxMacAddress, macIdBytes, 0 , iM.lengthMacIdBytes);
 				mMacIdFromInfoMem = bytesToHex(macIdBytes);
@@ -5979,22 +5986,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mConfigFileCreationFlag = false;
 				}
 				// InfoMem C - End
-				
-				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
-				syncNodesList.clear();
-				for (int i = 0; i < 21; i++) {
-					System.arraycopy(infoMemContents, iM.idxNode0 + (i*iM.lengthMacIdBytes), macIdBytes, 0 , iM.lengthMacIdBytes);
-					if(Arrays.equals(macIdBytes, new byte[]{-1,-1,-1,-1,-1,-1})) {
-						break;
+					
+				if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
+					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
+					syncNodesList.clear();
+					for (int i = 0; i < 21; i++) {
+						System.arraycopy(infoMemContents, iM.idxNode0 + (i*iM.lengthMacIdBytes), macIdBytes, 0 , iM.lengthMacIdBytes);
+						if(Arrays.equals(macIdBytes, new byte[]{-1,-1,-1,-1,-1,-1})) {
+							break;
+						}
+						else {
+							syncNodesList.add(bytesToHex(macIdBytes));
+						}
 					}
-					else {
-						syncNodesList.add(bytesToHex(macIdBytes));
-					}
+					// InfoMem B End
 				}
-				// InfoMem B End
-				
 			}
-			
 			
 			//TODO Complete and tidy below
 			channelMapCreate();
@@ -6005,101 +6012,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	//TODO Complete and tidy below
-	protected void channelMapUpdateWithEnabledSensors(long enabledSensors) {
-
-		if((enabledSensors != 0) && (mChannelMap != null)) {
-			//Set channelMap channel enable values
-			for(Integer key:mChannelMap.keySet()) {
-				
-				//TODO add exceptions for ECG/EMG/ExG Test/Respiration 
-				
-				if(((key==Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12)||(key==Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13))&&((mEnabledSensors&mMaskPpgMode)>0)) {
-					// Catch if in PPG mode BIT high along with either A12 or A13
-				}
-				else if((key==Configuration.Shimmer3.CHANNELMAPKEY_ECG)
-						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EMG)
-						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)
-						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION)) {
-					// Catch if ExG channel
-				}
-				else {
-					if((mEnabledSensors & mChannelMap.get(key).mSensorBitmapIDSDLogHeader) == mChannelMap.get(key).mSensorBitmapIDSDLogHeader) {
-						mChannelMap.get(key).mIsEnabled = true;
-					}
-					else {
-						mChannelMap.get(key).mIsEnabled = false;
-					}
-				}
-					
-				
-				if((key==Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT)
-						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT)
-						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT)
-						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT)) {
-					if(isEXGUsingDefaultRespirationConfiguration()) {
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = true;
-					}
-					else if(isEXGUsingDefaultECGConfiguration()) {
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = true;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else if(isEXGUsingDefaultEMGConfiguration()) {
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = true;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else if(isEXGUsingDefaultTestSignalConfiguration()){
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = true;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else {
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
-						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
-					}
-				}
-
-				
-			}
-			
-			if((mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT).mIsEnabled)||(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT).mIsEnabled)) {
-				mExGResolution = 0;
-			}
-			else if((mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mIsEnabled)||(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mIsEnabled)) {
-				mExGResolution = 1;
-			}
-
-		}
-		
-	}
-
-	
 	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 		
 		byte[] infoMemBackup = mInfoMemBytes.clone();
 		
-		if((mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
-			mInfoMemBytes = new byte[384];
-//			mShimmerInfoMemBytes = createEmptyInfoMemByteArray(384);
-		}
-		else if(mFirmwareIdentifier == FW_ID_SHIMMER3_BTSTREAM) {
-			mInfoMemBytes = new byte[128];
-//			mShimmerInfoMemBytes = createEmptyInfoMemByteArray(128);
-		}
-		else {
-			mInfoMemBytes = new byte[512]; 
-//			mShimmerInfoMemBytes = createEmptyInfoMemByteArray(512);
-		}
+		mInfoMemBytes = new byte[getExpectedInfoMemByteLength()];
+//		mShimmerInfoMemBytes = createEmptyInfoMemByteArray(getExpectedInfoMemByteLength());
 		
 		// InfoMem defaults to 0xFF on firmware flash
 		for(int i =0; i < mInfoMemBytes.length; i++) {
@@ -6252,29 +6170,31 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		
 		//TODO: Add full FW version checking here to support future changes to FW
 		//SDLog and LogAndStream
-		if((mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) || (mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM)) {
+		if(((mFirmwareIdentifier==FW_ID_SHIMMER3_LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG))&&(mInfoMemBytes.length >=384)) {
 
 			// InfoMem C - Start - used by SdLog and LogAndStream
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & 0x01) << 7);
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & 0x07) << 3);
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & 0x07) << 0);
+			if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & 0x01) << 7);
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & 0x07) << 3);
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & 0x07) << 0);
 
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte5] = (byte) ((mMPU9150MPLSamplingRate & 0x07) << 5);
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & 0x07) << 2);
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte5] = (byte) ((mMPU9150MPLSamplingRate & 0x07) << 5);
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & 0x07) << 2);
 
-			mInfoMemBytes[infoMemMap.idxSensors3] = (byte) ((mEnabledSensors >> 24) & 0xFF);
-			mInfoMemBytes[infoMemMap.idxSensors4] = (byte) ((mEnabledSensors >> 32) & 0xFF);
+				mInfoMemBytes[infoMemMap.idxSensors3] = (byte) ((mEnabledSensors >> 24) & 0xFF);
+				mInfoMemBytes[infoMemMap.idxSensors4] = (byte) ((mEnabledSensors >> 32) & 0xFF);
 
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte6] = (byte) ((mMPLSensorFusion & 0x01) << 7);
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & 0x01) << 6);
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & 0x01) << 5);
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & 0x01) << 4);
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLEnable & 0x01) << 3);
-			
-			//TODO: decide what to do
-			//MPL Accel Calibration Parameters
-			//MPL Mag Calibration Configuration
-			//MPL Gyro Calibration Configuration
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] = (byte) ((mMPLSensorFusion & 0x01) << 7);
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & 0x01) << 6);
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & 0x01) << 5);
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & 0x01) << 4);
+				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLEnable & 0x01) << 3);
+				
+				//TODO: decide what to do
+				//MPL Accel Calibration Parameters
+				//MPL Mag Calibration Configuration
+				//MPL Gyro Calibration Configuration
+			}
 
 			// Shimmer Name
 			for (int i = 0; i < 12; i++) {
@@ -6302,25 +6222,30 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInfoMemBytes[infoMemMap.idxSDConfigTime+2] = (byte) ((mConfigTime >> 8) & 0xFF);
 			mInfoMemBytes[infoMemMap.idxSDConfigTime+3] = (byte) ((mConfigTime >> 0) & 0xFF);
 			
-			mInfoMemBytes[infoMemMap.idxSDMyTrialID] = (byte) (mExperimentId & 0xFF);
-
-			mInfoMemBytes[infoMemMap.idxSDNumOfShimmers] = (byte) (mExperimentNumberOfShimmers & 0xFF);
+			if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
+				mInfoMemBytes[infoMemMap.idxSDMyTrialID] = (byte) (mExperimentId & 0xFF);
+	
+				mInfoMemBytes[infoMemMap.idxSDNumOfShimmers] = (byte) (mExperimentNumberOfShimmers & 0xFF);
+			}
 			
 			mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] = (byte) ((mButtonStart & 0x01) << 5);
-			mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mSyncTimeWhenLogging & 0x01) << 2);
-			mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & 0x01) << 1);
 			
-			mInfoMemBytes[infoMemMap.idxSDExperimentConfig1] = (byte) ((mSingleTouch & 0x01) << 7);
-			mInfoMemBytes[infoMemMap.idxSDExperimentConfig1] |= (byte) ((mTCXO & 0x01) << 4);
+			if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
+				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mSyncTimeWhenLogging & 0x01) << 2);
+				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & 0x01) << 1);
+				
+				mInfoMemBytes[infoMemMap.idxSDExperimentConfig1] = (byte) ((mSingleTouch & 0x01) << 7);
+				mInfoMemBytes[infoMemMap.idxSDExperimentConfig1] |= (byte) ((mTCXO & 0x01) << 4);
 			
-			mInfoMemBytes[infoMemMap.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
+				mInfoMemBytes[infoMemMap.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
 			
-			// Maximum and Estimated Length in minutes
-			mInfoMemBytes[infoMemMap.idxEstimatedExpLengthLsb] = (byte) ((mExperimentDurationEstimated >> 0) & 0xFF);
-			mInfoMemBytes[infoMemMap.idxEstimatedExpLengthMsb] = (byte) ((mExperimentDurationEstimated >> 8) & 0xFF);
-			mInfoMemBytes[infoMemMap.idxMaxExpLengthLsb] = (byte) ((mExperimentDurationMaximum >> 0) & 0xFF);
-			mInfoMemBytes[infoMemMap.idxMaxExpLengthMsb] = (byte) ((mExperimentDurationMaximum >> 8) & 0xFF);
-
+				// Maximum and Estimated Length in minutes
+				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthLsb] = (byte) ((mExperimentDurationEstimated >> 0) & 0xFF);
+				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthMsb] = (byte) ((mExperimentDurationEstimated >> 8) & 0xFF);
+				mInfoMemBytes[infoMemMap.idxMaxExpLengthLsb] = (byte) ((mExperimentDurationMaximum >> 0) & 0xFF);
+				mInfoMemBytes[infoMemMap.idxMaxExpLengthMsb] = (byte) ((mExperimentDurationMaximum >> 8) & 0xFF);
+			}
+			
 			byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
 			if(generateForWritingToShimmer) {
 				// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
@@ -6331,22 +6256,40 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mInfoMemBytes[infoMemMap.idxSDConfigDelayFlag] = (byte) 0x01;
 			}
 			// InfoMem C - End
-			
-			// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
-			for (int i = 0; i < 21; i++) { // Limit of 21 nodes
-				byte[] macIdArray;
-				if(i < syncNodesList.size()) {
-					macIdArray = hexStringToByteArray(syncNodesList.get(i));
+				
+			if(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG) {
+				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
+				for (int i = 0; i < 21; i++) { // Limit of 21 nodes
+					byte[] macIdArray;
+					if(i < syncNodesList.size()) {
+						macIdArray = hexStringToByteArray(syncNodesList.get(i));
+					}
+					else {
+						macIdArray = invalidMacId;
+					}
+					System.arraycopy(macIdArray, 0, mInfoMemBytes, infoMemMap.idxNode0 + (i*6), 6);
 				}
-				else {
-					macIdArray = invalidMacId;
-				}
-				System.arraycopy(macIdArray, 0, mInfoMemBytes, infoMemMap.idxNode0 + (i*6), 6);
+				// InfoMem B End
 			}
-			// InfoMem B End
 		}
 		
 		return mInfoMemBytes;
+	}
+	
+	public int getExpectedInfoMemByteLength() {
+		//TODO: should add full FW version checking here to support different size InfoMems in the future
+		if(mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) {
+			return 384;
+		}
+		else if(mFirmwareIdentifier == FW_ID_SHIMMER3_BTSTREAM) {
+			return 128;
+		}
+		else if(mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM) {
+			return 384;
+		}
+		else {
+			return 512; 
+		}
 	}
 	
 	public byte[] createEmptyInfoMemByteArray(int size) {
@@ -6381,7 +6324,83 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	    }
 	    return data;
 	}
-	
+
+	//TODO Complete and tidy below
+	protected void channelMapUpdateWithEnabledSensors(long enabledSensors) {
+
+		if((enabledSensors != 0) && (mChannelMap != null)) {
+			//Set channelMap channel enable values
+			for(Integer key:mChannelMap.keySet()) {
+				
+				//TODO add exceptions for ECG/EMG/ExG Test/Respiration 
+				
+				if(((key==Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12)||(key==Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13))&&((mEnabledSensors&mMaskPpgMode)>0)) {
+					// Catch if in PPG mode BIT high along with either A12 or A13
+				}
+				else if((key==Configuration.Shimmer3.CHANNELMAPKEY_ECG)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EMG)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION)) {
+					// Catch if ExG channel
+				}
+				else {
+					if((mEnabledSensors & mChannelMap.get(key).mSensorBitmapIDSDLogHeader) == mChannelMap.get(key).mSensorBitmapIDSDLogHeader) {
+						mChannelMap.get(key).mIsEnabled = true;
+					}
+					else {
+						mChannelMap.get(key).mIsEnabled = false;
+					}
+				}
+					
+				
+				if((key==Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT)
+						||(key==Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT)) {
+					if(isEXGUsingDefaultRespirationConfiguration()) {
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = true;
+					}
+					else if(isEXGUsingDefaultECGConfiguration()) {
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = true;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else if(isEXGUsingDefaultEMGConfiguration()) {
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = true;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else if(isEXGUsingDefaultTestSignalConfiguration()){
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = true;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else {
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_ECG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EMG).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_TEST).mIsEnabled = false;
+						mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG_RESPIRATION).mIsEnabled = false;
+					}
+				}
+
+			}
+			
+			if((mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT).mIsEnabled)||(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT).mIsEnabled)) {
+				mExGResolution = 0;
+			}
+			else if((mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_24BIT).mIsEnabled)||(mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_24BIT).mIsEnabled)) {
+				mExGResolution = 1;
+			}
+
+		}
+		
+	}
 	
 	/**
 	 * Should only be used after the Shimmer HW and FW version information is set
@@ -6471,40 +6490,40 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 				CompatibleVersionDetails baseSdLog = 				new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,ANY_VERSION);
 				CompatibleVersionDetails baseBtStream = 			new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,ANY_VERSION);
-				CompatibleVersionDetails baseLogAndStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,ANY_VERSION);
+				CompatibleVersionDetails baseLogAndStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,ANY_VERSION);
 				
 				CompatibleVersionDetails baseExgSdLog = 			new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_EXG); 
 				CompatibleVersionDetails baseExgUnifiedSdLog = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
 				CompatibleVersionDetails baseExgBtStream = 			new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_EXG);
 				CompatibleVersionDetails baseExgUnifiedBtStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
-				CompatibleVersionDetails baseExgLogAndStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_EXG);
-				CompatibleVersionDetails baseExgUnifiedLogAndStream = new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
+				CompatibleVersionDetails baseExgLogAndStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_EXG);
+				CompatibleVersionDetails baseExgUnifiedLogAndStream = new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
 				
 				CompatibleVersionDetails baseGsrSdLog = 			new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_GSR);
 				CompatibleVersionDetails baseGsrUnifiedSdLog = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
 				CompatibleVersionDetails baseGsrBtStream = 			new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_GSR);
 				CompatibleVersionDetails baseGsrUnifiedBtStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
-				CompatibleVersionDetails baseGsrLogAndStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_GSR);
-				CompatibleVersionDetails baseGsrUnifiedLogAndStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
+				CompatibleVersionDetails baseGsrLogAndStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_GSR);
+				CompatibleVersionDetails baseGsrUnifiedLogAndStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
 
 				CompatibleVersionDetails baseBrAmpSdLog = 			new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
 				CompatibleVersionDetails baseBrAmpUnifiedSdLog = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
 				CompatibleVersionDetails baseBrAmpBtStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
 				CompatibleVersionDetails baseBrAmpUnifiedBtStream = new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
-				CompatibleVersionDetails baseBrAmpLogAndStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_BR_AMP);
-				CompatibleVersionDetails baseBrAmpUnifiedLogAndStream = new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
+				CompatibleVersionDetails baseBrAmpLogAndStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_BR_AMP);
+				CompatibleVersionDetails baseBrAmpUnifiedLogAndStream = new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
 				
 				CompatibleVersionDetails baseProto3MiniSdLog = 			new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
 				CompatibleVersionDetails baseProto3MiniBtStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
-				CompatibleVersionDetails baseProto3MiniLogAndStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
+				CompatibleVersionDetails baseProto3MiniLogAndStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
 
 				CompatibleVersionDetails baseProto3DeluxeSdLog = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
 				CompatibleVersionDetails baseProto3DeluxeBtStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
-				CompatibleVersionDetails baseProto3DeluxeLogAndStream =	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
+				CompatibleVersionDetails baseProto3DeluxeLogAndStream =	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
 
 				CompatibleVersionDetails baseHighGAccelSdLog = 			new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_SDLOG,0,8,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
 				CompatibleVersionDetails baseHighGAccelBtStream = 		new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_BTSTREAM,0,5,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
-				CompatibleVersionDetails baseHighGAccelLogAndStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,0,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
+				CompatibleVersionDetails baseHighGAccelLogAndStream = 	new CompatibleVersionDetails(HW_ID_SHIMMER_3,FW_ID_SHIMMER3_LOGANDSTREAM,0,3,3,HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
 
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoExg = Arrays.asList(
 						baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
@@ -6677,6 +6696,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoIntExpA14;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG1_16BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_EXG2_16BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
+				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_TEMP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_QUAT_9DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_MPL_EULER_6DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
@@ -6976,6 +6996,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A12,
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13,
 									Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A14)));
+//				mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_9DOF, new ChannelTileDetails(
+//						Arrays.asList(Configuration.Shimmer3.CHANNELMAPKEY_A_ACCEL,
+//									Configuration.Shimmer3.CHANNELMAPKEY_LSM303DLHC_ACCEL,
+//									Configuration.Shimmer3.CHANNELMAPKEY_MPU9150_GYRO,
+//									Configuration.Shimmer3.CHANNELMAPKEY_LSM303DLHC_MAG)));
 				//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
 				
 				// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
@@ -7203,24 +7228,24 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_USER_BUTTON_START, 
 						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoLogging));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_SINGLE_TOUCH_START, 
-						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoLogging));
+						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_MASTER_SHIMMER, 
 						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_EXPERIMENT_SYNC_WHEN_LOGGING, 
 						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_KINEMATIC_LPM, 
-						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM, 
-						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_MPU9150_GYRO_LPM, 
-						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM, 
-						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_TCX0, 
 						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_INT_EXP_BRD_POW, 
-						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+				mConfigOptionsMap.put(Configuration.Shimmer3.GUI_LABEL_CONFIG_INT_EXP_BRD_POWER, 
+						new ChannelConfigOptionDetails(ChannelConfigOptionDetails.CHECKBOX));
 			}
 			
 			
@@ -8061,6 +8086,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	public double getShimmerSamplingRate(){
 		return mShimmerSamplingRate; 
+	}
+
+
+	/**
+	 * @return the mFirmwareIdentifier
+	 */
+	public int getFirmwareIdentifier() {
+		return mFirmwareIdentifier;
 	}
 
 
