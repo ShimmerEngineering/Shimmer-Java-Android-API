@@ -2,6 +2,13 @@ package com.shimmerresearch.driver;
 
 public class InfoMemLayout {
 
+	int mFirmwareVersionCode = 0;
+	int mFirmwareIdentifier = 0;
+	int mFirmwareVersionMajor = 0;
+	int mFirmwareVersionMinor = 0;
+	int mFirmwareVersionInternal = 0;
+	int mInfoMemSize = 512;
+	
 //	//SENSORS0
 //	public int SENSOR_A_ACCEL =                     0x80;
 //	public int SENSOR_MPU9150_GYRO =                0x40;
@@ -361,8 +368,16 @@ public class InfoMemLayout {
 //	public int GYRO_AND_SOME_MAG =            0x03;
 	
 	
-	public InfoMemLayout(int mFirmwareVersionCode, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+	public InfoMemLayout(int firmwareVersionCode, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 
+		mFirmwareVersionCode = firmwareVersionCode;
+		mFirmwareIdentifier = firmwareIdentifier;
+		mFirmwareVersionMajor = firmwareVersionMajor;
+		mFirmwareVersionMinor = firmwareVersionMinor;
+		mFirmwareVersionInternal = firmwareVersionInternal;
+		
+		mInfoMemSize = calculateInfoMemByteLength(mFirmwareVersionCode,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
+		
 		if(mFirmwareVersionCode == 5) { //
 			// First common version - do nothing and use default values
 		}
@@ -374,5 +389,22 @@ public class InfoMemLayout {
 		}
 		
 	}
+	
+	public int calculateInfoMemByteLength(int mFirmwareVersionCode, int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+	//TODO: should add full FW version checking here to support different size InfoMems in the future
+	if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_SDLOG) {
+		return 384;
+	}
+	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_BTSTREAM) {
+		return 128;
+	}
+	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM) {
+		return 384;
+	}
+	else {
+		return 512; 
+	}
+	
+}
 
 }

@@ -5701,7 +5701,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			// InfoMem valid
 			
 			mInfoMemBytes = infoMemContents;
-			InfoMemLayout iM = new InfoMemLayout(mFirmwareVersionCode, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+			InfoMemLayout iM = new InfoMemLayout(mFirmwareVersionCode, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
 			
 	//		mRawSamplingRate = ((int)(infoMemContents[NV_SAMPLING_RATE] & 0xFF) + (((int)(infoMemContents[NV_SAMPLING_RATE+1] & 0xFF)) << 8));
 			
@@ -6013,10 +6013,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+
+		InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareVersionCode, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
 		
 		byte[] infoMemBackup = mInfoMemBytes.clone();
 		
-		mInfoMemBytes = new byte[getExpectedInfoMemByteLength()];
+		mInfoMemBytes = new byte[infoMemMap.mInfoMemSize];
 //		mShimmerInfoMemBytes = createEmptyInfoMemByteArray(getExpectedInfoMemByteLength());
 		
 		// InfoMem defaults to 0xFF on firmware flash
@@ -6029,7 +6031,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			System.arraycopy(infoMemBackup, 0, mInfoMemBytes, 0, (infoMemBackup.length > mInfoMemBytes.length) ? mInfoMemBytes.length:infoMemBackup.length);
 		}	
 		
-		InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareVersionCode, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
 		
 		// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 		// Sampling Rate
@@ -6276,21 +6277,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mInfoMemBytes;
 	}
 	
-	public int getExpectedInfoMemByteLength() {
-		//TODO: should add full FW version checking here to support different size InfoMems in the future
-		if(mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) {
-			return 384;
-		}
-		else if(mFirmwareIdentifier == FW_ID_SHIMMER3_BTSTREAM) {
-			return 128;
-		}
-		else if(mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM) {
-			return 384;
-		}
-		else {
-			return 512; 
-		}
-	}
+//	public int getExpectedInfoMemByteLength() {
+//		//TODO: should add full FW version checking here to support different size InfoMems in the future
+//		if(mFirmwareIdentifier == FW_ID_SHIMMER3_SDLOG) {
+//			return 384;
+//		}
+//		else if(mFirmwareIdentifier == FW_ID_SHIMMER3_BTSTREAM) {
+//			return 128;
+//		}
+//		else if(mFirmwareIdentifier == FW_ID_SHIMMER3_LOGANDSTREAM) {
+//			return 384;
+//		}
+//		else {
+//			return 512; 
+//		}
+//	}
 	
 	public byte[] createEmptyInfoMemByteArray(int size) {
 		byte[] newArray = new byte[size];
@@ -7686,6 +7687,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	
+	 /**
+	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
+	 */
+	public int getExpectedInfoMemByteLength() {
+		InfoMemLayout iML = new InfoMemLayout(mFirmwareVersionCode, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+		return iML.mInfoMemSize;
+	}
 	
 	 /**
 	 * @return the mConfigTime
