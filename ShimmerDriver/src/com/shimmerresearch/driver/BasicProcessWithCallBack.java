@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public abstract class BasicProcessWithCallBack {
 
 	protected Callable mThread = null;
-	protected BlockingQueue<ShimmerMSG> mQueue = new ArrayBlockingQueue<ShimmerMSG>(1024);
+	//protected BlockingQueue<ShimmerMSG> mQueue = new ArrayBlockingQueue<ShimmerMSG>(1024);
+	protected LinkedBlockingDeque<ShimmerMSG> mQueue = new LinkedBlockingDeque<ShimmerMSG>(1024);
 	protected ConsumerThread mGUIConsumerThread = null;
 	WaitForData mWaitForData = null;
 	List<Callable> mListOfThreads = new ArrayList<Callable>();
