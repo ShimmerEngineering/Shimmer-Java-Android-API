@@ -1,5 +1,10 @@
 package com.shimmerresearch.driver;
 
+/**
+ * 
+ * @author Mark Nolan
+ *
+ */
 public class InfoMemLayout {
 
 	int mFirmwareVersionCode = 0;
@@ -378,15 +383,26 @@ public class InfoMemLayout {
 		
 		mInfoMemSize = calculateInfoMemByteLength(mFirmwareVersionCode,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
 		
-		if(mFirmwareVersionCode == 5) { //
-			// First common version - do nothing and use default values
+		//To add new exceptions include the new cases to the top here and change previous top case below to 'else if'
+		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3_SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=42))
+			||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=4))) {
+			
+			idxSensors3 =			128+0;
+			idxSensors4 =			128+1;
+			idxConfigSetupByte4 =	128+2;
+			idxConfigSetupByte5 =	128+3;
+			idxConfigSetupByte6 =	128+4;
 		}
-		else if(mFirmwareVersionCode == 6) { // Modify defaults
-			//TODO: Modify defaults
-		}
-		else {
-			// Use defaults
-		}
+		
+//		if(mFirmwareVersionCode == 5) { //
+//			// First common version - do nothing and use default values
+//		}
+//		else if(mFirmwareVersionCode == 6) { // Modify defaults
+//			//TODO: Modify defaults
+//		}
+//		else {
+//			// Use defaults
+//		}
 		
 	}
 	
