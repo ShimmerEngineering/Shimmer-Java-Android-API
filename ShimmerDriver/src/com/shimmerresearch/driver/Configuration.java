@@ -336,8 +336,8 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNELTILE_EXTERNAL_EXPANSION_ADC = "External Expansion";
 		public static final String GUI_LABEL_CHANNELTILE_GSR = "GSR+";
 		public static final String GUI_LABEL_CHANNELTILE_EXG = "ExG";
-		public static final String GUI_LABEL_CHANNELTILE_PROTO_MINI = "Proto Mini";
-		public static final String GUI_LABEL_CHANNELTILE_PROTO_DELUXE = "Proto Deluxe";
+		public static final String GUI_LABEL_CHANNELTILE_PROTO3_MINI = "Proto Mini";
+		public static final String GUI_LABEL_CHANNELTILE_PROTO3_DELUXE = "Proto Deluxe";
 		public static final String GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 		public static final String GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL = "200g Accel";
 		public static final String GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC = "Internal Expansion";

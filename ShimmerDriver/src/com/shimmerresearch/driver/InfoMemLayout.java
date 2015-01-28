@@ -7,11 +7,11 @@ package com.shimmerresearch.driver;
  */
 public class InfoMemLayout {
 
-	int mFirmwareVersionCode = 0;
-	int mFirmwareIdentifier = 0;
-	int mFirmwareVersionMajor = 0;
-	int mFirmwareVersionMinor = 0;
-	int mFirmwareVersionInternal = 0;
+//	int mFirmwareVersionCode = -1;
+	int mFirmwareIdentifier = -1;
+	int mFirmwareVersionMajor = -1;
+	int mFirmwareVersionMinor = -1;
+	int mFirmwareVersionInternal = -1;
 	int mInfoMemSize = 512;
 	
 //	//SENSORS0
@@ -97,6 +97,10 @@ public class InfoMemLayout {
 	public int idxLSM303DLHCMagCalibration =      	73;
 	public int idxLSM303DLHCAccelCalibration =    	94; //94->114
 
+	// Derived Channels - used by SW not FW
+	public int idxDerivedChannels0 =		    	115;
+	public int idxDerivedChannels1 =		    	116;
+	
 	public int idxConfigSetupByte4 =              	128+0;
 	public int idxConfigSetupByte5 =              	128+1;
 	public int idxSensors3 =                        128+2;
@@ -129,11 +133,9 @@ public class InfoMemLayout {
 
 	// Sensors
 	public int maskSensors = 							0xFF;
-	public int bitShiftSensors0 = 						0;
-	public int bitShiftSensors1 =						8;
-	public int bitShiftSensors2 =						16;
-	
-	public int maskPpgMode = 							(0x40<<8);
+	public int byteShiftSensors0 = 						0;
+	public int byteShiftSensors1 =						8;
+	public int byteShiftSensors2 =						16;
 	
 	//Config Byte0
 	public int bitShiftLSM303DLHCAccelSamplingRate = 	4;
@@ -168,6 +170,17 @@ public class InfoMemLayout {
 	public int bitShiftEXPPowerEnable =                 0;
 	public int maskEXPPowerEnable =                     0x01;
 	//Unused bits 3-0
+	
+	// Derived Channels - used by SW not FW
+	public int maskDerivedChannels = 					0xFF;
+	public int byteShiftDerivedChannels0 =				0;
+	public int byteShiftDerivedChannels1 =				8;
+	public int maskDerivedChannelResAmp = 				0;
+	public int maskDerivedChannelPpg = 					1;
+	public int maskDerivedChannelPpgToHr = 				2;
+	public int maskDerivedChannelEcgToHr = 				3;
+	public int maskDerivedChannel6DofMadgewick =		4;
+	public int maskDerivedChannel9DofMadgewick =		5;
 	
 	// ExG related config bytes
 	public int idxEXGADS1292RConfig1 = 			0;
@@ -373,17 +386,18 @@ public class InfoMemLayout {
 //	public int GYRO_AND_SOME_MAG =            0x03;
 	
 	
-	public InfoMemLayout(int firmwareVersionCode, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+//	public InfoMemLayout(int firmwareVersionCode, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+	public InfoMemLayout(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 
-		mFirmwareVersionCode = firmwareVersionCode;
+//		mFirmwareVersionCode = firmwareVersionCode;
 		mFirmwareIdentifier = firmwareIdentifier;
 		mFirmwareVersionMajor = firmwareVersionMajor;
 		mFirmwareVersionMinor = firmwareVersionMinor;
 		mFirmwareVersionInternal = firmwareVersionInternal;
 		
-		mInfoMemSize = calculateInfoMemByteLength(mFirmwareVersionCode,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
+//		mInfoMemSize = calculateInfoMemByteLength(mFirmwareVersionCode,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
+		mInfoMemSize = calculateInfoMemByteLength(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
 		
-		//To add new exceptions include the new cases to the top here and change previous top case below to 'else if'
 		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3_SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=42))
 			||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=4))) {
 			
@@ -406,7 +420,8 @@ public class InfoMemLayout {
 		
 	}
 	
-	public int calculateInfoMemByteLength(int mFirmwareVersionCode, int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+//	public int calculateInfoMemByteLength(int mFirmwareVersionCode, int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 	//TODO: should add full FW version checking here to support different size InfoMems in the future
 	if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_SDLOG) {
 		return 384;

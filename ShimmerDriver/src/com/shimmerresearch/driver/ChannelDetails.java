@@ -28,6 +28,7 @@ public class ChannelDetails implements Serializable {
 	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
+	public long mDerivedChannelBitmapID = 0;
 	public String mLabel = "";
 	public List<Integer> mListOfChannelMapKeysRequired = null;
 	public List<Integer> mListOfChannelMapKeysConflicting = null;
@@ -36,7 +37,6 @@ public class ChannelDetails implements Serializable {
 	
 	public List<CompatibleVersionDetails> mListOfCompatibleVersionInfo = null;  
 
-	//Needed for Shimmer2?
 	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
 		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
@@ -47,15 +47,17 @@ public class ChannelDetails implements Serializable {
 		mListOfCompatibleVersionInfo = null;
 	}
 
-	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired) {
-		mIsEnabled = isChannelEnabled;
-		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
-		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
-		mLabel = label;
-		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
-		
-		mListOfCompatibleVersionInfo = null;
-	}
+	
+
+//	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired) {
+//		mIsEnabled = isChannelEnabled;
+//		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
+//		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
+//		mLabel = label;
+//		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
+//		
+//		mListOfCompatibleVersionInfo = null;
+//	}
 	
 //	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired, List<CompatibleVersionDetails> listOfCompatibleVersionInfo) {
 //		mIsEnabled = isChannelEnabled;
