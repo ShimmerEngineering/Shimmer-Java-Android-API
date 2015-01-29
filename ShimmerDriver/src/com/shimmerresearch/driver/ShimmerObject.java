@@ -168,6 +168,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public final static int HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE = 38;
 	public final static int HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL = 44; // ADXL377
 	public final static int HW_SHIMMER3_EXP_BRD_GPS = 46;
+	
+	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
+	public final static String DEFAULT_EXPERIMENT_NAME = "Trial";
 
 	protected boolean mFirstTime = true;
 	double mFirstRawTS = 0;
@@ -5594,10 +5597,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected void setDefaultShimmerConfiguration() {
 		if (mHardwareVersion != -1){
-			mShimmerUserAssignedName = "Default";
-			mExperimentName = "Trial";
+			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
+			mExperimentName = DEFAULT_EXPERIMENT_NAME;
 			
 			mExperimentNumberOfShimmers = 1;
+			mExperimentId = 0;
 			mButtonStart = 1;
 			
 			mBluetoothBaudRate=0;
@@ -5624,7 +5628,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mMPLVectCompCal = 0;
 			mMPLMagDistCal = 0;
 			mMPLEnable = 0;
-			mButtonStart = 0;
 			mMasterShimmer = 0;
 			mSingleTouch = 0;
 			mTCXO = 0;
