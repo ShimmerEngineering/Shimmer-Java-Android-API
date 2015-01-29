@@ -14,11 +14,12 @@ public class SessionDetails {
 	public double mRTCUserInput;
 	public int mSuggestionIndex;
 	public double mRTCDifference; // if RTCDiff is = 0, there is no RTC
+	public String mConfigTime;
 	
 	
 	public SessionDetails(String mSessionName, int mSessionDuration,
 			long mFileSize, String mDockID, int mUniqueSlotID,
-			String mMacAddress, double startingRTC, double rtcDifference) {
+			String mMacAddress, double startingRTC, double rtcDifference, String configTime) {
 		super();
 		this.mSessionName = mSessionName;
 		this.mSessionDuration = mSessionDuration;
@@ -28,12 +29,13 @@ public class SessionDetails {
 		this.mMacAddress = mMacAddress;
 		this.mStartingRTC = startingRTC;
 		this.mRTCDifference = rtcDifference;
+		this.mConfigTime = configTime;
 	}
 
 
 	public SessionDetails(String mSessionName, int mSessionDuration,
 			long mFileSize, String mDockID, int mUniqueSlotID,
-			String mMacAddress, int mNewSessionId, double startingRTC, double rtcDifference) {
+			String mMacAddress, int mNewSessionId, double startingRTC, double rtcDifference, String configTime) {
 		super();
 		this.mSessionName = mSessionName;
 		this.mSessionDuration = mSessionDuration;
@@ -44,6 +46,7 @@ public class SessionDetails {
 		this.mNewSessionId = mNewSessionId;
 		this.mStartingRTC = startingRTC;
 		this.mRTCDifference = rtcDifference;
+		this.mConfigTime = configTime;
 	}
 	
 	
