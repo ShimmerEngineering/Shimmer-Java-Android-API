@@ -162,13 +162,13 @@ public class Configuration {
 		public final static Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
 		public final static Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option
 		
-		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
-		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
-		public final static Integer[] ListOfExGResolutionsConfigValues={0,1};
-		
 		public final static Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
 		public final static Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
 		public final static Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
+
+		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
+		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
+		public final static Integer[] ListOfExGResolutionsConfigValues={0,1};
 
 		public final static Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
 		public final static Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
@@ -183,8 +183,9 @@ public class Configuration {
 		public final static String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
 		public final static Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
 		
+		public final static String[] ListOfExGRate={"125Hz","250Hz","500Hz","1kHz","2kHz","4kHz","8kHz"};
+		public final static Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
 		
-
 		/**
 		 * Shimmer3 Low-noise analog accelerometer
 		 */
@@ -284,6 +285,7 @@ public class Configuration {
 		public static final String GUI_LABEL_CONFIG_EXG_RESOLUTION = "ExG Resolution";
 		public static final String GUI_LABEL_CONFIG_EXG_GAIN = "ExG Gain";
 
+		public static final String GUI_LABEL_CONFIG_EXG_RATE = "ExG Rate";
 		public static final String GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE = "ExG Reference Electrode";
 		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_DETECTION = "ExG Lead-Off Detection";
 		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_CURRENT = "ExG Lead-Off Current";
@@ -315,6 +317,7 @@ public class Configuration {
 		//Channels
 		public static final String GUI_LABEL_CHANNEL_PPG_A12 = "PPG A12";
 		public static final String GUI_LABEL_CHANNEL_PPG_A13 = "PPG A13";
+		public static final String GUI_LABEL_CHANNEL_EXG_RESPIRATION = "Respiration";
 		public static final String GUI_LABEL_CHANNEL_BRAMP_HIGHGAIN = "High Gain";
 		public static final String GUI_LABEL_CHANNEL_BRAMP_LOWGAIN = "Low Gain";
 
@@ -322,9 +325,8 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNEL_EXG2_24BIT = "EXG2 24BIT";
 		public static final String GUI_LABEL_CHANNEL_EXG1_16BIT = "EXG1 16BIT";
 		public static final String GUI_LABEL_CHANNEL_EXG2_16BIT = "EXG2 16BIT";
-		public static final String GUI_LABEL_CHANNEL_EXG_RESPIRATION = "Respiration";
 
-		
+		//ChannelTiles
 		public static final String GUI_LABEL_CHANNELTILE_LOW_NOISE_ACCEL = "Low Noise Accel";
 		public static final String GUI_LABEL_CHANNELTILE_GYRO = "Gyro";
 		public static final String GUI_LABEL_CHANNELTILE_MAG = "Mag";
@@ -338,6 +340,7 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNELTILE_PROTO_DELUXE = "Proto Deluxe";
 		public static final String GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 		public static final String GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL = "200g Accel";
+		public static final String GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC = "Internal Expansion";
 		//public static final String GUI_LABEL_CHANNELTILE_GPS = "GPS";
 		
 	}
