@@ -3509,7 +3509,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
 					}
 
-
 				}
 			}
 
@@ -5172,7 +5171,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if(mMPU9150LPF == 0) {
 			numerator = 8000;
 		}
-		System.out.println("Numerator is :" + numerator);
+//		System.out.println("Numerator is:" + numerator);
 
 		if (!mLowPowerGyro){
 			if(freq<4) {
@@ -5557,17 +5556,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		 if (mHardwareVersion==HW_ID_SHIMMER_3){
 			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-//			if (mShimmerSamplingRate<=128){
-//				mEXG1RegisterArray[0]=0;
-//				mEXG2RegisterArray[0]=0;
-//			} else if (mShimmerSamplingRate<=256){
-//				mEXG1RegisterArray[0]=1;
-//				mEXG2RegisterArray[0]=1;
-//			}
-//			else if (mShimmerSamplingRate<=512){
-//				mEXG1RegisterArray[0]=2;
-//				mEXG2RegisterArray[0]=2;
-//			}
 			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
@@ -5582,17 +5570,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (mHardwareVersion==HW_ID_SHIMMER_3){
 			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-//			if (mShimmerSamplingRate<=128){
-//				mEXG1RegisterArray[0]=0;
-//				mEXG2RegisterArray[0]=0;
-//			} else if (mShimmerSamplingRate<=256){
-//				mEXG1RegisterArray[0]=1;
-//				mEXG2RegisterArray[0]=1;
-//			}
-//			else if (mShimmerSamplingRate<=512){
-//				mEXG1RegisterArray[0]=2;
-//				mEXG2RegisterArray[0]=2;
-//			}
 			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
@@ -5607,17 +5584,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (mHardwareVersion==HW_ID_SHIMMER_3){
 			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-//			if (mShimmerSamplingRate<=128){
-//				mEXG1RegisterArray[0]=0;
-//				mEXG2RegisterArray[0]=0;
-//			} else if (mShimmerSamplingRate<=256){
-//				mEXG1RegisterArray[0]=1;
-//				mEXG2RegisterArray[0]=1;
-//			}
-//			else if (mShimmerSamplingRate<=512){
-//				mEXG1RegisterArray[0]=2;
-//				mEXG2RegisterArray[0]=2;
-//			}
 			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
@@ -5626,11 +5592,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	//endregion
 	
-	//TODO set all defaults
 	protected void setDefaultShimmerConfiguration() {
 		if (mHardwareVersion != -1){
 			mShimmerUserAssignedName = "Default";
-			mExperimentName = "Trial001";
+			mExperimentName = "Trial";
 			
 			mExperimentNumberOfShimmers = 1;
 			mButtonStart = 1;
@@ -5703,11 +5668,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInfoMemBytes = infoMemContents;
 			InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
 			
-	//		mRawSamplingRate = ((int)(infoMemContents[NV_SAMPLING_RATE] & 0xFF) + (((int)(infoMemContents[NV_SAMPLING_RATE+1] & 0xFF)) << 8));
-			
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-	//		double samplingRate = (32768/(double)((int)(infoMemContents[NV_SAMPLING_RATE] & 0xFF) + ((int)(infoMemContents[NV_SAMPLING_RATE+1] & 0xFF) << 8)));
 			mShimmerSamplingRate = (32768/(double)((int)(infoMemContents[infoMemMap.idxShimmerSamplingRate] & infoMemMap.maskShimmerSamplingRate) + ((int)(infoMemContents[infoMemMap.idxShimmerSamplingRate+1] & infoMemMap.maskShimmerSamplingRate) << 8)));
 	
 			mBufferSize = (int)(infoMemContents[infoMemMap.idxBufferSize] & infoMemMap.maskBufferSize);
@@ -5749,30 +5711,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			//EXG Configuration
 			System.arraycopy(infoMemContents, infoMemMap.idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
 			exgBytesGetConfigFrom(1,mEXG1RegisterArray);
-//			mEXG1RateSetting = (mEXG1Register[iM.idxEXGADS1292RConfig1] >> iM.bitShiftEXGRateSetting) & iM.maskEXGRateSetting;
-//			mEXG1CH1GainSetting = (mEXG1Register[iM.idxEXGADS1292RCH1Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
-//			mEXG1CH1GainValue = convertEXGGainSettingToValue(mEXG1CH1GainSetting);
-//			mEXG1CH2GainSetting = (mEXG1Register[iM.idxEXGADS1292RCH2Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
-//			mEXG1CH2GainValue = convertEXGGainSettingToValue(mEXG1CH2GainSetting);
-//			mRefenceElectrode = mEXG1Register[iM.idxEXGADS1292RRLDSens] & 0x0F;
 	
 			System.arraycopy(infoMemContents, infoMemMap.idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
 			exgBytesGetConfigFrom(2,mEXG2RegisterArray);
-//			mEXG2RateSetting = (mEXG2Register[iM.idxEXGADS1292RConfig1] >> iM.bitShiftEXGRateSetting) & iM.maskEXGRateSetting;
-//			mEXG2CH1GainSetting = (mEXG2Register[iM.idxEXGADS1292RCH1Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
-//			mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
-//			mEXG2CH2GainSetting = (mEXG2Register[iM.idxEXGADS1292RCH2Set] >> iM.bitShiftEXGGainSetting) & iM.maskEXGGainSetting;
-//			mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
-			
-//			//TODO Remove, here for testing 
-//			exgBytesGetFromConfig();
 			
 			mBluetoothBaudRate = infoMemContents[infoMemMap.idxBtCommBaudRate] & infoMemMap.maskBaudRate;
-			
 			//TODO: hack below -> fix
-			if(!(mBluetoothBaudRate>=0 && mBluetoothBaudRate<=10)){
-				mBluetoothBaudRate = 0; 
-			}
+//			if(!(mBluetoothBaudRate>=0 && mBluetoothBaudRate<=10)){
+//				mBluetoothBaudRate = 0; 
+//			}
 			
 			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 			// Analog Accel Calibration Parameters
@@ -6702,7 +6649,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mSensorBitmapIDStreaming = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mSensorBitmapIDSDLogHeader = mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
 				mChannelMap.get(Configuration.Shimmer3.CHANNELMAPKEY_PPG_A13).mDerivedChannelBitmapID = 0x02;
-
+				//TODO add PPG_A14?
 				
 				//Now that channel map is assembled we can add compatiblity information, internal expansion board power requirements, associated required channels, conflicting channels and associated configuration options.
 				

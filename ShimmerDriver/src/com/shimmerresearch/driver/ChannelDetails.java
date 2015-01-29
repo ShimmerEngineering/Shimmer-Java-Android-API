@@ -47,8 +47,6 @@ public class ChannelDetails implements Serializable {
 		mListOfCompatibleVersionInfo = null;
 	}
 
-	
-
 //	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired) {
 //		mIsEnabled = isChannelEnabled;
 //		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
