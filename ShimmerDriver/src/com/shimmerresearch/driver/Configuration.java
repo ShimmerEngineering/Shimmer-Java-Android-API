@@ -443,6 +443,7 @@ public class Configuration {
 		public static final String EULER_9DOF_X_OBJECTCLUSTER_SENSORNAME = "Euler_9DOF_X";
 		public static final String EULER_9DOF_Y_OBJECTCLUSTER_SENSORNAME = "Euler_9DOF_Y";
 		public static final String EULER_9DOF_Z_OBJECTCLUSTER_SENSORNAME = "Euler_9DOF_Z";
+		
 		//GUI SENSORS
 		public static final String ACCEL_LN_GUI = "Low Noise Accel";
 		public static final String BATTERY_GUI = "Battery Monitoring";
@@ -486,6 +487,7 @@ public class Configuration {
 		public static final String ORIENTATION_3D_9DOF_GUI = "3D Orientation (9DOF)";
 		public static final String EULER_ANGLES_6DOF_GUI = "Euler Angles (6DOF)";
 		public static final String EULER_ANGLES_9DOF_GUI = "Euler Angles (9DOF)";
+		
 		//Channels
 		public static final String GUI_LABEL_CHANNEL_PPG_A12 = "PPG A12";
 		public static final String GUI_LABEL_CHANNEL_PPG_A13 = "PPG A13";
@@ -497,9 +499,6 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNEL_EXG2_24BIT = "EXG2 24BIT";
 		public static final String GUI_LABEL_CHANNEL_EXG1_16BIT = "EXG1 16BIT";
 		public static final String GUI_LABEL_CHANNEL_EXG2_16BIT = "EXG2 16BIT";
-
-
-
 
 
 	}

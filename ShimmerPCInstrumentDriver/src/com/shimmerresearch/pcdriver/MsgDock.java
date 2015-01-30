@@ -4,10 +4,11 @@ public class MsgDock {
 
 	//callback msg options
 	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_SUCCESS = 30;
-	public final static int MSG_IDENTIFIER_BSL_WRITE_PROGRESS = 31; 
+	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_PROGRESS = 31; 
 	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_FAIL = 32;
 	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_BUSY = 33;
-	public final static int MSG_IDENTIFIER_BSL_WRITE_PROGRESS_LOG = 34;
+	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_PROGRESS_LOG = 34;
+	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_FINISHED = 35;
 	
 	public final static int MSG_IDENTIFIER_SMARTDOCK_SLOT_DOCKED = 40;
 	public final static int MSG_IDENTIFIER_SMARTDOCK_SLOT_REMOVED = 41;
@@ -18,8 +19,8 @@ public class MsgDock {
 	
 	public final static int MSG_IDENTIFIER_SHIMMERUART_READ_SHIMMER_DETAILS_SUCCESS = 50;
 	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_SUCCESS = 51;
-//	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_PROGRESS = 52;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_FAIL = 53;
+	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_FAIL = 52;
+	public final static int MSG_IDENTIFIER_DOCK_INFOMEM_WRITE_FINISHED = 53;
 	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE = 54;
 	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE = 55;
 	public final static int MSG_IDENTIFIER_SHIMMERUART_READ_SHIMMER_DETAILS_ERROR = 58;
