@@ -10,7 +10,7 @@ import java.util.List;
  * @author Mark Nolan
  *
  */
-public class ChannelTileDetails implements Serializable {
+public class SensorTileDetails implements Serializable {
 
 	/**
 	 * 
@@ -24,18 +24,18 @@ public class ChannelTileDetails implements Serializable {
 //	public Integer[] mChannelMapKeysRequired = null;
 //	public Integer[] mChannelMapKeysConflicting = null;
 //	public boolean mIntExpBoardPowerRequired = false;
-	public List<Integer> mListOfChannelMapKeysAssociated = null;
+	public List<Integer> mListOfSensorMapKeysAssociated = null;
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 	
 	public List<CompatibleVersionDetails> mListOfCompatibleVersionInfo = null;  
 
-	public ChannelTileDetails(List<Integer> listOfChannelMapKeysAssociated) {
-		mListOfChannelMapKeysAssociated = listOfChannelMapKeysAssociated;
+	public SensorTileDetails(List<Integer> listOfChannelMapKeysAssociated) {
+		mListOfSensorMapKeysAssociated = listOfChannelMapKeysAssociated;
 		mListOfCompatibleVersionInfo = null;
 	}
 
-	public ChannelTileDetails(List<Integer> listOfChannelMapKeysAssociated, List<CompatibleVersionDetails> listOfCompatibleVersionInfo) {
-		mListOfChannelMapKeysAssociated = listOfChannelMapKeysAssociated;
+	public SensorTileDetails(List<Integer> listOfChannelMapKeysAssociated, List<CompatibleVersionDetails> listOfCompatibleVersionInfo) {
+		mListOfSensorMapKeysAssociated = listOfChannelMapKeysAssociated;
 		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}
 

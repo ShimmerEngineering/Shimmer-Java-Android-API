@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Mark Nolan
  */
-public class ChannelConfigOptionDetails implements Serializable {
+public class SensorConfigOptionDetails implements Serializable {
 
 	/**
 	 * 
@@ -33,7 +33,7 @@ public class ChannelConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelConfigOptionDetails(String[] guiValues, Integer[] configValues, int optionType) {
+	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, int optionType) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mOptionType = optionType;
@@ -46,7 +46,7 @@ public class ChannelConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelConfigOptionDetails(String[] guiValues, Integer[] configValues, int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
+	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mOptionType = optionType;
@@ -60,7 +60,7 @@ public class ChannelConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelConfigOptionDetails(int optionType) {
+	public SensorConfigOptionDetails(int optionType) {
 		mOptionType = optionType;
 		
 		mCompatibleVersionInfo = null;
@@ -71,7 +71,7 @@ public class ChannelConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param optionType
 	 */
-	public ChannelConfigOptionDetails(int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
+	public SensorConfigOptionDetails(int optionType, List<CompatibleVersionDetails> compatibleVersionInfo) {
 		mOptionType = optionType;
 		
 		mCompatibleVersionInfo = compatibleVersionInfo;

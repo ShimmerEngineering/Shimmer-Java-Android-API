@@ -98,8 +98,8 @@ public class InfoMemLayout {
 	public int idxLSM303DLHCAccelCalibration =    	94; //94->114
 
 	// Derived Channels - used by SW not FW
-	public int idxDerivedChannels0 =		    	115;
-	public int idxDerivedChannels1 =		    	116;
+	public int idxDerivedSensors0 =		    	115;
+	public int idxDerivedSensors1 =		    	116;
 	
 	public int idxConfigSetupByte4 =              	128+0;
 	public int idxConfigSetupByte5 =              	128+1;
@@ -173,8 +173,8 @@ public class InfoMemLayout {
 	
 	// Derived Channels - used by SW not FW
 	public int maskDerivedChannels = 					0xFF;
-	public int byteShiftDerivedChannels0 =				0;
-	public int byteShiftDerivedChannels1 =				8;
+	public int byteShiftDerivedSensors0 =				0;
+	public int byteShiftDerivedSensors1 =				8;
 	public int maskDerivedChannelResAmp = 				0x01;
 	public int maskDerivedChannelPpg = 					0x02;
 	public int maskDerivedChannelPpgToHr = 				0x03;

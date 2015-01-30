@@ -9,7 +9,7 @@ import java.util.List;
  * @author Mark Nolan
  *
  */
-public class ChannelDetails implements Serializable {
+public class SensorDetails implements Serializable {
 
 	/**
 	 * 
@@ -30,14 +30,14 @@ public class ChannelDetails implements Serializable {
 	public long mSensorBitmapIDSDLogHeader = 0;
 	public long mDerivedChannelBitmapID = 0;
 	public String mLabel = "";
-	public List<Integer> mListOfChannelMapKeysRequired = null;
-	public List<Integer> mListOfChannelMapKeysConflicting = null;
+	public List<Integer> mListOfSensorMapKeysRequired = null;
+	public List<Integer> mListOfSensorMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
 	public List<String> mListOfConfigOptionKeysAssociated = null;
 	
 	public List<CompatibleVersionDetails> mListOfCompatibleVersionInfo = null;  
 
-	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
+	public SensorDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
 		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;

@@ -186,321 +186,327 @@ public class Configuration {
 		public final static String[] ListOfExGRate={"125Hz","250Hz","500Hz","1kHz","2kHz","4kHz","8kHz"};
 		public final static Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
 
-		/**
-		 * Shimmer3 Low-noise analog accelerometer
-		 */
-		public final static int CHANNELMAPKEY_A_ACCEL = 0;
-		/**
-		 * Shimmer3 Gyroscope
-		 */
-		public final static int CHANNELMAPKEY_MPU9150_GYRO = 1;
-		/**
-		 * Shimmer3 Primary magnetometer
-		 */
-		public final static int CHANNELMAPKEY_LSM303DLHC_MAG = 2;
-		public final static int CHANNELMAPKEY_EXG1_24BIT = 3;
-		public final static int CHANNELMAPKEY_EXG2_24BIT = 4;
-		public final static int CHANNELMAPKEY_GSR = 5;
-		public final static int CHANNELMAPKEY_EXT_EXP_ADC_A6 = 6;
-		public final static int CHANNELMAPKEY_EXT_EXP_ADC_A7 = 7;
-		public final static int CHANNELMAPKEY_BRIDGE_AMP = 8;
-		public final static int CHANNELMAPKEY_RESISTANCE_AMP = 9;
-		//public final static int CHANNELMAPKEY_HR = 9;
-		public final static int CHANNELMAPKEY_VBATT = 10;
-		/**
-		 * Shimmer3 Wide-range digital accelerometer
-		 */
-		public final static int CHANNELMAPKEY_LSM303DLHC_ACCEL = 11;
-		public final static int CHANNELMAPKEY_EXT_EXP_ADC_A15 = 12;
-		public final static int CHANNELMAPKEY_INT_EXP_ADC_A1 = 13;
-		public final static int CHANNELMAPKEY_INT_EXP_ADC_A12 = 14;
-		public final static int CHANNELMAPKEY_INT_EXP_ADC_A13 = 15;
-		public final static int CHANNELMAPKEY_INT_EXP_ADC_A14 = 16;
-		/**
-		 * Shimmer3 Alternative accelerometer
-		 */
-		public final static int CHANNELMAPKEY_MPU9150_ACCEL = 17;
-		/**
-		 * Shimmer3 Alternative magnetometer
-		 */
-		public final static int CHANNELMAPKEY_MPU9150_MAG = 18;
-		public final static int CHANNELMAPKEY_EXG1_16BIT = 19;
-		public final static int CHANNELMAPKEY_EXG2_16BIT = 21;
-		public final static int CHANNELMAPKEY_BMP180_PRESSURE = 22;
-		//public final static int CHANNELMAPKEY_BMP180_TEMPERATURE = 23; // not yet implemented
-		//public final static int CHANNELMAPKEY_MSP430_TEMPERATURE = 24; // not yet implemented
-		public final static int CHANNELMAPKEY_MPU9150_TEMP = 25;
-		//public final static int CHANNELMAPKEY_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
-		//public final static int CHANNELMAPKEY_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
-		public final static int CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF = 27;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_QUAT_9DOF = 28;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_EULER_6DOF = 29;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_EULER_9DOF = 30;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_HEADING = 31;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_PEDOMETER = 32;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_TAP = 33;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_MOTION_ORIENT = 34;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_GYRO = 35;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_ACCEL = 36;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_MAG = 37;
-		public final static int CHANNELMAPKEY_MPU9150_MPL_QUAT_6DOF_RAW = 38;
-
-		// Combination Channels
-		public final static int CHANNELMAPKEY_ECG = 100;
-		public final static int CHANNELMAPKEY_EMG = 101;
-		public final static int CHANNELMAPKEY_EXG_TEST = 102;
-
-		public final static int CHANNELMAPKEY_PPG_A12 = 105;
-		public final static int CHANNELMAPKEY_PPG_A13 = 106;
-		public final static int CHANNELMAPKEY_EXG_RESPIRATION = 107;
-
+		
+		public class SensorMapKey{
+			/**
+			 * Shimmer3 Low-noise analog accelerometer
+			 */
+			public final static int A_ACCEL = 0;
+			/**
+			 * Shimmer3 Gyroscope
+			 */
+			public final static int MPU9150_GYRO = 1;
+			/**
+			 * Shimmer3 Primary magnetometer
+			 */
+			public final static int LSM303DLHC_MAG = 2;
+			public final static int EXG1_24BIT = 3;
+			public final static int EXG2_24BIT = 4;
+			public final static int GSR = 5;
+			public final static int EXT_EXP_ADC_A6 = 6;
+			public final static int EXT_EXP_ADC_A7 = 7;
+			public final static int BRIDGE_AMP = 8;
+			public final static int RESISTANCE_AMP = 9;
+			//public final static int HR = 9;
+			public final static int VBATT = 10;
+			/**
+			 * Shimmer3 Wide-range digital accelerometer
+			 */
+			public final static int LSM303DLHC_ACCEL = 11;
+			public final static int EXT_EXP_ADC_A15 = 12;
+			public final static int INT_EXP_ADC_A1 = 13;
+			public final static int INT_EXP_ADC_A12 = 14;
+			public final static int INT_EXP_ADC_A13 = 15;
+			public final static int INT_EXP_ADC_A14 = 16;
+			/**
+			 * Shimmer3 Alternative accelerometer
+			 */
+			public final static int MPU9150_ACCEL = 17;
+			/**
+			 * Shimmer3 Alternative magnetometer
+			 */
+			public final static int MPU9150_MAG = 18;
+			public final static int EXG1_16BIT = 19;
+			public final static int EXG2_16BIT = 21;
+			public final static int BMP180_PRESSURE = 22;
+			//public final static int BMP180_TEMPERATURE = 23; // not yet implemented
+			//public final static int MSP430_TEMPERATURE = 24; // not yet implemented
+			public final static int MPU9150_TEMP = 25;
+			//public final static int LSM303DLHC_TEMPERATURE = 26; // not yet implemented
+			//public final static int MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
+			public final static int MPU9150_MPL_QUAT_6DOF = 27;
+			public final static int MPU9150_MPL_QUAT_9DOF = 28;
+			public final static int MPU9150_MPL_EULER_6DOF = 29;
+			public final static int MPU9150_MPL_EULER_9DOF = 30;
+			public final static int MPU9150_MPL_HEADING = 31;
+			public final static int MPU9150_MPL_PEDOMETER = 32;
+			public final static int MPU9150_MPL_TAP = 33;
+			public final static int MPU9150_MPL_MOTION_ORIENT = 34;
+			public final static int MPU9150_MPL_GYRO = 35;
+			public final static int MPU9150_MPL_ACCEL = 36;
+			public final static int MPU9150_MPL_MAG = 37;
+			public final static int MPU9150_MPL_QUAT_6DOF_RAW = 38;
+	
+			// Combination Channels
+			public final static int ECG = 100;
+			public final static int EMG = 101;
+			public final static int EXG_TEST = 102;
+	
+			public final static int PPG_A12 = 105;
+			public final static int PPG_A13 = 106;
+			public final static int EXG_RESPIRATION = 107;
+		}
 
 		// Sensor Options Map
-		public static final String GUI_LABEL_CONFIG_SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
-		public static final String GUI_LABEL_CONFIG_EXPERIMENT_NAME = "Experiment Name";
-		public static final String GUI_LABEL_CONFIG_SHIMMER_SAMPLING_RATE = "Sampling Rate";
-		public static final String GUI_LABEL_CONFIG_BUFFER_SIZE = "Buffer Size";
-		public static final String GUI_LABEL_CONFIG_CONFIG_TIME = "Config Time";
-		public static final String GUI_LABEL_CONFIG_EXPERIMENT_NUMBER_OF_SHIMMERS = "Number Of Shimmers";
-		public static final String GUI_LABEL_CONFIG_SHIMMER_MAC_FROM_INFOMEM = "InfoMem MAC";
-		public static final String GUI_LABEL_CONFIG_EXPERIMENT_ID = "Experiment ID";
-		public static final String GUI_LABEL_CONFIG_EXPERIMENT_DURATION_ESTIMATED = "Estimated Duration";
-		public static final String GUI_LABEL_CONFIG_EXPERIMENT_DURATION_MAXIMUM = "Maximum Duration";
-		public static final String GUI_LABEL_CONFIG_BROADCAST_INTERVAL = "Broadcast Interval";
-		public static final String GUI_LABEL_CONFIG_BLUETOOTH_BAUD_RATE = "Bluetooth Baud Rate";
+		public class GuiLabelConfig{
+			public static final String SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
+			public static final String EXPERIMENT_NAME = "Experiment Name";
+			public static final String SHIMMER_SAMPLING_RATE = "Sampling Rate";
+			public static final String BUFFER_SIZE = "Buffer Size";
+			public static final String CONFIG_TIME = "Config Time";
+			public static final String EXPERIMENT_NUMBER_OF_SHIMMERS = "Number Of Shimmers";
+			public static final String SHIMMER_MAC_FROM_INFOMEM = "InfoMem MAC";
+			public static final String EXPERIMENT_ID = "Experiment ID";
+			public static final String EXPERIMENT_DURATION_ESTIMATED = "Estimated Duration";
+			public static final String EXPERIMENT_DURATION_MAXIMUM = "Maximum Duration";
+			public static final String BROADCAST_INTERVAL = "Broadcast Interval";
+			public static final String BLUETOOTH_BAUD_RATE = "Bluetooth Baud Rate";
 
-		public static final String GUI_LABEL_CONFIG_USER_BUTTON_START = "User Button Start";
-		public static final String GUI_LABEL_CONFIG_SINGLE_TOUCH_START = "Single Touch Start";
-		public static final String GUI_LABEL_CONFIG_EXPERIMENT_MASTER_SHIMMER = "Master Shimmer";
-		public static final String GUI_LABEL_CONFIG_EXPERIMENT_SYNC_WHEN_LOGGING = "Sync When Logging";
+			public static final String USER_BUTTON_START = "User Button Start";
+			public static final String SINGLE_TOUCH_START = "Single Touch Start";
+			public static final String EXPERIMENT_MASTER_SHIMMER = "Master Shimmer";
+			public static final String EXPERIMENT_SYNC_WHEN_LOGGING = "Sync When Logging";
 
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range";
-		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RANGE = "Gyro Range";
-		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_RATE = "Gyro Sampling Rate";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_RANGE = "Mag Range";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_RATE = "Mag Rate";
-		public static final String GUI_LABEL_CONFIG_PRESSURE_RESOLUTION = "Pressure Resolution";
-		public static final String GUI_LABEL_CONFIG_GSR_RANGE = "GSR Range";
-		public static final String GUI_LABEL_CONFIG_EXG_RESOLUTION = "ExG Resolution";
-		public static final String GUI_LABEL_CONFIG_EXG_GAIN = "ExG Gain";
+			public static final String LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";
+			public static final String LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range";
+			public static final String MPU9150_GYRO_RANGE = "Gyro Range";
+			public static final String MPU9150_GYRO_RATE = "Gyro Sampling Rate";
+			public static final String LSM303DLHC_MAG_RANGE = "Mag Range";
+			public static final String LSM303DLHC_MAG_RATE = "Mag Rate";
+			public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
+			public static final String GSR_RANGE = "GSR Range";
+			public static final String EXG_RESOLUTION = "ExG Resolution";
+			public static final String EXG_GAIN = "ExG Gain";
 
-		public static final String GUI_LABEL_CONFIG_EXG_RATE = "ExG Rate";
-		public static final String GUI_LABEL_CONFIG_EXG_REFERENCE_ELECTRODE = "ExG Reference Electrode";
-		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_DETECTION = "ExG Lead-Off Detection";
-		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_CURRENT = "ExG Lead-Off Current";
-		public static final String GUI_LABEL_CONFIG_EXG_LEAD_OFF_COMPARATOR = "ExG Lead-Off Compartor Threshold";
-		public static final String GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_FREQ = "ExG Respiration Detection Freq.";
-		public static final String GUI_LABEL_CONFIG_EXG_RESPIRATION_DETECT_PHASE = "ExG Respiration Detection Phase";
+			public static final String EXG_RATE = "ExG Rate";
+			public static final String EXG_REFERENCE_ELECTRODE = "ExG Reference Electrode";
+			public static final String EXG_LEAD_OFF_DETECTION = "ExG Lead-Off Detection";
+			public static final String EXG_LEAD_OFF_CURRENT = "ExG Lead-Off Current";
+			public static final String EXG_LEAD_OFF_COMPARATOR = "ExG Lead-Off Compartor Threshold";
+			public static final String EXG_RESPIRATION_DETECT_FREQ = "ExG Respiration Detection Freq.";
+			public static final String EXG_RESPIRATION_DETECT_PHASE = "ExG Respiration Detection Phase";
 
-		public static final String GUI_LABEL_CONFIG_MPU9150_ACCEL_RANGE = "MPU Accel Range";
-		public static final String GUI_LABEL_CONFIG_MPU9150_DMP_GYRO_CAL = "MPU Gyro Cal";
-		public static final String GUI_LABEL_CONFIG_MPU9150_LPF = "MPU LPF";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_RATE = "MPL Rate";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MAG_RATE = "MPU Mag Rate";
+			public static final String MPU9150_ACCEL_RANGE = "MPU Accel Range";
+			public static final String MPU9150_DMP_GYRO_CAL = "MPU Gyro Cal";
+			public static final String MPU9150_LPF = "MPU LPF";
+			public static final String MPU9150_MPL_RATE = "MPL Rate";
+			public static final String MPU9150_MAG_RATE = "MPU Mag Rate";
 
-		public static final String GUI_LABEL_CONFIG_MPU9150_DMP = "DMP";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL = "MPL";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_9DOF_SENSOR_FUSION = "9DOF Sensor Fusion";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_GYRO_CAL = "Gyro Calibration";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_VECTOR_CAL = "Vector Compensation Calibration";
-		public static final String GUI_LABEL_CONFIG_MPU9150_MPL_MAG_CAL = "Magnetic Disturbance Calibration";
+			public static final String MPU9150_DMP = "DMP";
+			public static final String MPU9150_MPL = "MPL";
+			public static final String MPU9150_MPL_9DOF_SENSOR_FUSION = "9DOF Sensor Fusion";
+			public static final String MPU9150_MPL_GYRO_CAL = "Gyro Calibration";
+			public static final String MPU9150_MPL_VECTOR_CAL = "Vector Compensation Calibration";
+			public static final String MPU9150_MPL_MAG_CAL = "Magnetic Disturbance Calibration";
 
-		public static final String GUI_LABEL_CONFIG_KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode";
-		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
-		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
-		public static final String GUI_LABEL_CONFIG_TCX0 = "TCX0";
-		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POWER = "Internal Expansion Board Power";
+			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";
+			public static final String LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode";
+			public static final String MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
+			public static final String LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
+			public static final String TCX0 = "TCX0";
+			public static final String INT_EXP_BRD_POWER = "Internal Expansion Board Power";
+		}
 
-		//Channel Tiles
-		public static final String GUI_LABEL_CHANNELTILE_LOW_NOISE_ACCEL = "Low Noise Accel";
-		public static final String GUI_LABEL_CHANNELTILE_GYRO = "Gyro";
-		public static final String GUI_LABEL_CHANNELTILE_MAG = "Mag";
-		public static final String GUI_LABEL_CHANNELTILE_BATTERY_MONITORING = "Battery Monitoring";
-		public static final String GUI_LABEL_CHANNELTILE_WIDE_RANGE_ACCEL = "Wide Range Accel";
-		public static final String GUI_LABEL_CHANNELTILE_PRESSURE_TEMPERATURE = "Pressure/Temperature";
-		public static final String GUI_LABEL_CHANNELTILE_EXTERNAL_EXPANSION_ADC = "External Expansion";
-		public static final String GUI_LABEL_CHANNELTILE_GSR = "GSR+";
-		public static final String GUI_LABEL_CHANNELTILE_EXG = "ExG";
-		public static final String GUI_LABEL_CHANNELTILE_PROTO3_MINI = "Proto Mini";
-		public static final String GUI_LABEL_CHANNELTILE_PROTO3_DELUXE = "Proto Deluxe";
-		public static final String GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER = "Bridge Amplifier+";
-		public static final String GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL = "200g Accel";
-		public static final String GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC = "Internal Expansion";
-		//public static final String GUI_LABEL_CHANNELTILE_GPS = "GPS";
-
+		// GUI Sensor Tiles
+		public class GuiLabelSensorTiles{
+			public static final String LOW_NOISE_ACCEL = "Low Noise Accel";
+			public static final String GYRO = "Gyro";
+			public static final String MAG = "Mag";
+			public static final String BATTERY_MONITORING = "Battery Monitoring";
+			public static final String WIDE_RANGE_ACCEL = "Wide Range Accel";
+			public static final String PRESSURE_TEMPERATURE = "Pressure/Temperature";
+			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion";
+			public static final String GSR = "GSR+";
+			public static final String EXG = "ExG";
+			public static final String PROTO3_MINI = "Proto Mini";
+			public static final String PROTO3_DELUXE = "Proto Deluxe";
+			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
+			public static final String HIGH_G_ACCEL = "200g Accel";
+			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion";
+			//public static final String GPS = "GPS";
+		}
+		
+		//GUI SENSORS
+		public class GuiLabelSensors{
+			public static final String ACCEL_LN = "Low Noise Accel";
+			public static final String BATTERY = "Battery Monitoring";
+			public static final String EXT_EXP_A7 = "Ext A7";
+			public static final String EXT_EXP_A6 = "Ext A6";
+			public static final String EXT_EXP_A15 = "Ext A15";
+			public static final String INT_EXP_A12 = "Int A12";
+			public static final String INT_EXP_A13 = "Int A13";
+			public static final String INT_EXP_A14 = "Int A14";
+			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier";
+			public static final String GSR = "GSR";
+			public static final String INT_EXP_A1 = "Int A1";
+			public static final String RESISTANCE_AMP = "Resistance Amplifier";
+			public static final String GYRO = "Gyro";
+			public static final String ACCEL_WR = "Wide Range Accel";
+			public static final String MAG = "Mag";
+			public static final String ACCEL_MPU = "Alternative Accel";
+			public static final String MAG_MPU = "Alternative Mag";
+			public static final String PRESS_TEMP_BMP180 = "Pressure/Temperature";
+			public static final String EMG = "EMG";
+			public static final String ECG = "ECG";
+			public static final String EXG_TEST = "ExG Test";
+			public static final String EXT_EXP_ADC = "External Expansion";
+			public static final String QUAT_MPL_6DOF = "MPU Quat 6DOF";
+			public static final String QUAT_MPL_9DOF = "MPU Quat 9DOF";
+			public static final String EULER_MPL_6DOF = "MPU Euler 6DOF";
+			public static final String EULER_MPL_9DOF = "MPU Euler 9DOF";
+			public static final String MPL_HEADING = "MPU Heading";
+			public static final String MPL_TEMPERATURE = "MPU Temp";
+			public static final String MPL_PEDOM_CNT = "MPL_Pedom_cnt"; // not currently supported
+			public static final String MPL_PEDOM_TIME = "MPL_Pedom_Time"; // not currently supported
+			public static final String MPL_TAPDIRANDTAPCNT = "TapDirAndTapCnt"; // not currently supported
+			public static final String MPL_MOTIONANDORIENT = "MotionAndOrient"; // not currently supported
+			public static final String GYRO_MPU_MPL = "MPU Gyro";
+			public static final String ACCEL_MPU_MPL = "MPU Accel";
+			public static final String MAG_MPU_MPL = "MPU Mag";
+			public static final String QUAT_DMP_6DOF = "MPU Quat 6DOF (from DMP)";
+			public static final String ECG_TO_HR = "ECG To HR";
+			public static final String PPG_TO_HR = "PPG To HR";
+			public static final String ORIENTATION_3D_6DOF = "3D Orientation (6DOF)";
+			public static final String ORIENTATION_3D_9DOF = "3D Orientation (9DOF)";
+			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)";
+			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";
+			
+			public static final String PPG_A12 = "PPG A12";
+			public static final String PPG_A13 = "PPG A13";
+			public static final String EXG_RESPIRATION = "Respiration";
+			public static final String BRAMP_HIGHGAIN = "High Gain";
+			public static final String BRAMP_LOWGAIN = "Low Gain";
+	
+			public static final String EXG1_24BIT = "EXG1 24BIT";
+			public static final String EXG2_24BIT = "EXG2 24BIT";
+			public static final String EXG1_16BIT = "EXG1 16BIT";
+			public static final String EXG2_16BIT = "EXG2 16BIT";
+		}
 
 		//DATABASE NAMES
 		//GUI AND EXPORT CHANNELS
-		public static final String REAL_TIME_CLOCK_OBJECTCLUSTER_SENSORNAME = "RealTime";
-		public static final String ACCEL_LN_X_OBJECTCLUSTER_SENSORNAME = "Accel_LN_X";
-		public static final String ACCEL_LN_Y_OBJECTCLUSTER_SENSORNAME = "Accel_LN_Y";
-		public static final String ACCEL_LN_Z_OBJECTCLUSTER_SENSORNAME = "Accel_LN_Z";
-		public static final String BATTERY_OBJECTCLUSTER_SENSORNAME = "Battery";
-		public static final String EXT_EXP_A7_OBJECTCLUSTER_SENSORNAME = "Ext_Exp_A7";
-		public static final String EXT_EXP_A6_OBJECTCLUSTER_SENSORNAME = "Ext_Exp_A6";
-		public static final String EXT_EXP_A15_OBJECTCLUSTER_SENSORNAME = "Ext_Exp_A15";
-		public static final String INT_EXP_A12_OBJECTCLUSTER_SENSORNAME = "Int_Exp_A12";
-		public static final String INT_EXP_A13_OBJECTCLUSTER_SENSORNAME = "Int_Exp_A13";
-		public static final String INT_EXP_A14_OBJECTCLUSTER_SENSORNAME = "Int_Exp_A14";
-		public static final String BRIDGE_AMP_HIGH_OBJECTCLUSTER_SENSORNAME = "Bridge_Amp_High";
-		public static final String BRIDGE_AMP_LOW_OBJECTCLUSTER_SENSORNAME = "Bridge_Amp_Low";
-		public static final String GSR_OBJECTCLUSTER_SENSORNAME = "GSR";
-		public static final String INT_EXP_A1_OBJECTCLUSTER_SENSORNAME = "Int_Exp_A1";
-		public static final String RESISTANCE_AMP_OBJECTCLUSTER_SENSORNAME = "Resistance_Amp";
-		public static final String GYRO_X_OBJECTCLUSTER_SENSORNAME = "Gyro_X";
-		public static final String GYRO_Y_OBJECTCLUSTER_SENSORNAME = "Gyro_Y";
-		public static final String GYRO_Z_OBJECTCLUSTER_SENSORNAME = "Gyro_Z";
-		public static final String ACCEL_WR_X_OBJECTCLUSTER_SENSORNAME = "Accel_WR_X";
-		public static final String ACCEL_WR_Y_OBJECTCLUSTER_SENSORNAME = "Accel_WR_Y";
-		public static final String ACCEL_WR_Z_OBJECTCLUSTER_SENSORNAME= "Accel_WR_Z";
-		public static final String MAG_X_OBJECTCLUSTER_SENSORNAME = "Mag_X";
-		public static final String MAG_Y_OBJECTCLUSTER_SENSORNAME = "Mag_Y";
-		public static final String MAG_Z_OBJECTCLUSTER_SENSORNAME = "Mag_Z";
-		public static final String ACCEL_MPU_X_OBJECTCLUSTER_SENSORNAME = "Accel_MPU_X";
-		public static final String ACCEL_MPU_Y_OBJECTCLUSTER_SENSORNAME = "Accel_MPU_Y";
-		public static final String ACCEL_MPU_Z_OBJECTCLUSTER_SENSORNAME = "Accel_MPU_Z";
-		public static final String MAG_MPU_X_OBJECTCLUSTER_SENSORNAME = "Mag_MPU_X";
-		public static final String MAG_MPU_Y_OBJECTCLUSTER_SENSORNAME = "Mag_MPU_Y";
-		public static final String MAG_MPU_Z_OBJECTCLUSTER_SENSORNAME = "Mag_MPU_Z";
-		public static final String TEMPERATURE_BMP180_OBJECTCLUSTER_SENSORNAME = "Temperature_BMP180";
-		public static final String PRESSURE_BMP180_OBJECTCLUSTER_SENSORNAME = "Pressure_BMP180";
-		public static final String EMG_CH1_24BIT_OBJECTCLUSTER_SENSORNAME = "EMG_CH1_24BIT";
-		public static final String EMG_CH2_24BIT_OBJECTCLUSTER_SENSORNAME = "EMG_CH2_24BIT";
-		public static final String EMG_CH1_16BIT_OBJECTCLUSTER_SENSORNAME = "EMG_CH1_16BIT";
-		public static final String EMG_CH2_16BIT_OBJECTCLUSTER_SENSORNAME = "EMG_CH2_16BIT";
-		public static final String ECG_LL_RA_24BIT_OBJECTCLUSTER_SENSORNAME = "ECG_LL-RA_24BIT";
-		public static final String ECG_LA_RA_24BIT_OBJECTCLUSTER_SENSORNAME = "ECG_LA-RA_24BIT";
-		public static final String ECG_LL_RA_16BIT_OBJECTCLUSTER_SENSORNAME = "ECG_LL-RA_16BIT";
-		public static final String ECG_LA_RA_16BIT_OBJECTCLUSTER_SENSORNAME = "ECG_LA-RA_16BIT";
-		public static final String TEST_CH1_24BIT_OBJECTCLUSTER_SENSORNAME = "Test_CH1_24BIT";
-		public static final String TEST_CH2_24BIT_OBJECTCLUSTER_SENSORNAME = "Test_CH2_24BIT";
-		public static final String TEST_CH1_16BIT_OBJECTCLUSTER_SENSORNAME = "Test_CH1_16BIT";
-		public static final String TEST_CH2_16BIT_OBJECTCLUSTER_SENSORNAME = "Test_CH2_16BIT";
-		public static final String EXG1_STATUS_OBJECTCLUSTER_SENSORNAME = "ExG1_Status";
-		public static final String ECG_RESP_24BIT_OBJECTCLUSTER_SENSORNAME = "ECG_RESP_24BIT";
-		public static final String ECG_VX_RL_24BIT_OBJECTCLUSTER_SENSORNAME = "ECG_Vx-RL_24BIT";
-		public static final String ECG_RESP_16BIT_OBJECTCLUSTER_SENSORNAME = "ECG_RESP_16BIT";
-		public static final String ECG_VX_RL_16BIT_OBJECTCLUSTER_SENSORNAME = "ECG_Vx-RL_16BIT";
-		public static final String EXG1_CH1_24BIT_OBJECTCLUSTER_SENSORNAME = "ExG1_CH1_24BIT";
-		public static final String EXG1_CH2_24BIT_OBJECTCLUSTER_SENSORNAME = "ExG1_CH2_24BIT";
-		public static final String EXG1_CH1_16BIT_OBJECTCLUSTER_SENSORNAME = "ExG1_CH1_16BIT";
-		public static final String EXG1_CH2_16BIT_OBJECTCLUSTER_SENSORNAME = "ExG1_CH2_16BIT";
-		public static final String EXG2_CH1_24BIT_OBJECTCLUSTER_SENSORNAME = "ExG2_CH1_24BIT";
-		public static final String EXG2_CH2_24BIT_OBJECTCLUSTER_SENSORNAME = "ExG2_CH2_24BIT";
-		public static final String EXG2_CH1_16BIT_OBJECTCLUSTER_SENSORNAME = "ExG2_CH1_16BIT";
-		public static final String EXG2_CH2_16BIT_OBJECTCLUSTER_SENSORNAME = "ExG2_CH2_16BIT";
-		public static final String EXG2_STATUS_OBJECTCLUSTER_SENSORNAME = "ExG2_Status";
-		public static final String QUAT_MPL_6DOF_W_OBJECTCLUSTER_SENSORNAME = "Quat_MPL_6DOF_W";
-		public static final String QUAT_MPL_6DOF_X_OBJECTCLUSTER_SENSORNAME = "Quat_MPL_6DOF_X";
-		public static final String QUAT_MPL_6DOF_Y_OBJECTCLUSTER_SENSORNAME = "Quat_MPL_6DOF_Y";
-		public static final String QUAT_MPL_6DOF_Z_OBJECTCLUSTER_SENSORNAME = "Quat_MPL_6DOF_Z";
-		public static final String QUAT_MPL_9DOF_W_OBJECTCLUSTER_SENSORNAME = "Quat_MPL_9DOF_W";
-		public static final String QUAT_MPL_9DOF_X_OBJECTCLUSTER_SENSORNAME = "Quat_MPL_9DOF_X";
-		public static final String QUAT_MPL_9DOF_Y_OBJECTCLUSTER_SENSORNAME = "Quat_MPL_9DOF_Y";
-		public static final String QUAT_MPL_9DOF_Z_OBJECTCLUSTER_SENSORNAME = "Quat_MPL_9DOF_Z";
-		public static final String EULER_MPL_6DOF_X_OBJECTCLUSTER_SENSORNAME = "Euler_MPL_6DOF_X";
-		public static final String EULER_MPL_6DOF_Y_OBJECTCLUSTER_SENSORNAME = "Euler_MPL_6DOF_Y";
-		public static final String EULER_MPL_6DOF_Z_OBJECTCLUSTER_SENSORNAME = "Euler_MPL_6DOF_Z";
-		public static final String EULER_MPL_9DOF_X_OBJECTCLUSTER_SENSORNAME = "Euler_MPL_9DOF_X";
-		public static final String EULER_MPL_9DOF_Y_OBJECTCLUSTER_SENSORNAME = "Euler_MPL_9DOF_Y";
-		public static final String EULER_MPL_9DOF_Z_OBJECTCLUSTER_SENSORNAME = "Euler_MPL_9DOF_Z";
-		public static final String MPL_HEADING_OBJECTCLUSTER_SENSORNAME = "MPL_heading";
-		public static final String MPL_TEMPERATURE_OBJECTCLUSTER_SENSORNAME = "MPL_Temperature";
-		public static final String MPL_PEDOM_CNT_OBJECTCLUSTER_SENSORNAME = "MPL_Pedom_cnt";
-		public static final String MPL_PEDOM_TIME_OBJECTCLUSTER_SENSORNAME = "MPL_Pedom_Time";
-		public static final String TAPDIRANDTAPCNT_OBJECTCLUSTER_SENSORNAME = "TapDirAndTapCnt";
-		public static final String MOTIONANDORIENT_OBJECTCLUSTER_SENSORNAME = "MotionAndOrient";
-		public static final String GYRO_MPU_MPL_X_OBJECTCLUSTER_SENSORNAME = "Gyro_MPU_MPL_X";
-		public static final String GYRO_MPU_MPL_Y_OBJECTCLUSTER_SENSORNAME = "Gyro_MPU_MPL_Y";
-		public static final String GYRO_MPU_MPL_Z_OBJECTCLUSTER_SENSORNAME = "Gyro_MPU_MPL_Z";
-		public static final String ACCEL_MPU_MPL_X_OBJECTCLUSTER_SENSORNAME = "Accel_MPU_MPL_X";
-		public static final String ACCEL_MPU_MPL_Y_OBJECTCLUSTER_SENSORNAME = "Accel_MPU_MPL_Y";
-		public static final String ACCEL_MPU_MPL_Z_OBJECTCLUSTER_SENSORNAME = "Accel_MPU_MPL_Z";
-		public static final String MAG_MPU_MPL_X_OBJECTCLUSTER_SENSORNAME = "Mag_MPU_MPL_X";
-		public static final String MAG_MPU_MPL_Y_OBJECTCLUSTER_SENSORNAME = "Mag_MPU_MPL_Y";
-		public static final String MAG_MPU_MPL_Z_OBJECTCLUSTER_SENSORNAME = "Mag_MPU_MPL_Z";
-		public static final String QUAT_DMP_6DOF_W_OBJECTCLUSTER_SENSORNAME = "Quat_DMP_6DOF_W";
-		public static final String QUAT_DMP_6DOF_X_OBJECTCLUSTER_SENSORNAME = "Quat_DMP_6DOF_X";
-		public static final String QUAT_DMP_6DOF_Y_OBJECTCLUSTER_SENSORNAME = "Quat_DMP_6DOF_Y";
-		public static final String QUAT_DMP_6DOF_Z_OBJECTCLUSTER_SENSORNAME = "Quat_DMP_6DOF_Z";
-		public static final String ECG_TO_HR_OBJECTCLUSTER_SENSORNAME = "ECGtoHR";
-		public static final String PPG_TO_HR_OBJECTCLUSTER_SENSORNAME = "PPGtoHR";
-		public static final String QUAT_MADGE_6DOF_W_OBJECTCLUSTER_SENSORNAME = "Quat_Madge_6DOF_W";
-		public static final String QUAT_MADGE_6DOF_X_OBJECTCLUSTER_SENSORNAME = "Quat_Madge_6DOF_X";
-		public static final String QUAT_MADGE_6DOF_Y_OBJECTCLUSTER_SENSORNAME = "Quat_Madge_6DOF_Y";
-		public static final String QUAT_MADGE_6DOF_Z_OBJECTCLUSTER_SENSORNAME = "Quat_Madge_6DOF_Z";
-		public static final String QUAT_MADGE_9DOF_W_OBJECTCLUSTER_SENSORNAME = "Quat_Madge_9DOF_W";
-		public static final String QUAT_MADGE_9DOF_X_OBJECTCLUSTER_SENSORNAME = "Quat_Madge_9DOF_X";
-		public static final String QUAT_MADGE_9DOF_Y_OBJECTCLUSTER_SENSORNAME = "Quat_Madge_9DOF_Y";
-		public static final String QUAT_MADGE_9DOF_Z_OBJECTCLUSTER_SENSORNAME = "Quat_Madge_9DOF_Z";
-		public static final String EULER_6DOF_A_OBJECTCLUSTER_SENSORNAME = "Euler_6DOF_A";
-		public static final String EULER_6DOF_X_OBJECTCLUSTER_SENSORNAME = "Euler_6DOF_X";
-		public static final String EULER_6DOF_Y_OBJECTCLUSTER_SENSORNAME = "Euler_6DOF_Y";
-		public static final String EULER_6DOF_Z_OBJECTCLUSTER_SENSORNAME = "Euler_6DOF_Z";
-		public static final String EULER_9DOF_A_OBJECTCLUSTER_SENSORNAME = "Euler_9DOF_A";
-		public static final String EULER_9DOF_X_OBJECTCLUSTER_SENSORNAME = "Euler_9DOF_X";
-		public static final String EULER_9DOF_Y_OBJECTCLUSTER_SENSORNAME = "Euler_9DOF_Y";
-		public static final String EULER_9DOF_Z_OBJECTCLUSTER_SENSORNAME = "Euler_9DOF_Z";
-		
-		//GUI SENSORS
-		public static final String ACCEL_LN_GUI = "Low Noise Accel";
-		public static final String BATTERY_GUI = "Battery Monitoring";
-		public static final String EXT_EXP_A7_GUI = "Ext A7";
-		public static final String EXT_EXP_A6_GUI = "Ext A6";
-		public static final String EXT_EXP_A15_GUI = "Ext A15";
-		public static final String INT_EXP_A12_GUI = "Int A12";
-		public static final String INT_EXP_A13_GUI = "Int A13";
-		public static final String INT_EXP_A14_GUI = "Int A14";
-		public static final String BRIDGE_AMPLIFIER_GUI = "Bridge Amplifier";
-		public static final String GSR_GUI = "GSR";
-		public static final String INT_EXP_A1_GUI = "Int A1";
-		public static final String RESISTANCE_AMP_GUI = "Resistance Amplifier";
-		public static final String GYRO_GUI = "Gyro";
-		public static final String ACCEL_WR_GUI = "Wide Range Accel";
-		public static final String MAG_GUI = "Mag";
-		public static final String ACCEL_MPU_GUI = "Alternative Accel";
-		public static final String MAG_MPU_GUI = "Alternative Mag";
-		public static final String PRESS_TEMP_BMP180_GUI = "Pressure/Temperature";
-		public static final String EMG_GUI = "EMG";
-		public static final String ECG_GUI = "ECG";
-		public static final String EXG_TEST_GUI = "ExG Test";
-		public static final String GUI_LABEL_EXT_EXP_ADC = "External Expansion";
-		public static final String QUAT_MPL_6DOF_GUI = "MPU Quat 6DOF";
-		public static final String QUAT_MPL_9DOF_GUI = "MPU Quat 9DOF";
-		public static final String EULER_MPL_6DOF_GUI = "MPU Euler 6DOF";
-		public static final String EULER_MPL_9DOF_GUI = "MPU Euler 9DOF";
-		public static final String MPL_HEADING_GUI = "MPU Heading";
-		public static final String MPL_TEMPERATURE_GUI = "MPU Temp";
-		public static final String MPL_PEDOM_CNT_GUI = "MPL_Pedom_cnt"; // not currently supported
-		public static final String MPL_PEDOM_TIME_GUI = "MPL_Pedom_Time"; // not currently supported
-		public static final String MPL_TAPDIRANDTAPCNT_GUI = "TapDirAndTapCnt"; // not currently supported
-		public static final String MPL_MOTIONANDORIENT_GUI = "MotionAndOrient"; // not currently supported
-		public static final String GYRO_MPU_MPL_GUI = "MPU Gyro";
-		public static final String ACCEL_MPU_MPL_GUI = "MPU Accel";
-		public static final String MAG_MPU_MPL_GUI = "MPU Mag";
-		public static final String QUAT_DMP_6DOF_GUI = "MPU Quat 6DOF (from DMP)";
-		public static final String ECG_TO_HR_GUI = "ECG To HR";
-		public static final String PPG_TO_HR_GUI = "PPG To HR";
-		public static final String ORIENTATION_3D_6DOF_GUI = "3D Orientation (6DOF)";
-		public static final String ORIENTATION_3D_9DOF_GUI = "3D Orientation (9DOF)";
-		public static final String EULER_ANGLES_6DOF_GUI = "Euler Angles (6DOF)";
-		public static final String EULER_ANGLES_9DOF_GUI = "Euler Angles (9DOF)";
-		
-		//Channels
-		public static final String GUI_LABEL_CHANNEL_PPG_A12 = "PPG A12";
-		public static final String GUI_LABEL_CHANNEL_PPG_A13 = "PPG A13";
-		public static final String GUI_LABEL_CHANNEL_EXG_RESPIRATION = "Respiration";
-		public static final String GUI_LABEL_CHANNEL_BRAMP_HIGHGAIN = "High Gain";
-		public static final String GUI_LABEL_CHANNEL_BRAMP_LOWGAIN = "Low Gain";
-
-		public static final String GUI_LABEL_CHANNEL_EXG1_24BIT = "EXG1 24BIT";
-		public static final String GUI_LABEL_CHANNEL_EXG2_24BIT = "EXG2 24BIT";
-		public static final String GUI_LABEL_CHANNEL_EXG1_16BIT = "EXG1 16BIT";
-		public static final String GUI_LABEL_CHANNEL_EXG2_16BIT = "EXG2 16BIT";
-
-
+		public class ObjectClusterSensorName{
+			public static final String REAL_TIME_CLOCK = "RealTime";
+			public static final String ACCEL_LN_X = "Accel_LN_X";
+			public static final String ACCEL_LN_Y = "Accel_LN_Y";
+			public static final String ACCEL_LN_Z = "Accel_LN_Z";
+			public static final String BATTERY = "Battery";
+			public static final String EXT_EXP_A7 = "Ext_Exp_A7";
+			public static final String EXT_EXP_A6 = "Ext_Exp_A6";
+			public static final String EXT_EXP_A15 = "Ext_Exp_A15";
+			public static final String INT_EXP_A12 = "Int_Exp_A12";
+			public static final String INT_EXP_A13 = "Int_Exp_A13";
+			public static final String INT_EXP_A14 = "Int_Exp_A14";
+			public static final String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
+			public static final String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
+			public static final String GSR = "GSR";
+			public static final String INT_EXP_A1 = "Int_Exp_A1";
+			public static final String RESISTANCE_AMP = "Resistance_Amp";
+			public static final String GYRO_X = "Gyro_X";
+			public static final String GYRO_Y = "Gyro_Y";
+			public static final String GYRO_Z = "Gyro_Z";
+			public static final String ACCEL_WR_X = "Accel_WR_X";
+			public static final String ACCEL_WR_Y = "Accel_WR_Y";
+			public static final String ACCEL_WR_Z= "Accel_WR_Z";
+			public static final String MAG_X = "Mag_X";
+			public static final String MAG_Y = "Mag_Y";
+			public static final String MAG_Z = "Mag_Z";
+			public static final String ACCEL_MPU_X = "Accel_MPU_X";
+			public static final String ACCEL_MPU_Y = "Accel_MPU_Y";
+			public static final String ACCEL_MPU_Z = "Accel_MPU_Z";
+			public static final String MAG_MPU_X = "Mag_MPU_X";
+			public static final String MAG_MPU_Y = "Mag_MPU_Y";
+			public static final String MAG_MPU_Z = "Mag_MPU_Z";
+			public static final String TEMPERATURE_BMP180 = "Temperature_BMP180";
+			public static final String PRESSURE_BMP180 = "Pressure_BMP180";
+			public static final String EMG_CH1_24BIT = "EMG_CH1_24BIT";
+			public static final String EMG_CH2_24BIT = "EMG_CH2_24BIT";
+			public static final String EMG_CH1_16BIT = "EMG_CH1_16BIT";
+			public static final String EMG_CH2_16BIT = "EMG_CH2_16BIT";
+			public static final String ECG_LL_RA_24BIT = "ECG_LL-RA_24BIT";
+			public static final String ECG_LA_RA_24BIT = "ECG_LA-RA_24BIT";
+			public static final String ECG_LL_RA_16BIT = "ECG_LL-RA_16BIT";
+			public static final String ECG_LA_RA_16BIT = "ECG_LA-RA_16BIT";
+			public static final String TEST_CH1_24BIT = "Test_CH1_24BIT";
+			public static final String TEST_CH2_24BIT = "Test_CH2_24BIT";
+			public static final String TEST_CH1_16BIT = "Test_CH1_16BIT";
+			public static final String TEST_CH2_16BIT = "Test_CH2_16BIT";
+			public static final String EXG1_STATUS = "ExG1_Status";
+			public static final String ECG_RESP_24BIT = "ECG_RESP_24BIT";
+			public static final String ECG_VX_RL_24BIT = "ECG_Vx-RL_24BIT";
+			public static final String ECG_RESP_16BIT = "ECG_RESP_16BIT";
+			public static final String ECG_VX_RL_16BIT = "ECG_Vx-RL_16BIT";
+			public static final String EXG1_CH1_24BIT = "ExG1_CH1_24BIT";
+			public static final String EXG1_CH2_24BIT = "ExG1_CH2_24BIT";
+			public static final String EXG1_CH1_16BIT = "ExG1_CH1_16BIT";
+			public static final String EXG1_CH2_16BIT = "ExG1_CH2_16BIT";
+			public static final String EXG2_CH1_24BIT = "ExG2_CH1_24BIT";
+			public static final String EXG2_CH2_24BIT = "ExG2_CH2_24BIT";
+			public static final String EXG2_CH1_16BIT = "ExG2_CH1_16BIT";
+			public static final String EXG2_CH2_16BIT = "ExG2_CH2_16BIT";
+			public static final String EXG2_STATUS = "ExG2_Status";
+			public static final String QUAT_MPL_6DOF_W = "Quat_MPL_6DOF_W";
+			public static final String QUAT_MPL_6DOF_X = "Quat_MPL_6DOF_X";
+			public static final String QUAT_MPL_6DOF_Y = "Quat_MPL_6DOF_Y";
+			public static final String QUAT_MPL_6DOF_Z = "Quat_MPL_6DOF_Z";
+			public static final String QUAT_MPL_9DOF_W = "Quat_MPL_9DOF_W";
+			public static final String QUAT_MPL_9DOF_X = "Quat_MPL_9DOF_X";
+			public static final String QUAT_MPL_9DOF_Y = "Quat_MPL_9DOF_Y";
+			public static final String QUAT_MPL_9DOF_Z = "Quat_MPL_9DOF_Z";
+			public static final String EULER_MPL_6DOF_X = "Euler_MPL_6DOF_X";
+			public static final String EULER_MPL_6DOF_Y = "Euler_MPL_6DOF_Y";
+			public static final String EULER_MPL_6DOF_Z = "Euler_MPL_6DOF_Z";
+			public static final String EULER_MPL_9DOF_X = "Euler_MPL_9DOF_X";
+			public static final String EULER_MPL_9DOF_Y = "Euler_MPL_9DOF_Y";
+			public static final String EULER_MPL_9DOF_Z = "Euler_MPL_9DOF_Z";
+			public static final String MPL_HEADING = "MPL_heading";
+			public static final String MPL_TEMPERATURE = "MPL_Temperature";
+			public static final String MPL_PEDOM_CNT = "MPL_Pedom_cnt";
+			public static final String MPL_PEDOM_TIME = "MPL_Pedom_Time";
+			public static final String TAPDIRANDTAPCNT = "TapDirAndTapCnt";
+			public static final String MOTIONANDORIENT = "MotionAndOrient";
+			public static final String GYRO_MPU_MPL_X = "Gyro_MPU_MPL_X";
+			public static final String GYRO_MPU_MPL_Y = "Gyro_MPU_MPL_Y";
+			public static final String GYRO_MPU_MPL_Z = "Gyro_MPU_MPL_Z";
+			public static final String ACCEL_MPU_MPL_X = "Accel_MPU_MPL_X";
+			public static final String ACCEL_MPU_MPL_Y = "Accel_MPU_MPL_Y";
+			public static final String ACCEL_MPU_MPL_Z = "Accel_MPU_MPL_Z";
+			public static final String MAG_MPU_MPL_X = "Mag_MPU_MPL_X";
+			public static final String MAG_MPU_MPL_Y = "Mag_MPU_MPL_Y";
+			public static final String MAG_MPU_MPL_Z = "Mag_MPU_MPL_Z";
+			public static final String QUAT_DMP_6DOF_W = "Quat_DMP_6DOF_W";
+			public static final String QUAT_DMP_6DOF_X = "Quat_DMP_6DOF_X";
+			public static final String QUAT_DMP_6DOF_Y = "Quat_DMP_6DOF_Y";
+			public static final String QUAT_DMP_6DOF_Z = "Quat_DMP_6DOF_Z";
+			public static final String ECG_TO_HR = "ECGtoHR";
+			public static final String PPG_TO_HR = "PPGtoHR";
+			public static final String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";
+			public static final String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";
+			public static final String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";
+			public static final String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";
+			public static final String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";
+			public static final String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";
+			public static final String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";
+			public static final String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
+			public static final String EULER_6DOF_A = "Euler_6DOF_A";
+			public static final String EULER_6DOF_X = "Euler_6DOF_X";
+			public static final String EULER_6DOF_Y = "Euler_6DOF_Y";
+			public static final String EULER_6DOF_Z = "Euler_6DOF_Z";
+			public static final String EULER_9DOF_A = "Euler_9DOF_A";
+			public static final String EULER_9DOF_X = "Euler_9DOF_X";
+			public static final String EULER_9DOF_Y = "Euler_9DOF_Y";
+			public static final String EULER_9DOF_Z = "Euler_9DOF_Z";
+		}
 	}
 
 	public static class Shimmer2{
@@ -536,32 +542,32 @@ public class Configuration {
 			public static final int SENSOR_EXP_BOARD_A0		       = 0x01;
 			public static final int SENSOR_BRIDGE_AMP			   = 0x8000;
 			public static final int SENSOR_HEART				   = 0x4000;
-
 		}
+		
 		public final static String[] ListofCompatibleSensors={"Accelerometer","Gyroscope","Magnetometer","Battery Voltage","ECG","EMG","GSR","Exp Board","Bridge Amplifier","Heart Rate"};
 		public final static String[] ListofAccelRange={"+/- 1.5g","+/- 6g"};
 		public final static String[] ListofMagRange={"+/- 0.8Ga","+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"};
 		public final static String[] ListofGSRRange={"10kOhm to 56kOhm","56kOhm to 220kOhm","220kOhm to 680kOhm","680kOhm to 4.7MOhm","Auto Range"};
 
-
-		public final static int CHANNELMAPKEY_ACCEL = 0;
-		public final static int CHANNELMAPKEY_GYRO = 1;
-		public final static int CHANNELMAPKEY_MAG = 2;
-		public final static int CHANNELMAPKEY_EMG = 3;
-		public final static int CHANNELMAPKEY_ECG = 4;
-		public final static int CHANNELMAPKEY_GSR = 5;
-		public final static int CHANNELMAPKEY_EXP_BOARD_A7 = 6;
-		public final static int CHANNELMAPKEY_EXP_BOARD_A0 = 7;
-		public final static int CHANNELMAPKEY_EXP_BOARD = 8;
-		public final static int CHANNELMAPKEY_BRIDGE_AMP = 9;
-		public final static int CHANNELMAPKEY_HEART = 10;
-		public final static int CHANNELMAPKEY_BATT = 11;
-		public final static int CHANNELMAPKEY_EXT_ADC_A15 = 12;
-		public final static int CHANNELMAPKEY_INT_ADC_A1 = 13;
-		public final static int CHANNELMAPKEY_INT_ADC_A12 = 14;
-		public final static int CHANNELMAPKEY_INT_ADC_A13 = 15;
-		public final static int CHANNELMAPKEY_INT_ADC_A14 = 16;
-
+		public class SensorMapKey{
+			public final static int ACCEL = 0;
+			public final static int GYRO = 1;
+			public final static int MAG = 2;
+			public final static int EMG = 3;
+			public final static int ECG = 4;
+			public final static int GSR = 5;
+			public final static int EXP_BOARD_A7 = 6;
+			public final static int EXP_BOARD_A0 = 7;
+			public final static int EXP_BOARD = 8;
+			public final static int BRIDGE_AMP = 9;
+			public final static int HEART = 10;
+			public final static int BATT = 11;
+			public final static int EXT_ADC_A15 = 12;
+			public final static int INT_ADC_A1 = 13;
+			public final static int INT_ADC_A12 = 14;
+			public final static int INT_ADC_A13 = 15;
+			public final static int INT_ADC_A14 = 16;
+		}
 	}
 
 }
