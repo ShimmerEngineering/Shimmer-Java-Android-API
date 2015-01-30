@@ -311,8 +311,24 @@ public class Configuration {
 		public static final String GUI_LABEL_CONFIG_MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
 		public static final String GUI_LABEL_CONFIG_LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
 		public static final String GUI_LABEL_CONFIG_TCX0 = "TCX0";
-		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POW = "Internal Expansion Board Power";
-		
+		public static final String GUI_LABEL_CONFIG_INT_EXP_BRD_POWER = "Internal Expansion Board Power";
+
+		//Channel Tiles
+		public static final String GUI_LABEL_CHANNELTILE_LOW_NOISE_ACCEL = "Low Noise Accel";
+		public static final String GUI_LABEL_CHANNELTILE_GYRO = "Gyro";
+		public static final String GUI_LABEL_CHANNELTILE_MAG = "Mag";
+		public static final String GUI_LABEL_CHANNELTILE_BATTERY_MONITORING = "Battery Monitoring";
+		public static final String GUI_LABEL_CHANNELTILE_WIDE_RANGE_ACCEL = "Wide Range Accel";
+		public static final String GUI_LABEL_CHANNELTILE_PRESSURE_TEMPERATURE = "Pressure/Temperature";
+		public static final String GUI_LABEL_CHANNELTILE_EXTERNAL_EXPANSION_ADC = "External Expansion";
+		public static final String GUI_LABEL_CHANNELTILE_GSR = "GSR+";
+		public static final String GUI_LABEL_CHANNELTILE_EXG = "ExG";
+		public static final String GUI_LABEL_CHANNELTILE_PROTO3_MINI = "Proto Mini";
+		public static final String GUI_LABEL_CHANNELTILE_PROTO3_DELUXE = "Proto Deluxe";
+		public static final String GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER = "Bridge Amplifier+";
+		public static final String GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL = "200g Accel";
+		public static final String GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC = "Internal Expansion";
+		//public static final String GUI_LABEL_CHANNELTILE_GPS = "GPS";
 		
 		//Channels
 		public static final String GUI_LABEL_CHANNEL_PPG_A12 = "PPG A12";
@@ -326,22 +342,10 @@ public class Configuration {
 		public static final String GUI_LABEL_CHANNEL_EXG1_16BIT = "EXG1 16BIT";
 		public static final String GUI_LABEL_CHANNEL_EXG2_16BIT = "EXG2 16BIT";
 
-		//ChannelTiles
-		public static final String GUI_LABEL_CHANNELTILE_LOW_NOISE_ACCEL = "Low Noise Accel";
-		public static final String GUI_LABEL_CHANNELTILE_GYRO = "Gyro";
-		public static final String GUI_LABEL_CHANNELTILE_MAG = "Mag";
-		public static final String GUI_LABEL_CHANNELTILE_BATTERY_MONITORING = "Battery Monitoring";
-		public static final String GUI_LABEL_CHANNELTILE_WIDE_RANGE_ACCEL = "Wide Range Accel";
-		public static final String GUI_LABEL_CHANNELTILE_PRESSURE_TEMPERATURE = "Pressure/Temperature";
-		public static final String GUI_LABEL_CHANNELTILE_EXTERNAL_EXPANSION_ADC = "External Expansion";
-		public static final String GUI_LABEL_CHANNELTILE_GSR = "GSR+";
-		public static final String GUI_LABEL_CHANNELTILE_EXG = "ExG";
-		public static final String GUI_LABEL_CHANNELTILE_PROTO_MINI = "Proto Mini";
-		public static final String GUI_LABEL_CHANNELTILE_PROTO_DELUXE = "Proto Deluxe";
-		public static final String GUI_LABEL_CHANNELTILE_BRIDGE_AMPLIFIER = "Bridge Amplifier+";
-		public static final String GUI_LABEL_CHANNELTILE_HIGH_G_ACCEL = "200g Accel";
-		public static final String GUI_LABEL_CHANNELTILE_INTERNAL_EXPANSION_ADC = "Internal Expansion";
-		//public static final String GUI_LABEL_CHANNELTILE_GPS = "GPS";
+		
+		
+		
+		
 		
 	}
 	

@@ -1,7 +1,19 @@
 package com.shimmerresearch.driver;
 
+/**
+ * 
+ * @author Mark Nolan
+ *
+ */
 public class InfoMemLayout {
 
+//	int mFirmwareVersionCode = -1;
+	int mFirmwareIdentifier = -1;
+	int mFirmwareVersionMajor = -1;
+	int mFirmwareVersionMinor = -1;
+	int mFirmwareVersionInternal = -1;
+	int mInfoMemSize = 512;
+	
 //	//SENSORS0
 //	public int SENSOR_A_ACCEL =                     0x80;
 //	public int SENSOR_MPU9150_GYRO =                0x40;
@@ -85,6 +97,10 @@ public class InfoMemLayout {
 	public int idxLSM303DLHCMagCalibration =      	73;
 	public int idxLSM303DLHCAccelCalibration =    	94; //94->114
 
+	// Derived Channels - used by SW not FW
+	public int idxDerivedChannels0 =		    	115;
+	public int idxDerivedChannels1 =		    	116;
+	
 	public int idxConfigSetupByte4 =              	128+0;
 	public int idxConfigSetupByte5 =              	128+1;
 	public int idxSensors3 =                        128+2;
@@ -117,11 +133,9 @@ public class InfoMemLayout {
 
 	// Sensors
 	public int maskSensors = 							0xFF;
-	public int bitShiftSensors0 = 						0;
-	public int bitShiftSensors1 =						8;
-	public int bitShiftSensors2 =						16;
-	
-	public int maskPpgMode = 							(0x40<<8);
+	public int byteShiftSensors0 = 						0;
+	public int byteShiftSensors1 =						8;
+	public int byteShiftSensors2 =						16;
 	
 	//Config Byte0
 	public int bitShiftLSM303DLHCAccelSamplingRate = 	4;
@@ -156,6 +170,17 @@ public class InfoMemLayout {
 	public int bitShiftEXPPowerEnable =                 0;
 	public int maskEXPPowerEnable =                     0x01;
 	//Unused bits 3-0
+	
+	// Derived Channels - used by SW not FW
+	public int maskDerivedChannels = 					0xFF;
+	public int byteShiftDerivedChannels0 =				0;
+	public int byteShiftDerivedChannels1 =				8;
+	public int maskDerivedChannelResAmp = 				0x01;
+	public int maskDerivedChannelPpg = 					0x02;
+	public int maskDerivedChannelPpgToHr = 				0x03;
+	public int maskDerivedChannelEcgToHr = 				0x04;
+	public int maskDerivedChannel6DofMadgewick =		0x05;
+	public int maskDerivedChannel9DofMadgewick =		0x06;
 	
 	// ExG related config bytes
 	public int idxEXGADS1292RConfig1 = 			0;
@@ -361,18 +386,56 @@ public class InfoMemLayout {
 //	public int GYRO_AND_SOME_MAG =            0x03;
 	
 	
-	public InfoMemLayout(int mFirmwareVersionCode, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+//	public InfoMemLayout(int firmwareVersionCode, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+	public InfoMemLayout(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 
-		if(mFirmwareVersionCode == 5) { //
-			// First common version - do nothing and use default values
-		}
-		else if(mFirmwareVersionCode == 6) { // Modify defaults
-			//TODO: Modify defaults
-		}
-		else {
-			// Use defaults
+//		mFirmwareVersionCode = firmwareVersionCode;
+		mFirmwareIdentifier = firmwareIdentifier;
+		mFirmwareVersionMajor = firmwareVersionMajor;
+		mFirmwareVersionMinor = firmwareVersionMinor;
+		mFirmwareVersionInternal = firmwareVersionInternal;
+		
+//		mInfoMemSize = calculateInfoMemByteLength(mFirmwareVersionCode,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
+		mInfoMemSize = calculateInfoMemByteLength(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
+		
+		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3_SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=42))
+			||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=4))) {
+			
+			idxSensors3 =			128+0;
+			idxSensors4 =			128+1;
+			idxConfigSetupByte4 =	128+2;
+			idxConfigSetupByte5 =	128+3;
+			idxConfigSetupByte6 =	128+4;
 		}
 		
+//		if(mFirmwareVersionCode == 5) { //
+//			// First common version - do nothing and use default values
+//		}
+//		else if(mFirmwareVersionCode == 6) { // Modify defaults
+//			//TODO: Modify defaults
+//		}
+//		else {
+//			// Use defaults
+//		}
+		
 	}
+	
+//	public int calculateInfoMemByteLength(int mFirmwareVersionCode, int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+	//TODO: should add full FW version checking here to support different size InfoMems in the future
+	if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_SDLOG) {
+		return 384;
+	}
+	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_BTSTREAM) {
+		return 128;
+	}
+	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM) {
+		return 384;
+	}
+	else {
+		return 512; 
+	}
+	
+}
 
 }

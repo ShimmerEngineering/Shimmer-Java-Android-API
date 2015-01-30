@@ -97,13 +97,16 @@ public class MsgDock {
 	public MsgDock(){
 	}
 	
+	public MsgDock(int msgIdentifier,String uniqueID){
+		mMessageIdentifier = msgIdentifier;
+		mUniqueID = uniqueID;
+	}
 	
-	
-	public MsgDock(int msgIdentifier,int slotIdentifier, String dockID){
+	public MsgDock(int msgIdentifier,String dockID,int slotIdentifier){
 		mMessageIdentifier = msgIdentifier;
 		mSlotIdentifier = slotIdentifier;
 		mDockID = dockID;
-	}
-	
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotIdentifier);
+	}	
 	
 }
