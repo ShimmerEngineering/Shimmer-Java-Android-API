@@ -12,7 +12,7 @@ public abstract class BasicProcessWithCallBack {
 
 	protected Callable mThread = null;
 	//protected BlockingQueue<ShimmerMSG> mQueue = new ArrayBlockingQueue<ShimmerMSG>(1024);
-	protected LinkedBlockingDeque<ShimmerMSG> mQueue = new LinkedBlockingDeque<ShimmerMSG>(1024);
+	protected LinkedBlockingDeque<ShimmerMsg> mQueue = new LinkedBlockingDeque<ShimmerMsg>(1024);
 	protected ConsumerThread mGUIConsumerThread = null;
 	WaitForData mWaitForData = null;
 	List<Callable> mListOfThreads = new ArrayList<Callable>();
@@ -23,7 +23,7 @@ public abstract class BasicProcessWithCallBack {
 	
 	public void queueMethod(int i,Object ojc){
 		try {
-			mQueue.put(new ShimmerMSG(i,ojc));
+			mQueue.put(new ShimmerMsg(i,ojc));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -33,7 +33,7 @@ public abstract class BasicProcessWithCallBack {
 	/**This is a seperate thread running on the callback msgs from lower layer
 	 * @param shimmerMSG
 	 */
-	protected abstract void processMsgFromCallback(ShimmerMSG shimmerMSG);
+	protected abstract void processMsgFromCallback(ShimmerMsg shimmerMSG);
 	
 	
 	
@@ -44,7 +44,7 @@ public abstract class BasicProcessWithCallBack {
 		public void run() {
 			while (!stop) {
 				try {
-					ShimmerMSG shimmerMSG = mQueue.take();
+					ShimmerMsg shimmerMSG = mQueue.take();
 					processMsgFromCallback(shimmerMSG);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -84,7 +84,7 @@ public abstract class BasicProcessWithCallBack {
 	}
 	
 	
-    public void sendCallBackMsg(ShimmerMSG s){
+    public void sendCallBackMsg(ShimmerMsg s){
     	if (mThread!=null){
     		mThread.callBackMethod(s);
     	} 
@@ -112,7 +112,7 @@ public abstract class BasicProcessWithCallBack {
 		} 
 		
 		@Override
-		public void callBackMethod(ShimmerMSG s) {
+		public void callBackMethod(ShimmerMsg s) {
 			try {
 				mQueue.put(s);
 			} catch (InterruptedException e) {
@@ -123,7 +123,7 @@ public abstract class BasicProcessWithCallBack {
 		@Override
 		public void callBackMethod(int i, Object ojc) {
 			try {
-				mQueue.put(new ShimmerMSG(i,ojc));
+				mQueue.put(new ShimmerMsg(i,ojc));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

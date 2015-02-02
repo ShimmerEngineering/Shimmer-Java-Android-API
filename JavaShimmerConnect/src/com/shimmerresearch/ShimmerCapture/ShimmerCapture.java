@@ -79,7 +79,7 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerMSG;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.pcdriver.CallbackObject;
 import com.shimmerresearch.pcdriver.ShimmerPC;
 import com.shimmerresearch.tools.LoggingPC;
@@ -2057,7 +2057,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	}
 
 	@Override
-	protected void processMsgFromCallback(ShimmerMSG shimmerMSG) {
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
 		  int ind = shimmerMSG.mIdentifier;
 		  Object objectCluster = (ObjectCluster) shimmerMSG.mB;

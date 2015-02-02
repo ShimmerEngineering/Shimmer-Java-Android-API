@@ -48,6 +48,6 @@ public interface Callable
 {  
     public void callBackMethod(int i, Object ojc);
 
-	public void callBackMethod(ShimmerMSG s);
+	public void callBackMethod(ShimmerMsg s);
 	
 }  

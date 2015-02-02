@@ -1,10 +1,10 @@
 package com.shimmerresearch.driver;
 
-public class ShimmerMSG {
+public class ShimmerMsg {
 	public int mIdentifier;
 	public Object mB;
 	
-	public ShimmerMSG(int a, Object b){
+	public ShimmerMsg(int a, Object b){
 		mIdentifier=a;
 		mB=b;
 	}

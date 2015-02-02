@@ -2024,7 +2024,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 
 	@Override
 	protected void processMsgFromCallback(
-			com.shimmerresearch.driver.ShimmerMSG shimmerMSG) {
+			com.shimmerresearch.driver.ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
 		  int ind = shimmerMSG.mIdentifier;
 		  Object objectCluster = shimmerMSG.mB;

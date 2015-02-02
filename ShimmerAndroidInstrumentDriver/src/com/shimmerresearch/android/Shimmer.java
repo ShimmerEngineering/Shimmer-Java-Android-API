@@ -162,7 +162,7 @@ import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerMSG;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
@@ -1029,7 +1029,7 @@ public class Shimmer extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void processMsgFromCallback(ShimmerMSG shimmerMSG) {
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
 		
 	}

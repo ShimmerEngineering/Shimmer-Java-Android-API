@@ -8,7 +8,8 @@ public class MsgDock {
 	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_FAIL = 32;
 	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_BUSY = 33;
 	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_PROGRESS_LOG = 34;
-	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_FINISHED = 35;
+	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_FINISHED_PER_DOCK = 35;
+	public final static int MSG_IDENTIFIER_BSL_FW_WRITE_FINISHED_ALL = 36;
 	
 	public final static int MSG_IDENTIFIER_SMARTDOCK_SLOT_DOCKED = 40;
 	public final static int MSG_IDENTIFIER_SMARTDOCK_SLOT_REMOVED = 41;
@@ -17,29 +18,35 @@ public class MsgDock {
 	public final static int MSG_IDENTIFIER_SMARTDOCK_IS_FREE = 43;
 	public final static int MSG_IDENTIFIER_SMARTDOCK_ERROR = 49; //USED TO INDICATE CASES WHERE THE SHIMMER SHOULD BE REDOCKED
 	
+	
+	
 	public final static int MSG_IDENTIFIER_SHIMMERUART_READ_SHIMMER_DETAILS_SUCCESS = 50;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_SUCCESS = 51;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_FAIL = 52;
-	public final static int MSG_IDENTIFIER_DOCK_INFOMEM_WRITE_FINISHED = 53;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE = 54;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE = 55;
 	public final static int MSG_IDENTIFIER_SHIMMERUART_READ_SHIMMER_DETAILS_ERROR = 58;
 	public final static int MSG_IDENTIFIER_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL = 59;
+	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_SUCCESS = 51;
+	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_FAIL = 52;
+	public final static int MSG_IDENTIFIER_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 53;
+	public final static int MSG_IDENTIFIER_DOCK_INFOMEM_WRITE_FINISHED_ALL = 54;
 	
+	
+	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE = 55;
+	public final static int MSG_IDENTIFIER_SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE = 56;
+	
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_NONE = 60;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_PORT_EXCEPTION = 61;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_TIMEOUT = 62;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_CRC = 63;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_PACKAGE_FORMAT = 64;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_WRITING_DATA = 65;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_READING_DATA = 66;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD = 67;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG = 68;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC = 69;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED = 70;
+//	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS = 71;
 
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_NONE = 60;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_PORT_EXCEPTION = 61;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_TIMEOUT = 62;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_CRC = 63;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_PACKAGE_FORMAT = 64;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_WRITING_DATA = 65;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_READING_DATA = 66;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD = 67;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG = 68;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC = 69;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED = 70;
-	public final static int MSG_IDENTIFIER_SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS = 71;
-
+	
+	
 	public final static int MSG_IDENTIFIER_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
 	
 	public final static int MSG_IDENTIFIER_DOCKMANAGER_INITIALIZED_SUCCESS = 91;
@@ -90,7 +97,7 @@ public class MsgDock {
 	public String mMessage = "";
 	public double mValue;
 	
-	public int mErrorCode;
+	public int mLowLevelErrorCode;
 	public String mErrorMessage; //if needed, should probably have a list of strings each corresponding with an error code  
 	
 	public byte[] mSlotMap = new byte[]{};

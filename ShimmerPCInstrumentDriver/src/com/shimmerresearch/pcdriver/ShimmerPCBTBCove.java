@@ -68,7 +68,7 @@ import javax.microedition.io.StreamConnection;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerMSG;
+import com.shimmerresearch.driver.ShimmerMsg;
 
 
 public class ShimmerPCBTBCove extends ShimmerBluetooth{
@@ -410,7 +410,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void processMsgFromCallback(ShimmerMSG shimmerMSG) {
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
 		
 	}
