@@ -85,25 +85,36 @@ public class MsgDock {
 	
 	
 	public int mMessageIdentifier = -1; //identifies what type of dock this is 0 for basic 1 for advance
-	public int mSlotIdentifier = -1; //only applicable for the smart dock
+	public int mSlotID = -1; //only applicable for the smart dock
 	public String mUniqueID = "";
 	public String mBSLComPort = "";
 	public String mUARTComPort = "";
 	public String mDockID = "";
-	public int mState = 0;
+	public int mDockState = 0;
 	
 	public int mFwImageTotalSize = 0;
 	public int mFwImageWriteProgress = 0;
 	public float mFwImageWriteSpeed = 0;
+	/**
+	 * Used for BSL progress reporting and lists SmartDock UART responses
+	 */
 	public String mMessage = "";
 	public double mValue;
 	
+	public int mErrorCode;
 	public int mLowLevelErrorCode;
-	public String mErrorMessage; //if needed, should probably have a list of strings each corresponding with an error code  
+	public String mExceptionMsg;
 	
 	public byte[] mSlotMap = new byte[]{};
 	
-	public MsgDock(){
+//	public MsgDock(){
+//	}
+
+	/** Used exclusively by the DockManager class for messages associated with no specific slot or dock 
+	 * @param msgIdentifier
+	 */
+	public MsgDock(int msgIdentifier){
+		mMessageIdentifier = msgIdentifier;
 	}
 	
 	public MsgDock(int msgIdentifier,String uniqueID){
@@ -113,9 +124,9 @@ public class MsgDock {
 	
 	public MsgDock(int msgIdentifier,String dockID,int slotIdentifier){
 		mMessageIdentifier = msgIdentifier;
-		mSlotIdentifier = slotIdentifier;
+		mSlotID = slotIdentifier;
 		mDockID = dockID;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotIdentifier);
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotID);
 	}	
 	
 }

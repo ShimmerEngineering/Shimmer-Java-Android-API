@@ -7313,7 +7313,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						break;
 					}
 					else {
-						mInternalExpPower = 0;
+						// Exception for Int ADC sensors 
+						//TODO need to checkhare version??
+						if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mIsEnabled
+							||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mIsEnabled
+							||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mIsEnabled
+							||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mIsEnabled){
+							
+						}
+						else {
+							mInternalExpPower = 0;
+						}
 					}
 				}
 			}
