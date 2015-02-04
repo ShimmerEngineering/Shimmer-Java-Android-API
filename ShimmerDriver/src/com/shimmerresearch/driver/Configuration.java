@@ -186,6 +186,8 @@ public class Configuration {
 		public final static String[] ListOfExGRate={"125Hz","250Hz","500Hz","1kHz","2kHz","4kHz","8kHz"};
 		public final static Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
 
+		public final static String[] ListOfOnOff={"On","Off"};
+		public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
 		public class SensorMapKey{
 			/**
@@ -314,7 +316,8 @@ public class Configuration {
 			public static final String MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
 			public static final String LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
 			public static final String TCX0 = "TCX0";
-			public static final String INT_EXP_BRD_POWER = "Internal Expansion Board Power";
+			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
+			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 		}
 
 		// GUI Sensor Tiles

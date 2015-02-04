@@ -6976,22 +6976,27 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = listOfCompatibleVersionInfoGps;
 				
 				// For loop to automatically inherit associated channel configuration options from ChannelMap in the ChannelTileMap
-				for(String channelGroup:mSensorTileMap.keySet()){
+				for (String channelGroup : mSensorTileMap.keySet()) {
 					// Ok to clear here because variable is initiated in the class
 					mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
-					for(Integer channel:mSensorTileMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
-						List<String> associatedConfigOptions = mSensorMap.get(channel).mListOfConfigOptionKeysAssociated;
-						if(associatedConfigOptions!=null) {
-							for(String configOption:associatedConfigOptions) {
-								// do not add duplicates
-								if(!(mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-									mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+					if (channelGroup.equals(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC)
+							|| channelGroup.equals(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI)
+							|| channelGroup.equals(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE)) {
+						mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
+					} else {
+						for (Integer channel : mSensorTileMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
+							List<String> associatedConfigOptions = mSensorMap.get(channel).mListOfConfigOptionKeysAssociated;
+							if (associatedConfigOptions != null) {
+								for (String configOption : associatedConfigOptions) {
+									// do not add duplicates
+									if (!(mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+										mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+									}
 								}
 							}
 						}
 					}
-				}
-				
+				}				
 				
 				//TODO: A console print below shows that the Channel map is being generate a good few times, is this expected with deep clones or bad??
 //				for(String channelGroup:mShimmerChannelGroupingMap.keySet()){
@@ -7162,6 +7167,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												SensorConfigOptionDetails.COMBOBOX,
 												listOfCompatibleVersionInfoSdLog));
 
+			    mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
+			    	      new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfOnOff, 
+					    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
+					    	        SensorConfigOptionDetails.COMBOBOX));
+				
 				//MPL CheckBoxes
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
@@ -7199,7 +7209,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
-				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER, 
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX));
 			}
 			
