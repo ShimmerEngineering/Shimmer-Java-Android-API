@@ -8,10 +8,6 @@ import java.util.TreeMap;
  * @author Mark Nolan
  *
  */
-/**
- * @author mnolan
- *
- */
 public class MsgDock {
 
 	//callback msg options
@@ -180,6 +176,11 @@ public class MsgDock {
 		}
 	}
 	
+	/** Used by BasicDock, SmartDock and SmartDockUart
+	 * @param msgIdentifier
+	 * @param dockID
+	 * @param slotIdentifier
+	 */
 	public MsgDock(int msgIdentifier,String dockID,int slotIdentifier){
 		mMessageIdentifier = msgIdentifier;
 		mSlotNumber = slotIdentifier;
