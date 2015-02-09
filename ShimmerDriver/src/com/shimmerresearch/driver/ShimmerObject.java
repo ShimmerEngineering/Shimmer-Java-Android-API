@@ -89,10 +89,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -107,8 +110,10 @@ import javax.vecmath.Vector3d;
 
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
-import sun.util.calendar.BaseCalendar.Date;
-import sun.util.calendar.CalendarDate;
+
+//import sun.util.calendar.BaseCalendar.Date;
+//import sun.util.calendar.CalendarDate;
+import java.util.Date;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -7671,6 +7676,75 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
+	public String convertSecondsToDateString(long seconds) {
+		Calendar cal = Calendar.getInstance();
+		
+		cal.setTimeInMillis(seconds * 1000);
+		int dayIndex = cal.get(Calendar.DAY_OF_MONTH);
+		String dayString = getDayOfMonthSuffix(dayIndex);
+
+		int monthIndex = cal.get(Calendar.MONTH);
+		String monthString = "";
+
+    	switch(monthIndex){
+		
+			case(1):
+				monthString = "Jan";
+            	break;
+			case(2):
+				monthString = "Feb";
+            	break;
+			case(3):
+				monthString = "Mar";
+            	break;
+			case(4):
+				monthString = "Apr";
+            	break;
+			case(5):
+				monthString = "May";
+            	break;
+			case(6):
+				monthString = "June";
+            	break;
+			case(7):
+				monthString = "July";
+            	break;
+			case(8):
+				monthString = "Aug";
+            	break;
+			case(9):
+				monthString = "Sept";
+            	break;
+			case(10):
+				monthString = "Oct";
+            	break;
+			case(11):
+				monthString = "Nov";
+            	break;
+			case(12):
+				monthString = "Dec";
+            	break;
+            default:
+            	break;
+    	}
+    	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
+    	String timeString = dfLocal.format(new Date(seconds*1000));
+    	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
+		return timeString;
+	}
+	
+	private String getDayOfMonthSuffix(final int n) {
+	    if (n >= 11 && n <= 13) {
+	        return "th";
+	    }
+	    switch (n % 10) {
+	        case 1:  return "st";
+	        case 2:  return "nd";
+	        case 3:  return "rd";
+	        default: return "th";
+	    }
+	}
+	
 	 /**
 	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
 	 */
@@ -7686,6 +7760,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mConfigTime;
 	}
 
+	 /**
+	 * @return the mConfigTime in a parsed String format (yyyy-MM-dd hh:MM:ss)
+	 */
+	public String getConfigTimeParsed() {
+		return convertSecondsToDateString(mConfigTime);
+	}
+	
 	/**
 	 * @return the mBufferSize
 	 */
