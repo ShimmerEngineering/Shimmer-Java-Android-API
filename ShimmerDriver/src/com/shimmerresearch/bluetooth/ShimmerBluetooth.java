@@ -1607,8 +1607,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							if (byteStack.size()==mPacketSize+1){
 								if (tb[0]==DATA_PACKET && byteStack.firstElement()==DATA_PACKET) { //check for the starting zero of the packet, and the starting zero of the subsequent packet, this causes a delay equivalent to the transmission duration between two packets
 									newPacket=convertstacktobytearray(byteStack,mPacketSize);
-									ObjectCluster objectCluster=new ObjectCluster(mMyName,getBluetoothAddress());
-									objectCluster=(ObjectCluster) buildMsg(newPacket, objectCluster);
+									//ObjectCluster objectCluster=new ObjectCluster(mMyName,getBluetoothAddress());
+									//objectCluster=(ObjectCluster) buildMsg(newPacket, objectCluster);
+									ObjectCluster objectCluster=buildMsg(newPacket, FW_IDEN_BTSTREAM, 0);
 									if (mDataProcessing!=null){
 										objectCluster = mDataProcessing.ProcessData(objectCluster);
 									}

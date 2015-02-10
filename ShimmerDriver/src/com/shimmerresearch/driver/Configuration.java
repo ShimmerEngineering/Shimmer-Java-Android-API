@@ -399,6 +399,7 @@ public class Configuration {
 		//DATABASE NAMES
 		//GUI AND EXPORT CHANNELS
 		public class ObjectClusterSensorName{
+			public static final String TIMESTAMP = "Timestamp";
 			public static final String REAL_TIME_CLOCK = "RealTime";
 			public static final String ACCEL_LN_X = "Accel_LN_X";
 			public static final String ACCEL_LN_Y = "Accel_LN_Y";
@@ -509,6 +510,10 @@ public class Configuration {
 			public static final String EULER_9DOF_X = "Euler_9DOF_X";
 			public static final String EULER_9DOF_Y = "Euler_9DOF_Y";
 			public static final String EULER_9DOF_Z = "Euler_9DOF_Z";
+			public static final String AXIS_ANGLE_A = "Axis Angle A";
+			public static final String AXIS_ANGLE_X = "Axis Angle X";
+			public static final String AXIS_ANGLE_Y = "Axis Angle Y";
+			public static final String AXIS_ANGLE_Z = "Axis Angle Z";
 		}
 	}
 
@@ -546,6 +551,62 @@ public class Configuration {
 			public static final int SENSOR_BRIDGE_AMP			   = 0x8000;
 			public static final int SENSOR_HEART				   = 0x4000;
 		}
+		
+		//DATABASE NAMES
+				//GUI AND EXPORT CHANNELS
+				public class ObjectClusterSensorName{
+					public static final String TIMESTAMP = "Timestamp";
+					public static final String REAL_TIME_CLOCK = "RealTime";
+					public static final String ACCEL_X = "Accel_X";
+					public static final String ACCEL_Y = "Accel_Y";
+					public static final String ACCEL_Z = "Accel_Z";
+					public static final String BATTERY = "Battery";
+					public static final String REG = "Reg";
+					public static final String EXT_EXP_A7 = "Ext_Exp_A7";
+					public static final String EXT_EXP_A6 = "Ext_Exp_A6";
+					public static final String EXT_EXP_A15 = "Ext_Exp_A15";
+					public static final String INT_EXP_A12 = "Int_Exp_A12";
+					public static final String INT_EXP_A13 = "Int_Exp_A13";
+					public static final String INT_EXP_A14 = "Int_Exp_A14";
+					public static final String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
+					public static final String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
+					public static final String GSR_RAW = "GSR Raw";
+					public static final String GSR_RES = "GSR Res";
+					public static final String INT_EXP_A1 = "Int_Exp_A1";
+					public static final String EXP_BOARD_A0 = "Exp Board A0";
+					public static final String EXP_BOARD_A7 = "Exp Board A7";
+					public static final String GYRO_X = "Gyro_X";
+					public static final String GYRO_Y = "Gyro_Y";
+					public static final String GYRO_Z = "Gyro_Z";
+					public static final String MAG_X = "Mag_X";
+					public static final String MAG_Y = "Mag_Y";
+					public static final String MAG_Z = "Mag_Z";
+					public static final String EMG = "EMG";
+					public static final String ECG_RA_LL = "ECG RA-LL";
+					public static final String ECG_LA_LL = "ECG_LA-LL";
+					public static final String ECG_TO_HR = "ECGtoHR";
+					public static final String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";
+					public static final String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";
+					public static final String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";
+					public static final String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";
+					public static final String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";
+					public static final String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";
+					public static final String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";
+					public static final String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
+					public static final String EULER_6DOF_A = "Euler_6DOF_A";
+					public static final String EULER_6DOF_X = "Euler_6DOF_X";
+					public static final String EULER_6DOF_Y = "Euler_6DOF_Y";
+					public static final String EULER_6DOF_Z = "Euler_6DOF_Z";
+					public static final String EULER_9DOF_A = "Euler_9DOF_A";
+					public static final String EULER_9DOF_X = "Euler_9DOF_X";
+					public static final String EULER_9DOF_Y = "Euler_9DOF_Y";
+					public static final String EULER_9DOF_Z = "Euler_9DOF_Z";
+					public static final String HEART_RATE = "Heart Rate"; //for the heart rate strap now no longer sold
+					public static final String AXIS_ANGLE_A = "Axis Angle A";
+					public static final String AXIS_ANGLE_X = "Axis Angle X";
+					public static final String AXIS_ANGLE_Y = "Axis Angle Y";
+					public static final String AXIS_ANGLE_Z = "Axis Angle Z";
+				}
 		
 		public final static String[] ListofCompatibleSensors={"Accelerometer","Gyroscope","Magnetometer","Battery Voltage","ECG","EMG","GSR","Exp Board","Bridge Amplifier","Heart Rate"};
 		public final static String[] ListofAccelRange={"+/- 1.5g","+/- 6g"};
