@@ -3,6 +3,7 @@ package com.shimmerresearch.pcdriver;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * @author Mark Nolan
@@ -49,6 +50,9 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 106;
 	public final static int MSG_ID_DATA_SYNC_UPDATE = 107;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 106;
+
+	public final static int MSG_ID_OPERATION_PROGRESS = 200; //TODO: MN FOR TESTING
+	public final static int MSG_ID_OPERATION_FINISHED = 201; //TODO: MN FOR TESTING
 	
 	//TODO move closer to SmartDockUart?
 	//TODO rename UART to MSG?
@@ -65,7 +69,6 @@ public class MsgDock {
 	public final static int MSG_ID_SMARTDOCK_UART_SLOT_MAP_UPDATE = 120;
 	public final static int MSG_ID_SMARTDOCK_UART_ERROR = 129;
 
-	
 	public final static int MSG_IDENTIFIER_DB_PARSER_UPDATE = 130;
 
     public static final Map<Integer, String> mMapOfMsgCodes;
@@ -116,6 +119,10 @@ public class MsgDock {
         aMap.put(MSG_ID_SMARTDOCK_UART_BOOT_MESSAGE, "MSG_ID_SMARTDOCK_UART_BOOT_MESSAGE");
         aMap.put(MSG_ID_SMARTDOCK_UART_SLOT_MAP_UPDATE, "MSG_ID_SMARTDOCK_UART_SLOT_MAP_UPDATE");
         aMap.put(MSG_ID_SMARTDOCK_UART_ERROR, "MSG_ID_SMARTDOCK_UART_ERROR");
+        
+        aMap.put(MSG_ID_OPERATION_PROGRESS, "MSG_ID_OPERATION_PROGRESS"); //TODO: MN FOR TESTING
+        aMap.put(MSG_ID_OPERATION_FINISHED, "MSG_ID_OPERATION_FINISHED"); //TODO: MN FOR TESTING
+        
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }
 	
@@ -186,6 +193,7 @@ public class MsgDock {
 		mSlotNumber = slotIdentifier;
 		mDockID = dockID;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-	}	
+	}
+
 	
 }
