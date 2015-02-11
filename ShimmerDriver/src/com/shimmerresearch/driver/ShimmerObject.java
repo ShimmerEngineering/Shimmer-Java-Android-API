@@ -5601,7 +5601,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mGyroRange=1; 
 			mMPU9150AccelRange=0;
 			mGSRRange=4;
-			mInternalExpPower=-1;
+			mInternalExpPower=0;
 
 			mPressureResolution = 0;
 			mExGResolution = 0;
@@ -5630,6 +5630,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			setShimmerSamplingRate(51.2);
 			setDefaultECGConfiguration(); //TODO: bytes to set to default ECG or all 0xFF's? 
+			
+			syncNodesList.clear();
 			
 			sensorMapCreate();
 			if (mHardwareVersion == HW_ID_SHIMMER_3){

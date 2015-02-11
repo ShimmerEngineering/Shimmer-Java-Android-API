@@ -11,12 +11,6 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class MsgDock {
 
-	public final static int OPERATION_FW_WRITE = 0;
-	public final static int OPERATION_CONFIG_WRITE = 1;
-//	public final static int OPERATION_SD_SCAN = 2;
-//	public final static int OPERATION_SD_COPY = 3;
-
-	
 	//callback msg options
 	public final static int MSG_ID_BSL_FW_WRITE_SUCCESS = 30;
 	public final static int MSG_ID_BSL_FW_WRITE_PROGRESS = 31; 
