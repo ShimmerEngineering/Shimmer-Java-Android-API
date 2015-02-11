@@ -11,6 +11,12 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class MsgDock {
 
+	public final static int OPERATION_FW_WRITE = 0;
+	public final static int OPERATION_CONFIG_WRITE = 1;
+//	public final static int OPERATION_SD_SCAN = 2;
+//	public final static int OPERATION_SD_COPY = 3;
+
+	
 	//callback msg options
 	public final static int MSG_ID_BSL_FW_WRITE_SUCCESS = 30;
 	public final static int MSG_ID_BSL_FW_WRITE_PROGRESS = 31; 
@@ -150,6 +156,7 @@ public class MsgDock {
 	
 	public byte[] mSlotMap = new byte[]{};
 	
+	public int mCurrentOperation = -1;
 	
 	/**SmartDockActiveSlotDetails
 	 * @see SmartDockActiveSlotDetails
@@ -164,6 +171,14 @@ public class MsgDock {
 	 */
 	public MsgDock(int msgIdentifier){
 		mMessageIdentifier = msgIdentifier;
+	}
+	
+	/** Used exclusively by the DockManager class for messages associated with an operations progress 
+	 * @param msgIdentifier
+	 */
+	public MsgDock(int msgIdentifier,int currentOperation){
+		mMessageIdentifier = msgIdentifier;
+		mCurrentOperation = currentOperation;
 	}
 	
 	/** Used by MspBsl with uniqueID, SmartDockUartListener with dockID
