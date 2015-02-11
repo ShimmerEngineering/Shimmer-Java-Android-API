@@ -136,7 +136,9 @@ import it.gerdavax.easybluetooth.BtSocket;
 import it.gerdavax.easybluetooth.LocalDevice;
 import it.gerdavax.easybluetooth.RemoteDevice;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -158,6 +160,8 @@ import java.util.UUID;
 
 
 
+
+
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
@@ -166,6 +170,8 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
+
+
 
 
 
@@ -208,7 +214,9 @@ public class Shimmer extends ShimmerBluetooth{
 	private ConnectedThread mConnectedThread;
 	private boolean mDummy=false;
 	private LocalDevice localDevice;
-	private InputStream mInStream=null;
+	//private InputStream mInputStream=null;
+	//private DataInputStream mInStream=null;
+	private BufferedInputStream mInStream=null;
 	private OutputStream mmOutStream=null;
 
 	public static final int MSG_STATE_FULLY_INITIALIZED = 3;  // This is the connected state, indicating the device has establish a connection + tx/rx commands and reponses (Initialized)
@@ -448,6 +456,9 @@ public class Shimmer extends ShimmerBluetooth{
 		mConnectedThread = new ConnectedThread(socket);
 		mIOThread = new IOThread();
 		mIOThread.start();
+		mPThread = new ProcessingThread();
+		mPThread.start();
+				
 		mMyBluetoothAddress = device.getAddress();
 		// Send the name of the connected device back to the UI Activity
 		Message msg = mHandler.obtainMessage(Shimmer.MESSAGE_DEVICE_NAME);
@@ -476,6 +487,8 @@ public class Shimmer extends ShimmerBluetooth{
 		if (mIOThread != null) {
 			mIOThread.stop = true;
 			mIOThread = null;
+			mPThread.stop =true;
+			mPThread = null;
 			
 		}
 		if (mConnectThread != null) {
@@ -527,6 +540,8 @@ public class Shimmer extends ShimmerBluetooth{
 		if (mIOThread != null) {
 			mIOThread.stop = true;
 			mIOThread = null;
+			mPThread.stop =true;
+			mPThread = null;
 			
 		}
 		setState(STATE_NONE);
@@ -691,6 +706,8 @@ public class Shimmer extends ShimmerBluetooth{
 			Log.d(mClassName, "ConnectedThread is about to start");
 			mIOThread = new IOThread();
 			mIOThread.start();
+			mPThread = new ProcessingThread();
+			mPThread.start();
 			// Send the name of the connected device back to the UI Activity
 			mMyBluetoothAddress = mDevice.getAddress();
 			Message msg = mHandler.obtainMessage(Shimmer.MESSAGE_DEVICE_NAME);
@@ -730,7 +747,7 @@ public class Shimmer extends ShimmerBluetooth{
 				connectionLost();
 			}
 
-			mInStream = tmpIn;
+			mInStream = new BufferedInputStream(tmpIn);
 			mmOutStream = tmpOut;
 		}
 
@@ -748,7 +765,8 @@ public class Shimmer extends ShimmerBluetooth{
 			} catch (Exception e) { Log.d(mClassName,"Connected Thread Error");
 			connectionLost();}
 
-			mInStream = tmpIn;
+			mInStream = new BufferedInputStream(tmpIn);
+			
 			mmOutStream = tmpOut;
 
 		}

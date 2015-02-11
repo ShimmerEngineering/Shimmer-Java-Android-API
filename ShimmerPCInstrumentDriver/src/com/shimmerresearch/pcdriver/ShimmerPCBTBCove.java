@@ -40,6 +40,7 @@
 
 package com.shimmerresearch.pcdriver;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,6 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
 
 
 
@@ -75,7 +77,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	StreamConnection conn=null;
 	ObjectCluster objectClusterTemp = null;
-	InputStream mIN;
+	//InputStream mIN;
+	DataInputStream mIN;
 	OutputStream mOUT;
 	Callable myUIThread;
 
@@ -175,7 +178,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		try {
 			setState(STATE_CONNECTING);
 			conn = (StreamConnection)Connector.open(address);
-			mIN = conn.openInputStream();
+			mIN = new DataInputStream(conn.openInputStream());
 			mOUT = conn.openOutputStream();
 			if (mIOThread != null) { 
 				mIOThread = null;
@@ -243,7 +246,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		// TODO Auto-generated method stub
 		byte[] b = new byte[numberofBytes];
 		try {
-			mIN.read(b,0,numberofBytes);
+			//mIN.read(b,0,numberofBytes);
+			mIN.readFully(b,0,numberofBytes);
 			return(b);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

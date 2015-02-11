@@ -110,7 +110,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	public static final int SHIMMER_3=3;
 	public static final int SHIMMER_SR30=4;
 	protected int mShimmerVersion;
-	
+	int downSample=0;
 	private JFrame frame;
 	private JFrame configFrame;
 	private JFrame exgFrame;
@@ -2084,7 +2084,8 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				setupListOfEnabledSensors();
 				btnStartStreaming.setEnabled(true);
 			}
-		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
+		} 
+		/*else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
 			ObjectCluster objc = (ObjectCluster)objectCluster;
 			String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
 			//Filter signals
@@ -2271,48 +2272,51 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				}
 				
 				//Plotting data
-	    		int numberOfTraces = dataArray.length;
-	    		for (int i=0; i<numberOfTraces; i++){
-		    		float newX = mLastX + mSpeed;
-		    		if (chckbxHeartRate.isSelected()){
-		    			traceHR.addPoint(newX, heartRate);
-		    		}
-		    		for (int count=0; count<numberOfTraces; count++) {
-		    			traces[count].addPoint(newX, dataArray[count]);
-		    			if (count==0) {
-		    				mLastX += mSpeed;
-		    			}
-		    		}
-	    		}
-	    		if (numberOfTraces == 0 && chckbxHeartRate.isSelected()){
-		    		float newX = mLastX + mSpeed;
-		    		traceHR.addPoint(newX, heartRate);
-		    		mLastX += mSpeed;
-		    		minDataPoint=-5;
-		    		maxDataPoint=215;
-		    		Range range = new Range(minDataPoint, maxDataPoint);
-		    		IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
-		    		yAxis.setRangePolicy(rangePolicy);
-	    		} else {
-		    		//Scaling Y Axis
-		    		for (int count=0; count<numberOfTraces; count++){
-		    			if (dataArray[count] > maxDataPoint) {
-		    				maxDataPoint = (int) Math.ceil(dataArray[count]);
-		    			}
-		    			if (heartRate > maxDataPoint){
-		    				maxDataPoint = (int) Math.ceil(heartRate);
-		    			}
-		    			if (dataArray[count] < minDataPoint) {
-		    				minDataPoint = (int) Math.floor(dataArray[count]);
-		    			}
-		    			if (heartRate < minDataPoint) {
-		    				minDataPoint = (int) Math.floor(heartRate);
-		    			}
-		    		}
-		    		Range range = new Range(minDataPoint, maxDataPoint);
-		    		IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
-		    		yAxis.setRangePolicy(rangePolicy);
-	    		}
+				downSample++;
+				if(downSample%50==0){
+					int numberOfTraces = dataArray.length;
+					for (int i=0; i<numberOfTraces; i++){
+						float newX = mLastX + mSpeed;
+						if (chckbxHeartRate.isSelected()){
+							traceHR.addPoint(newX, heartRate);
+						}
+						for (int count=0; count<numberOfTraces; count++) {
+							traces[count].addPoint(newX, dataArray[count]);
+							if (count==0) {
+								mLastX += mSpeed;
+							}
+						}
+					}
+					if (numberOfTraces == 0 && chckbxHeartRate.isSelected()){
+						float newX = mLastX + mSpeed;
+						traceHR.addPoint(newX, heartRate);
+						mLastX += mSpeed;
+						minDataPoint=-5;
+						maxDataPoint=215;
+						Range range = new Range(minDataPoint, maxDataPoint);
+						IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
+						yAxis.setRangePolicy(rangePolicy);
+					} else {
+						//Scaling Y Axis
+						for (int count=0; count<numberOfTraces; count++){
+							if (dataArray[count] > maxDataPoint) {
+								maxDataPoint = (int) Math.ceil(dataArray[count]);
+							}
+							if (heartRate > maxDataPoint){
+								maxDataPoint = (int) Math.ceil(heartRate);
+							}
+							if (dataArray[count] < minDataPoint) {
+								minDataPoint = (int) Math.floor(dataArray[count]);
+							}
+							if (heartRate < minDataPoint) {
+								minDataPoint = (int) Math.floor(heartRate);
+							}
+						}
+						Range range = new Range(minDataPoint, maxDataPoint);
+						IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
+						yAxis.setRangePolicy(rangePolicy);
+					}
+				}
 			}
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION && loggingData) {
@@ -2320,10 +2324,13 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			}
 			
 			
-		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
+		}*/ else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
 			double packetReceptionRate = (Double) objectCluster;
-			textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
+			if(downSample%50==0){
+				textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
+			}
 		}
+		
 	
 	}
 }

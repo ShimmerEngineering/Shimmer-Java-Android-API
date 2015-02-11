@@ -264,6 +264,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
 					ShimmerConnectBCove window = new ShimmerConnectBCove();
 					window.frame.setVisible(true);
 					/*SerialPort serialPort = new SerialPort("COM155");
@@ -383,6 +384,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 		textFieldComPort.setBounds(10, 46, 150, 24);
 		frame.getContentPane().add(textFieldComPort);
 		textFieldComPort.setColumns(10);
+		textFieldComPort.setText("btspp://00066666940E:1");
 
 		textFieldState = new JTextField();
 		textFieldState.setBounds(450, 46, 150, 24);

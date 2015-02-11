@@ -190,11 +190,14 @@ public class ShimmerPC extends ShimmerBluetooth{
 			System.out.println("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
 			if (mIOThread != null) { 
 				mIOThread = null;
+				mPThread = null;
 				}
 			if (mSerialPort.isOpened()){
 				setState(STATE_CONNECTED);
 				mIOThread = new IOThread();
 				mIOThread.start();
+				mPThread = new ProcessingThread();
+				mPThread.start();
 				initialize();
 			}
 		}
@@ -340,7 +343,8 @@ public class ShimmerPC extends ShimmerBluetooth{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
-				
+				mPThread.stop = true;
+				mPThread = null;
 			}
 			mStreaming = false;
 			mInitialized = false;
@@ -374,6 +378,8 @@ public class ShimmerPC extends ShimmerBluetooth{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
+				mPThread.stop = true;
+				mPThread = null;
 				
 			}
 			mStreaming = false;

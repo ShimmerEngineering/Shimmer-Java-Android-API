@@ -2060,7 +2060,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
 		  int ind = shimmerMSG.mIdentifier;
-		  Object objectCluster = (ObjectCluster) shimmerMSG.mB;
+		  Object objectCluster = shimmerMSG.mB;
 		if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
 			CallbackObject callbackObject = (CallbackObject)objectCluster;
 			int state = callbackObject.mIndicator;
