@@ -508,7 +508,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
-
+	protected boolean mShimmerUsingConfigFromInfoMem = false;
+	
 	protected long mInitialTimeStamp;
 
 	//TODO: ASK JC ABOUT BELOW, indexes wrong? Can we just use new ones above like (FW_ID_SHIMMER3_BTSTREAM)
@@ -5584,6 +5585,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected void setDefaultShimmerConfiguration() {
 		if (mHardwareVersion != -1){
+			
 			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
 			mExperimentName = DEFAULT_EXPERIMENT_NAME;
 			
@@ -5648,11 +5650,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if(Arrays.equals(comparisonBuffer, detectionBuffer)) {
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
+			mShimmerUsingConfigFromInfoMem = false;
+
 //			mShimmerInfoMemBytes = infoMemByteArrayGenerate();
 //			mShimmerInfoMemBytes = new byte[infoMemContents.length];
 			mInfoMemBytes = infoMemContents;
 		}
 		else {
+			mShimmerUsingConfigFromInfoMem = true;
+
 			// InfoMem valid
 			
 			mInfoMemBytes = infoMemContents;
@@ -8177,5 +8183,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mDerivedSensors;
 	}
 
+	public boolean isUsingConfigFromInfoMem() {
+		return mShimmerUsingConfigFromInfoMem;
+	}
 
 }
