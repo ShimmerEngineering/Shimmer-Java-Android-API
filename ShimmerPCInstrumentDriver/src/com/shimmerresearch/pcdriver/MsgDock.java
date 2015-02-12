@@ -33,8 +33,9 @@ public class MsgDock {
 	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL = 59;
 	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_SUCCESS = 51;
 	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_FAIL = 52;
-	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 53;
-	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 54;
+	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS = 53;
+	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 54;
+	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 55;
 	
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
 	
@@ -44,12 +45,10 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_ID_DOCK_SD_SCAN_UPDATE = 101;
 	public final static int MSG_ID_DOCK_SD_COPY_UPDATE = 102;
-	public final static int MSG_ID_DOCK_WRITE_INFOMEM_UPDATE = 103;
 	public final static int MSG_ID_DOCK_SD_SCAN_COMPLETED = 104;
 	public final static int MSG_ID_DOCK_SD_COPY_COMPLETED = 105;
 	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 106;
 	public final static int MSG_ID_DATA_SYNC_UPDATE = 107;
-//	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 106;
 
 	public final static int MSG_ID_OPERATION_PROGRESS = 200; //TODO: MN FOR TESTING
 	public final static int MSG_ID_OPERATION_FINISHED = 201; //TODO: MN FOR TESTING
@@ -101,7 +100,7 @@ public class MsgDock {
         aMap.put(MSG_ID_DOCK_STATE_CHANGE, "MSG_ID_DOCK_STATE_CHANGE");
         aMap.put(MSG_ID_DOCK_SD_SCAN_UPDATE, "MSG_ID_DOCK_SD_SCAN_UPDATE");
         aMap.put(MSG_ID_DOCK_SD_COPY_UPDATE, "MSG_ID_DOCK_SD_COPY_UPDATE");
-        aMap.put(MSG_ID_DOCK_WRITE_INFOMEM_UPDATE, "MSG_ID_DOCK_WRITE_INFOMEM_UPDATE");
+        aMap.put(MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS, "MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS");
         aMap.put(MSG_ID_DOCK_SD_SCAN_COMPLETED, "MSG_ID_DOCK_SD_SCAN_COMPLETED");
         aMap.put(MSG_ID_DOCK_SD_COPY_COMPLETED, "MSG_ID_DOCK_SD_COPY_COMPLETED");
         aMap.put(MSG_ID_DOCK_SD_COPY_FAILED, "MSG_ID_DOCK_SD_COPY_FAILED");
