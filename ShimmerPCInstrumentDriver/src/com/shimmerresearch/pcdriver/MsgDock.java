@@ -3,7 +3,6 @@ package com.shimmerresearch.pcdriver;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * @author Mark Nolan
@@ -12,6 +11,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class MsgDock {
 
 	//callback msg options
+	public final static int MSG_ID_UNKNOWN = 0;
+
 	public final static int MSG_ID_BSL_FW_WRITE_SUCCESS = 30;
 	public final static int MSG_ID_BSL_FW_WRITE_PROGRESS = 31; 
 	public final static int MSG_ID_BSL_FW_WRITE_FAIL = 32;
@@ -44,11 +45,13 @@ public class MsgDock {
 	
 	public final static int MSG_ID_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_ID_DOCK_SD_SCAN_UPDATE = 101;
-	public final static int MSG_ID_DOCK_SD_COPY_UPDATE = 102;
-	public final static int MSG_ID_DOCK_SD_SCAN_COMPLETED = 104;
-	public final static int MSG_ID_DOCK_SD_COPY_COMPLETED = 105;
-	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 106;
-	public final static int MSG_ID_DATA_SYNC_UPDATE = 107;
+	public final static int MSG_ID_DOCK_SD_SCAN_SUCCESS = 102;
+	public final static int MSG_ID_DOCK_SD_SCAN_FAILED = 103;
+	public final static int MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK = 104; 
+	public final static int MSG_ID_DOCK_SD_COPY_UPDATE = 105;
+	public final static int MSG_ID_DOCK_SD_COPY_SUCCESS = 106;
+	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 107;
+	public final static int MSG_ID_DATA_SYNC_UPDATE = 108;
 
 	public final static int MSG_ID_OPERATION_PROGRESS = 200; //TODO: MN FOR TESTING
 	public final static int MSG_ID_OPERATION_FINISHED = 201; //TODO: MN FOR TESTING
@@ -73,6 +76,7 @@ public class MsgDock {
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
+        aMap.put(MSG_ID_UNKNOWN, "MSG_ID_UNKNOWN");
         aMap.put(MSG_ID_BSL_FW_WRITE_SUCCESS, "MSG_ID_BSL_FW_WRITE_SUCCESS");
         aMap.put(MSG_ID_BSL_FW_WRITE_PROGRESS, "MSG_ID_BSL_FW_WRITE_PROGRESS");
         aMap.put(MSG_ID_BSL_FW_WRITE_FAIL, "MSG_ID_BSL_FW_WRITE_FAIL");
@@ -98,11 +102,13 @@ public class MsgDock {
         aMap.put(MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS, "MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS");
         aMap.put(MSG_ID_DOCKMANAGER_INITIALIZED_FAIL, "MSG_ID_DOCKMANAGER_INITIALIZED_FAIL");
         aMap.put(MSG_ID_DOCK_STATE_CHANGE, "MSG_ID_DOCK_STATE_CHANGE");
-        aMap.put(MSG_ID_DOCK_SD_SCAN_UPDATE, "MSG_ID_DOCK_SD_SCAN_UPDATE");
-        aMap.put(MSG_ID_DOCK_SD_COPY_UPDATE, "MSG_ID_DOCK_SD_COPY_UPDATE");
         aMap.put(MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS, "MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS");
-        aMap.put(MSG_ID_DOCK_SD_SCAN_COMPLETED, "MSG_ID_DOCK_SD_SCAN_COMPLETED");
-        aMap.put(MSG_ID_DOCK_SD_COPY_COMPLETED, "MSG_ID_DOCK_SD_COPY_COMPLETED");
+        aMap.put(MSG_ID_DOCK_SD_SCAN_UPDATE, "MSG_ID_DOCK_SD_SCAN_UPDATE");
+        aMap.put(MSG_ID_DOCK_SD_SCAN_SUCCESS, "MSG_ID_DOCK_SD_SCAN_SUCCESS");
+        aMap.put(MSG_ID_DOCK_SD_SCAN_FAILED, "MSG_ID_DOCK_SD_SCAN_FAILED");
+        aMap.put(MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK, "MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK");
+        aMap.put(MSG_ID_DOCK_SD_COPY_UPDATE, "MSG_ID_DOCK_SD_COPY_UPDATE");
+        aMap.put(MSG_ID_DOCK_SD_COPY_SUCCESS, "MSG_ID_DOCK_SD_COPY_SUCCESS");
         aMap.put(MSG_ID_DOCK_SD_COPY_FAILED, "MSG_ID_DOCK_SD_COPY_FAILED");
         aMap.put(MSG_ID_DATA_SYNC_UPDATE, "MSG_ID_DATA_SYNC_UPDATE");
         
