@@ -48,6 +48,8 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_SD_COPY_COMPLETED = 105;
 	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 106;
 	public final static int MSG_ID_DATA_SYNC_UPDATE = 107;
+	public final static int MSG_ID_DOCK_SD_CLEAR_UPDATE = 108;
+	public final static int MSG_ID_DOCK_SD_SCAN_FAILED = 109;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 106;
 	
 	//TODO move closer to SmartDockUart?
