@@ -6115,7 +6115,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 
 			// InfoMem D - End
-			
+
+//			System.out.println("mAlignmentMatrixAnalogAccel");
+//			System.out.println(mAlignmentMatrixAnalogAccel[0][0] + " " + mAlignmentMatrixAnalogAccel[0][1] + " " + mAlignmentMatrixAnalogAccel[0][2]);
+//			System.out.println(mAlignmentMatrixAnalogAccel[1][0] + " " + mAlignmentMatrixAnalogAccel[1][1] + " " + mAlignmentMatrixAnalogAccel[1][2]);
+//			System.out.println(mAlignmentMatrixAnalogAccel[2][0] + " " + mAlignmentMatrixAnalogAccel[2][1] + " " + mAlignmentMatrixAnalogAccel[2][2]);
+//			System.out.println("mSensitivityMatrixAnalogAccel");
+//			System.out.println(mSensitivityMatrixAnalogAccel[0][0] + " " + mSensitivityMatrixAnalogAccel[0][1] + " " + mSensitivityMatrixAnalogAccel[0][2]);
+//			System.out.println(mSensitivityMatrixAnalogAccel[1][0] + " " + mSensitivityMatrixAnalogAccel[1][1] + " " + mSensitivityMatrixAnalogAccel[1][2]);
+//			System.out.println(mSensitivityMatrixAnalogAccel[2][0] + " " + mSensitivityMatrixAnalogAccel[2][1] + " " + mSensitivityMatrixAnalogAccel[2][2]);
+//			System.out.println("mOffsetVectorAnalogAccel");
+//			System.out.println(mOffsetVectorAnalogAccel[0][0]);
+//			System.out.println(mOffsetVectorAnalogAccel[1][0]);
+//			System.out.println(mOffsetVectorAnalogAccel[2][0]);
 			
 			//SDLog and LogAndStream
 			if(((mFirmwareIdentifier==FW_ID_SHIMMER3_LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG))&&(mInfoMemBytes.length >=384)) {
