@@ -2932,7 +2932,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.ACCEL_X;
 					signalDataTypeArray[i+1] = "u12";
@@ -2946,7 +2946,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2; 
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.ACCEL_Y;
 					signalDataTypeArray[i+1] = "u12";
@@ -2960,7 +2960,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL);
 				} else {
 					signalNameArray[i+1]="Shimmer2.ObjectClusterSensorName.ACCEL_Z";
 					signalDataTypeArray[i+1] = "u12";
@@ -2975,12 +2975,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.BATTERY; //should be the battery but this will do for now
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT_S3);	
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT);	
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GYRO_X;
 					signalDataTypeArray[i+1] = "u12";
@@ -2995,12 +2995,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_X;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GYRO_Y;
 					signalDataTypeArray[i+1] = "u12";
@@ -3014,12 +3014,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GYRO_Z;
 					signalDataTypeArray[i+1] = "u12";
@@ -3033,12 +3033,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.BATTERY; //should be the battery but this will do for now
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT_S3);	
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT);	
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.MAG_X;
 					signalDataTypeArray[i+1] = "i16";
@@ -3054,12 +3054,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_X;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else if(mHardwareVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_X;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else {
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -3075,12 +3075,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else if(mHardwareVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Y;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else {
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -3095,12 +3095,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else if(mHardwareVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Z;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.ECG_RA_LL;
 					signalDataTypeArray[i+1] = "u12";
@@ -3116,12 +3116,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_X;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_X;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else {
 
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.ECG_LA_LL;
@@ -3136,12 +3136,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Y;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				}  else if (mHardwareVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Y;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GSR_RAW;
 					signalDataTypeArray[i+1] = "u16";
@@ -3155,12 +3155,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Z;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Z;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GSR_RES;
 					signalDataTypeArray[i+1] = "u16";

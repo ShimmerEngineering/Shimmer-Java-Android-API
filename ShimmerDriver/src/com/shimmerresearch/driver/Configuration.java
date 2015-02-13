@@ -96,16 +96,16 @@ public class Configuration {
 
 		public class SensorBitmap{
 			//Sensor Bitmap for Shimmer 3
-			public static final int SENSOR_A_ACCEL_S3			   = 0x80;
-			public static final int SENSOR_GYRO_S3			   	   = 0x40;
-			public static final int SENSOR_MAG_S3				   = 0x20;
+			public static final int SENSOR_A_ACCEL			   = 0x80;
+			public static final int SENSOR_GYRO			   	   = 0x40;
+			public static final int SENSOR_MAG				   = 0x20;
 			public static final int SENSOR_EXG1_24BIT			   = 0x10;
 			public static final int SENSOR_EXG2_24BIT			   = 0x08;
 			public static final int SENSOR_GSR					   = 0x04;
 			public static final int SENSOR_EXT_A7				   = 0x02;
 			public static final int SENSOR_EXT_A6				   = 0x01;
-			public static final int SENSOR_VBATT_S3				   = 0x2000;
-			public static final int SENSOR_D_ACCEL_S3			   = 0x1000;
+			public static final int SENSOR_VBATT				   = 0x2000;
+			public static final int SENSOR_D_ACCEL			   = 0x1000;
 			public static final int SENSOR_EXT_A15				   = 0x0800;
 			public static final int SENSOR_INT_A1				   = 0x0400;
 			public static final int SENSOR_INT_A12				   = 0x0200;

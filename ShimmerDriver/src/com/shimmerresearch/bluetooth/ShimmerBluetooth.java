@@ -3986,10 +3986,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			hardwareSensorBitmap  = enabledSensors;
 		} else if (mHardwareVersion == HW_ID_SHIMMER_3){
 			if (((enabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
-				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL_S3;
+				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL;
 			}
 			if ((enabledSensors & SENSOR_DACCEL) > 0){
-				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3;
+				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL;
 			}
 			if (((enabledSensors & 0xFF)& SENSOR_EXG1_24BIT) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT;
@@ -4005,13 +4005,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_EXG2_16BIT;
 			}
 			if (((enabledSensors & 0xFF)& SENSOR_GYRO) > 0){
-				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3;
+				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO;
 			}
 			if (((enabledSensors & 0xFF)& SENSOR_MAG) > 0){
-				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3;
+				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG;
 			}
 			if ((enabledSensors & SENSOR_BATT) > 0){
-				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT_S3;
+				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT;
 			}
 			if ((enabledSensors & SENSOR_EXT_ADC_A7) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_EXT_A7;
