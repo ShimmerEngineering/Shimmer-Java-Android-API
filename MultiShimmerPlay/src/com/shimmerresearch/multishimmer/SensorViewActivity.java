@@ -20,7 +20,11 @@ public class SensorViewActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	Bundle extras = getIntent().getExtras();
-        int enabledSensors = extras.getInt("Enabled_Sensors");
+    	long enabledSensors=0;
+    	if (extras != null) {
+    		enabledSensors = extras.getLong("Enabled_Sensors");
+    	}
+        
     	// Setup the window	    
     	setContentView(R.layout.sensor_view);
     	final CheckBox accelCheckBox = (CheckBox) findViewById(R.id.checkBoxAccelerometerGraph);
@@ -34,7 +38,7 @@ public class SensorViewActivity extends Activity{
  	    final CheckBox expBoardA0CheckBox = (CheckBox) findViewById(R.id.checkBoxExpBoardA0Graph);
  	    final CheckBox expBoardA7CheckBox = (CheckBox) findViewById(R.id.checkBoxExpBoardA7Graph);
  	    final CheckBox timeStampCheckBox = (CheckBox) findViewById(R.id.checkBoxTimeStampGraph);
-	   Log.d("EnabledSensors",Integer.toString(enabledSensors));
+	   
 	   
  	   if (((enabledSensors & 0xFF) & Shimmer.SENSOR_ACCEL) > 0){
 	    	accelCheckBox.setEnabled(true);
@@ -88,7 +92,7 @@ public class SensorViewActivity extends Activity{
 		}
 		
 		if (((enabledSensors & 0xFF) & Shimmer.SENSOR_EXP_BOARD_A7) > 0)  {	
-			Log.d("EnabledSensors",Integer.toString(enabledSensors));
+			
 			expBoardA7CheckBox.setEnabled(true);
 		} else {
 			expBoardA7CheckBox.setEnabled(false);

@@ -591,6 +591,20 @@ public class MultiShimmerPlayService extends Service {
 		}
 	}
 	
+	public int getHWVersion(String bluetoothAddress) {
+		// TODO Auto-generated method stub
+		Collection<Object> colS=mMultiShimmer.values();
+		Iterator<Object> iterator = colS.iterator();
+		int HWversion=0;
+		while (iterator.hasNext()) {
+			Shimmer stemp=(Shimmer) iterator.next();
+			if (stemp.getShimmerState()==Shimmer.STATE_CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+				HWversion = stemp.getHardwareVersion();
+			}
+		}
+		return HWversion;
+	}
+	
 	public long getEnabledSensors(String bluetoothAddress) {
 		// TODO Auto-generated method stub
 		Collection<Object> colS=mMultiShimmer.values();

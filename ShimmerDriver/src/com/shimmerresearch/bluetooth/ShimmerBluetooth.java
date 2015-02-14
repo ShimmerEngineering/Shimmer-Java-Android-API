@@ -1819,8 +1819,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							if (!instream){
 								if(byteStack.firstElement()==DATA_PACKET && (byteStack.size()==mPacketSize+1)) {         //only used when continous sync is disabled
 									newPacket=convertstacktobytearray(byteStack,mPacketSize);
-									ObjectCluster objectCluster=new ObjectCluster(mMyName,getBluetoothAddress());
-									objectCluster=(ObjectCluster) buildMsg(newPacket, objectCluster);
+									//ObjectCluster objectCluster=new ObjectCluster(mMyName,getBluetoothAddress());
+									//objectCluster=(ObjectCluster) buildMsg(newPacket, objectCluster);
+									ObjectCluster objectCluster=buildMsg(newPacket, FW_IDEN_BTSTREAM, 0);
 									if (mDataProcessing!=null){
 										objectCluster = mDataProcessing.ProcessData(objectCluster);
 									}
