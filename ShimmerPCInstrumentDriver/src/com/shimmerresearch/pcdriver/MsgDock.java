@@ -57,6 +57,9 @@ public class MsgDock {
 //	public final static int MSG_ID_DOCK_SD_SCAN_COMPLETED = 110;
 	public final static int MSG_ID_DOCK_SD_COPY_COMPLETED = 111;
 	public final static int MSG_ID_DOCK_SD_CLEAR_UPDATE = 112;
+	public final static int MSG_ID_DOCK_SD_CLEAR_FAILED = 113;
+	public final static int MSG_ID_DOCK_SD_CLEAR_FINISHED_PER_DOCK = 114;
+	public final static int MSG_ID_DOCK_SD_CLEAR_SUCCESS = 115;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_UPDATE = 113;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 114;
 	
