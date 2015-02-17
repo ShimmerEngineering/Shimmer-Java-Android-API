@@ -75,11 +75,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.collect.Multimap;
+import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.pcdriver.CallbackObject;
 import com.shimmerresearch.pcdriver.ShimmerPCBTBCove;
 import com.shimmerresearch.tools.LoggingPC;
@@ -87,7 +89,6 @@ import com.shimmerresearch.tools.HighPassFilter;
 import com.shimmerresearch.tools.BandStopFilter;
 import com.shimmerresearch.tools.LowPassFilter;
 import com.shimmerresearch.algorithms.*;
-import com.shimmerresearch.algorithms.ShimmerPPG.PpgSignalProcessing;
 
 public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 	
@@ -233,7 +234,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 	double[] exg1Data16bit = new double[4];
 	double[] exg2Data16bit = new double[4];
 	
-	private PpgSignalProcessing heartRateCalculation;
+	private PPGtoHRAlgorithm heartRateCalculation;
 	private boolean calculateHeartRate = false;
 	private int INVALID_RESULT=-1;
 	
@@ -360,7 +361,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 				if ((Integer)spinnerNumberOfBeatsToAve.getValue() <= 0){
 					spinnerNumberOfBeatsToAve.setValue(1);
 				}
-				heartRateCalculation = new PpgSignalProcessing(mShimmer.getSamplingRate(), (Integer)spinnerNumberOfBeatsToAve.getValue(),10); //10 second training period
+				heartRateCalculation = new PPGtoHRAlgorithm(mShimmer.getSamplingRate(), (Integer)spinnerNumberOfBeatsToAve.getValue(),10); //10 second training period
 				mShimmer.startStreaming();
 			}
 		});
@@ -2244,7 +2245,10 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 				}
 				
 				if (calculateHeartRate){
-					heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG);
+					Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+					FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
+					double ppgTimeStamp = ts.mData;
+					heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG,ppgTimeStamp);
 					if (heartRate == INVALID_RESULT){
 						heartRate = Double.NaN;
 					}
