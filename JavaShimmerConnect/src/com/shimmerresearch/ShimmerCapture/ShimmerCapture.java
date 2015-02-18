@@ -2061,9 +2061,9 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
 		  int ind = shimmerMSG.mIdentifier;
-		  Object objectCluster = (ObjectCluster) shimmerMSG.mB;
+		  Object object = (Object) shimmerMSG.mB;
 		if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
-			CallbackObject callbackObject = (CallbackObject)objectCluster;
+			CallbackObject callbackObject = (CallbackObject)object;
 			int state = callbackObject.mIndicator;
 			if (state == ShimmerBluetooth.STATE_CONNECTING) {	//Never called
 				textFieldState.setText("Shimmer Connecting");
@@ -2084,7 +2084,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				onDisconnect();
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
-			CallbackObject callbackObject = (CallbackObject)objectCluster;
+			CallbackObject callbackObject = (CallbackObject)object;
 			int msg = callbackObject.mIndicator;
 			if (msg == ShimmerPC.NOTIFICATION_STOP_STREAMING) {
 				menuItemConfigure.setEnabled(true);
@@ -2103,7 +2103,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				btnStartStreaming.setEnabled(true);
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
-			ObjectCluster objc = (ObjectCluster)objectCluster;
+			ObjectCluster objc = (ObjectCluster)object;
 			String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
 			//Filter signals
 			if (highPassFilterEnabled || bandStopFilterEnabled){
@@ -2387,7 +2387,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			
 			
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
-			double packetReceptionRate = (Double) objectCluster;
+			double packetReceptionRate = (Double) object;
 			textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
 		}
 	
