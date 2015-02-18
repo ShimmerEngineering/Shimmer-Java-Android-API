@@ -5805,7 +5805,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	
 	/**
 	 * This enables the low power accel option. When not enabled the sampling rate of the accel is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz. Also and additional low power mode is used for the LSM303DLHC. This command will only supports the following Accel range +4g, +8g , +16g 
 	 * @param enable
@@ -6557,7 +6556,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 				for (int i = 0; i < 21; i++) { // Limit of 21 nodes
 					byte[] macIdArray;
-					if(i < syncNodesList.size()) {
+					if((syncNodesList.size()>0)&&(i < syncNodesList.size())) {
 						macIdArray = hexStringToByteArray(syncNodesList.get(i));
 					}
 					else {
