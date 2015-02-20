@@ -85,6 +85,11 @@ public class MsgDock {
 	
 
 	public final static int MSG_IDENTIFIER_DB_PARSER_UPDATE = 130;
+	public final static int MSG_IDENTIFIER_DB_PARSER_SUCCESS = 131;
+	public final static int MSG_IDENTIFIER_DB_PARSER_FAILURE_SQLITE_EXCEPTION = 132;
+	public final static int MSG_IDENTIFIER_DB_PARSER_FAILURE_IO_EXCEPTION = 133;
+	
+	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
 
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
@@ -184,7 +189,7 @@ public class MsgDock {
 //	public MsgDock(){
 //	}
 
-	/** Used exclusively by the DockManager class for messages associated with no specific slot or dock 
+	/** Used exclusively by the DockManager/ImportManager class for messages associated with no specific slot or dock
 	 * @param msgID
 	 */
 	public MsgDock(int msgID){
