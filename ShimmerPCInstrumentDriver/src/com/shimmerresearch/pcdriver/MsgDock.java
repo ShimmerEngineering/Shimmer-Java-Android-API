@@ -62,10 +62,14 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_SD_CLEAR_SUCCESS = 115;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_UPDATE = 113;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 114;
-	
 
-	public final static int MSG_ID_OPERATION_PROGRESS = 200; //TODO: MN FOR TESTING
-	public final static int MSG_ID_OPERATION_FINISHED = 201; //TODO: MN FOR TESTING
+	//Version Checking
+	public final static int MSG_ID_VERSION_CHECK_PROGRESS 	= 800;
+	public final static int MSG_ID_VERSION_CHECK_FAIL 		= 801;
+
+
+	public final static int MSG_ID_DOCK_OPERATION_PROGRESS = 900;
+	public final static int MSG_ID_DOCK_OPERATION_FINISHED = 901;
 	
 	//TODO move closer to SmartDockUart?
 	//TODO rename UART to MSG?
@@ -146,8 +150,13 @@ public class MsgDock {
         aMap.put(MSG_ID_SMARTDOCK_UART_ERROR, "MSG_ID_SMARTDOCK_UART_ERROR");
         aMap.put(MSG_ID_SMARTDOCK_UART_SBWTCK_STATE, "MSG_ID_SMARTDOCK_UART_SBWTCK_STATE");
         
-        aMap.put(MSG_ID_OPERATION_PROGRESS, "MSG_ID_OPERATION_PROGRESS"); //TODO: MN FOR TESTING
-        aMap.put(MSG_ID_OPERATION_FINISHED, "MSG_ID_OPERATION_FINISHED"); //TODO: MN FOR TESTING
+    	//Version Checking
+        aMap.put(MSG_ID_VERSION_CHECK_PROGRESS, "MSG_ID_VERSION_CHECK_PROGRESS");
+        aMap.put(MSG_ID_VERSION_CHECK_FAIL, "MSG_ID_VERSION_CHECK_FAIL");
+
+        
+        aMap.put(MSG_ID_DOCK_OPERATION_PROGRESS, "MSG_ID_OPERATION_PROGRESS");
+        aMap.put(MSG_ID_DOCK_OPERATION_FINISHED, "MSG_ID_OPERATION_FINISHED");
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }
