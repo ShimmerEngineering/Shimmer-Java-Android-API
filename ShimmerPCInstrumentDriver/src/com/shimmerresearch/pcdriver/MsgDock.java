@@ -49,9 +49,10 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_SD_SCAN_FAILED = 103;
 	public final static int MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK = 104; 
 	public final static int MSG_ID_DOCK_SD_COPY_UPDATE = 105;
-	public final static int MSG_ID_DOCK_SD_COPY_SUCCESS = 106;
-	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 107;
-	public final static int MSG_ID_DATA_SYNC_UPDATE = 108;
+	public final static int MSG_ID_DOCK_SD_COPY_PROGRESS = 106;
+	public final static int MSG_ID_DOCK_SD_COPY_SUCCESS = 107;
+	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 108;
+	public final static int MSG_ID_DATA_SYNC_UPDATE = 109;
 	
 	//From JC
 //	public final static int MSG_ID_DOCK_SD_SCAN_COMPLETED = 110;
@@ -62,14 +63,10 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_SD_CLEAR_SUCCESS = 115;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_UPDATE = 113;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 114;
+	
 
-	//Version Checking
-	public final static int MSG_ID_VERSION_CHECK_PROGRESS 	= 800;
-	public final static int MSG_ID_VERSION_CHECK_FAIL 		= 801;
-
-
-	public final static int MSG_ID_DOCK_OPERATION_PROGRESS = 900;
-	public final static int MSG_ID_DOCK_OPERATION_FINISHED = 901;
+	public final static int MSG_ID_OPERATION_PROGRESS = 200; //TODO: MN FOR TESTING
+	public final static int MSG_ID_OPERATION_FINISHED = 201; //TODO: MN FOR TESTING
 	
 	//TODO move closer to SmartDockUart?
 	//TODO rename UART to MSG?
@@ -150,13 +147,8 @@ public class MsgDock {
         aMap.put(MSG_ID_SMARTDOCK_UART_ERROR, "MSG_ID_SMARTDOCK_UART_ERROR");
         aMap.put(MSG_ID_SMARTDOCK_UART_SBWTCK_STATE, "MSG_ID_SMARTDOCK_UART_SBWTCK_STATE");
         
-    	//Version Checking
-        aMap.put(MSG_ID_VERSION_CHECK_PROGRESS, "MSG_ID_VERSION_CHECK_PROGRESS");
-        aMap.put(MSG_ID_VERSION_CHECK_FAIL, "MSG_ID_VERSION_CHECK_FAIL");
-
-        
-        aMap.put(MSG_ID_DOCK_OPERATION_PROGRESS, "MSG_ID_OPERATION_PROGRESS");
-        aMap.put(MSG_ID_DOCK_OPERATION_FINISHED, "MSG_ID_OPERATION_FINISHED");
+        aMap.put(MSG_ID_OPERATION_PROGRESS, "MSG_ID_OPERATION_PROGRESS"); //TODO: MN FOR TESTING
+        aMap.put(MSG_ID_OPERATION_FINISHED, "MSG_ID_OPERATION_FINISHED"); //TODO: MN FOR TESTING
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }
