@@ -19,7 +19,10 @@ public class ShimmerLogDetails implements Serializable{
 	public String mMacAddress;
 	public String mDockID;
 	public String mAbsolutePathWhereFileWasCopied;
-
+	public int mFirmwareIdentifier;
+	public int mFirmwareVersionMajor;
+	public int mFirmwareVersionMinor;
+	public int mFirmwareVersionInternal;
 	public String mNewSessionName;
 	public int mNewSessionId;
 	public double mStartingRTC; // this is = (mInitialTimeStamp/32768*1000) + (mRTCDifference/32768*1000);
