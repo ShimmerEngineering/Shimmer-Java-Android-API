@@ -64,10 +64,12 @@ import java.util.TimerTask;
 
 
 
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -182,10 +184,12 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mOUT = conn.openOutputStream();
 			if (mIOThread != null) { 
 				mIOThread = null;
-				
+				mPThread = null;
 				}
 			mIOThread = new IOThread();
 			mIOThread.start();
+			mPThread = new ProcessingThread();
+			mPThread.start();
 			initialize();
 			setState(STATE_CONNECTED);
 		}
@@ -327,7 +331,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
-				
+				mPThread.stop = true;
+				mPThread = null;
 			}
 			mStreaming = false;
 			mInitialized = false;
@@ -359,7 +364,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
-				
+				mPThread.stop = true;
+				mPThread = null;
 			}
 			mStreaming = false;
 			mInitialized = false;
