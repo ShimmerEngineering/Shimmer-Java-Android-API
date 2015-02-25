@@ -6556,7 +6556,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 				for (int i = 0; i < 21; i++) { // Limit of 21 nodes
 					byte[] macIdArray;
-					if((syncNodesList.size()>0)&&(i < syncNodesList.size())) {
+					if((syncNodesList.size()>0) && (i<syncNodesList.size()) && (mSyncWhenLogging>0)) {
 						macIdArray = hexStringToByteArray(syncNodesList.get(i));
 					}
 					else {
