@@ -2086,7 +2086,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				btnStartStreaming.setEnabled(true);
 			}
 		} 
-		/*else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
+		else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
 			ObjectCluster objc = (ObjectCluster)objectCluster;
 			String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
 			//Filter signals
@@ -2373,7 +2373,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			}
 			
 			
-		}*/ else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
+		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
 			double packetReceptionRate = (Double) objectCluster;
 			if(downSample%50==0){
 				textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));

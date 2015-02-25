@@ -208,6 +208,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 					count++;
 					if (count%1000==0){
 						System.out.print("Queue Size: " + mABQ.size() + "\n");
+						printLogDataForDebugging("Queue Size: " + mABQ.size() + "\n");
 					}
 					byte[] packet = mABQ.remove();
 					ObjectCluster objectCluster=buildMsg(packet, FW_IDEN_BTSTREAM, 0);
