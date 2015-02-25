@@ -53,6 +53,7 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_SD_COPY_SUCCESS = 107;
 	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 108;
 	public final static int MSG_ID_DATA_SYNC_UPDATE = 109;
+	public final static int MSG_ID_DATA_SESSION_FINISHED= 110;
 	
 	//From JC
 //	public final static int MSG_ID_DOCK_SD_SCAN_COMPLETED = 110;
@@ -67,6 +68,9 @@ public class MsgDock {
 
 	public final static int MSG_ID_DOCK_OPERATION_PROGRESS = 200; //TODO: MN FOR TESTING
 	public final static int MSG_ID_DOCK_OPERATION_FINISHED = 201; //TODO: MN FOR TESTING
+	
+	public final static int MSG_ID_DATA_OPERATION_PROGRESS = 300;
+	public final static int MSG_ID_DATA_OPERATION_FINISHED = 301;
 	
 	//TODO move closer to SmartDockUart?
 	//TODO rename UART to MSG?
@@ -171,6 +175,8 @@ public class MsgDock {
 	public float mFwImageWriteSpeed = 0;
 	public String mMessage = "";
 	public double mValue;
+	
+	public int mSessionId;
 	
 	public int mErrorCode;
 	public int mErrorCodeLowLevel;

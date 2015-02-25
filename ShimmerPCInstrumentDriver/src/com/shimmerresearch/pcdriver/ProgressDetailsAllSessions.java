@@ -8,6 +8,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
+
+import com.shimmerresearch.pcdriver.ProgressDetailsPerSession.OperationState;
 
 
 public class ProgressDetailsAllSessions implements Serializable{
@@ -15,7 +18,7 @@ public class ProgressDetailsAllSessions implements Serializable{
 	
 	public enum Operation {
 		NONE("None"),
-		SD_SCAN("SD Scan"),
+//		SD_SCAN("SD Scan"),
 		SD_COPY("SD Copy"),
 		SD_DELETE("SD Delete"),
 		IMPORTING("Importing Data");
@@ -39,6 +42,8 @@ public class ProgressDetailsAllSessions implements Serializable{
 		public int mNumberOfFails = 0;
 		public List<String> mListOfFailedSessions = new ArrayList<String>();
 		public int mProgressPercentageComplete = 0;
+		public int mProgressStepCompleted = 0;
+		public double mProgressPercentagePerStep = 0;
 		
 		
 		
@@ -59,13 +64,90 @@ public class ProgressDetailsAllSessions implements Serializable{
 			for(ProgressDetailsPerSession dps: mMapOfSessionsProgressInfo.values()){
 				progress += dps.mProgressPercentageComplete;
 			}
-			progress = progress/(double)mNumberOfSessions;
-			mProgressPercentageComplete = (int) progress;
+			mProgressPercentagePerStep = progress/(double)mNumberOfSessions;
+			if(mProgressPercentagePerStep==100 && mOperationCurrent==Operation.SD_DELETE){
+				mProgressPercentageComplete = 100;
+			}
+			else
+				mProgressPercentageComplete = (int) ((int) mProgressStepCompleted + (mProgressPercentagePerStep/3.0)); //divede between 3 because there are 3 steps, copy, import and delete
+			
+			if(mProgressPercentagePerStep==100)
+				mProgressStepCompleted = (int) (mProgressPercentagePerStep/3.0);
 
 			if(!operationSuccessful) {
 				mListOfFailedSessions.add(uniqueID);
 				mNumberOfFails = mListOfFailedSessions.size();
 			}
+		}
+		
+		public void setDataForCopy(List<ShimmerLogDetails> list){
+			
+			mOperationCurrent = Operation.SD_COPY;
+			for(ShimmerLogDetails ld: list){
+				String key = ld.mFullTrialName+"."+ld.mNewSessionId;
+				if(mMapOfSessionsProgressInfo.containsKey(key)){
+					ProgressDetailsPerSession dps = mMapOfSessionsProgressInfo.get(key);
+					dps.mMapOfFilesProgressInfo.put(ld.mAbsolutePath, new ProgressDetailsPerFile());
+					dps.updateProgressTotal();
+				}
+				else{
+					ProgressDetailsPerSession dps = new ProgressDetailsPerSession(ProgressDetailsPerSession.OperationState.PENDING);
+					dps.mMapOfFilesProgressInfo.put(ld.mAbsolutePath, new ProgressDetailsPerFile());
+					dps.updateProgressTotal();
+					mMapOfSessionsProgressInfo.put(key, dps);
+				}
+			}
+			updateProgressTotal();
+		}
+		
+		public void setDataForImport(TreeMap<String, TreeMap<Integer, TreeMap<String, TreeMap<Integer, ShimmerLogDetails>>>> map){
+			
+			mOperationCurrent = Operation.IMPORTING;
+			mMapOfSessionsProgressInfo.clear();
+			for(String trialName: map.keySet()){
+				TreeMap<Integer, TreeMap<String, TreeMap<Integer, ShimmerLogDetails>>> mapOfSessions = map.get(trialName);
+				for(Integer sessionId: mapOfSessions.keySet()){
+					String key = trialName+"."+sessionId;
+					ProgressDetailsPerSession dps = mMapOfSessionsProgressInfo.get(key);
+					TreeMap<String, TreeMap<Integer, ShimmerLogDetails>> mapOfFolders = mapOfSessions.get(sessionId);
+					for(String folder: mapOfFolders.keySet()){
+						String absPath = "";
+						int i=0;
+						TreeMap<Integer, ShimmerLogDetails> mapOfFiles = mapOfFolders.get(folder);
+						for(ShimmerLogDetails ld: mapOfFiles.values()){
+							if(dps!=null){
+//								dps = mMapOfSessionsProgressInfo.get(key);
+//								String path = ld.mAbsolutePathWhereFileWasCopied.replace("//", "\\");
+//								path = path.replace("/", "\\");
+								dps.mMapOfFilesProgressInfo.put(ld.mAbsolutePathWhereFileWasCopied, new ProgressDetailsPerFile());
+								dps.updateProgressTotal();
+								if(i==0){
+									absPath = ld.mAbsolutePathWhereFileWasCopied;
+									i++;
+								}
+							}
+							else{
+								dps = new ProgressDetailsPerSession(ProgressDetailsPerSession.OperationState.PENDING);
+//								String path = ld.mAbsolutePathWhereFileWasCopied.replace("//", "\\");
+//								path = path.replace("/", "\\");
+								dps.mMapOfFilesProgressInfo.put(ld.mAbsolutePathWhereFileWasCopied, new ProgressDetailsPerFile());
+								dps.updateProgressTotal();
+								mMapOfSessionsProgressInfo.put(key, dps);
+								if(i==0){
+									absPath = ld.mAbsolutePathWhereFileWasCopied;
+									i++;
+								}
+							}
+						}
+						String[] splitPath = absPath.split(folder);
+						String folderPath = splitPath[0]+"\\"+folder;
+						dps.mMapOfFoldersProgressInfo.put(folderPath, 0D);
+					}
+					dps = mMapOfSessionsProgressInfo.get(key);
+					dps.updateFoldersTotal();
+				}
+			}
+			updateProgressTotal();
 		}
 		
 		
