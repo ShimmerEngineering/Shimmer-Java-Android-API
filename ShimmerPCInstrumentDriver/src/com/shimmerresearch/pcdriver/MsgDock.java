@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * @author Mark Nolan
+ * @author JC, Mark Nolan
  *
  */
 public class MsgDock {
 
 	//callback msg options
+	public final static int MSG_ID_UNKNOWN = 0;
+
 	public final static int MSG_ID_BSL_FW_WRITE_SUCCESS = 30;
 	public final static int MSG_ID_BSL_FW_WRITE_PROGRESS = 31; 
 	public final static int MSG_ID_BSL_FW_WRITE_FAIL = 32;
@@ -32,8 +34,9 @@ public class MsgDock {
 	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL = 59;
 	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_SUCCESS = 51;
 	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_FAIL = 52;
-	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 53;
-	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 54;
+	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS = 53;
+	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 54;
+	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 55;
 	
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
 	
@@ -42,13 +45,28 @@ public class MsgDock {
 	
 	public final static int MSG_ID_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_ID_DOCK_SD_SCAN_UPDATE = 101;
-	public final static int MSG_ID_DOCK_SD_COPY_UPDATE = 102;
-	public final static int MSG_ID_DOCK_WRITE_INFOMEM_UPDATE = 103;
-	public final static int MSG_ID_DOCK_SD_SCAN_COMPLETED = 104;
-	public final static int MSG_ID_DOCK_SD_COPY_COMPLETED = 105;
-	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 106;
-	public final static int MSG_ID_DATA_SYNC_UPDATE = 107;
-//	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 106;
+	public final static int MSG_ID_DOCK_SD_SCAN_SUCCESS = 102;
+	public final static int MSG_ID_DOCK_SD_SCAN_FAILED = 103;
+	public final static int MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK = 104; 
+	public final static int MSG_ID_DOCK_SD_COPY_UPDATE = 105;
+	public final static int MSG_ID_DOCK_SD_COPY_PROGRESS = 106;
+	public final static int MSG_ID_DOCK_SD_COPY_SUCCESS = 107;
+	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 108;
+	public final static int MSG_ID_DATA_SYNC_UPDATE = 109;
+	
+	//From JC
+//	public final static int MSG_ID_DOCK_SD_SCAN_COMPLETED = 110;
+	public final static int MSG_ID_DOCK_SD_COPY_COMPLETED = 111;
+	public final static int MSG_ID_DOCK_SD_CLEAR_UPDATE = 112;
+	public final static int MSG_ID_DOCK_SD_CLEAR_FAILED = 113;
+	public final static int MSG_ID_DOCK_SD_CLEAR_FINISHED_PER_DOCK = 114;
+	public final static int MSG_ID_DOCK_SD_CLEAR_SUCCESS = 115;
+//	public final static int MSG_ID_DOCK_WRITE_INFOMEM_UPDATE = 113;
+//	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 114;
+	
+
+	public final static int MSG_ID_DOCK_OPERATION_PROGRESS = 200; //TODO: MN FOR TESTING
+	public final static int MSG_ID_DOCK_OPERATION_FINISHED = 201; //TODO: MN FOR TESTING
 	
 	//TODO move closer to SmartDockUart?
 	//TODO rename UART to MSG?
@@ -63,14 +81,21 @@ public class MsgDock {
 	public final static int MSG_ID_SMARTDOCK_UART_ACTIVE_SLOT_DISCONNECTED = 118;
 	public final static int MSG_ID_SMARTDOCK_UART_BOOT_MESSAGE = 119;
 	public final static int MSG_ID_SMARTDOCK_UART_SLOT_MAP_UPDATE = 120;
+	public final static int MSG_ID_SMARTDOCK_UART_BSL_MASK_DOCK_STATE = 121;
 	public final static int MSG_ID_SMARTDOCK_UART_ERROR = 129;
-
 	
+
 	public final static int MSG_IDENTIFIER_DB_PARSER_UPDATE = 130;
+	public final static int MSG_IDENTIFIER_DB_PARSER_SUCCESS = 131;
+	public final static int MSG_IDENTIFIER_DB_PARSER_FAILURE_SQLITE_EXCEPTION = 132;
+	public final static int MSG_IDENTIFIER_DB_PARSER_FAILURE_IO_EXCEPTION = 133;
+	
+	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
 
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
+        aMap.put(MSG_ID_UNKNOWN, "MSG_ID_UNKNOWN");
         aMap.put(MSG_ID_BSL_FW_WRITE_SUCCESS, "MSG_ID_BSL_FW_WRITE_SUCCESS");
         aMap.put(MSG_ID_BSL_FW_WRITE_PROGRESS, "MSG_ID_BSL_FW_WRITE_PROGRESS");
         aMap.put(MSG_ID_BSL_FW_WRITE_FAIL, "MSG_ID_BSL_FW_WRITE_FAIL");
@@ -96,12 +121,16 @@ public class MsgDock {
         aMap.put(MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS, "MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS");
         aMap.put(MSG_ID_DOCKMANAGER_INITIALIZED_FAIL, "MSG_ID_DOCKMANAGER_INITIALIZED_FAIL");
         aMap.put(MSG_ID_DOCK_STATE_CHANGE, "MSG_ID_DOCK_STATE_CHANGE");
+        aMap.put(MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS, "MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS");
         aMap.put(MSG_ID_DOCK_SD_SCAN_UPDATE, "MSG_ID_DOCK_SD_SCAN_UPDATE");
+        aMap.put(MSG_ID_DOCK_SD_SCAN_SUCCESS, "MSG_ID_DOCK_SD_SCAN_SUCCESS");
+        aMap.put(MSG_ID_DOCK_SD_SCAN_FAILED, "MSG_ID_DOCK_SD_SCAN_FAILED");
+        aMap.put(MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK, "MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK");
         aMap.put(MSG_ID_DOCK_SD_COPY_UPDATE, "MSG_ID_DOCK_SD_COPY_UPDATE");
-        aMap.put(MSG_ID_DOCK_WRITE_INFOMEM_UPDATE, "MSG_ID_DOCK_WRITE_INFOMEM_UPDATE");
-        aMap.put(MSG_ID_DOCK_SD_SCAN_COMPLETED, "MSG_ID_DOCK_SD_SCAN_COMPLETED");
-        aMap.put(MSG_ID_DOCK_SD_COPY_COMPLETED, "MSG_ID_DOCK_SD_COPY_COMPLETED");
+        aMap.put(MSG_ID_DOCK_SD_COPY_SUCCESS, "MSG_ID_DOCK_SD_COPY_SUCCESS");
         aMap.put(MSG_ID_DOCK_SD_COPY_FAILED, "MSG_ID_DOCK_SD_COPY_FAILED");
+        aMap.put(MSG_ID_DOCK_SD_COPY_COMPLETED, "MSG_ID_DOCK_SD_COPY_COMPLETED");
+        aMap.put(MSG_ID_DOCK_SD_CLEAR_UPDATE, "MSG_ID_DOCK_SD_CLEAR_UPDATE");
         aMap.put(MSG_ID_DATA_SYNC_UPDATE, "MSG_ID_DATA_SYNC_UPDATE");
         
 //        aMap.put(MSG_ID_SMARTDOCK_UART_ERR_NONE, "MSG_ID_SMARTDOCK_UART_ERR_NONE");
@@ -116,11 +145,17 @@ public class MsgDock {
         aMap.put(MSG_ID_SMARTDOCK_UART_BOOT_MESSAGE, "MSG_ID_SMARTDOCK_UART_BOOT_MESSAGE");
         aMap.put(MSG_ID_SMARTDOCK_UART_SLOT_MAP_UPDATE, "MSG_ID_SMARTDOCK_UART_SLOT_MAP_UPDATE");
         aMap.put(MSG_ID_SMARTDOCK_UART_ERROR, "MSG_ID_SMARTDOCK_UART_ERROR");
+        aMap.put(MSG_ID_SMARTDOCK_UART_BSL_MASK_DOCK_STATE, "MSG_ID_SMARTDOCK_UART_SBWTCK_STATE");
+        
+        aMap.put(MSG_ID_DOCK_OPERATION_PROGRESS, "MSG_ID_OPERATION_PROGRESS"); //TODO: MN FOR TESTING
+        aMap.put(MSG_ID_DOCK_OPERATION_FINISHED, "MSG_ID_OPERATION_FINISHED"); //TODO: MN FOR TESTING
+        
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }
 	
 	
-	public int mMessageIdentifier = -1; //identifies what type of dock this is 0 for basic 1 for advance
+	public int mMsgID = -1; //identifies what type of dock this is 0 for basic 1 for advance
+	public int mCurrentOperation = -1;
 	public int mSlotNumber = -1; //only applicable for the smart dock
 	public String mUniqueID = "";
 	public String mBSLComPort = "";
@@ -128,18 +163,20 @@ public class MsgDock {
 	public String mDockID = "";
 	public int mDockState = 0;
 	
-	public int mFwImageTotalSize = 0;
-	public int mFwImageWriteProgress = 0;
-	public float mFwImageWriteSpeed = 0;
 	/**
 	 * Used for BSL progress reporting and lists SmartDock UART responses
 	 */
+	public int mFwImageTotalSize = 0;
+	public int mFwImageWriteProgress = 0;
+	public float mFwImageWriteSpeed = 0;
 	public String mMessage = "";
 	public double mValue;
 	
 	public int mErrorCode;
-	public int mLowLevelErrorCode;
+	public int mErrorCodeLowLevel;
+	public int mErrorCodeLowBsl;
 	public String mExceptionMsg;
+	public StackTraceElement[] mExceptionStackTrace;
 	
 	public byte[] mSlotMap = new byte[]{};
 	
@@ -148,15 +185,24 @@ public class MsgDock {
 	 * @see SmartDockActiveSlotDetails
 	 */
 	public int mConnectionType = 0;
+
 	
 //	public MsgDock(){
 //	}
 
-	/** Used exclusively by the DockManager class for messages associated with no specific slot or dock 
-	 * @param msgIdentifier
+	/** Used exclusively by the DockManager/ImportManager class for messages associated with no specific slot or dock
+	 * @param msgID
 	 */
-	public MsgDock(int msgIdentifier){
-		mMessageIdentifier = msgIdentifier;
+	public MsgDock(int msgID){
+		mMsgID = msgID;
+	}
+	
+	/** Used exclusively by the DockManager class for messages associated with an operations progress 
+	 * @param msgID
+	 */
+	public MsgDock(int msgID,int currentOperation){
+		mMsgID = msgID;
+		mCurrentOperation = currentOperation;
 	}
 	
 	/** Used by MspBsl with uniqueID, SmartDockUartListener with dockID
@@ -164,7 +210,7 @@ public class MsgDock {
 	 * @param uniqueID
 	 */
 	public MsgDock(int msgIdentifier,String iD){
-		mMessageIdentifier = msgIdentifier;
+		mMsgID = msgIdentifier;
 		mUniqueID = iD;
 		String[] subString = iD.split("\\.");
 		mDockID  = subString[0]+"."+subString[1];
@@ -177,15 +223,16 @@ public class MsgDock {
 	}
 	
 	/** Used by BasicDock, SmartDock and SmartDockUart
-	 * @param msgIdentifier
+	 * @param msgID
 	 * @param dockID
 	 * @param slotIdentifier
 	 */
-	public MsgDock(int msgIdentifier,String dockID,int slotIdentifier){
-		mMessageIdentifier = msgIdentifier;
+	public MsgDock(int msgID,String dockID,int slotIdentifier){
+		mMsgID = msgID;
 		mSlotNumber = slotIdentifier;
 		mDockID = dockID;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-	}	
+	}
+
 	
 }

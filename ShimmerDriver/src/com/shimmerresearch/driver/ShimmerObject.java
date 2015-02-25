@@ -509,7 +509,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
-
+	protected boolean mShimmerUsingConfigFromInfoMem = false;
+	
 	protected long mInitialTimeStamp;
 
 	//TODO: ASK JC ABOUT BELOW, indexes wrong? Can we just use new ones above like (FW_ID_SHIMMER3_BTSTREAM)
@@ -2894,7 +2895,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.ACCEL_X;
 					signalDataTypeArray[i+1] = "u12";
@@ -2908,7 +2909,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2; 
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.ACCEL_Y;
 					signalDataTypeArray[i+1] = "u12";
@@ -2922,7 +2923,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL);
 				} else {
 					signalNameArray[i+1]="Shimmer2.ObjectClusterSensorName.ACCEL_Z";
 					signalDataTypeArray[i+1] = "u12";
@@ -2937,12 +2938,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.BATTERY; //should be the battery but this will do for now
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT_S3);	
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT);	
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GYRO_X;
 					signalDataTypeArray[i+1] = "u12";
@@ -2957,12 +2958,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_X;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GYRO_Y;
 					signalDataTypeArray[i+1] = "u12";
@@ -2976,12 +2977,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GYRO_Z;
 					signalDataTypeArray[i+1] = "u12";
@@ -2995,12 +2996,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.BATTERY; //should be the battery but this will do for now
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT_S3);	
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT);	
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.MAG_X;
 					signalDataTypeArray[i+1] = "i16";
@@ -3016,12 +3017,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_X;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else if(mHardwareVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_X;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else {
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -3037,12 +3038,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else if(mHardwareVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Y;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else {
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -3057,12 +3058,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} else if(mHardwareVersion==HW_ID_SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Z;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.ECG_RA_LL;
 					signalDataTypeArray[i+1] = "u12";
@@ -3078,12 +3079,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_X;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_X;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else {
 
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.ECG_LA_LL;
@@ -3098,12 +3099,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Y;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				}  else if (mHardwareVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Y;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GSR_RAW;
 					signalDataTypeArray[i+1] = "u16";
@@ -3117,12 +3118,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Z;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				} else if (mHardwareVersion==HW_ID_SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Z;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
-					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO_S3);
+					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.GSR_RES;
 					signalDataTypeArray[i+1] = "u16";
@@ -5767,7 +5768,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	
 	/**
 	 * This enables the low power accel option. When not enabled the sampling rate of the accel is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz. Also and additional low power mode is used for the LSM303DLHC. This command will only supports the following Accel range +4g, +8g , +16g 
 	 * @param enable
@@ -5864,6 +5864,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected void setDefaultShimmerConfiguration() {
 		if (mHardwareVersion != -1){
+			
 			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
 			mExperimentName = DEFAULT_EXPERIMENT_NAME;
 			
@@ -5879,7 +5880,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mGyroRange=1; 
 			mMPU9150AccelRange=0;
 			mGSRRange=4;
-			mInternalExpPower=-1;
+			mInternalExpPower=0;
 
 			mPressureResolution = 0;
 			mExGResolution = 0;
@@ -5909,6 +5910,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setShimmerSamplingRate(51.2);
 			setDefaultECGConfiguration(); //TODO: bytes to set to default ECG or all 0xFF's? 
 			
+			syncNodesList.clear();
+			
 			sensorMapCreate();
 			if (mHardwareVersion == HW_ID_SHIMMER_3){
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mIsEnabled = true;
@@ -5928,11 +5931,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if(Arrays.equals(comparisonBuffer, detectionBuffer)) {
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
+			mShimmerUsingConfigFromInfoMem = false;
+
 //			mShimmerInfoMemBytes = infoMemByteArrayGenerate();
 //			mShimmerInfoMemBytes = new byte[infoMemContents.length];
 			mInfoMemBytes = infoMemContents;
 		}
 		else {
+			mShimmerUsingConfigFromInfoMem = true;
+
 			// InfoMem valid
 			
 			mInfoMemBytes = infoMemContents;
@@ -6070,7 +6077,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 
 			// InfoMem D - End
-			
+
+//			System.out.println("mAlignmentMatrixAnalogAccel");
+//			System.out.println(mAlignmentMatrixAnalogAccel[0][0] + " " + mAlignmentMatrixAnalogAccel[0][1] + " " + mAlignmentMatrixAnalogAccel[0][2]);
+//			System.out.println(mAlignmentMatrixAnalogAccel[1][0] + " " + mAlignmentMatrixAnalogAccel[1][1] + " " + mAlignmentMatrixAnalogAccel[1][2]);
+//			System.out.println(mAlignmentMatrixAnalogAccel[2][0] + " " + mAlignmentMatrixAnalogAccel[2][1] + " " + mAlignmentMatrixAnalogAccel[2][2]);
+//			System.out.println("mSensitivityMatrixAnalogAccel");
+//			System.out.println(mSensitivityMatrixAnalogAccel[0][0] + " " + mSensitivityMatrixAnalogAccel[0][1] + " " + mSensitivityMatrixAnalogAccel[0][2]);
+//			System.out.println(mSensitivityMatrixAnalogAccel[1][0] + " " + mSensitivityMatrixAnalogAccel[1][1] + " " + mSensitivityMatrixAnalogAccel[1][2]);
+//			System.out.println(mSensitivityMatrixAnalogAccel[2][0] + " " + mSensitivityMatrixAnalogAccel[2][1] + " " + mSensitivityMatrixAnalogAccel[2][2]);
+//			System.out.println("mOffsetVectorAnalogAccel");
+//			System.out.println(mOffsetVectorAnalogAccel[0][0]);
+//			System.out.println(mOffsetVectorAnalogAccel[1][0]);
+//			System.out.println(mOffsetVectorAnalogAccel[2][0]);
 			
 			//SDLog and LogAndStream
 			if(((mFirmwareIdentifier==FW_ID_SHIMMER3_LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID_SHIMMER3_SDLOG))&&(mInfoMemBytes.length >=384)) {
@@ -6500,7 +6519,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 				for (int i = 0; i < 21; i++) { // Limit of 21 nodes
 					byte[] macIdArray;
-					if(i < syncNodesList.size()) {
+					if((syncNodesList.size()>0) && (i<syncNodesList.size()) && (mSyncWhenLogging>0)) {
 						macIdArray = hexStringToByteArray(syncNodesList.get(i));
 					}
 					else {
@@ -8457,5 +8476,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mDerivedSensors;
 	}
 
+	public boolean isUsingConfigFromInfoMem() {
+		return mShimmerUsingConfigFromInfoMem;
+	}
 
 }

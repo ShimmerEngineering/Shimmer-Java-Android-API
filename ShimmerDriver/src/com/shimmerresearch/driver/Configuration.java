@@ -96,16 +96,16 @@ public class Configuration {
 
 		public class SensorBitmap{
 			//Sensor Bitmap for Shimmer 3
-			public static final int SENSOR_A_ACCEL_S3			   = 0x80;
-			public static final int SENSOR_GYRO_S3			   	   = 0x40;
-			public static final int SENSOR_MAG_S3				   = 0x20;
+			public static final int SENSOR_A_ACCEL			   = 0x80;
+			public static final int SENSOR_GYRO			   	   = 0x40;
+			public static final int SENSOR_MAG				   = 0x20;
 			public static final int SENSOR_EXG1_24BIT			   = 0x10;
 			public static final int SENSOR_EXG2_24BIT			   = 0x08;
 			public static final int SENSOR_GSR					   = 0x04;
 			public static final int SENSOR_EXT_A7				   = 0x02;
 			public static final int SENSOR_EXT_A6				   = 0x01;
-			public static final int SENSOR_VBATT_S3				   = 0x2000;
-			public static final int SENSOR_D_ACCEL_S3			   = 0x1000;
+			public static final int SENSOR_VBATT				   = 0x2000;
+			public static final int SENSOR_D_ACCEL			   = 0x1000;
 			public static final int SENSOR_EXT_A15				   = 0x0800;
 			public static final int SENSOR_INT_A1				   = 0x0400;
 			public static final int SENSOR_INT_A12				   = 0x0200;
@@ -287,16 +287,16 @@ public class Configuration {
 			public static final String LSM303DLHC_MAG_RATE = "Mag Rate";
 			public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
 			public static final String GSR_RANGE = "GSR Range";
-			public static final String EXG_RESOLUTION = "ExG Resolution";
-			public static final String EXG_GAIN = "ExG Gain";
+			public static final String EXG_RESOLUTION = "Resolution";
+			public static final String EXG_GAIN = "Gain";
 
-			public static final String EXG_RATE = "ExG Rate";
-			public static final String EXG_REFERENCE_ELECTRODE = "ExG Reference Electrode";
-			public static final String EXG_LEAD_OFF_DETECTION = "ExG Lead-Off Detection";
-			public static final String EXG_LEAD_OFF_CURRENT = "ExG Lead-Off Current";
-			public static final String EXG_LEAD_OFF_COMPARATOR = "ExG Lead-Off Compartor Threshold";
-			public static final String EXG_RESPIRATION_DETECT_FREQ = "ExG Respiration Detection Freq.";
-			public static final String EXG_RESPIRATION_DETECT_PHASE = "ExG Respiration Detection Phase";
+			public static final String EXG_RATE = "Rate";
+			public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
+			public static final String EXG_LEAD_OFF_DETECTION = "Lead-Off Detection";
+			public static final String EXG_LEAD_OFF_CURRENT = "Lead-Off Current";
+			public static final String EXG_LEAD_OFF_COMPARATOR = "Lead-Off Compartor Threshold";
+			public static final String EXG_RESPIRATION_DETECT_FREQ = "Respiration Detection Freq.";
+			public static final String EXG_RESPIRATION_DETECT_PHASE = "Respiration Detection Phase";
 
 			public static final String MPU9150_ACCEL_RANGE = "MPU Accel Range";
 			public static final String MPU9150_DMP_GYRO_CAL = "MPU Gyro Cal";
@@ -330,7 +330,7 @@ public class Configuration {
 			public static final String PRESSURE_TEMPERATURE = "Pressure/Temperature";
 			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion";
 			public static final String GSR = "GSR+";
-			public static final String EXG = "ExG";
+			public static final String EXG = "ECG/EMG";
 			public static final String PROTO3_MINI = "Proto Mini";
 			public static final String PROTO3_DELUXE = "Proto Deluxe";
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
@@ -361,7 +361,7 @@ public class Configuration {
 			public static final String PRESS_TEMP_BMP180 = "Pressure/Temperature";
 			public static final String EMG = "EMG";
 			public static final String ECG = "ECG";
-			public static final String EXG_TEST = "ExG Test";
+			public static final String EXG_TEST = "Test";
 			public static final String EXT_EXP_ADC = "External Expansion";
 			public static final String QUAT_MPL_6DOF = "MPU Quat 6DOF";
 			public static final String QUAT_MPL_9DOF = "MPU Quat 9DOF";
@@ -445,7 +445,7 @@ public class Configuration {
 			public static final String TEST_CH2_24BIT = "Test_CH2_24BIT";
 			public static final String TEST_CH1_16BIT = "Test_CH1_16BIT";
 			public static final String TEST_CH2_16BIT = "Test_CH2_16BIT";
-			public static final String EXG1_STATUS = "ExG1_Status";
+			public static final String EXG1_STATUS = "ECG_EMG_Status1";
 			public static final String ECG_RESP_24BIT = "ECG_RESP_24BIT";
 			public static final String ECG_VX_RL_24BIT = "ECG_Vx-RL_24BIT";
 			public static final String ECG_RESP_16BIT = "ECG_RESP_16BIT";
@@ -458,7 +458,7 @@ public class Configuration {
 			public static final String EXG2_CH2_24BIT = "ExG2_CH2_24BIT";
 			public static final String EXG2_CH1_16BIT = "ExG2_CH1_16BIT";
 			public static final String EXG2_CH2_16BIT = "ExG2_CH2_16BIT";
-			public static final String EXG2_STATUS = "ExG2_Status";
+			public static final String EXG2_STATUS = "ECG_EMG_Status2";
 			public static final String QUAT_MPL_6DOF_W = "Quat_MPL_6DOF_W";
 			public static final String QUAT_MPL_6DOF_X = "Quat_MPL_6DOF_X";
 			public static final String QUAT_MPL_6DOF_Y = "Quat_MPL_6DOF_Y";
@@ -582,7 +582,7 @@ public class Configuration {
 					public static final String MAG_Y = "Mag_Y";
 					public static final String MAG_Z = "Mag_Z";
 					public static final String EMG = "EMG";
-					public static final String ECG_RA_LL = "ECG RA-LL";
+					public static final String ECG_RA_LL = "ECG_RA-LL";
 					public static final String ECG_LA_LL = "ECG_LA-LL";
 					public static final String ECG_TO_HR = "ECGtoHR";
 					public static final String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";

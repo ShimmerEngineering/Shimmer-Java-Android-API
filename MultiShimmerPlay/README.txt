@@ -20,3 +20,10 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 - Moved to legacy folder, with the introduction of the MultiShimmerTemplate
 - Supports Shimmer 3, but the list of enabled sensors has not been updated in terms of the interface, hence not all Shimmer sensors are supported.
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+14 February 2014
+
+- Only supports LN Accel/Accel, Gyro and Mag (Shimmer2 and 3)
+
+
