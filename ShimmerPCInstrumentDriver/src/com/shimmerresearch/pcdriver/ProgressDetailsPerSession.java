@@ -41,6 +41,7 @@ public class ProgressDetailsPerSession implements Serializable{
 	public int mNumberOfFiles = 0;
 	public int mNumberOfFolders = 0;
 	public int mProgressCounter = 0;
+	public int mFoldersCounter = 0;
 	public int mNumberOfFails = 0;
 	public List<String> mListOfFailedFiles = new ArrayList<String>();
 	public List<String> mListOfFailedSync = new ArrayList<String>();
@@ -84,15 +85,17 @@ public class ProgressDetailsPerSession implements Serializable{
 		
 		progressParse = (progressParse*100)/(double) mNumberOfFiles;
 		
+		mFoldersCounter=0;
 		double progressSync=0;
 		for(Double p: mMapOfFoldersProgressInfo.values()){
 			progressSync += p;
+			if(p==1) mFoldersCounter++;
 		}
 		
 		progressSync = (progressSync*100)/(double) mNumberOfFolders;
 		mProgressPercentageComplete = (int) ((progressParse+progressSync)/2);
 		
-		if(mProgressPercentageComplete==100){
+		if(mFoldersCounter==mMapOfFoldersProgressInfo.size()){
 			mOperationState = OperationState.SUCCESS;
 		}
 		
@@ -105,6 +108,22 @@ public class ProgressDetailsPerSession implements Serializable{
 				mListOfFailedSync.add(uniqueID);
 				mNumberOfFails = mListOfFailedFiles.size() + mListOfFailedSync.size();
 			}
+		}
+	}
+	
+	public void updateProgressDelete(String uniqueID, boolean operationSuccessful){
+		
+		mProgressCounter += 1;
+		mProgressPercentageComplete = ((int)(((double)mProgressCounter/(double)mNumberOfFiles)*100));
+
+		if(!operationSuccessful) {
+			mListOfFailedFiles.add(uniqueID);
+			mNumberOfFails = mListOfFailedFiles.size();
+		}
+		
+		if(mProgressCounter==mNumberOfFiles){
+			mOperationState = OperationState.SUCCESS;
+			mProgressPercentageComplete=100;
 		}
 	}
 	

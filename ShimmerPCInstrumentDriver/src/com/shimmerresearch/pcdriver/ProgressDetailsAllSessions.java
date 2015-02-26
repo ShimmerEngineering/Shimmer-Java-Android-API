@@ -45,7 +45,8 @@ public class ProgressDetailsAllSessions implements Serializable{
 		public int mProgressStepCompleted = 0;
 		public double mProgressPercentagePerStep = 0;
 		
-		
+		//needed for the delete feedback
+		public List<ShimmerLogDetails> mListOfFilesToDelete;
 		
 		public ProgressDetailsAllSessions(Operation operationCurrent) {
 			super();
@@ -78,6 +79,25 @@ public class ProgressDetailsAllSessions implements Serializable{
 				mListOfFailedSessions.add(uniqueID);
 				mNumberOfFails = mListOfFailedSessions.size();
 			}
+		}
+		
+		public void updateDeleteProgress(String dock, int slotNumber, String uniqueID){
+			
+			String key=null;
+//			List<ShimmerLogDetails> tmpList = new ArrayList<ShimmerLogDetails>();
+			for(ShimmerLogDetails ld: mListOfFilesToDelete){
+				if(ld.mDockID.equals(dock) && ld.mSlotID == slotNumber){
+					key = ld.mFullTrialName+"."+ld.mNewSessionId;
+					String path = ld.mAbsolutePath;
+					ProgressDetailsPerSession dps = mMapOfSessionsProgressInfo.get(key);
+					ProgressDetailsPerFile dpf = dps.mMapOfFilesProgressInfo.get(path);
+					dpf.mOperationState = ProgressDetailsPerFile.OperationState.SUCCESS;
+					dpf.mProgressPercentageComplete=100;
+					dps.updateProgressDelete(path, true);
+					updateProgress(key, true);
+				}
+			}
+				
 		}
 		
 		public void setDataForCopy(List<ShimmerLogDetails> list){
@@ -140,7 +160,8 @@ public class ProgressDetailsAllSessions implements Serializable{
 							}
 						}
 						String[] splitPath = absPath.split(folder);
-						String folderPath = splitPath[0]+"\\"+folder;
+						String folderPath = splitPath[0]+folder;
+						
 						dps.mMapOfFoldersProgressInfo.put(folderPath, 0D);
 					}
 					dps = mMapOfSessionsProgressInfo.get(key);
@@ -148,6 +169,47 @@ public class ProgressDetailsAllSessions implements Serializable{
 				}
 			}
 			updateProgressTotal();
+		}
+		
+		public void setDataForDelete(List<ShimmerLogDetails> list){
+			
+			mOperationCurrent = Operation.SD_DELETE;
+			mMapOfSessionsProgressInfo.clear();
+			for(ShimmerLogDetails ld: list){
+				String key = ld.mFullTrialName+"."+ld.mNewSessionId;
+				if(mMapOfSessionsProgressInfo.containsKey(key)){
+					ProgressDetailsPerSession dps = mMapOfSessionsProgressInfo.get(key);
+					dps.mMapOfFilesProgressInfo.put(ld.mAbsolutePath, new ProgressDetailsPerFile());
+					dps.updateProgressTotal();
+				}
+				else{
+					ProgressDetailsPerSession dps = new ProgressDetailsPerSession(ProgressDetailsPerSession.OperationState.PENDING);
+					dps.mMapOfFilesProgressInfo.put(ld.mAbsolutePath, new ProgressDetailsPerFile());
+					dps.updateProgressTotal();
+					mMapOfSessionsProgressInfo.put(key, dps);
+				}
+			}
+			updateProgressTotal();
+		}
+		
+		public boolean isImportFinished(){
+			boolean finished = false;
+			
+			if(mOperationCurrent==Operation.IMPORTING){
+				int counter=0;
+				for(ProgressDetailsPerSession dps: mMapOfSessionsProgressInfo.values()){
+					if(dps.mProgressPercentageComplete==100)
+						counter++;
+				}
+				if(counter==mMapOfSessionsProgressInfo.size())
+					finished=true;
+				
+			}
+			else if(mOperationCurrent==Operation.SD_DELETE){
+				finished=true;
+			}
+			
+			return finished;
 		}
 		
 		
