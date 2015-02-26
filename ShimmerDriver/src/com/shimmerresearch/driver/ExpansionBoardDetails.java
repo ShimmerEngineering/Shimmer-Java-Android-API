@@ -62,8 +62,10 @@ public class ExpansionBoardDetails {
 			boardName="PROTO3 Mini";
 			break;
 		case HW_SHIMMER3_EXP_BRD_EXG:
+			boardName="ECG/EMG";
+			break;
 		case HW_SHIMMER3_EXP_BRD_EXG_UNIFIED:
-			boardName="ExG";
+			boardName="ECG/EMG/Resp";
 			break;
 		case HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE:
 			boardName="PROTO3 Deluxe";
