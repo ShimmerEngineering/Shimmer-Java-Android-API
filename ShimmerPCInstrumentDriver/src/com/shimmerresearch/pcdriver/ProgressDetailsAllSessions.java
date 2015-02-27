@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.shimmerresearch.pcdriver.ProgressDetailsPerSession.OperationState;
-
 
 public class ProgressDetailsAllSessions implements Serializable{
 
@@ -78,6 +76,9 @@ public class ProgressDetailsAllSessions implements Serializable{
 			if(!operationSuccessful) {
 				mListOfFailedSessions.add(uniqueID);
 				mNumberOfFails = mListOfFailedSessions.size();
+				if(mNumberOfFails==mMapOfSessionsProgressInfo.size()){
+					mProgressPercentageComplete=100;
+				}
 			}
 		}
 		
@@ -124,6 +125,7 @@ public class ProgressDetailsAllSessions implements Serializable{
 			
 			mOperationCurrent = Operation.IMPORTING;
 			mMapOfSessionsProgressInfo.clear();
+			mListOfFailedSessions.clear();
 			for(String trialName: map.keySet()){
 				TreeMap<Integer, TreeMap<String, TreeMap<Integer, ShimmerLogDetails>>> mapOfSessions = map.get(trialName);
 				for(Integer sessionId: mapOfSessions.keySet()){
@@ -175,6 +177,7 @@ public class ProgressDetailsAllSessions implements Serializable{
 			
 			mOperationCurrent = Operation.SD_DELETE;
 			mMapOfSessionsProgressInfo.clear();
+			mListOfFailedSessions.clear();
 			for(ShimmerLogDetails ld: list){
 				String key = ld.mFullTrialName+"."+ld.mNewSessionId;
 				if(mMapOfSessionsProgressInfo.containsKey(key)){
