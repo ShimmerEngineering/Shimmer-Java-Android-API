@@ -61,19 +61,39 @@ public class ProgressDetailsPerSession implements Serializable{
 		mNumberOfFolders = mMapOfFoldersProgressInfo.keySet().size();
 	}
 	
-	public void updateProgressCopy(String uniqueID,boolean operationSuccessful) {
+	public void updateProgressCopySuccess() {
 		mProgressCounter += 1;
 		mProgressPercentageComplete = ((int)(((double)mProgressCounter/(double)mNumberOfFiles)*100));
 
-		if(!operationSuccessful) {
-			mListOfFailedFiles.add(uniqueID);
-			mNumberOfFails = mListOfFailedFiles.size();
-		}
+//		if(!operationSuccessful) {
+//			mListOfFailedFiles.add(uniqueID);
+//			mNumberOfFails = mListOfFailedFiles.size();
+//		}
 		
 		if(mProgressCounter==mNumberOfFiles){
 			mOperationState = OperationState.SUCCESS;
 			mProgressPercentageComplete=100;
 		}
+	}
+	
+	public void updateProgressCopyFail(MsgDock msgDock, String uniqueID){
+		
+		if(mMapOfFilesProgressInfo.containsKey(uniqueID)){
+			ProgressDetailsPerFile dpf = mMapOfFilesProgressInfo.get(uniqueID);
+			dpf.mProgressPercentageComplete=100;
+			dpf.mOperationState = ProgressDetailsPerFile.OperationState.FAIL;
+			dpf.addErrorMessage(msgDock);
+//			dps.updateProgressCopy(path, false);
+			mListOfFailedFiles.add(uniqueID);
+			mNumberOfFails = mListOfFailedFiles.size();
+		}
+		else{
+			mListOfFailedFiles.add("");
+			mNumberOfFails = mListOfFailedFiles.size();
+		}
+			
+		mProgressPercentageComplete=100;
+		mOperationState = OperationState.FAIL;
 	}
 	
 	public void updateProgressImport(String uniqueID, boolean operationSuccessful){
