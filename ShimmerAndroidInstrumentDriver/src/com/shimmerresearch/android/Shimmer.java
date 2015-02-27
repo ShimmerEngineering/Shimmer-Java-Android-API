@@ -162,6 +162,7 @@ import java.util.UUID;
 
 
 
+
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
@@ -170,6 +171,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
+
 
 
 
@@ -216,7 +218,8 @@ public class Shimmer extends ShimmerBluetooth{
 	private LocalDevice localDevice;
 	//private InputStream mInputStream=null;
 	//private DataInputStream mInStream=null;
-	private BufferedInputStream mInStream=null;
+	private DataInputStream mInStream;
+	//private BufferedInputStream mInStream=null;
 	private OutputStream mmOutStream=null;
 
 	public static final int MSG_STATE_FULLY_INITIALIZED = 3;  // This is the connected state, indicating the device has establish a connection + tx/rx commands and reponses (Initialized)
@@ -747,7 +750,8 @@ public class Shimmer extends ShimmerBluetooth{
 				connectionLost();
 			}
 
-			mInStream = new BufferedInputStream(tmpIn);
+			//mInStream = new BufferedInputStream(tmpIn);
+			mInStream = new DataInputStream(tmpIn);
 			mmOutStream = tmpOut;
 		}
 
@@ -765,8 +769,8 @@ public class Shimmer extends ShimmerBluetooth{
 			} catch (Exception e) { Log.d(mClassName,"Connected Thread Error");
 			connectionLost();}
 
-			mInStream = new BufferedInputStream(tmpIn);
-			
+			//mInStream = new BufferedInputStream(tmpIn);
+			mInStream = new DataInputStream(tmpIn);
 			mmOutStream = tmpOut;
 
 		}
@@ -954,7 +958,7 @@ public class Shimmer extends ShimmerBluetooth{
 		write(data);
 	}
 
-	
+	/*
 	public byte[] readBytes(int numberofBytes){
 		  byte[] b = new byte[numberofBytes];  
 		  try{
@@ -976,13 +980,32 @@ public class Shimmer extends ShimmerBluetooth{
 			   e.printStackTrace();
 			   return b;
 		  }
+	}*/
+	
+	@Override
+	protected byte[] readBytes(int numberofBytes) {
+		// TODO Auto-generated method stub
+		byte[] b = new byte[numberofBytes];
+		try {
+			//mIN.read(b,0,numberofBytes);
+			mInStream.readFully(b,0,numberofBytes);
+			return(b);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Connection Lost");
+			e.printStackTrace();
+		}
+			
+			
+		return null;
 	}
 
 	@Override
 	protected byte readByte() {
 		byte[] tb = new byte[1];
 		try {
-			mInStream.read(tb,0,1);
+			//mInStream.read(tb,0,1);
+			mInStream.readFully(tb,0,1);
 			return tb[0];
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
