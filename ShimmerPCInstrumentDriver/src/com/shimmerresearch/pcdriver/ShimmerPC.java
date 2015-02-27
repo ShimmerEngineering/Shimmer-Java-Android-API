@@ -269,7 +269,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 
 
 	@Override
-	protected void stop() {
+	public void stop() {
 		// TODO Auto-generated method stub
 		disconnect();
 	}
