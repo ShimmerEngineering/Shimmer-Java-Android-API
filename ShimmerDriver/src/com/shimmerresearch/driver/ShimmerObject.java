@@ -718,6 +718,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) {
 		ObjectCluster objectCluster = new ObjectCluster();
+		
 		objectCluster.mMyName = mMyName;
 		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
 		objectCluster.mRawData = newPacket;
@@ -766,6 +767,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		
 		
 		if (mHardwareVersion==HW_ID_SHIMMER_SR30 || mHardwareVersion==HW_ID_SHIMMER_3){
+			
 			int iTimeStamp=getSignalIndex("TimeStamp"); //find index
 			if(mFirstTime && fwIdentifier == FW_IDEN_SD){
 				//this is to make sure the Raw starts from zero
@@ -1477,11 +1479,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-					/* p1 = 6.5995E-9;
-	                    p2 = -6.895E-5;
-	                    p3 = 2.699E-1;
-	                    p4 = -4.769835E+2;
-	                    p5 = 3.403513341E+5;*/
 					if (mHardwareVersion!=HW_ID_SHIMMER_3){
 						p1 = 0.0373;
 						p2 = -24.9915;
@@ -1490,11 +1487,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						p2 = -24.8617;
 					}
 				} else if (mGSRRange==1 || newGSRRange==1) {
-					/*p1 = 1.3569627E-8;
-	                    p2 = -1.650399E-4;
-	                    p3 = 7.54199E-1;
-	                    p4 = -1.5726287856E+3;
-	                    p5 = 1.367507927E+6;*/
 					if (mHardwareVersion!=HW_ID_SHIMMER_3){
 						p1 = 0.0054;
 						p2 = -3.5194;
@@ -1503,11 +1495,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						p2 = -3.8357;
 					}
 				} else if (mGSRRange==2 || newGSRRange==2) {
-					/*p1 = 2.550036498E-8;
-	                    p2 = -3.3136E-4;
-	                    p3 = 1.6509426597E+0;
-	                    p4 = -3.833348044E+3;
-	                    p5 = 3.8063176947E+6;*/
 					if (mHardwareVersion!=HW_ID_SHIMMER_3){
 						p1 = 0.0015;
 						p2 = -1.0163;
@@ -1516,11 +1503,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						p2 = -1.0067;
 					}
 				} else if (mGSRRange==3  || newGSRRange==3) {
-					/*p1 = 3.7153627E-7;
-	                    p2 = -4.239437E-3;
-	                    p3 = 1.7905709E+1;
-	                    p4 = -3.37238657E+4;
-	                    p5 = 2.53680446279E+7;*/
 					if (mHardwareVersion!=HW_ID_SHIMMER_3){
 						p1 = 4.5580e-04;
 						p2 = -0.3014;
@@ -1778,35 +1760,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-					/* p1 = 6.5995E-9;
-		                    p2 = -6.895E-5;
-		                    p3 = 2.699E-1;
-		                    p4 = -4.769835E+2;
-		                    p5 = 3.403513341E+5;*/
+					
 					p1 = 0.0373;
 					p2 = -24.9915;
 				} else if (mGSRRange==1 || newGSRRange==1) {
-					/*p1 = 1.3569627E-8;
-		                    p2 = -1.650399E-4;
-		                    p3 = 7.54199E-1;
-		                    p4 = -1.5726287856E+3;
-		                    p5 = 1.367507927E+6;*/
 					p1 = 0.0054;
 					p2 = -3.5194;
 				} else if (mGSRRange==2 || newGSRRange==2) {
-					/*p1 = 2.550036498E-8;
-		                    p2 = -3.3136E-4;
-		                    p3 = 1.6509426597E+0;
-		                    p4 = -3.833348044E+3;
-		                    p5 = 3.8063176947E+6;*/
 					p1 = 0.0015;
 					p2 = -1.0163;
 				} else if (mGSRRange==3  || newGSRRange==3) {
-					/*p1 = 3.7153627E-7;
-		                    p2 = -4.239437E-3;
-		                    p3 = 1.7905709E+1;
-		                    p4 = -3.37238657E+4;
-		                    p5 = 2.53680446279E+7;*/
 					p1 = 4.5580e-04;
 					p2 = -0.3014;
 				}

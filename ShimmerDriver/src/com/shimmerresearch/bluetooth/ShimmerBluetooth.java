@@ -101,6 +101,8 @@ import java.util.TimerTask;
 
 
 
+import java.util.concurrent.ArrayBlockingQueue;
+
 import sun.rmi.runtime.Log;
 
 import com.shimmerresearch.driver.Configuration;
@@ -124,11 +126,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	protected boolean mWaitForResponse=false; 									// This indicates whether the device is waiting for a response packet from the Shimmer Device 
 	protected boolean mTransactionCompleted=true;									// Variable is used to ensure a command has finished execution prior to executing the next command (see initialize())
 	protected IOThread mIOThread;
+	protected ProcessingThread mPThread;
 	protected boolean mContinousSync=false;                                       // This is to select whether to continuously check the data packets 
 	protected boolean mSetupDevice=false;		
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected double mLowBattLimit=3.4;
 	protected int numBytesToReadFromExpBoard=0;
+	ArrayBlockingQueue<byte[]> mABQ = new ArrayBlockingQueue<byte[]>(10000);
 	
 	protected abstract void connect(String address,String bluetoothLibrary);
 	protected abstract void dataHandler(ObjectCluster ojc);
@@ -192,6 +196,27 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	}
 	DataProcessing mDataProcessing;
 
+	
+	public class ProcessingThread extends Thread {
+		byte[] tb ={0};
+		byte[] newPacket=new byte[mPacketSize+1];
+		public boolean stop = false;
+		int count=0;
+		public synchronized void run() {
+			while (!stop) {
+				if (!mABQ.isEmpty()){
+					count++;
+					if (count%1000==0){
+						System.out.print("Queue Size: " + mABQ.size() + "\n");
+						printLogDataForDebugging("Queue Size: " + mABQ.size() + "\n");
+					}
+					byte[] packet = mABQ.remove();
+					ObjectCluster objectCluster=buildMsg(packet, FW_IDEN_BTSTREAM, 0);
+					dataHandler(objectCluster);
+				}
+			}
+		}
+	}
 	
 	//region --------- BLUETOOH STACK --------- 
 	
@@ -1543,7 +1568,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 				
 				if (mStreaming==true) {
 					tb = readBytes(1);
-
+					newPacket = readBytes(mPacketSize);
+					mABQ.add(newPacket);
+					
+					//ObjectCluster objectCluster=buildMsg(newPacket, FW_IDEN_BTSTREAM, 0);
+					//dataHandler(objectCluster);
+					/*
 					//Log.d(mClassName,"Incoming Byte: " + Byte.toString(tb[0])); // can be commented out to watch the incoming bytes
 					if (mSync==true) {        //if the stack is full
 						if (mWaitForAck==true && (byte)tb[0]==ACK_COMMAND_PROCESSED && byteStack.size()==mPacketSize+1){ //this is to handle acks during mid stream, acks only are received between packets.
@@ -1679,12 +1709,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									}
 								}
 							}
-							/*if (mStreaming==true && mWaitForAck==true && (byte)tb[0]==ACK_COMMAND_PROCESSED && (packetStack.size()==0)){ //this is to handle acks during mid stream, acks only are received between packets.
-                        		Log.d("ShimmerCMD","LED_BLINK_ACK_DETECTED");
-                        		mWaitForAck=false;
-                        		mCurrentLEDStatus=mTempIntValue;
-                    		    mTransactionCompleted = true;
-                        	} */
+							
 							if(!inStream)
 							{
 								byteStack.push((tb[0])); //push new sensor data into the stack
@@ -1839,7 +1864,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 
 
-
+					*/
 				} else {
 					
 				}

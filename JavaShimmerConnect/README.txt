@@ -1,5 +1,8 @@
 Java Shimmer Connect
 
+February 2015
+- Found a bottleneck in performance in the plotting function of ShimmerConnect and ShimmerCapture (1024Hz, 6 Channels)
+
 September 2014
 - Added support for LogandStream
 

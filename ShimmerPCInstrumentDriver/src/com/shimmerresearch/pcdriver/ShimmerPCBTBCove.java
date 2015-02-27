@@ -40,6 +40,7 @@
 
 package com.shimmerresearch.pcdriver;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -62,10 +63,13 @@ import java.util.TimerTask;
 
 
 
+
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -75,7 +79,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	StreamConnection conn=null;
 	ObjectCluster objectClusterTemp = null;
-	InputStream mIN;
+	//InputStream mIN;
+	DataInputStream mIN;
 	OutputStream mOUT;
 	Callable myUIThread;
 
@@ -175,14 +180,16 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		try {
 			setState(STATE_CONNECTING);
 			conn = (StreamConnection)Connector.open(address);
-			mIN = conn.openInputStream();
+			mIN = new DataInputStream(conn.openInputStream());
 			mOUT = conn.openOutputStream();
 			if (mIOThread != null) { 
 				mIOThread = null;
-				
+				mPThread = null;
 				}
 			mIOThread = new IOThread();
 			mIOThread.start();
+			mPThread = new ProcessingThread();
+			mPThread.start();
 			initialize();
 			setState(STATE_CONNECTED);
 		}
@@ -243,7 +250,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		// TODO Auto-generated method stub
 		byte[] b = new byte[numberofBytes];
 		try {
-			mIN.read(b,0,numberofBytes);
+			//mIN.read(b,0,numberofBytes);
+			mIN.readFully(b,0,numberofBytes);
 			return(b);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -323,7 +331,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
-				
+				mPThread.stop = true;
+				mPThread = null;
 			}
 			mStreaming = false;
 			mInitialized = false;
@@ -355,7 +364,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
-				
+				mPThread.stop = true;
+				mPThread = null;
 			}
 			mStreaming = false;
 			mInitialized = false;
