@@ -6972,7 +6972,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoRespiration;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoRespiration;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
 				
 				// Channels that require Internal Expansion board power (automatically enabled internal expansion board power when each Channel is enabled)
@@ -6980,6 +6979,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mIntExpBoardPowerRequired = true;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIntExpBoardPowerRequired = true;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIntExpBoardPowerRequired = true;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIntExpBoardPowerRequired = true;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIntExpBoardPowerRequired = true;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIntExpBoardPowerRequired = true;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIntExpBoardPowerRequired = true;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIntExpBoardPowerRequired = true;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIntExpBoardPowerRequired = true;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIntExpBoardPowerRequired = true;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIntExpBoardPowerRequired = true;
 				
 				// Required Channels - these get auto enabled/disabled when the parent channel is enabled/disabled
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfSensorMapKeysRequired = Arrays.asList(
@@ -7628,7 +7635,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 					else {
 						// Exception for Int ADC sensors 
-						//TODO need to checkhare version??
+						//TODO need to check HW version??
 						if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mIsEnabled
 							||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mIsEnabled
 							||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mIsEnabled
