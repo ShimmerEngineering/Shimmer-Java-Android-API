@@ -215,6 +215,11 @@ public class ProgressDetailsAllSessions implements Serializable{
 			return finished;
 		}
 		
+		public void clearFailedSessions(){
+			mListOfFailedSessions.clear();
+			mNumberOfFails=0;
+		}
+		
 		
 		/**Performs a deep copy of ProgressDetailsAll by Serializing
 		 * @return ProgressDetailsAll the deep copy of the current ProgressDetailsAll
