@@ -71,7 +71,7 @@ public class ProgressDetailsAllSessions implements Serializable{
 				mProgressPercentageComplete = (int) ((int) mProgressStepCompleted + (mProgressPercentagePerStep/3.0)); //divede between 3 because there are 3 steps, copy, import and delete
 			
 			if(mProgressPercentagePerStep==100)
-				mProgressStepCompleted = (int) (mProgressPercentagePerStep/3.0);
+				mProgressStepCompleted += (int) (mProgressPercentagePerStep/3.0);
 
 			if(!operationSuccessful) {
 				mListOfFailedSessions.add(uniqueID);
