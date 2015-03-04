@@ -133,18 +133,18 @@ public class ProgressDetailsPerSession implements Serializable{
 	
 	public void updateProgressImportFail(MsgDock msgDock, String uniqueID){
 		
-//		if(mMapOfFilesProgressInfo.containsKey(uniqueID)){
+		if(mMapOfFilesProgressInfo.containsKey(uniqueID)){
 			ProgressDetailsPerFile dpf = mMapOfFilesProgressInfo.get(uniqueID);
 			dpf.mOperationState = ProgressDetailsPerFile.OperationState.FAIL;
 			dpf.mProgressPercentageComplete=100;
 			dpf.addErrorMessage(msgDock);
 			mListOfFailedFiles.add(uniqueID);
 			mNumberOfFails = mListOfFailedFiles.size();
-//		}
-//		else{
-//			mListOfFailedFiles.add("");
-//			mNumberOfFails = mListOfFailedFiles.size();
-//		}
+		}
+		else{
+			mListOfFailedFiles.add(uniqueID);
+			mNumberOfFails = mListOfFailedFiles.size();
+		}
 		
 		mProgressPercentageComplete=100;
 		mOperationState = OperationState.FAIL;
@@ -165,6 +165,12 @@ public class ProgressDetailsPerSession implements Serializable{
 			mOperationState = OperationState.SUCCESS;
 			mProgressPercentageComplete=100;
 		}
+	}
+	
+	public void updateProgressDeleteFail(){
+		
+		mOperationState = OperationState.FAIL;
+		mProgressPercentageComplete=100;
 	}
 	
 //	public void updateProgressParse(String uniqueID, boolean operationSuccessful){
