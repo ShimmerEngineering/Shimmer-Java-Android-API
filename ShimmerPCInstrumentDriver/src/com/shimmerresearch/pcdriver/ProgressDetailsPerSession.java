@@ -69,6 +69,8 @@ public class ProgressDetailsPerSession implements Serializable{
 //			mListOfFailedFiles.add(uniqueID);
 //			mNumberOfFails = mListOfFailedFiles.size();
 //		}
+		if(mOperationState != OperationState.INPROGRESS)
+			mOperationState = OperationState.INPROGRESS;
 		
 		if(mProgressCounter==mNumberOfFiles){
 			mOperationState = OperationState.SUCCESS;
@@ -115,6 +117,9 @@ public class ProgressDetailsPerSession implements Serializable{
 		progressSync = (progressSync*100)/(double) mNumberOfFolders;
 		mProgressPercentageComplete = (int) ((progressParse+progressSync)/2);
 		
+		if(mOperationState != OperationState.INPROGRESS)
+			mOperationState = OperationState.INPROGRESS;
+		
 		if(mFoldersCounter==mMapOfFoldersProgressInfo.size()){
 			mOperationState = OperationState.SUCCESS;
 		}
@@ -160,6 +165,9 @@ public class ProgressDetailsPerSession implements Serializable{
 			mListOfFailedFiles.add(uniqueID);
 			mNumberOfFails = mListOfFailedFiles.size();
 		}
+		
+		if(mOperationState != OperationState.INPROGRESS)
+			mOperationState = OperationState.INPROGRESS;
 		
 		if(mProgressCounter==mNumberOfFiles){
 			mOperationState = OperationState.SUCCESS;
