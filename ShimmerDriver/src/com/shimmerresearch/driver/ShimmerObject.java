@@ -7319,7 +7319,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD,
+												listOfCompatibleVersionInfoLogging));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, 
