@@ -76,6 +76,8 @@
 
 package com.shimmerresearch.bluetooth;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -170,6 +172,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	private int mReadStatusPeriod=5000;
 	protected Timer mTimerToReadStatus;
 	
+	ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
+	
 	//endregion
 	
 	/**
@@ -240,10 +244,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 					if (!mListofInstructions.isEmpty()){
 
 						byte[] insBytes = (byte[]) mListofInstructions.get(0);
-
-						mInstructionStackLock=true;
 						mCurrentCommand=insBytes[0];
+						mInstructionStackLock=true;
 						mWaitForAck=true;
+						
 						String msg = "Command Transmitted: " + Arrays.toString(insBytes);
 						printLogDataForDebugging(msg);
 
@@ -256,6 +260,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 						writeBytes(insBytes);
 
+						
 						if (mCurrentCommand==STOP_STREAMING_COMMAND){
 							mStreaming=false;
 							mListofInstructions.removeAll(Collections.singleton(null));
@@ -267,10 +272,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							} else if (mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){
 								startResponseTimer(ACK_TIMER_DURATION);
 							} else {
-								startResponseTimer(ACK_TIMER_DURATION+10);
+								if(mStreaming){
+									startResponseTimer(ACK_TIMER_DURATION);
+								} else {
+									startResponseTimer(ACK_TIMER_DURATION+10);
+								}
 							}
 						}
-						mTransactionCompleted=false;
+						
+							mTransactionCompleted=false;
+						
 					}
 
 
@@ -840,8 +851,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 
 					}
-				}
-				else if (mWaitForResponse==true) {
+				} else if (mWaitForResponse==true && !mStreaming) {
 					if (mFirstTime){
 						while (availableBytes()!=0){
 								int avaible = availableBytes();
@@ -1509,7 +1519,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							mInstructionStackLock=false;
 						}
 					}
-				} if (mWaitForAck==false && mWaitForResponse == false && mStreaming ==false && availableBytes()!=0 && mFirmwareIdentifier==3) {
+				} 
+				
+				
+				if (mWaitForAck==false && mWaitForResponse == false && mStreaming ==false && availableBytes()!=0 && mFirmwareIdentifier==3) {
 					tb=readBytes(1);
 					if(tb[0]==ACK_COMMAND_PROCESSED){
 						System.out.println("ACK RECEIVED , Connected State!!");
@@ -1567,180 +1580,54 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 				
 				
 				if (mStreaming==true) {
+					
 					tb = readBytes(1);
-					newPacket = readBytes(mPacketSize);
-					mABQ.add(newPacket);
+					mByteArrayOutputStream.write(tb[0]);
 					
-					//ObjectCluster objectCluster=buildMsg(newPacket, FW_IDEN_BTSTREAM, 0);
-					//dataHandler(objectCluster);
-					/*
-					//Log.d(mClassName,"Incoming Byte: " + Byte.toString(tb[0])); // can be commented out to watch the incoming bytes
-					if (mSync==true) {        //if the stack is full
-						if (mWaitForAck==true && (byte)tb[0]==ACK_COMMAND_PROCESSED && byteStack.size()==mPacketSize+1){ //this is to handle acks during mid stream, acks only are received between packets.
-							if (mCurrentCommand==SET_BLINK_LED){
-								mWaitForAck=false;
-								mTransactionCompleted = true;   
-								mTimer.cancel(); //cancel the ack timer
-								mTimer.purge();
-								mCurrentLEDStatus=(int)((byte[])mListofInstructions.get(0))[1];
-								mListofInstructions.remove(0);
-								mInstructionStackLock=false;
-								System.out.println("LED COMMAND ACK RECEIVED");
-							} else if (mFirmwareIdentifier == 3 ){ //this is for logandstream stupport, command is trasmitted and ack received
-								System.out.println("COMMAND TXed and ACK RECEIVED IN STREAM");
-								tb = readBytes(1);
-								if(tb[0]==INSTREAM_CMD_RESPONSE){
+					
+
+					//If there is a full packet and the subsequent sequence number of following packet
+					if (mByteArrayOutputStream.size()>=mPacketSize+2){
+						byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
+						if (bufferTemp[0]==DATA_PACKET && bufferTemp[mPacketSize+1]==DATA_PACKET){
+							newPacket = new byte[mPacketSize];
+							System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
+							mABQ.add(newPacket);
+							//Finally clear the parsed packet from the bytearrayoutputstream, NOTE the last two bytes(seq number of next packet) are added back on after the reset
+							//System.out.print("Byte size reset: " + mByteArrayOutputStream.size() + "\n");
+							mByteArrayOutputStream.reset();
+							mByteArrayOutputStream.write(bufferTemp[mPacketSize+1]);
+							//System.out.print(bufferTemp[mPacketSize+1] + "\n");
+							
+						} else if (bufferTemp[0]==DATA_PACKET && bufferTemp[mPacketSize+1]==ACK_COMMAND_PROCESSED){
+							if (mByteArrayOutputStream.size()>mPacketSize+2){
+								if (bufferTemp[mPacketSize+2]==DATA_PACKET){
+									newPacket = new byte[mPacketSize];
+									System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
+									mABQ.add(newPacket);
+									//Finally clear the parsed packet from the bytearrayoutputstream, NOTE the last two bytes(seq number of next packet) are added back on after the reset
+									mByteArrayOutputStream.reset();
+									mByteArrayOutputStream.write(bufferTemp[mPacketSize+2]);
+									System.out.print(bufferTemp[mPacketSize+2] + "\n");
+									
+									if (mCurrentCommand==SET_BLINK_LED){
+										System.out.println("LED COMMAND ACK RECEIVED");
+										mCurrentLEDStatus=(int)((byte[])mListofInstructions.get(0))[1];
+										mListofInstructions.remove(0);
+										mTimer.cancel(); //cancel the ack timer
+										mTimer.purge();
+										mWaitForAck=false;
+										mTransactionCompleted = true;
+										mInstructionStackLock=false;
+									} 
+									
+									
+								} else if (mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM && bufferTemp[mPacketSize+2]==INSTREAM_CMD_RESPONSE){ //this is for logandstream stupport, command is trasmitted and ack received
+									System.out.println("COMMAND TXed and ACK RECEIVED IN STREAM");
 									System.out.println("INS CMD RESP");
 									byte[] command = readBytes(2);
 									if(command[0]==DIR_RESPONSE){
-										mDirectoryNameLength = command[1];
-										byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
-										bufferDirectoryName = readBytes(mDirectoryNameLength);
-										String tempDirectory = new String(bufferDirectoryName);
-										mDirectoryName = tempDirectory;
-
-										System.out.println("DIR RESP : " + mDirectoryName);
-									}
-									else if(command[0]==STATUS_RESPONSE){
-										int sensing = command[1] & 2;
-										if(sensing==2)
-											mSensingStatus = true;
-										else
-											mSensingStatus = false;
-
-										int docked = command[1] & 1;
-										if(docked==1)
-											mDockedStatus = true;
-										else
-											mDockedStatus = false;
-
-										
-										System.out.println("Sensing = "+sensing);
-										System.out.println("Sensing status = "+mSensingStatus);
-										System.out.println("Docked = "+docked);
-										System.out.println("Docked status = "+mDockedStatus);
-									}
-									
-									mWaitForAck=false;
-									mTransactionCompleted = true;   
-									mTimer.cancel(); //cancel the ack timer
-									mTimer.purge();
-									mListofInstructions.remove(0);
-									mInstructionStackLock=false;
-									
-								}
-
-
-							}
-						} else { // the first time you start streaming it will go through this piece of code to make sure the data streaming is alligned/sync
-							boolean inStream = false;
-							if (byteStack.size()==mPacketSize+1){
-								if (tb[0]==DATA_PACKET && byteStack.firstElement()==DATA_PACKET) { //check for the starting zero of the packet, and the starting zero of the subsequent packet, this causes a delay equivalent to the transmission duration between two packets
-									newPacket=convertstacktobytearray(byteStack,mPacketSize);
-									//ObjectCluster objectCluster=new ObjectCluster(mMyName,getBluetoothAddress());
-									//objectCluster=(ObjectCluster) buildMsg(newPacket, objectCluster);
-									ObjectCluster objectCluster=buildMsg(newPacket, FW_IDEN_BTSTREAM, 0);
-									if (mDataProcessing!=null){
-										objectCluster = mDataProcessing.ProcessData(objectCluster);
-									}
-									//printtofile(newmsg.UncalibratedData);
-									dataHandler(objectCluster);
-									
-									byteStack.clear();
-									if (mContinousSync==false) {         //disable continuous synchronizing 
-										mSync=false;
-									}
-								} 
-								
-								else if(tb[0]==ACK_COMMAND_PROCESSED && mFirmwareIdentifier==3){ // this is for LogandStream support if the device is docked/undocked
-									System.out.println("ACK RECEIVED");
-									tb = readBytes(1);
-									if (tb[0]==ACK_COMMAND_PROCESSED){
-										tb = readBytes(1);
-									}
-									if(tb[0]==INSTREAM_CMD_RESPONSE){
-										System.out.println("INS CMD RESP");
-										inStream = true;
-										byte[] command = readBytes(2);
-										if(command[0]==DIR_RESPONSE){
-											mDirectoryNameLength = command[1];
-											byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
-											bufferDirectoryName = readBytes(mDirectoryNameLength);
-											String tempDirectory = new String(bufferDirectoryName);
-											mDirectoryName = tempDirectory;
-
-											System.out.println("DIR RESP : " + mDirectoryName);
-										}
-										else if(command[0]==STATUS_RESPONSE){
-											int sensing = command[1] & 2;
-											if(sensing==2)
-												mSensingStatus = true;
-											else
-												mSensingStatus = false;
-
-											int docked = command[1] & 1;
-											if(docked==1)
-												mDockedStatus = true;
-											else
-												mDockedStatus = false;
-
-											if (!mSensingStatus){
-												mStreaming=false;
-												setState(ShimmerBluetooth.STATE_CONNECTED);
-//												isReadyForStreaming();
-												hasStopStreaming();
-												if(mTimerToReadStatus==null){ 
-													mTimerToReadStatus = new Timer();
-													mTimerToReadStatus.schedule(new readStatusTask(), mReadStatusPeriod, mReadStatusPeriod);
-												}
-												//flush all the bytes
-												while(availableBytes()!=0){
-													System.out.println("Throwing away = "+readBytes(1));
-												}
-											}
-											
-											logAndStreamStatusChanged();
-											
-											System.out.println("Sensing = "+sensing);
-											System.out.println("Sensing status = "+mSensingStatus);
-											System.out.println("Docked = "+docked);
-											System.out.println("Docked status = "+mDockedStatus);
-										}
-									}
-								}
-							}
-							
-							if(!inStream)
-							{
-								byteStack.push((tb[0])); //push new sensor data into the stack
-							}
-							if (byteStack.size()>mPacketSize+1) { //if the stack has reached the packet size remove an element from the stack
-								System.out.println("Throw Bytes "+ byteStack.get(0));
-								byteStack.removeElementAt(0);
-								
-							}
-						}
-					} else if (mSync==false){ //shimmershimmer
-						if (mWaitForAck==true && (byte)tb[0]==ACK_COMMAND_PROCESSED && byteStack.size()==0){ //this is to handle acks during mid stream, acks only are received between packets.
-							if (mCurrentCommand==SET_BLINK_LED){
-							
-								mWaitForAck=false;
-								mTransactionCompleted = true;   
-								mTimer.cancel(); //cancel the ack timer
-								mTimer.purge();
-								mCurrentLEDStatus=(int)((byte[])mListofInstructions.get(0))[1];
-								mListofInstructions.remove(0);
-								mInstructionStackLock=false;
-								System.out.println("LED COMMAND ACK RECEIVED");
-							} else if (mFirmwareIdentifier ==3 ){ //ack received for LogandStream commands
-
-								System.out.println("COMMAND TXed and ACK RECEIVED IN STREAM");
-								tb = readBytes(1);
-								if(tb[0]==INSTREAM_CMD_RESPONSE){
-									System.out.println("INS CMD RESP");
-									byte[] command = readBytes(2);
-									if(command[0]==DIR_RESPONSE){
-										mDirectoryNameLength = command[1];
+										int mDirectoryNameLength = command[1];
 										byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
 										bufferDirectoryName = readBytes(mDirectoryNameLength);
 										String tempDirectory = new String(bufferDirectoryName);
@@ -1773,100 +1660,28 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									mTimer.purge();
 									mListofInstructions.remove(0);
 									mInstructionStackLock=false;
-									
-								}								
+									newPacket = new byte[mPacketSize];
+									System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
+									mABQ.add(newPacket);
+									mByteArrayOutputStream.reset();
+								} else {
+									System.out.print("?? \n");
+								}
+							} 
+							if (mByteArrayOutputStream.size()>mPacketSize+2){ //throw the first byte away
+								byte[] bTemp = mByteArrayOutputStream.toByteArray();
+								mByteArrayOutputStream.reset();
+								mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
+								System.out.print("Throw Byte \n");
 							}
-						} else {
 							
-							byteStack.push((tb[0])); //push new sensor data into the stack
-							boolean instream = false;
-							
-							//LogAndStream in stream ack command , without sending a command (e.g. dock/undock)
-							if( (byteStack.size()==1 && tb[0]==ACK_COMMAND_PROCESSED && mFirmwareIdentifier == 3) ){
-								System.out.println("ACK RECEIVED");
-								tb = readBytes(1);
-								if (tb[0]==ACK_COMMAND_PROCESSED){
-									tb = readBytes(1);
-								}
-								if(tb[0]==INSTREAM_CMD_RESPONSE){
-									System.out.println("INS CMD RESP");
-									byte[] command = readBytes(2);
-									if(command[0]==DIR_RESPONSE){
-										mDirectoryNameLength = command[1];
-										byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
-										bufferDirectoryName = readBytes(mDirectoryNameLength);
-										String tempDirectory = new String(bufferDirectoryName);
-										mDirectoryName = tempDirectory;
-
-										System.out.println("DIR RESP : " + mDirectoryName);
-									}
-									else if(command[0]==STATUS_RESPONSE){
-										int sensing = command[1] & 2;
-										if(sensing==2)
-											mSensingStatus = true;
-										else
-											mSensingStatus = false;
-
-										int docked = command[1] & 1;
-										if(docked==1)
-											mDockedStatus = true;
-										else
-											mDockedStatus = false;
-
-										if (!mSensingStatus){
-											mStreaming=false;
-											setState(ShimmerBluetooth.STATE_CONNECTED);
-//											isReadyForStreaming();
-											hasStopStreaming();
-											if(mTimerToReadStatus==null){ 
-												mTimerToReadStatus = new Timer();
-												mTimerToReadStatus.schedule(new readStatusTask(), mReadStatusPeriod, mReadStatusPeriod);
-											}
-											//flush all the bytes
-											while(availableBytes()!=0){
-												System.out.println("Throwing away = "+readBytes(1));
-											}
-
-										}
-										
-										logAndStreamStatusChanged();
-										
-										System.out.println("Sensing = "+sensing);
-										System.out.println("Sensing status = "+mSensingStatus);
-										System.out.println("Docked = "+docked);
-										System.out.println("Docked status = "+mDockedStatus);
-										
-									}
-								}
-								instream = true;
-								byteStack.pop(); //remove the last element, which is the INSTREAM_COMMAND
-							}
-							if (!instream){
-								if(byteStack.firstElement()==DATA_PACKET && (byteStack.size()==mPacketSize+1)) {         //only used when continous sync is disabled
-									newPacket=convertstacktobytearray(byteStack,mPacketSize);
-									//ObjectCluster objectCluster=new ObjectCluster(mMyName,getBluetoothAddress());
-									//objectCluster=(ObjectCluster) buildMsg(newPacket, objectCluster);
-									ObjectCluster objectCluster=buildMsg(newPacket, FW_IDEN_BTSTREAM, 0);
-									if (mDataProcessing!=null){
-										objectCluster = mDataProcessing.ProcessData(objectCluster);
-									}
-									dataHandler(objectCluster);
-									byteStack.clear();
-								}
-							}
-							if (byteStack.size()>mPacketSize) { //if the stack has reached the packet size remove an element from the stack
-								System.out.println("Throw Bytes "+ byteStack.get(0));
-								byteStack.removeElementAt(0);
-								
-							}
+						} else {//throw the first byte away
+							byte[] bTemp = mByteArrayOutputStream.toByteArray();
+							mByteArrayOutputStream.reset();
+							mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
+							System.out.print("Throw Byte \n");
 						}
-					}
-
-
-
-					*/
-				} else {
-					
+					} 
 				}
 			}
 		}
@@ -1946,20 +1761,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 				}
 				else if(mCurrentCommand==GET_STATUS_COMMAND){
 					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
-
 					System.out.println("Command " + Integer.toString(mCurrentCommand) +" failed");
-					mWaitForAck=false;
-					mTransactionCompleted=true;
 					mTimer.cancel(); //Terminate the timer thread
 					mTimer.purge();
-					mListofInstructions.remove(0);
-					mInstructionStackLock=false;
 					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
+					mInstructionStackLock=false;
+					
 					if (mStreaming && getPacketReceptionRate()<100){
 						mListofInstructions.clear();
 						printLogDataForDebugging("Response not received for Get_Status_Command. Loss bytes detected.");
-					} else {
+					} else if(!mStreaming) {
 						//CODE TO BE USED
 						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection. Packet RR:  " + Double.toString(getPacketReceptionRate()));
 						if (mWaitForResponse){
@@ -1973,18 +1785,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
 
 					System.out.println("Command " + Integer.toString(mCurrentCommand) +" failed");
-					mWaitForAck=false;
-					mTransactionCompleted=true;
 					mTimer.cancel(); //Terminate the timer thread
 					mTimer.purge();
-					mListofInstructions.remove(0);
-					mInstructionStackLock=false;
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+					mInstructionStackLock=false;
 					if (mStreaming && getPacketReceptionRate()<100){
 						printLogDataForDebugging("Response not received for Get_Dir_Command. Loss bytes detected.");
 						mListofInstructions.clear();
-					} else {
+					} else  if(!mStreaming){
 						//CODE TO BE USED
 						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection  ");
 						if (mWaitForResponse){
@@ -1995,15 +1804,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 					}
 				}
 				else {
-					printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection  ");
-					if (mWaitForResponse){
-						printLogDataForDebugging("Response not received");
-						sendStatusMSGtoUI("Response not received, please reset Shimmer Device." + mMyBluetoothAddress);
+					
+					if(!mStreaming){
+						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection  ");
+						if (mWaitForResponse){
+							printLogDataForDebugging("Response not received");
+							sendStatusMSGtoUI("Response not received, please reset Shimmer Device." + mMyBluetoothAddress);
+						}
+						mWaitForAck=false;
+						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+						stop(); //If command fail exit device 
+					} else {
+						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed;");
+						mWaitForAck=false;
+						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+						mInstructionStackLock=false;
 					}
-					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-					stop(); //If command fail exit device 
-
 				}
 			}
 		}
@@ -2161,6 +1977,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		mFirstTimeCalTime=true;
 		mLastReceivedCalibratedTimeStamp = -1;
 		mSync=true; // a backup sync done every time you start streaming
+		mByteArrayOutputStream.reset();
 		mListofInstructions.add(new byte[]{START_STREAMING_COMMAND});
 	}
 	
@@ -2877,6 +2694,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	}
 
 	public void writeLEDCommand(int command) {
+		
 //		if (mShimmerVersion!=HW_ID_SHIMMER_3){
 			if (mFirmwareVersionParsed.equals("BoilerPlate 0.1.0")){
 			} else {

@@ -254,7 +254,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 		try {
 			if (mSerialPort.isOpened())
 			{
-			return(mSerialPort.readBytes(numberofBytes));
+				return(mSerialPort.readBytes(numberofBytes));
 			} else {
 				System.out.println("ALERT!!");
 			}
