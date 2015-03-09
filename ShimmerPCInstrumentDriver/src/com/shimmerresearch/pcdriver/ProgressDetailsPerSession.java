@@ -69,6 +69,8 @@ public class ProgressDetailsPerSession implements Serializable{
 //			mListOfFailedFiles.add(uniqueID);
 //			mNumberOfFails = mListOfFailedFiles.size();
 //		}
+		if(mOperationState != OperationState.INPROGRESS)
+			mOperationState = OperationState.INPROGRESS;
 		
 		if(mProgressCounter==mNumberOfFiles){
 			mOperationState = OperationState.SUCCESS;
@@ -115,6 +117,9 @@ public class ProgressDetailsPerSession implements Serializable{
 		progressSync = (progressSync*100)/(double) mNumberOfFolders;
 		mProgressPercentageComplete = (int) ((progressParse+progressSync)/2);
 		
+		if(mOperationState != OperationState.INPROGRESS)
+			mOperationState = OperationState.INPROGRESS;
+		
 		if(mFoldersCounter==mMapOfFoldersProgressInfo.size()){
 			mOperationState = OperationState.SUCCESS;
 		}
@@ -133,18 +138,18 @@ public class ProgressDetailsPerSession implements Serializable{
 	
 	public void updateProgressImportFail(MsgDock msgDock, String uniqueID){
 		
-//		if(mMapOfFilesProgressInfo.containsKey(uniqueID)){
+		if(mMapOfFilesProgressInfo.containsKey(uniqueID)){
 			ProgressDetailsPerFile dpf = mMapOfFilesProgressInfo.get(uniqueID);
 			dpf.mOperationState = ProgressDetailsPerFile.OperationState.FAIL;
 			dpf.mProgressPercentageComplete=100;
 			dpf.addErrorMessage(msgDock);
 			mListOfFailedFiles.add(uniqueID);
 			mNumberOfFails = mListOfFailedFiles.size();
-//		}
-//		else{
-//			mListOfFailedFiles.add("");
-//			mNumberOfFails = mListOfFailedFiles.size();
-//		}
+		}
+		else{
+			mListOfFailedFiles.add(uniqueID);
+			mNumberOfFails = mListOfFailedFiles.size();
+		}
 		
 		mProgressPercentageComplete=100;
 		mOperationState = OperationState.FAIL;
@@ -161,10 +166,19 @@ public class ProgressDetailsPerSession implements Serializable{
 			mNumberOfFails = mListOfFailedFiles.size();
 		}
 		
+		if(mOperationState != OperationState.INPROGRESS)
+			mOperationState = OperationState.INPROGRESS;
+		
 		if(mProgressCounter==mNumberOfFiles){
 			mOperationState = OperationState.SUCCESS;
 			mProgressPercentageComplete=100;
 		}
+	}
+	
+	public void updateProgressDeleteFail(){
+		
+		mOperationState = OperationState.FAIL;
+		mProgressPercentageComplete=100;
 	}
 	
 //	public void updateProgressParse(String uniqueID, boolean operationSuccessful){
