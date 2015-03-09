@@ -303,11 +303,6 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 	 */
 	private void initialize() {
 		setWaitForData(mShimmer);
-		configFrame = new JFrame("Configure");
-		configFrame.setBounds(150, 150, 370, 735);
-		configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		configFrame.getContentPane().setLayout(null);
-		configFrame.setVisible(false);
 		
 		frame = new JFrame("Shimmer Connect");
 		frame.setBounds(100, 100, 720, 592);
@@ -315,12 +310,19 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 		frame.getContentPane().setLayout(null);
 		backgroundColor = frame.getBackground();
 		
+
+		configFrame = new JFrame("Configure");
+		configFrame.setBounds(150, 150, 370, 735);
+		configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		configFrame.getContentPane().setLayout(null);
+		configFrame.setVisible(false);
+		
+		
 		exgFrame = new JFrame("EXG");
 		exgFrame.setBounds(150, 150, 400, 540);
 		exgFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		exgFrame.getContentPane().setLayout(null);
 		exgFrame.setVisible(false);
-		
 
 		btnConnect = new JButton("Connect");
 		btnConnect.addActionListener(new ActionListener() {

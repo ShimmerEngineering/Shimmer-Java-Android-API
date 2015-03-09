@@ -570,7 +570,8 @@ public class Configuration {
 					public static final String INT_EXP_A14 = "Int_Exp_A14";
 					public static final String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
 					public static final String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
-					public static final String GSR_RAW = "GSR Raw";
+					public static final String GSR = "GSR";
+					//public static final String GSR_RAW = "GSR Raw";
 					public static final String GSR_RES = "GSR Res";
 					public static final String INT_EXP_A1 = "Int_Exp_A1";
 					public static final String EXP_BOARD_A0 = "Exp Board A0";
@@ -606,6 +607,7 @@ public class Configuration {
 					public static final String AXIS_ANGLE_X = "Axis Angle X";
 					public static final String AXIS_ANGLE_Y = "Axis Angle Y";
 					public static final String AXIS_ANGLE_Z = "Axis Angle Z";
+					public static final String VOLT_REG = "VSenseReg";
 				}
 		
 		public final static String[] ListofCompatibleSensors={"Accelerometer","Gyroscope","Magnetometer","Battery Voltage","ECG","EMG","GSR","Exp Board","Bridge Amplifier","Heart Rate"};
