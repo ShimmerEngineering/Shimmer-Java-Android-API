@@ -46,7 +46,7 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_ID_DOCK_SD_SCAN_UPDATE = 101;
 	public final static int MSG_ID_DOCK_SD_SCAN_SUCCESS = 102;
-	public final static int MSG_ID_DOCK_SD_SCAN_FAILED = 103;
+	public final static int MSG_ID_DOCK_SD_SCAN_FAIL = 103;
 	public final static int MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK = 104; 
 	public final static int MSG_ID_DOCK_SD_COPY_UPDATE = 105;
 	public final static int MSG_ID_DOCK_SD_COPY_PROGRESS = 106;
@@ -129,7 +129,7 @@ public class MsgDock {
         aMap.put(MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS, "MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS");
         aMap.put(MSG_ID_DOCK_SD_SCAN_UPDATE, "MSG_ID_DOCK_SD_SCAN_UPDATE");
         aMap.put(MSG_ID_DOCK_SD_SCAN_SUCCESS, "MSG_ID_DOCK_SD_SCAN_SUCCESS");
-        aMap.put(MSG_ID_DOCK_SD_SCAN_FAILED, "MSG_ID_DOCK_SD_SCAN_FAILED");
+        aMap.put(MSG_ID_DOCK_SD_SCAN_FAIL, "MSG_ID_DOCK_SD_SCAN_FAILED");
         aMap.put(MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK, "MSG_ID_DOCK_SD_SCAN_FINISHED_PER_DOCK");
         aMap.put(MSG_ID_DOCK_SD_COPY_UPDATE, "MSG_ID_DOCK_SD_COPY_UPDATE");
         aMap.put(MSG_ID_DOCK_SD_COPY_SUCCESS, "MSG_ID_DOCK_SD_COPY_SUCCESS");
