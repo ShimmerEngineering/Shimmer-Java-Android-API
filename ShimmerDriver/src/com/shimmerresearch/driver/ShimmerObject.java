@@ -833,7 +833,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}	
 				}
 				else{
-					if(newPacketInt[iOffset] == 4294967295L){
+					if(newPacketInt[iOffset] == 4294967295L){ //this is 4 bytes
 						offsetValue=Double.NaN;
 					} else {
 						offsetValue=(double)newPacketInt[iOffset];
@@ -2887,7 +2887,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	protected int getSignalIndex(String signalName) {
-		int iSignal=0; //used to be -1, putting to zero ensure it works eventhough it might be wrong SR30
+		int iSignal=-1; //better to fail //used to be -1, putting to zero ensure it works eventhough it might be wrong SR30
 		for (int i=0;i<mSignalNameArray.length;i++) {
 			if (signalName==mSignalNameArray[i]) {
 				iSignal=i;
