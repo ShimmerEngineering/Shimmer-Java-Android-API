@@ -50,6 +50,13 @@ public class SessionDetails {
 	}
 	
 	
-	
+	public Object clone(){
+		SessionDetails details = new SessionDetails(this.mSessionName, this.mSessionDuration, this.mFileSize, this.mDockID, this.mUniqueSlotID, this.mMacAddress, this.mStartingRTC, this.mRTCDifference, this.mConfigTime);
+		details.mTrialName = this.mTrialName;
+		details.mFileSize = this.mFileSize;
+		details.mRTCUserInput = this.mRTCUserInput;
+		details.mSuggestionIndex = this.mSuggestionIndex;
+		return details;
+	}
 	
 }

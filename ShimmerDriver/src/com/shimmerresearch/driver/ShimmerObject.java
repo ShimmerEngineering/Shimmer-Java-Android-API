@@ -1149,7 +1149,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.INT_EXP_A12) > 0) 
 					|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A12) > 0)
 					) {
-				int iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A1);
+				int iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A12);
 				tempData[0] = (double)newPacketInt[iA12];
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A12,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA12]));
 				uncalibratedData[iA12]=(double)newPacketInt[iA12];
