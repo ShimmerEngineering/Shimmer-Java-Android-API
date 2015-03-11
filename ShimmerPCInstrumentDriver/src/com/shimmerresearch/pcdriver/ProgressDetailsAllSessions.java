@@ -46,6 +46,9 @@ public class ProgressDetailsAllSessions implements Serializable{
 		//needed for the delete feedback
 		public List<ShimmerLogDetails> mListOfFilesToDelete;
 		
+		//this indicates if we are only deleting the data from the SD card, that's it, the copy and import is not done
+		public boolean mOnlyDelete=false;
+		
 		public ProgressDetailsAllSessions(Operation operationCurrent) {
 			super();
 			mOperationCurrent = operationCurrent;
@@ -82,6 +85,24 @@ public class ProgressDetailsAllSessions implements Serializable{
 			}
 		}
 		
+		public void updateProgressOnlyDelete(String uniqueID,boolean operationSuccessful){
+			
+			double progress=0;
+			for(ProgressDetailsPerSession dps: mMapOfSessionsProgressInfo.values()){
+				progress += dps.mProgressPercentageComplete;
+			}
+			
+			mProgressPercentageComplete = (int) (progress/(double)mNumberOfSessions);
+			
+			if(!operationSuccessful) {
+				mListOfFailedSessions.add(uniqueID);
+				mNumberOfFails = mListOfFailedSessions.size();
+				if(mNumberOfFails==mMapOfSessionsProgressInfo.size()){
+					mProgressPercentageComplete=100;
+				}
+			}
+		}
+		
 		public void updateDeleteProgress(String dock, int slotNumber, String uniqueID){
 			
 			String key=null;
@@ -95,10 +116,12 @@ public class ProgressDetailsAllSessions implements Serializable{
 					dpf.mOperationState = ProgressDetailsPerFile.OperationState.SUCCESS;
 					dpf.mProgressPercentageComplete=100;
 					dps.updateProgressDelete(path, true);
-					updateProgress(key, true);
+					if(!mOnlyDelete)
+						updateProgress(key, true);
+					else
+						updateProgressOnlyDelete(key, true);
 				}
-			}
-				
+			}				
 		}
 		
 		public void setDataForCopy(List<ShimmerLogDetails> list){
