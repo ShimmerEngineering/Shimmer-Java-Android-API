@@ -6639,9 +6639,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 
 			if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
-					||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
-					||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
-					||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)) {
+					||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)
+					||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)
+					||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled)) {
 				if(isEXGUsingDefaultRespirationConfiguration()) {
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
