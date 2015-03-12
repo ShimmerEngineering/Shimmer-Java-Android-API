@@ -68,7 +68,7 @@ public class ProgressDetailsAllSessions implements Serializable{
 			}
 			mProgressPercentagePerStep = progress/(double)mNumberOfSessions;
 			if(mProgressPercentagePerStep==100 && mOperationCurrent==Operation.SD_DELETE){
-				mProgressPercentageComplete = 100;
+				mProgressPercentageComplete = 99;
 			}
 			else
 				mProgressPercentageComplete = (int) ((int) mProgressStepCompleted + (mProgressPercentagePerStep/3.0)); //divede between 3 because there are 3 steps, copy, import and delete
@@ -243,6 +243,17 @@ public class ProgressDetailsAllSessions implements Serializable{
 			mNumberOfFails=0;
 		}
 		
+		
+		public void allImportProcessDone(){
+			for(ProgressDetailsPerSession dps: mMapOfSessionsProgressInfo.values()){
+				if(dps.mOperationState != ProgressDetailsPerSession.OperationState.FAIL &&
+						dps.mOperationState != ProgressDetailsPerSession.OperationState.DELETED)
+					dps.mOperationState = ProgressDetailsPerSession.OperationState.DELETED;
+				if(dps.mProgressPercentageComplete!=100)
+					dps.mProgressPercentageComplete=100;
+			}
+			mProgressPercentageComplete=100;
+		}
 		
 		/**Performs a deep copy of ProgressDetailsAll by Serializing
 		 * @return ProgressDetailsAll the deep copy of the current ProgressDetailsAll
