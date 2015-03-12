@@ -17,9 +17,14 @@ public class ProgressDetailsPerSession implements Serializable{
 		PENDING("Pending"),
 		INPROGRESS("In Progress"),
 		COPYING("Copying"),
-		SYNC("Sync"),
+		COPIED("Copied"),
+		IMPORTING("Importing"),
+		IMPORTED("Imported"),
+		DELETING("Deleting"),
+		DELETED("Deleted"),
 		SUCCESS("Success"),
 		FAIL("Fail");
+		
 		
 //		private int value;
 		public String tag;
@@ -69,11 +74,11 @@ public class ProgressDetailsPerSession implements Serializable{
 //			mListOfFailedFiles.add(uniqueID);
 //			mNumberOfFails = mListOfFailedFiles.size();
 //		}
-		if(mOperationState != OperationState.INPROGRESS)
-			mOperationState = OperationState.INPROGRESS;
+		if(mOperationState != OperationState.COPYING)
+			mOperationState = OperationState.COPYING;
 		
 		if(mProgressCounter==mNumberOfFiles){
-			mOperationState = OperationState.SUCCESS;
+			mOperationState = OperationState.COPIED;
 			mProgressPercentageComplete=100;
 		}
 	}
@@ -117,11 +122,11 @@ public class ProgressDetailsPerSession implements Serializable{
 		progressSync = (progressSync*100)/(double) mNumberOfFolders;
 		mProgressPercentageComplete = (int) ((progressParse+progressSync)/2);
 		
-		if(mOperationState != OperationState.INPROGRESS)
-			mOperationState = OperationState.INPROGRESS;
+		if(mOperationState != OperationState.IMPORTING)
+			mOperationState = OperationState.IMPORTING;
 		
 		if(mFoldersCounter==mMapOfFoldersProgressInfo.size()){
-			mOperationState = OperationState.SUCCESS;
+			mOperationState = OperationState.IMPORTED;
 		}
 		
 		if(!operationSuccessful) {
@@ -166,11 +171,11 @@ public class ProgressDetailsPerSession implements Serializable{
 			mNumberOfFails = mListOfFailedFiles.size();
 		}
 		
-		if(mOperationState != OperationState.INPROGRESS)
-			mOperationState = OperationState.INPROGRESS;
+		if(mOperationState != OperationState.DELETING)
+			mOperationState = OperationState.DELETING;
 		
 		if(mProgressCounter==mNumberOfFiles){
-			mOperationState = OperationState.SUCCESS;
+			mOperationState = OperationState.DELETED;
 			mProgressPercentageComplete=100;
 		}
 	}
