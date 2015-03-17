@@ -3154,6 +3154,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		return mOrientationEnabled;
 	}
     
+	/**Only used for LogAndStream
+	 * @return
+	 */
 	public boolean isSensing(){
 		return mSensingStatus;
 	}
