@@ -3112,6 +3112,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
         return mState;
     }
 
+    /** Returns true if device is streaming (Bluetooth)
+     * @return
+     */
+    public boolean isStreaming(){
+    	return mStreaming;
+    }
     
     /**** SET FUNCTIONS *****/
     
