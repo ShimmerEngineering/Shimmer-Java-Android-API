@@ -2752,7 +2752,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 		for (int i=0;i<dataType.length;i++)
 			if (dataType[i]=="u8") {
-				formattedData[i]=(int)data[iData];
+				formattedData[i]=(int)0xFF & data[iData];
 				iData=iData+1;
 			} else if (dataType[i]=="i8") {
 				formattedData[i]=calculatetwoscomplement((int)((int)0xFF & data[iData]),8);
