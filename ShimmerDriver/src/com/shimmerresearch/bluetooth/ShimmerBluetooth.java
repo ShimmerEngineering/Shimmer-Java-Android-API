@@ -343,7 +343,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								mWaitForAck=false;
 								byte[] instruction=mListofInstructions.get(0);
 								double tempdouble=-1;
-								if (mHardwareVersion==HW_ID_SHIMMER_2 || mHardwareVersion==HW_ID_SHIMMER_2R){
+								if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
 									tempdouble=(double)1024/instruction[1];
 								} else {
 									tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
@@ -351,7 +351,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								mShimmerSamplingRate = tempdouble;
 								mListofInstructions.remove(0);
 								mInstructionStackLock=false;
-								if (mHardwareVersion == HW_ID_SHIMMER_3){ // has to be here because to ensure the current exgregister settings have been read back
+								if (mHardwareVersion == HW_ID.SHIMMER_3){ // has to be here because to ensure the current exgregister settings have been read back
 									//check sampling rate and adjust accordingly;
 									/*if (mShimmerSamplingRate<=128){
 										writeEXGRateSetting(1,0);
@@ -554,7 +554,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								mTimer.purge();
 								mAccelRange=(int)(((byte[])mListofInstructions.get(0))[1]);
 								if (mDefaultCalibrationParametersAccel == true){
-									if (mHardwareVersion != HW_ID_SHIMMER_3){
+									if (mHardwareVersion != HW_ID.SHIMMER_3){
 										if (getAccelRange()==0){
 											mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
 										} else if (getAccelRange()==1){
@@ -564,7 +564,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 										} else if (getAccelRange()==3){
 											mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
 										}
-									} else if(mHardwareVersion == HW_ID_SHIMMER_3){
+									} else if(mHardwareVersion == HW_ID.SHIMMER_3){
 										mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
 										mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
 										mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
@@ -572,7 +572,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								}
 
 								if (mDefaultCalibrationParametersDigitalAccel){
-									if (mHardwareVersion == HW_ID_SHIMMER_3){
+									if (mHardwareVersion == HW_ID.SHIMMER_3){
 										if (getAccelRange()==1){
 											mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
 											mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
@@ -640,7 +640,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								mTimer.purge();
 								mGyroRange=(int)(((byte[])mListofInstructions.get(0))[1]);
 								if (mDefaultCalibrationParametersGyro == true){
-									if(mHardwareVersion == HW_ID_SHIMMER_3){
+									if(mHardwareVersion == HW_ID.SHIMMER_3){
 										mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
 										mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
 										if (mGyroRange==0){
@@ -733,7 +733,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								mWaitForAck = false;
 								mMagRange=(int)((byte [])mListofInstructions.get(0))[1];
 								if (mDefaultCalibrationParametersMag == true){
-									if(mHardwareVersion == HW_ID_SHIMMER_3){
+									if(mHardwareVersion == HW_ID.SHIMMER_3){
 										mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
 										mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
 										if (mMagRange==1){
@@ -894,7 +894,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 //								mFirmwareVersionParsed = "BtStream " + Double.toString(mFWVersion) + "."+ Integer.toString(mFirmwareVersionRelease);
 //							}
 							if(mFirmwareIdentifier==1){ //BTStream
-								if((mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1) || (mFirmwareVersionMajor==1 && mFirmwareVersionMinor==2 && mHardwareVersion==HW_ID_SHIMMER_2R))
+								if((mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1) || (mFirmwareVersionMajor==1 && mFirmwareVersionMinor==2 && mHardwareVersion==HW_ID.SHIMMER_2R))
 									mFirmwareVersionCode = 1;
 								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
 									mFirmwareVersionCode = 2;
@@ -924,9 +924,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							mListofInstructions.remove(0);
 							mInstructionStackLock=false;
 							mTransactionCompleted=true;
-							if (mHardwareVersion == HW_ID_SHIMMER_2R){
+							if (mHardwareVersion == HW_ID.SHIMMER_2R){
 								initializeShimmer2R();
-							} else if (mHardwareVersion == HW_ID_SHIMMER_3) {
+							} else if (mHardwareVersion == HW_ID.SHIMMER_3) {
 								initializeShimmer3();
 							}
 //							readShimmerVersion();
@@ -962,7 +962,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 								e.printStackTrace();
 							}
 							List<Byte> buffer = new  ArrayList<Byte>();
-							if (!(mHardwareVersion==HW_ID_SHIMMER_3))
+							if (!(mHardwareVersion==HW_ID.SHIMMER_3))
 							{
 								 for (int i = 0; i < 5; i++)
 	                                {
@@ -1122,7 +1122,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							byte[] bufferAccelSensitivity = readBytes(1);
 							mAccelRange=bufferAccelSensitivity[0];
 							if (mDefaultCalibrationParametersAccel == true){
-								if (mHardwareVersion != HW_ID_SHIMMER_3){
+								if (mHardwareVersion != HW_ID.SHIMMER_3){
 									if (getAccelRange()==0){
 										mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
 									} else if (getAccelRange()==1){
@@ -1132,7 +1132,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									} else if (getAccelRange()==3){
 										mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
 									}
-								} else if(mHardwareVersion == HW_ID_SHIMMER_3){
+								} else if(mHardwareVersion == HW_ID.SHIMMER_3){
 									if (getAccelRange()==0){
 										mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
 										mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
@@ -1162,7 +1162,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							byte[] bufferGyroSensitivity = readBytes(1);
 							mGyroRange=bufferGyroSensitivity[0];
 							if (mDefaultCalibrationParametersGyro == true){
-								if(mHardwareVersion == HW_ID_SHIMMER_3){
+								if(mHardwareVersion == HW_ID.SHIMMER_3){
 									mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
 									mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
 									if (mGyroRange==0){
@@ -1186,13 +1186,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							mTimer.purge();
 							mWaitForResponse=false;
 							if(mStreaming==false) {
-								if (mHardwareVersion==HW_ID_SHIMMER_2R || mHardwareVersion==HW_ID_SHIMMER_2){    
+								if (mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
 									byte[] bufferSR = readBytes(1);
 									if (mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
 										double val=(double)(bufferSR[0] & (byte) ACK_COMMAND_PROCESSED);
 										mShimmerSamplingRate=1024/val;
 									}
-								} else if (mHardwareVersion==HW_ID_SHIMMER_3){
+								} else if (mHardwareVersion==HW_ID.SHIMMER_3){
 									byte[] bufferSR = readBytes(2); //read the sampling rate
 									mShimmerSamplingRate = 32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8));
 								}
@@ -1234,7 +1234,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							if (mHardwareVersion != HW_ID_SHIMMER_3){
+							if (mHardwareVersion != HW_ID.SHIMMER_3){
 								byte[] bufferCalibrationParameters = readBytes(21);
 								mAccelCalRawParams = new byte[22];
 								System.arraycopy(bufferCalibrationParameters, 0, mAccelCalRawParams, 1, 21);
@@ -1388,7 +1388,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							mTimer.cancel(); //cancel the ack timer
 							mTimer.purge();
 							
-							if (mHardwareVersion==HW_ID_SHIMMER_2R || mHardwareVersion==HW_ID_SHIMMER_2){    
+							if (mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
 								byte[] bufferConfigByte0 = readBytes(1);
 								mConfigByte0 = bufferConfigByte0[0] & 0xFF;
 							} else {
@@ -1412,9 +1412,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							mHardwareVersion=(int)bufferShimmerVersion[0];
 							mTransactionCompleted=true;
 							mInstructionStackLock=false;
-//							if (mShimmerVersion == HW_ID_SHIMMER_2R){
+//							if (mShimmerVersion == HW_ID.SHIMMER_2R){
 //								initializeShimmer2R();
-//							} else if (mShimmerVersion == HW_ID_SHIMMER_3) {
+//							} else if (mShimmerVersion == HW_ID.SHIMMER_3) {
 //								initializeShimmer3();
 //							}
 							msg = "Shimmer Version (HW) Response Received: " + Arrays.toString(bufferShimmerVersion);
@@ -1622,7 +1622,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									} 
 									
 									
-								} else if (mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM && bufferTemp[mPacketSize+2]==INSTREAM_CMD_RESPONSE){ //this is for logandstream stupport, command is trasmitted and ack received
+								} else if (mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM && bufferTemp[mPacketSize+2]==INSTREAM_CMD_RESPONSE){ //this is for logandstream stupport, command is trasmitted and ack received
 									System.out.println("COMMAND TXed and ACK RECEIVED IN STREAM");
 									System.out.println("INS CMD RESP");
 									byte[] command = readBytes(2);
@@ -1722,7 +1722,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 					mFirmwareVersionInternal=0;
 					mFirmwareVersionCode=0;
 					mFirmwareVersionParsed="BoilerPlate 0.1.0";
-					mHardwareVersion = HW_ID_SHIMMER_2R; // on Shimmer2r has
+					mHardwareVersion = HW_ID.SHIMMER_2R; // on Shimmer2r has
 					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
           	        Bundle bundle = new Bundle();
           	        bundle.putString(TOAST, "Firmware Version: " +mFirmwareVersionParsed);
@@ -2027,7 +2027,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	public void readShimmerVersion() {
 		mDummy=false;//false
 //		if (mFirmwareVersionParsed.equals("BoilerPlate 0.1.0")){
-//			mShimmerVersion = HW_ID_SHIMMER_2R; // on Shimmer2r has 
+//			mShimmerVersion = HW_ID.SHIMMER_2R; // on Shimmer2r has 
 			
 //		} else if (mFWVersion!=1.2){
 			mListofInstructions.add(new byte[]{GET_SHIMMER_VERSION_COMMAND_NEW});
@@ -2062,7 +2062,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	}
 
 	public void readpressurecalibrationcoefficients() {
-		if (mHardwareVersion == HW_ID_SHIMMER_3){
+		if (mHardwareVersion == HW_ID.SHIMMER_3){
 			if (mFirmwareVersionCode>1){
 				mListofInstructions.add(new byte[]{ GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND});
 			}
@@ -2239,7 +2239,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param rate it is a value between 0 and 255; 6 = 1152Hz, 77 = 102.56Hz, 255 = 31.25Hz
 	 */
 	private void writeGyroSamplingRate(int rate) {
-		if (mHardwareVersion == HW_ID_SHIMMER_3){
+		if (mHardwareVersion == HW_ID.SHIMMER_3){
 			mTempIntValue=rate;
 			mListofInstructions.add(new byte[]{SET_MPU9150_SAMPLING_RATE_COMMAND, (byte)rate});
 		}
@@ -2263,7 +2263,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param rate it is a value between 1 and 7; 1 = 1 Hz; 2 = 10 Hz; 3 = 25 Hz; 4 = 50 Hz; 5 = 100 Hz; 6 = 200 Hz; 7 = 400 Hz
 	 */
 	private void writeAccelSamplingRate(int rate) {
-		if (mHardwareVersion == HW_ID_SHIMMER_3){
+		if (mHardwareVersion == HW_ID.SHIMMER_3){
 			mTempIntValue=rate;
 			mListofInstructions.add(new byte[]{SET_ACCEL_SAMPLING_RATE_COMMAND, (byte)rate});
 		}
@@ -2286,7 +2286,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			byte firstByte=(byte)(enabledSensors & 0xFF);
 
 			//write(new byte[]{SET_SENSORS_COMMAND,(byte) lowByte, highByte});
-			if (mHardwareVersion == HW_ID_SHIMMER_3){
+			if (mHardwareVersion == HW_ID.SHIMMER_3){
 				byte thirdByte=(byte)((enabledSensors & 16711680)>>16);
 
 				mListofInstructions.add(new byte[]{SET_SENSORS_COMMAND,(byte) firstByte,(byte) secondByte,(byte) thirdByte});
@@ -2304,7 +2304,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * 
 	 * */
 	public void writePressureResolution(int setting) {
-		if (mHardwareVersion==HW_ID_SHIMMER_3){
+		if (mHardwareVersion==HW_ID.SHIMMER_3){
 			mListofInstructions.add(new byte[]{SET_BMP180_PRES_RESOLUTION_COMMAND, (byte)setting});
 		}
 	}
@@ -2324,7 +2324,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param range is a numeric value defining the desired gyroscope range. 
 	 */
 	public void writeGyroRange(int range) {
-		if (mHardwareVersion==HW_ID_SHIMMER_3){
+		if (mHardwareVersion==HW_ID.SHIMMER_3){
 			mListofInstructions.add(new byte[]{SET_MPU9150_GYRO_RANGE_COMMAND, (byte)range});
 			mGyroRange=(int)range;
 		}
@@ -2336,13 +2336,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	public void writeSamplingRate(double rate) {
 		if (mInitialized=true) {
 			setShimmerSamplingRate(rate);
-			if (mHardwareVersion==HW_ID_SHIMMER_2 || mHardwareVersion==HW_ID_SHIMMER_2R){
+			if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
 
 				writeMagSamplingRate(mShimmer2MagRate);
 				
 				int samplingByteValue = (int) (1024/mShimmerSamplingRate); //the equivalent hex setting
 				mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(samplingByteValue), 0x00});
-			} else if (mHardwareVersion==HW_ID_SHIMMER_3) {
+			} else if (mHardwareVersion==HW_ID.SHIMMER_3) {
 	
 				writeMagSamplingRate(mLSM303MagRate);
 				writeAccelSamplingRate(mLSM303DigitalAccelRate);
@@ -2355,7 +2355,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		
 //		if (mInitialized=true) {
 //
-//			if (mShimmerVersion==HW_ID_SHIMMER_2 || mShimmerVersion==HW_ID_SHIMMER_2R){
+//			if (mShimmerVersion==HW_ID.SHIMMER_2 || mShimmerVersion==HW_ID.SHIMMER_2R){
 //				if (!mLowPowerMag){
 //					if (rate<=10) {
 //						writeMagSamplingRate(4);
@@ -2369,7 +2369,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 //				}
 //				rate=1024/rate; //the equivalent hex setting
 //				mListofInstructions.add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(rate), 0x00});
-//			} else if (mShimmerVersion==HW_ID_SHIMMER_3) {
+//			} else if (mShimmerVersion==HW_ID.SHIMMER_3) {
 //				if (!mLowPowerMag){
 //					if (rate<=1) {
 //						writeMagSamplingRate(1);
@@ -2673,7 +2673,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param range numeric value defining the desired GSR range. Valid range settings are 0 (10kOhm to 56kOhm), 1 (56kOhm to 220kOhm), 2 (220kOhm to 680kOhm), 3 (680kOhm to 4.7MOhm) and 4 (Auto Range).
 	 */
 	public void writeGSRRange(int range) {
-		if (mHardwareVersion == HW_ID_SHIMMER_3){
+		if (mHardwareVersion == HW_ID.SHIMMER_3){
 			if (mFirmwareVersionCode!=1 || mFirmwareVersionInternal >4){
 				mListofInstructions.add(new byte[]{SET_GSR_RANGE_COMMAND, (byte)range});
 			}
@@ -2695,7 +2695,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 	public void writeLEDCommand(int command) {
 		
-//		if (mShimmerVersion!=HW_ID_SHIMMER_3){
+//		if (mShimmerVersion!=HW_ID.SHIMMER_3){
 			if (mFirmwareVersionParsed.equals("BoilerPlate 0.1.0")){
 			} else {
 				mListofInstructions.add(new byte[]{SET_BLINK_LED, (byte)command});
@@ -2722,7 +2722,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	}
 
 	public void writeWRAccelCalibrationParameters(byte[] calibrationParameters) {
-		if(mHardwareVersion==HW_ID_SHIMMER_3){
+		if(mHardwareVersion==HW_ID.SHIMMER_3){
 			cmdcalibrationParameters[0] = SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND;
 			System.arraycopy(calibrationParameters, 0, cmdcalibrationParameters, 1, 21);
 			mListofInstructions.add(cmdcalibrationParameters);	
@@ -2828,7 +2828,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @param setBit value defining the desired setting of the Volt regulator (1=ENABLED, 0=DISABLED).
 	 */
 	public void writeInternalExpPower(int setBit) {
-		if (mHardwareVersion == HW_ID_SHIMMER_3 && mFirmwareVersionCode>=2){
+		if (mHardwareVersion == HW_ID.SHIMMER_3 && mFirmwareVersionCode>=2){
 			mListofInstructions.add(new byte[]{SET_INTERNAL_EXP_POWER_ENABLE_COMMAND,(byte) setBit});
 		} else {
 			
@@ -2905,7 +2905,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 * @return 0 in case the 5V Reg is disableb, 1 in case the 5V Reg is enabled, and -1 in case the device doesn't support this feature
 	 */
 	public int get5VReg(){
-		if(mHardwareVersion!=HW_ID_SHIMMER_3){
+		if(mHardwareVersion!=HW_ID.SHIMMER_3){
 			if ((mConfigByte0 & (byte)128)!=0) {
 				//then set ConfigByte0 at bit position 7
 				return 1;
@@ -3294,7 +3294,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		
 		if (mFirmwareVersionCode==1 && mFirmwareVersionInternal==0) {
 
-		} else if (mHardwareVersion == HW_ID_SHIMMER_3) {
+		} else if (mHardwareVersion == HW_ID.SHIMMER_3) {
 			setLowPowerAccelWR(!enable);
 //			setHighResAccelWR(enable);
 			if (enable) {
@@ -3313,7 +3313,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 //		while(getInstructionStatus()==false) {};
 //		if (mFirmwareVersionCode==1 && mFirmwareVersionRelease==0) {
 //
-//		} else if (mShimmerVersion == HW_ID_SHIMMER_3) {
+//		} else if (mShimmerVersion == HW_ID.SHIMMER_3) {
 //			if (enable) {
 //				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, (byte)0x01});
 //				mListofInstructions.add(new byte[]{SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, (byte)0x00});
@@ -3423,7 +3423,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	 */
 	public long sensorConflictCheckandCorrection(long enabledSensors,long sensorToCheck){
 
-		if (mHardwareVersion==HW_ID_SHIMMER_2R || mHardwareVersion==HW_ID_SHIMMER_2){
+		if (mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){
 			if ((sensorToCheck & SENSOR_GYRO) >0 || (sensorToCheck & SENSOR_MAG) >0){
 				enabledSensors = disableBit(enabledSensors,SENSOR_ECG);
 				enabledSensors = disableBit(enabledSensors,SENSOR_EMG);
@@ -3465,7 +3465,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			}
 		}
 
-		else if(mHardwareVersion==HW_ID_SHIMMER_3){
+		else if(mHardwareVersion==HW_ID.SHIMMER_3){
 			
 			if((sensorToCheck & SENSOR_GSR) >0){
 				enabledSensors = disableBit(enabledSensors,SENSOR_INT_ADC_A1);
@@ -3543,7 +3543,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	
 	public boolean sensorConflictCheck(long enabledSensors){
 		boolean pass=true;
-		if (mHardwareVersion != HW_ID_SHIMMER_3){
+		if (mHardwareVersion != HW_ID.SHIMMER_3){
 			if (((enabledSensors & 0xFF)& SENSOR_GYRO) > 0){
 				if (((enabledSensors & 0xFF)& SENSOR_EMG) > 0){
 					pass=false;
@@ -3821,14 +3821,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	private long generateSensorBitmapForHardwareControl(long enabledSensors){
 		long hardwareSensorBitmap=0;
 
-		//check if the batt volt is enabled (this is only applicable for HW_ID_SHIMMER_2R
-		if (mHardwareVersion == HW_ID_SHIMMER_2R || mHardwareVersion == HW_ID_SHIMMER_2){
+		//check if the batt volt is enabled (this is only applicable for HW_ID.SHIMMER_2R
+		if (mHardwareVersion == HW_ID.SHIMMER_2R || mHardwareVersion == HW_ID.SHIMMER_2){
 			if (((enabledSensors & 0xFFFFF) & SENSOR_BATT) > 0 ){
 				enabledSensors = enabledSensors & 0xFFFF;
 				enabledSensors = enabledSensors|SENSOR_EXP_BOARD_A0|SENSOR_EXP_BOARD_A7;
 			}
 			hardwareSensorBitmap  = enabledSensors;
-		} else if (mHardwareVersion == HW_ID_SHIMMER_3){
+		} else if (mHardwareVersion == HW_ID.SHIMMER_3){
 			if (((enabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL;
 			}
@@ -3901,7 +3901,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	@Override
 	protected void checkBattery(){
 		if (mStreaming ){
-			if(mHardwareVersion == HW_ID_SHIMMER_3 && mFirmwareIdentifier==3){
+			if(mHardwareVersion == HW_ID.SHIMMER_3 && mFirmwareIdentifier==3){
 				if (!mWaitForAck) {	
 					if (mVSenseBattMA.getMean()<mLowBattLimit*1000*0.8) {
 						if (mCurrentLEDStatus!=2) {
@@ -3919,7 +3919,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 				}
 			}
-			if(mHardwareVersion == HW_ID_SHIMMER_2R){
+			if(mHardwareVersion == HW_ID.SHIMMER_2R){
 				if (!mWaitForAck) {	
 					if (mVSenseBattMA.getMean()<mLowBattLimit*1000) {
 						if (mCurrentLEDStatus!=1) {
