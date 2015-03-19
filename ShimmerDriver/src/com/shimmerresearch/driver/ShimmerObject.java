@@ -1135,7 +1135,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.INT_EXP_A1) > 0) 
 					|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A1) > 0)
 					) {
-				if ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A1) > 0){
+				if ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.BRIDGE_AMP) > 0){
 					int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP);
 					tempData[0] = (double)newPacketInt[iA1];
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA1]));
