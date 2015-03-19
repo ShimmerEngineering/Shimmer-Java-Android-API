@@ -6781,6 +6781,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				CompatibleVersionDetails baseSdLog = 				new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ANY_VERSION);
 				CompatibleVersionDetails baseBtStream = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ANY_VERSION);
 				CompatibleVersionDetails baseLogAndStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ANY_VERSION);
+				CompatibleVersionDetails baseGqGsr = 					new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,0,0,0,ANY_VERSION);
 				
 				CompatibleVersionDetails baseExgSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG); 
 				CompatibleVersionDetails baseExgUnifiedSdLog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
@@ -6823,7 +6824,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
 				
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoGsr = Arrays.asList(
-						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
+						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream,
 						baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream);
 				
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
