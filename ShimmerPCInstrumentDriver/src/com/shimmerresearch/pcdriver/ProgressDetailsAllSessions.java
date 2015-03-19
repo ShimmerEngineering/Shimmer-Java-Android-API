@@ -172,7 +172,7 @@ public class ProgressDetailsAllSessions implements Serializable{
 								}
 							}
 							else{
-								dps = new ProgressDetailsPerSession(ProgressDetailsPerSession.OperationState.PENDING);
+								dps = new ProgressDetailsPerSession(ProgressDetailsPerSession.OperationState.COPIED);
 //								String path = ld.mAbsolutePathWhereFileWasCopied.replace("//", "\\");
 //								path = path.replace("/", "\\");
 								dps.mMapOfFilesProgressInfo.put(ld.mAbsolutePathWhereFileWasCopied, new ProgressDetailsPerFile());
@@ -209,7 +209,7 @@ public class ProgressDetailsAllSessions implements Serializable{
 					dps.updateProgressTotal();
 				}
 				else{
-					ProgressDetailsPerSession dps = new ProgressDetailsPerSession(ProgressDetailsPerSession.OperationState.PENDING);
+					ProgressDetailsPerSession dps = new ProgressDetailsPerSession(ProgressDetailsPerSession.OperationState.IMPORTED);
 					dps.mMapOfFilesProgressInfo.put(ld.mAbsolutePath, new ProgressDetailsPerFile());
 					dps.updateProgressTotal();
 					mMapOfSessionsProgressInfo.put(key, dps);

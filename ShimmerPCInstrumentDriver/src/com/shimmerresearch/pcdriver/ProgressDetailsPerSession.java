@@ -41,7 +41,7 @@ public class ProgressDetailsPerSession implements Serializable{
 	//the key is the absolute path of the folder
 	public SerializableTreeMap<String, Double> mMapOfFoldersProgressInfo = new SerializableTreeMap<String, Double>();
 	
-	public OperationState mOperationState = OperationState.PENDING;
+	public OperationState mOperationState;// = OperationState.PENDING;
 
 	public int mNumberOfFiles = 0;
 	public int mNumberOfFolders = 0;

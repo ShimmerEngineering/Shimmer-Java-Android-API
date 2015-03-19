@@ -5117,6 +5117,42 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public double[][] getOffsetVectorMatrixWRAccel(){
 		return mOffsetVectorWRAccel;
 	}
+	
+	public double[][] getOffsetVectorMPLAccel(){
+		return OffsetVectorMPLAccel;
+	}
+	
+	public double[][] getSensitivityMatrixMPLAccel(){
+		return SensitivityMatrixMPLAccel;
+	}
+	
+	public double[][] getAlignmentMatrixMPLAccel(){
+		return AlignmentMatrixMPLAccel;
+	}
+	
+	public double[][] getOffsetVectorMPLMag(){
+		return OffsetVectorMPLMag;
+	}
+	
+	public double[][] getSensitivityMatrixMPLMag(){
+		return SensitivityMatrixMPLMag;
+	}
+	
+	public double[][] getAlignmentMatrixMPLMag(){
+		return AlignmentMatrixMPLMag;
+	}
+	
+	public double[][] getOffsetVectorMPLGyro(){
+		return OffsetVectorMPLGyro;
+	}
+	
+	public double[][] getSensitivityMatrixMPLGyro(){
+		return SensitivityMatrixMPLGyro;
+	}
+	
+	public double[][] getAlignmentMatrixMPLGyro(){
+		return AlignmentMatrixMPLGyro;
+	}
 
 
 	public long getEnabledSensors() {
@@ -5236,19 +5272,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mPressureCalRawParams;
 	}
 	
-	protected int getExg1CH1GainValue(){
+	public int getExg1CH1GainValue(){
 		return mEXG1CH1GainValue;
 	}
 	
-	protected int getExg1CH2GainValue(){
+	public int getExg1CH2GainValue(){
 		return mEXG1CH2GainValue;
 	}
 	
-	protected int getExg2CH1GainValue(){
+	public int getExg2CH1GainValue(){
 		return mEXG2CH1GainValue;
 	}
 	
-	protected int getExg2CH2GainValue(){
+	public int getExg2CH2GainValue(){
 		return mEXG2CH2GainValue;
 	}
 	
@@ -8383,20 +8419,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 
-//	/**
-//	 * @return the mEXG2CH1GainSetting
-//	 */
-//	public int getEXG2CH1GainSetting() {
-//		return mEXG2CH1GainSetting;
-//	}
-//
-//
-//	/**
-//	 * @return the mEXG2CH2GainSetting
-//	 */
-//	public int getEXG2CH2GainSetting() {
-//		return mEXG2CH2GainSetting;
-//	}
+	/**
+	 * @return the mEXG2CH1GainSetting
+	 */
+	public int getEXG2CH1GainSetting() {
+		return mEXG2CH1GainSetting;
+	}
+
+
+	/**
+	 * @return the mEXG2CH2GainSetting
+	 */
+	public int getEXG2CH2GainSetting() {
+		return mEXG2CH2GainSetting;
+	}
 
 
 	/**
@@ -8512,6 +8548,50 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public int getFirmwareIdentifier() {
 		return mFirmwareIdentifier;
+	}
+	
+	public double getPressTempAC1(){
+		return AC1;
+	}
+	
+	public double getPressTempAC2(){
+		return AC2;
+	}
+	
+	public double getPressTempAC3(){
+		return AC3;
+	}
+	
+	public double getPressTempAC4(){
+		return AC4;
+	}
+	
+	public double getPressTempAC5(){
+		return AC5;
+	}
+	
+	public double getPressTempAC6(){
+		return AC6;
+	}
+	
+	public double getPressTempB1(){
+		return B1;
+	}
+	
+	public double getPressTempB2(){
+		return B2;
+	}
+	
+	public double getPressTempMB(){
+		return MB;
+	}
+	
+	public double getPressTempMC(){
+		return MC;
+	}
+	
+	public double getPressTempMD(){
+		return MD;
 	}
 
 
