@@ -6774,14 +6774,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if (mHardwareVersion == HW_ID.SHIMMER_3) {
 				
 				// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
-				CompatibleVersionDetails baseAnyIntExpBoardAndFw = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+				CompatibleVersionDetails baseAnyIntExpBoardAndFw = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+				CompatibleVersionDetails baseAnyIntExpBoardAndSdlog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+				CompatibleVersionDetails baseAnyIntExpBoardAndBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+				CompatibleVersionDetails baseAnyIntExpBoardAndLogAndStream = new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
 
 				CompatibleVersionDetails baseNoIntExpBoardSdLog = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_NONE);
 
 				CompatibleVersionDetails baseSdLog = 				new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ANY_VERSION);
 				CompatibleVersionDetails baseBtStream = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ANY_VERSION);
 				CompatibleVersionDetails baseLogAndStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ANY_VERSION);
-				CompatibleVersionDetails baseGqGsr = 					new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,0,0,0,ANY_VERSION);
+				//CompatibleVersionDetails baseGsrGq = 					new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,0,0,0,ANY_VERSION);
 				
 				CompatibleVersionDetails baseExgSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG); 
 				CompatibleVersionDetails baseExgUnifiedSdLog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
@@ -6796,6 +6799,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				CompatibleVersionDetails baseGsrUnifiedBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
 				CompatibleVersionDetails baseGsrLogAndStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR);
 				CompatibleVersionDetails baseGsrUnifiedLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
+				CompatibleVersionDetails baseGsrGq = 				new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR);
+				CompatibleVersionDetails baseGsrUnifiedGq = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
 
 				CompatibleVersionDetails baseBrAmpSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_BR_AMP);
 				CompatibleVersionDetails baseBrAmpUnifiedSdLog = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
@@ -6822,10 +6827,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
+				List<CompatibleVersionDetails> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
+						baseAnyIntExpBoardAndSdlog,baseAnyIntExpBoardAndBtStream,baseAnyIntExpBoardAndLogAndStream);
 				
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoGsr = Arrays.asList(
-						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream,
-						baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream);
+						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGq,
+						baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, baseGsrUnifiedGq);
 				
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
@@ -7006,6 +7013,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoRespiration;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				//mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A15).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				
 				// Channels that require Internal Expansion board power (automatically enabled internal expansion board power when each Channel is enabled)
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mIntExpBoardPowerRequired = true;
@@ -7303,13 +7318,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
 				
 				// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
@@ -7409,19 +7424,23 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGyroRange, 
 												Configuration.Shimmer3.ListofMPU9150GyroRangeConfigValues, 
-												SensorConfigOptionDetails.COMBOBOX));
+												SensorConfigOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMagRange, 
 												Configuration.Shimmer3.ListofMagRangeConfigValues, 
-												SensorConfigOptionDetails.COMBOBOX));
+												SensorConfigOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCMagRate, 
 												Configuration.Shimmer3.ListofLSM303DLHCMagRateConfigValues, 
-												SensorConfigOptionDetails.COMBOBOX));
+												SensorConfigOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
 												Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
-												SensorConfigOptionDetails.COMBOBOX));
+												SensorConfigOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
@@ -7533,7 +7552,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				//General Config
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD,listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoLogging));
@@ -7545,13 +7564,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoSdLog));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 

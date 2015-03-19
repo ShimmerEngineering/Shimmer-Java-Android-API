@@ -21,8 +21,8 @@ public class MsgDock {
 	public final static int MSG_ID_BSL_FW_WRITE_FINISHED_PER_DOCK = 35;
 	public final static int MSG_ID_BSL_FW_WRITE_FINISHED_ALL = 36;
 	
-	public final static int MSG_ID_SMARTDOCK_SLOT_DOCKED = 40;
-	public final static int MSG_ID_SMARTDOCK_SLOT_REMOVED = 41;
+	public final static int MSG_ID_DOCK_SLOT_DOCKED = 40;
+	public final static int MSG_ID_DOCK_SLOT_REMOVED = 41;
 	public final static int MSG_ID_SMARTDOCK_NO_STATE = 44;
 	public final static int MSG_ID_SMARTDOCK_IS_BUSY = 42;
 	public final static int MSG_ID_SMARTDOCK_IS_FREE = 43;
@@ -108,8 +108,8 @@ public class MsgDock {
         aMap.put(MSG_ID_BSL_FW_WRITE_PROGRESS_LOG, "MSG_ID_BSL_FW_WRITE_PROGRESS_LOG");
         aMap.put(MSG_ID_BSL_FW_WRITE_FINISHED_PER_DOCK, "MSG_ID_BSL_FW_WRITE_FINISHED_PER_DOCK");
         aMap.put(MSG_ID_BSL_FW_WRITE_FINISHED_ALL, "MSG_ID_BSL_FW_WRITE_FINISHED_ALL");
-        aMap.put(MSG_ID_SMARTDOCK_SLOT_DOCKED, "MSG_ID_SMARTDOCK_SLOT_DOCKED");
-        aMap.put(MSG_ID_SMARTDOCK_SLOT_REMOVED, "MSG_ID_SMARTDOCK_SLOT_REMOVED");
+        aMap.put(MSG_ID_DOCK_SLOT_DOCKED, "MSG_ID_SMARTDOCK_SLOT_DOCKED");
+        aMap.put(MSG_ID_DOCK_SLOT_REMOVED, "MSG_ID_SMARTDOCK_SLOT_REMOVED");
         aMap.put(MSG_ID_SMARTDOCK_NO_STATE, "MSG_ID_SMARTDOCK_NO_STATE");
         aMap.put(MSG_ID_SMARTDOCK_IS_BUSY, "MSG_ID_SMARTDOCK_IS_BUSY");
         aMap.put(MSG_ID_SMARTDOCK_IS_FREE, "MSG_ID_SMARTDOCK_IS_FREE");

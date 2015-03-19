@@ -433,7 +433,7 @@ public class InfoMemLayout {
 		return 384;
 	}
 	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.GQ_GSR) {
-		return 384;
+		return 128;
 	}
 	else {
 		return 512; 
