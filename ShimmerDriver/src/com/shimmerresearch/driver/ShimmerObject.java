@@ -1135,15 +1135,28 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.INT_EXP_A1) > 0) 
 					|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A1) > 0)
 					) {
-				int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A1);
-				tempData[0] = (double)newPacketInt[iA1];
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A1,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA1]));
-				uncalibratedData[iA1]=(double)newPacketInt[iA1];
-				uncalibratedDataUnits[iA1]=NO_UNIT;
-				if (mEnableCalibration){
-					calibratedData[iA1]=calibrateU12AdcValue(tempData[0],0,3,1);
-					calibratedDataUnits[iA1] = ADC_CAL_UNIT;
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A1,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA1]));
+				if ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A1) > 0){
+					int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP);
+					tempData[0] = (double)newPacketInt[iA1];
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA1]));
+					uncalibratedData[iA1]=(double)newPacketInt[iA1];
+					uncalibratedDataUnits[iA1]=NO_UNIT;
+					if (mEnableCalibration){
+						calibratedData[iA1]=calibrateU12AdcValue(tempData[0],0,3,1);
+						calibratedDataUnits[iA1] = ADC_CAL_UNIT;
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA1]));
+					}
+				} else {
+					int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A1);
+					tempData[0] = (double)newPacketInt[iA1];
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A1,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA1]));
+					uncalibratedData[iA1]=(double)newPacketInt[iA1];
+					uncalibratedDataUnits[iA1]=NO_UNIT;
+					if (mEnableCalibration){
+						calibratedData[iA1]=calibrateU12AdcValue(tempData[0],0,3,1);
+						calibratedDataUnits[iA1] = ADC_CAL_UNIT;
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A1,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA1]));
+					}
 				}
 			}
 			if (((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.INT_EXP_A12) > 0) 
