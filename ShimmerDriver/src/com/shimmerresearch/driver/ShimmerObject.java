@@ -8095,46 +8095,46 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		String monthString = "";
 
     	switch(monthIndex){
-		
-			case(1):
+			case(0):
 				monthString = "Jan";
             	break;
-			case(2):
+			case(1):
 				monthString = "Feb";
             	break;
-			case(3):
+			case(2):
 				monthString = "Mar";
             	break;
-			case(4):
+			case(3):
 				monthString = "Apr";
             	break;
-			case(5):
+			case(4):
 				monthString = "May";
             	break;
-			case(6):
+			case(5):
 				monthString = "June";
             	break;
-			case(7):
+			case(6):
 				monthString = "July";
             	break;
-			case(8):
+			case(7):
 				monthString = "Aug";
             	break;
-			case(9):
+			case(8):
 				monthString = "Sept";
             	break;
-			case(10):
+			case(9):
 				monthString = "Oct";
             	break;
-			case(11):
+			case(10):
 				monthString = "Nov";
             	break;
-			case(12):
+			case(11):
 				monthString = "Dec";
             	break;
             default:
             	break;
     	}
+
     	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
     	String timeString = dfLocal.format(new Date(seconds*1000));
     	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
