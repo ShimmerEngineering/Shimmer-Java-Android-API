@@ -398,8 +398,8 @@ public class InfoMemLayout {
 //		mInfoMemSize = calculateInfoMemByteLength(mFirmwareVersionCode,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
 		mInfoMemSize = calculateInfoMemByteLength(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
 		
-		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3_SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=42))
-			||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=4))) {
+		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=42))
+			||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=4))) {
 			
 			idxSensors3 =			128+0;
 			idxSensors4 =			128+1;
@@ -423,14 +423,17 @@ public class InfoMemLayout {
 //	public int calculateInfoMemByteLength(int mFirmwareVersionCode, int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 	//TODO: should add full FW version checking here to support different size InfoMems in the future
-	if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_SDLOG) {
+	if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.SDLOG) {
 		return 384;
 	}
-	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_BTSTREAM) {
+	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.BTSTREAM) {
 		return 128;
 	}
-	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3_LOGANDSTREAM) {
+	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM) {
 		return 384;
+	}
+	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.GQ_GSR) {
+		return 128;
 	}
 	else {
 		return 512; 
