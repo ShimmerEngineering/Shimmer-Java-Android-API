@@ -189,6 +189,14 @@ public class Configuration {
 		public final static String[] ListOfOnOff={"On","Off"};
 		public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
+		public final static String[] ListOfPpgAdcSelection={"A13","A12"};
+		public final static Integer[] ListOfPpgAdcSelectionConfigValues={0,1};
+		public final static String[] ListOfPpg1AdcSelection={"A13","A12"};
+		public final static Integer[] ListOfPpg1AdcSelectionConfigValues={0,1};
+		public final static String[] ListOfPpg2AdcSelection={"A1","A14"};
+		public final static Integer[] ListOfPpg2AdcSelectionConfigValues={0,1};
+
+		
 		public class SensorMapKey{
 			/**
 			 * Shimmer3 Low-noise analog accelerometer
@@ -253,10 +261,23 @@ public class Configuration {
 			public final static int ECG = 100;
 			public final static int EMG = 101;
 			public final static int EXG_TEST = 102;
+			
+			// Derived Channels
+			public final static int EXG_RESPIRATION = 103;
 	
-			public final static int PPG_A12 = 105;
-			public final static int PPG_A13 = 106;
-			public final static int EXG_RESPIRATION = 107;
+			// Derived Channels - GSR Board
+			public final static int PPG_DUMMY = 105;
+			public final static int PPG_A12 = 106;
+			public final static int PPG_A13 = 107;
+			
+			// Derived Channels - Proto3 Deluxe Board
+			
+			public final static int PPG1_DUMMY = 110;
+			public final static int PPG1_A12 = 111;
+			public final static int PPG1_A13 = 112;
+			public final static int PPG2_DUMMY = 113;
+			public final static int PPG2_A1 = 114;
+			public final static int PPG2_A14 = 115;
 		}
 
 		// Sensor Options Map
@@ -318,6 +339,11 @@ public class Configuration {
 			public static final String TCX0 = "TCX0";
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
+			
+			public static final String PPG_ADC_SELECTION = "PPG ADC selection";
+			public static final String PPG1_ADC_SELECTION = "PPG1 ADC selection";
+			public static final String PPG2_ADC_SELECTION = "PPG2 ADC selection";
+
 		}
 
 		// GUI Sensor Tiles
@@ -333,6 +359,7 @@ public class Configuration {
 			public static final String EXG = "ECG/EMG";
 			public static final String PROTO3_MINI = "Proto Mini";
 			public static final String PROTO3_DELUXE = "Proto Deluxe";
+			public static final String PROTO3_DELUXE_EXTRA = "Extra";
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 			public static final String HIGH_G_ACCEL = "200g Accel";
 			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion";
@@ -384,8 +411,15 @@ public class Configuration {
 			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)";
 			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";
 			
+			public static final String PPG_DUMMY = "PPG";
 			public static final String PPG_A12 = "PPG A12";
 			public static final String PPG_A13 = "PPG A13";
+			public static final String PPG1_DUMMY = "PPG1";
+			public static final String PPG1_A12 = "PPG1 A12";
+			public static final String PPG1_A13 = "PPG1 A13";
+			public static final String PPG2_DUMMY = "PPG2";
+			public static final String PPG2_A1 = "PPG2 A1";
+			public static final String PPG2_A14 = "PPG2 A14";
 			public static final String EXG_RESPIRATION = "Respiration";
 			public static final String BRAMP_HIGHGAIN = "High Gain";
 			public static final String BRAMP_LOWGAIN = "Low Gain";
