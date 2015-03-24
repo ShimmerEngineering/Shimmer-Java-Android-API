@@ -5955,28 +5955,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			mBluetoothBaudRate=0;
 
-			mAccelRange=0;  	
-			mHighResAccelWR = false;
-			mMagRange=1;
-			mGyroRange=1; 
-			mMPU9150AccelRange=0;
-			mGSRRange=4;
 			mInternalExpPower=0;
 
-			mPressureResolution = 0;
 			mExGResolution = 0;
 			mShimmer2MagRate=0;
 			
-			mMPU9150DMP = 0;
-			mMPU9150LPF = 0;
-			mMPU9150MotCalCfg = 0;
-			mMPU9150MPLSamplingRate = 0;
-			mMPU9150MagSamplingRate = 0;
-			mMPLSensorFusion = 0;
-			mMPLGyroCalTC = 0;
-			mMPLVectCompCal = 0;
-			mMPLMagDistCal = 0;
-			mMPLEnable = 0;
 			mMasterShimmer = 0;
 			mSingleTouch = 0;
 			mTCXO = 0;
@@ -5990,6 +5973,33 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			setShimmerSamplingRate(51.2);
 			setDefaultECGConfiguration(); //TODO: bytes to set to default ECG or all 0xFF's? 
+			setDefaultBmp180PressureSensorConfig();
+			setDefaultLsm303dlhcAccelSensorConfig();
+			setDefaultLsm303dlhcMagSensorConfig();
+			setDefaultGsrSensorConfig();
+			setDefaultMpu9150GyroSensorConfig();
+			setDefaultMpu9150AccelSensorConfig();
+			setDefaultMpu9150MplSensorConfig();
+			
+//			mPressureResolution = 0;
+//			mAccelRange=0;  	
+//			mHighResAccelWR = false;
+//			mMagRange=1;
+//			mGyroRange=1; 
+//			mGSRRange=4;
+//
+//			mMPU9150DMP = 0;
+//			mMPU9150LPF = 0;
+//			mMPU9150MotCalCfg = 0;
+//			mMPU9150MPLSamplingRate = 0;
+//			mMPU9150MagSamplingRate = 0;
+//			mMPLSensorFusion = 0;
+//			mMPLGyroCalTC = 0;
+//			mMPLVectCompCal = 0;
+//			mMPLMagDistCal = 0;
+//			mMPLEnable = 0;
+//			
+//			mMPU9150AccelRange=0;
 			
 			syncNodesList.clear();
 			
@@ -6000,6 +6010,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mIsEnabled = true;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.VBATT).mIsEnabled = true;
 			}
+
 		}
 	}
 	
@@ -6366,6 +6377,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		// Sensors
 		//TODO: check version compatible?
 		mEnabledSensors = (long)0;
+		sensorMapCheckandCorrectHwDependencies();
 		for(Integer key:mSensorMap.keySet()) {
 			if(mSensorMap.get(key).mIsEnabled) {
 				mEnabledSensors |= mSensorMap.get(key).mSensorBitmapIDSDLogHeader;
@@ -6374,6 +6386,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mInfoMemBytes[infoMemMap.idxSensors0] = (byte) ((mEnabledSensors >> 0) & 0xFF);
 		mInfoMemBytes[infoMemMap.idxSensors1] = (byte) ((mEnabledSensors >> 8) & 0xFF);
 		mInfoMemBytes[infoMemMap.idxSensors2] = (byte) ((mEnabledSensors >> 16) & 0xFF);
+		setDefaultConfigForDisabledSensors();
 		
 		// Configuration
 		mInfoMemBytes[infoMemMap.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & 0xF) << 4);
@@ -7117,6 +7130,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.SensorMapKey.ECG,
 					Configuration.Shimmer3.SensorMapKey.EMG,
 					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -7131,6 +7145,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.SensorMapKey.ECG,
 					Configuration.Shimmer3.SensorMapKey.EMG,
 					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -7143,6 +7158,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.SensorMapKey.ECG,
 					Configuration.Shimmer3.SensorMapKey.EMG,
 					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -7152,6 +7168,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.SensorMapKey.ECG,
 					Configuration.Shimmer3.SensorMapKey.EMG,
 					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -7162,6 +7179,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.SensorMapKey.ECG,
 					Configuration.Shimmer3.SensorMapKey.EMG,
 					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -7174,6 +7192,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.SensorMapKey.ECG,
 					Configuration.Shimmer3.SensorMapKey.EMG,
 					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -7185,6 +7204,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					Configuration.Shimmer3.SensorMapKey.ECG,
 					Configuration.Shimmer3.SensorMapKey.EMG,
 					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -7630,14 +7650,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public boolean setSensorEnabledState(int key, boolean state) {
+	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
 		if(mSensorMap!=null) {
 			
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
 				
 				// Automatically handle required channels for each sensor
-				if(mSensorMap.get(key).mListOfSensorMapKeysRequired != null) {
-					for(Integer i:mSensorMap.get(key).mListOfSensorMapKeysRequired) {
+				if(mSensorMap.get(sensorMapKey).mListOfSensorMapKeysRequired != null) {
+					for(Integer i:mSensorMap.get(sensorMapKey).mListOfSensorMapKeysRequired) {
 						mSensorMap.get(i).mIsEnabled = state;
 					}
 				}
@@ -7645,89 +7665,77 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//TODO need to handle setting master channel when any of the sub channels are selected, for example, Setting External Expansion ADC channel when ADC6 is selected
 				
 				// Unique cases for Shimmer3 ExG
-				if((key == Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
-						||(key == Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)) {
+				if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
+						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)) {
 					mExGResolution = 0;
 				}
-				else if((key == Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
-						||(key == Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
+				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
+						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
 					mExGResolution = 1;
 				}
 				
-				if((key == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-						|| (key == Configuration.Shimmer3.SensorMapKey.ECG)
-						|| (key == Configuration.Shimmer3.SensorMapKey.EMG)
-						|| (key == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
+				if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
+						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG)
+						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
 					if(state) { // Set default settings
-						if(key == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION) {
+						if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION) {
 							setDefaultRespirationConfiguration();
 						}
-						else if(key == Configuration.Shimmer3.SensorMapKey.ECG) {
+						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG) {
 							setDefaultECGConfiguration();
 						}
-						else if(key == Configuration.Shimmer3.SensorMapKey.EMG) {
+						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
 							setDefaultEMGConfiguration();
 						}
-						else if(key == Configuration.Shimmer3.SensorMapKey.EXG_TEST) {
+						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST) {
 							setEXGTestSignal();
 						}
 					}
+					else {
+						// handle ECG, EMG, ExG Test being turned off
+						setDefaultECGConfiguration();
+					}
 					
 					if(mExGResolution == 0) {// 16-bit
-						if((key == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-								||(key == Configuration.Shimmer3.SensorMapKey.ECG)
-								||(key == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
+						if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+								||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
+								||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = state;
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = state;
 						}
-						else if(key == Configuration.Shimmer3.SensorMapKey.EMG) {
+						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = state;
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = false;
 						}
 					}
 					else { // 24-bit
-						if((key == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-								||(key == Configuration.Shimmer3.SensorMapKey.ECG)
-								||(key == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
+						if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+								||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
+								||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = state;
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = state;
 						}
-						else if(key == Configuration.Shimmer3.SensorMapKey.EMG) {
+						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = state;
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = false;
 						}
 					}
 				}
 				
-
 			}
 			
-			mSensorMap.get(key).mIsEnabled = state;
-			sensorMapConflictCheckandCorrect(key);
+			//Set sensor state
+			mSensorMap.get(sensorMapKey).mIsEnabled = state;
 			
-			//TODO handle ECG, EMG, ExG Test being turned off
+			sensorMapConflictCheckandCorrect(sensorMapKey);
 			
+			//Set default sensor configuration if sensor was disabled.
+			if(!mSensorMap.get(sensorMapKey).mIsEnabled) {
+				setDefaultConfigForSensor(sensorMapKey);
+			}
+
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
-				
-				if(key == Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-					if(state==true) {
-						setLowPowerAccelWR(false);
-					}
-					setLSM303AccelRateFromFreq(mShimmerSamplingRate);
-				}
-				else if(key == Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-					if(state==true) {
-						setLowPowerMag(false);
-					}
-					setLSM303MagRateFromFreq(mShimmerSamplingRate);
-				}
-				else if(key == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO) {
-					if(state==true) {
-						setLowPowerGyro(false);
-					}
-					setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-				}
-				
 				
 				// Automatically control internal expansion board power
 				for(Integer channelKey:mSensorMap.keySet()) {
@@ -7756,7 +7764,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			return false;
 		}
 		
-		if(mSensorMap.get(key).mIsEnabled == state) {
+		if(mSensorMap.get(sensorMapKey).mIsEnabled == state) {
 			return true;
 		}
 		else {
@@ -7865,14 +7873,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public void sensorMapConflictCheckandCorrect(int key){
 		if(mSensorMap.get(key) != null) {
 			if(mSensorMap.get(key).mListOfSensorMapKeysConflicting != null) {
-				for(Integer i:mSensorMap.get(key).mListOfSensorMapKeysConflicting) {
-					if(mSensorMap.get(i) != null) {
-						mSensorMap.get(i).mIsEnabled = false;
+				for(Integer sensorMapKey:mSensorMap.get(key).mListOfSensorMapKeysConflicting) {
+					if(mSensorMap.get(sensorMapKey) != null) {
+						mSensorMap.get(sensorMapKey).mIsEnabled = false;
+						mDerivedSensors &= ~(mSensorMap.get(sensorMapKey).mDerivedChannelBitmapID);
+						setDefaultConfigForSensor(sensorMapKey);
 					}
 				}
 			}
 		}
 		sensorMapCheckandCorrectSensorDependencies();
+		sensorMapCheckandCorrectHwDependencies();
 	}
 
 	public List<Integer> sensorMapConflictCheck(Integer key){
@@ -8017,6 +8028,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 
+	private void sensorMapCheckandCorrectHwDependencies() {
+		for(Integer sensorMapKey:mSensorMap.keySet()) {
+			if(mSensorMap.get(sensorMapKey).mListOfCompatibleVersionInfo != null) {
+				if(!checkIfVersionCompatible(mSensorMap.get(sensorMapKey).mListOfCompatibleVersionInfo)) {
+					mSensorMap.get(sensorMapKey).mIsEnabled = false;
+					mDerivedSensors &= ~(mSensorMap.get(sensorMapKey).mDerivedChannelBitmapID);
+					setDefaultConfigForSensor(sensorMapKey);
+				}
+			}
+		}
+	}
 	
 	private void sensorMapCheckandCorrectSensorDependencies() {
 		//Cycle through any required sensors and update sensorMap channel enable values
@@ -8025,6 +8047,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				for(Integer requiredSensorKey:mSensorMap.get(sensorMapKey).mListOfSensorMapKeysRequired) {
 					if(mSensorMap.get(requiredSensorKey).mIsEnabled == false) {
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
+						mDerivedSensors &= ~(mSensorMap.get(sensorMapKey).mDerivedChannelBitmapID);
+						setDefaultConfigForSensor(sensorMapKey);
 						break;
 					}
 				}
@@ -8033,37 +8057,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
 				//Exceptions for Shimmer3 ExG
 				
-				//TODO: Check if default ECG/EMG/ExG Test
-				//TODO: Distinguish between ECG/EMG/ExG Test
-				//
-//				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EMG)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)
-//					) {
-//					if(isEXGUsingDefaultECGConfiguration()) {
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = true;
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-//					}
-//					else if(isEXGUsingDefaultEMGConfiguration()) {
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = true;
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-//					}
-//					else if(isEXGUsingDefaultTestSignalConfiguration()) {
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-//						mShimmerSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = true;
-//					}
-//				}
-				
-				
 				// If ECG or ExG_Test (i.e., two ExG chips)
-				if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST))&&(mSensorMap.get(sensorMapKey).mIsEnabled)) {
+				if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION))&&(mSensorMap.get(sensorMapKey).mIsEnabled)) {
 					if(!(((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)&&(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled))
 							||((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)&&(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled)))){
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
@@ -8083,6 +8078,149 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	private void setDefaultConfigForDisabledSensors() {
+		for(Integer sensorMapKey:mSensorMap.keySet()) {
+			if(mSensorMap.get(sensorMapKey).mIsEnabled == false) {
+				setDefaultConfigForSensor(sensorMapKey);
+			}
+		}
+	}
+
+	//TODO set defaults when ").mIsEnabled = false)" is set manually in the code
+	private void setDefaultConfigForSensor(int sensorMapKey) {
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
+			setDefaultLsm303dlhcAccelSensorConfig();
+		}
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+			setDefaultLsm303dlhcMagSensorConfig();
+		}
+		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+			setDefaultMpu9150GyroSensorConfig();
+		}
+		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
+				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
+			setDefaultMpu9150AccelSensorConfig();
+		}
+		
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE) {
+			setDefaultBmp180PressureSensorConfig();
+		}
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.GSR) {
+			setDefaultGsrSensorConfig();
+		}
+		else if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EMG)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
+			if(!checkIfOtherExgChannelEnabled()) {
+				setDefaultECGConfiguration();
+			}
+		}
+		
+		else if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW)) {
+			if(!checkIfOtherMplChannelEnabled()) {
+				setDefaultMpu9150MplSensorConfig();
+			}
+		}
+		
+	}
+	
+	private void setDefaultBmp180PressureSensorConfig() {
+		mPressureResolution = 0;
+	}
+	
+	private void setDefaultLsm303dlhcAccelSensorConfig() {
+		mAccelRange = 0;
+		setLowPowerAccelWR(false);
+		setLSM303AccelRateFromFreq(mShimmerSamplingRate);
+	}
+
+	private void setDefaultLsm303dlhcMagSensorConfig() {
+		mMagRange=1;
+		setLowPowerMag(false);
+		setLSM303MagRateFromFreq(mShimmerSamplingRate);
+	}
+
+	private void setDefaultGsrSensorConfig() {
+		mGSRRange=4;
+	}
+
+	private void setDefaultMpu9150GyroSensorConfig() {
+		mGyroRange=1;
+		setLowPowerGyro(false);
+		setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+	}
+	
+	private void setDefaultMpu9150AccelSensorConfig() {
+		mMPU9150AccelRange=0;
+	}
+	
+	private void setDefaultMpu9150MplSensorConfig() {
+		mMPU9150DMP = 0;
+		mMPU9150LPF = 0;
+		mMPU9150MotCalCfg = 0;
+		mMPU9150MPLSamplingRate = 0;
+		mMPU9150MagSamplingRate = 0;
+		mMPLSensorFusion = 0;
+		mMPLGyroCalTC = 0;
+		mMPLVectCompCal = 0;
+		mMPLMagDistCal = 0;
+		mMPLEnable = 0;
+	}
+	
+	private boolean checkIfOtherExgChannelEnabled() {
+		for(Integer sensorMapKey:mSensorMap.keySet()) {
+			if(mSensorMap.get(sensorMapKey).mIsEnabled) {
+				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean checkIfOtherMplChannelEnabled() {
+		for(Integer sensorMapKey:mSensorMap.keySet()) {
+			if(mSensorMap.get(sensorMapKey).mIsEnabled) {
+				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EMG)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	public String convertSecondsToDateString(long seconds) {
 		Calendar cal = Calendar.getInstance();
