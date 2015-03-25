@@ -175,12 +175,15 @@ public class InfoMemLayout {
 	public int maskDerivedChannels = 					0xFF;
 	public int byteShiftDerivedSensors0 =				0;
 	public int byteShiftDerivedSensors1 =				8;
-	public int maskDerivedChannelResAmp = 				0x01;
-	public int maskDerivedChannelPpg = 					0x02;
-	public int maskDerivedChannelPpgToHr = 				0x03;
-	public int maskDerivedChannelEcgToHr = 				0x04;
-	public int maskDerivedChannel6DofMadgewick =		0x05;
-	public int maskDerivedChannel9DofMadgewick =		0x06;
+	public int maskDerivedChannel = 					0x01;
+	public int bitShiftDerivedChannelResAmp = 			0;
+	public int bitShiftDerivedChannelSkinTemp =			1;
+	public int bitShiftDerivedChannelPpg_ADC12ADC13 =	2;
+	public int bitShiftDerivedChannelPpg_ADC1ADC14 =	3;
+	public int bitShiftDerivedChannelPpgToHr = 			4;
+	public int bitShiftDerivedChannelEcgToHr = 			5;
+	public int bitShiftDerivedChannel6DofMadgewick =	6;
+	public int bitShiftDerivedChannel9DofMadgewick =	7;
 	
 	// ExG related config bytes
 	public int idxEXGADS1292RConfig1 = 			0;

@@ -264,6 +264,7 @@ public class Configuration {
 			
 			// Derived Channels
 			public final static int EXG_RESPIRATION = 103;
+			public final static int SKIN_TEMP_PROBE = 104;
 	
 			// Derived Channels - GSR Board
 			public final static int PPG_DUMMY = 105;
@@ -359,8 +360,9 @@ public class Configuration {
 			public static final String EXG = "ECG/EMG";
 			public static final String PROTO3_MINI = "Proto Mini";
 			public static final String PROTO3_DELUXE = "Proto Deluxe";
-			public static final String PROTO3_DELUXE_EXTRA = "Extra";
+			public static final String PROTO3_DELUXE_SUPP = "Supplemental (P3D)";
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
+			public static final String BRIDGE_AMPLIFIER_SUPP = "Supplemental (BR)";
 			public static final String HIGH_G_ACCEL = "200g Accel";
 			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion";
 			//public static final String GPS = "GPS";
@@ -421,6 +423,7 @@ public class Configuration {
 			public static final String PPG2_A1 = "PPG2 A1";
 			public static final String PPG2_A14 = "PPG2 A14";
 			public static final String EXG_RESPIRATION = "Respiration";
+			public static final String SKIN_TEMP_PROBE = "Skin Temperature Probe";
 			public static final String BRAMP_HIGHGAIN = "High Gain";
 			public static final String BRAMP_LOWGAIN = "Low Gain";
 	
