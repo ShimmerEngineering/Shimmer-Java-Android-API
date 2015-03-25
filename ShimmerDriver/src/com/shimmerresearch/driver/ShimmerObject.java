@@ -6152,11 +6152,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			//TODO: decide what to do
 			// BMP180 Pressure Calibration Parameters
 
-			if(infoMemMap.idxDerivedSensors0>=0) {
-				mDerivedSensors = ((long)infoMemContents[infoMemMap.idxDerivedSensors0] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors0;
-				if(infoMemMap.idxDerivedSensors1>=0) {
-					mDerivedSensors |= ((long)infoMemContents[infoMemMap.idxDerivedSensors1] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors1;
+			if((infoMemContents[infoMemMap.idxDerivedSensors0] == infoMemMap.maskDerivedChannelsByte)
+					||(infoMemContents[infoMemMap.idxDerivedSensors1] == infoMemMap.maskDerivedChannelsByte)){
+				if(infoMemMap.idxDerivedSensors0>=0) {
+					mDerivedSensors = ((long)infoMemContents[infoMemMap.idxDerivedSensors0] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors0;
+					if(infoMemMap.idxDerivedSensors1>=0) {
+						mDerivedSensors |= ((long)infoMemContents[infoMemMap.idxDerivedSensors1] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors1;
+					}
 				}
+			}			
+			else {
+				mDerivedSensors = 0;
 			}
 
 			// InfoMem D - End

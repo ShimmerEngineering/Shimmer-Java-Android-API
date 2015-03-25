@@ -355,7 +355,7 @@ public class Configuration {
 			public static final String BATTERY_MONITORING = Configuration.Shimmer3.GuiLabelSensors.BATTERY;
 			public static final String WIDE_RANGE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_WR;
 			public static final String PRESSURE_TEMPERATURE = Configuration.Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180;
-			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion";
+			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion ADCs";
 			public static final String GSR = "GSR+";
 			public static final String EXG = "ECG/EMG";
 			public static final String PROTO3_MINI = "Proto Mini";
@@ -364,7 +364,7 @@ public class Configuration {
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 			public static final String BRIDGE_AMPLIFIER_SUPP = Configuration.Shimmer3.GuiLabelSensors.SKIN_TEMP_PROBE;
 			public static final String HIGH_G_ACCEL = Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL;
-			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion";
+			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
 			//public static final String GPS = "GPS";
 		}
 		

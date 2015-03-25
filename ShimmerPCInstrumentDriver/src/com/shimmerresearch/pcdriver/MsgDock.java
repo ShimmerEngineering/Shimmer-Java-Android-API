@@ -235,7 +235,7 @@ public class MsgDock {
 		}
 	}
 	
-	/** Used by BasicDock, SmartDock and SmartDockUart
+	/** Used by BasicDock, SmartDock, SmartDockUart and SmartDockUartListener
 	 * @param msgID
 	 * @param dockID
 	 * @param slotIdentifier
