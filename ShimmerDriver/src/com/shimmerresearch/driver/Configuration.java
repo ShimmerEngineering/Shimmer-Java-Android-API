@@ -119,10 +119,10 @@ public class Configuration {
 
 		public final static String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
 		public final static String[] ListofAccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-		public final static String[] ListofGyroRange={"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"}; 
-		public final static String[] ListofMagRange={"+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"}; 
+		public final static String[] ListofGyroRange={"+/- 250 dps","+/- 500 dps","+/- 1000 dps","+/- 2000 dps"}; 
+		public final static String[] ListofMagRange={"+/- 1.3 Ga","+/- 1.9 Ga","+/- 2.5 Ga","+/- 4.0 Ga","+/- 4.7 Ga","+/- 5.6 Ga","+/- 8.1 Ga"}; 
 		public final static String[] ListofPressureResolution={"Low","Standard","High","Very High"};
-		public final static String[] ListofGSRRange={"10kOhm to 56kOhm","56kOhm to 220kOhm","220kOhm to 680kOhm","680kOhm to 4.7MOhm","Auto Range"};
+		public final static String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
 		public final static String[] ListofDefaultEXG={"ECG","EMG","Test Signal"};
 		public final static String[] ListOfExGGain={"6","1","2","3","4","8","12"};
 		public final static String[] ListOfECGReferenceElectrode={"Inverse Wilson CT","Fixed Potential"};
@@ -183,7 +183,7 @@ public class Configuration {
 		public final static String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
 		public final static Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
 
-		public final static String[] ListOfExGRate={"125Hz","250Hz","500Hz","1kHz","2kHz","4kHz","8kHz"};
+		public final static String[] ListOfExGRate={"125 Hz","250 Hz","500 Hz","1 kHz","2 kHz","4 kHz","8 kHz"};
 		public final static Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
 
 		public final static String[] ListOfOnOff={"On","Off"};
@@ -349,21 +349,21 @@ public class Configuration {
 
 		// GUI Sensor Tiles
 		public class GuiLabelSensorTiles{
-			public static final String LOW_NOISE_ACCEL = "Low Noise Accel";
-			public static final String GYRO = "Gyro";
-			public static final String MAG = "Mag";
-			public static final String BATTERY_MONITORING = "Battery Monitoring";
-			public static final String WIDE_RANGE_ACCEL = "Wide Range Accel";
-			public static final String PRESSURE_TEMPERATURE = "Pressure/Temperature";
+			public static final String LOW_NOISE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_LN;
+			public static final String GYRO = Configuration.Shimmer3.GuiLabelSensors.GYRO;
+			public static final String MAG = Configuration.Shimmer3.GuiLabelSensors.MAG;
+			public static final String BATTERY_MONITORING = Configuration.Shimmer3.GuiLabelSensors.BATTERY;
+			public static final String WIDE_RANGE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_WR;
+			public static final String PRESSURE_TEMPERATURE = Configuration.Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180;
 			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion";
 			public static final String GSR = "GSR+";
 			public static final String EXG = "ECG/EMG";
 			public static final String PROTO3_MINI = "Proto Mini";
 			public static final String PROTO3_DELUXE = "Proto Deluxe";
-			public static final String PROTO3_DELUXE_SUPP = "Other (P3D)";
+			public static final String PROTO3_DELUXE_SUPP = "PPG";
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
-			public static final String BRIDGE_AMPLIFIER_SUPP = "Other (BR)";
-			public static final String HIGH_G_ACCEL = "200g Accel";
+			public static final String BRIDGE_AMPLIFIER_SUPP = Configuration.Shimmer3.GuiLabelSensors.SKIN_TEMP_PROBE;
+			public static final String HIGH_G_ACCEL = Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL;
 			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion";
 			//public static final String GPS = "GPS";
 		}
@@ -387,7 +387,7 @@ public class Configuration {
 			public static final String MAG = "Mag";
 			public static final String ACCEL_MPU = "Alternative Accel";
 			public static final String MAG_MPU = "Alternative Mag";
-			public static final String PRESS_TEMP_BMP180 = "Pressure/Temperature";
+			public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
 			public static final String EMG = "EMG";
 			public static final String ECG = "ECG";
 			public static final String EXG_TEST = "Test";
@@ -412,7 +412,9 @@ public class Configuration {
 			public static final String ORIENTATION_3D_9DOF = "3D Orientation (9DOF)";
 			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)";
 			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";
-			
+
+			public static final String HIGH_G_ACCEL = "200g Accel";
+
 			public static final String PPG_DUMMY = "PPG";
 			public static final String PPG_A12 = "PPG A12";
 			public static final String PPG_A13 = "PPG A13";

@@ -175,16 +175,28 @@ public class InfoMemLayout {
 	public int maskDerivedChannelsByte =				0xFF;
 	public int byteShiftDerivedSensors0 =				0;
 	public int byteShiftDerivedSensors1 =				8;
-	public int maskDerivedChannel = 					0x01;
-	public int bitShiftDerivedChannelResAmp = 			0;
-	public int bitShiftDerivedChannelSkinTemp =			1;
-	public int bitShiftDerivedChannelPpg_ADC12ADC13 =	2;
-	public int bitShiftDerivedChannelPpg1_ADC12ADC13 =	3;
-	public int bitShiftDerivedChannelPpg2_ADC1ADC14 =	4;
-	public int bitShiftDerivedChannelPpgToHr = 			5;
-	public int bitShiftDerivedChannelEcgToHr = 			6;
-	public int bitShiftDerivedChannel6DofMadgewick =	8;
-	public int bitShiftDerivedChannel9DofMadgewick =	9;
+//	public int maskDerivedChannel = 					0x01;
+//	public int bitShiftDerivedChannelResAmp = 			0;
+//	public int bitShiftDerivedChannelSkinTemp =			1;
+//	public int bitShiftDerivedChannelPpg_ADC12ADC13 =	2;
+//	public int bitShiftDerivedChannelPpg1_ADC12ADC13 =	3;
+//	public int bitShiftDerivedChannelPpg2_ADC1ADC14 =	4;
+//	public int bitShiftDerivedChannelPpgToHr = 			5;
+//	public int bitShiftDerivedChannelEcgToHr = 			6;
+//	public int bitShiftDerivedChannel6DofMadgewick =	8;
+//	public int bitShiftDerivedChannel9DofMadgewick =	9;
+	
+	public int maskDerivedChannelResAmp = 			0x0001;
+	public int maskDerivedChannelSkinTemp =			0x0002;
+	public int maskDerivedChannelPpg_ADC12ADC13 =	0x0004;
+	public int maskDerivedChannelPpg1_ADC12ADC13 =	0x0008;
+	public int maskDerivedChannelPpg2_ADC1ADC14 =	0x0010;
+	public int maskDerivedChannelPpgToHr = 			0x0020;
+	public int maskDerivedChannelEcgToHr = 			0x0040;
+	
+	public int maskDerivedChannel6DofMadgewick =	0x0100;
+	public int maskDerivedChannel9DofMadgewick =	0x0200;
+
 	
 	// ExG related config bytes
 	public int idxEXGADS1292RConfig1 = 			0;
