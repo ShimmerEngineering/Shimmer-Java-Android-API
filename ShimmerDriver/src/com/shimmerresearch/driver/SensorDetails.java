@@ -28,17 +28,14 @@ public class SensorDetails implements Serializable {
 	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
+	
 	public long mDerivedSensorBitmapID = 0;
 	
-//	public long mDerivedChannelBitmapBitShift = 0;
-//	public long mDerivedChannelBitmapMask = 0;
 	public String mLabel = "";
 	public List<Integer> mListOfSensorMapKeysRequired = null;
 	public List<Integer> mListOfSensorMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
 	public List<String> mListOfConfigOptionKeysAssociated = null;
-	
-//	public boolean mIsDerivedChannel = false;
 	
 	public List<CompatibleVersionDetails> mListOfCompatibleVersionInfo = null;  
 
@@ -51,34 +48,22 @@ public class SensorDetails implements Serializable {
 		
 		mListOfCompatibleVersionInfo = null;
 	}
-
-//	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired) {
-//		mIsEnabled = isChannelEnabled;
-//		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
-//		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
-//		mLabel = label;
-//		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
-//		
-//		mListOfCompatibleVersionInfo = null;
-//	}
-	
-//	public ChannelDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label, boolean intExpBoardPowerRequired, List<CompatibleVersionDetails> listOfCompatibleVersionInfo) {
-//		mIsEnabled = isChannelEnabled;
-//		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
-//		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
-//		mLabel = label;
-//		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
-//		
-//		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
-//	}
 	
 	public void setEnabledState(boolean state) {
 		mIsEnabled = state;
 	}
 	
-//	public void setDerivedChannelInfo(long derivedChannelBitmapBitShift,long derivedChannelBitmapMask) {
-//		mDerivedChannelBitmapBitShift = derivedChannelBitmapBitShift;
-//		mDerivedChannelBitmapMask = derivedChannelBitmapMask;
-//	}
+	public boolean isDerivedChannel() {
+		if(mDerivedSensorBitmapID>0) {
+			return true;
+		}
+		return false;
+	}
+
+	public void resetMapKeyLists() {
+		mListOfSensorMapKeysRequired = null;
+		mListOfSensorMapKeysConflicting = null;
+		mListOfConfigOptionKeysAssociated = null;
+	}
 
 }
