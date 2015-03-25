@@ -6021,6 +6021,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInfoMemBytes = infoMemContents;
 		}
 		else {
+			String shimmerName = "";
+
 			mShimmerUsingConfigFromInfoMem = true;
 
 			// InfoMem valid
@@ -6253,14 +6255,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				// Shimmer Name
 				byte[] shimmerNameBuffer = new byte[infoMemMap.lengthShimmerName];
 				System.arraycopy(infoMemContents, infoMemMap.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemMap.lengthShimmerName);
-				String shimmerName = "";
 				for(byte b : shimmerNameBuffer) {
 					if(!isAsciiPrintable((char)b)) {
 						break;
 					}
 					shimmerName += (char)b;
 				}
-				mShimmerUserAssignedName = new String(shimmerName);
 				
 				// Experiment Name
 				byte[] experimentNameBuffer = new byte[infoMemMap.lengthExperimentName];
@@ -6333,11 +6333,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					// InfoMem B End
 				}
 			}
+			
+			// Set name if nothing was read from InfoMem
+			if(!shimmerName.isEmpty()) {
+				mShimmerUserAssignedName = new String(shimmerName);
+			}
 			else {
+				mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
 				if(!mMacIdFromUartParsed.isEmpty()) {
-					mShimmerUserAssignedName = "Shimmer_" + mMacIdFromUartParsed;
+					mShimmerUserAssignedName += "_" + mMacIdFromUartParsed;
 				}
 			}
+
 			
 			//TODO Complete and tidy below
 			sensorAndConfigMapsCreate();
