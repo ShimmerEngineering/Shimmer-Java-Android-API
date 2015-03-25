@@ -36,7 +36,7 @@ public class ProgressDetailsPerFile implements Serializable{
 	
 	public String mLog = "";
 //	public int mProgressCounter = 0;
-	public int mProgressPercentageComplete = 0;
+	public double mProgressPercentageComplete = 0;
 //	public int mProgressEndValue = 0;
 //	public float mProgressSpeed = 0;
 	
@@ -48,7 +48,7 @@ public class ProgressDetailsPerFile implements Serializable{
 	/** Used to calculated the percentage progress based on the pre-set mOperationEndValue and the passed in operationProgress. 
 	 * @param operationProgress
 	 */
-	public void updateProgress(int operationProgress) {
+	public void updateProgress(double operationProgress) {
 //		if(mProgressEndValue!=0) {
 //			mProgressPercentageComplete = (int)(((double)operationProgress / (double)mProgressEndValue) * 100);
 //		}
