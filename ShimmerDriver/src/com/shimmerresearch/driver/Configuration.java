@@ -189,11 +189,11 @@ public class Configuration {
 		public final static String[] ListOfOnOff={"On","Off"};
 		public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
-		public final static String[] ListOfPpgAdcSelection={"A13","A12"};
+		public final static String[] ListOfPpgAdcSelection={"Int A13","Int A12"};
 		public final static Integer[] ListOfPpgAdcSelectionConfigValues={0,1};
-		public final static String[] ListOfPpg1AdcSelection={"A13","A12"};
+		public final static String[] ListOfPpg1AdcSelection={"Int A13","Int A12"};
 		public final static Integer[] ListOfPpg1AdcSelectionConfigValues={0,1};
-		public final static String[] ListOfPpg2AdcSelection={"A1","A14"};
+		public final static String[] ListOfPpg2AdcSelection={"Int A1","Int A14"};
 		public final static Integer[] ListOfPpg2AdcSelectionConfigValues={0,1};
 
 		
@@ -341,9 +341,9 @@ public class Configuration {
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 			
-			public static final String PPG_ADC_SELECTION = "PPG ADC selection";
-			public static final String PPG1_ADC_SELECTION = "PPG1 ADC selection";
-			public static final String PPG2_ADC_SELECTION = "PPG2 ADC selection";
+			public static final String PPG_ADC_SELECTION = "PPG Channel";
+			public static final String PPG1_ADC_SELECTION = "PPG1 Channel";
+			public static final String PPG2_ADC_SELECTION = "PPG2 Channel";
 
 		}
 

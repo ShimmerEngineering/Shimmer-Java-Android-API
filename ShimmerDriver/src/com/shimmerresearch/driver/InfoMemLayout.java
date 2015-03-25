@@ -98,8 +98,8 @@ public class InfoMemLayout {
 	public int idxLSM303DLHCAccelCalibration =    	94; //94->114
 
 	// Derived Channels - used by SW not FW
-	public int idxDerivedSensors0 =		    	115;
-	public int idxDerivedSensors1 =		    	116;
+	public int idxDerivedSensors0 =		    		115;
+	public int idxDerivedSensors1 =		    		116;
 	
 	public int idxConfigSetupByte4 =              	128+0;
 	public int idxConfigSetupByte5 =              	128+1;
@@ -172,18 +172,19 @@ public class InfoMemLayout {
 	//Unused bits 3-0
 	
 	// Derived Channels - used by SW not FW
-	public int maskDerivedChannels = 					0xFF;
+	public int maskDerivedChannelsByte =				0xFF;
 	public int byteShiftDerivedSensors0 =				0;
 	public int byteShiftDerivedSensors1 =				8;
 	public int maskDerivedChannel = 					0x01;
 	public int bitShiftDerivedChannelResAmp = 			0;
 	public int bitShiftDerivedChannelSkinTemp =			1;
 	public int bitShiftDerivedChannelPpg_ADC12ADC13 =	2;
-	public int bitShiftDerivedChannelPpg_ADC1ADC14 =	3;
-	public int bitShiftDerivedChannelPpgToHr = 			4;
-	public int bitShiftDerivedChannelEcgToHr = 			5;
-	public int bitShiftDerivedChannel6DofMadgewick =	6;
-	public int bitShiftDerivedChannel9DofMadgewick =	7;
+	public int bitShiftDerivedChannelPpg1_ADC12ADC13 =	3;
+	public int bitShiftDerivedChannelPpg2_ADC1ADC14 =	4;
+	public int bitShiftDerivedChannelPpgToHr = 			5;
+	public int bitShiftDerivedChannelEcgToHr = 			6;
+	public int bitShiftDerivedChannel6DofMadgewick =	8;
+	public int bitShiftDerivedChannel9DofMadgewick =	9;
 	
 	// ExG related config bytes
 	public int idxEXGADS1292RConfig1 = 			0;

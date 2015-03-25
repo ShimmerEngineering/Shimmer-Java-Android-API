@@ -6167,9 +6167,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			// BMP180 Pressure Calibration Parameters
 
 			if(infoMemMap.idxDerivedSensors0>=0) {
-				mDerivedSensors = ((long)infoMemContents[infoMemMap.idxDerivedSensors0] & infoMemMap.maskDerivedChannels) << infoMemMap.byteShiftDerivedSensors0;
+				mDerivedSensors = ((long)infoMemContents[infoMemMap.idxDerivedSensors0] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors0;
 				if(infoMemMap.idxDerivedSensors1>=0) {
-					mDerivedSensors |= ((long)infoMemContents[infoMemMap.idxDerivedSensors1] & infoMemMap.maskDerivedChannels) << infoMemMap.byteShiftDerivedSensors1;
+					mDerivedSensors |= ((long)infoMemContents[infoMemMap.idxDerivedSensors1] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors1;
 				}
 			}
 
@@ -6516,9 +6516,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mDerivedSensors |= ((mSensorMap.get(key).mDerivedChannelBitmapMask)<<mSensorMap.get(key).mDerivedChannelBitmapBitShift);
 				}
 			}
-			mInfoMemBytes[infoMemMap.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemMap.byteShiftDerivedSensors0) & infoMemMap.maskDerivedChannels);
+			mInfoMemBytes[infoMemMap.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemMap.byteShiftDerivedSensors0) & infoMemMap.maskDerivedChannelsByte);
 			if(infoMemMap.idxDerivedSensors1>=0) { // Check if compatible
-				mInfoMemBytes[infoMemMap.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemMap.byteShiftDerivedSensors1) & infoMemMap.maskDerivedChannels);
+				mInfoMemBytes[infoMemMap.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemMap.byteShiftDerivedSensors1) & infoMemMap.maskDerivedChannelsByte);
 			}
 		}
 		
@@ -7111,20 +7111,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_A12, new SensorDetails(false, 0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A12));
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mSensorBitmapIDStreaming = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mSensorBitmapIDSDLogHeader = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).setDerivedChannelInfo(infoMemMap.bitShiftDerivedChannelPpg_ADC12ADC13, infoMemMap.maskDerivedChannel);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).setDerivedChannelInfo(infoMemMap.bitShiftDerivedChannelPpg1_ADC12ADC13, infoMemMap.maskDerivedChannel);
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_A13, new SensorDetails(false, 0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A13));
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mSensorBitmapIDStreaming = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mSensorBitmapIDSDLogHeader = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).setDerivedChannelInfo(infoMemMap.bitShiftDerivedChannelPpg_ADC12ADC13, infoMemMap.maskDerivedChannel);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).setDerivedChannelInfo(infoMemMap.bitShiftDerivedChannelPpg1_ADC12ADC13, infoMemMap.maskDerivedChannel);
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY, new SensorDetails(false, 0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_DUMMY));
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_A1, new SensorDetails(false, 0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A1));
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mSensorBitmapIDStreaming = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mSensorBitmapIDSDLogHeader = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).setDerivedChannelInfo(infoMemMap.bitShiftDerivedChannelPpg_ADC1ADC14, infoMemMap.maskDerivedChannel);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).setDerivedChannelInfo(infoMemMap.bitShiftDerivedChannelPpg2_ADC1ADC14, infoMemMap.maskDerivedChannel);
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_A14, new SensorDetails(false, 0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A14));
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mSensorBitmapIDStreaming = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDStreaming;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mSensorBitmapIDSDLogHeader = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDSDLogHeader;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).setDerivedChannelInfo(infoMemMap.bitShiftDerivedChannelPpg_ADC1ADC14, infoMemMap.maskDerivedChannel);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).setDerivedChannelInfo(infoMemMap.bitShiftDerivedChannelPpg2_ADC1ADC14, infoMemMap.maskDerivedChannel);
 
 				
 				//Now that channel map is assembled we can add compatiblity information, internal expansion board power requirements, associated required channels, conflicting channels and associated configuration options.
