@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.shimmer3dexample.R;
 /**
  * The initial Android Activity, setting and initiating
@@ -180,7 +181,7 @@ public class Shimmer3DOrientationExample extends Activity {
 	                    	    if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
 	                    	        Log.d("ConnectionStatus","Successful");
 	                    	        //because the default mag range for Shimmer2 and 3 are 0 and 1 respectively, please be aware of what range you use when calibrating using Shimmer 9DOF Cal App, and use the same range here
-	                    	        if (mShimmerDevice1.getShimmerVersion()==Shimmer.HW_ID_SHIMMER_2R){ 
+	                    	        if (mShimmerDevice1.getShimmerVersion()==ShimmerObject.HW_ID.SHIMMER_2R){ 
 	                    	        	mShimmerDevice1.writeMagRange(0);
 	                    	        } else {
 	                    	        	mShimmerDevice1.writeMagRange(1);
