@@ -6378,10 +6378,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 		// Sampling Rate
 		int samplingRate = (int)(32768 / mShimmerSamplingRate);
-		mInfoMemBytes[infoMemMap.idxShimmerSamplingRate] = (byte) (samplingRate & 0xFF); 
-		mInfoMemBytes[infoMemMap.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8 ) & 0xFF); 
+		mInfoMemBytes[infoMemMap.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemMap.maskShimmerSamplingRate); 
+		mInfoMemBytes[infoMemMap.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemMap.maskShimmerSamplingRate); 
 
-		mInfoMemBytes[infoMemMap.idxBufferSize] = (byte) (mBufferSize & 0xFF); 
+		mInfoMemBytes[infoMemMap.idxBufferSize] = (byte) (mBufferSize & infoMemMap.maskBufferSize); 
 		
 		// Sensors
 		//TODO: check version compatible?
@@ -6392,31 +6392,31 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mEnabledSensors |= mSensorMap.get(key).mSensorBitmapIDSDLogHeader;
 			}
 		}
-		mInfoMemBytes[infoMemMap.idxSensors0] = (byte) ((mEnabledSensors >> 0) & 0xFF);
-		mInfoMemBytes[infoMemMap.idxSensors1] = (byte) ((mEnabledSensors >> 8) & 0xFF);
-		mInfoMemBytes[infoMemMap.idxSensors2] = (byte) ((mEnabledSensors >> 16) & 0xFF);
+		mInfoMemBytes[infoMemMap.idxSensors0] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors0) & infoMemMap.maskSensors);
+		mInfoMemBytes[infoMemMap.idxSensors1] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors1) & infoMemMap.maskSensors);
+		mInfoMemBytes[infoMemMap.idxSensors2] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors2) & infoMemMap.maskSensors);
 		setDefaultConfigForDisabledSensors();
 		
 		// Configuration
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & 0xF) << 4);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (byte) ((mAccelRange & 0x03) << 2);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & infoMemMap.maskLSM303DLHCAccelSamplingRate) << infoMemMap.bitShiftLSM303DLHCAccelSamplingRate);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (byte) ((mAccelRange & infoMemMap.maskLSM303DLHCAccelRange) << infoMemMap.bitShiftLSM303DLHCAccelRange);
 		if(mLowPowerAccelWR) {
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= 0x02;
+			mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (infoMemMap.maskLSM303DLHCAccelLPM << infoMemMap.bitShiftLSM303DLHCAccelLPM);
 		}
 		if(mHighResAccelWR) {
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= 0x01;
+			mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (infoMemMap.maskLSM303DLHCAccelHRM << infoMemMap.bitShiftLSM303DLHCAccelHRM);
 		}
 
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte1] = (byte) ((mMPU9150GyroAccelRate & 0xFF) << 0);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte1] = (byte) ((mMPU9150GyroAccelRate & infoMemMap.maskMPU9150AccelGyroSamplingRate) << infoMemMap.bitShiftMPU9150AccelGyroSamplingRate);
 
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] = (byte) ((mMagRange & 0x07) << 5);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] |= (byte) ((mLSM303MagRate & 0x07) << 2);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] |= (byte) ((mGyroRange & 0x03) << 0);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] = (byte) ((mMagRange & infoMemMap.maskLSM303DLHCMagRange) << infoMemMap.bitShiftLSM303DLHCMagRange);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] |= (byte) ((mLSM303MagRate & infoMemMap.maskLSM303DLHCMagSamplingRate) << infoMemMap.bitShiftLSM303DLHCMagSamplingRate);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] |= (byte) ((mGyroRange & infoMemMap.maskMPU9150GyroRange) << infoMemMap.bitShiftMPU9150GyroRange);
 		
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & 0x03) << 6);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mPressureResolution & 0x03) << 4);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mGSRRange & 0x07) << 1);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & 0x01) << 0);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & infoMemMap.maskMPU9150AccelRange) << infoMemMap.bitShiftMPU9150AccelRange);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mPressureResolution & infoMemMap.maskBMP180PressureResolution) << infoMemMap.bitShiftBMP180PressureResolution);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mGSRRange & infoMemMap.maskGSRRange) << infoMemMap.bitShiftGSRRange);
+		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemMap.maskEXPPowerEnable) << infoMemMap.bitShiftEXPPowerEnable);
 		
 		//EXG Configuration
 		//update mEXG1Register and mEXG2Register 
@@ -6426,10 +6426,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //		exgBytesGetConfigFrom(1, mEXG1Register);
 //		exgBytesGetConfigFrom(2, mEXG2Register);
 		
-		mInfoMemBytes[infoMemMap.idxBtCommBaudRate] = (byte) ((mBluetoothBaudRate & 0xFF) << 0);
+		mInfoMemBytes[infoMemMap.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & infoMemMap.maskBaudRate);
 
 		// Analog Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[21];
+		byte[] bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
 			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
@@ -6446,10 +6446,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
 			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
 		}
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxAnalogAccelCalibration, 21);
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxAnalogAccelCalibration, infoMemMap.lengthGeneralCalibrationBytes);
 
 		// MPU9150 Gyroscope Calibration Parameters
-		bufferCalibrationParameters = new byte[21];
+		bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
 			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
@@ -6466,10 +6466,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
 			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
 		}
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxMPU9150GyroCalibration, 21);
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxMPU9150GyroCalibration, infoMemMap.lengthGeneralCalibrationBytes);
 
 		// LSM303DLHC Magnetometer Calibration Parameters
-		bufferCalibrationParameters = new byte[21];
+		bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
 			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 0) & 0xFF);
@@ -6486,10 +6486,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][1]*100)) & 0xFF);
 			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][2]*100)) & 0xFF);
 		}
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxLSM303DLHCMagCalibration, 21);
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxLSM303DLHCMagCalibration, infoMemMap.lengthGeneralCalibrationBytes);
 
 		// LSM303DLHC Digital Accel Calibration Parameters
-		bufferCalibrationParameters = new byte[21];
+		bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
 			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 0) & 0xFF);
@@ -6506,7 +6506,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixWRAccel[i][1]*100)) & 0xFF);
 			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixWRAccel[i][2]*100)) & 0xFF);
 		}
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxLSM303DLHCAccelCalibration, 21);
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxLSM303DLHCAccelCalibration, infoMemMap.lengthGeneralCalibrationBytes);
 		
 		//TODO: decide what to do
 		// BMP180 Pressure Calibration Parameters
