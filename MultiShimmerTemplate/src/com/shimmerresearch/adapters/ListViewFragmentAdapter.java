@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.database.ShimmerConfiguration;
+import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.multishimmertemplate.ConfigurationFragment;
 import com.shimmerresearch.multishimmertemplate.DevicesFragment;
 import com.shimmerresearch.multishimmertemplate.R;
@@ -167,7 +168,7 @@ public class ListViewFragmentAdapter extends ArrayAdapter<String>{
 						Shimmer shimmer = dF.mService.getShimmer(dF.deviceBluetoothAddresses[currentPosition]);
 						dF.compatibleSensors = shimmer.getListofSupportedSensors();
 						
-						if(shimmer.getShimmerVersion() == Shimmer.HW_ID_SHIMMER_3){ //replace EXG1, EXG2, EXG1 16 bit and EXG2 16 bit for ECG,EMG and test signal
+						if(shimmer.getShimmerVersion() == ShimmerObject.HW_ID.SHIMMER_3){ //replace EXG1, EXG2, EXG1 16 bit and EXG2 16 bit for ECG,EMG and test signal
 							ArrayList<String> tmp = new ArrayList<String>();
 							for(int i=0;i<dF.compatibleSensors.length;i++)
 								if(!dF.compatibleSensors[i].equals("EXG1") && !dF.compatibleSensors[i].equals("EXG2") &&
@@ -191,19 +192,19 @@ public class ListViewFragmentAdapter extends ArrayAdapter<String>{
  						dF.sensorBitmaptoName = Shimmer.generateBiMapSensorIDtoSensorName(dF.mService.getShimmerVersion(dF.deviceBluetoothAddresses[currentPosition]));
  						//check the enabled sensors
  						for (int i=0;i<dF.compatibleSensors.length;i++){
- 							if(dF.mService.getShimmerVersion(dF.deviceBluetoothAddresses[currentPosition])==Shimmer.HW_ID_SHIMMER_3 && dF.compatibleSensors[i].equals("ECG")){
+ 							if(dF.mService.getShimmerVersion(dF.deviceBluetoothAddresses[currentPosition])==ShimmerObject.HW_ID.SHIMMER_3 && dF.compatibleSensors[i].equals("ECG")){
  	 							if(dF.mService.isEXGUsingECG16Configuration(dF.deviceBluetoothAddresses[currentPosition]) ||
  	 									dF.mService.isEXGUsingECG24Configuration(dF.deviceBluetoothAddresses[currentPosition])){ 
  	 								dF.enableSensorListView.setItemChecked(i, true);
  	 							}
  							}
- 							else if(dF.mService.getShimmerVersion(dF.deviceBluetoothAddresses[currentPosition])==Shimmer.HW_ID_SHIMMER_3 && dF.compatibleSensors[i].equals("EMG")){
+ 							else if(dF.mService.getShimmerVersion(dF.deviceBluetoothAddresses[currentPosition])==ShimmerObject.HW_ID.SHIMMER_3 && dF.compatibleSensors[i].equals("EMG")){
  	 							if(dF.mService.isEXGUsingEMG16Configuration(dF.deviceBluetoothAddresses[currentPosition]) ||
  	 									dF.mService.isEXGUsingEMG24Configuration(dF.deviceBluetoothAddresses[currentPosition])){ 
  	 								dF.enableSensorListView.setItemChecked(i, true);
  	 							}
  							}
- 							else if(dF.mService.getShimmerVersion(dF.deviceBluetoothAddresses[currentPosition])==Shimmer.HW_ID_SHIMMER_3 && dF.compatibleSensors[i].equals("Test signal")){
+ 							else if(dF.mService.getShimmerVersion(dF.deviceBluetoothAddresses[currentPosition])==ShimmerObject.HW_ID.SHIMMER_3 && dF.compatibleSensors[i].equals("Test signal")){
  	 							if(dF.mService.isEXGUsingTestSignal16Configuration(dF.deviceBluetoothAddresses[currentPosition]) || 
  	 									dF.mService.isEXGUsingTestSignal24Configuration(dF.deviceBluetoothAddresses[currentPosition])){ 
  	 								dF.enableSensorListView.setItemChecked(i, true);

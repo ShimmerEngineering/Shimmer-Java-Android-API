@@ -248,6 +248,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		public final static long MAG_MPU_MPL = (long)1<<37;
 		public final static long SD_SENSOR_MPL_QUAT_6DOF_RAW = (long)1<<36;
 	}
+	
+	public class SDLogHeaderDerivedSensors{
+		public final static int PPG2_1_14 = 1<<4;
+		public final static int PPG1_12_13 = 1<<3;
+		public final static int PPG_12_13 = 1<<2;
+		public final static int SKIN_TEMP = 1<<1;
+		public final static int RES_AMP = 1<<0;
+	}
+	
 	public class BTStream {
 		public final static int ACCEL_LN = 0x80; 
 		public final static int GYRO = 0x40;
@@ -1167,13 +1176,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				} else {
 					int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A1);
 					tempData[0] = (double)newPacketInt[iA1];
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A1,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA1]));
+					String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A1;
+					//to Support derived sensor renaming
+					if (fwIdentifier == FW_IDEN_SD){
+						//change name based on derived sensor value
+						if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG2_1_14)>0){
+							sensorName = Shimmer3.ObjectClusterSensorName.PPG2_A1;
+						}
+					}
+					objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA1]));
 					uncalibratedData[iA1]=(double)newPacketInt[iA1];
 					uncalibratedDataUnits[iA1]=NO_UNIT;
 					if (mEnableCalibration){
 						calibratedData[iA1]=calibrateU12AdcValue(tempData[0],0,3,1);
 						calibratedDataUnits[iA1] = ADC_CAL_UNIT;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A1,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA1]));
+						objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA1]));
 					}
 				}
 			}
@@ -1182,12 +1199,24 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					) {
 				int iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A12);
 				tempData[0] = (double)newPacketInt[iA12];
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A12,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA12]));
+				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A12;
+				//to Support derived sensor renaming
+				if (fwIdentifier == FW_IDEN_SD){
+					//change name based on derived sensor value
+					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
+						sensorName = Shimmer3.ObjectClusterSensorName.PPG_A12;
+					} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG1_12_13)>0){
+						sensorName = Shimmer3.ObjectClusterSensorName.PPG1_A12;
+					}
+				}
+				
+				
+				objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA12]));
 				uncalibratedData[iA12]=(double)newPacketInt[iA12];
 				uncalibratedDataUnits[iA12]=NO_UNIT;
 				if (mEnableCalibration){
 					calibratedData[iA12]=calibrateU12AdcValue(tempData[0],0,3,1);
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A12,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA12]));
+					objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA12]));
 					calibratedDataUnits[iA12] = ADC_CAL_UNIT;
 
 				}
@@ -1197,12 +1226,24 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					) {
 				int iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
 				tempData[0] = (double)newPacketInt[iA13];
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A13,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA13]));
+				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A13;
+				//to Support derived sensor renaming
+				if (fwIdentifier == FW_IDEN_SD){
+					//change name based on derived sensor value
+					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
+						sensorName = Shimmer3.ObjectClusterSensorName.PPG_A13;
+					} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG1_12_13)>0){
+						sensorName = Shimmer3.ObjectClusterSensorName.PPG1_A13;
+					}
+				}
+				
+				
+				objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA13]));
 				uncalibratedData[iA13]=(double)newPacketInt[iA13];
 				uncalibratedDataUnits[iA13]=NO_UNIT;
 				if (mEnableCalibration){
 					calibratedData[iA13]=calibrateU12AdcValue(tempData[0],0,3,1);
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A13,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA13]));
+					objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA13]));
 					calibratedDataUnits[iA13] = ADC_CAL_UNIT;
 				}
 			}
@@ -1211,12 +1252,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					) {
 				int iA14 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A14);
 				tempData[0] = (double)newPacketInt[iA14];
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A14,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA14]));
+				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A14;
+				//to Support derived sensor renaming
+				if (fwIdentifier == FW_IDEN_SD){
+					//change name based on derived sensor value
+					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG2_1_14)>0){
+						sensorName = Shimmer3.ObjectClusterSensorName.PPG2_A14;
+					}
+				}
+				
+				objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA14]));
 				uncalibratedData[iA14]=(double)newPacketInt[iA14];
 				uncalibratedDataUnits[iA14]=NO_UNIT;
 				if (mEnableCalibration){
 					calibratedData[iA14]=calibrateU12AdcValue(tempData[0],0,3,1);
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.INT_EXP_A14,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA14]));
+					objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iA14]));
 					calibratedDataUnits[iA14] = ADC_CAL_UNIT;
 				}
 			}

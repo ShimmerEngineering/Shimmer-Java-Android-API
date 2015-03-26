@@ -22,6 +22,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.multishimmerplay.R;
 import com.shimmerresearch.service.MultiShimmerPlayService;
 import com.shimmerresearch.service.MultiShimmerPlayService.LocalBinder;
@@ -142,11 +143,11 @@ public class GraphActivity extends Activity{
 						sensorName = new String[3]; // for x y and z axis
 						dataArray = new int[3];
 						calibratedDataArray = new double[3];
-						if (mHardwareVersion == Shimmer.HW_ID_SHIMMER_3){
+						if (mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_3){
 							sensorName[0] = Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
 							sensorName[1] = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
 							sensorName[2] = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
-						} else if (mHardwareVersion == Shimmer.HW_ID_SHIMMER_2 || mHardwareVersion == Shimmer.HW_ID_SHIMMER_2R){
+						} else if (mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_2 || mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_2R){
 							sensorName[0] = Shimmer2.ObjectClusterSensorName.ACCEL_X;
 							sensorName[1] = Shimmer2.ObjectClusterSensorName.ACCEL_Y;
 							sensorName[2] = Shimmer2.ObjectClusterSensorName.ACCEL_Z;
@@ -156,11 +157,11 @@ public class GraphActivity extends Activity{
 						sensorName = new String[3]; // for x y and z axis
 						dataArray = new int[3];
 						calibratedDataArray = new double[3];
-						if (mHardwareVersion == Shimmer.HW_ID_SHIMMER_3){
+						if (mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_3){
 							sensorName[0] = Shimmer3.ObjectClusterSensorName.GYRO_X;
 							sensorName[1] = Shimmer3.ObjectClusterSensorName.GYRO_Y;
 							sensorName[2] = Shimmer3.ObjectClusterSensorName.GYRO_Z;
-						} else if (mHardwareVersion == Shimmer.HW_ID_SHIMMER_2 || mHardwareVersion == Shimmer.HW_ID_SHIMMER_2R){
+						} else if (mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_2 || mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_2R){
 							sensorName[0] = Shimmer3.ObjectClusterSensorName.GYRO_X;
 							sensorName[1] = Shimmer3.ObjectClusterSensorName.GYRO_Y;
 							sensorName[2] = Shimmer3.ObjectClusterSensorName.GYRO_Z;
@@ -170,11 +171,11 @@ public class GraphActivity extends Activity{
 						sensorName = new String[3]; // for x y and z axis
 						dataArray = new int[3];
 						calibratedDataArray = new double[3];
-						if (mHardwareVersion == Shimmer.HW_ID_SHIMMER_3){
+						if (mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_3){
 							sensorName[0] = Shimmer3.ObjectClusterSensorName.MAG_X;
 							sensorName[1] = Shimmer3.ObjectClusterSensorName.MAG_Y;
 							sensorName[2] = Shimmer3.ObjectClusterSensorName.MAG_Z;
-						} else if (mHardwareVersion == Shimmer.HW_ID_SHIMMER_2 || mHardwareVersion == Shimmer.HW_ID_SHIMMER_2R){
+						} else if (mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_2 || mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_2R){
 							sensorName[0] = Shimmer3.ObjectClusterSensorName.MAG_X;
 							sensorName[1] = Shimmer3.ObjectClusterSensorName.MAG_Y;
 							sensorName[2] = Shimmer3.ObjectClusterSensorName.MAG_Z;
@@ -184,9 +185,9 @@ public class GraphActivity extends Activity{
 						sensorName = new String[1]; 
 						dataArray = new int[1];
 						calibratedDataArray = new double[1];
-						if (mHardwareVersion == Shimmer.HW_ID_SHIMMER_3){
+						if (mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_3){
 							sensorName[0] = Shimmer3.ObjectClusterSensorName.GSR;
-						} else if (mHardwareVersion == Shimmer.HW_ID_SHIMMER_2 || mHardwareVersion == Shimmer.HW_ID_SHIMMER_2R){
+						} else if (mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_2 || mHardwareVersion == ShimmerObject.HW_ID.SHIMMER_2R){
 							sensorName[0] = Shimmer3.ObjectClusterSensorName.GSR;
 						}
 					}
