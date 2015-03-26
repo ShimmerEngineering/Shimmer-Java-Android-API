@@ -843,7 +843,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedDataUnits[sensorNames.length-1] = CLOCK_UNIT;
 				sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
 				if (mEnableCalibration){
-					double rtctimestampcal = (mInitialTimeStamp/32768*1000) + calibratedTS + (mRTCDifference/32768*1000) - (mFirstRawTS/32768*1000);
+					double rtctimestampcal = ((double)mInitialTimeStamp/32768.0*1000.0) + calibratedTS + ((double)mRTCDifference/32768.0*1000.0) - (mFirstRawTS/32768.0*1000.0);
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster("CAL","mSecs",rtctimestampcal));
 					calibratedData[sensorNames.length-1] = rtctimestampcal;
 					calibratedDataUnits[sensorNames.length-1] = "mSecs";
