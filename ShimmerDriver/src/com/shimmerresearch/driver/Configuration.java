@@ -378,10 +378,10 @@ public class Configuration {
 			public static final String INT_EXP_A12 = "Int A12";
 			public static final String INT_EXP_A13 = "Int A13";
 			public static final String INT_EXP_A14 = "Int A14";
-			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier";
+			public static final String BRIDGE_AMPLIFIER = "Bridge Amp";
 			public static final String GSR = "GSR";
 			public static final String INT_EXP_A1 = "Int A1";
-			public static final String RESISTANCE_AMP = "Resistance Amplifier";
+			public static final String RESISTANCE_AMP = "Resistance Amp";
 			public static final String GYRO = "Gyroscope";
 			public static final String ACCEL_WR = "Wide-Range Accelerometer";
 			public static final String MAG = "Magnetometer";
