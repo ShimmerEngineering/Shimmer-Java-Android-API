@@ -6059,6 +6059,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected void infoMemByteArrayParse(byte[] infoMemContents) {
 
+		String shimmerName = "";
+
 		// Check first 6 bytes of InfoMem for 0xFF to determine if contents are valid 
 		byte[] comparisonBuffer = new byte[]{-1,-1,-1,-1,-1,-1};
 		byte[] detectionBuffer = new byte[comparisonBuffer.length];
@@ -6073,8 +6075,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInfoMemBytes = infoMemContents;
 		}
 		else {
-			String shimmerName = "";
-
 			mShimmerUsingConfigFromInfoMem = true;
 
 			// InfoMem valid
@@ -6391,24 +6391,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			}
 			
-			// Set name if nothing was read from InfoMem
-			if(!shimmerName.isEmpty()) {
-				mShimmerUserAssignedName = new String(shimmerName);
-			}
-			else {
-				mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
-				if(!mMacIdFromUartParsed.isEmpty()) {
-					mShimmerUserAssignedName += "_" + mMacIdFromUartParsed;
-				}
-			}
-
-			
 			//TODO Complete and tidy below
 			sensorAndConfigMapsCreate();
 			sensorMapUpdateWithEnabledSensors(mEnabledSensors, mDerivedSensors);
 			
 //			sensorMapCheckandCorrectSensorDependencies();
-			
+		}
+		
+		// Set name if nothing was read from InfoMem
+		if(!shimmerName.isEmpty()) {
+			mShimmerUserAssignedName = new String(shimmerName);
+		}
+		else {
+			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
+			if(!mMacIdFromUartParsed.isEmpty()) {
+				mShimmerUserAssignedName += "_" + mMacIdFromUartParsed;
+			}
 		}
 	}
 
@@ -7679,8 +7677,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER, new SensorTileDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
 									Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP)));
-				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorTileDetails(
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
+//				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorTileDetails(
+//						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL, new SensorTileDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12, //X-axis
 									Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13, //Y-axis
@@ -7713,7 +7711,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Deluxe;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Deluxe;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
+//				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoHighGAccel;
 //				mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = listOfCompatibleVersionInfoGps;
 				
