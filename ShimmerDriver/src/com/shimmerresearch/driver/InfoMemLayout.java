@@ -7,6 +7,9 @@ package com.shimmerresearch.driver;
  */
 public class InfoMemLayout {
 
+	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+	public int maxNumOfExperimentNodes = 21;
+
 //	int mFirmwareVersionCode = -1;
 	int mFirmwareIdentifier = -1;
 	int mFirmwareVersionMajor = -1;
@@ -111,7 +114,10 @@ public class InfoMemLayout {
 	public int idxMPLGyroCalibration =            	128+47; //+12
 	public int idxSDShimmerName =                 	128+59;   // +12 bytes
 	public int idxSDEXPIDName =                  	128+71;   // +12 bytes
-	public int idxSDConfigTime =                  	128+83;   // +4 bytes
+	public int idxSDConfigTime0 =                  	128+83;   // +4 bytes
+	public int idxSDConfigTime1 =                  	128+84;
+	public int idxSDConfigTime2 =                  	128+85;
+	public int idxSDConfigTime3 =                  	128+86;
 	public int idxSDMyTrialID =                   	128+87;   // 1 byte
 	public int idxSDNumOfShimmers =                 128+88;   // 1 byte
 	public int idxSDExperimentConfig0 =             128+89;
@@ -280,7 +286,18 @@ public class InfoMemLayout {
 
 	public int lengthMacIdBytes = 				6;
 
+	public int bitShiftSDConfigTime0 = 			24;
+	public int bitShiftSDConfigTime1 = 			16;
+	public int bitShiftSDConfigTime2 = 			8;
+	public int bitShiftSDConfigTime3 = 			0;
 
+	
+	public int bitShiftSDCfgFileWriteFlag =		0; 
+	public int maskSDCfgFileWriteFlag =			0x01; 
+	public int bitShiftSDCalibFileWriteFlag =		1; 
+	public int maskSDCalibFileWriteFlag =			0x01; 
+
+	
 	//	//ADC initialisation mask
 //	public int MASK_A_ACCEL =        0x0001;
 //	public int MASK_VBATT =          0x0002;
