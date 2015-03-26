@@ -371,7 +371,7 @@ public class Configuration {
 		//GUI SENSORS
 		public class GuiLabelSensors{
 			public static final String ACCEL_LN = "Low-Noise Accelerometer";
-			public static final String BATTERY = "Battery Monitoring";
+			public static final String BATTERY = "Battery Voltage";
 			public static final String EXT_EXP_A7 = "Ext A7";
 			public static final String EXT_EXP_A6 = "Ext A6";
 			public static final String EXT_EXP_A15 = "Ext A15";
