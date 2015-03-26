@@ -370,7 +370,7 @@ public class Configuration {
 		
 		//GUI SENSORS
 		public class GuiLabelSensors{
-			public static final String ACCEL_LN = "Low Noise Accel";
+			public static final String ACCEL_LN = "Low-Noise Accelerometer";
 			public static final String BATTERY = "Battery Monitoring";
 			public static final String EXT_EXP_A7 = "Ext A7";
 			public static final String EXT_EXP_A6 = "Ext A6";
@@ -382,9 +382,9 @@ public class Configuration {
 			public static final String GSR = "GSR";
 			public static final String INT_EXP_A1 = "Int A1";
 			public static final String RESISTANCE_AMP = "Resistance Amplifier";
-			public static final String GYRO = "Gyro";
-			public static final String ACCEL_WR = "Wide Range Accel";
-			public static final String MAG = "Mag";
+			public static final String GYRO = "Gyroscope";
+			public static final String ACCEL_WR = "Wide-Range Accelerometer";
+			public static final String MAG = "Magnetometer";
 			public static final String ACCEL_MPU = "Alternative Accel";
 			public static final String MAG_MPU = "Alternative Mag";
 			public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
