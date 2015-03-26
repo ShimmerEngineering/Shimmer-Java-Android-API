@@ -547,10 +547,16 @@ public class Configuration {
 			public static final String EULER_9DOF_X = "Euler_9DOF_X";
 			public static final String EULER_9DOF_Y = "Euler_9DOF_Y";
 			public static final String EULER_9DOF_Z = "Euler_9DOF_Z";
-			public static final String AXIS_ANGLE_A = "Axis Angle A";
-			public static final String AXIS_ANGLE_X = "Axis Angle X";
-			public static final String AXIS_ANGLE_Y = "Axis Angle Y";
-			public static final String AXIS_ANGLE_Z = "Axis Angle Z";
+			public static final String AXIS_ANGLE_A = "Axis_Angle_A";
+			public static final String AXIS_ANGLE_X = "Axis_Angle_X";
+			public static final String AXIS_ANGLE_Y = "Axis_Angle_Y";
+			public static final String AXIS_ANGLE_Z = "Axis_Angle_Z";
+			public static final String PPG_A12 = "PPG_A12";
+			public static final String PPG_A13 = "PPG_A13";
+			public static final String PPG1_A12 = "PPG1_A12";
+			public static final String PPG1_A13 = "PPG1_A13";
+			public static final String PPG2_A1 = "PPG2_A1";
+			public static final String PPG2_A14 = "PPG2_A14";
 		}
 	}
 
