@@ -101,8 +101,9 @@ public class InfoMemLayout {
 	public int idxLSM303DLHCAccelCalibration =    	94; //94->114
 
 	// Derived Channels - used by SW not FW
-	public int idxDerivedSensors0 =		    		115;
-	public int idxDerivedSensors1 =		    		116;
+	public int idxDerivedSensors0 =		    		0;
+	public int idxDerivedSensors1 =		    		0;
+	public int idxDerivedSensors2 =		    		0;
 	
 	public int idxConfigSetupByte4 =              	128+0;
 	public int idxConfigSetupByte5 =              	128+1;
@@ -181,6 +182,8 @@ public class InfoMemLayout {
 	public int maskDerivedChannelsByte =				0xFF;
 	public int byteShiftDerivedSensors0 =				0;
 	public int byteShiftDerivedSensors1 =				8;
+	public int byteShiftDerivedSensors2 =				16;
+	
 //	public int maskDerivedChannel = 					0x01;
 //	public int bitShiftDerivedChannelResAmp = 			0;
 //	public int bitShiftDerivedChannelSkinTemp =			1;
@@ -192,16 +195,16 @@ public class InfoMemLayout {
 //	public int bitShiftDerivedChannel6DofMadgewick =	8;
 //	public int bitShiftDerivedChannel9DofMadgewick =	9;
 	
-	public int maskDerivedChannelResAmp = 			0x0001;
-	public int maskDerivedChannelSkinTemp =			0x0002;
-	public int maskDerivedChannelPpg_ADC12ADC13 =	0x0004;
-	public int maskDerivedChannelPpg1_ADC12ADC13 =	0x0008;
-	public int maskDerivedChannelPpg2_ADC1ADC14 =	0x0010;
-	public int maskDerivedChannelPpgToHr = 			0x0020;
-	public int maskDerivedChannelEcgToHr = 			0x0040;
+	public int maskDerivedChannelResAmp = 			0x000001;
+	public int maskDerivedChannelSkinTemp =			0x000002;
+	public int maskDerivedChannelPpg_ADC12ADC13 =	0x000004;
+	public int maskDerivedChannelPpg1_ADC12ADC13 =	0x000008;
+	public int maskDerivedChannelPpg2_ADC1ADC14 =	0x000010;
+	public int maskDerivedChannelPpgToHr = 			0x000020;
+	public int maskDerivedChannelEcgToHr = 			0x000040;
 	
-	public int maskDerivedChannel6DofMadgewick =	0x0100;
-	public int maskDerivedChannel9DofMadgewick =	0x0200;
+	public int maskDerivedChannel6DofMadgewick =	0x000100;
+	public int maskDerivedChannel9DofMadgewick =	0x000200;
 
 	
 	// ExG related config bytes
@@ -430,6 +433,9 @@ public class InfoMemLayout {
 		
 //		mInfoMemSize = calculateInfoMemByteLength(mFirmwareVersionCode,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
 		mInfoMemSize = calculateInfoMemByteLength(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
+
+		//Include changes to mapping below in order of oldest to newest in 
+		//independent "if statements"
 		
 		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=42))
 			||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=4))) {
@@ -439,7 +445,25 @@ public class InfoMemLayout {
 			idxConfigSetupByte4 =	128+2;
 			idxConfigSetupByte5 =	128+3;
 			idxConfigSetupByte6 =	128+4;
+			
+			idxDerivedSensors0 = 115;
+			idxDerivedSensors1 = 116;
+			idxDerivedSensors2 = 117;
 		}
+		
+		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=69))
+				||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=17))
+				||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.BTSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=6)&&(mFirmwareVersionInternal>=0))) {
+			
+			idxDerivedSensors0 =		    31;
+			idxDerivedSensors1 =		    32;
+			idxDerivedSensors2 =		    33;
+			idxAnalogAccelCalibration =		34;
+			idxMPU9150GyroCalibration =     55;
+			idxLSM303DLHCMagCalibration =   76;
+			idxLSM303DLHCAccelCalibration = 97;
+		}
+
 		
 //		if(mFirmwareVersionCode == 5) { //
 //			// First common version - do nothing and use default values

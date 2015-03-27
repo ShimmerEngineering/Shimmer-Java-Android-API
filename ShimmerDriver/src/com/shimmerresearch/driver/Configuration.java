@@ -189,6 +189,7 @@ public class Configuration {
 		public final static String[] ListOfOnOff={"On","Off"};
 		public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
+		
 		public final static String[] ListOfPpgAdcSelection={"Int A13","Int A12"};
 		public final static Integer[] ListOfPpgAdcSelectionConfigValues={0,1};
 		public final static String[] ListOfPpg1AdcSelection={"Int A13","Int A12"};
