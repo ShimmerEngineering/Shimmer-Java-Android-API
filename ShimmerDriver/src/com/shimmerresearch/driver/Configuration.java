@@ -560,6 +560,8 @@ public class Configuration {
 			public static final String PPG1_A13 = "PPG1_A13";
 			public static final String PPG2_A1 = "PPG2_A1";
 			public static final String PPG2_A14 = "PPG2_A14";
+			public static final String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
+			public static final String TIMESTAMP_SYNC = "Timestamp_Sync";
 		}
 	}
 
