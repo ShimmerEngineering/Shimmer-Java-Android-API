@@ -8176,7 +8176,44 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			//Set default sensor configuration if sensor was disabled.
 			if(!mSensorMap.get(sensorMapKey).mIsEnabled) {
-				setDefaultConfigForSensor(sensorMapKey);
+//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
+//				setDefaultLsm303dlhcAccelSensorConfig();
+//			}
+//			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+//				setDefaultLsm303dlhcMagSensorConfig();
+//			}
+//			else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+//					||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+//				setDefaultMpu9150GyroSensorConfig();
+//			}
+//			else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
+//					||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
+//				setDefaultMpu9150AccelSensorConfig();
+//			}
+				
+//				setDefaultConfigForSensor(sensorMapKey);
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
+					setLowPowerAccelWR(true);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+					setLowPowerMag(true);
+				}
+				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+					setLowPowerGyro(true);
+				}
+			}
+			else {
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
+					setLowPowerAccelWR(false);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+					setLowPowerMag(false);
+				}
+				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+					setLowPowerGyro(false);
+				}
 			}
 
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
@@ -8424,20 +8461,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	//TODO set defaults when ").mIsEnabled = false)" is set manually in the code
 	private void setDefaultConfigForSensor(int sensorMapKey) {
-		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-			setDefaultLsm303dlhcAccelSensorConfig();
-		}
-		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-			setDefaultLsm303dlhcMagSensorConfig();
-		}
-		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
-			setDefaultMpu9150GyroSensorConfig();
-		}
-		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
-				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
-			setDefaultMpu9150AccelSensorConfig();
-		}
+//		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
+//			setDefaultLsm303dlhcAccelSensorConfig();
+//		}
+//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+//			setDefaultLsm303dlhcMagSensorConfig();
+//		}
+//		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+//				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+//			setDefaultMpu9150GyroSensorConfig();
+//		}
+//		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
+//				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
+//			setDefaultMpu9150AccelSensorConfig();
+//		}
 		
 		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE) {
 			setDefaultBmp180PressureSensorConfig();
