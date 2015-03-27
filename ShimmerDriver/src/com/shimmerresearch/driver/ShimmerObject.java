@@ -5482,8 +5482,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setLSM303MagRateFromFreq(mShimmerSamplingRate);
 			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-			setExGRateFromFreq(mShimmerSamplingRate);
+			setExGRateFromFreq(mEXG1RateSetting);
 		}
+	
+		System.out.println(" ");
+		System.out.println("Change in ShimmerObject");
+		System.out.println("Shimmer=" + mShimmerSamplingRate);
+		System.out.println("Mag=" + mLSM303MagRate);
+		System.out.println("Gyro=" + mMPU9150GyroAccelRate);
+		System.out.println("ExG=" + mShimmerSamplingRate);
+		System.out.println(" ");
 	}
 	
 	private int setLSM303AccelRateFromFreq(double freq) {
@@ -6415,6 +6423,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mShimmerUserAssignedName += "_" + mMacIdFromUartParsed;
 			}
 		}
+		
+		System.out.println(" ");
+		System.out.println("Parsed InfoMem");
+		System.out.println("Shimmer=" + mShimmerSamplingRate);
+		System.out.println("Mag=" + mLSM303MagRate);
+		System.out.println("Gyro=" + mMPU9150GyroAccelRate);
+		System.out.println("ExG=" + mShimmerSamplingRate);
+		System.out.println(" ");
+		
 	}
 
 	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
@@ -6700,6 +6717,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				// InfoMem B End
 			}
 		}
+		
+		System.out.println(" ");
+		System.out.println("Generated InfoMem");
+		System.out.println("Shimmer=" + mShimmerSamplingRate);
+		System.out.println("Mag=" + mLSM303MagRate);
+		System.out.println("Gyro=" + mMPU9150GyroAccelRate);
+		System.out.println("ExG=" + mShimmerSamplingRate);
+		System.out.println(" ");
 		
 		return mInfoMemBytes;
 	}
