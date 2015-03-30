@@ -5487,13 +5487,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setExGRateFromFreq(mEXG1RateSetting);
 		}
 	
-		System.out.println(" ");
-		System.out.println("Change in ShimmerObject");
-		System.out.println("Shimmer=" + mShimmerSamplingRate);
-		System.out.println("Mag=" + mLSM303MagRate);
-		System.out.println("Gyro=" + mMPU9150GyroAccelRate);
-		System.out.println("ExG=" + mShimmerSamplingRate);
-		System.out.println(" ");
 	}
 	
 	private int setLSM303AccelRateFromFreq(double freq) {
@@ -5587,7 +5580,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if(mMPU9150LPF == 0) {
 			numerator = 8000;
 		}
-//		System.out.println("Numerator is:" + numerator);
 
 		if (!mLowPowerGyro){
 			if(freq<4) {
@@ -5602,23 +5594,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 			mMPU9150GyroAccelRate = result;
 
-//			if (mSamplingRate<=51.28) {
-//				mMPU9150GyroAccelRate = 0x9B; // Dec. = 155, Freq. = 51.28Hz 
-//			} else if (mSamplingRate<=102.56) {
-//				mMPU9150GyroAccelRate = 0x4D; // Dec. = 77, Freq. = 102.56Hz
-//			} else if (mSamplingRate<=129.03) {
-//				mMPU9150GyroAccelRate = 0x3D; // Dec. = 61, Freq. = 129.03Hz
-//			} else if (mSamplingRate<=173.91) {
-//				mMPU9150GyroAccelRate = 0x2D; // Dec. = 45, Freq. = 173.91Hz
-//			} else if (mSamplingRate<=205.13) {
-//				mMPU9150GyroAccelRate = 0x26; // Dec. = 38, Freq. = 205.13Hz
-//			} else if (mSamplingRate<=258.06) {
-//				mMPU9150GyroAccelRate = 0x1E; // Dec. = 30, Freq. = 258.06Hz
-//			} else if (mSamplingRate<=533.33) {
-//				mMPU9150GyroAccelRate = 0x0E; // Dec. = 14, Freq. = 533.33Hz
-//			} else {
-//				mMPU9150GyroAccelRate = 0x06; // Dec. = 6, Freq. = 1142.86Hz
-//			}
 		}
 		else {
 			mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz
@@ -5784,9 +5759,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mEXG2RegisterArray[9] &= (~(0x01 << 2));
 		mEXG2RegisterArray[9] |= ((mEXG2RespirationDetectFreq & 0x01) << 2);
 
-//		System.out.println(bytesToHex(mEXG1Register));
-//		System.out.println(bytesToHex(mEXG2Register));
-		
 	}
 	
 	
@@ -6037,22 +6009,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			setShimmerSamplingRate(51.2);
 			setDefaultECGConfiguration(); //TODO: bytes to set to default ECG or all 0xFF's? 
-			setDefaultBmp180PressureSensorConfig();
-			setDefaultLsm303dlhcAccelSensorConfig();
-			setDefaultLsm303dlhcMagSensorConfig();
-			setDefaultGsrSensorConfig();
-			setDefaultMpu9150GyroSensorConfig();
-			setDefaultMpu9150AccelSensorConfig();
-			setDefaultMpu9150MplSensorConfig();
+//			setDefaultBmp180PressureSensorConfig();
+//			setDefaultLsm303dlhcAccelSensorConfig();
+//			setDefaultLsm303dlhcMagSensorConfig();
+//			setDefaultGsrSensorConfig();
+//			setDefaultMpu9150GyroSensorConfig();
+//			setDefaultMpu9150AccelSensorConfig();
+//			setDefaultMpu9150MplSensorConfig();
 			
 			syncNodesList.clear();
 			
 			sensorAndConfigMapsCreate();
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mIsEnabled = true;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled = true;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mIsEnabled = true;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.VBATT).mIsEnabled = true;
+				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.A_ACCEL, true);
+				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO, true);
+				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG, true);
+				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.VBATT, true);
 			}
 
 		}
@@ -6426,14 +6398,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		}
 		
-		System.out.println(" ");
-		System.out.println("Parsed InfoMem");
-		System.out.println("Shimmer=" + mShimmerSamplingRate);
-		System.out.println("Mag=" + mLSM303MagRate);
-		System.out.println("Gyro=" + mMPU9150GyroAccelRate);
-		System.out.println("ExG=" + mShimmerSamplingRate);
-		System.out.println(" ");
-		
 	}
 
 	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
@@ -6476,7 +6440,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mInfoMemBytes[infoMemMap.idxSensors0] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors0) & infoMemMap.maskSensors);
 		mInfoMemBytes[infoMemMap.idxSensors1] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors1) & infoMemMap.maskSensors);
 		mInfoMemBytes[infoMemMap.idxSensors2] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors2) & infoMemMap.maskSensors);
-		setDefaultConfigForDisabledSensors();
+//		setDefaultConfigForDisabledSensors();
 		
 		// Configuration
 		mInfoMemBytes[infoMemMap.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & infoMemMap.maskLSM303DLHCAccelSamplingRate) << infoMemMap.bitShiftLSM303DLHCAccelSamplingRate);
@@ -6720,14 +6684,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		}
 		
-		System.out.println(" ");
-		System.out.println("Generated InfoMem");
-		System.out.println("Shimmer=" + mShimmerSamplingRate);
-		System.out.println("Mag=" + mLSM303MagRate);
-		System.out.println("Gyro=" + mMPU9150GyroAccelRate);
-		System.out.println("ExG=" + mShimmerSamplingRate);
-		System.out.println(" ");
-		
 		return mInfoMemBytes;
 	}
 	
@@ -6740,32 +6696,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return newArray;
 	}
 
-	public static boolean isAsciiPrintable(char ch) {
-	      return ch >= 32 && ch < 127;
-	  }
-
-	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for ( int j = 0; j < bytes.length; j++ ) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = hexArray[v >>> 4];
-	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-	    }
-	    return new String(hexChars);
-	}
 	
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
 
-	//TODO Complete and tidy below
 	public void sensorMapUpdateWithEnabledSensors() {
 
 		if((mEnabledSensors != 0) && (mSensorMap != null)) {
@@ -6795,7 +6727,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						for(Integer conflictKey:mSensorMap.get(sensorMapKey).mListOfSensorMapKeysConflicting) {
 							if(mSensorMap.get(conflictKey).isDerivedChannel()) {
 								if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
-//									System.out.println("Disabling conflicting key for: " + mSensorMap.get(sensorMapKey).mLabel + " - " + mSensorMap.get(conflictKey).mLabel);
 									mSensorMap.get(sensorMapKey).mIsEnabled = false;
 									skipKey = true;
 									break innerloop;
@@ -6806,16 +6737,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 					// Process remaining channels
 					if(!skipKey) {
-
 						
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
 						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) { // This is a derived sensor
 							
-//							System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled);
-//							System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIsEnabled);
-
-							//Check if all required sensors are enabled
 							if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
+								//Check if all required sensors are enabled
 //								boolean allRequiredSensorsEnabled = true;
 //								if(mSensorMap.get(sensorMapKey).mListOfSensorMapKeysRequired != null) {
 //									innerloop:
@@ -6843,11 +6770,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							else {
 //								System.out.println("Derived Channel - " + mSensorMap.get(sensorMapKey).mLabel + " no associated required keys:");
 							}
-//							System.out.println("Derived Channel: " + mSensorMap.get(sensorMapKey).mLabel + " - " + mSensorMap.get(sensorMapKey).mIsEnabled);
-//
-//							System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled);
-//							System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIsEnabled);
-
 						}
 						else { // This is not a derived sensor
 							if((mEnabledSensors & mSensorMap.get(sensorMapKey).mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorBitmapIDSDLogHeader) {
@@ -6857,12 +6779,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}
 	
-//				System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mIsEnabled);
-//				System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mIsEnabled);
-//				System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled);
-//				System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIsEnabled);
-//				System.out.println(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mLabel + " - " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mIsEnabled);
-
 				//Handle ExG sensors
 				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
 						||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)
@@ -7805,7 +7721,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				for(String channelGroup:mShimmerChannelGroupingMap.keySet()){
 //					System.out.println(channelGroup);
 //				}
-
 				
 				// Assemble the channel configuration options map
 				mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
@@ -8060,8 +7975,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
 		
-//		System.out.println("Setting: " + mSensorMap.get(sensorMapKey).mLabel);
-
 		if(mSensorMap!=null) {
 			
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
@@ -8176,47 +8089,49 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			sensorMapConflictCheckandCorrect(sensorMapKey);
 			
-			//Set default sensor configuration if sensor was disabled.
-			if(!mSensorMap.get(sensorMapKey).mIsEnabled) {
+			setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
+
+//			//Set default sensor configuration if sensor was disabled.
+//			if(!mSensorMap.get(sensorMapKey).mIsEnabled) {
+////				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
+////				setDefaultLsm303dlhcAccelSensorConfig();
+////			}
+////			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+////				setDefaultLsm303dlhcMagSensorConfig();
+////			}
+////			else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+////					||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+////				setDefaultMpu9150GyroSensorConfig();
+////			}
+////			else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
+////					||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
+////				setDefaultMpu9150AccelSensorConfig();
+////			}
+//				
+////				setDefaultConfigForSensor(sensorMapKey);
 //				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-//				setDefaultLsm303dlhcAccelSensorConfig();
+//					setLowPowerAccelWR(true);
+//				}
+//				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+//					setLowPowerMag(true);
+//				}
+//				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+//						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+//					setLowPowerGyro(true);
+//				}
 //			}
-//			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-//				setDefaultLsm303dlhcMagSensorConfig();
+//			else {
+//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
+//					setLowPowerAccelWR(false);
+//				}
+//				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+//					setLowPowerMag(false);
+//				}
+//				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+//						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+//					setLowPowerGyro(false);
+//				}
 //			}
-//			else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-//					||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
-//				setDefaultMpu9150GyroSensorConfig();
-//			}
-//			else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
-//					||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
-//				setDefaultMpu9150AccelSensorConfig();
-//			}
-				
-//				setDefaultConfigForSensor(sensorMapKey);
-				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-					setLowPowerAccelWR(true);
-				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-					setLowPowerMag(true);
-				}
-				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
-					setLowPowerGyro(true);
-				}
-			}
-			else {
-				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-					setLowPowerAccelWR(false);
-				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-					setLowPowerMag(false);
-				}
-				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
-					setLowPowerGyro(false);
-				}
-			}
 
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
 				
@@ -8356,16 +8271,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public void sensorMapConflictCheckandCorrect(int key){
 		
 		if(mSensorMap.get(key) != null) {
-//			System.out.println("Conflict checking: " + mSensorMap.get(key).mLabel);
 			if(mSensorMap.get(key).mListOfSensorMapKeysConflicting != null) {
 				for(Integer sensorMapKey:mSensorMap.get(key).mListOfSensorMapKeysConflicting) {
 					if(mSensorMap.get(sensorMapKey) != null) {
-//						System.out.println("Conflict: " + mSensorMap.get(sensorMapKey).mLabel);
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
 						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
 							mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
 						}
-						setDefaultConfigForSensor(sensorMapKey);
+						setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
 					}
 				}
 			}
@@ -8407,7 +8320,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
 						mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
 					}
-					setDefaultConfigForSensor(sensorMapKey);
+					setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
 				}
 			}
 		}
@@ -8423,7 +8336,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
 							mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
 						}
-						setDefaultConfigForSensor(sensorMapKey);
+						setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
 						break;
 					}
 				}
@@ -8453,36 +8366,36 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	private void setDefaultConfigForDisabledSensors() {
-		for(Integer sensorMapKey:mSensorMap.keySet()) {
-			if(mSensorMap.get(sensorMapKey).mIsEnabled == false) {
-				setDefaultConfigForSensor(sensorMapKey);
-			}
-		}
-	}
+//	private void setDefaultConfigForDisabledSensors() {
+//		for(Integer sensorMapKey:mSensorMap.keySet()) {
+//			if(mSensorMap.get(sensorMapKey).mIsEnabled == false) {
+//				setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
+//			}
+//		}
+//	}
 
 	//TODO set defaults when ").mIsEnabled = false)" is set manually in the code
-	private void setDefaultConfigForSensor(int sensorMapKey) {
-//		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-//			setDefaultLsm303dlhcAccelSensorConfig();
-//		}
-//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-//			setDefaultLsm303dlhcMagSensorConfig();
-//		}
-//		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-//				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
-//			setDefaultMpu9150GyroSensorConfig();
-//		}
-//		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
-//				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
-//			setDefaultMpu9150AccelSensorConfig();
-//		}
+	private void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
+			setDefaultLsm303dlhcAccelSensorConfig(state);
+		}
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
+			setDefaultLsm303dlhcMagSensorConfig(state);
+		}
+		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
+				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+			setDefaultMpu9150GyroSensorConfig(state);
+		}
+		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
+				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
+			setDefaultMpu9150AccelSensorConfig(state);
+		}
 		
-		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE) {
-			setDefaultBmp180PressureSensorConfig();
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE) {
+			setDefaultBmp180PressureSensorConfig(state);
 		}
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.GSR) {
-			setDefaultGsrSensorConfig();
+			setDefaultGsrSensorConfig(state);
 		}
 		else if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
@@ -8508,43 +8421,62 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW)) {
 			if(!checkIfOtherMplChannelEnabled()) {
-				setDefaultMpu9150MplSensorConfig();
+				setDefaultMpu9150MplSensorConfig(state);
 			}
 		}
 		
 	}
 	
-	private void setDefaultBmp180PressureSensorConfig() {
+	private void setDefaultBmp180PressureSensorConfig(boolean state) {
 		mPressureResolution = 0;
 	}
 	
-	private void setDefaultLsm303dlhcAccelSensorConfig() {
-		mAccelRange = 0;
-		setLowPowerAccelWR(false);
-		setLSM303AccelRateFromFreq(mShimmerSamplingRate);
+	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
+		if(state) {
+			setLowPowerAccelWR(false);
+		}
+		else {
+			mAccelRange = 0;
+			setLowPowerAccelWR(true);
+//			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
+		}
 	}
 
-	private void setDefaultLsm303dlhcMagSensorConfig() {
-		mMagRange=1;
-		setLowPowerMag(false);
-		setLSM303MagRateFromFreq(mShimmerSamplingRate);
+	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
+		if(state) {
+			setLowPowerMag(false);
+		}
+		else {
+			mMagRange=1;
+			setLowPowerMag(true);
+//			setLSM303MagRateFromFreq(mShimmerSamplingRate);
+		}
 	}
 
-	private void setDefaultGsrSensorConfig() {
-		mGSRRange=4;
+	private void setDefaultGsrSensorConfig(boolean state) {
+		if(state) {
+		}
+		else {
+			mGSRRange=4;
+		}
 	}
 
-	private void setDefaultMpu9150GyroSensorConfig() {
-		mGyroRange=1;
-		setLowPowerGyro(false);
-		setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+	private void setDefaultMpu9150GyroSensorConfig(boolean state) {
+		if(state) {
+			setLowPowerGyro(false);
+		}
+		else {
+			mGyroRange=1;
+			setLowPowerGyro(true);
+//			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+		}
 	}
 	
-	private void setDefaultMpu9150AccelSensorConfig() {
+	private void setDefaultMpu9150AccelSensorConfig(boolean state) {
 		mMPU9150AccelRange=0;
 	}
 	
-	private void setDefaultMpu9150MplSensorConfig() {
+	private void setDefaultMpu9150MplSensorConfig(boolean state) {
 		mMPU9150DMP = 0;
 		mMPU9150LPF = 0;
 		mMPU9150MotCalCfg = 0;
@@ -8595,6 +8527,32 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		}
 		return false;
+	}
+	
+	
+	public static boolean isAsciiPrintable(char ch) {
+	      return ch >= 32 && ch < 127;
+	}
+
+	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+	public static String bytesToHex(byte[] bytes) {
+	    char[] hexChars = new char[bytes.length * 2];
+	    for ( int j = 0; j < bytes.length; j++ ) {
+	        int v = bytes[j] & 0xFF;
+	        hexChars[j * 2] = hexArray[v >>> 4];
+	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+	    }
+	    return new String(hexChars);
+	}
+	
+	public static byte[] hexStringToByteArray(String s) {
+	    int len = s.length();
+	    byte[] data = new byte[len / 2];
+	    for (int i = 0; i < len; i += 2) {
+	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+	                             + Character.digit(s.charAt(i+1), 16));
+	    }
+	    return data;
 	}
 	
 	public String convertSecondsToDateString(long seconds) {
