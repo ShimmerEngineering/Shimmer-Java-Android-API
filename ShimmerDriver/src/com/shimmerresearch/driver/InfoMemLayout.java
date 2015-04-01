@@ -437,12 +437,8 @@ public class InfoMemLayout {
 		//Include changes to mapping below in order of oldest to newest in 
 		//independent "if statements"
 		
-		
 		if((compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.SDLOG,0,8,42))
 				||(compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM,0,3,4))) {
-			
-//		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=42))
-//			||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=4))) {
 			
 			idxSensors3 =			128+0;
 			idxSensors4 =			128+1;
@@ -459,11 +455,6 @@ public class InfoMemLayout {
 				||(compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM,0,3,17))
 				||(compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.BTSTREAM,0,6,0))) {
 
-		
-//		if(((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.SDLOG)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=8)&&(mFirmwareVersionInternal>=69))
-//				||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=3)&&(mFirmwareVersionInternal>=17))
-//				||((mFirmwareIdentifier==ShimmerObject.FW_ID_SHIMMER3.BTSTREAM)&&(mFirmwareVersionMajor>=0)&&(mFirmwareVersionMinor>=6)&&(mFirmwareVersionInternal>=0))) {
-			
 			idxDerivedSensors0 =		    31;
 			idxDerivedSensors1 =		    32;
 			idxDerivedSensors2 =		    33;

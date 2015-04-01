@@ -235,6 +235,18 @@ public class MsgDock {
 			mSlotNumber = -1;
 		}
 	}
+
+	/** Used by SmartDock for BSL operations
+	 * @param msgIdentifier
+	 * @param uniqueID
+	 */
+	public MsgDock(String dockID,int msgIdentifier){
+		mMsgID = msgIdentifier;
+		mDockID  = dockID;
+		mUniqueID  = dockID;
+		mSlotNumber = -1;
+//		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+	}
 	
 	/** Used by BasicDock, SmartDock, SmartDockUart and SmartDockUartListener
 	 * @param msgID

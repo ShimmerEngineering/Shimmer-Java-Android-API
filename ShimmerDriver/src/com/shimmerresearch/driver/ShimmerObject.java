@@ -164,6 +164,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		public final static int SHIMMER_3 = 3;
 		public final static int SHIMMER_SR30 = 4;
 //		public final static int DCU_SWEATSENSOR = 4;
+		
+		public final static int SMARTDOCK15U = 41;
 	}
 	
 	public final static class FW_ID_SHIMMER3 {
@@ -173,6 +175,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		public final static int LOGANDSTREAM = 3;
 		public final static int DCU_SWEATSENSOR = 4;
 		public final static int GQ_GSR = 5;
+	}
+	
+	public final static class FW_ID_SMARTDOCK {
+		public final static int SMARTDOCK15U_REV2 = 0;
+		public final static int SMARTDOCK15U_REV4 = 1;
 	}
 	
 	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
