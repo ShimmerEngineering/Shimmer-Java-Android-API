@@ -165,7 +165,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		public final static int SHIMMER_SR30 = 4;
 //		public final static int DCU_SWEATSENSOR = 4;
 		
+		//TODO: TEMP PLACED HERE
 		public final static int SMARTDOCK15U = 41;
+		public final static int SMARTDOCK6 = 42;
 	}
 	
 	public final static class FW_ID_SHIMMER3 {
@@ -177,9 +179,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		public final static int GQ_GSR = 5;
 	}
 	
+	//TODO: TEMP PLACED HERE
 	public final static class FW_ID_SMARTDOCK {
 		public final static int SMARTDOCK15U_REV2 = 0;
 		public final static int SMARTDOCK15U_REV4 = 1;
+		public final static int SMARTDOCK6 = 2;
 	}
 	
 	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
@@ -7689,7 +7693,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardAndFw;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
+				//mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGsr;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Mini;
