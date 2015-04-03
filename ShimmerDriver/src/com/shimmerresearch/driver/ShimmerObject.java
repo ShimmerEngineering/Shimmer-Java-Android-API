@@ -1114,7 +1114,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedData[iBatt]=(double)newPacketInt[iBatt];
 				uncalibratedDataUnits[iBatt]=NO_UNIT;
 				if (mEnableCalibration){
-					calibratedData[iBatt]=calibrateU12AdcValue(tempData[0],0,3,1)*1.988;
+					calibratedData[iBatt]=calibrateU12AdcValue(tempData[0],0,3,1)*2;
 					calibratedDataUnits[iBatt] = ADC_CAL_UNIT;
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATTERY,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iBatt]));
 					mVSenseBattMA.addValue(calibratedData[iBatt]);
