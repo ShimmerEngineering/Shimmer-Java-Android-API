@@ -902,7 +902,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									mFirmwareVersionCode = 3;
 								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==4)
 									mFirmwareVersionCode = 4;
-								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==5)
+								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor>=5)
 									mFirmwareVersionCode = 5;
 								
 								mFirmwareVersionParsed = "BtStream " + mFirmwareVersionMajor + "." + mFirmwareVersionMinor + "."+ mFirmwareVersionInternal;
@@ -912,7 +912,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									mFirmwareVersionCode = 3;
 								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
 									mFirmwareVersionCode = 4;
-								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==3)
+								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor>=3)
 									mFirmwareVersionCode = 5;
 								
 								mFirmwareVersionParsed = "LogAndStream " + mFirmwareVersionMajor + "." + mFirmwareVersionMinor + "."+ mFirmwareVersionInternal;

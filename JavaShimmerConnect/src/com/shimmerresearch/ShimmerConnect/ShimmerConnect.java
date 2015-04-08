@@ -2088,7 +2088,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		} 
 		else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
 			ObjectCluster objc = (ObjectCluster)objectCluster;
-			String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
+			String[] exgnames = {Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT,Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT};
 			//Filter signals
 			if (highPassFilterEnabled || bandStopFilterEnabled){
 				for (int indexgnames=0;indexgnames<exgnames.length;indexgnames++){
