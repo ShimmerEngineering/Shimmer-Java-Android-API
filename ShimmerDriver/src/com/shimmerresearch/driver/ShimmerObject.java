@@ -1186,6 +1186,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A1);
 					tempData[0] = (double)newPacketInt[iA1];
 					String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A1;
+					
 					//to Support derived sensor renaming
 					if (fwIdentifier == FW_IDEN_SD){
 						//change name based on derived sensor value
@@ -1195,6 +1196,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							sensorName = Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP;
 						}
 					}
+					sensorNames[iA1]=sensorName;
 					objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA1]));
 					uncalibratedData[iA1]=(double)newPacketInt[iA1];
 					uncalibratedDataUnits[iA1]=NO_UNIT;
@@ -1221,7 +1223,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}
 				
-				
+				sensorNames[iA12]=sensorName;
 				objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA12]));
 				uncalibratedData[iA12]=(double)newPacketInt[iA12];
 				uncalibratedDataUnits[iA12]=NO_UNIT;
@@ -1248,7 +1250,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}
 				
-				
+				sensorNames[iA13]=sensorName;
 				objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA13]));
 				uncalibratedData[iA13]=(double)newPacketInt[iA13];
 				uncalibratedDataUnits[iA13]=NO_UNIT;
@@ -1271,7 +1273,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG2_A14;
 					}
 				}
-				
+				sensorNames[iA14]=sensorName;
 				objectCluster.mPropertyCluster.put(sensorName,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA14]));
 				uncalibratedData[iA14]=(double)newPacketInt[iA14];
 				uncalibratedDataUnits[iA14]=NO_UNIT;
