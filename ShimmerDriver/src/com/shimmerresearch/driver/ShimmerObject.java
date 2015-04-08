@@ -763,6 +763,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected boolean mSensingStatus;
 	protected boolean mDockedStatus;
 	private List<String[]> mExtraSignalProperties = null;
+	
+	//Testing for GQ
+	protected int mSamplingDividerVBatt = 0;
+	protected int mSamplingDividerGsr = 0;
+	protected int mSamplingDividerLsm303dlhcAccel = 0;
 
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) {
 		ObjectCluster objectCluster = new ObjectCluster();
