@@ -2,6 +2,7 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -36,8 +37,12 @@ public class SensorDetails implements Serializable {
 	public List<Integer> mListOfSensorMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
 	public List<String> mListOfConfigOptionKeysAssociated = null;
-	
 	public List<CompatibleVersionDetails> mListOfCompatibleVersionInfo = null;  
+	
+	//Testing for GQ
+	public String mHeaderFileLabel = "";
+	public int mHeaderByteMask = 0;
+	public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
 
 	public SensorDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
 		mIsEnabled = isChannelEnabled;

@@ -29,7 +29,11 @@ public class ShimmerLogDetails implements Serializable{
 	public int mNumOfShimmers;
 	public double mRTCUserInput;
 	public int mMasterShimmer;
-	public ShimmerLogDetails(){};
+	
+	public ShimmerLogDetails(){
+		
+	};
+	
 	public ShimmerLogDetails(String mAbolutePath, String mFileName,
 			String mTrialName, String mConfigTime,
 			String mSessionName, long mFileSize, int mSlotID,

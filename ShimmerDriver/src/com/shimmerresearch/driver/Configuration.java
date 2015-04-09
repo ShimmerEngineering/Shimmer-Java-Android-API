@@ -563,6 +563,14 @@ public class Configuration {
 			public static final String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 			public static final String TIMESTAMP_SYNC = "Timestamp_Sync";
 		}
+		
+		//Names used for parsing the GQ configuration header file 
+		public class HeaderFileSensorName{
+			public static final String SHIMMER3 = "shimmer3";
+			public static final String VBATT = "VBATT";
+			public static final String GSR = "GSR";
+			public static final String LSM303DLHC_ACCEL = "LSM303DLHC_ACCEL";
+		}
 	}
 
 	public static class Shimmer2{

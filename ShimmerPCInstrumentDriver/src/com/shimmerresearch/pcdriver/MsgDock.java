@@ -42,6 +42,7 @@ public class MsgDock {
 	
 	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS = 91;
 	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_FAIL = 99;
+
 	
 	public final static int MSG_ID_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_ID_DOCK_SD_SCAN_UPDATE = 101;
@@ -128,6 +129,7 @@ public class MsgDock {
         aMap.put(MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED, "MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED");
         aMap.put(MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS, "MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS");
         aMap.put(MSG_ID_DOCKMANAGER_INITIALIZED_FAIL, "MSG_ID_DOCKMANAGER_INITIALIZED_FAIL");
+        
         aMap.put(MSG_ID_DOCK_STATE_CHANGE, "MSG_ID_DOCK_STATE_CHANGE");
         aMap.put(MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS, "MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS");
         aMap.put(MSG_ID_DOCK_SD_SCAN_UPDATE, "MSG_ID_DOCK_SD_SCAN_UPDATE");
@@ -234,6 +236,18 @@ public class MsgDock {
 		else {
 			mSlotNumber = -1;
 		}
+	}
+
+	/** Used by SmartDock for BSL operations
+	 * @param msgIdentifier
+	 * @param uniqueID
+	 */
+	public MsgDock(String dockID,int msgIdentifier){
+		mMsgID = msgIdentifier;
+		mDockID  = dockID;
+		mUniqueID  = dockID;
+		mSlotNumber = -1;
+//		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
 	}
 	
 	/** Used by BasicDock, SmartDock, SmartDockUart and SmartDockUartListener
