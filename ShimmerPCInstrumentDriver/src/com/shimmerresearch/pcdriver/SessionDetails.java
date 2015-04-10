@@ -1,5 +1,7 @@
 package com.shimmerresearch.pcdriver;
 
+import com.shimmerresearch.driver.ShimmerObject;
+
 public class SessionDetails {
 	
 	public String mTrialName;
@@ -11,10 +13,12 @@ public class SessionDetails {
 	public String mMacAddress;
 	public int mNewSessionId;
 	public double mStartingRTC;
+	public String mStartingRTCParsed;
 	public double mRTCUserInput;
 	public int mSuggestionIndex;
 	public double mRTCDifference; // if RTCDiff is = 0, there is no RTC
 	public String mConfigTime;
+	public String mConfigTimeParsed;
 	
 	public int mAssignedSessionId = -1;
 	public boolean mSelectedForDelete = false;
@@ -34,10 +38,12 @@ public class SessionDetails {
 		this.mUniqueSlotID = mUniqueSlotID;
 		this.mMacAddress = mMacAddress;
 		this.mStartingRTC = startingRTC;
+		this.mStartingRTCParsed = convertTime(startingRTC);
+
 		this.mRTCDifference = rtcDifference;
 		this.mConfigTime = configTime;
+		this.mConfigTimeParsed = convertTime(configTime);
 	}
-
 
 	public SessionDetails(String mSessionName, int mSessionDuration,
 			long mFileSize, String mDockID, int mUniqueSlotID,
@@ -51,8 +57,10 @@ public class SessionDetails {
 		this.mMacAddress = mMacAddress;
 		this.mNewSessionId = mNewSessionId;
 		this.mStartingRTC = startingRTC;
+		this.mStartingRTCParsed = convertTime(startingRTC);
 		this.mRTCDifference = rtcDifference;
 		this.mConfigTime = configTime;
+		this.mConfigTimeParsed = convertTime(configTime);
 	}
 	
 	
@@ -63,6 +71,34 @@ public class SessionDetails {
 		details.mRTCUserInput = this.mRTCUserInput;
 		details.mSuggestionIndex = this.mSuggestionIndex;
 		return details;
+	}
+	
+	
+	public String convertTime(double time) {
+		return ShimmerObject.convertSecondsToDateString((long) time/1000);
+	}
+	
+	public String convertTime(String time) {
+		if(isNumeric(time)) {
+			long configTimeConverted = Long.parseLong(time);
+			//Util.convertSecondsToDateString not in API currently so using this
+			return ShimmerObject.convertSecondsToDateString(configTimeConverted/1000);
+		}
+		return "";
+	}
+	
+	public static boolean isNumeric(String str){
+		if(str==null) {
+			return false;
+		}
+		if(str.isEmpty()) {
+			return false;
+		}
+		
+	    for (char c : str.toCharArray()){
+	        if (!Character.isDigit(c)) return false;
+	    }
+	    return true;
 	}
 	
 }

@@ -8787,7 +8787,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	    return data;
 	}
 	
-	public String convertSecondsToDateString(long seconds) {
+	public static String convertSecondsToDateString(long seconds) {
 		Calendar cal = Calendar.getInstance();
 		
 		cal.setTimeInMillis(seconds * 1000);
@@ -8844,7 +8844,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return timeString;
 	}
 	
-	private String getDayOfMonthSuffix(final int n) {
+	private static String getDayOfMonthSuffix(final int n) {
 	    if (n >= 11 && n <= 13) {
 	        return "th";
 	    }
