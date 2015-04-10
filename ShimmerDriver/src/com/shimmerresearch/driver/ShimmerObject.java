@@ -119,6 +119,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
 
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -8787,10 +8788,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	    return data;
 	}
 	
+
 	public static String convertSecondsToDateString(long seconds) {
+		return convertMilliSecondsToDateString(seconds * 1000);
+	}
+	
+	public static String convertMilliSecondsToDateString(long milliSeconds) {
 		Calendar cal = Calendar.getInstance();
 		
-		cal.setTimeInMillis(seconds * 1000);
+		cal.setTimeInMillis(milliSeconds);
 		int dayIndex = cal.get(Calendar.DAY_OF_MONTH);
 		String dayString = getDayOfMonthSuffix(dayIndex);
 
@@ -8798,6 +8804,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		String monthString = "";
 
     	switch(monthIndex){
+		
 			case(0):
 				monthString = "Jan";
             	break;
@@ -8837,9 +8844,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
             default:
             	break;
     	}
-
     	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
-    	String timeString = dfLocal.format(new Date(seconds*1000));
+    	String timeString = dfLocal.format(new Date(milliSeconds));
     	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
 		return timeString;
 	}

@@ -75,14 +75,14 @@ public class SessionDetails {
 	
 	
 	public String convertTime(double time) {
-		return ShimmerObject.convertSecondsToDateString((long) time/1000);
+		return ShimmerObject.convertMilliSecondsToDateString((long) time);
 	}
 	
 	public String convertTime(String time) {
 		if(isNumeric(time)) {
 			long configTimeConverted = Long.parseLong(time);
 			//Util.convertSecondsToDateString not in API currently so using this
-			return ShimmerObject.convertSecondsToDateString(configTimeConverted/1000);
+			return ShimmerObject.convertMilliSecondsToDateString(configTimeConverted);
 		}
 		return "";
 	}
