@@ -9,6 +9,8 @@ public class TrialDetails {
 	public int mNShimmers;
 	public List<SessionDetails> mListofSessionDetails;
 	
+	//Testing
+	public int mTrialListIndex = 0;
 	
 	public TrialDetails() {
 		super();

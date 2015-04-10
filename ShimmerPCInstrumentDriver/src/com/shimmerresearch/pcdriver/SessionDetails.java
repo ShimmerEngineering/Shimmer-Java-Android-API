@@ -17,7 +17,11 @@ public class SessionDetails {
 	public String mConfigTime;
 	
 	public int mAssignedSessionId = -1;
-	
+	public boolean mSelectedForDelete = false;
+	//Testing
+	public int mTrialListIndex = 0;
+	public int mSessionListIndex = 0;
+
 	
 	public SessionDetails(String mSessionName, int mSessionDuration,
 			long mFileSize, String mDockID, int mUniqueSlotID,
