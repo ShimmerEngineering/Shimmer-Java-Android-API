@@ -1135,7 +1135,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedData[iBatt]=(double)newPacketInt[iBatt];
 				uncalibratedDataUnits[iBatt]=NO_UNIT;
 				if (mEnableCalibration){
-					calibratedData[iBatt]=calibrateU12AdcValue(tempData[0],0,3,1)*1.988;
+					calibratedData[iBatt]=calibrateU12AdcValue(tempData[0],0,3,1)*2;
 					calibratedDataUnits[iBatt] = ADC_CAL_UNIT;
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATTERY,new FormatCluster("CAL",ADC_CAL_UNIT,calibratedData[iBatt]));
 					mVSenseBattMA.addValue(calibratedData[iBatt]);
@@ -1509,10 +1509,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					} else {
 						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
 						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster("RAW",NO_UNIT,0));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,new FormatCluster("RAW",NO_UNIT,0));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster("CAL",ADC_CAL_UNIT,0));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,new FormatCluster("CAL",ADC_CAL_UNIT,0));	
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster("RAW",NO_UNIT,exg2ch1));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,new FormatCluster("RAW",NO_UNIT,exg2ch1));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster("CAL",ADC_CAL_UNIT,calexg2ch1));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,new FormatCluster("CAL",ADC_CAL_UNIT,calexg2ch1));	
 					}
 				}
 			}
