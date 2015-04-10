@@ -16,6 +16,8 @@ public class SessionDetails {
 	public double mRTCDifference; // if RTCDiff is = 0, there is no RTC
 	public String mConfigTime;
 	
+	public int mAssignedSessionId = -1;
+	
 	
 	public SessionDetails(String mSessionName, int mSessionDuration,
 			long mFileSize, String mDockID, int mUniqueSlotID,

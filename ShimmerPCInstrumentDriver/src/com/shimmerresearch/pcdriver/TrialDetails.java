@@ -7,7 +7,7 @@ public class TrialDetails {
 	public String mTrialName;
 	public String mConfigTime;
 	public int mNShimmers;
-	public List<SessionDetails> mListofSessionsNames;
+	public List<SessionDetails> mListofSessionDetails;
 	
 	
 	public TrialDetails() {
@@ -20,7 +20,7 @@ public class TrialDetails {
 			List<SessionDetails> mListofSessionsNames) {
 		super();
 		this.mTrialName = mTrialName;
-		this.mListofSessionsNames = mListofSessionsNames;
+		this.mListofSessionDetails = mListofSessionsNames;
 	}
 	
 	
