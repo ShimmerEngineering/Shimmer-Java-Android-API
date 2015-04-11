@@ -437,8 +437,8 @@ public class InfoMemLayout {
 		//Include changes to mapping below in order of oldest to newest in 
 		//independent "if statements"
 		
-		if((compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.SDLOG,0,8,42))
-				||(compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM,0,3,4))) {
+		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.SDLOG,0,8,42))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM,0,3,4))) {
 			
 			idxSensors3 =			128+0;
 			idxSensors4 =			128+1;
@@ -451,9 +451,9 @@ public class InfoMemLayout {
 			idxDerivedSensors2 = 117;
 		}
 		
-		if((compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.SDLOG,0,8,68))
-				||(compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM,0,3,17))
-				||(compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.BTSTREAM,0,6,0))) {
+		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.SDLOG,0,8,68))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM,0,3,17))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.BTSTREAM,0,6,0))) {
 
 			idxDerivedSensors0 =		    31;
 			idxDerivedSensors1 =		    32;
@@ -477,19 +477,6 @@ public class InfoMemLayout {
 		
 	}
 	
-	
-	private boolean compareVersions(int thisFwIdent, int thisMajor, int thisMinor, int thisInternal,
-									int compFwIdent, int compMajor, int compMinor, int compInternal) {
-		
-		if (thisFwIdent==compFwIdent){
-		     if ((thisMajor>compMajor)||
-		       (thisMajor==compMajor && thisMinor>compMinor)||
-		       (thisMajor==compMajor && thisMinor==compMinor && thisInternal>=compInternal)){
-		      return true; // if FW is the same and version is greater or equal 
-		     }
-		}
-      return false; // if less or not the same FW
-	}
 	
 //	public int calculateInfoMemByteLength(int mFirmwareVersionCode, int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {

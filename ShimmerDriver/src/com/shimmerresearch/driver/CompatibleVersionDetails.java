@@ -2,6 +2,11 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 
+/** 
+ * 
+ * @author Mark Nolan
+ *
+ */
 public class CompatibleVersionDetails implements Serializable {
 
 	//TODO: use already defined ShimmerHwFwDetails and ShimmerExpansionBoardDetails instead

@@ -6317,7 +6317,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				byte[] shimmerNameBuffer = new byte[infoMemMap.lengthShimmerName];
 				System.arraycopy(infoMemContents, infoMemMap.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemMap.lengthShimmerName);
 				for(byte b : shimmerNameBuffer) {
-					if(!isAsciiPrintable((char)b)) {
+					if(!Util.isAsciiPrintable((char)b)) {
 						break;
 					}
 					shimmerName += (char)b;
@@ -6328,7 +6328,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				System.arraycopy(infoMemContents, infoMemMap.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemMap.lengthExperimentName);
 				String experimentName = "";
 				for(byte b : experimentNameBuffer) {
-					if(!isAsciiPrintable((char)b)) {
+					if(!Util.isAsciiPrintable((char)b)) {
 						break;
 					}
 					experimentName += (char)b;
@@ -6369,7 +6369,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					
 				byte[] macIdBytes = new byte[infoMemMap.lengthMacIdBytes];
 				System.arraycopy(infoMemContents, infoMemMap.idxMacAddress, macIdBytes, 0 , infoMemMap.lengthMacIdBytes);
-				mMacIdFromInfoMem = bytesToHex(macIdBytes);
+				mMacIdFromInfoMem = Util.bytesToHex(macIdBytes);
 				
 
 				if(((infoMemContents[infoMemMap.idxSDConfigDelayFlag]>>infoMemMap.bitShiftSDCfgFileWriteFlag)&infoMemMap.maskSDCfgFileWriteFlag) == infoMemMap.maskSDCfgFileWriteFlag) {
@@ -6397,7 +6397,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							break;
 						}
 						else {
-							syncNodesList.add(bytesToHex(macIdBytes));
+							syncNodesList.add(Util.bytesToHex(macIdBytes));
 						}
 					}
 					// InfoMem B End
@@ -6697,7 +6697,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				for (int i = 0; i < infoMemMap.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 					byte[] macIdArray;
 					if((syncNodesList.size()>0) && (i<syncNodesList.size()) && (mSyncWhenLogging>0)) {
-						macIdArray = hexStringToByteArray(syncNodesList.get(i));
+						macIdArray = Util.hexStringToByteArray(syncNodesList.get(i));
 					}
 					else {
 						macIdArray = infoMemMap.invalidMacId;
@@ -6991,47 +6991,47 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				CompatibleVersionDetails baseAnyIntExpBoardAndBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
 				CompatibleVersionDetails baseAnyIntExpBoardAndLogAndStream = new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
 
-				CompatibleVersionDetails baseNoIntExpBoardSdLog = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_NONE);
+				CompatibleVersionDetails baseNoIntExpBoardSdLog = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_NONE);
 
 				CompatibleVersionDetails baseSdLog = 				new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ANY_VERSION);
 				CompatibleVersionDetails baseBtStream = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ANY_VERSION);
 				CompatibleVersionDetails baseLogAndStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ANY_VERSION);
 				//CompatibleVersionDetails baseGsrGq = 					new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,0,0,0,ANY_VERSION);
 				
-				CompatibleVersionDetails baseExgSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG); 
-				CompatibleVersionDetails baseExgUnifiedSdLog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
-				CompatibleVersionDetails baseExgBtStream = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG);
-				CompatibleVersionDetails baseExgUnifiedBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
-				CompatibleVersionDetails baseExgLogAndStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG);
-				CompatibleVersionDetails baseExgUnifiedLogAndStream = new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_EXG_UNIFIED);
+				CompatibleVersionDetails baseExgSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_EXG); 
+				CompatibleVersionDetails baseExgUnifiedSdLog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_EXG_UNIFIED);
+				CompatibleVersionDetails baseExgBtStream = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_EXG);
+				CompatibleVersionDetails baseExgUnifiedBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_EXG_UNIFIED);
+				CompatibleVersionDetails baseExgLogAndStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_EXG);
+				CompatibleVersionDetails baseExgUnifiedLogAndStream = new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_EXG_UNIFIED);
 				
-				CompatibleVersionDetails baseGsrSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR);
-				CompatibleVersionDetails baseGsrUnifiedSdLog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
-				CompatibleVersionDetails baseGsrBtStream = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR);
-				CompatibleVersionDetails baseGsrUnifiedBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
-				CompatibleVersionDetails baseGsrLogAndStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR);
-				CompatibleVersionDetails baseGsrUnifiedLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
-				CompatibleVersionDetails baseGsrGq = 				new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR);
-				CompatibleVersionDetails baseGsrUnifiedGq = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_GSR_UNIFIED);
+				CompatibleVersionDetails baseGsrSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_GSR);
+				CompatibleVersionDetails baseGsrUnifiedSdLog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_GSR_UNIFIED);
+				CompatibleVersionDetails baseGsrBtStream = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_GSR);
+				CompatibleVersionDetails baseGsrUnifiedBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_GSR_UNIFIED);
+				CompatibleVersionDetails baseGsrLogAndStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_GSR);
+				CompatibleVersionDetails baseGsrUnifiedLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_GSR_UNIFIED);
+				CompatibleVersionDetails baseGsrGq = 				new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_GSR);
+				CompatibleVersionDetails baseGsrUnifiedGq = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_GSR_UNIFIED);
 
-				CompatibleVersionDetails baseBrAmpSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_BR_AMP);
-				CompatibleVersionDetails baseBrAmpUnifiedSdLog = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
-				CompatibleVersionDetails baseBrAmpBtStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_BR_AMP);
-				CompatibleVersionDetails baseBrAmpUnifiedBtStream = new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
-				CompatibleVersionDetails baseBrAmpLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_BR_AMP);
-				CompatibleVersionDetails baseBrAmpUnifiedLogAndStream = new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_BR_AMP_UNIFIED);
+				CompatibleVersionDetails baseBrAmpSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_BR_AMP);
+				CompatibleVersionDetails baseBrAmpUnifiedSdLog = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_BR_AMP_UNIFIED);
+				CompatibleVersionDetails baseBrAmpBtStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_BR_AMP);
+				CompatibleVersionDetails baseBrAmpUnifiedBtStream = new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_BR_AMP_UNIFIED);
+				CompatibleVersionDetails baseBrAmpLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_BR_AMP);
+				CompatibleVersionDetails baseBrAmpUnifiedLogAndStream = new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_BR_AMP_UNIFIED);
 				
-				CompatibleVersionDetails baseProto3MiniSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
-				CompatibleVersionDetails baseProto3MiniBtStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
-				CompatibleVersionDetails baseProto3MiniLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_PROTO3_MINI);
+				CompatibleVersionDetails baseProto3MiniSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_PROTO3_MINI);
+				CompatibleVersionDetails baseProto3MiniBtStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_PROTO3_MINI);
+				CompatibleVersionDetails baseProto3MiniLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_PROTO3_MINI);
 
-				CompatibleVersionDetails baseProto3DeluxeSdLog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
-				CompatibleVersionDetails baseProto3DeluxeBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
-				CompatibleVersionDetails baseProto3DeluxeLogAndStream =	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_PROTO3_DELUXE);
+				CompatibleVersionDetails baseProto3DeluxeSdLog = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_PROTO3_DELUXE);
+				CompatibleVersionDetails baseProto3DeluxeBtStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_PROTO3_DELUXE);
+				CompatibleVersionDetails baseProto3DeluxeLogAndStream =	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_PROTO3_DELUXE);
 
-				CompatibleVersionDetails baseHighGAccelSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
-				CompatibleVersionDetails baseHighGAccelBtStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
-				CompatibleVersionDetails baseHighGAccelLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_SHIMMER3_EXP_BRD_HIGH_G_ACCEL);
+				CompatibleVersionDetails baseHighGAccelSdLog = 			new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.SDLOG,0,8,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_HIGH_G_ACCEL);
+				CompatibleVersionDetails baseHighGAccelBtStream = 		new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.BTSTREAM,0,5,0,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_HIGH_G_ACCEL);
+				CompatibleVersionDetails baseHighGAccelLogAndStream = 	new CompatibleVersionDetails(HW_ID.SHIMMER_3,FW_ID_SHIMMER3.LOGANDSTREAM,0,3,3,ExpansionBoardDetails.HW_ID_SHIMMER3.EXP_BRD_HIGH_G_ACCEL);
 
 				List<CompatibleVersionDetails> listOfCompatibleVersionInfoExg = Arrays.asList(
 						baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
@@ -8763,104 +8763,104 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
-	public static boolean isAsciiPrintable(char ch) {
-	      return ch >= 32 && ch < 127;
-	}
-
-	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for ( int j = 0; j < bytes.length; j++ ) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = hexArray[v >>> 4];
-	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-	    }
-	    return new String(hexChars);
-	}
+//	public static boolean isAsciiPrintable(char ch) {
+//	      return ch >= 32 && ch < 127;
+//	}
+//
+//	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+//	public static String bytesToHex(byte[] bytes) {
+//	    char[] hexChars = new char[bytes.length * 2];
+//	    for ( int j = 0; j < bytes.length; j++ ) {
+//	        int v = bytes[j] & 0xFF;
+//	        hexChars[j * 2] = hexArray[v >>> 4];
+//	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+//	    }
+//	    return new String(hexChars);
+//	}
+//	
+//	public static byte[] hexStringToByteArray(String s) {
+//	    int len = s.length();
+//	    byte[] data = new byte[len / 2];
+//	    for (int i = 0; i < len; i += 2) {
+//	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+//	                             + Character.digit(s.charAt(i+1), 16));
+//	    }
+//	    return data;
+//	}
 	
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
-	
 
-	public static String convertSecondsToDateString(long seconds) {
-		return convertMilliSecondsToDateString(seconds * 1000);
-	}
-	
-	public static String convertMilliSecondsToDateString(long milliSeconds) {
-		Calendar cal = Calendar.getInstance();
-		
-		cal.setTimeInMillis(milliSeconds);
-		int dayIndex = cal.get(Calendar.DAY_OF_MONTH);
-		String dayString = getDayOfMonthSuffix(dayIndex);
-
-		int monthIndex = cal.get(Calendar.MONTH);
-		String monthString = "";
-
-    	switch(monthIndex){
-		
-			case(0):
-				monthString = "Jan";
-            	break;
-			case(1):
-				monthString = "Feb";
-            	break;
-			case(2):
-				monthString = "Mar";
-            	break;
-			case(3):
-				monthString = "Apr";
-            	break;
-			case(4):
-				monthString = "May";
-            	break;
-			case(5):
-				monthString = "June";
-            	break;
-			case(6):
-				monthString = "July";
-            	break;
-			case(7):
-				monthString = "Aug";
-            	break;
-			case(8):
-				monthString = "Sept";
-            	break;
-			case(9):
-				monthString = "Oct";
-            	break;
-			case(10):
-				monthString = "Nov";
-            	break;
-			case(11):
-				monthString = "Dec";
-            	break;
-            default:
-            	break;
-    	}
-    	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
-    	String timeString = dfLocal.format(new Date(milliSeconds));
-    	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
-		return timeString;
-	}
-	
-	private static String getDayOfMonthSuffix(final int n) {
-	    if (n >= 11 && n <= 13) {
-	        return "th";
-	    }
-	    switch (n % 10) {
-	        case 1:  return "st";
-	        case 2:  return "nd";
-	        case 3:  return "rd";
-	        default: return "th";
-	    }
-	}
+//	public static String convertSecondsToDateString(long seconds) {
+//		return convertMilliSecondsToDateString(seconds * 1000);
+//	}
+//	
+//	public static String convertMilliSecondsToDateString(long milliSeconds) {
+//		Calendar cal = Calendar.getInstance();
+//		
+//		cal.setTimeInMillis(milliSeconds);
+//		int dayIndex = cal.get(Calendar.DAY_OF_MONTH);
+//		String dayString = getDayOfMonthSuffix(dayIndex);
+//
+//		int monthIndex = cal.get(Calendar.MONTH);
+//		String monthString = "";
+//
+//    	switch(monthIndex){
+//		
+//			case(0):
+//				monthString = "Jan";
+//            	break;
+//			case(1):
+//				monthString = "Feb";
+//            	break;
+//			case(2):
+//				monthString = "Mar";
+//            	break;
+//			case(3):
+//				monthString = "Apr";
+//            	break;
+//			case(4):
+//				monthString = "May";
+//            	break;
+//			case(5):
+//				monthString = "June";
+//            	break;
+//			case(6):
+//				monthString = "July";
+//            	break;
+//			case(7):
+//				monthString = "Aug";
+//            	break;
+//			case(8):
+//				monthString = "Sept";
+//            	break;
+//			case(9):
+//				monthString = "Oct";
+//            	break;
+//			case(10):
+//				monthString = "Nov";
+//            	break;
+//			case(11):
+//				monthString = "Dec";
+//            	break;
+//            default:
+//            	break;
+//    	}
+//    	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
+//    	String timeString = dfLocal.format(new Date(milliSeconds));
+//    	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
+//		return timeString;
+//	}
+//	
+//	private static String getDayOfMonthSuffix(final int n) {
+//	    if (n >= 11 && n <= 13) {
+//	        return "th";
+//	    }
+//	    switch (n % 10) {
+//	        case 1:  return "st";
+//	        case 2:  return "nd";
+//	        case 3:  return "rd";
+//	        default: return "th";
+//	    }
+//	}
 	
 	 /**
 	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
@@ -8881,7 +8881,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mConfigTime in a parsed String format (yyyy-MM-dd hh:MM:ss)
 	 */
 	public String getConfigTimeParsed() {
-		return convertSecondsToDateString(mConfigTime);
+		return Util.convertSecondsToDateString(mConfigTime);
 	}
 	
 	/**

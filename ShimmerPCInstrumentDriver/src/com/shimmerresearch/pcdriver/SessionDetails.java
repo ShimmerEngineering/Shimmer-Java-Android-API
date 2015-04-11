@@ -1,13 +1,15 @@
 package com.shimmerresearch.pcdriver;
 
-import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.Util;
 
 public class SessionDetails {
 	
 	public String mTrialName;
 	public String mSessionName;
 	public int mSessionDuration;
+	public String mSessionDurationParsed;
 	public long mFileSize;
+	public String mFileSizeParsed;
 	public String mDockID;
 	public int mUniqueSlotID;
 	public String mMacAddress;
@@ -33,7 +35,9 @@ public class SessionDetails {
 		super();
 		this.mSessionName = mSessionName;
 		this.mSessionDuration = mSessionDuration;
+		this.mSessionDurationParsed = Util.convertDuration(mSessionDuration);
 		this.mFileSize = mFileSize;
+		this.mFileSizeParsed = Util.convertBytes(mFileSize);
 		this.mDockID = mDockID;
 		this.mUniqueSlotID = mUniqueSlotID;
 		this.mMacAddress = mMacAddress;
@@ -51,7 +55,9 @@ public class SessionDetails {
 		super();
 		this.mSessionName = mSessionName;
 		this.mSessionDuration = mSessionDuration;
+		this.mSessionDurationParsed = Util.convertDuration(mSessionDuration);
 		this.mFileSize = mFileSize;
+		this.mFileSizeParsed = Util.convertBytes(mFileSize);
 		this.mDockID = mDockID;
 		this.mUniqueSlotID = mUniqueSlotID;
 		this.mMacAddress = mMacAddress;
@@ -75,30 +81,17 @@ public class SessionDetails {
 	
 	
 	public String convertTime(double time) {
-		return ShimmerObject.convertMilliSecondsToDateString((long) time);
+		return Util.convertMilliSecondsToDateString((long) time);
 	}
 	
 	public String convertTime(String time) {
-		if(isNumeric(time)) {
+		if(Util.isNumeric(time)) {
 			long configTimeConverted = Long.parseLong(time);
-			//Util.convertSecondsToDateString not in API currently so using this
-			return ShimmerObject.convertMilliSecondsToDateString(configTimeConverted);
+			return Util.convertMilliSecondsToDateString(configTimeConverted);
 		}
 		return "";
 	}
 	
-	public static boolean isNumeric(String str){
-		if(str==null) {
-			return false;
-		}
-		if(str.isEmpty()) {
-			return false;
-		}
-		
-	    for (char c : str.toCharArray()){
-	        if (!Character.isDigit(c)) return false;
-	    }
-	    return true;
-	}
+
 	
 }
