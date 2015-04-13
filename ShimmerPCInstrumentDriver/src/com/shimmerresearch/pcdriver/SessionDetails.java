@@ -13,6 +13,7 @@ public class SessionDetails {
 	public String mDockID;
 	public int mUniqueSlotID;
 	public String mMacAddress;
+	public String mMacAddressParsed;
 	public int mNewSessionId = -1;
 	public double mStartingRTC;
 	public String mStartingRTCParsed;
@@ -41,6 +42,7 @@ public class SessionDetails {
 		this.mDockID = mDockID;
 		this.mUniqueSlotID = mUniqueSlotID;
 		this.mMacAddress = mMacAddress;
+		this.mMacAddressParsed = parseMacID(mMacAddress);
 		this.mStartingRTC = startingRTC;
 		this.mStartingRTCParsed = convertTime(startingRTC);
 
@@ -61,6 +63,7 @@ public class SessionDetails {
 		this.mDockID = mDockID;
 		this.mUniqueSlotID = mUniqueSlotID;
 		this.mMacAddress = mMacAddress;
+		this.mMacAddressParsed = parseMacID(mMacAddress);
 		this.mNewSessionId = mNewSessionId;
 		this.mStartingRTC = startingRTC;
 		this.mStartingRTCParsed = convertTime(startingRTC);
@@ -70,6 +73,7 @@ public class SessionDetails {
 	}
 	
 	
+	//Only used in DialogSessionReview
 	public Object clone(){
 		SessionDetails details = new SessionDetails(this.mSessionName, this.mSessionDuration, this.mFileSize, this.mDockID, this.mUniqueSlotID, this.mMacAddress, this.mStartingRTC, this.mRTCDifference, this.mConfigTime);
 		details.mTrialName = this.mTrialName;
@@ -82,6 +86,17 @@ public class SessionDetails {
 	
 	public String convertTime(double time) {
 		return Util.convertMilliSecondsToDateString((long) time);
+	}
+	
+	public String parseMacID(String macID){
+		String parsedMacID = macID;
+		if(parsedMacID.contains(":")){
+			parsedMacID = parsedMacID.replace(":", "");
+			if(parsedMacID.length()>4){
+				parsedMacID = parsedMacID.substring(parsedMacID.length()-4, parsedMacID.length()).toUpperCase();
+			}
+		}
+		return parsedMacID;
 	}
 	
 	public String convertTime(String time) {
