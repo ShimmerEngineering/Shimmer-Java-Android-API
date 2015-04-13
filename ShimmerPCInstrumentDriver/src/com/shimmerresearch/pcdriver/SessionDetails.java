@@ -13,7 +13,7 @@ public class SessionDetails {
 	public String mDockID;
 	public int mUniqueSlotID;
 	public String mMacAddress;
-	public int mNewSessionId;
+	public int mNewSessionId = -1;
 	public double mStartingRTC;
 	public String mStartingRTCParsed;
 	public double mRTCUserInput;
@@ -23,7 +23,6 @@ public class SessionDetails {
 	public String mConfigTimeParsed;
 	
 	//For the GUI
-	public int mAssignedSessionId = -1;
 	public boolean mSelectedForDelete = false;
 	public int mTrialListIndex = 0;
 	public int mSessionListIndex = 0;
