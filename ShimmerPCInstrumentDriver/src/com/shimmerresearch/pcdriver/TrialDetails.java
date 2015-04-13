@@ -13,17 +13,19 @@ public class TrialDetails {
 	public int mNShimmers;
 	public List<SessionDetails> mListofSessionDetails;
 	
-	//Testing
-	public int mTrialListIndex = 0;
-	
+	//For the GUI
+	public int mTrialListIndex = -1;
+
+	public int mSuggestionsCount = -1;
+	public int mSuggestionsIndex = -1;
+
 	public TrialDetails() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 
-	public TrialDetails(String mTrialName,
-			List<SessionDetails> mListofSessionsNames) {
+	public TrialDetails(String mTrialName,List<SessionDetails> mListofSessionsNames) {
 		super();
 		this.mTrialName = mTrialName;
 		this.mListofSessionDetails = mListofSessionsNames;
@@ -32,6 +34,13 @@ public class TrialDetails {
 	public void setConfigTime(String configTime){
 		this.mConfigTime = configTime;
 		mConfigTimeParsed = convertTime(configTime);
+	}
+	
+	public void incrementSuggestionIndex(){
+		mSuggestionsIndex+=1;
+		if(mSuggestionsIndex>mSuggestionsCount){
+			mSuggestionsIndex=0;
+		}
 	}
 	
 	public String convertTime(String time) {
