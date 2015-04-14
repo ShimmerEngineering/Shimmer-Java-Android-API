@@ -16,17 +16,14 @@ public class ProgressDetailsAllSessions implements Serializable{
 	
 	public enum Operation {
 		NONE("None"),
-//		SD_SCAN("SD Scan"),
 		SD_COPY("SD Copy"),
 		SD_DELETE("SD Delete"),
 		IMPORTING("Importing Data");
 		
-//		private int value;
 		private String tag;
  
 		private Operation(String tag) {
 			this.tag = tag;
-//			this.value = value;
 		}
 	}
 	
