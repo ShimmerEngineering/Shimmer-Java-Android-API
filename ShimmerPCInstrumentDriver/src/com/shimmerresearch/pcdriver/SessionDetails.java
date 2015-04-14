@@ -5,7 +5,9 @@ import com.shimmerresearch.driver.Util;
 public class SessionDetails {
 	
 	public String mTrialName;
-	public String mSessionName;
+	public String mSessionNameFull;
+	public String mSessionNameParsed = "";
+	public String mSessionFolderNumber = "";
 	public int mSessionDuration;
 	public String mSessionDurationParsed;
 	public long mFileSize;
@@ -20,8 +22,8 @@ public class SessionDetails {
 	public double mRTCUserInput;
 	public int mSuggestionIndex;
 	public double mRTCDifference; // if RTCDiff is = 0, there is no RTC
-	public String mConfigTime;
-	public String mConfigTimeParsed;
+	private String mConfigTime;
+	private String mConfigTimeParsed;
 	
 	//For the GUI
 	public boolean mSelectedForDelete = false;
@@ -34,7 +36,15 @@ public class SessionDetails {
 			long mFileSize, String mDockID, int mUniqueSlotID,
 			String mMacAddress, double startingRTC, double rtcDifference, String configTime) {
 		super();
-		this.mSessionName = mSessionName;
+		this.mSessionNameFull = mSessionName;
+		
+		if(mSessionName.contains("-")){
+			mSessionNameParsed = mSessionName.substring(0, mSessionName.lastIndexOf("-")); 
+			if(mSessionName.lastIndexOf("-")<mSessionName.length()+1){
+				mSessionFolderNumber = mSessionName.substring(mSessionName.lastIndexOf("-")+1);
+			}
+		}
+		
 		this.mSessionDuration = mSessionDuration;
 		this.mSessionDurationParsed = Util.convertDuration(mSessionDuration);
 		this.mFileSize = mFileSize;
@@ -55,7 +65,13 @@ public class SessionDetails {
 			long mFileSize, String mDockID, int mUniqueSlotID,
 			String mMacAddress, int mNewSessionId, double startingRTC, double rtcDifference, String configTime) {
 		super();
-		this.mSessionName = mSessionName;
+		this.mSessionNameFull = mSessionName;
+		
+		if(mSessionName.contains("-")){
+			mSessionNameParsed = mSessionName.substring(0, mSessionName.lastIndexOf("-")); 
+			mSessionFolderNumber = mSessionName.substring(mSessionName.lastIndexOf("-"));
+		}
+
 		this.mSessionDuration = mSessionDuration;
 		this.mSessionDurationParsed = Util.convertDuration(mSessionDuration);
 		this.mFileSize = mFileSize;
@@ -75,7 +91,7 @@ public class SessionDetails {
 	
 	//Only used in DialogSessionReview
 	public Object clone(){
-		SessionDetails details = new SessionDetails(this.mSessionName, this.mSessionDuration, this.mFileSize, this.mDockID, this.mUniqueSlotID, this.mMacAddress, this.mStartingRTC, this.mRTCDifference, this.mConfigTime);
+		SessionDetails details = new SessionDetails(this.mSessionNameFull, this.mSessionDuration, this.mFileSize, this.mDockID, this.mUniqueSlotID, this.mMacAddress, this.mStartingRTC, this.mRTCDifference, this.mConfigTime);
 		details.mTrialName = this.mTrialName;
 		details.mFileSize = this.mFileSize;
 		details.mRTCUserInput = this.mRTCUserInput;
@@ -101,12 +117,25 @@ public class SessionDetails {
 	
 	public String convertTime(String time) {
 		if(Util.isNumeric(time)) {
-			long configTimeConverted = Long.parseLong(time);
+			long configTimeConverted = Long.parseLong(time)*1000;
 			return Util.convertMilliSecondsToDateString(configTimeConverted);
 		}
 		return "";
 	}
 	
+	/**
+	 * @return the mConfigTime
+	 */
+	public String getConfigTime() {
+		return mConfigTime;
+	}
+
+	/**
+	 * @return the mConfigTimeParsed
+	 */
+	public String getConfigTimeParsed() {
+		return mConfigTimeParsed;
+	}
 
 	
 }

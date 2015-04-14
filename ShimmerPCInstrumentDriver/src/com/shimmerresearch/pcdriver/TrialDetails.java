@@ -8,8 +8,8 @@ import com.shimmerresearch.driver.Util;
 
 public class TrialDetails {
 	public String mTrialName;
-	public String mConfigTime;
-	public String mConfigTimeParsed;
+	private String mConfigTime;
+	private String mConfigTimeParsed;
 	public int mNShimmers;
 	public List<SessionDetails> mListofSessionDetails;
 	
@@ -45,10 +45,24 @@ public class TrialDetails {
 	
 	public String convertTime(String time) {
 		if(Util.isNumeric(time)) {
-			long configTimeConverted = Long.parseLong(time);
+			long configTimeConverted = Long.parseLong(time)*1000;
 			return Util.convertMilliSecondsToDateString(configTimeConverted);
 		}
 		return "";
+	}
+
+	/**
+	 * @return the mConfigTime
+	 */
+	public String getConfigTime() {
+		return mConfigTime;
+	}
+
+	/**
+	 * @return the mConfigTimeParsed
+	 */
+	public String getConfigTimeParsed() {
+		return mConfigTimeParsed;
 	}
 	
 }
