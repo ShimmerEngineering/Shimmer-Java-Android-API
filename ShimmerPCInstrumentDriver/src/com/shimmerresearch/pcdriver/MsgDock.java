@@ -89,6 +89,8 @@ public class MsgDock {
 	public final static int MSG_ID_SMARTDOCK_UART_SLOT_MAP_UPDATE = 120;
 	public final static int MSG_ID_SMARTDOCK_UART_BSL_MASK_DOCK_STATE = 121;
 	public final static int MSG_ID_SMARTDOCK_UART_BSL_MASK_SHIMMER_STATE = 122;
+	public final static int MSG_ID_SMARTDOCK_UART_GPIO_TO_SHIMMERS = 123;
+	public final static int MSG_ID_SMARTDOCK_UART_ALL_SHIMMER_RST = 124;
 	public final static int MSG_ID_SMARTDOCK_UART_ERROR = 129;
 	
 

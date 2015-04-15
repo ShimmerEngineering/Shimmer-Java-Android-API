@@ -454,7 +454,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
 	protected String mMyName="";														// This stores the user assigned name
 	protected String mMyBluetoothAddress="";
-	public static final int MAX_NUMBER_OF_SIGNALS = 40; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
+	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 //	protected int mFWCode=0;
 
