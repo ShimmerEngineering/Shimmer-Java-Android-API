@@ -8,14 +8,14 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ProgressDetailsAllDevices {
 
 	
 	public enum Operation {
 		NONE("None"),
-		RETRIEVING("Retreiving Data"),
 		PROCESSING("Processing Data"),
-		INSERTING("Inserting Data");
+		PROCESSED("Data Processed");
 		
 		private String tag;
  
@@ -25,11 +25,43 @@ public class ProgressDetailsAllDevices {
 	}
 	
 	//the key is the mac address + "." + session id
-	SerializableTreeMap<String , ProgressDetailsPerDevice> mMapOfDeviceProgressInfo = new SerializableTreeMap<String, ProgressDetailsPerDevice>();
+	public SerializableTreeMap<String , ProgressDetailsPerDevice> mMapOfDeviceProgressInfo = new SerializableTreeMap<String, ProgressDetailsPerDevice>();
+	public Operation mOperationCurrent = Operation.NONE;
 	
 	public int mNumberOfFails = 0;
 	public List<String> mListOfFailedDevices = new ArrayList<String>();
 	public int mProgressPercentageComplete = 0;
+	
+	
+	public ProgressDetailsAllDevices() {
+		super();
+	}
+
+	public void updateProgress(String uniqueID, boolean operationSuccessful) {
+		
+		double progress=0;
+		for(ProgressDetailsPerDevice dpd: mMapOfDeviceProgressInfo.values()){
+			progress += dpd.mProgressPercentageComplete/mMapOfDeviceProgressInfo.size();
+		}
+		mProgressPercentageComplete = (int) progress;
+		
+		if(!operationSuccessful) {
+			mListOfFailedDevices.add(uniqueID);
+			mNumberOfFails = mListOfFailedDevices.size();
+			if(mNumberOfFails==mMapOfDeviceProgressInfo.size()){
+				mProgressPercentageComplete=100;
+			}
+		}
+	}
+	
+	public boolean updateProgressFinish(){
+		if(mProgressPercentageComplete!=100){
+			mProgressPercentageComplete=100;
+			return true;
+		}
+		else
+			return false;
+	}
 	
 	
 	/**Performs a deep copy of ProgressDetailsAll by Serializing
