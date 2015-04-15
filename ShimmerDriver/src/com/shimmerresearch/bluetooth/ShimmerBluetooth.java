@@ -1582,7 +1582,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 				if (mStreaming==true) {
 					
 					tb = readBytes(1);
-					mByteArrayOutputStream.write(tb[0]);
+					if (tb!=null){
+						mByteArrayOutputStream.write(tb[0]);
+					} else {
+						System.out.print("readbyte null");
+					}
 					
 					
 
