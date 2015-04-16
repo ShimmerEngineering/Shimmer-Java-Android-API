@@ -6450,7 +6450,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mInfoMemBytes[infoMemMap.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemMap.maskShimmerSamplingRate); 
 		mInfoMemBytes[infoMemMap.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemMap.maskShimmerSamplingRate); 
 
-		mInfoMemBytes[infoMemMap.idxBufferSize] = (byte) (mBufferSize & infoMemMap.maskBufferSize); 
+		//FW not using this feature and BtStream will reject infomem if this isn't set to '1'
+		mInfoMemBytes[infoMemMap.idxBufferSize] = (byte) 1;//(byte) (mBufferSize & infoMemMap.maskBufferSize); 
 		
 		// Sensors
 		//TODO: check version compatible?
