@@ -265,7 +265,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+					Configuration.setTooLegacyObjectClusterSensorNames();
 					ShimmerConnectBCove window = new ShimmerConnectBCove();
 					window.frame.setVisible(true);
 					/*SerialPort serialPort = new SerialPort("COM155");

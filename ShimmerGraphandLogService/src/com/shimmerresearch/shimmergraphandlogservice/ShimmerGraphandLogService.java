@@ -136,6 +136,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	Configuration.setTooLegacyObjectClusterSensorNames();
         Log.d("ShimmerActivity","On Create");
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);

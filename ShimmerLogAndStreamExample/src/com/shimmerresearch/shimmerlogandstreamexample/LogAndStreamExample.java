@@ -54,6 +54,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 
 
@@ -85,6 +86,7 @@ public class LogAndStreamExample extends Activity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	Configuration.setTooLegacyObjectClusterSensorNames();
         Log.d("ShimmerActivity","On Create");
         super.onCreate(savedInstanceState);
         

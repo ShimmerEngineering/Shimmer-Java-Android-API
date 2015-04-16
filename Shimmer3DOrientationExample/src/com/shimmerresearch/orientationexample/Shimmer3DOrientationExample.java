@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerObject;
@@ -66,6 +67,7 @@ public class Shimmer3DOrientationExample extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.exercise);
+		Configuration.setTooLegacyObjectClusterSensorNames();
 		t= new MyGLSurfaceView(this);
 		//Create an Instance with this Activity
 		glSurface = (GLSurfaceView)findViewById(R.id.graphics_glsurfaceview1);

@@ -279,6 +279,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					Configuration.setTooLegacyObjectClusterSensorNames();
 					ShimmerConnect window = new ShimmerConnect();
 					window.frame.setVisible(true);
 					/*SerialPort serialPort = new SerialPort("COM155");

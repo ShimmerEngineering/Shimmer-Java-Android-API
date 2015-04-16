@@ -72,6 +72,7 @@ public class ShimmerTCPExampleActivity extends Activity {
     boolean firstTime = true;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Configuration.setTooLegacyObjectClusterSensorNames();
         setContentView(R.layout.main);
         mShimmerDevice1 = new Shimmer(this, mHandler,"RightArm",false); 
         String bluetoothAddress="00:06:66:66:94:0E";
