@@ -183,6 +183,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		public final static int LOGANDSTREAM = 3;
 		public final static int DCU_SWEATSENSOR = 4;
 		public final static int GQ_GSR = 5;
+		
+		public final static int GPIO_TEST = 6;
 	}
 	
 	//TODO: TEMP PLACED HERE
