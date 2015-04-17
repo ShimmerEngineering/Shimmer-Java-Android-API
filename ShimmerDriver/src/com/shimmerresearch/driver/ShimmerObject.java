@@ -5475,7 +5475,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			maxRate = 32768.0;
 		}		
     	// don't let sampling rate < 0 OR > maxRate
-    	if(rate <= 0) {
+    	if(rate < 1) {
     		rate = 1.0;
     	}
     	else if (rate > maxRate) {

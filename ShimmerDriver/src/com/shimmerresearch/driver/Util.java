@@ -142,8 +142,6 @@ public class Util {
 	    return data;
 	}
 	
-	
-	
 	public static boolean compareVersions(int thisFwIdent, int thisMajor, int thisMinor, int thisInternal,
 			int compFwIdent, int compMajor, int compMinor, int compInternal) {
 
@@ -157,8 +155,6 @@ public class Util {
 		return false; // if less or not the same FW
 	}
 	
-	
-
 	public static String convertDuration(int duration){
 		
 		double totalSecs = duration/1000; //convert from miliseconds to seconds
