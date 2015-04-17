@@ -38,6 +38,9 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 54;
 	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 55;
 	
+	public final static int MSG_ID_DOCK_JOB_STARTED_PER_DOCK = 56;
+	public final static int MSG_ID_DOCK_JOB_FINISHED_PER_DOCK = 57;
+	
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
 	
 	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS = 91;
@@ -198,6 +201,8 @@ public class MsgDock {
 	
 	public byte[] mSlotMap = new byte[]{};
 	
+	//TODO here for test
+	public Object mCurrentJob;
 	
 	/**SmartDockActiveSlotDetails
 	 * @see SmartDockActiveSlotDetails
@@ -262,6 +267,21 @@ public class MsgDock {
 		mSlotNumber = slotIdentifier;
 		mDockID = dockID;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+	}
+
+	
+	/** Used by SmartDock for specific SmartDock operation requests
+	 * @param msgID
+	 * @param dockID
+	 * @param slotIdentifier
+	 */
+	public MsgDock(int msgID, String dockID, Object currentJob) {
+		mMsgID = msgID;
+		mDockID = dockID;
+		mSlotNumber = -1;
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+		
+		mCurrentJob = currentJob;
 	}
 
 	
