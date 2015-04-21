@@ -5655,7 +5655,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mEXG1RateSetting;
 	}
 	
-	public boolean isLowPowerGyro() {
+	public boolean checkLowPowerGyro() {
 		if(mMPU9150GyroAccelRate == 0xFF) {
 			mLowPowerGyro = true;
 		}
@@ -5665,7 +5665,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mLowPowerGyro;
 	}
 
-	public boolean isLowPowerMag() {
+	public boolean checkLowPowerMag() {
 		if(mLSM303MagRate <= 4) {
 //		if((mLSM303MagRate == 4)||(mLSM303MagRate == 1)) {
 			mLowPowerMag = true;
@@ -5918,6 +5918,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void setLowPowerGyro(boolean enable){
 		mLowPowerGyro = enable;
 		setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+		
+//		System.out.println("Gyro state: " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled + " LP mode:" + mLowPowerGyro + " setLowPowerGyro");
 	}
 	
 	/**
@@ -6108,11 +6110,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mHighResAccelWR = false;
 			}
 			mMPU9150GyroAccelRate = (infoMemContents[infoMemMap.idxConfigSetupByte1] >> infoMemMap.bitShiftMPU9150AccelGyroSamplingRate) & infoMemMap.maskMPU9150AccelGyroSamplingRate;
-			isLowPowerGyro(); // check rate to determine if Sensor is in LPM mode
+			checkLowPowerGyro(); // check rate to determine if Sensor is in LPM mode
 			
 			mMagRange = (infoMemContents[infoMemMap.idxConfigSetupByte2] >> infoMemMap.bitShiftLSM303DLHCMagRange) & infoMemMap.maskLSM303DLHCMagRange;
 			mLSM303MagRate = (infoMemContents[infoMemMap.idxConfigSetupByte2] >> infoMemMap.bitShiftLSM303DLHCMagSamplingRate) & infoMemMap.maskLSM303DLHCMagSamplingRate;
-			isLowPowerMag(); // check rate to determine if Sensor is in LPM mode
+			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
 
 			mGyroRange = (infoMemContents[infoMemMap.idxConfigSetupByte2] >> infoMemMap.bitShiftMPU9150GyroRange) & infoMemMap.maskMPU9150GyroRange;
 			
@@ -8661,6 +8663,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		}
 		
+//		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO){
+//			System.out.println("Gyro state: " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled + " LP mode:" + mLowPowerGyro + " setDefaultConfigForSensor");
+//		}
+
+		
 	}
 	
 	private void setDefaultBmp180PressureSensorConfig(boolean state) {
@@ -8699,12 +8706,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	private void setDefaultMpu9150GyroSensorConfig(boolean state) {
 		if(state) {
-			setLowPowerGyro(false);
+			this.setLowPowerGyro(false);
 		}
 		else {
 			mGyroRange=1;
-			setLowPowerGyro(true);
+			this.setLowPowerGyro(true);
 //			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+//			System.out.println("Gyro state: " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled + " LP mode:" + mLowPowerGyro + " setDefaultMpu9150GyroSensorConfig");
 		}
 	}
 	
