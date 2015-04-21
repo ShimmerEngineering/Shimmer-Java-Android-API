@@ -5612,7 +5612,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if(freq>numerator) {
 				freq = numerator;
 			}
-			int result = (int) (numerator / freq);
+			int result = (int) Math.floor(((numerator / freq) - 1));
 			if(result>255) {
 				result = 255;
 			}
