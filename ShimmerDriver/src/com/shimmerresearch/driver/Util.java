@@ -142,6 +142,18 @@ public class Util {
 	    return data;
 	}
 	
+	
+	/**Returns true if FW ID is the same and "this" version is greater or equal then comparison version
+	 * @param thisFwIdent
+	 * @param thisMajor
+	 * @param thisMinor
+	 * @param thisInternal
+	 * @param compFwIdent
+	 * @param compMajor
+	 * @param compMinor
+	 * @param compInternal
+	 * @return
+	 */
 	public static boolean compareVersions(int thisFwIdent, int thisMajor, int thisMinor, int thisInternal,
 			int compFwIdent, int compMajor, int compMinor, int compInternal) {
 
@@ -149,10 +161,10 @@ public class Util {
 			if ((thisMajor>compMajor)
 					||(thisMajor==compMajor && thisMinor>compMinor)
 					||(thisMajor==compMajor && thisMinor==compMinor && thisInternal>=compInternal)){
-				return true; // if FW is the same and version is greater or equal 
+				return true; // if FW ID is the same and version is greater or equal 
 			}
 		}
-		return false; // if less or not the same FW
+		return false; // if less or not the same FW ID
 	}
 	
 	public static String convertDuration(int duration){

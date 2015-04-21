@@ -8449,43 +8449,58 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					compatible = false;
 				}
 			}
-			if((compatible)&&(checkFirmwareIdentifier)) {
-				if(mFirmwareIdentifier != compatibleVersionInfo.mFirmwareIdentifier) {
+//			if((compatible)&&(checkFirmwareIdentifier)) {
+//				if(mFirmwareIdentifier != compatibleVersionInfo.mFirmwareIdentifier) {
+//					compatible = false;
+//				}
+//			}
+			
+//			if((compatible)&&(checkFirmwareVersionMajor)) {
+//				if(mFirmwareVersionMajor < compatibleVersionInfo.mFirmwareVersionMajor) {
+//					compatible = false;
+//				}
+//				if((compatible)&&(checkFirmwareVersionMinor)) {
+//					if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
+//						compatible = false;
+//					}
+//				}
+//				if((compatible)&&(checkFirmwareVersionInternal)) {
+//					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//						compatible = false;
+//					}
+//				}
+//			}
+//			else if((compatible)&&(checkFirmwareVersionMinor)) {
+//				if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
+//					compatible = false;
+//				}
+//				if((compatible)&&(checkFirmwareVersionInternal)) {
+//					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//						compatible = false;
+//					}
+//				}
+//			}
+//			else if((compatible)&&(checkFirmwareVersionInternal)) {
+//				if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//					compatible = false;
+//				}
+//			}
+			
+			if(checkFirmwareVersionMajor){
+				// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored
+				if((compatible)&&(!Util.compareVersions(mFirmwareIdentifier, 
+						mFirmwareVersionMajor, 
+						mFirmwareVersionMinor, 
+						mFirmwareVersionInternal, 
+						compatibleVersionInfo.mFirmwareIdentifier, 
+						compatibleVersionInfo.mFirmwareVersionMajor, 
+						compatibleVersionInfo.mFirmwareVersionMinor, 
+						compatibleVersionInfo.mFirmwareVersionInternal))){
 					compatible = false;
 				}
 			}
 			
-			// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored 
-			if((compatible)&&(checkFirmwareVersionMajor)) {
-				if(mFirmwareVersionMajor < compatibleVersionInfo.mFirmwareVersionMajor) {
-					compatible = false;
-				}
-				if((compatible)&&(checkFirmwareVersionMinor)) {
-					if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
-						compatible = false;
-					}
-				}
-				if((compatible)&&(checkFirmwareVersionInternal)) {
-					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
-						compatible = false;
-					}
-				}
-			}
-			else if((compatible)&&(checkFirmwareVersionMinor)) {
-				if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
-					compatible = false;
-				}
-				if((compatible)&&(checkFirmwareVersionInternal)) {
-					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
-						compatible = false;
-					}
-				}
-			}
-			else if((compatible)&&(checkFirmwareVersionInternal)) {
-				if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
-					compatible = false;
-				}
-			}
+
 			
 			if(compatible) {
 				return true;
