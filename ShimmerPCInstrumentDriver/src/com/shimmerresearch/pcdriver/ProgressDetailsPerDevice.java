@@ -23,7 +23,6 @@ public class ProgressDetailsPerDevice implements Serializable{
 	public double mProgressPercentageComplete = 0;
 	
 	public int mNumberOfIterations = 0;
-	public int mNumberOfFolders = 0;
 	public int mInserterdIterations = 0;
 	
 	
@@ -46,14 +45,33 @@ public class ProgressDetailsPerDevice implements Serializable{
 	public void updateProgressDataInserted(int rowsInserted, int totalRows){
 		if(rowsInserted==totalRows){
 			mInserterdIterations++;
-			if(mInserterdIterations==mNumberOfIterations)
+			if(mInserterdIterations==mNumberOfIterations){
 				mProgressPercentageComplete = 100;
-			else
+				mOperationState = OperationState.SUCCESS;
+			}
+			else{
 				mProgressPercentageComplete += (rowsInserted/totalRows*0.6)/mNumberOfIterations;
+				if(mProgressPercentageComplete>=100){
+					mProgressPercentageComplete=100;
+					mOperationState = OperationState.SUCCESS;
+//					mInserterdIterations++;
+				}
+			}
 		}
 		else{
 			mProgressPercentageComplete += (rowsInserted/totalRows*0.6)/mNumberOfIterations;
+			if(mProgressPercentageComplete>=100){
+				mProgressPercentageComplete=100;
+				mOperationState = OperationState.SUCCESS;
+//				mInserterdIterations++;
+			}
 		}
+		
+	}
+	
+	public void updateProgressFailed(){
+		mProgressPercentageComplete = 100;
+		mOperationState = OperationState.FAIL;
 	}
 	
 }

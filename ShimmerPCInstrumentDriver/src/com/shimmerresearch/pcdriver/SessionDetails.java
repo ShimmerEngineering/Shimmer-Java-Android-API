@@ -24,6 +24,13 @@ public class SessionDetails {
 	public double mRTCDifference; // if RTCDiff is = 0, there is no RTC
 	private String mConfigTime;
 	private String mConfigTimeParsed;
+	public double mSampleRate;
+	public double mEnableSensors;
+	public double mDerivedSensors;
+	public int mHardwareVersion;
+	public int mFirwareId;
+	public int mFirmwareMajorVersion;
+	public int mFirmwareMinorVersion;
 	
 	//For the GUI
 	public boolean mSelectedForDelete = false;

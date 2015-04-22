@@ -29,6 +29,10 @@ public class ShimmerLogDetails implements Serializable{
 	public int mNumOfShimmers;
 	public double mRTCUserInput;
 	public int mMasterShimmer;
+	public double mSampleRate;
+	public double mEnabledSensors;
+	public double mDerivedSensors;
+	public int mHardwareVersion;
 	
 	public ShimmerLogDetails(){
 		
