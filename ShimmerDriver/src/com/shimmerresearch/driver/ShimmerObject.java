@@ -8722,6 +8722,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	private void setDefaultMpu9150AccelSensorConfig(boolean state) {
 		mMPU9150AccelRange=0;
+		
 	}
 	
 	private void setDefaultMpu9150MplSensorConfig(boolean state) {
