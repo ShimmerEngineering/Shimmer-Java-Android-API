@@ -120,6 +120,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
 
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -5918,8 +5919,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void setLowPowerGyro(boolean enable){
 		mLowPowerGyro = enable;
 		setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-		
-//		System.out.println("Gyro state: " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled + " LP mode:" + mLowPowerGyro + " setLowPowerGyro");
 	}
 	
 	/**
@@ -8620,12 +8619,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
 			setDefaultLsm303dlhcMagSensorConfig(state);
 		}
-		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
+		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO){
 			setDefaultMpu9150GyroSensorConfig(state);
 		}
-		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
-				||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
+		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL){
 			setDefaultMpu9150AccelSensorConfig(state);
 		}
 		
@@ -8662,11 +8659,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				setDefaultMpu9150MplSensorConfig(state);
 			}
 		}
-		
-//		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO){
-//			System.out.println("Gyro state: " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled + " LP mode:" + mLowPowerGyro + " setDefaultConfigForSensor");
-//		}
-
 		
 	}
 	
@@ -8706,13 +8698,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	private void setDefaultMpu9150GyroSensorConfig(boolean state) {
 		if(state) {
-			this.setLowPowerGyro(false);
+			setLowPowerGyro(false);
 		}
 		else {
 			mGyroRange=1;
-			this.setLowPowerGyro(true);
+			setLowPowerGyro(true);
 //			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-//			System.out.println("Gyro state: " + mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled + " LP mode:" + mLowPowerGyro + " setDefaultMpu9150GyroSensorConfig");
 		}
 	}
 	
