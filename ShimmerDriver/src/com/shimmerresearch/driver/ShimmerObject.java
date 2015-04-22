@@ -5478,7 +5478,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			maxRate = 32768.0;
 		}		
     	// don't let sampling rate < 0 OR > maxRate
-    	if(rate <= 0) {
+    	if(rate < 1) {
     		rate = 1.0;
     	}
     	else if (rate > maxRate) {
@@ -5615,7 +5615,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if(freq>numerator) {
 				freq = numerator;
 			}
-			int result = (int) (numerator / freq);
+			int result = (int) Math.floor(((numerator / freq) - 1));
 			if(result>255) {
 				result = 255;
 			}
@@ -8453,43 +8453,58 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					compatible = false;
 				}
 			}
-			if((compatible)&&(checkFirmwareIdentifier)) {
-				if(mFirmwareIdentifier != compatibleVersionInfo.mFirmwareIdentifier) {
+//			if((compatible)&&(checkFirmwareIdentifier)) {
+//				if(mFirmwareIdentifier != compatibleVersionInfo.mFirmwareIdentifier) {
+//					compatible = false;
+//				}
+//			}
+			
+//			if((compatible)&&(checkFirmwareVersionMajor)) {
+//				if(mFirmwareVersionMajor < compatibleVersionInfo.mFirmwareVersionMajor) {
+//					compatible = false;
+//				}
+//				if((compatible)&&(checkFirmwareVersionMinor)) {
+//					if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
+//						compatible = false;
+//					}
+//				}
+//				if((compatible)&&(checkFirmwareVersionInternal)) {
+//					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//						compatible = false;
+//					}
+//				}
+//			}
+//			else if((compatible)&&(checkFirmwareVersionMinor)) {
+//				if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
+//					compatible = false;
+//				}
+//				if((compatible)&&(checkFirmwareVersionInternal)) {
+//					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//						compatible = false;
+//					}
+//				}
+//			}
+//			else if((compatible)&&(checkFirmwareVersionInternal)) {
+//				if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//					compatible = false;
+//				}
+//			}
+			
+			if(checkFirmwareVersionMajor){
+				// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored
+				if((compatible)&&(!Util.compareVersions(mFirmwareIdentifier, 
+						mFirmwareVersionMajor, 
+						mFirmwareVersionMinor, 
+						mFirmwareVersionInternal, 
+						compatibleVersionInfo.mFirmwareIdentifier, 
+						compatibleVersionInfo.mFirmwareVersionMajor, 
+						compatibleVersionInfo.mFirmwareVersionMinor, 
+						compatibleVersionInfo.mFirmwareVersionInternal))){
 					compatible = false;
 				}
 			}
 			
-			// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored 
-			if((compatible)&&(checkFirmwareVersionMajor)) {
-				if(mFirmwareVersionMajor < compatibleVersionInfo.mFirmwareVersionMajor) {
-					compatible = false;
-				}
-				if((compatible)&&(checkFirmwareVersionMinor)) {
-					if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
-						compatible = false;
-					}
-				}
-				if((compatible)&&(checkFirmwareVersionInternal)) {
-					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
-						compatible = false;
-					}
-				}
-			}
-			else if((compatible)&&(checkFirmwareVersionMinor)) {
-				if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
-					compatible = false;
-				}
-				if((compatible)&&(checkFirmwareVersionInternal)) {
-					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
-						compatible = false;
-					}
-				}
-			}
-			else if((compatible)&&(checkFirmwareVersionInternal)) {
-				if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
-					compatible = false;
-				}
-			}
+
 			
 			if(compatible) {
 				return true;
@@ -8709,6 +8724,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	private void setDefaultMpu9150AccelSensorConfig(boolean state) {
 		mMPU9150AccelRange=0;
+		
 	}
 	
 	private void setDefaultMpu9150MplSensorConfig(boolean state) {
