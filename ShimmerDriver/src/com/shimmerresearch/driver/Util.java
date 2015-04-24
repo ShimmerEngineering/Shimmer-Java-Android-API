@@ -92,11 +92,15 @@ public class Util {
 	    
 	    String mFormattedBytesTxt = " GB";
 	    
-	    if (bytes < 1.0) {
+    	if(bytes < 0.001){
+    		bytes = bytes * 1024 * 1024;
+    		mFormattedBytesTxt = " KB";
+    	}	
+	    
+    	else if (bytes < 1.0) {
 	    	bytes = bytes * 1024;
 	    	mFormattedBytesTxt = " MB";
 	    }
-
 	    mFormattedBytesTxt = String.format("%.2f", bytes) + mFormattedBytesTxt;
 	    return mFormattedBytesTxt;
 	    

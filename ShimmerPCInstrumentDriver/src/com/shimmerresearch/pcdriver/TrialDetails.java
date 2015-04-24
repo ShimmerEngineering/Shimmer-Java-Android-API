@@ -39,7 +39,7 @@ public class TrialDetails {
 	public void incrementSuggestionIndex(){
 		mSuggestionsIndex+=1;
 		if(mSuggestionsIndex>mSuggestionsCount){
-			mSuggestionsIndex=0; // None selected
+			mSuggestionsIndex=1; // None selected
 		}
 	}
 	
