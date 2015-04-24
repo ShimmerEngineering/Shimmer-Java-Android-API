@@ -82,6 +82,7 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYStepMode;
 import com.google.common.collect.BiMap;
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.service.ShimmerService;
@@ -135,6 +136,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	Configuration.setTooLegacyObjectClusterSensorNames();
         Log.d("ShimmerActivity","On Create");
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
@@ -411,16 +413,16 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             		if (mSensorView.equals("Accelerometer")){
             			sensorName = new String[3]; // for x y and z axis
             			calibratedDataArray = new double[3];
-            			sensorName[0] = "Accelerometer X";
-            			sensorName[1] = "Accelerometer Y";
-            			sensorName[2] = "Accelerometer Z";
+            			sensorName[0] = Configuration.Shimmer2.ObjectClusterSensorName.ACCEL_X;
+            			sensorName[1] = Configuration.Shimmer2.ObjectClusterSensorName.ACCEL_Y;
+            			sensorName[2] = Configuration.Shimmer2.ObjectClusterSensorName.ACCEL_Z;
             		}
             		if (mSensorView.equals("Low Noise Accelerometer")){
             			sensorName = new String[3]; // for x y and z axis
             			calibratedDataArray = new double[3];
-            			sensorName[0] = "Low Noise Accelerometer X";
-            			sensorName[1] = "Low Noise Accelerometer Y";
-            			sensorName[2] = "Low Noise Accelerometer Z";
+            			sensorName[0] = Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
+            			sensorName[1] = Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
+            			sensorName[2] = Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
             			
             		}
             		if (mSensorView.equals("Wide Range Accelerometer")){

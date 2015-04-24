@@ -73,6 +73,7 @@ public class ShimmerLogExampleActivity extends Activity {
     boolean stop=false;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Configuration.setTooLegacyObjectClusterSensorNames();
         setContentView(R.layout.main);
         
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

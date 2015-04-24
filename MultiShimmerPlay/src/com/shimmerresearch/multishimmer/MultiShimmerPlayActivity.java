@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.multishimmerplay.R;
 import com.shimmerresearch.service.MultiShimmerPlayService;
 import com.shimmerresearch.service.MultiShimmerPlayService.LocalBinder;
@@ -37,10 +38,10 @@ import com.shimmerresearch.service.MultiShimmerPlayService.LocalBinder;
 
 
 public class MultiShimmerPlayActivity extends Activity {
-  private static final String TAG = "ServicesDemo";
-  
-  Button buttonStop;
 
+	
+	private static final String TAG = "ServicesDemo";
+	Button buttonStop;
 	MultiShimmerPlayService mService;
 	private Context mCtx;
 	private String currentSelectedBluetoothAddress;
@@ -63,6 +64,7 @@ public class MultiShimmerPlayActivity extends Activity {
 	@Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Configuration.setTooLegacyObjectClusterSensorNames();
     setContentView(R.layout.main);
     Log.d("ShimmerH","Oncreate");
    

@@ -1413,10 +1413,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					} else {
 						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
 						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,new FormatCluster("RAW",NO_UNIT,0));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,new FormatCluster("RAW",NO_UNIT,0));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,new FormatCluster("CAL",ADC_CAL_UNIT,0));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,new FormatCluster("CAL",ADC_CAL_UNIT,0));	
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,new FormatCluster("RAW",NO_UNIT,exg2ch1));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,new FormatCluster("RAW",NO_UNIT,exg2ch2));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,new FormatCluster("CAL",ADC_CAL_UNIT,calexg2ch1));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,new FormatCluster("CAL",ADC_CAL_UNIT,calexg2ch2));	
 					}
 				}
 			}

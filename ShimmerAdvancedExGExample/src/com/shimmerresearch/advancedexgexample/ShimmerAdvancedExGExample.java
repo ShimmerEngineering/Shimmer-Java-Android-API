@@ -48,6 +48,7 @@ import pl.flex_it.androidplot.XYSeriesShimmer;
 import com.example.shimmeradvancedexgexample.R;
 import com.google.common.collect.BiMap;
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerObject;
@@ -121,7 +122,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 	 @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	    	super.onCreate(savedInstanceState);
-	        
+	        Configuration.setTooLegacyObjectClusterSensorNames();
 	        setContentView(R.layout.main);
 	        context = getApplicationContext();
 	        

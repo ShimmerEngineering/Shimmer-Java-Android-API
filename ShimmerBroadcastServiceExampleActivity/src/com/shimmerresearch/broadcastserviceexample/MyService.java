@@ -65,6 +65,7 @@ public class MyService extends Service {
 	
 	@Override
 	public void onCreate() {
+		Configuration.setTooLegacyObjectClusterSensorNames();
 		Toast.makeText(this, "My Service Created", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onCreate");
 	}

@@ -30,6 +30,7 @@ public class MultiShimmerExampleActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		Configuration.setTooLegacyObjectClusterSensorNames();
 		mShimmerDevice1 = new Shimmer(this, mHandler,"RightArm",false); //Right Arm is a unique identifier for the shimmer unit
 		mShimmerDevice2 = new Shimmer(this, mHandler, "LeftArm", 51.2, 0, 0, Shimmer.SENSOR_ACCEL, false); //Left Arm is a unique identifier for the shimmer unit
 

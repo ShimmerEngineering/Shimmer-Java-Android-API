@@ -126,6 +126,7 @@ public class ShimmerGestureRecogActivity extends Activity implements OnClickList
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Configuration.setTooLegacyObjectClusterSensorNames();
         setContentView(R.layout.activity_main);
 
         //ActionBar gets initiated

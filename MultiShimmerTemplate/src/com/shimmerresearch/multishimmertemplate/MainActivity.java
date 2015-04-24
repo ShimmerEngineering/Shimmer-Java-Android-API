@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 import com.shimmerresearch.adapters.NavDrawerListAdapter;
 import com.shimmerresearch.database.DatabaseHandler;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.model.NavDrawerItem;
 import com.shimmerresearch.service.MultiShimmerTemplateService;
 import com.shimmerresearch.service.MultiShimmerTemplateService.LocalBinder;
@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
@@ -88,7 +87,7 @@ public class MainActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+        Configuration.setTooLegacyObjectClusterSensorNames();
         Intent intent=new Intent(this, MultiShimmerTemplateService.class);
        	startService(intent);
         
