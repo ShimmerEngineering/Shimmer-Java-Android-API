@@ -33,6 +33,8 @@ public class ExpansionBoardDetails {
 		public final static int EXP_BRD_GPS = 46;
 	}
 
+	public static final String EXP_BRD_NONE = "None";
+	
 	public int mExpBoardId = -1;
 	public int mExpBoardRev = -1;
 	public int mExpBoardSpecialRev = -1;
@@ -62,7 +64,7 @@ public class ExpansionBoardDetails {
 		
 		switch(boardID){
 		case HW_ID_SHIMMER3.EXP_BRD_NONE:
-			boardName="None";
+			boardName= EXP_BRD_NONE;
 			break;
 		case HW_ID_SHIMMER3.EXP_BRD_BR_AMP:
 		case HW_ID_SHIMMER3.EXP_BRD_BR_AMP_UNIFIED:
