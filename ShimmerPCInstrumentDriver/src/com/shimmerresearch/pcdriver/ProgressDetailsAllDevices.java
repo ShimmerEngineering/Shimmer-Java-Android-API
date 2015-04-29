@@ -24,11 +24,12 @@ public class ProgressDetailsAllDevices {
 		}
 	}
 	
-	//the key is the mac address + "." + session id
+	//the key is thedevice name + "." + session id
 	public SerializableTreeMap<String , ProgressDetailsPerDevice> mMapOfDeviceProgressInfo = new SerializableTreeMap<String, ProgressDetailsPerDevice>();
 	public Operation mOperationCurrent = Operation.NONE;
 	
 	public int mNumberOfFails = 0;
+	public int mNumberOfDevices = 0;
 	public List<String> mListOfFailedDevices = new ArrayList<String>();
 	public int mProgressPercentageComplete = 0;
 	
