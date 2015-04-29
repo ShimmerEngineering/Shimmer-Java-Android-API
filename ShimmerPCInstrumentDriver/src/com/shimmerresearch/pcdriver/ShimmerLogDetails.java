@@ -17,6 +17,7 @@ public class ShimmerLogDetails implements Serializable{
 	public long mDuration;
 	public int mSlotID;
 	public String mMacAddress;
+	public String mUniqueId;
 	public String mDockID;
 	public String mAbsolutePathWhereFileWasCopied;
 	public int mFirmwareIdentifier;
@@ -41,7 +42,7 @@ public class ShimmerLogDetails implements Serializable{
 	public ShimmerLogDetails(String mAbolutePath, String mFileName,
 			String mTrialName, String mConfigTime,
 			String mSessionName, long mFileSize, int mSlotID,
-			String mMacAddress, String mDockID) {
+			String mMacAddress, String mDockID, String mUniqueId) {
 		super();
 		this.mAbsolutePath = mAbolutePath;
 		this.mFileName = mFileName;
@@ -53,5 +54,6 @@ public class ShimmerLogDetails implements Serializable{
 		this.mSlotID = mSlotID;
 		this.mMacAddress = mMacAddress;
 		this.mDockID = mDockID;
+		this.mUniqueId = mUniqueId;
 	}
 }
