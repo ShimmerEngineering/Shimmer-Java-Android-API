@@ -1,6 +1,7 @@
 package com.shimmerresearch.pcdriver;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 
 public class ShimmerLogDetails implements Serializable{
 
@@ -34,6 +35,10 @@ public class ShimmerLogDetails implements Serializable{
 	public double mDerivedSensors;
 	public int mHardwareVersion;
 	
+	//GQ related
+	public LinkedHashMap<String, SensorParsingDetails> mMapOfSensorsToParse = new LinkedHashMap<String, SensorParsingDetails>();
+	public String mHeaderFileAbsoluteFilePath = "";
+
 	public ShimmerLogDetails(){
 		
 	};

@@ -42,18 +42,28 @@ public class SensorDetails implements Serializable {
 	//Testing for GQ
 	public String mHeaderFileLabel = "";
 	public int mHeaderByteMask = 0;
-	public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
+	public int mNumChannels = 0;
+//	public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
+	public List<ChannelDetails> mListOfChannels = new ArrayList<ChannelDetails>();
 
+	//Shimmer3 Sensors
 	public SensorDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
 		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mLabel = label;
 		mIntExpBoardPowerRequired = false;
-		
 		mListOfCompatibleVersionInfo = null;
 	}
-	
+
+	//ShimmerGQ Sensors
+	public SensorDetails(boolean isChannelEnabled, String label) {
+		mIsEnabled = isChannelEnabled;
+		mLabel = label;
+		mIntExpBoardPowerRequired = false;
+		mListOfCompatibleVersionInfo = null;
+	}
+
 	public void setEnabledState(boolean state) {
 		mIsEnabled = state;
 	}

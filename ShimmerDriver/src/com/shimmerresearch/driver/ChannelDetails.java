@@ -15,7 +15,7 @@ public class ChannelDetails implements Serializable {
 	private static final long serialVersionUID = -2662151922286820989L;
 
 	public class ChannelDataType {
-		public static final String UINT8 = "unt8";
+		public static final String UINT8 = "uint8";
 		public static final String UINT12 = "uint12";
 		public static final String UINT16 = "uint16";
 		public static final String UINT24 = "int24";
@@ -24,6 +24,9 @@ public class ChannelDetails implements Serializable {
 		public static final String INT16 = "int16";
 		public static final String INT24 = "int24";
 		public static final String INT32 = "int32";
+		
+		public static final String UINT64 = "uint64";
+		public static final String UINT48 = "uint48";
 	}
 
 //	public enum ChannelDataType {
@@ -38,20 +41,25 @@ public class ChannelDetails implements Serializable {
 //	}
 	
 	public class ChannelDataEndian {
+		public static final String UNKOWN = "";
 		public static final String LSB = "LSB";
 		public static final String MSB = "MSB";
 	}
 	
-	public String mChannel = "";
+	public String mChannelName = "";
 	public String mChannelDataType = "";
 	public int mNumBytes = 0;
-	public String mChannelType = "";
+	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
 
-	public ChannelDetails(String channel, String channelDataType, int numBytes, String channelType){
-		mChannel = channel;
+	public ChannelDetails(String channelName, String channelDataType, int numBytes, String channelDataEndian){
+		mChannelName = channelName;
 		mChannelDataType = channelDataType;
 		mNumBytes = numBytes;
-		mChannelType = channelType;
+		mChannelDataEndian = channelDataEndian;
+	}
+
+	public ChannelDetails() {
+		// TODO Auto-generated constructor stub
 	}
 	
 }

@@ -49,6 +49,19 @@ package com.shimmerresearch.driver;
 
 public class Configuration {
 	//Channel Contents
+	public static class Shimmer3Gq{
+		public class GuiLabelConfig{
+			public static final String SAMPLING_RATE_DIVIDER_VBATT = "VBATT Divider";
+			public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
+			public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
+			public static final String SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL = "LSM3030DLHC Divider";
+		}
+		
+		public final static String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
+		public final static Integer[] ListofSamplingRateDividersValues={0,1,2,3,4,5,6,7};
+
+	}
+	
 	public static class Shimmer3{
 		public class Channel{
 			public final static int XAAccel     			 = 0x00;
