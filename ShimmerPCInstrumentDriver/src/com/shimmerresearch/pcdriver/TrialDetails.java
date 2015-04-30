@@ -12,6 +12,7 @@ public class TrialDetails {
 	private String mConfigTimeParsed;
 	public int mNShimmers;
 	public List<SessionDetails> mListofSessionDetails;
+	public List<String> mUniqueIDs;
 	
 	//For the GUI
 	public int mTrialListIndex = -1;
@@ -25,10 +26,11 @@ public class TrialDetails {
 	}
 
 
-	public TrialDetails(String mTrialName,List<SessionDetails> mListofSessionsNames) {
+	public TrialDetails(String mTrialName, List<SessionDetails> mListofSessionsNames, List<String> mUniqueIDs) {
 		super();
 		this.mTrialName = mTrialName;
 		this.mListofSessionDetails = mListofSessionsNames;
+		this.mUniqueIDs = mUniqueIDs;
 	}
 	
 	public void setConfigTime(String configTime){
