@@ -158,23 +158,32 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final String NO_UNIT = "No Units";
 	public static final String CLOCK_UNIT = "Ticks";
 	
-//	public static final int SHIMMER_1=0;
-//	public static final int SHIMMER_2=1;
-//	public static final int SHIMMER_2R=2;
-//	public static final int SHIMMER_3=3;
-//	public static final int SHIMMER_SR30=4;
-	
 	public final static class HW_ID {
 		public final static int SHIMMER_1 = 0;
 		public final static int SHIMMER_2 = 1;
 		public final static int SHIMMER_2R = 2;
 		public final static int SHIMMER_3 = 3;
 		public final static int SHIMMER_SR30 = 4;
+		public final static int SHIMMER_GQ = 5;
 //		public final static int DCU_SWEATSENSOR = 4;
 		
 		//TODO: TEMP PLACED HERE
-		public final static int SMARTDOCK15U = 41;
-		public final static int SMARTDOCK6 = 42;
+		public final static int BASE15U = 41;
+		public final static int BASE6U = 42;
+	}
+	
+	public final static class HW_ID_PARSED {
+		public final static String SHIMMER_1 = "Shimmer1";
+		public final static String SHIMMER_2 = "Shimmer2";
+		public final static String SHIMMER_2R = "Shimmer2r";
+		public final static String SHIMMER_3 = "Shimmer3";
+		public final static String SHIMMER_SR30 = "Shimmer SR30";
+		public final static String SHIMMER_GQ = "ShimmerGQ";
+//		public final static String DCU_SWEATSENSOR = "DCU_SWEATSENSOR";
+		
+		//TODO: TEMP PLACED HERE
+		public final static String BASE15U = "Base15U";
+		public final static String BASE6U = "Base6U";
 	}
 	
 	public final static class FW_ID_SHIMMER3 {
@@ -187,12 +196,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		
 		public final static int GPIO_TEST = 6;
 	}
-	
+
+	public final static class FW_ID_SHIMMER_GQ {
+		public final static int GQ_GSR = 5;
+	}
+
 	//TODO: TEMP PLACED HERE
 	public final static class FW_ID_SMARTDOCK {
-		public final static int SMARTDOCK15U_REV2 = 0;
-		public final static int SMARTDOCK15U_REV4 = 1;
-		public final static int SMARTDOCK6 = 2;
+		public final static int BASE15U_REV2 = 0;
+		public final static int BASE15U_REV4 = 1;
+		public final static int BASE6U = 2;
 	}
 	
 	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
@@ -546,7 +559,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSingleTouch = 0;
 	protected int mTCXO = 0;
 	protected long mConfigTime; //this is in milliseconds, utc
-	protected long mRTCDifference; //this is in ticks
+	protected long mRTCOffset; //this is in ticks
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
@@ -769,8 +782,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	private List<String[]> mExtraSignalProperties = null;
 	
 	//Testing for GQ
+	protected int mGqPacketNumHeaderBytes = 0;
 	protected int mSamplingDividerVBatt = 0;
 	protected int mSamplingDividerGsr = 0;
+	protected int mSamplingDividerPpg = 0;
 	protected int mSamplingDividerLsm303dlhcAccel = 0;
 
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) {
@@ -797,7 +812,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			calibratedDataUnits = new String[mNChannels + 1];
 			sensorNames = new String[mNChannels + 1];
 		} else {
-			if (mRTCDifference == 0){
+			if (mRTCOffset == 0){
 				calibratedData=new double[mNChannels]; //sd log time stamp already included in mnChannels
 				uncalibratedData=new double[mNChannels];
 				uncalibratedDataUnits = new String[mNChannels];
@@ -861,17 +876,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 
 			//RAW RTC
-			if ((fwIdentifier == FW_IDEN_SD) && mRTCDifference!=0)
+			if ((fwIdentifier == FW_IDEN_SD) && mRTCOffset!=0)
 			{
 				double unwrappedrawtimestamp = calibratedTS*32768/1000;
 				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
-				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCDifference;
+				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCOffset;
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster("RAW",CLOCK_UNIT,(double)rtctimestamp));
 				uncalibratedData[sensorNames.length-1] = (double)rtctimestamp;
 				uncalibratedDataUnits[sensorNames.length-1] = CLOCK_UNIT;
 				sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
 				if (mEnableCalibration){
-					double rtctimestampcal = ((double)mInitialTimeStamp/32768.0*1000.0) + calibratedTS + ((double)mRTCDifference/32768.0*1000.0) - (mFirstRawTS/32768.0*1000.0);
+					double rtctimestampcal = ((double)mInitialTimeStamp/32768.0*1000.0) + calibratedTS + ((double)mRTCOffset/32768.0*1000.0) - (mFirstRawTS/32768.0*1000.0);
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster("CAL","mSecs",rtctimestampcal));
 					calibratedData[sensorNames.length-1] = rtctimestampcal;
 					calibratedDataUnits[sensorNames.length-1] = "mSecs";
@@ -5474,7 +5489,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		double maxRate = 0.0;
 		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R) {
 			maxRate = 1024.0;
-		} else if (mHardwareVersion==HW_ID.SHIMMER_3) {
+		} else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
 			maxRate = 32768.0;
 		}		
     	// don't let sampling rate < 0 OR > maxRate
@@ -5507,13 +5522,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mShimmer2MagRate = 4;
 			}
 		} 
-		else if (mHardwareVersion==HW_ID.SHIMMER_3) {
+		else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
 			setLSM303MagRateFromFreq(mShimmerSamplingRate);
 			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
 			setExGRateFromFreq(mEXG1RateSetting);
 		}
-	
 	}
 	
 	private int setLSM303AccelRateFromFreq(double freq) {
@@ -6186,23 +6200,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mAlignmentMatrixMagnetometer = alignmentMatrixM; 			
 			mSensitivityMatrixMagnetometer = sensitivityMatrixM; 	
 			mOffsetVectorMagnetometer = offsetVectorM;
-	
+			
 			// LSM303DLHC Digital Accel Calibration Parameters
 			bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
 			System.arraycopy(infoMemContents, infoMemMap.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , infoMemMap.lengthGeneralCalibrationBytes);
-			formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
-			AM=new double[9];
-			for (int i=0;i<9;i++)
-			{
-				AM[i]=((double)formattedPacket[6+i])/100;
-			}
-			double[][] alignmentMatrixDA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-			double[][] sensitivityMatrixDA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-			double[][] offsetVectorDA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-			mAlignmentMatrixWRAccel = alignmentMatrixDA; 			
-			mSensitivityMatrixWRAccel = sensitivityMatrixDA; 	
-			mOffsetVectorWRAccel = offsetVectorDA;
-			
+			parseCalParamLSM303DLHCAccel(bufferCalibrationParameters);
+
 			//TODO: decide what to do
 			// BMP180 Pressure Calibration Parameters
 
@@ -6426,7 +6429,45 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		
 	}
+	
+	public void parseCalParamLSM303DLHCAccel(byte[] bufferCalibrationParameters){
+		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
+		int[] formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
+		double[] AM=new double[9];
+		for (int i=0;i<9;i++)
+		{
+			AM[i]=((double)formattedPacket[6+i])/100;
+		}
+		double[][] alignmentMatrixDA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+		double[][] sensitivityMatrixDA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+		double[][] offsetVectorDA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+		mAlignmentMatrixWRAccel = alignmentMatrixDA; 			
+		mSensitivityMatrixWRAccel = sensitivityMatrixDA; 	
+		mOffsetVectorWRAccel = offsetVectorDA;
+	}
 
+	public byte[] generateCalParamLSM303DLHCAccel(){
+		byte[] bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 0) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 8) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 0) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 8) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixWRAccel[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixWRAccel[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixWRAccel[i][2]*100)) & 0xFF);
+		}
+		return bufferCalibrationParameters;
+	}
+
+	
 	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 
 		InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
@@ -6562,23 +6603,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxLSM303DLHCMagCalibration, infoMemMap.lengthGeneralCalibrationBytes);
 
 		// LSM303DLHC Digital Accel Calibration Parameters
-		bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
-		// offsetVector -> buffer offset = 0
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 0) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 8) & 0xFF);
-		}
-		// sensitivityMatrix -> buffer offset = 6
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 0) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 8) & 0xFF);
-		}
-		// alignmentMatrix -> buffer offset = 12
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixWRAccel[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixWRAccel[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixWRAccel[i][2]*100)) & 0xFF);
-		}
+//		bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
+		bufferCalibrationParameters = generateCalParamLSM303DLHCAccel();
 		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxLSM303DLHCAccelCalibration, infoMemMap.lengthGeneralCalibrationBytes);
 		
 		//TODO: decide what to do
@@ -7122,7 +7148,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.GSR, new SensorDetails(false, 0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GSR));
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7, new SensorDetails(false, 0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A7));
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6, new SensorDetails(false, 0x01<<(streamingByteIndex*8), 0x01<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A6));
-
+				
 				// NV_SENSORS1
 				streamingByteIndex = 1;
 				logHeaderByteIndex = 1;
@@ -7982,204 +8008,128 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				
 				// All Information required for parsing each of the channels
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
 				
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.VBATT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.VBATT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
 
 				//ADC
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A7, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A6, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A15).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A15).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
 
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A1, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A1,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A12, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A12,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A13, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A13,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A14, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A14,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A1,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A12,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A13,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A14,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
 
 				//Bridge Amp High
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
 				
 				//GSR
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GSR,ChannelDataType.UINT16,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GSR,ChannelDataType.UINT16,2,ChannelDataEndian.LSB));
 
 				//GyroMPU
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
 				
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
 				
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
 
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
 
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_X,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Y,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Z,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_X,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Y,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Z,ChannelDataType.INT16,2,ChannelDataEndian.LSB));
 
 				//bmp180 - pressure
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,ChannelDataType.UINT24,3,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,ChannelDataType.UINT24,3,ChannelDataEndian.MSB));
 				//bmp180 - temp
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,ChannelDataType.UINT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,ChannelDataType.UINT16,2,ChannelDataEndian.MSB));
 				
 				//exg
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB));
 
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB));
 
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
 
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB));
 				
 
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_W, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 				
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_W, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 				
 				//euler
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 
 				//heading
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MPL_HEADING, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_HEADING,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_HEADING,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 
 				//mpu temp
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 
 				//mpl pedom
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MPL_PEDOM_CNT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_PEDOM_CNT,ChannelDataType.UINT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MPL_PEDOM_TIME, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_PEDOM_TIME,ChannelDataType.UINT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_PEDOM_CNT,ChannelDataType.UINT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_PEDOM_TIME,ChannelDataType.UINT32,4,ChannelDataEndian.MSB));
 
 				//mpl tap
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT,ChannelDataType.UINT8,1,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT,ChannelDataType.UINT8,1,ChannelDataEndian.MSB));
 
 				//mpl motion orient
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MOTIONANDORIENT, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT,ChannelDataType.UINT8,1,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT,ChannelDataType.UINT8,1,ChannelDataEndian.MSB));
 
 				//mpl gyro cal
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 
 				//mpl accel cal
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 
 				//mpl mag cal
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 				
 				// Raw 6DOF quaterians from the DMP hardware module of the MPU9150
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_W, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_X, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Y, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mMapOfChannels.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z, 
-						new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 				
 				
 				//Testing for GQ and parsing of header files
@@ -8189,7 +8139,151 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 
 			}
-			
+			else if (mHardwareVersion == HW_ID.SHIMMER_GQ) {
+//				InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+
+//				// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
+				CompatibleVersionDetails baseAnyIntExpBoardAndFw = 			new CompatibleVersionDetails(HW_ID.SHIMMER_GQ,FW_ID_SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+				List<CompatibleVersionDetails> listOfCompatibleVersionInfoGq = Arrays.asList(baseAnyIntExpBoardAndFw);
+				
+				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.VBATT, new SensorDetails(false, Shimmer3.GuiLabelSensors.BATTERY));
+				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL, new SensorDetails(false, Shimmer3.GuiLabelSensors.ACCEL_WR));
+				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.GSR, new SensorDetails(false, Shimmer3.GuiLabelSensors.GSR));
+				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.PPG_A13, new SensorDetails(false, Shimmer3.GuiLabelSensors.PPG_A13));
+				
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.VBATT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGq;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGq;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGq;
+
+				// Associated config options for each channel (currently used for the ChannelTileMap)
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.VBATT).mListOfConfigOptionKeysAssociated = Arrays.asList(
+						Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mListOfConfigOptionKeysAssociated = Arrays.asList(
+						Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
+						Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,
+						Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE,
+						Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfConfigOptionKeysAssociated = Arrays.asList(
+						Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE,
+						Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR);
+
+				//Sensor Grouping for Configuration Panel 'tile' generation. 
+				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING, new SensorTileDetails(
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.VBATT)));
+				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorTileDetails(
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL)));
+				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorTileDetails(
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
+									Configuration.Shimmer3.SensorMapKey.PPG_A12)));
+				
+				// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGq;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGq;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGq;
+				
+				// For loop to automatically inherit associated channel configuration options from ChannelMap in the ChannelTileMap
+				for (String channelGroup : mSensorTileMap.keySet()) {
+					// Ok to clear here because variable is initiated in the class
+					mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
+					for (Integer channel : mSensorTileMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
+						if(mSensorMap.containsKey(channel)){
+							List<String> associatedConfigOptions = mSensorMap.get(channel).mListOfConfigOptionKeysAssociated;
+							if (associatedConfigOptions != null) {
+								for (String configOption : associatedConfigOptions) {
+									// do not add duplicates
+									if (!(mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+										mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+									}
+								}
+							}
+							
+						}
+					}
+				}
+				
+				
+				// Assemble the channel configuration options map
+				mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
+				
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD,
+								listOfCompatibleVersionInfoGq));
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD));
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD));
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD,
+								listOfCompatibleVersionInfoGq));
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NAME, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD,
+								listOfCompatibleVersionInfoGq));
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.TEXTFIELD,
+								listOfCompatibleVersionInfoGq));
+
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
+						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
+												Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
+												SensorConfigOptionDetails.COMBOBOX));
+				if(mLowPowerAccelWR) {
+					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
+													Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
+													SensorConfigOptionDetails.COMBOBOX));
+				}
+				else {
+					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+													Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+													SensorConfigOptionDetails.COMBOBOX));
+				}
+				
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
+						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
+												Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+												SensorConfigOptionDetails.COMBOBOX,
+												listOfCompatibleVersionInfoGq));
+				
+				mConfigOptionsMap.put(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR, 
+						new SensorConfigOptionDetails(Configuration.Shimmer3Gq.ListofSamplingRateDividers, 
+												Configuration.Shimmer3Gq.ListofSamplingRateDividersValues, 
+												SensorConfigOptionDetails.COMBOBOX));
+				mConfigOptionsMap.put(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL, 
+						new SensorConfigOptionDetails(Configuration.Shimmer3Gq.ListofSamplingRateDividers, 
+												Configuration.Shimmer3Gq.ListofSamplingRateDividersValues, 
+												SensorConfigOptionDetails.COMBOBOX));
+				mConfigOptionsMap.put(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, 
+						new SensorConfigOptionDetails(Configuration.Shimmer3Gq.ListofSamplingRateDividers, 
+												Configuration.Shimmer3Gq.ListofSamplingRateDividersValues, 
+												SensorConfigOptionDetails.COMBOBOX));
+				mConfigOptionsMap.put(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT, 
+						new SensorConfigOptionDetails(Configuration.Shimmer3Gq.ListofSamplingRateDividers, 
+												Configuration.Shimmer3Gq.ListofSamplingRateDividersValues, 
+												SensorConfigOptionDetails.COMBOBOX));
+
+
+			    mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
+			    	      new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfOnOff, 
+					    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
+					    	        SensorConfigOptionDetails.COMBOBOX));
+				
+				
+				//General Config
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoGq));
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX,listOfCompatibleVersionInfoGq));
+
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX));
+				
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.CHECKBOX));
+				
+
+			}
 		}
 	}
 	
@@ -8781,105 +8875,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
-//	public static boolean isAsciiPrintable(char ch) {
-//	      return ch >= 32 && ch < 127;
-//	}
-//
-//	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-//	public static String bytesToHex(byte[] bytes) {
-//	    char[] hexChars = new char[bytes.length * 2];
-//	    for ( int j = 0; j < bytes.length; j++ ) {
-//	        int v = bytes[j] & 0xFF;
-//	        hexChars[j * 2] = hexArray[v >>> 4];
-//	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-//	    }
-//	    return new String(hexChars);
-//	}
-//	
-//	public static byte[] hexStringToByteArray(String s) {
-//	    int len = s.length();
-//	    byte[] data = new byte[len / 2];
-//	    for (int i = 0; i < len; i += 2) {
-//	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-//	                             + Character.digit(s.charAt(i+1), 16));
-//	    }
-//	    return data;
-//	}
-	
-
-//	public static String convertSecondsToDateString(long seconds) {
-//		return convertMilliSecondsToDateString(seconds * 1000);
-//	}
-//	
-//	public static String convertMilliSecondsToDateString(long milliSeconds) {
-//		Calendar cal = Calendar.getInstance();
-//		
-//		cal.setTimeInMillis(milliSeconds);
-//		int dayIndex = cal.get(Calendar.DAY_OF_MONTH);
-//		String dayString = getDayOfMonthSuffix(dayIndex);
-//
-//		int monthIndex = cal.get(Calendar.MONTH);
-//		String monthString = "";
-//
-//    	switch(monthIndex){
-//		
-//			case(0):
-//				monthString = "Jan";
-//            	break;
-//			case(1):
-//				monthString = "Feb";
-//            	break;
-//			case(2):
-//				monthString = "Mar";
-//            	break;
-//			case(3):
-//				monthString = "Apr";
-//            	break;
-//			case(4):
-//				monthString = "May";
-//            	break;
-//			case(5):
-//				monthString = "June";
-//            	break;
-//			case(6):
-//				monthString = "July";
-//            	break;
-//			case(7):
-//				monthString = "Aug";
-//            	break;
-//			case(8):
-//				monthString = "Sept";
-//            	break;
-//			case(9):
-//				monthString = "Oct";
-//            	break;
-//			case(10):
-//				monthString = "Nov";
-//            	break;
-//			case(11):
-//				monthString = "Dec";
-//            	break;
-//            default:
-//            	break;
-//    	}
-//    	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
-//    	String timeString = dfLocal.format(new Date(milliSeconds));
-//    	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
-//		return timeString;
-//	}
-//	
-//	private static String getDayOfMonthSuffix(final int n) {
-//	    if (n >= 11 && n <= 13) {
-//	        return "th";
-//	    }
-//	    switch (n % 10) {
-//	        case 1:  return "st";
-//	        case 2:  return "nd";
-//	        case 3:  return "rd";
-//	        default: return "th";
-//	    }
-//	}
-	
 	 /**
 	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
 	 */
@@ -9395,7 +9390,47 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mMacIdFromUartParsed;
 	}
 
+	/**
+	 * @return the mSamplingDividerVBatt
+	 */
+	public int getSamplingDividerVBatt() {
+		return mSamplingDividerVBatt;
+	}
 
+	/**
+	 * @return the mSamplingDividerGsr
+	 */
+	public int getSamplingDividerGsr() {
+		return mSamplingDividerGsr;
+	}
+
+	/**
+	 * @return the mSamplingDividerPpg
+	 */
+	public int getSamplingDividerPpg() {
+		return mSamplingDividerPpg;
+	}
+
+	/**
+	 * @return the mSamplingDividerLsm303dlhcAccel
+	 */
+	public int getSamplingDividerLsm303dlhcAccel() {
+		return mSamplingDividerLsm303dlhcAccel;
+	}
+
+	/**
+	 * @return the mHighResAccelWR
+	 */
+	public boolean isHighResAccelWR() {
+		return mHighResAccelWR;
+	}
+
+	/**
+	 * @return the mLowPowerAccelWR
+	 */
+	public boolean isLowPowerAccelWR() {
+		return mLowPowerAccelWR;
+	}
 
 
 }
