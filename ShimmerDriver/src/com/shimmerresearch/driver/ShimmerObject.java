@@ -522,6 +522,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mGyroRange=1;													// This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps 
 	protected int mMPU9150AccelRange=0;											// This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
 	protected int mGSRRange=4;													// This stores the current GSR range being used.
+	protected int mPastGSRRange=4; // this is to fix a bug with SDLog v0.9
+	protected int mPastGSRUncalibratedValue=4; // this is to fix a bug with SDLog v0.9
+	protected boolean mPastGSRFirstTime=true; // this is to fix a bug with SDLog v0.9
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	protected long mConfigByte0;
 	protected int mNChannels=0;	                                                // Default number of sensor channels set to three because of the on board accelerometer 
@@ -1588,45 +1591,114 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.GSR) > 0)
 					) {
 				int iGSR = getSignalIndex(Shimmer3.ObjectClusterSensorName.GSR);
-				tempData[0] = (double)newPacketInt[iGSR];
-				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
-
 				double p1=0,p2=0;//,p3=0,p4=0,p5=0;
-				if (mGSRRange==4){
-					newGSRRange=(49152 & (int)tempData[0])>>14; 
-				}
-				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-					if (mHardwareVersion!=HW_ID.SHIMMER_3){
-						p1 = 0.0373;
-						p2 = -24.9915;
-					} else {
-						p1 = 0.0363;
-						p2 = -24.8617;
+				if (fwIdentifier == FW_IDEN_SD && mFirmwareVersionMajor ==0 && mFirmwareVersionMinor==9){
+					tempData[0] = (double)newPacketInt[iGSR];
+					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
+					int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+
+					/*
+					 * 	for i = 2:length(range)
+    				 *		if range(i-1)~=range(i)
+        			 *			if abs(gsrValue(i-1)-gsrValue(i))< 300
+            		 *				range(i) = range(i-1);
+        			 *			end
+    				 *		end
+					 *	end
+					 */
+					
+					if (mGSRRange==4){
+						newGSRRange=(49152 & (int)tempData[0])>>14;
+						if (mPastGSRFirstTime){
+							mPastGSRRange = newGSRRange;
+							mPastGSRFirstTime = false;
+						}
+						if (newGSRRange != mPastGSRRange)
+						{
+							
+							if (Math.abs(mPastGSRUncalibratedValue-gsrUncalibratedData)<300){
+								newGSRRange = mPastGSRRange;
+							} else {
+								mPastGSRRange = newGSRRange;
+							}
+							mPastGSRUncalibratedValue = gsrUncalibratedData;
+						}
+						
 					}
-				} else if (mGSRRange==1 || newGSRRange==1) {
-					if (mHardwareVersion!=HW_ID.SHIMMER_3){
-						p1 = 0.0054;
-						p2 = -3.5194;
-					} else {
-						p1 = 0.0051;
-						p2 = -3.8357;
+					if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+							p1 = 0.0373;
+							p2 = -24.9915;
+						} else {
+							p1 = 0.0363;
+							p2 = -24.8617;
+						}
+					} else if (mGSRRange==1 || newGSRRange==1) {
+						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+							p1 = 0.0054;
+							p2 = -3.5194;
+						} else {
+							p1 = 0.0051;
+							p2 = -3.8357;
+						}
+					} else if (mGSRRange==2 || newGSRRange==2) {
+						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+							p1 = 0.0015;
+							p2 = -1.0163;
+						} else {
+							p1 = 0.0015;
+							p2 = -1.0067;
+						}
+					} else if (mGSRRange==3  || newGSRRange==3) {
+						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+							p1 = 4.5580e-04;
+							p2 = -0.3014;
+						} else {
+							p1 = 4.4513e-04;
+							p2 = -0.3193;
+						}
 					}
-				} else if (mGSRRange==2 || newGSRRange==2) {
-					if (mHardwareVersion!=HW_ID.SHIMMER_3){
-						p1 = 0.0015;
-						p2 = -1.0163;
-					} else {
-						p1 = 0.0015;
-						p2 = -1.0067;
+				} else {
+					tempData[0] = (double)newPacketInt[iGSR];
+					int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+
+					if (mGSRRange==4){
+						newGSRRange=(49152 & (int)tempData[0])>>14; 
 					}
-				} else if (mGSRRange==3  || newGSRRange==3) {
-					if (mHardwareVersion!=HW_ID.SHIMMER_3){
-						p1 = 4.5580e-04;
-						p2 = -0.3014;
-					} else {
-						p1 = 4.4513e-04;
-						p2 = -0.3193;
+					if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+							p1 = 0.0373;
+							p2 = -24.9915;
+						} else {
+							p1 = 0.0363;
+							p2 = -24.8617;
+						}
+					} else if (mGSRRange==1 || newGSRRange==1) {
+						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+							p1 = 0.0054;
+							p2 = -3.5194;
+						} else {
+							p1 = 0.0051;
+							p2 = -3.8357;
+						}
+					} else if (mGSRRange==2 || newGSRRange==2) {
+						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+							p1 = 0.0015;
+							p2 = -1.0163;
+						} else {
+							p1 = 0.0015;
+							p2 = -1.0067;
+						}
+					} else if (mGSRRange==3  || newGSRRange==3) {
+						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+							p1 = 4.5580e-04;
+							p2 = -0.3014;
+						} else {
+							p1 = 4.4513e-04;
+							p2 = -0.3193;
+						}
 					}
 				}
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iGSR]));
