@@ -108,7 +108,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import sun.rmi.runtime.Log;
 
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ShimmerHwFw.FW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerHwFw.HW_ID;
 import com.shimmerresearch.driver.ShimmerObject;
 
 public abstract class ShimmerBluetooth extends ShimmerObject {
@@ -215,7 +217,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 						printLogDataForDebugging("Queue Size: " + mABQ.size() + "\n");
 					}
 					byte[] packet = mABQ.remove();
-					ObjectCluster objectCluster=buildMsg(packet, FW_IDEN_BTSTREAM, 0);
+					ObjectCluster objectCluster=buildMsg(packet, FW_TYPE_BT, 0);
 					dataHandler(objectCluster);
 				}
 			}
@@ -1626,7 +1628,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 									} 
 									
 									
-								} else if (mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM && bufferTemp[mPacketSize+2]==INSTREAM_CMD_RESPONSE){ //this is for logandstream stupport, command is trasmitted and ack received
+								} else if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM && bufferTemp[mPacketSize+2]==INSTREAM_CMD_RESPONSE){ //this is for logandstream stupport, command is trasmitted and ack received
 									System.out.println("COMMAND TXed and ACK RECEIVED IN STREAM");
 									System.out.println("INS CMD RESP");
 									byte[] command = readBytes(2);
