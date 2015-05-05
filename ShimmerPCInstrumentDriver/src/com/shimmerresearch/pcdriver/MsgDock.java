@@ -78,6 +78,9 @@ public class MsgDock {
 	public final static int MSG_ID_DATA_OPERATION_PROGRESS = 300;
 	public final static int MSG_ID_DATA_OPERATION_FINISHED = 301;
 	
+	public final static int MSG_ID_PROCESS_DATA_OPERATION_PROGRESS = 400;
+	public final static int MSG_ID_PROCESS_DATA_OPERATION_FINISHED = 401;
+	
 	//TODO move closer to SmartDockUart?
 	//TODO rename UART to MSG?
 //	public final static int MSG_ID_SMARTDOCK_UART_ERR_NONE = 110;
