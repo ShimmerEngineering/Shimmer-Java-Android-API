@@ -178,6 +178,7 @@ public class ShimmerPC extends ShimmerBluetooth{
 	 */
 	@Override
 	public synchronized void connect(final String address, String a) {
+		mIamAlive = false;
 		if (mSerialPort==null){
 		mMyBluetoothAddress = address;
 		mSerialPort = new SerialPort(address);
@@ -333,6 +334,12 @@ public class ShimmerPC extends ShimmerBluetooth{
 		if (mTimerToReadStatus!=null) {
 			mTimerToReadStatus.cancel();
 			mTimerToReadStatus.purge();
+		}
+		
+		if (mAliveTimer!=null){
+			mAliveTimer.cancel();
+			mAliveTimer.purge();
+			mAliveTimer = null;
 		}
 		
 		if (mTimer!=null){

@@ -396,6 +396,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 * @param bluetoothLibrary Supported libraries are 'default' and 'gerdavax'  
 	 */
 	public synchronized void connect(final String address, String bluetoothLibrary) {
+		mIamAlive = false;
 		mListofInstructions.clear();
 		mFirstTime=true;
 		if (bluetoothLibrary=="default"){
@@ -478,6 +479,12 @@ public class Shimmer extends ShimmerBluetooth{
 		if (mTimerToReadStatus!=null) {
 			mTimerToReadStatus.cancel();
 			mTimerToReadStatus.purge();
+		}
+		
+		if (mAliveTimer!=null){
+			mAliveTimer.cancel();
+			mAliveTimer.purge();
+			mAliveTimer = null;
 		}
 		
 		if (mTimer!=null){

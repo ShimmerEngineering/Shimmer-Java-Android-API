@@ -317,6 +317,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	 */
 	private void initialize() {	
 		setWaitForData(mShimmer);
+		mShimmer.enableCheckifAlive(true);
 		frame = new JFrame("Shimmer Connect");
 		frame.setBounds(100, 100, 720, 592);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

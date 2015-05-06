@@ -135,7 +135,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	protected double mLowBattLimit=3.4;
 	protected int numBytesToReadFromExpBoard=0;
 	ArrayBlockingQueue<byte[]> mABQ = new ArrayBlockingQueue<byte[]>(10000);
-	
+	protected boolean mIamAlive = false;
 	protected abstract void connect(String address,String bluetoothLibrary);
 	protected abstract void dataHandler(ObjectCluster ojc);
 	protected abstract boolean bytesToBeRead();
@@ -170,7 +170,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	protected boolean mSetupEXG = false;
 	private byte[] cmdcalibrationParameters = new byte [22];  
 	private int mReadStatusPeriod=5000;
+	private int mAliveStatusPeriod=2000;
 	protected Timer mTimerToReadStatus;
+	protected Timer mAliveTimer;
+	private int mCountDeadConnection = 0;
+	private boolean mCheckIfConnectionisAlive = false;
 	
 	ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
 	
@@ -292,6 +296,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 					if (bytesToBeRead()){
 						tb=readBytes(1);
+						mIamAlive = true;
 						String msg="";
 						//	msg = "rxb resp : " + Arrays.toString(tb);
 						//	printLogDataForDebugging(msg);
@@ -866,7 +871,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 					} else if (availableBytes()!=0){
 
 						tb=readBytes(1);
-						
+						mIamAlive = true;
 						String msg="";
 						//msg = "rxb : " + Arrays.toString(tb);
 						//printLogDataForDebugging(msg);
@@ -929,6 +934,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 							} else if (mHardwareVersion == HW_ID.SHIMMER_3) {
 								initializeShimmer3();
 							}
+							
+							if (mCheckIfConnectionisAlive){
+								if(mAliveTimer==null){ 
+									mAliveTimer = new Timer();
+								}
+								mAliveTimer.schedule(new checkIfAliveTask(), mAliveStatusPeriod, mAliveStatusPeriod);
+							
+							}
+							
 //							readShimmerVersion();
 						} else if (tb[0]==BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
 							mTimer.cancel(); //cancel the ack timer
@@ -1946,6 +1960,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 			if (mTimerToReadStatus!=null) {
 				mTimerToReadStatus.cancel();
 				mTimerToReadStatus.purge();
+				
+				
 			}
 			printLogDataForDebugging("Waiting for ack/response for command: " + Integer.toString(mCurrentCommand));
 			mTimerToReadStatus = new Timer();
@@ -2231,6 +2247,30 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		}
 		
 	}
+	
+	/**
+	 * @author Lim
+	 * Used to check if the connection is alive 
+	 */
+	private class checkIfAliveTask extends TimerTask{
+
+		@Override
+		public void run() {
+			if (!mIamAlive){
+				mCountDeadConnection++;
+				writeLEDCommand(0);
+				if (mCountDeadConnection>5){
+					setState(STATE_NONE);
+				}
+			} else {
+				mCountDeadConnection = 0;
+				mIamAlive=false;
+			}
+		}
+
+	}
+	
+	
 	
 	//endregion
 	
@@ -3951,6 +3991,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		
 		}
 	
+	}
+	
+	public void enableCheckifAlive(boolean set){
+		mCheckIfConnectionisAlive = set;
 	}
 	
 	public void resetCalibratedTimeStamp(){
