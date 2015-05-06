@@ -1,5 +1,7 @@
 package com.shimmerresearch.driver;
 
+import com.shimmerresearch.driver.ShimmerHwFw.FW_ID;
+
 /**
  * 
  * @author Mark Nolan
@@ -437,8 +439,8 @@ public class InfoMemLayout {
 		//Include changes to mapping below in order of oldest to newest in 
 		//independent "if statements"
 		
-		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.SDLOG,0,8,42))
-				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM,0,3,4))) {
+		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,8,42))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,4))) {
 			
 			idxSensors3 =			128+0;
 			idxSensors4 =			128+1;
@@ -451,9 +453,9 @@ public class InfoMemLayout {
 			idxDerivedSensors2 = 117;
 		}
 		
-		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.SDLOG,0,8,68))
-				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM,0,3,17))
-				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,ShimmerObject.FW_ID_SHIMMER3.BTSTREAM,0,6,0))) {
+		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,8,68))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,17))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.BTSTREAM,0,6,0))) {
 
 			idxDerivedSensors0 =		    31;
 			idxDerivedSensors1 =		    32;
@@ -481,16 +483,16 @@ public class InfoMemLayout {
 //	public int calculateInfoMemByteLength(int mFirmwareVersionCode, int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 	//TODO: should add full FW version checking here to support different size InfoMems in the future
-	if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.SDLOG) {
+	if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
 		return 384;
 	}
-	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.BTSTREAM) {
+	else if(mFirmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
 		return 128;
 	}
-	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.LOGANDSTREAM) {
+	else if(mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM) {
 		return 384;
 	}
-	else if(mFirmwareIdentifier == ShimmerObject.FW_ID_SHIMMER3.GQ_GSR) {
+	else if(mFirmwareIdentifier == FW_ID.SHIMMER3.GQ_GSR) {
 		return 128;
 	}
 	else {
