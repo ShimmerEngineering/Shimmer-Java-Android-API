@@ -6,21 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.shimmerresearch.adapters.NavDrawerListAdapter;
-import com.shimmerresearch.database.DatabaseHandler;
-import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.model.NavDrawerItem;
-import com.shimmerresearch.service.MultiShimmerTemplateService;
-import com.shimmerresearch.service.MultiShimmerTemplateService.LocalBinder;
-import com.shimmerresearch.tools.Logging;
-
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,6 +39,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.res.Configuration;
+
+import com.shimmerresearch.adapters.NavDrawerListAdapter;
+import com.shimmerresearch.database.DatabaseHandler;
+import com.shimmerresearch.model.NavDrawerItem;
+import com.shimmerresearch.service.MultiShimmerTemplateService;
+import com.shimmerresearch.service.MultiShimmerTemplateService.LocalBinder;
+import com.shimmerresearch.tools.Logging;
 
 public class MainActivity extends Activity{
 	
@@ -87,7 +87,7 @@ public class MainActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Configuration.setTooLegacyObjectClusterSensorNames();
+        com.shimmerresearch.driver.Configuration.setTooLegacyObjectClusterSensorNames();
         Intent intent=new Intent(this, MultiShimmerTemplateService.class);
        	startService(intent);
         

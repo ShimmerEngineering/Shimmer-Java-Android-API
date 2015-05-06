@@ -4,6 +4,7 @@ package com.shimmerresearch.shimmergraphandlogservice;
 
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ShimmerHwFw;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.shimmergraphandlogservice.R;
 import com.shimmerresearch.service.ShimmerService;
@@ -80,7 +81,7 @@ public class CommandsActivity extends ServiceActivity {
         buttonSampleRate.setText("Sampling Rate "+"\n"+rate+" Hz");
         
         if (mAccelerometerRangeV==0){
-        	if (mService.getShimmerVersion(mBluetoothAddress)!=ShimmerObject.HW_ID.SHIMMER_3){
+        	if (mService.getShimmerVersion(mBluetoothAddress)!=ShimmerHwFw.HW_ID.SHIMMER_3){
         		buttonAccRange.setText("Accel Range"+"\n"+"(+/- 1.5g)");
         	} else {
         		buttonAccRange.setText("Accel Range"+"\n"+"(+/- 2g)");
@@ -91,7 +92,7 @@ public class CommandsActivity extends ServiceActivity {
         	buttonAccRange.setText("Accel Range"+"\n"+"(+/- 8g)");
         }
         else if (mAccelerometerRangeV==3){
-        	if (mService.getShimmerVersion(mBluetoothAddress)!=ShimmerObject.HW_ID.SHIMMER_3){
+        	if (mService.getShimmerVersion(mBluetoothAddress)!=ShimmerHwFw.HW_ID.SHIMMER_3){
         		buttonAccRange.setText("Accel Range"+"\n"+"(+/- 6g)");
         	} else {
         		buttonAccRange.setText("Accel Range"+"\n"+"(+/- 16g)");
@@ -234,7 +235,7 @@ public class CommandsActivity extends ServiceActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (mService.getShimmerVersion(mBluetoothAddress)!=ShimmerObject.HW_ID.SHIMMER_3)
+				if (mService.getShimmerVersion(mBluetoothAddress)!=ShimmerHwFw.HW_ID.SHIMMER_3)
 					dialogAccelShimmer2.show();
 				else
 					dialogAccelShimmer3.show();
@@ -340,7 +341,7 @@ public class CommandsActivity extends ServiceActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				 if (mService.getShimmerVersion(mBluetoothAddress)==ShimmerObject.HW_ID.SHIMMER_3)
+				 if (mService.getShimmerVersion(mBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3)
 					 dialogMagRangeShimmer3.show();
 				 else
 					 dialogMagRangeShimmer2.show();
@@ -460,7 +461,7 @@ public class CommandsActivity extends ServiceActivity {
         	
         	
         	
-        	if (mService.getShimmerVersion(mBluetoothAddress)==ShimmerObject.HW_ID.SHIMMER_3){
+        	if (mService.getShimmerVersion(mBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3){
             	buttonGsr.setVisibility(View.VISIBLE);
             	cBox5VReg.setEnabled(false);
             	String currentGyroRange = "("+Configuration.Shimmer3.ListofGyroRange[shimmer.getAccelRange()]+")";

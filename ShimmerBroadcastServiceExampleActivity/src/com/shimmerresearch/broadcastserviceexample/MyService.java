@@ -44,6 +44,7 @@ import java.util.Collection;
 
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.*;
+
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
