@@ -423,10 +423,15 @@ public class ShimmerPC extends ShimmerBluetooth{
 
 	@Override
 	protected void setState(int state) {
+		
+		if (state==STATE_NONE && mStreaming==true){
+			disconnect();
+		}
 		// TODO Auto-generated method stub
 		mState = state;
 		// Give the new state to the UI through a callback (use a msg identifier state change)
 		// Do something here
+		
 	}
 	
 	@Override

@@ -1608,6 +1608,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 
 					//If there is a full packet and the subsequent sequence number of following packet
 					if (mByteArrayOutputStream.size()>=mPacketSize+2){
+						mIamAlive = true;
 						byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
 						if (bufferTemp[0]==DATA_PACKET && bufferTemp[mPacketSize+1]==DATA_PACKET){
 							newPacket = new byte[mPacketSize];
