@@ -311,6 +311,7 @@ public class Configuration {
 			public static final String BLUETOOTH_BAUD_RATE = "Bluetooth Baud Rate";
 
 			public static final String USER_BUTTON_START = "User Button Start";
+			public static final String UNDOCK_START = "Undock Start";
 			public static final String SINGLE_TOUCH_START = "Single Touch Start";
 			public static final String EXPERIMENT_MASTER_SHIMMER = "Master Shimmer";
 			public static final String EXPERIMENT_SYNC_WHEN_LOGGING = "Sync When Logging";
