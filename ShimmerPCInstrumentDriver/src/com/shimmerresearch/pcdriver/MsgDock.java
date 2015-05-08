@@ -218,7 +218,7 @@ public class MsgDock {
 	public byte[] mSlotMap = new byte[]{};
 	
 	//TODO here for test
-	public Object mCurrentJob;
+	public Object mCurrentJobDetails;
 	
 	/**SmartDockActiveSlotDetails
 	 * @see SmartDockActiveSlotDetails
@@ -291,13 +291,13 @@ public class MsgDock {
 	 * @param dockID
 	 * @param slotIdentifier
 	 */
-	public MsgDock(int msgID, String dockID, Object currentJob) {
+	public MsgDock(int msgID, String dockID, Object currentJobDetails) {
 		mMsgID = msgID;
 		mDockID = dockID;
 		mSlotNumber = -1;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
 		
-		mCurrentJob = currentJob;
+		mCurrentJobDetails = currentJobDetails;
 	}
 
 	
