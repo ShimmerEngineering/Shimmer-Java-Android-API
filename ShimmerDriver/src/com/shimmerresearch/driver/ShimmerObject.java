@@ -127,7 +127,6 @@ import com.shimmerresearch.driver.ShimmerHwFw.HW_ID;
 import com.shimmerresearch.driver.SensorDetails;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
-import com.sun.org.apache.bcel.internal.generic.ISUB;
 
 public abstract class ShimmerObject extends BasicProcessWithCallBack implements Serializable {
 
@@ -5379,7 +5378,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return using;
 	}
 
-	protected boolean isEXGUsingDefaultEMGConfiguration(){
+	public boolean isEXGUsingDefaultEMGConfiguration(){
 		boolean using = false;
 		if(((mEXG1RegisterArray[3] & 0x0F)==9)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==1)&&((mEXG2RegisterArray[4] & 0x0F)==1)){
 			using = true;
@@ -6130,7 +6129,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**Sets all default Shimmer settings in ShimmerObject.
 	 * 
 	 */
-	protected void setDefaultShimmerConfiguration() {
+	public void setDefaultShimmerConfiguration() {
 		if (mHardwareVersion != -1){
 			
 			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
@@ -9509,6 +9508,25 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mSamplingDividerGsr;
 	}
 
+	/**
+	 * @return the mMPU9150GyroAccelRate in Hz
+	 */
+	public double getMPU9150GyroAccelRateInHz() {
+		// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
+		double numerator = 1000.0;
+		if(mMPU9150LPF == 0) {
+			numerator = 8000.0;
+		}
+		
+		if(mMPU9150GyroAccelRate == 0) {
+			return numerator;
+		}
+		else {
+			return (numerator / mMPU9150GyroAccelRate);
+		}
+	}
+	
+	
 	/**
 	 * @return the mSamplingDividerPpg
 	 */

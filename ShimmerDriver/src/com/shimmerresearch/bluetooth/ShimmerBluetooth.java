@@ -78,6 +78,7 @@ package com.shimmerresearch.bluetooth;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -105,7 +106,6 @@ import java.util.TimerTask;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
-import sun.rmi.runtime.Log;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerHwFw.FW_ID;
@@ -113,7 +113,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerHwFw.HW_ID;
 import com.shimmerresearch.driver.ShimmerObject;
 
-public abstract class ShimmerBluetooth extends ShimmerObject {
+public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
 	
 	//region --------- CLASS VARIABLES AND ABSTRACT METHODS ---------
 	
@@ -178,7 +178,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	private int mCountDeadConnection = 0;
 	private boolean mCheckIfConnectionisAlive = false;
 	
-	ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
+	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
 	
 	//endregion
 	
@@ -3095,6 +3095,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 		return mMyName;
 	}
 	
+	public void setShimmerName(String name){
+		mMyName = name;
+	}
+	
 	/**
 	 * Get the Gain value for the ExG1 Channel 1
 	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8 or 12. The function return -1 when it is not possible to get the value.
@@ -4008,6 +4012,345 @@ public abstract class ShimmerBluetooth extends ShimmerObject {
 	
 	//endregion
 	
+	public Object slotDetailsGetMethods(String componentName) {
+		Object returnValue = null;
+		switch(componentName){
+//Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
+				if(isLSM303DigitalAccelLPM()&&checkLowPowerGyro()&&checkLowPowerMag()) {
+					returnValue = true;
+				}
+				else {
+					returnValue = false;
+				}
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
+				returnValue = isLSM303DigitalAccelLPM();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
+				returnValue = checkLowPowerGyro();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
+				returnValue = checkLowPowerMag();
+	        	break;
+			
+//Integers
+			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
+				returnValue = getBluetoothBaudRate();
+	        	break;
+    	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+				returnValue = getAccelRange();
+	        	break;
+	        
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
+				returnValue = getGyroRange();
+	        	break;
 	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+				//TODO check below and commented out code
+				returnValue = getMagRange();
+			
+//					// firmware sets mag range to 7 (i.e. index 6 in combobox) if user set mag range to 0 in config file
+//					if(getMagRange() == 0) cmBx.setSelectedIndex(6);
+//					else cmBx.setSelectedIndex(getMagRange()-1);
+	    		break;
+			
+			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+				returnValue = getPressureResolution();
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+				returnValue = getExGResolution();
+	    		break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+				//TODO: What should this be?
+				//returnValue = getExGGainSetting();
+				//consolePrintLn("Get " + configValue);
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+				int configValue = getLSM303DigitalAccelRate(); 
+				 
+	        	if(!isLSM303DigitalAccelLPM()) {
+		        	if(configValue==8) {
+		        		configValue = 9;
+		        	}
+	        	}
+				returnValue = configValue;
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
+				returnValue = getLSM303MagRate();
+	        	break;
+
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+				returnValue = getMPU9150AccelRange();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+				returnValue = getMPU9150MotCalCfg();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF):
+				returnValue = getMPU9150LPF();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
+				returnValue = getMPU9150MPLSamplingRate();
+        		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
+				returnValue = getMPU9150MagSamplingRate();
+            	break;
+            	
+        	//TODO
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+				returnValue = getEXG1RateSetting();
+				//returnValue = getEXG2RateSetting();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+				returnValue = getEXGReferenceElectrode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+				returnValue = getEXG2LeadOffCurrentMode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+				returnValue = getEXGLeadOffDetectionCurrent();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+				returnValue = getEXGLeadOffComparatorTreshold();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+				returnValue = getEXG2RespirationDetectFreq();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+				returnValue = getEXG2RespirationDetectPhase();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+				returnValue = getInternalExpPower();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+				returnValue = getPpgAdcSelectionGsrBoard();
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+				returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+				returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
+	    		break;
+            	
+
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
+				returnValue = getSamplingDividerGsr();
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
+				returnValue = getSamplingDividerLsm303dlhcAccel();
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
+				returnValue = getSamplingDividerPpg();
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
+				returnValue = getSamplingDividerVBatt();
+	    		break;
+	    		
+	    		
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+				returnValue = getShimmerUserAssignedName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NAME):
+				returnValue = getExperimentName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+		        Double readSamplingRate = getShimmerSamplingRate();
+		    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
+		    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100; // round sampling rate to two decimal places
+//			    	consolePrintLn("GET SAMPLING RATE: " + componentName);
+		    	returnValue = actualSamplingRate.toString();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
+				returnValue = Integer.toString(getBufferSize());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+	        	returnValue = getConfigTimeParsed();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
+	        	returnValue = getMacIdFromInfoMem();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID):
+	        	returnValue = Integer.toString(getExperimentId());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS):
+	        	returnValue = Integer.toString(getExperimentNumberOfShimmers());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
+	        	returnValue = Integer.toString(getExperimentDurationEstimated());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
+	        	returnValue = Integer.toString(getExperimentDurationMaximum());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
+	        	returnValue = Integer.toString(getSyncBroadcastInterval());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
+				returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+//    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
+
+	        	break;
+	        default:
+	        	break;
+		}
+		
+		return returnValue;
+	}		
+	
+	public Object slotDetailsSetMethods(String componentName, Object valueToSet) {
+
+		Object returnValue = null;
+		int buf = 0;
+
+		switch(componentName){
+//Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
+				enableLowPowerAccel((boolean)valueToSet);
+				enableLowPowerGyro((boolean)valueToSet);
+            	enableLowPowerMag((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
+				enableLowPowerAccel((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
+            	this.enableLowPowerGyro((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
+            	enableLowPowerMag((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+				if ((boolean)valueToSet){
+					writeInternalExpPower(1);
+				} else {
+					writeInternalExpPower(0);
+				}
+	        	break;
+        	
+		
+//Integers
+			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
+				//TODO: Test
+				writeBaudRate((int)valueToSet);
+	        	break;
+		        	
+    		case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+    			writeAccelRange((int)valueToSet);
+				break;
+	        
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
+				writeGyroRange((int)valueToSet);
+	        	break;
+	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+				writeMagRange((int)valueToSet);
+	    		break;
+			
+			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+				writePressureResolution((int)valueToSet);
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+	    		writeGSRRange((int)valueToSet);
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+				//writeExGResolution((int)valueToSet);
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+				
+				//TODO: Implementation
+				//consolePrintLn("before set " + getExGGain());
+				//writeExGGainSetting((int)valueToSet);
+				//consolePrintLn("after set " + getExGGain());
+	        	break;
+				
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+				writeAccelSamplingRate((int)valueToSet);
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
+				writeMagSamplingRate((int)valueToSet);
+	        	break;
+	        //TODO: regenerate EXG register bytes on each change (just in case)
+	        	
+        	//TODO
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+				writeEXGRateSetting(1,(int)valueToSet);
+				writeEXGRateSetting(2,(int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+				writeEXGReferenceElectrode((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+				writeEXGLeadOffDetectionMode((int)valueToSet);
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+				writeEXGLeadOffDetectionCurrent((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+				writeEXGLeadOffComparatorTreshold((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+				writeInternalExpPower((int)valueToSet);
+            	break;
+			
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+        		setShimmerName((String)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+	          	// don't let sampling rate be empty
+	          	Double enteredSamplingRate;
+	          	if(((String)valueToSet).isEmpty()) {
+	          		enteredSamplingRate = 1.0;
+	          	}            	
+	          	else {
+	          		enteredSamplingRate = Double.parseDouble((String)valueToSet);
+	          	}
+	      		setShimmerSamplingRate(enteredSamplingRate);
+	      		
+	      		returnValue = Double.toString(getShimmerSamplingRate());
+	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
+//	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+//	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
+//	        	break;
+			
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
+            	double bufDouble = 4.0; // Minimum = 4Hz
+            	if(((String)valueToSet).isEmpty()) {
+            		bufDouble = 4.0;
+            	}
+            	else {
+            		bufDouble = Double.parseDouble((String)valueToSet);
+            	}
+            	
+            	// Since user is manually entering a freq., clear low-power mode so that their chosen rate will be set correctly. Tick box will be re-enabled automatically if they enter LPM freq. 
+            	enableLowPowerGyro(false); 
+        		setMPU9150GyroAccelRateFromFreq(bufDouble);
+
+        		returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+//        		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
+
+	        	break;
+	        default:
+	        	break;
+		}
+			
+		return returnValue;
+
+	}
 
 }

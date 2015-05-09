@@ -57,6 +57,12 @@
 
 package com.shimmerresearch.pcdriver;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -72,7 +78,7 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 
 
-public class ShimmerPC extends ShimmerBluetooth{
+public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializable  {
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
@@ -456,7 +462,29 @@ public class ShimmerPC extends ShimmerBluetooth{
 		
 	}
 
-	
+
+	/**Performs a deep copy of SlotDetails by Serializing
+	 * @return SlotDetails the deep copy of the current SlotDetails
+	 * @see java.io.Serializable
+	 */
+	public ShimmerPC deepClone() {
+//		System.out.println("Cloning:" + mUniqueID);
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (ShimmerPC) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 }
 
