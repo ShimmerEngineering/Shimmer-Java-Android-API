@@ -212,12 +212,26 @@ public class MsgDock {
 	public int mErrorCode;
 	public int mErrorCodeLowLevel;
 	public int mErrorCodeLowBsl;
+	
+	/** Contains the error message as copied from a caught exception. 
+	 * 
+	 */
 	public String mExceptionMsg;
+	/** Contains the stracktrace as copied from a caught exception. 
+	 * 
+	 */
 	public StackTraceElement[] mExceptionStackTrace;
+	/**Indicates whether the Exception is critical to the operation underway.
+	 * 
+	 */
+	public ExceptionLevel mExceptionLevel;
+	public static enum ExceptionLevel {
+		LOW,
+		HIGH
+	}
 	
 	public byte[] mSlotMap = new byte[]{};
 	
-	//TODO here for test
 	public Object mCurrentJobDetails;
 	
 	/**SmartDockActiveSlotDetails
