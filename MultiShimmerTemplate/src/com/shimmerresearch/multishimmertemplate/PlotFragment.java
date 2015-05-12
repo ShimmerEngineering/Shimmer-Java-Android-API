@@ -54,6 +54,7 @@ import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerHwFw;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.service.MultiShimmerTemplateService;
 
@@ -394,7 +395,7 @@ public class PlotFragment extends Fragment {
 	    public int getNumberofChildren(long enabledSensors, String bluetoothAddress){
 	    	int count=1; //timestamp
 	    	int shimmerVersion = mService.getShimmerVersion(bluetoothAddress);
-	    	if (shimmerVersion==ShimmerObject.HW_ID.SHIMMER_3 || shimmerVersion==ShimmerObject.HW_ID.SHIMMER_SR30){
+	    	if (shimmerVersion==ShimmerHwFw.HW_ID.SHIMMER_3 || shimmerVersion==ShimmerHwFw.HW_ID.SHIMMER_SR30){
 	    		if (((enabledSensors & 0xFF)& Shimmer.SENSOR_ACCEL) > 0){
 	 		    	count=count+3;
 	 		    }
