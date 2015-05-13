@@ -1,8 +1,10 @@
 package com.shimmerresearch.driver;
 
-import com.shimmerresearch.driver.ShimmerHwFw;
+import com.shimmerresearch.driver.ShimmerVerDetails;
 
-/**Holds the Shimmer's Expansion board information 
+/**
+ * Holds the Shimmer's Expansion board information as read from the memory chip
+ * on the Shimmers expansion board.
  * 
  * @author Mark Nolan
  *
@@ -15,9 +17,10 @@ public class ExpansionBoardDetails {
 	public String mExpBoardParsed = "";
 	public String mExpBoardParsedWithVer = "";
 	
-	public ExpansionBoardDetails(int boardID,
-											int boardRev,
-											int specialRev) {
+	public ExpansionBoardDetails(
+			int boardID,
+			int boardRev,
+			int specialRev) {
 		parseExpansionBoardDetails(boardID, boardRev, specialRev);
 	}
 	
@@ -36,12 +39,12 @@ public class ExpansionBoardDetails {
 		String boardName = "";
 		String boardNameWithVer = "";
 		
-		if(boardID==ShimmerHwFw.EXP_BRD_NONE_ID){
-			boardName = ShimmerHwFw.EXP_BRD_NONE;
+		if(boardID==ShimmerVerDetails.EXP_BRD_NONE_ID){
+			boardName = ShimmerVerDetails.EXP_BRD_NONE;
 		}
 		else {
-			if(ShimmerHwFw.mMapOfShimmmerHardware.containsKey(boardID)){
-				boardName = ShimmerHwFw.mMapOfShimmmerHardware.get(boardID);
+			if(ShimmerVerDetails.mMapOfShimmmerHardware.containsKey(boardID)){
+				boardName = ShimmerVerDetails.mMapOfShimmmerHardware.get(boardID);
 			}
 			else {
 				boardName="Unknown";

@@ -4,11 +4,40 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ShimmerHwFw {
+/**
+ * Holds Shimmer Hardware and Firmware version details.
+ * 
+ * @author Mark Nolan
+ *
+ */
+public class ShimmerVerDetails {
 
 	public final static int EXP_BRD_NONE_ID = 255;
 	public static final String EXP_BRD_NONE = "None";
 	
+	public final static class HW_ID {
+		public final static int SHIMMER_1 = 0;
+		public final static int SHIMMER_2 = 1;
+		public final static int SHIMMER_2R = 2;
+		public final static int SHIMMER_3 = 3;
+		public final static int SHIMMER_SR30 = 4;
+//		public final static int DCU_SWEATSENSOR = 4;
+		public final static int SHIMMER_GQ = 5;
+	}
+	
+	public static final Map<Integer, String> mMapOfShimmerRevisions;
+    static {
+        Map<Integer, String> aMap = new TreeMap<Integer,String>();
+        aMap.put(HW_ID.SHIMMER_1, "Shimmer1");
+        aMap.put(HW_ID.SHIMMER_2, "Shimmer2");
+        aMap.put(HW_ID.SHIMMER_2R, "Shimmer2r");
+        aMap.put(HW_ID.SHIMMER_3, "Shimmer3");
+        aMap.put(HW_ID.SHIMMER_SR30, "Shimmer SR30");
+        aMap.put(HW_ID.SHIMMER_GQ, "ShimmerGQ");
+//        aMap.put(HW_ID.DCU_SWEATSENSOR, "DCU_SWEATSENSOR");
+        mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
+    }
+    
 	public static final class HW_ID_SR_CODES {
 		public final static int EXP_BRD_BR_AMP = 8;
 		public final static int EXP_BRD_BR_AMP_UNIFIED = 49;
@@ -64,26 +93,4 @@ public class ShimmerHwFw {
 		}
 	}
 
-	public final static class HW_ID {
-		public final static int SHIMMER_1 = 0;
-		public final static int SHIMMER_2 = 1;
-		public final static int SHIMMER_2R = 2;
-		public final static int SHIMMER_3 = 3;
-		public final static int SHIMMER_SR30 = 4;
-//		public final static int DCU_SWEATSENSOR = 4;
-		public final static int SHIMMER_GQ = 5;
-	}
-	
-	public static final Map<Integer, String> mMapOfShimmerRevisions;
-    static {
-        Map<Integer, String> aMap = new TreeMap<Integer,String>();
-        aMap.put(HW_ID.SHIMMER_1, "Shimmer1");
-        aMap.put(HW_ID.SHIMMER_2, "Shimmer2");
-        aMap.put(HW_ID.SHIMMER_2R, "Shimmer2r");
-        aMap.put(HW_ID.SHIMMER_3, "Shimmer3");
-        aMap.put(HW_ID.SHIMMER_SR30, "Shimmer SR30");
-        aMap.put(HW_ID.SHIMMER_GQ, "ShimmerGQ");
-//        aMap.put(HW_ID.DCU_SWEATSENSOR, "DCU_SWEATSENSOR");
-        mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
-    }
 }

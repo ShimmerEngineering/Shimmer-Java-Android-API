@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
+ * Holds all information related individual sensor channels for dynamic GUI and
+ * configuration purposes. Currently used in Consensys only.
  * 
  * @author Mark Nolan
  *
@@ -37,16 +39,27 @@ public class SensorDetails implements Serializable {
 	public List<Integer> mListOfSensorMapKeysConflicting = null;
 	public boolean mIntExpBoardPowerRequired = false;
 	public List<String> mListOfConfigOptionKeysAssociated = null;
-	public List<CompatibleVersionDetails> mListOfCompatibleVersionInfo = null;  
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null;  
 	
 	//Testing for GQ
 	public String mHeaderFileLabel = "";
 	public int mHeaderByteMask = 0;
 	public int mNumChannels = 0;
-//	public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
+	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
 	public List<ChannelDetails> mListOfChannels = new ArrayList<ChannelDetails>();
 
-	//Shimmer3 Sensors
+	/**
+	 * Holds all information related individual sensor channels for dynamic GUI
+	 * and configuration purposes. Currently used in Consensys only.
+	 * 
+	 * This constructor is used for standard Shimmer3 firmware (SDLog,
+	 * LogAndStream and BtStream)
+	 * 
+	 * @param isChannelEnabled
+	 * @param sensorBitmapIDStreaming
+	 * @param sensorBitmapIDSDLogHeader
+	 * @param label
+	 */
 	public SensorDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
 		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
@@ -56,7 +69,15 @@ public class SensorDetails implements Serializable {
 		mListOfCompatibleVersionInfo = null;
 	}
 
-	//ShimmerGQ Sensors
+	/**
+	 * Holds all information related individual sensor channels for dynamic GUI
+	 * and configuration purposes. Currently used in Consensys only.
+	 * 
+	 * This constructor is used for Shimmer3 GQ firmware
+	 * 
+	 * @param isChannelEnabled
+	 * @param label
+	 */
 	public SensorDetails(boolean isChannelEnabled, String label) {
 		mIsEnabled = isChannelEnabled;
 		mLabel = label;

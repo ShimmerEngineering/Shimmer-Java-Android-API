@@ -1,8 +1,14 @@
 package com.shimmerresearch.driver;
 
-import com.shimmerresearch.driver.ShimmerHwFw.FW_ID;
+import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 
 /**
+ * Hold the Shimmer3's microcontroller information memory layout. This region of
+ * the the microcontrollers RAM can be used to configure all properties of the
+ * Shimmer when configured through a docking station using Consensys. Variables
+ * stored in this class are based on firmware header files for mapping which
+ * bits in each information memory byte represents various configurable settings
+ * on the Shimmer.
  * 
  * @author Mark Nolan
  *
@@ -12,7 +18,6 @@ public class InfoMemLayout {
 	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
 	public int maxNumOfExperimentNodes = 21;
 
-//	int mFirmwareVersionCode = -1;
 	int mFirmwareIdentifier = -1;
 	int mFirmwareVersionMajor = -1;
 	int mFirmwareVersionMinor = -1;
@@ -424,30 +429,37 @@ public class InfoMemLayout {
 //	public int GYRO_AND_SOME_MAG =            0x03;
 	
 	
-//	public InfoMemLayout(int firmwareVersionCode, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+	/**
+	 * Hold the Shimmer3's microcontroller information memory layout. This
+	 * region of the the microcontrollers RAM can be used to configure all
+	 * properties of the Shimmer when configured through a docking station using
+	 * Consensys. Variables stored in this class are based on firmware header
+	 * files for mapping which bits in each information memory byte represents
+	 * various configurable settings on the Shimmer.
+	 * 
+	 * @param firmwareIdentifier
+	 * @param firmwareVersionMajor
+	 * @param firmwareVersionMinor
+	 * @param firmwareVersionInternal
+	 */
 	public InfoMemLayout(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
-
-//		mFirmwareVersionCode = firmwareVersionCode;
 		mFirmwareIdentifier = firmwareIdentifier;
 		mFirmwareVersionMajor = firmwareVersionMajor;
 		mFirmwareVersionMinor = firmwareVersionMinor;
 		mFirmwareVersionInternal = firmwareVersionInternal;
 		
-//		mInfoMemSize = calculateInfoMemByteLength(mFirmwareVersionCode,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
 		mInfoMemSize = calculateInfoMemByteLength(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
 
 		//Include changes to mapping below in order of oldest to newest in 
-		//independent "if statements"
+		//seperate "if statements"
 		
 		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,8,42))
 				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,4))) {
-			
 			idxSensors3 =			128+0;
 			idxSensors4 =			128+1;
 			idxConfigSetupByte4 =	128+2;
 			idxConfigSetupByte5 =	128+3;
 			idxConfigSetupByte6 =	128+4;
-			
 			idxDerivedSensors0 = 115;
 			idxDerivedSensors1 = 116;
 			idxDerivedSensors2 = 117;
@@ -456,7 +468,6 @@ public class InfoMemLayout {
 		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,8,68))
 				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,17))
 				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.BTSTREAM,0,6,0))) {
-
 			idxDerivedSensors0 =		    31;
 			idxDerivedSensors1 =		    32;
 			idxDerivedSensors2 =		    33;
@@ -465,40 +476,26 @@ public class InfoMemLayout {
 			idxLSM303DLHCMagCalibration =   76;
 			idxLSM303DLHCAccelCalibration = 97;
 		}
-
-		
-//		if(mFirmwareVersionCode == 5) { //
-//			// First common version - do nothing and use default values
-//		}
-//		else if(mFirmwareVersionCode == 6) { // Modify defaults
-//			//TODO: Modify defaults
-//		}
-//		else {
-//			// Use defaults
-//		}
 		
 	}
 	
-	
-//	public int calculateInfoMemByteLength(int mFirmwareVersionCode, int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
-	//TODO: should add full FW version checking here to support different size InfoMems in the future
-	if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
-		return 384;
+		//TODO: should add full FW version checking here to support different size InfoMems in the future
+		if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
+			return 384;
+		}
+		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
+			return 128;
+		}
+		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM) {
+			return 384;
+		}
+		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.GQ_GSR) {
+			return 128;
+		}
+		else {
+			return 512; 
+		}
 	}
-	else if(mFirmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
-		return 128;
-	}
-	else if(mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM) {
-		return 384;
-	}
-	else if(mFirmwareIdentifier == FW_ID.SHIMMER3.GQ_GSR) {
-		return 128;
-	}
-	else {
-		return 512; 
-	}
-	
-}
 
 }

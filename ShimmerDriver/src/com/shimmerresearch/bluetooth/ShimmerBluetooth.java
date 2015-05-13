@@ -108,9 +108,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.ShimmerHwFw.FW_ID;
+import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerHwFw.HW_ID;
+import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ShimmerObject;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
