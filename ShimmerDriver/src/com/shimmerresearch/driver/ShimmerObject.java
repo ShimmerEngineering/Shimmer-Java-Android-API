@@ -5716,7 +5716,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mEXG2RegisterArray[0] = (byte) ((mEXG2RegisterArray[0] & ~0x07) | mEXG2RateSetting);
 		
 		//TODO decide whether to include exgBytesGetFromConfig() here or not
-//		exgBytesGetFromConfig();
+		//exgBytesGetFromConfig();
 		return mEXG1RateSetting;
 	}
 	
@@ -5746,7 +5746,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public boolean checkLowPowerMag() {
 		if(mLSM303MagRate <= 4) {
-//		if((mLSM303MagRate == 4)||(mLSM303MagRate == 1)) {
 			mLowPowerMag = true;
 		}
 		else {
@@ -5768,7 +5767,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 *            long)
 	 */
 	public void exgBytesGetConfigFrom(int chipIndex, byte[] byteArray) {
-		// to overcome possible backward compatability issues (where bufferAns.length was 11 or 12 using all of the ExG config bytes)
+		// to overcome possible backward compatability issues (where
+		// bufferAns.length was 11 or 12 using all of the ExG config bytes)
 		int index = 1;
 		if(byteArray.length == 10) {
 			index = 0;
@@ -6809,8 +6809,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 
 	/**
-	 * @param size
-	 * @return
+	 * Creates an empty byte array for the purposes of generating the
+	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
+	 * 
+	 * @param size the size of the byte array to create.
+	 * @return byte array
 	 */
 	public byte[] createEmptyInfoMemByteArray(int size) {
 		byte[] newArray = new byte[size];
@@ -6820,6 +6823,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return newArray;
 	}
 
+	/**
+	 * Parses the LSM303DLHC Accel calibration variables from a byte array stored
+	 * in the Shimmer's infomem or in the SD header of logged data files.
+	 * 
+	 * @param bufferCalibrationParameters
+	 *            the byte array containing the LSM303DLHC Accel calibration
+	 */
 	public void parseCalParamLSM303DLHCAccel(byte[] bufferCalibrationParameters){
 		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 		int[] formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
@@ -6836,6 +6846,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mOffsetVectorWRAccel = offsetVectorDA;
 	}
 
+	/**
+	 * Converts the LSM303DLHC Accel calibration variables from Shimmer Object
+	 * into a byte array for sending to the Shimmer.
+	 * 
+	 * @return the bytes array containing the LSM303DLHC Accel calibration
+	 */
 	public byte[] generateCalParamLSM303DLHCAccel(){
 		byte[] bufferCalibrationParameters = new byte[21];
 		// offsetVector -> buffer offset = 0
@@ -6858,14 +6874,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	/**
-	 * Should only be used after the Shimmer HW and FW version information is set
+	 * This method is used as the basis for configuring a Shimmer through the
+	 * Consensys application. All sensor and configuration information is stored
+	 * in dynamically created and controlled Maps.
+	 * 
+	 * Should only be used after the Shimmer HW and FW version information is
+	 * set
 	 */
 	public void sensorAndConfigMapsCreate() {
 		
-		//TODO: move bitshift values and masks to dedicated classes for infomem, btstream sensor enable and SD file header mapping (for version control)
-		
 		mSensorMap = new TreeMap<Integer,SensorDetails>();
 		mSensorTileMap = new LinkedHashMap<String,SensorTileDetails>();
+		mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 		
 		if (mHardwareVersion != -1){
 			if (mHardwareVersion == HW_ID.SHIMMER_2R){
@@ -6950,7 +6970,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				ShimmerVerObject baseSdLog = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,ANY_VERSION);
 				ShimmerVerObject baseBtStream = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,ANY_VERSION);
 				ShimmerVerObject baseLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,ANY_VERSION);
-				//ShimmerHwFw baseGsrGq = 					new ShimmerHwFw(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.GQ_GSR,0,0,0,ANY_VERSION);
 				
 				ShimmerVerObject baseExgSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_EXG); 
 				ShimmerVerObject baseExgUnifiedSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED);
@@ -7000,11 +7019,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGq,
 						baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, baseGsrUnifiedGq);
 				
-//				List<ShimmerHwFw> listOfCompatibleVersionInfoPpg1213 = Arrays.asList(
-//						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGq,
-//						baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, baseGsrUnifiedGq,
-//						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream);
-				
 				List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
 						baseBrAmpUnifiedSdLog,  baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
@@ -7019,8 +7033,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
-//						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
-//						baseBrAmpUnifiedSdLog,  baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
 				
 				List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA12 = Arrays.asList(
 						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
@@ -7035,16 +7047,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
 						baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
 						baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream 
-//						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
-//						baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream
 						);
 
 				List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
 						baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 						baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 						baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream 
-//						baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream, 
-//						baseBrAmpUnifiedSdLog, baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream
 						);
 				
 				List<ShimmerVerObject> listOfCompatibleVersionInfoStreaming = Arrays.asList(
@@ -7122,18 +7130,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x02<<(loggingHeaderByteIndex*8), "")); // unused
 				//shimmerChannels.put(, new ChannelDetails(false, 0, 0x01<<(loggingHeaderByteIndex*8), "")); // unused
 				
-				// Combination Sensors
-//				long shimmer3Ecg = mChannelMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mSensorBitmapIDStreaming | mChannelMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mSensorBitmapIDStreaming;
-//				mChannelMap.put(Configuration.Shimmer3.SensorMapKey.ECG, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.ECG_GUI)); // SENSOR_EXG1_24BIT + SENSOR_EXG2_24BIT
-//				mChannelMap.put(Configuration.Shimmer3.SensorMapKey.EXG_TEST, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Shimmer3Configuration.EXG_TEST_GUI)); // SENSOR_EXG1_24BIT
-//				mChannelMap.put(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION, new ChannelDetails(false, shimmer3Ecg, shimmer3Ecg, Configuration.Shimmer3.GUI_LABEL_CHANNEL_EXG_RESPIRATION));
-//				long shimmer3Emg = mChannelMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mSensorBitmapIDStreaming;
-//				mChannelMap.put(Configuration.Shimmer3.SensorMapKey.EMG, new ChannelDetails(false, shimmer3Emg, shimmer3Emg, Shimmer3Configuration.EMG_GUI)); // SENSOR_EXG1_24BIT
-
-				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.ECG, new SensorDetails(false, 0, 0, Shimmer3.GuiLabelSensors.ECG)); // SENSOR_EXG1_24BIT + SENSOR_EXG2_24BIT
-				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.EXG_TEST, new SensorDetails(false, 0, 0, Shimmer3.GuiLabelSensors.EXG_TEST)); // SENSOR_EXG1_24BIT
+				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.ECG, new SensorDetails(false, 0, 0, Shimmer3.GuiLabelSensors.ECG));
+				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.EXG_TEST, new SensorDetails(false, 0, 0, Shimmer3.GuiLabelSensors.EXG_TEST));
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION, new SensorDetails(false, 0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_RESPIRATION));
-				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.EMG, new SensorDetails(false, 0, 0, Shimmer3.GuiLabelSensors.EMG)); // SENSOR_EXG1_24BIT
+				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.EMG, new SensorDetails(false, 0, 0, Shimmer3.GuiLabelSensors.EMG));
 
 				// Derived Channels - Bridge Amp Board
 				mSensorMap.put(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP, new SensorDetails(false, 0, 0, Shimmer3.GuiLabelSensors.RESISTANCE_AMP));
@@ -7177,7 +7177,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
 
 				
-				//Now that channel map is assembled we can add compatiblity information, internal expansion board power requirements, associated required channels, conflicting channels and associated configuration options.
+				// Now that channel map is assembled we can add compatiblity
+				// information, internal expansion board power requirements,
+				// associated required channels, conflicting channels and
+				// associated configuration options.
 				
 				// Channels that have compatibility considerations (used to auto-hide/disable channels/config options in GUI)
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
@@ -7221,7 +7224,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-				//mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoAnyExpBoardStandardFW;
@@ -7247,10 +7250,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIntExpBoardPowerRequired = true;
 				
 				// Required Channels - these get auto enabled/disabled when the parent channel is enabled/disabled
-//				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfSensorMapKeysRequired = Arrays.asList(
-//						Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1);
-//				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mListOfSensorMapKeysRequired = Arrays.asList(
-//						Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1);
+				//mSensorMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfSensorMapKeysRequired = Arrays.asList(
+				//		Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1);
+				//mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mListOfSensorMapKeysRequired = Arrays.asList(
+				//		Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1);
 				
 				// Conflicting Channels (stop two conflicting channels from being enabled and the same time)
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfSensorMapKeysConflicting = Arrays.asList(
@@ -7633,8 +7636,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER, new SensorTileDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
 									Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP)));
-//				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorTileDetails(
-//						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
+				//mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorTileDetails(
+				//		Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL, new SensorTileDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12, //X-axis
 									Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13, //Y-axis
@@ -7645,11 +7648,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 									Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
 									Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
 									Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14)));
-//				mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_9DOF, new ChannelTileDetails(
-//						Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,
-//									Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL,
-//									Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO,
-//									Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG)));
+				//mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_9DOF, new ChannelTileDetails(
+				//		Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,
+				//					Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL,
+				//					Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO,
+				//					Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG)));
 				//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
 				
 				// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
@@ -7667,42 +7670,29 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Deluxe;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoProto3Deluxe;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
-//				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
+				//mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoHighGAccel;
-//				mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = listOfCompatibleVersionInfoGps;
+				//mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = listOfCompatibleVersionInfoGps;
 				
-				// For loop to automatically inherit associated channel configuration options from ChannelMap in the ChannelTileMap
+				// For loop to automatically inherit associated channel configuration options from mSensorMap in the mSensorTileMap
 				for (String channelGroup : mSensorTileMap.keySet()) {
 					// Ok to clear here because variable is initiated in the class
 					mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
-					//TODO REMOVED 2015-03-24 - TEST
-//					if (channelGroup.equals(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC)
-//							|| channelGroup.equals(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI)
-//							|| channelGroup.equals(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE)) {
-//						mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
-//					} else {
-						for (Integer channel : mSensorTileMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
-							List<String> associatedConfigOptions = mSensorMap.get(channel).mListOfConfigOptionKeysAssociated;
-							if (associatedConfigOptions != null) {
-								for (String configOption : associatedConfigOptions) {
-									// do not add duplicates
-									if (!(mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-										mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
-									}
+					for (Integer channel : mSensorTileMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
+						List<String> associatedConfigOptions = mSensorMap.get(channel).mListOfConfigOptionKeysAssociated;
+						if (associatedConfigOptions != null) {
+							for (String configOption : associatedConfigOptions) {
+								// do not add duplicates
+								if (!(mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+									mSensorTileMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
 								}
 							}
-//						}
+						}
 					}
 				}				
 				
-				//TODO: A console print below shows that the Channel map is being generate a good few times, is this expected with deep clones or bad??
-//				for(String channelGroup:mShimmerChannelGroupingMap.keySet()){
-//					System.out.println(channelGroup);
-//				}
 				
 				// Assemble the channel configuration options map
-				mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
-				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
 												listOfCompatibleVersionInfoLogging));
@@ -7803,12 +7793,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 												listOfCompatibleVersionInfoExg));
 				//TODO EMG vs. ECG vs. ExG Test vs. Respiration
-//				mShimmerSensorsOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE, 
-//						new ChannelOptionDetails(Configuration.Shimmer3.ListOfEMGReferenceElectrode, 
-//												Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues, 
-//												ChannelOptionDetails.COMBOBOX,
-//												listOfCompatibleVersionInfoExG));
-				
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGRate, 
@@ -7929,7 +7913,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 												listOfCompatibleVersionInfoProto3Deluxe));
 
-				
 				
 				// All Information required for parsing each of the channels
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,ChannelDataType.UINT12,2,ChannelDataEndian.LSB));
@@ -8055,18 +8038,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB));
 				
-				
-				//Testing for GQ and parsing of header files
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.VBATT).mHeaderFileLabel = Configuration.Shimmer3.HeaderFileSensorName.VBATT;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mHeaderFileLabel = Configuration.Shimmer3.HeaderFileSensorName.GSR;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mHeaderFileLabel = Configuration.Shimmer3.HeaderFileSensorName.LSM303DLHC_ACCEL;
-
-
 			}
 			else if (mHardwareVersion == HW_ID.SHIMMER_GQ) {
-//				InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
 
-//				// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
+				// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
 				ShimmerVerObject baseAnyIntExpBoardAndFw = new ShimmerVerObject(HW_ID.SHIMMER_GQ,FW_ID.SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
 				List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(baseAnyIntExpBoardAndFw);
 				
@@ -8121,11 +8096,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 									}
 								}
 							}
-							
 						}
 					}
 				}
-				
 				
 				// Assemble the channel configuration options map
 				mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
@@ -8187,12 +8160,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												Configuration.Shimmer3Gq.ListofSamplingRateDividersValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
 
-
 			    mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
 			    	      new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfOnOff, 
 					    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
 					    	        SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-				
 				
 				//General Config
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
@@ -8205,12 +8176,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX));
-				
-
 			}
 		}
 	}
 	
+	
+	/**
+	 * Used to convert from the enabledSensors long variable read from the
+	 * Shimmer to the set enabled status of the relative entries in the Sensor
+	 * Map. Used in Consensys for dynamic GUI generation to configure a Shimmer.
+	 * 
+	 */
 	public void sensorMapUpdateWithEnabledSensors() {
 
 		if((mEnabledSensors != 0) && (mSensorMap != null)) {
@@ -8218,10 +8194,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (mHardwareVersion == HW_ID.SHIMMER_3) {
 				
 				for(Integer sensorMapKey:mSensorMap.keySet()) {
-					
 					boolean skipKey = false;
 
-					// Skip if ExG channels
+					// Skip if ExG channels here -> handle them after for loop.
 					if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
 							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EMG)
 							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
@@ -8229,7 +8204,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
 						skipKey = true;
 					}
-					// Handle derived sensors bases on int adc channels (e.g. PPG vrs A12/A13)
+					// Handle derived sensors based on int adc channels (e.g. PPG vs. A12/A13)
 					else if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12)
 						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13)
 						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1)
@@ -8250,47 +8225,37 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 					// Process remaining channels
 					if(!skipKey) {
-						
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
-						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) { // This is a derived sensor
-							
+						// Check if this sensor is a derived sensor
+						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+							//Check if all associated derived channels are enabled 
 							if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
-								//Check if all required sensors are enabled
-//								boolean allRequiredSensorsEnabled = true;
-//								if(mSensorMap.get(sensorMapKey).mListOfSensorMapKeysRequired != null) {
-//									innerloop:
-//									for(Integer requiredKey:mSensorMap.get(sensorMapKey).mListOfSensorMapKeysRequired) {
-//										System.out.println("Required Channel: " + mSensorMap.get(sensorMapKey).mLabel);
-//										if((mEnabledSensors & mSensorMap.get(requiredKey).mSensorBitmapIDSDLogHeader) != mSensorMap.get(requiredKey).mSensorBitmapIDSDLogHeader) {
-//											allRequiredSensorsEnabled = false;
-//											System.out.println("Required Channel: " + mSensorMap.get(sensorMapKey).mLabel + " " + mSensorMap.get(requiredKey).mIsEnabled);
-//											break innerloop;
-//										}
-//									}
-//								}
-//								if(allRequiredSensorsEnabled) {
-//									mSensorMap.get(sensorMapKey).mIsEnabled = true;
-//								}
-								
+								//TODO comment
 								if((mEnabledSensors & mSensorMap.get(sensorMapKey).mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorBitmapIDSDLogHeader) {
 									mSensorMap.get(sensorMapKey).mIsEnabled = true;
 								}
 								else {
 									mSensorMap.get(sensorMapKey).mIsEnabled = false;
 								}
-
 							}
 							else {
-//								System.out.println("Derived Channel - " + mSensorMap.get(sensorMapKey).mLabel + " no associated required keys:");
+								//System.out.println("Derived Channel - " + mSensorMap.get(sensorMapKey).mLabel + " no associated required keys:");
 							}
 						}
-						else { // This is not a derived sensor
+						// This is not a derived sensor
+						else {
+							//Check if sensor's bit in sensor bitmap is enabled
 							if((mEnabledSensors & mSensorMap.get(sensorMapKey).mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorBitmapIDSDLogHeader) {
 								mSensorMap.get(sensorMapKey).mIsEnabled = true;
 							}
 						}
 					}
 				}
+				
+				// Now that all main sensor channels have been parsed, deal with
+				// sensor channels that have special conditions. E.g. deciding
+				// what type of signal the ExG is configured for or what derived
+				// channel is enabled like whether PPG is on ADC12 or ADC13
 	
 				//Handle ExG sensors
 				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
@@ -8329,8 +8294,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}
 				
+				// Set the ExG resolution variable based on which channels are
+				// enabled in the sensor map
+				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
+						||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)) {
+					mExGResolution = 0;
+				}
+				else if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)
+						||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled)) {
+					mExGResolution = 1;
+				}
 
-				//Handle PPG sensors
+				// Handle PPG sensors so that it appears in Consensys as a
+				// single PPG channel with a selectable ADC based on different
+				// hardware versions.
+				
+				//Used for Shimmer GSR hardware
 				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIsEnabled)) {
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mIsEnabled = true;
 					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled) {
@@ -8346,7 +8325,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mIsEnabled = false;
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).resetMapKeyLists();
 				}
-				
+				//Used for Shimmer Proto3 Deluxe hardware
 				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mIsEnabled)) {
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mIsEnabled = true;
 					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mIsEnabled) {
@@ -8362,7 +8341,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mIsEnabled = false;
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).resetMapKeyLists();
 				}
-				
+				//Used for Shimmer Proto3 Deluxe hardware
 				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mIsEnabled)) {
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mIsEnabled = true;
 					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mIsEnabled) {
@@ -8378,19 +8357,28 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mIsEnabled = false;
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).resetMapKeyLists();
 				}
-	
-				
-				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)) {
-					mExGResolution = 0;
-				}
-				else if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled)) {
-					mExGResolution = 1;
-				}
-
 			}
+			else if (mHardwareVersion == HW_ID.SHIMMER_GQ) {
+				
+			}
+			
 		}
 	}
 	
+	/**
+	 * Used to changed the enabled state of a sensor in the sensormap. This is
+	 * only used in Consensys for dynamic configuration of a Shimmer. This
+	 * method deals with everything assciated with enabling a sensor such as:
+	 * 1) dealing with conflicting sensors
+	 * 2) dealing with other required sensors for the chosen sensor
+	 * 3) determining whether expansion board power is required
+	 * 4) setting default settings for disabled sensors 
+	 * 5) etc.
+	 * 
+	 * @param sensorMapKey the sensormap key of the sensor to be enabled/disabled
+	 * @param state the sensor state to set 
+	 * @return a boolean indicating if the sensors state was successfully changed
+	 */
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
 		
 		if(mSensorMap!=null) {
@@ -8439,8 +8427,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}
 				
-				//TODO need to handle setting master channel when any of the sub channels are selected, for example, Setting External Expansion ADC channel when ADC6 is selected - not sure if still valid
-				
 				// Unique cases for Shimmer3 ExG
 				if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
 						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)) {
@@ -8450,12 +8436,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
 					mExGResolution = 1;
 				}
-				
-				if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
 						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
 						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG)
 						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
-					if(state) { // Set default settings
+					
+					// If ExG sensor enabled, set default settings for that
+					// sensor. Otherwise set the default ECG configuration.
+					if(state) { 
 						if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION) {
 							setDefaultRespirationConfiguration();
 						}
@@ -8470,90 +8458,48 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						}
 					}
 					else {
-						// handle ECG, EMG, ExG Test being turned off
 						setDefaultECGConfiguration();
 					}
 					
-					if(mExGResolution == 0) {// 16-bit
-						if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-								||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
-								||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
+					if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+							||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
+							||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
+						if(mExGResolution == 0) {// 16-bit
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = state;
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = state;
 						}
-						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
-							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = state;
-							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = false;
-						}
-					}
-					else { // 24-bit
-						if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-								||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
-								||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)) {
+						else { // 24-bit
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = state;
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = state;
 						}
-						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
+					}
+					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
+						if(mExGResolution == 0) {// 16-bit
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = state;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = false;
+						}
+						else { // 24-bit
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = state;
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = false;
 						}
 					}
+
 				}
 				
 			}
+			else if (mHardwareVersion == HW_ID.SHIMMER_GQ) {
+				
+			}
+
 			
 			//Set sensor state
 			mSensorMap.get(sensorMapKey).mIsEnabled = state;
 			
 			sensorMapConflictCheckandCorrect(sensorMapKey);
-			
 			setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
 
-//			//Set default sensor configuration if sensor was disabled.
-//			if(!mSensorMap.get(sensorMapKey).mIsEnabled) {
-////				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-////				setDefaultLsm303dlhcAccelSensorConfig();
-////			}
-////			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-////				setDefaultLsm303dlhcMagSensorConfig();
-////			}
-////			else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-////					||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
-////				setDefaultMpu9150GyroSensorConfig();
-////			}
-////			else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)
-////					||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)) {
-////				setDefaultMpu9150AccelSensorConfig();
-////			}
-//				
-////				setDefaultConfigForSensor(sensorMapKey);
-//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-//					setLowPowerAccelWR(true);
-//				}
-//				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-//					setLowPowerMag(true);
-//				}
-//				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-//						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
-//					setLowPowerGyro(true);
-//				}
-//			}
-//			else {
-//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL) {
-//					setLowPowerAccelWR(false);
-//				}
-//				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG) {
-//					setLowPowerMag(false);
-//				}
-//				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)
-//						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)) {
-//					setLowPowerGyro(false);
-//				}
-//			}
-
+			// Automatically control internal expansion board power
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
-				
-				// Automatically control internal expansion board power
 				for(Integer channelKey:mSensorMap.keySet()) {
 					if(mSensorMap.get(channelKey).mIsEnabled && mSensorMap.get(channelKey).mIntExpBoardPowerRequired) {
 						mInternalExpPower = 1;
@@ -8575,13 +8521,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			}
 			
-		}
-		else {
-			return false;
-		}
-		
-		if(mSensorMap.get(sensorMapKey).mIsEnabled == state) {
-			return true;
+			if(mSensorMap.get(sensorMapKey).mIsEnabled == state) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			
 		}
 		else {
 			return false;
@@ -8606,6 +8552,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}		
 	}
 	
+	//TODO improve this method - was changed at the last minute and is not fully operational
 	public boolean checkIfVersionCompatible(List<ShimmerVerObject> listOfCompatibleVersionInfo) {
 		if(listOfCompatibleVersionInfo == null) {
 			return true;

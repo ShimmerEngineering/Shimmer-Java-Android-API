@@ -1,5 +1,6 @@
 package com.shimmerresearch.driver;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,8 +11,13 @@ import java.util.TreeMap;
  * @author Mark Nolan
  *
  */
-public class ShimmerVerDetails {
+public class ShimmerVerDetails implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7940733886215010795L;
+	
 	public final static int EXP_BRD_NONE_ID = 255;
 	public static final String EXP_BRD_NONE = "None";
 	
