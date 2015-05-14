@@ -36,8 +36,8 @@ import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerHwFw;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.tools.Logging;
 
 public class MultiShimmerTemplateService extends Service {
@@ -524,7 +524,7 @@ public class MultiShimmerTemplateService extends Service {
 	 				           	if (sc.getBluetoothAddress().equals(((ObjectCluster)msg.obj).mBluetoothAddress)){
 	 					           	sc.setShimmerVersion(service.getShimmerVersion(((ObjectCluster)msg.obj).mBluetoothAddress));
 	 					           	Shimmer shimmer = service.getShimmer(((ObjectCluster)msg.obj).mBluetoothAddress);
-	 					           	if(shimmer.getShimmerVersion()==ShimmerHwFw.HW_ID.SHIMMER_3){
+	 					           	if(shimmer.getShimmerVersion()==ShimmerVerDetails.HW_ID.SHIMMER_3){
 	 					           		sc.setEnabledSensors(shimmer.getEnabledSensors());
 	 					           		sc.setShimmerVersion(shimmer.getShimmerVersion());
 	 					           		sc.setAccelRange(shimmer.getAccelRange());
@@ -1366,7 +1366,7 @@ public class MultiShimmerTemplateService extends Service {
 	 */
 	public long sensorConflictCheckandCorrection(long enabledSensors,long sensorToCheck, int shimmerVersion){
 		
-		if (shimmerVersion==ShimmerHwFw.HW_ID.SHIMMER_2 || shimmerVersion==ShimmerHwFw.HW_ID.SHIMMER_2R){
+		if (shimmerVersion==ShimmerVerDetails.HW_ID.SHIMMER_2 || shimmerVersion==ShimmerVerDetails.HW_ID.SHIMMER_2R){
 			if ((sensorToCheck & Shimmer.SENSOR_GYRO) >0 || (sensorToCheck & Shimmer.SENSOR_MAG) >0){
 				enabledSensors = disableBit(enabledSensors,Shimmer.SENSOR_ECG);
 				enabledSensors = disableBit(enabledSensors,Shimmer.SENSOR_EMG);

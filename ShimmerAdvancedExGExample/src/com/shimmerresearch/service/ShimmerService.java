@@ -1002,7 +1002,7 @@ public class ShimmerService extends Service {
 	
 	public int sensorConflictCheckandCorrection(int enabledSensors,int sensorToCheck, int shimmerVersion){
 			
-			if (shimmerVersion==ShimmerHwFw.HW_ID.SHIMMER_2 || shimmerVersion==ShimmerHwFw.HW_ID.SHIMMER_2R){
+			if (shimmerVersion==ShimmerVerDetails.HW_ID.SHIMMER_2 || shimmerVersion==ShimmerVerDetails.HW_ID.SHIMMER_2R){
 				if ((sensorToCheck & Shimmer.SENSOR_GYRO) >0 || (sensorToCheck & Shimmer.SENSOR_MAG) >0){
 					enabledSensors = disableBit(enabledSensors,Shimmer.SENSOR_ECG);
 					enabledSensors = disableBit(enabledSensors,Shimmer.SENSOR_EMG);
