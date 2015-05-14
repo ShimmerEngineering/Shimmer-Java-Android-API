@@ -2,6 +2,7 @@ package com.shimmerresearch.multishimmertemplate;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.collect.BiMap;
 import com.shimmerresearch.android.Shimmer;
@@ -10,6 +11,7 @@ import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.service.MultiShimmerTemplateService;
 
 import android.app.AlertDialog;
@@ -1146,13 +1148,26 @@ public class ConfigurationFragment extends Fragment{
         heartRateDialog.setCancelable(false);
   		heartRateDialog.setContentView(R.layout.heart_rate_dialog);
   		Spinner spinnerSensors = (Spinner) heartRateDialog.findViewById(R.id.spinnerSensors);
+  		final long enableSensors = mService.getEnabledSensors(mBluetoothAddress);
+  		if (((Shimmer.SENSOR_EXG1_24BIT & enableSensors)>0 || (Shimmer.SENSOR_EXG1_16BIT & enableSensors)>0) && (mService.isEXGUsingECG24Configuration(mBluetoothAddress)||mService.isEXGUsingECG16Configuration(mBluetoothAddress))){
+  			final List<String> list=new ArrayList<String>();
+  	        list.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+  	        list.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+  	        list.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+  	        ArrayAdapter<String> adp= new ArrayAdapter<String>(getActivity(),
+  	        		android.R.layout.simple_list_item_1,list);
+  	        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+  	        spinnerSensors.setAdapter(adp);
+  		}
+  		
+  		
   		spinnerSensors.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				// TODO Auto-generated method stub
-				long enableSensors = mService.getEnabledSensors(mBluetoothAddress);
+				
 				if(parent.getItemAtPosition(pos).toString().equals("A1")){
 					if((Shimmer.SENSOR_INT_ADC_A1 & enableSensors) >0){
 						mSensorToHeartRate = "Internal ADC A1";
@@ -1191,6 +1206,36 @@ public class ConfigurationFragment extends Fragment{
 						mSensorToHeartRate="";
 					}
 				}
+				else if(parent.getItemAtPosition(pos).toString().equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)){
+					if(((Shimmer.SENSOR_EXG1_24BIT & enableSensors)>0 || (Shimmer.SENSOR_EXG1_16BIT & enableSensors)>0) && (mService.isEXGUsingECG24Configuration(mBluetoothAddress)||mService.isEXGUsingECG16Configuration(mBluetoothAddress))){
+						mSensorToHeartRate = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
+  					}
+					else{
+						Toast.makeText(getActivity(), "WARNING: The sensor A12 is not enabled", Toast.LENGTH_SHORT).show();
+						mSensorToHeartRate="";
+					}
+					
+				}
+				else if(parent.getItemAtPosition(pos).toString().equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT)){
+					if(((Shimmer.SENSOR_EXG1_24BIT & enableSensors)>0 || (Shimmer.SENSOR_EXG1_16BIT & enableSensors)>0) && (mService.isEXGUsingECG24Configuration(mBluetoothAddress)||mService.isEXGUsingECG16Configuration(mBluetoothAddress))){
+						mSensorToHeartRate = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
+  					}
+					else{
+						Toast.makeText(getActivity(), "WARNING: The sensor A13 is not enabled", Toast.LENGTH_SHORT).show();
+						mSensorToHeartRate="";
+					}
+					
+				}
+				else if(parent.getItemAtPosition(pos).toString().equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT)){
+					if(((Shimmer.SENSOR_EXG1_24BIT & enableSensors)>0 || (Shimmer.SENSOR_EXG1_16BIT & enableSensors)>0) && (mService.isEXGUsingECG24Configuration(mBluetoothAddress)||mService.isEXGUsingECG16Configuration(mBluetoothAddress))){
+						mSensorToHeartRate = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
+  					}
+					else{
+						Toast.makeText(getActivity(), "WARNING: The sensor A14 is not enabled", Toast.LENGTH_SHORT).show();
+						mSensorToHeartRate="";
+					}
+				}
+				
 			}
 
 			@Override
@@ -1236,7 +1281,16 @@ public class ConfigurationFragment extends Fragment{
 //						heartRateDialog.dismiss();
 					}
 					else{
-						mService.enableHeartRate(deviceBluetoothAddress, true, mSensorToHeartRate);
+						if (mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT) ||
+								mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT) || 
+										mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)){
+							mService.enableHeartRateECG(deviceBluetoothAddress, true, mSensorToHeartRate);
+						} else {
+							mService.enableHeartRate(deviceBluetoothAddress, true, mSensorToHeartRate);	
+						}
+						
+						
+						
 						Toast.makeText(getActivity(), "Heart Rate enabled", Toast.LENGTH_SHORT).show();
 //						heartRateDialog.dismiss();
 					}

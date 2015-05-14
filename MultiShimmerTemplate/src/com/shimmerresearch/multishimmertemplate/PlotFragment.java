@@ -727,7 +727,7 @@ public class PlotFragment extends Fragment {
 	 			setup();
 	 		}
 	 		
-	 		enableHeartRate = mService.isHeartRateEnabled();
+	 		enableHeartRate = mService.isHeartRateEnabled() || mService.isHeartRateEnabledECG();
 			if(enableHeartRate){
 				hearRateImage.setVisibility(View.VISIBLE);
 				heartRateText.setVisibility(View.VISIBLE);
