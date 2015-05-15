@@ -1284,6 +1284,9 @@ public class ConfigurationFragment extends Fragment{
 						if (mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT) ||
 								mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT) || 
 										mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)){
+							if(mService.getSamplingRate(mBluetoothAddress)>128){
+								Toast.makeText(getActivity(), "A lower sampling rate (e.g. 128 Hz) is recommended due to Android device processing limitations", Toast.LENGTH_LONG).show();	
+							}
 							mService.enableHeartRateECG(deviceBluetoothAddress, true, mSensorToHeartRate);
 						} else {
 							mService.enableHeartRate(deviceBluetoothAddress, true, mSensorToHeartRate);	

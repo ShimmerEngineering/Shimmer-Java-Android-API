@@ -4549,15 +4549,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (((mEnabledSensors & 0xFF) & SENSOR_GSR) > 0) {
 			listofSensors.add("GSR");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_ECG) > 0) {
-			listofSensors.add("ECG");
+		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
+			if (((mEnabledSensors & 0xFF) & SENSOR_ECG) > 0) {
+				listofSensors.add("ECG");
+			}
+			if (((mEnabledSensors & 0xFF) & SENSOR_EMG) > 0) {
+				listofSensors.add("EMG");
+			}
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EMG) > 0) {
-			listofSensors.add("EMG");
-		}
-		if (((mEnabledSensors & 0xFF00) & SENSOR_BRIDGE_AMP) > 0) {
-			listofSensors.add("Bridge Amplifier");
-		}
+			if (((mEnabledSensors & 0xFF00) & SENSOR_BRIDGE_AMP) > 0) {
+				listofSensors.add("Bridge Amplifier");
+			}
+		
 		if (((mEnabledSensors & 0xFF00) & SENSOR_HEART) > 0) {
 			listofSensors.add("Heart Rate");
 		}
