@@ -31,13 +31,14 @@ import android.widget.Toast;
 
 import com.shimmerresearch.algorithms.Filter;
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.biophysicalprocessing.ECGtoHRAlgorithm;
 import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerHwFw;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.tools.Logging;
 
 public class MultiShimmerTemplateService extends Service {
@@ -90,13 +91,20 @@ public class MultiShimmerTemplateService extends Service {
 	private static int mNumberOfBeatsToAverage=5;
 	private static Shimmer mShimmerHeartRate;
 	private static PPGtoHRAlgorithm mHeartRateCalculation;
+	private static ECGtoHRAlgorithm mHeartRateCalculationECG;
 	static Filter mLPFilter;
 	static Filter mHPFilter;
+	static Filter mLPFilterECG;
+	static Filter mHPFilterECG;
 	public static String mBluetoothAddressToHeartRate;
 	static private boolean mEnableHeartRate = false;
+	static private boolean mEnableHeartRateECG = false;
 	static private boolean mNewPPGSignalProcessing = true;
+	static private boolean mNewECGSignalProcessing = true;
 	static private double[] mLPFc = {5};
 	static private double[] mHPFc = {0.5};
+	static private double[] mLPFcECG = {51.2};
+	static private double[] mHPFcECG = {0.5};
 	private static int mCount = 0;
     private static int mCountPPGInitial = 0; //skip first 100 samples
     private static int mRefreshLimit =  10;
@@ -427,6 +435,52 @@ public class MultiShimmerTemplateService extends Service {
 		            		objectCluster.mPropertyCluster.put("Heart Rate", new FormatCluster("CAL", "bpm", heartRate));
 	            	    }
 	            	    
+	            	    if(mEnableHeartRateECG){
+//	            	    	mShimmerHeartRate = (Shimmer) mMultiShimmer.get(objectCluster.mBluetoothAddress);
+//	            	    	if (mNewPPGSignalProcessing) {
+//								mHeartRateCalculation = new PpgSignalProcessing(mShimmerHeartRate.getSamplingRate(), mNumberOfBeatsToAverage,10); //10 second training period
+//								mNewPPGSignalProcessing=false;s
+//							}
+	            	    	
+	            	    	double dataECG = 0;
+		            		Collection<FormatCluster> formatCluster = objectCluster.mPropertyCluster.get(mSensortoHR);
+		            		FormatCluster cal = ((FormatCluster)ObjectCluster.returnFormatCluster(formatCluster,"CAL"));
+		            		if (cal!=null) {
+		            			dataECG = ((FormatCluster)ObjectCluster.returnFormatCluster(formatCluster,"CAL")).mData;
+		            		}
+		            		
+		            		double timeStampECG = 0;
+		            		Collection<FormatCluster> formatClusterTimeStamp = objectCluster.mPropertyCluster.get("Timestamp");
+		            		FormatCluster timeStampCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(formatClusterTimeStamp,"CAL"));
+		            		if (timeStampCluster!=null) {
+		            			timeStampECG = ((FormatCluster)ObjectCluster.returnFormatCluster(formatClusterTimeStamp,"CAL")).mData;
+		            		}
+		            		
+	            	    	double lpFilteredDataECG = dataECG;
+		            		double hpFilteredDataECG = 0;
+		            		try {
+		            			if (mLPFilterECG!=null){
+		            				lpFilteredDataECG = mLPFilterECG.filterData(dataECG);
+		            			}
+								hpFilteredDataECG = mHPFilterECG.filterData(lpFilteredDataECG);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+		            		
+		            		
+		            		
+		            		double heartRate = Double.NaN;
+		            		heartRate = mHeartRateCalculationECG.ecgToHrConversion(hpFilteredDataECG, timeStampECG);		            			
+
+		            		if (heartRate==INVALID_OUTPUT) {
+		            			heartRate=Double.NaN;
+		            		}
+
+		            
+		            		objectCluster.mPropertyCluster.put("Heart Rate", new FormatCluster("CAL", "bpm", heartRate));
+	            	    }
+	            	    
 	            	    
 	            	   if (mGraphing==true && (objectCluster.mBluetoothAddress.equals(mGraphBluetoothAddress) || mGraphBluetoothAddress.equals(""))){
 	            		   mHandlerGraph.obtainMessage(Shimmer.MESSAGE_READ, objectCluster).sendToTarget();
@@ -524,7 +578,7 @@ public class MultiShimmerTemplateService extends Service {
 	 				           	if (sc.getBluetoothAddress().equals(((ObjectCluster)msg.obj).mBluetoothAddress)){
 	 					           	sc.setShimmerVersion(service.getShimmerVersion(((ObjectCluster)msg.obj).mBluetoothAddress));
 	 					           	Shimmer shimmer = service.getShimmer(((ObjectCluster)msg.obj).mBluetoothAddress);
-	 					           	if(shimmer.getShimmerVersion()==ShimmerHwFw.HW_ID.SHIMMER_3){
+	 					           	if(shimmer.getShimmerVersion()==ShimmerVerDetails.HW_ID.SHIMMER_3){
 	 					           		sc.setEnabledSensors(shimmer.getEnabledSensors());
 	 					           		sc.setShimmerVersion(shimmer.getShimmerVersion());
 	 					           		sc.setAccelRange(shimmer.getAccelRange());
@@ -855,6 +909,8 @@ public class MultiShimmerTemplateService extends Service {
 				if(mEnableHeartRate){
 					if(bluetoothAddress.equals(mBluetoothAddressToHeartRate) && mHeartRateCalculation!=null)
 						mHeartRateCalculation.resetParameters();
+					if(bluetoothAddress.equals(mBluetoothAddressToHeartRate) && mHeartRateCalculationECG!=null)
+						mHeartRateCalculationECG.resetParameters();
 				}
 				Collection<Object> colS=mMultiShimmer.values();
 				Iterator<Object> iterator = colS.iterator();
@@ -1366,7 +1422,7 @@ public class MultiShimmerTemplateService extends Service {
 	 */
 	public long sensorConflictCheckandCorrection(long enabledSensors,long sensorToCheck, int shimmerVersion){
 		
-		if (shimmerVersion==ShimmerHwFw.HW_ID.SHIMMER_2 || shimmerVersion==ShimmerHwFw.HW_ID.SHIMMER_2R){
+		if (shimmerVersion==ShimmerVerDetails.HW_ID.SHIMMER_2 || shimmerVersion==ShimmerVerDetails.HW_ID.SHIMMER_2R){
 			if ((sensorToCheck & Shimmer.SENSOR_GYRO) >0 || (sensorToCheck & Shimmer.SENSOR_MAG) >0){
 				enabledSensors = disableBit(enabledSensors,Shimmer.SENSOR_ECG);
 				enabledSensors = disableBit(enabledSensors,Shimmer.SENSOR_EMG);
@@ -1619,6 +1675,40 @@ public class MultiShimmerTemplateService extends Service {
 		
 	}
 	
+public void enableHeartRateECG(String bluetoothAddress, boolean enabled, String sensorToHeartRate){
+		
+		
+		mEnableHeartRateECG = enabled;
+		if(enabled){
+			mNewECGSignalProcessing = true;
+			mBluetoothAddressToHeartRate = bluetoothAddress;
+			mShimmerHeartRate = (Shimmer) mMultiShimmer.get(mBluetoothAddressToHeartRate);
+			mSensortoHR = sensorToHeartRate;
+			mHeartRateCalculationECG = new ECGtoHRAlgorithm(mShimmerHeartRate.getSamplingRate(), 10 ,mNumberOfBeatsToAverage); //10 second training period
+	
+			
+	    	try {
+				mLPFilterECG = new Filter(Filter.LOW_PASS, mShimmerHeartRate.getSamplingRate(), mLPFcECG);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	
+	    	try {
+				mHPFilterECG = new Filter(Filter.HIGH_PASS, mShimmerHeartRate.getSamplingRate(), mHPFcECG);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else{
+			mSensortoHR="";
+		}
+    	
+		
+	}
+	
+	
 	public void resetHearRateConfiguration(String sensorToHeartRate){
 		
 			mCountPPGInitial=0;	
@@ -1645,5 +1735,9 @@ public class MultiShimmerTemplateService extends Service {
 	public boolean isHeartRateEnabled(){
 		
 		return mEnableHeartRate;
+	}
+	public boolean isHeartRateEnabledECG(){
+		
+		return mEnableHeartRateECG;
 	}
 }

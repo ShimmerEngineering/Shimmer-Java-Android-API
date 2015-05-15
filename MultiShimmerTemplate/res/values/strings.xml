@@ -33,6 +33,13 @@
         <item>A13</item>
         <item>A14</item>
     </string-array>
+
+        <string-array name="sensors_to_heart_rate_ecg">
+        <item>A1</item>
+        <item>A12</item>
+        <item>A13</item>
+        <item>A14</item>
+    </string-array>
     
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

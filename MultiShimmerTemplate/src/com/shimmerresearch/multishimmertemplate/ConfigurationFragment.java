@@ -2,14 +2,16 @@ package com.shimmerresearch.multishimmertemplate;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.collect.BiMap;
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.ShimmerHwFw;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.service.MultiShimmerTemplateService;
 
 import android.app.AlertDialog;
@@ -164,7 +166,7 @@ public class ConfigurationFragment extends Fragment{
         else
         	cBoxHeartRate.setChecked(false);
 
-        if(shimmerConfig.getShimmerVersion()!=ShimmerHwFw.HW_ID.SHIMMER_3){
+        if(shimmerConfig.getShimmerVersion()!=ShimmerVerDetails.HW_ID.SHIMMER_3){
         	buttonExgGain.setEnabled(false);
         	buttonExgRes.setEnabled(false);
         }
@@ -175,7 +177,7 @@ public class ConfigurationFragment extends Fragment{
         
         
         if (mAccelerometerRangeV==0){
-        	if (shimmerConfig.getShimmerVersion()!=ShimmerHwFw.HW_ID.SHIMMER_3){
+        	if (shimmerConfig.getShimmerVersion()!=ShimmerVerDetails.HW_ID.SHIMMER_3){
         		buttonAccRange.setText("Accel Range"+"\n"+"(+/- 1.5g)");
         	} else {
         		buttonAccRange.setText("Accel Range"+"\n"+"(+/- 2g)");
@@ -186,7 +188,7 @@ public class ConfigurationFragment extends Fragment{
         	buttonAccRange.setText("Accel Range"+"\n"+"(+/- 8g)");
         }
         else if (mAccelerometerRangeV==3){
-        	if (shimmerConfig.getShimmerVersion()!=ShimmerHwFw.HW_ID.SHIMMER_3){
+        	if (shimmerConfig.getShimmerVersion()!=ShimmerVerDetails.HW_ID.SHIMMER_3){
         		buttonAccRange.setText("Accel Range"+"\n"+"(+/- 6g)");
         	} else {
         		buttonAccRange.setText("Accel Range"+"\n"+"(+/- 16g)");
@@ -236,7 +238,7 @@ public class ConfigurationFragment extends Fragment{
     	else
     		buttonExgRes.setText("EXG Res"+"\n (no res. set)");
         
-        if (shimmerConfig.getShimmerVersion()==ShimmerHwFw.HW_ID.SHIMMER_3){
+        if (shimmerConfig.getShimmerVersion()==ShimmerVerDetails.HW_ID.SHIMMER_3){
         	cBox5VReg.setEnabled(false);
         	String currentGyroRange = "("+Configuration.Shimmer3.ListofGyroRange[shimmerConfig.getAccelRange()]+")";
         	buttonGyroRange.setText("Gyro Range"+"\n"+currentGyroRange);
@@ -425,7 +427,7 @@ public class ConfigurationFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (mService.getShimmerVersion(mBluetoothAddress)!=ShimmerHwFw.HW_ID.SHIMMER_3)
+				if (mService.getShimmerVersion(mBluetoothAddress)!=ShimmerVerDetails.HW_ID.SHIMMER_3)
 					dialogAccelShimmer2.show();
 				else
 					dialogAccelShimmer3.show();
@@ -537,7 +539,7 @@ public class ConfigurationFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				 if (mService.getShimmerVersion(mBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3)
+				 if (mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3)
 					 dialogMagRangeShimmer3.show();
 				 else
 					 dialogMagRangeShimmer2.show();
@@ -732,7 +734,7 @@ public class ConfigurationFragment extends Fragment{
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
 				// TODO Auto-generated method stub
-				if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3 && compatibleSensors[position].equals("ECG")){
+				if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3 && compatibleSensors[position].equals("ECG")){
 					int exg1_24bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1"));
 					int exg2_24bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2"));
 					int exg1_16bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1 16Bit"));
@@ -792,7 +794,7 @@ public class ConfigurationFragment extends Fragment{
 
 					
 				}
-				else if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3 && compatibleSensors[position].equals("EMG")){
+				else if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3 && compatibleSensors[position].equals("EMG")){
 					int exg1_24bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1"));
 					int exg2_24bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2"));
 					int exg1_16bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1 16Bit"));
@@ -853,7 +855,7 @@ public class ConfigurationFragment extends Fragment{
 
 						
 				}
-				else if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3 && compatibleSensors[position].equals("Test signal")){
+				else if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3 && compatibleSensors[position].equals("Test signal")){
 					int exg1_24bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1"));
 					int exg2_24bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2"));
 					int exg1_16bits = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1 16Bit"));
@@ -923,7 +925,7 @@ public class ConfigurationFragment extends Fragment{
 					//since the last three elements (ECG,EMG,TestSignal) in Shimmer 3 are not signals,
 					//we treat them in a different way and they are not updated like the rest
 					int end=0;
-					if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3)
+					if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3)
 						end=compatibleSensors.length-3;
 					else
 						end=compatibleSensors.length;
@@ -952,7 +954,7 @@ public class ConfigurationFragment extends Fragment{
 				Shimmer shimmer = mService.getShimmer(deviceBluetoothAddress);
 				compatibleSensors = shimmer.getListofSupportedSensors();
 				
-				if(shimmer.getShimmerVersion() == ShimmerHwFw.HW_ID.SHIMMER_3){ //replace EXG1, EXG2, EXG1 16 bit and EXG2 16 bit for ECG,EMG and test signal
+				if(shimmer.getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){ //replace EXG1, EXG2, EXG1 16 bit and EXG2 16 bit for ECG,EMG and test signal
 					ArrayList<String> tmp = new ArrayList<String>();
 					for(int i=0;i<compatibleSensors.length;i++)
 						if(!compatibleSensors[i].equals("EXG1") && !compatibleSensors[i].equals("EXG2") &&
@@ -976,19 +978,19 @@ public class ConfigurationFragment extends Fragment{
 					sensorBitmaptoName = Shimmer.generateBiMapSensorIDtoSensorName(mService.getShimmerVersion(deviceBluetoothAddress));
 					//check the enabled sensors
 					for (int i=0;i<compatibleSensors.length;i++){
-						if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3 && compatibleSensors[i].equals("ECG")){
+						if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3 && compatibleSensors[i].equals("ECG")){
 							if(mService.isEXGUsingECG16Configuration(deviceBluetoothAddress) ||
 									mService.isEXGUsingECG24Configuration(deviceBluetoothAddress)){ 
 								enableSensorListView.setItemChecked(i, true);
 							}
 						}
-						else if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3 && compatibleSensors[i].equals("EMG")){
+						else if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3 && compatibleSensors[i].equals("EMG")){
 							if(mService.isEXGUsingEMG16Configuration(deviceBluetoothAddress) ||
 									mService.isEXGUsingEMG24Configuration(deviceBluetoothAddress)){ 
 								enableSensorListView.setItemChecked(i, true);
 							}
 						}
-						else if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerHwFw.HW_ID.SHIMMER_3 && compatibleSensors[i].equals("Test signal")){
+						else if(mService.getShimmerVersion(deviceBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3 && compatibleSensors[i].equals("Test signal")){
 							if(mService.isEXGUsingTestSignal16Configuration(deviceBluetoothAddress) || 
 									mService.isEXGUsingTestSignal24Configuration(deviceBluetoothAddress)){ 
 								enableSensorListView.setItemChecked(i, true);
@@ -1146,13 +1148,26 @@ public class ConfigurationFragment extends Fragment{
         heartRateDialog.setCancelable(false);
   		heartRateDialog.setContentView(R.layout.heart_rate_dialog);
   		Spinner spinnerSensors = (Spinner) heartRateDialog.findViewById(R.id.spinnerSensors);
+  		final long enableSensors = mService.getEnabledSensors(mBluetoothAddress);
+  		if (((Shimmer.SENSOR_EXG1_24BIT & enableSensors)>0 || (Shimmer.SENSOR_EXG1_16BIT & enableSensors)>0) && (mService.isEXGUsingECG24Configuration(mBluetoothAddress)||mService.isEXGUsingECG16Configuration(mBluetoothAddress))){
+  			final List<String> list=new ArrayList<String>();
+  	        list.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+  	        list.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+  	        list.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+  	        ArrayAdapter<String> adp= new ArrayAdapter<String>(getActivity(),
+  	        		android.R.layout.simple_list_item_1,list);
+  	        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+  	        spinnerSensors.setAdapter(adp);
+  		}
+  		
+  		
   		spinnerSensors.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				// TODO Auto-generated method stub
-				long enableSensors = mService.getEnabledSensors(mBluetoothAddress);
+				
 				if(parent.getItemAtPosition(pos).toString().equals("A1")){
 					if((Shimmer.SENSOR_INT_ADC_A1 & enableSensors) >0){
 						mSensorToHeartRate = "Internal ADC A1";
@@ -1191,6 +1206,36 @@ public class ConfigurationFragment extends Fragment{
 						mSensorToHeartRate="";
 					}
 				}
+				else if(parent.getItemAtPosition(pos).toString().equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)){
+					if(((Shimmer.SENSOR_EXG1_24BIT & enableSensors)>0 || (Shimmer.SENSOR_EXG1_16BIT & enableSensors)>0) && (mService.isEXGUsingECG24Configuration(mBluetoothAddress)||mService.isEXGUsingECG16Configuration(mBluetoothAddress))){
+						mSensorToHeartRate = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
+  					}
+					else{
+						Toast.makeText(getActivity(), "WARNING: The sensor A12 is not enabled", Toast.LENGTH_SHORT).show();
+						mSensorToHeartRate="";
+					}
+					
+				}
+				else if(parent.getItemAtPosition(pos).toString().equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT)){
+					if(((Shimmer.SENSOR_EXG1_24BIT & enableSensors)>0 || (Shimmer.SENSOR_EXG1_16BIT & enableSensors)>0) && (mService.isEXGUsingECG24Configuration(mBluetoothAddress)||mService.isEXGUsingECG16Configuration(mBluetoothAddress))){
+						mSensorToHeartRate = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
+  					}
+					else{
+						Toast.makeText(getActivity(), "WARNING: The sensor A13 is not enabled", Toast.LENGTH_SHORT).show();
+						mSensorToHeartRate="";
+					}
+					
+				}
+				else if(parent.getItemAtPosition(pos).toString().equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT)){
+					if(((Shimmer.SENSOR_EXG1_24BIT & enableSensors)>0 || (Shimmer.SENSOR_EXG1_16BIT & enableSensors)>0) && (mService.isEXGUsingECG24Configuration(mBluetoothAddress)||mService.isEXGUsingECG16Configuration(mBluetoothAddress))){
+						mSensorToHeartRate = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
+  					}
+					else{
+						Toast.makeText(getActivity(), "WARNING: The sensor A14 is not enabled", Toast.LENGTH_SHORT).show();
+						mSensorToHeartRate="";
+					}
+				}
+				
 			}
 
 			@Override
@@ -1236,7 +1281,16 @@ public class ConfigurationFragment extends Fragment{
 //						heartRateDialog.dismiss();
 					}
 					else{
-						mService.enableHeartRate(deviceBluetoothAddress, true, mSensorToHeartRate);
+						if (mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT) ||
+								mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT) || 
+										mSensorToHeartRate.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)){
+							mService.enableHeartRateECG(deviceBluetoothAddress, true, mSensorToHeartRate);
+						} else {
+							mService.enableHeartRate(deviceBluetoothAddress, true, mSensorToHeartRate);	
+						}
+						
+						
+						
 						Toast.makeText(getActivity(), "Heart Rate enabled", Toast.LENGTH_SHORT).show();
 //						heartRateDialog.dismiss();
 					}
