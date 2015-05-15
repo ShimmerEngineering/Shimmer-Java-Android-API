@@ -5512,7 +5512,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R) {
 			maxRate = 1024.0;
 		} else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
-			maxRate = 32768.0;
+			maxRate = 2048.0;
 		}		
     	// don't let sampling rate < 0 OR > maxRate
     	if(rate < 1) {
