@@ -1572,32 +1572,40 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							p1 = 0.0373;
 							p2 = -24.9915;
 						} else {
-							p1 = 0.0363;
-							p2 = -24.8617;
+							//p1 = 0.0363;
+							//p2 = -24.8617;
+							p1 = 0.0373;
+							p2 = -24.9915;
 						}
 					} else if (mGSRRange==1 || newGSRRange==1) {
 						if (mHardwareVersion!=HW_ID.SHIMMER_3){
 							p1 = 0.0054;
 							p2 = -3.5194;
 						} else {
-							p1 = 0.0051;
-							p2 = -3.8357;
+							//p1 = 0.0051;
+							//p2 = -3.8357;
+							p1 = 0.0054;
+							p2 = -3.5194;
 						}
 					} else if (mGSRRange==2 || newGSRRange==2) {
 						if (mHardwareVersion!=HW_ID.SHIMMER_3){
 							p1 = 0.0015;
 							p2 = -1.0163;
 						} else {
+							//p1 = 0.0015;
+							//p2 = -1.0067;
 							p1 = 0.0015;
-							p2 = -1.0067;
+							p2 = -1.0163;
 						}
 					} else if (mGSRRange==3  || newGSRRange==3) {
 						if (mHardwareVersion!=HW_ID.SHIMMER_3){
 							p1 = 4.5580e-04;
 							p2 = -0.3014;
 						} else {
-							p1 = 4.4513e-04;
-							p2 = -0.3193;
+							//p1 = 4.4513e-04;
+							//p2 = -0.3193;
+							p1 = 4.5580e-04;
+							p2 = -0.3014;
 						}
 					}
 				} else {
@@ -1612,33 +1620,41 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						if (mHardwareVersion!=HW_ID.SHIMMER_3){
 							p1 = 0.0373;
 							p2 = -24.9915;
-						} else {
-							p1 = 0.0363;
-							p2 = -24.8617;
+						} else { //Values have been reverted to 2r values
+							//p1 = 0.0363;
+							//p2 = -24.8617;
+							p1 = 0.0373;
+							p2 = -24.9915;
 						}
 					} else if (mGSRRange==1 || newGSRRange==1) {
 						if (mHardwareVersion!=HW_ID.SHIMMER_3){
 							p1 = 0.0054;
 							p2 = -3.5194;
 						} else {
-							p1 = 0.0051;
-							p2 = -3.8357;
+							//p1 = 0.0051;
+							//p2 = -3.8357;
+							p1 = 0.0054;
+							p2 = -3.5194;
 						}
 					} else if (mGSRRange==2 || newGSRRange==2) {
 						if (mHardwareVersion!=HW_ID.SHIMMER_3){
 							p1 = 0.0015;
 							p2 = -1.0163;
 						} else {
+							//p1 = 0.0015;
+							//p2 = -1.0067;
 							p1 = 0.0015;
-							p2 = -1.0067;
+							p2 = -1.0163;
 						}
 					} else if (mGSRRange==3  || newGSRRange==3) {
 						if (mHardwareVersion!=HW_ID.SHIMMER_3){
 							p1 = 4.5580e-04;
 							p2 = -0.3014;
 						} else {
-							p1 = 4.4513e-04;
-							p2 = -0.3193;
+							//p1 = 4.4513e-04;
+							//p2 = -0.3193;
+							p1 = 4.5580e-04;
+							p2 = -0.3014;
 						}
 					}
 				}
