@@ -1620,7 +1620,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						if (mHardwareVersion!=HW_ID.SHIMMER_3){
 							p1 = 0.0373;
 							p2 = -24.9915;
-						} else {
+
+						} else { //Values have been reverted to 2r values
 							//p1 = 0.0363;
 							//p2 = -24.8617;
 							p1 = 0.0373;
@@ -4565,15 +4566,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (((mEnabledSensors & 0xFF) & SENSOR_GSR) > 0) {
 			listofSensors.add("GSR");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_ECG) > 0) {
-			listofSensors.add("ECG");
+		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
+			if (((mEnabledSensors & 0xFF) & SENSOR_ECG) > 0) {
+				listofSensors.add("ECG");
+			}
+			if (((mEnabledSensors & 0xFF) & SENSOR_EMG) > 0) {
+				listofSensors.add("EMG");
+			}
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EMG) > 0) {
-			listofSensors.add("EMG");
-		}
-		if (((mEnabledSensors & 0xFF00) & SENSOR_BRIDGE_AMP) > 0) {
-			listofSensors.add("Bridge Amplifier");
-		}
+			if (((mEnabledSensors & 0xFF00) & SENSOR_BRIDGE_AMP) > 0) {
+				listofSensors.add("Bridge Amplifier");
+			}
+		
 		if (((mEnabledSensors & 0xFF00) & SENSOR_HEART) > 0) {
 			listofSensors.add("Heart Rate");
 		}

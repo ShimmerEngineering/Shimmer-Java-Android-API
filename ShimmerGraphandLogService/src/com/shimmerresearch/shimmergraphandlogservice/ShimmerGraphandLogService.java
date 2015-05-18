@@ -85,6 +85,8 @@ import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.service.ShimmerService;
 import com.shimmerresearch.service.ShimmerService.LocalBinder;
 import com.shimmerresearch.tools.Logging;
@@ -457,10 +459,47 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             			sensorName[0] = "EMG";
             		}
             		if (mSensorView.equals("ECG")){
-            			sensorName = new String[2]; 
+            			
             			calibratedDataArray = new double[2];
-            			sensorName[0] = "ECG RA-LL";
-            			sensorName[1] = "ECG LA-LL";
+            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_2 ||
+            					 mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_2R)
+            			{
+            				sensorName = new String[2]; 
+            				sensorName[0] = "ECG RA-LL";
+            				sensorName[1] = "ECG LA-LL";
+            			}
+            		}
+            		if (mSensorView.equals("EXG1") || mSensorView.equals("EXG2")){
+            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3)
+            			{
+            				if (mService.getShimmer(mBluetoothAddress).isEXGUsingECG24Configuration() ||
+            						mService.getShimmer(mBluetoothAddress).isEXGUsingECG16Configuration()){
+            					sensorName = new String[3]; 
+            					calibratedDataArray = new double[3];
+            					sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
+            					sensorName[1] = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
+            					sensorName[2] = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
+            				} else if (mService.getShimmer(mBluetoothAddress).isEXGUsingEMG24Configuration() ||
+            						mService.getShimmer(mBluetoothAddress).isEXGUsingEMG16Configuration()){
+                				sensorName = new String[2]; 
+                				calibratedDataArray = new double[2];
+                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT;
+                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT;
+                			} else if (mService.getShimmer(mBluetoothAddress).isEXGUsingTestSignal24Configuration() ||
+            						mService.getShimmer(mBluetoothAddress).isEXGUsingTestSignal16Configuration()){
+                				sensorName = new String[3]; 
+                				calibratedDataArray = new double[3];
+                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
+                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
+                    			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
+                			} else {
+                				sensorName = new String[3]; 
+                				calibratedDataArray = new double[3];
+                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
+                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
+                    			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
+                			}
+            			}
             		}
             		if (mSensorView.equals("Bridge Amplifier")){
             			sensorName = new String[2]; 
