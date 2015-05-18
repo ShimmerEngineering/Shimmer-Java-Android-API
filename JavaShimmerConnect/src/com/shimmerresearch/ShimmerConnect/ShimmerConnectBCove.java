@@ -85,9 +85,6 @@ import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.pcdriver.CallbackObject;
 import com.shimmerresearch.pcdriver.ShimmerPCBTBCove;
 import com.shimmerresearch.tools.LoggingPC;
-import com.shimmerresearch.tools.HighPassFilter;
-import com.shimmerresearch.tools.BandStopFilter;
-import com.shimmerresearch.tools.LowPassFilter;
 import com.shimmerresearch.algorithms.*;
 
 public class ShimmerConnectBCove extends BasicProcessWithCallBack{
@@ -244,17 +241,17 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 	private JButton btnOverwriteFile;
 	private JButton btnCancelWriteFile;
 
-	HighPassFilter hpfexg1ch1;
-	HighPassFilter hpfexg1ch2;
-	HighPassFilter hpfexg2ch1;
-	HighPassFilter hpfexg2ch2;
-	
-	BandStopFilter bsfexg1ch1;
-	BandStopFilter bsfexg1ch2;
-	BandStopFilter bsfexg2ch1;
-	BandStopFilter bsfexg2ch2;
-	LowPassFilter lpf;
-	HighPassFilter hpf;
+	Filter hpfexg1ch1;
+	Filter hpfexg1ch2;
+	Filter hpfexg2ch1;
+	Filter hpfexg2ch2;
+
+	Filter bsfexg1ch1;
+	Filter bsfexg1ch2;
+	Filter bsfexg2ch1;
+	Filter bsfexg2ch2;
+	Filter lpf;
+	Filter hpf;
 
 	
 	/**
@@ -349,17 +346,29 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 		btnStartStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Create HPFs for EXG
-				lpf = new LowPassFilter(mShimmer.getSamplingRate(), 5);
-				hpf = new HighPassFilter(mShimmer.getSamplingRate(), 0.5);
-				hpfexg1ch1 = new HighPassFilter(mShimmer.getSamplingRate(), cornerFrequencyHPF);
-				hpfexg1ch2 = new HighPassFilter(mShimmer.getSamplingRate(), cornerFrequencyHPF);
-				hpfexg2ch1 = new HighPassFilter(mShimmer.getSamplingRate(), cornerFrequencyHPF);
-				hpfexg2ch2 = new HighPassFilter(mShimmer.getSamplingRate(), cornerFrequencyHPF);
+				//Create HPFs for EXG
+				try {
+				double [] cutoff = {5.0};
+				lpf = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRate(), cutoff);
+				cutoff[0] = 0.5;
+				hpf = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				cutoff[0] = cornerFrequencyHPF;
+				hpfexg1ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpfexg1ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpfexg2ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpfexg2ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
 				//Create BSF for EXG
-				bsfexg1ch1 = new BandStopFilter(mShimmer.getSamplingRate(), cornerFrequencyBSF1, cornerFrequencyBSF2);
-				bsfexg1ch2 = new BandStopFilter(mShimmer.getSamplingRate(), cornerFrequencyBSF1, cornerFrequencyBSF2);
-				bsfexg2ch1 = new BandStopFilter(mShimmer.getSamplingRate(), cornerFrequencyBSF1, cornerFrequencyBSF2);
-				bsfexg2ch2 = new BandStopFilter(mShimmer.getSamplingRate(), cornerFrequencyBSF1, cornerFrequencyBSF2);
+				cutoff = new double[2];
+				cutoff[0]= cornerFrequencyBSF1;
+				cutoff[1]= cornerFrequencyBSF2;
+				bsfexg1ch1 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				bsfexg1ch2 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				bsfexg2ch1 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				bsfexg2ch2 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 				if ((Integer)spinnerNumberOfBeatsToAve.getValue() <= 0){
 					spinnerNumberOfBeatsToAve.setValue(1);
@@ -2078,175 +2087,182 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 			String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
 			//Filter signals
 			if (highPassFilterEnabled || bandStopFilterEnabled){
-			for (int indexgnames=0;indexgnames<exgnames.length;indexgnames++){
-				Collection<FormatCluster> cf = objc.mPropertyCluster.get(exgnames[indexgnames]);
-				if (cf.size()!=0){
-					double data =((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData;
-					if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg1ch1.filterData(data);
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg1ch1.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg1Ch1Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg1ch2.filterData(data);
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg1ch2.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg1Ch2Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg2ch1.filterData(data);
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg2ch1.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg2Ch1Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg2ch2.filterData(data);
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg2ch2.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg2Ch2Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg1ch1.filterData(data); 
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg1ch1.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg1Ch1Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg1ch2.filterData(data);
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg1ch2.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg1Ch2Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg2ch2.filterData(data);
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg2ch2.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg2Ch2Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg1ch1.filterData(data); 
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg1ch1.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg1Ch1Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT)) {
-						if (highPassFilterEnabled){
-							data = hpfexg1ch2.filterData(data);
-						}
-						if (bandStopFilterEnabled){
-							data = bsfexg1ch2.filterData(data);
-						}
-						((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-						exg1Ch2Data=data;
-					} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data);
+				for (int indexgnames=0;indexgnames<exgnames.length;indexgnames++){
+					Collection<FormatCluster> cf = objc.mPropertyCluster.get(exgnames[indexgnames]);
+					try {
+						if (cf.size()!=0){
+							double data =((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData;
+							if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT)) {
+								if (highPassFilterEnabled){
+
+									data = hpfexg1ch1.filterData(data);
+
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch1.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data); 
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data); 
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch1.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data); 
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data); 
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
 							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch1.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data); 
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data); 
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
 						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
 			}
 			
 			String[] selectedSensorSignals = selectSignalsToView();
@@ -2287,8 +2303,14 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 						calPPG = ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL"));
 						if (calPPG!=null) {
 							dataArrayPPG = (int) ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL")).mData;
-							dataArrayPPG = lpf.filterData(dataArrayPPG);
-							dataArrayPPG = hpf.filterData(dataArrayPPG);
+							try {
+								dataArrayPPG = lpf.filterData(dataArrayPPG);
+
+								dataArrayPPG = hpf.filterData(dataArrayPPG);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				}

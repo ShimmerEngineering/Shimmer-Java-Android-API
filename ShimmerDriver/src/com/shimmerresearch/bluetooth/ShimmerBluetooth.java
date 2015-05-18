@@ -222,6 +222,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					byte[] packet = mABQ.remove();
 					ObjectCluster objectCluster=buildMsg(packet, FW_TYPE_BT, 0);
+					objectCluster = mDataProcessing.ProcessData(objectCluster);
 					dataHandler(objectCluster);
 				}
 			}
