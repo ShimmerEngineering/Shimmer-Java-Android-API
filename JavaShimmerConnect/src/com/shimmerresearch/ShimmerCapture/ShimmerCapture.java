@@ -49,7 +49,10 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,7 +98,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	public static final int SHIMMER_3=3;
 	public static final int SHIMMER_SR30=4;
 	protected int mShimmerVersion;
-	
+	private int downSample=0;
 	private JFrame frame;
 	private JFrame configFrame;
 	private JFrame exgFrame;
@@ -256,7 +259,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 
 	private JButton btnReadStatus;
 	private JButton btnReadDirectory;
-
+	static BufferedWriter bw = null;
 	
 	/**
 	 * Launch the application.
@@ -266,6 +269,27 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
+					
+					File file = new File("C:\\Users\\Lim\\Documents\\testppghrres.csv");
+					// if file doesnt exists, then create it
+								if (!file.exists()) {
+									try {
+										file.createNewFile();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+					 
+								FileWriter fw;
+								try {
+									fw = new FileWriter(file.getAbsoluteFile());
+									bw = new BufferedWriter(fw);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
 					Configuration.setTooLegacyObjectClusterSensorNames();
 					ShimmerCapture window = new ShimmerCapture();
 					window.frame.setVisible(true);
@@ -326,7 +350,6 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Connect");
-				WaitForData waitForData= new WaitForData(mShimmer);
 				mShimmer.connect(textFieldComPort.getText(),"");
 				
 			}
@@ -2114,6 +2137,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				btnStartStreaming.setEnabled(true);
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
+			if (object instanceof ObjectCluster){
 			ObjectCluster objc = (ObjectCluster)object;
 			String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
 			//Filter signals
@@ -2300,11 +2324,44 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			if (numberOfSelectedSignals>maxTraces) {
 				numberOfSelectedSignals=maxTraces;
 			}
+			chart.removeAllTraces();
 			double dataArrayPPG = 0;
 			double heartRate = Double.NaN;
+
+			if (calculateHeartRate){
+				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
+				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
+				dataArrayPPG = format.mData;
+				try {
+					//bw.write(Double.toString(dataArrayPPG)+",");
+					dataArrayPPG = lpf.filterData(dataArrayPPG);
+					//dataArrayPPG = hpf.filterData(dataArrayPPG);
+					//bw.write(Double.toString(dataArrayPPG));
+					format.mData= dataArrayPPG;
+					//bw.newLine();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
+				double ppgTimeStamp = ts.mData;
+				heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG, ppgTimeStamp);
+				if (heartRate == INVALID_RESULT){
+					heartRate = Double.NaN;
+				}
+				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
+				if (chckbxHeartRate.isSelected()) {
+					chart.addTrace(traceHR);
+				}
+			}
+
 			
-			if (numberOfSelectedSignals > 0 || calculateHeartRate) {
-				chart.removeAllTraces();
+			if (numberOfSelectedSignals > 0  || calculateHeartRate) {
+				
+				
+				
 				Collection<FormatCluster> formats[] = new Collection[numberOfSelectedSignals];
 				FormatCluster cal[] = new FormatCluster[numberOfSelectedSignals];
 				double[] dataArray = new double[numberOfSelectedSignals];
@@ -2323,94 +2380,64 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 					}
 				}
 				
-				Multimap<String, FormatCluster> m = objc.mPropertyCluster;
-				for(String key : m.keys()) {
-					if (key.equals("Internal ADC A13")){
-						
-						Collection<FormatCluster> format;
-						FormatCluster calPPG;
-						format = objc.mPropertyCluster.get("Internal ADC A13");
-						calPPG = ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL"));
-						if (calPPG!=null) {
-							dataArrayPPG = (int) ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL")).mData;
-							try {
-								dataArrayPPG = lpf.filterData(dataArrayPPG);
-								dataArrayPPG = hpf.filterData(dataArrayPPG);
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+				//Plotting data
+				downSample++;
+
+				int numberOfTraces = dataArray.length;
+				for (int i=0; i<numberOfTraces; i++){
+					float newX = mLastX + mSpeed;
+					if (chckbxHeartRate.isSelected()){
+						traceHR.addPoint(newX, heartRate);
+					}
+					for (int count=0; count<numberOfTraces; count++) {
+						traces[count].addPoint(newX, dataArray[count]);
+						if (count==0) {
+							mLastX += mSpeed;
 						}
 					}
 				}
-				
-				if (calculateHeartRate){
-					Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
-					FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
-					double ppgTimeStamp = ts.mData;
-					heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG,ppgTimeStamp);
-					if (heartRate == INVALID_RESULT){
-						heartRate = Double.NaN;
+				if (numberOfTraces == 0 && chckbxHeartRate.isSelected()){
+					float newX = mLastX + mSpeed;
+					traceHR.addPoint(newX, heartRate);
+					mLastX += mSpeed;
+					minDataPoint=-5;
+					maxDataPoint=215;
+					Range range = new Range(minDataPoint, maxDataPoint);
+					IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
+					yAxis.setRangePolicy(rangePolicy);
+				} else {
+					//Scaling Y Axis
+					for (int count=0; count<numberOfTraces; count++){
+						if (dataArray[count] > maxDataPoint) {
+							maxDataPoint = (int) Math.ceil(dataArray[count]);
+						}
+						if (heartRate > maxDataPoint){
+							maxDataPoint = (int) Math.ceil(heartRate);
+						}
+						if (dataArray[count] < minDataPoint) {
+							minDataPoint = (int) Math.floor(dataArray[count]);
+						}
+						if (heartRate < minDataPoint) {
+							minDataPoint = (int) Math.floor(heartRate);
+						}
 					}
-					objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
-					if (chckbxHeartRate.isSelected()) {
-						chart.addTrace(traceHR);
-					}
+					Range range = new Range(minDataPoint, maxDataPoint);
+					IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
+					yAxis.setRangePolicy(rangePolicy);
 				}
-				
-				//Plotting data
-	    		int numberOfTraces = dataArray.length;
-	    		for (int i=0; i<numberOfTraces; i++){
-		    		float newX = mLastX + mSpeed;
-		    		if (chckbxHeartRate.isSelected()){
-		    			traceHR.addPoint(newX, heartRate);
-		    		}
-		    		for (int count=0; count<numberOfTraces; count++) {
-		    			traces[count].addPoint(newX, dataArray[count]);
-		    			if (count==0) {
-		    				mLastX += mSpeed;
-		    			}
-		    		}
-	    		}
-	    		if (numberOfTraces == 0 && chckbxHeartRate.isSelected()){
-		    		float newX = mLastX + mSpeed;
-		    		traceHR.addPoint(newX, heartRate);
-		    		mLastX += mSpeed;
-		    		minDataPoint=-5;
-		    		maxDataPoint=215;
-		    		Range range = new Range(minDataPoint, maxDataPoint);
-		    		IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
-		    		yAxis.setRangePolicy(rangePolicy);
-	    		} else {
-		    		//Scaling Y Axis
-		    		for (int count=0; count<numberOfTraces; count++){
-		    			if (dataArray[count] > maxDataPoint) {
-		    				maxDataPoint = (int) Math.ceil(dataArray[count]);
-		    			}
-		    			if (heartRate > maxDataPoint){
-		    				maxDataPoint = (int) Math.ceil(heartRate);
-		    			}
-		    			if (dataArray[count] < minDataPoint) {
-		    				minDataPoint = (int) Math.floor(dataArray[count]);
-		    			}
-		    			if (heartRate < minDataPoint) {
-		    				minDataPoint = (int) Math.floor(heartRate);
-		    			}
-		    		}
-		    		Range range = new Range(minDataPoint, maxDataPoint);
-		    		IRangePolicy rangePolicy = new RangePolicyFixedViewport(range);
-		    		yAxis.setRangePolicy(rangePolicy);
-	    		}
+
 			}
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION && loggingData) {
 					log.logData(objc);
 			}
-			
+			}
 			
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
 			double packetReceptionRate = (Double) object;
-			textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
+			if(downSample%50==0){
+				textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
+			}
 		}
 	
 	}

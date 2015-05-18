@@ -314,7 +314,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	 */
 	private void initialize() {	
 		setWaitForData(mShimmer);
-		mShimmer.enableCheckifAlive(true);
+		//mShimmer.enableCheckifAlive(true);
 		frame = new JFrame("Shimmer Connect");
 		frame.setBounds(100, 100, 720, 592);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -2282,11 +2282,45 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			if (numberOfSelectedSignals>maxTraces) {
 				numberOfSelectedSignals=maxTraces;
 			}
+			chart.removeAllTraces();
 			double dataArrayPPG = 0;
 			double heartRate = Double.NaN;
 
-			if (numberOfSelectedSignals > 0 || calculateHeartRate) {
-				chart.removeAllTraces();
+			if (calculateHeartRate){
+				
+				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
+				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
+				dataArrayPPG = format.mData;
+				try {
+					//bw.write(Double.toString(dataArrayPPG)+",");
+					dataArrayPPG = lpf.filterData(dataArrayPPG);
+					//bw.write(Double.toString(dataArrayPPG));
+					dataArrayPPG = hpf.filterData(dataArrayPPG);
+					//format.mData= dataArrayPPG;
+					//bw.newLine();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
+				double ppgTimeStamp = ts.mData;
+				heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG, ppgTimeStamp);
+				if (heartRate == INVALID_RESULT){
+					heartRate = Double.NaN;
+				}
+				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
+				if (chckbxHeartRate.isSelected()) {
+					chart.addTrace(traceHR);
+				}
+			}
+
+			
+			if (numberOfSelectedSignals > 0  || calculateHeartRate) {
+				
+				
+				
 				Collection<FormatCluster> formats[] = new Collection[numberOfSelectedSignals];
 				FormatCluster cal[] = new FormatCluster[numberOfSelectedSignals];
 				double[] dataArray = new double[numberOfSelectedSignals];
@@ -2304,42 +2338,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 						}
 					}
 				}
-
-				Multimap<String, FormatCluster> m = objc.mPropertyCluster;
-				for(String key : m.keys()) {
-					if (key.equals(Shimmer3.ObjectClusterSensorName.INT_EXP_A13)){
-
-						Collection<FormatCluster> format;
-						FormatCluster calPPG;
-						format = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
-						calPPG = ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL"));
-						if (calPPG!=null) {
-							dataArrayPPG = (int) ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL")).mData;
-							try {
-								dataArrayPPG = lpf.filterData(dataArrayPPG);
-								dataArrayPPG = hpf.filterData(dataArrayPPG);
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					}
-				}
-
-				if (calculateHeartRate){
-					Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
-					FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
-					double ppgTimeStamp = ts.mData;
-					heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG, ppgTimeStamp);
-					if (heartRate == INVALID_RESULT){
-						heartRate = Double.NaN;
-					}
-					objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
-					if (chckbxHeartRate.isSelected()) {
-						chart.addTrace(traceHR);
-					}
-				}
-
+				
 				//Plotting data
 				downSample++;
 
