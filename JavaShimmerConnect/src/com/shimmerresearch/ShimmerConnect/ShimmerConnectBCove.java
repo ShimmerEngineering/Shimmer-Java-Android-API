@@ -2281,12 +2281,10 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
 				dataArrayPPG = format.mData;
 				try {
-					//bw.write(Double.toString(dataArrayPPG)+",");
+
 					dataArrayPPG = lpf.filterData(dataArrayPPG);
-					//bw.write(Double.toString(dataArrayPPG));
+
 					dataArrayPPG = hpf.filterData(dataArrayPPG);
-					//format.mData= dataArrayPPG;
-					//bw.newLine();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -259,7 +259,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 
 	private JButton btnReadStatus;
 	private JButton btnReadDirectory;
-	static BufferedWriter bw = null;
+	
 	
 	/**
 	 * Launch the application.
@@ -271,25 +271,6 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				try {
 					
 					
-					File file = new File("C:\\Users\\Lim\\Documents\\testppghrres.csv");
-					// if file doesnt exists, then create it
-								if (!file.exists()) {
-									try {
-										file.createNewFile();
-									} catch (IOException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-								}
-					 
-								FileWriter fw;
-								try {
-									fw = new FileWriter(file.getAbsoluteFile());
-									bw = new BufferedWriter(fw);
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
 					Configuration.setTooLegacyObjectClusterSensorNames();
 					ShimmerCapture window = new ShimmerCapture();
 					window.frame.setVisible(true);
@@ -2333,12 +2314,8 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
 				dataArrayPPG = format.mData;
 				try {
-					//bw.write(Double.toString(dataArrayPPG)+",");
 					dataArrayPPG = lpf.filterData(dataArrayPPG);
-					//dataArrayPPG = hpf.filterData(dataArrayPPG);
-					//bw.write(Double.toString(dataArrayPPG));
-					format.mData= dataArrayPPG;
-					//bw.newLine();
+					dataArrayPPG = hpf.filterData(dataArrayPPG);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
