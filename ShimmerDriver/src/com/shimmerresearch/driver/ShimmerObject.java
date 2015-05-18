@@ -5375,7 +5375,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mEXG2RegisterArray;
 	}
 
-	protected boolean isEXGUsingDefaultRespirationConfiguration(){
+	public boolean isEXGUsingDefaultRespirationConfiguration(){
 		boolean using = false;
 		if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&&((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)&&((mEXG2RegisterArray[8] & 0xC0)==0xC0)){
 			using = true;
@@ -5383,7 +5383,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return using;
 	}
 	
-	protected boolean isEXGUsingDefaultECGConfiguration(){
+	public boolean isEXGUsingDefaultECGConfiguration(){
 		boolean using = false;
 		if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
 			using = true;
@@ -5391,7 +5391,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return using;
 	}
 
-	protected boolean isEXGUsingDefaultTestSignalConfiguration(){
+	public boolean isEXGUsingDefaultTestSignalConfiguration(){
 		boolean using = false;
 		if(((mEXG1RegisterArray[3] & 0x0F)==5)&&((mEXG1RegisterArray[4] & 0x0F)==5)&& ((mEXG2RegisterArray[3] & 0x0F)==5)&&((mEXG2RegisterArray[4] & 0x0F)==5)){
 			using = true;

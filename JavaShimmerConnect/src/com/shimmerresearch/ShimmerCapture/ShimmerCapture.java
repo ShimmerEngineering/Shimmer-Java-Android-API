@@ -77,6 +77,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.collect.Multimap;
+import com.shimmerresearch.biophysicalprocessing.ECGtoHRAlgorithm;
 import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -89,6 +90,7 @@ import com.shimmerresearch.pcdriver.CallbackObject;
 import com.shimmerresearch.pcdriver.ShimmerPC;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
+import javax.swing.SpinnerNumberModel;
 
 public class ShimmerCapture extends BasicProcessWithCallBack{
 	
@@ -146,6 +148,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	private JCheckBox chckbxLowPowerGyro;
 	private JCheckBox chckbxInternalExpPower;
 	private JCheckBox chckbxEnablePPGtoHR;
+	private JCheckBox chckbxEnableECGtoHR;
 	private JCheckBox[] listOfSensorsShimmer3;
 	private JCheckBox[] listOfSensorsShimmer2;
 	private JCheckBox[] listOfSignals;
@@ -236,6 +239,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	double[] exg2Data16bit = new double[4];
 	
 	private PPGtoHRAlgorithm heartRateCalculation;
+	private ECGtoHRAlgorithm heartRateCalculationECG;
 	private boolean calculateHeartRate = false;
 	private int INVALID_RESULT=-1;
 	
@@ -256,9 +260,14 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	Filter bsfexg2ch2;
 	Filter lpf;
 	Filter hpf;
-
+	Filter lpfECG;
+	Filter hpfECG;
+	
 	private JButton btnReadStatus;
 	private JButton btnReadDirectory;
+	private JLabel lblnoOfBeats;
+	private JSpinner spinnerNumberOfBeatsToAveECG;
+	
 	
 	
 	/**
@@ -316,7 +325,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		backgroundColor = frame.getBackground();
 		
 		configFrame = new JFrame("Configure");
-		configFrame.setBounds(150, 150, 370, 735);
+		configFrame.setBounds(150, 150, 434, 772);
 		configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		configFrame.getContentPane().setLayout(null);
 		configFrame.setVisible(false);
@@ -358,6 +367,13 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				lpf = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRate(), cutoff);
 				cutoff[0] = 0.5;
 				hpf = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				
+				cutoff[0] = 51.2;
+				lpfECG = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRate(), cutoff);
+				cutoff[0] = 0.5;
+				hpfECG = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				
+				
 				cutoff[0] = cornerFrequencyHPF;
 				hpfexg1ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
 				hpfexg1ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
@@ -379,6 +395,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 					spinnerNumberOfBeatsToAve.setValue(1);
 				}
 				heartRateCalculation = new PPGtoHRAlgorithm(mShimmer.getSamplingRate(), (Integer)spinnerNumberOfBeatsToAve.getValue(),10); //10 second training period
+				heartRateCalculationECG = new ECGtoHRAlgorithm(mShimmer.getSamplingRate(),10,(Integer)spinnerNumberOfBeatsToAveECG.getValue()); //10 second training period
 				mShimmer.startStreaming();
 			}
 		});
@@ -566,7 +583,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				configurationDone();
 			}
 		});
-		btnOK.setBounds(200, 640, 110, 25);
+		btnOK.setBounds(200, 668, 216, 25);
 		configFrame.getContentPane().add(btnOK);
 		
 		btnCancel = new JButton("Cancel");
@@ -575,7 +592,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				configFrame.setVisible(false);
 			}
 		});
-		btnCancel.setBounds(10, 640, 110, 25);
+		btnCancel.setBounds(10, 668, 110, 25);
 		configFrame.getContentPane().add(btnCancel);
 		
 		btnToggleLed = new JButton("Toggle LED");
@@ -584,7 +601,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				mShimmer.toggleLed();
 			}
 		});
-		btnToggleLed.setBounds(10, 600, 110, 23);
+		btnToggleLed.setBounds(10, 628, 110, 23);
 		configFrame.getContentPane().add(btnToggleLed);
 		
 		comboBoxSamplingRate = new JComboBox<String>();
@@ -640,53 +657,68 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		configFrame.getContentPane().add(lblSensors);
 		
 		chckbxVoltageMon = new JCheckBox("Enable Voltage Monitoring");
-		chckbxVoltageMon.setBounds(10, 400, 230, 23);
+		chckbxVoltageMon.setBounds(10, 424, 230, 23);
 		configFrame.getContentPane().add(chckbxVoltageMon);
 		chckbxVoltageMon.setEnabled(false);
 		
 		chckbx5VReg = new JCheckBox("Enable 5V Regulator");
-		chckbx5VReg.setBounds(10, 420, 230, 23);
+		chckbx5VReg.setBounds(10, 444, 230, 23);
 		configFrame.getContentPane().add(chckbx5VReg);
 		
 		chckbx3DOrientation = new JCheckBox("Enable 3D Orientation");
-		chckbx3DOrientation.setBounds(10, 440, 230, 23);
+		chckbx3DOrientation.setBounds(10, 464, 230, 23);
 		configFrame.getContentPane().add(chckbx3DOrientation);
 		
 		chckbxOnTheFlyGyroCal = new JCheckBox("Enable Gyro On-the-Fly Calibration");
-		chckbxOnTheFlyGyroCal.setBounds(10, 460, 230, 23);
+		chckbxOnTheFlyGyroCal.setBounds(10, 484, 230, 23);
 		configFrame.getContentPane().add(chckbxOnTheFlyGyroCal);
 		
 		chckbxLowPowerMag = new JCheckBox("Enable Low Power Magnetometer");
-		chckbxLowPowerMag.setBounds(10, 480, 230, 23);
+		chckbxLowPowerMag.setBounds(10, 504, 230, 23);
 		configFrame.getContentPane().add(chckbxLowPowerMag);
 		chckbxLowPowerMag.setEnabled(false);
 		
 		chckbxLowPowerAcc = new JCheckBox("Enable Low Power Acceleration");
-		chckbxLowPowerAcc.setBounds(10, 500, 230, 23);
+		chckbxLowPowerAcc.setBounds(10, 524, 230, 23);
 		configFrame.getContentPane().add(chckbxLowPowerAcc);
 		
 		chckbxLowPowerGyro = new JCheckBox("Enable Low Power Gyroscope");
-		chckbxLowPowerGyro.setBounds(10, 520, 230, 23);
+		chckbxLowPowerGyro.setBounds(10, 544, 230, 23);
 		configFrame.getContentPane().add(chckbxLowPowerGyro);
 		
 		chckbxInternalExpPower = new JCheckBox("Enable Internal Exp Power");
-		chckbxInternalExpPower.setBounds(10, 540, 230, 23);
+		chckbxInternalExpPower.setBounds(10, 564, 230, 23);
 		configFrame.getContentPane().add(chckbxInternalExpPower);
 		
 		chckbxEnablePPGtoHR = new JCheckBox("Enable PPG-HR");
-		chckbxEnablePPGtoHR.setBounds(10, 560, 180, 23);
+		chckbxEnablePPGtoHR.setBounds(10, 584, 180, 23);
 		configFrame.getContentPane().add(chckbxEnablePPGtoHR);
 		chckbxEnablePPGtoHR.setEnabled(false);
 		
 		spinnerNumberOfBeatsToAve = new JSpinner();
-		spinnerNumberOfBeatsToAve.setBounds(200, 600, 40, 24);
+		spinnerNumberOfBeatsToAve.setBounds(200, 628, 106, 24);
 		configFrame.getContentPane().add(spinnerNumberOfBeatsToAve);
 		spinnerNumberOfBeatsToAve.setValue(5);
 		spinnerNumberOfBeatsToAve.setEnabled(false);
 		
 		lblNumberOfBeats = new JLabel("<html>No. Of Beats To<br/>Average (PPG-HR)</html>");
-		lblNumberOfBeats.setBounds(200, 565, 180, 30);
+		lblNumberOfBeats.setBounds(200, 593, 106, 30);
 		configFrame.getContentPane().add(lblNumberOfBeats);
+		
+		lblnoOfBeats = new JLabel("<html>No. Of Beats To<br/>Average (ECG-HR)</html>");
+		lblnoOfBeats.setBounds(310, 592, 106, 30);
+		configFrame.getContentPane().add(lblnoOfBeats);
+		
+		spinnerNumberOfBeatsToAveECG = new JSpinner();
+		spinnerNumberOfBeatsToAveECG.setModel(new SpinnerNumberModel(new Integer(1), null, null, new Integer(1)));
+		spinnerNumberOfBeatsToAveECG.setEnabled(false);
+		spinnerNumberOfBeatsToAveECG.setBounds(310, 627, 106, 24);
+		configFrame.getContentPane().add(spinnerNumberOfBeatsToAveECG);
+		
+		chckbxEnableECGtoHR = new JCheckBox("Enable ECG-HR");
+		chckbxEnableECGtoHR.setEnabled(false);
+		chckbxEnableECGtoHR.setBounds(10, 604, 180, 23);
+		configFrame.getContentPane().add(chckbxEnableECGtoHR);
 		
 		//EXG Frame
 		JPanel filteringPane = new JPanel();
@@ -1159,6 +1191,22 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				spinnerNumberOfBeatsToAve.setEnabled(false);
 			}
 			
+			if (((listOfSensorsShimmer3[14].isSelected() && listOfSensorsShimmer3[15].isSelected()) 
+					|| (listOfSensorsShimmer3[16].isSelected() && listOfSensorsShimmer3[17].isSelected())) 
+					&& (mShimmer.isEXGUsingDefaultECGConfiguration())){
+				chckbxEnableECGtoHR.setEnabled(true);
+			} else {
+				chckbxEnableECGtoHR.setEnabled(false);
+				chckbxEnableECGtoHR.setSelected(false);
+				spinnerNumberOfBeatsToAveECG.setEnabled(false);
+			}
+			
+			if (chckbxEnableECGtoHR.isSelected()){
+				spinnerNumberOfBeatsToAveECG.setEnabled(true);
+			} else {
+				spinnerNumberOfBeatsToAveECG.setEnabled(false);
+			}
+			
 			if (chckbxEnablePPGtoHR.isSelected()){
 				spinnerNumberOfBeatsToAve.setEnabled(true);
 			} else {
@@ -1241,13 +1289,21 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 					if (listOfSensorsShimmer3[14].isSelected()) {
 						listOfSensorsShimmer3[16].setSelected(false);
 					} 
+					if (listOfSensorsShimmer3[14].isSelected() && listOfSensorsShimmer3[15].isSelected() && mShimmer.isEXGUsingDefaultECGConfiguration())
+					{
+						chckbxEnableECGtoHR.setEnabled(true);
+					}
 				}
 			});
 			listOfSensorsShimmer3[15].addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
 					if (listOfSensorsShimmer3[15].isSelected()) {
 						listOfSensorsShimmer3[17].setSelected(false);
-					} 
+					}
+					if (listOfSensorsShimmer3[14].isSelected() && listOfSensorsShimmer3[15].isSelected() && mShimmer.isEXGUsingDefaultECGConfiguration())
+					{
+						chckbxEnableECGtoHR.setEnabled(true);
+					}
 				}
 			});
 			listOfSensorsShimmer3[16].addActionListener(new ActionListener(){
@@ -1255,6 +1311,10 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 					if (listOfSensorsShimmer3[16].isSelected()) {
 						listOfSensorsShimmer3[14].setSelected(false);
 					} 
+					if (listOfSensorsShimmer3[16].isSelected() && listOfSensorsShimmer3[17].isSelected() && mShimmer.isEXGUsingDefaultECGConfiguration())
+					{
+						chckbxEnableECGtoHR.setEnabled(true);
+					}
 				}
 			});
 			listOfSensorsShimmer3[17].addActionListener(new ActionListener(){
@@ -1262,6 +1322,10 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 					if (listOfSensorsShimmer3[17].isSelected()) {
 						listOfSensorsShimmer3[15].setSelected(false);
 					} 
+					if (listOfSensorsShimmer3[16].isSelected() && listOfSensorsShimmer3[17].isSelected() && mShimmer.isEXGUsingDefaultECGConfiguration())
+					{
+						chckbxEnableECGtoHR.setEnabled(true);
+					}
 				}
 			});
 			chckbxInternalExpPower.addActionListener(new ActionListener(){
@@ -1282,9 +1346,20 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				public void actionPerformed(ActionEvent arg0) {
 					if (chckbxEnablePPGtoHR.isSelected()){
 						spinnerNumberOfBeatsToAve.setEnabled(true);
-						JOptionPane.showMessageDialog(null,"Users should note that the Low Pass Filter (5Hz Cutoff) on supports sampling rates of 51.2/102.4/128/204.8/256/512/1024. The Low Pass Filter is essential to getting a good PPG signal for PPG to HR calculation. No results will appear for ten seconds on the plot, due to the algorithm going through a training period.","PPG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(null,"Users should note that a Low Pass Filter (5Hz Cutoff) and a High Pass Filter (0.5Hz Cutoff) is used when calculating Heart Rate value","PPG To Heart Rate",JOptionPane.WARNING_MESSAGE);
 					} else {
 						spinnerNumberOfBeatsToAve.setEnabled(false);
+					}
+				}
+			});
+			
+			chckbxEnableECGtoHR.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent arg0) {
+					if (chckbxEnableECGtoHR.isSelected()){
+						spinnerNumberOfBeatsToAveECG.setEnabled(true);
+						JOptionPane.showMessageDialog(null,"Users should note that a Low Pass Filter (51.2Hz Cutoff) and a High Pass Filter (0.5Hz Cutoff) is used when calculating Heart Rate value","ECG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+					} else {
+						spinnerNumberOfBeatsToAveECG.setEnabled(false);
 					}
 				}
 			});
@@ -1400,6 +1475,11 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				mShimmer.writeInternalExpPower(0);
 			}
 			if (chckbxEnablePPGtoHR.isSelected()) {
+				calculateHeartRate = true;
+			} else {
+				calculateHeartRate = false;
+			}
+			if (chckbxEnableECGtoHR.isSelected()) {
 				calculateHeartRate = true;
 			} else {
 				calculateHeartRate = false;
@@ -2307,9 +2387,10 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			}
 			chart.removeAllTraces();
 			double dataArrayPPG = 0;
+			double dataArrayECG = 0;
 			double heartRate = Double.NaN;
 
-			if (calculateHeartRate){
+			if (calculateHeartRate && chckbxEnablePPGtoHR.isSelected()) {
 				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
 				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
 				dataArrayPPG = format.mData;
@@ -2327,6 +2408,34 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG, ppgTimeStamp);
 				if (heartRate == INVALID_RESULT){
 					heartRate = Double.NaN;
+				}
+				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
+				if (chckbxHeartRate.isSelected()) {
+					chart.addTrace(traceHR);
+				}
+			}
+			
+			if (calculateHeartRate && chckbxEnableECGtoHR.isSelected()) {
+				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
+				dataArrayECG = format.mData;
+				try {
+					//dataArrayECG = lpfECG.filterData(dataArrayECG);
+					//dataArrayECG = hpfECG.filterData(dataArrayECG);
+					format.mData = dataArrayECG;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
+				double ecgTimeStamp = ts.mData;
+				heartRate = heartRateCalculationECG.ecgToHrConversion(dataArrayECG, ecgTimeStamp);
+				if (heartRate == INVALID_RESULT){
+					heartRate = Double.NaN;
+				} else {
+					System.out.println("Heart Rate: " + heartRate);
 				}
 				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
 				if (chckbxHeartRate.isSelected()) {
