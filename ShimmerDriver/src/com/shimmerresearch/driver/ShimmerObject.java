@@ -135,6 +135,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = -1364568867018921219L;
 	
 	public static final String ACCEL_CAL_UNIT = "m/s^2";
@@ -5532,7 +5533,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R) {
 			maxRate = 1024.0;
 		} else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
-			maxRate = 32768.0;
+			maxRate = 2048.0;
 		}		
     	// don't let sampling rate < 0 OR > maxRate
     	if(rate < 1) {
@@ -8515,31 +8516,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			//Set sensor state
 			mSensorMap.get(sensorMapKey).mIsEnabled = state;
 			
+			
+			
 			sensorMapConflictCheckandCorrect(sensorMapKey);
 			setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
 
 			// Automatically control internal expansion board power
-			if (mHardwareVersion == HW_ID.SHIMMER_3){
-				for(Integer channelKey:mSensorMap.keySet()) {
-					if(mSensorMap.get(channelKey).mIsEnabled && mSensorMap.get(channelKey).mIntExpBoardPowerRequired) {
-						mInternalExpPower = 1;
-						break;
-					}
-					else {
-						// Exception for Int ADC sensors 
-						//TODO need to check HW version??
-						if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mIsEnabled
-							||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mIsEnabled
-							||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mIsEnabled
-							||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mIsEnabled){
-							
-						}
-						else {
-							mInternalExpPower = 0;
-						}
-					}
-				}
-			}
+			checkIfInternalExpBrdPowerIsNeeded();
 			
 			if(mSensorMap.get(sensorMapKey).mIsEnabled == state) {
 				return true;
@@ -8551,6 +8534,97 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		else {
 			return false;
+		}
+	}
+	
+	/**
+	 * Method to set force defaults for disabled sensors. Need to ensure
+	 * consistency across all configured Shimmers. Without the below, if a
+	 * Shimmer is read from and then configured without changing any of the
+	 * configuration, the configuration will not be checked. Another application
+	 * could have saved incorrect configuration to the Shimmer.
+	 * 
+	 */
+	public void checkShimmerConfigurationBeforeConfiguring() {
+		
+		if (mHardwareVersion == HW_ID.SHIMMER_3){
+			
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mIsEnabled) {
+				setDefaultLsm303dlhcAccelSensorConfig(false);
+			}
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mIsEnabled) {
+				setDefaultLsm303dlhcMagSensorConfig(false);
+			}
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled){
+				setDefaultMpu9150GyroSensorConfig(false);
+			}
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mIsEnabled){
+				setDefaultMpu9150AccelSensorConfig(false);
+			}
+			
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mIsEnabled) {
+				setDefaultBmp180PressureSensorConfig(false);
+			}
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mIsEnabled) {
+				setDefaultGsrSensorConfig(false);
+			}
+			if((!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled)) {
+//				if(!checkIfOtherExgChannelEnabled()) {
+					setDefaultECGConfiguration();
+//				}
+			}
+			if((!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mIsEnabled)) {
+//				if(!checkIfOtherMplChannelEnabled()) {
+					setDefaultMpu9150MplSensorConfig(false);
+//				}
+			}
+			
+			checkIfInternalExpBrdPowerIsNeeded();
+		}
+		
+	}
+
+	/**Automatically control internal expansion board power based on sensor map
+	 * 
+	 */
+	private void checkIfInternalExpBrdPowerIsNeeded(){
+
+		if (mHardwareVersion == HW_ID.SHIMMER_3){
+			for(Integer channelKey:mSensorMap.keySet()) {
+				if(mSensorMap.get(channelKey).mIsEnabled && mSensorMap.get(channelKey).mIntExpBoardPowerRequired) {
+					mInternalExpPower = 1;
+					break;
+				}
+				else {
+					// Exception for Int ADC sensors 
+					//TODO need to check HW version??
+					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mIsEnabled
+						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mIsEnabled
+						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mIsEnabled
+						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mIsEnabled){
+						
+					}
+					else {
+						mInternalExpPower = 0;
+					}
+				}
+			}
 		}
 	}
 	
@@ -8669,8 +8743,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			}
 			
-
-			
 			if(compatible) {
 				return true;
 			}
@@ -8678,6 +8750,31 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return false;
 	}
 
+	
+	public List<Integer> sensorMapConflictCheck(Integer key){
+		List<Integer> listOfChannelConflicts = new ArrayList<Integer>();
+		
+		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
+		
+		if (mHardwareVersion == HW_ID.SHIMMER_3){
+			if(mSensorMap.get(key).mListOfSensorMapKeysConflicting != null) {
+				for(Integer sensorMapKey:mSensorMap.get(key).mListOfSensorMapKeysConflicting) {
+					if(mSensorMap.get(sensorMapKey) != null) {
+						if(mSensorMap.get(sensorMapKey).mIsEnabled == true) {
+							listOfChannelConflicts.add(sensorMapKey);
+						}
+					}
+				}
+			}
+		}
+		
+		if(listOfChannelConflicts.isEmpty()) {
+			return null;
+		}
+		else {
+			return listOfChannelConflicts;
+		}
+	}
 	
 	/**
 	 * @param key This takes in a single sensor map key to check for conflicts and correct
@@ -8704,44 +8801,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		sensorMapCheckandCorrectHwDependencies();
 	}
 
-	public List<Integer> sensorMapConflictCheck(Integer key){
-		List<Integer> listOfChannelConflicts = new ArrayList<Integer>();
-		
-		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
-		
-		if (mHardwareVersion == HW_ID.SHIMMER_3){
-			if(mSensorMap.get(key).mListOfSensorMapKeysConflicting != null) {
-				for(Integer sensorMapKey:mSensorMap.get(key).mListOfSensorMapKeysConflicting) {
-					if(mSensorMap.get(sensorMapKey) != null) {
-						if(mSensorMap.get(sensorMapKey).mIsEnabled == true) {
-							listOfChannelConflicts.add(sensorMapKey);
-						}
-					}
-				}
-			}
-		}
-		
-		if(listOfChannelConflicts.isEmpty()) {
-			return null;
-		}
-		else {
-			return listOfChannelConflicts;
-		}
-	}
-
-	private void sensorMapCheckandCorrectHwDependencies() {
-		for(Integer sensorMapKey:mSensorMap.keySet()) {
-			if(mSensorMap.get(sensorMapKey).mListOfCompatibleVersionInfo != null) {
-				if(!checkIfVersionCompatible(mSensorMap.get(sensorMapKey).mListOfCompatibleVersionInfo)) {
-					mSensorMap.get(sensorMapKey).mIsEnabled = false;
-					if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
-						mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
-					}
-					setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
-				}
-			}
-		}
-	}
 	
 	private void sensorMapCheckandCorrectSensorDependencies() {
 		//Cycle through any required sensors and update sensorMap channel enable values
@@ -8780,6 +8839,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}	
 			}
 
+		}
+	}
+	
+
+	private void sensorMapCheckandCorrectHwDependencies() {
+		for(Integer sensorMapKey:mSensorMap.keySet()) {
+			if(mSensorMap.get(sensorMapKey).mListOfCompatibleVersionInfo != null) {
+				if(!checkIfVersionCompatible(mSensorMap.get(sensorMapKey).mListOfCompatibleVersionInfo)) {
+					mSensorMap.get(sensorMapKey).mIsEnabled = false;
+					if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+						mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
+					}
+					setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
+				}
+			}
 		}
 	}
 	
