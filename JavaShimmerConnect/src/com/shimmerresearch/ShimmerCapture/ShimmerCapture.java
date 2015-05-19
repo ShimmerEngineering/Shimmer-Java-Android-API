@@ -72,6 +72,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -90,6 +91,7 @@ import com.shimmerresearch.pcdriver.CallbackObject;
 import com.shimmerresearch.pcdriver.ShimmerPC;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
+
 import javax.swing.SpinnerNumberModel;
 
 public class ShimmerCapture extends BasicProcessWithCallBack{
@@ -840,9 +842,6 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		Border settingsBorder = BorderFactory.createLineBorder(gray);
 		settingsPane.setBorder(BorderFactory.createTitledBorder(settingsBorder, "EXG Settings", TitledBorder.LEFT, TitledBorder.TOP));
 
-		lblEXG = new JLabel("Check user guide for data rates supported by filters");
-		lblEXG.setBounds(20, 478, 400, 25);
-		exgFrame.getContentPane().add(lblEXG);
 		
 		//Logging - file exists
 		fileExistsWindow.setBounds (300, 300, 320, 150);
@@ -1345,8 +1344,10 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			chckbxEnablePPGtoHR.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
 					if (chckbxEnablePPGtoHR.isSelected()){
-						spinnerNumberOfBeatsToAve.setEnabled(true);
-						JOptionPane.showMessageDialog(null,"Users should note that a Low Pass Filter (5Hz Cutoff) and a High Pass Filter (0.5Hz Cutoff) is used when calculating Heart Rate value","PPG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+						if (!spinnerNumberOfBeatsToAve.isEnabled()){
+							spinnerNumberOfBeatsToAve.setEnabled(true);
+							JOptionPane.showMessageDialog(null,"Users should note that a Low Pass Filter (5Hz Cutoff) and a High Pass Filter (0.5Hz Cutoff) is used when calculating Heart Rate value","PPG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+						}
 					} else {
 						spinnerNumberOfBeatsToAve.setEnabled(false);
 					}
@@ -1356,8 +1357,10 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			chckbxEnableECGtoHR.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
 					if (chckbxEnableECGtoHR.isSelected()){
-						spinnerNumberOfBeatsToAveECG.setEnabled(true);
-						JOptionPane.showMessageDialog(null,"Users should note that a Low Pass Filter (51.2Hz Cutoff) and a High Pass Filter (0.5Hz Cutoff) is used when calculating Heart Rate value","ECG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+						if (!spinnerNumberOfBeatsToAveECG.isEnabled()){
+							spinnerNumberOfBeatsToAveECG.setEnabled(true);
+							JOptionPane.showMessageDialog(null,"Users are recomended to use High Pass Filter (0.5Hz Cutoff) and appropriate band stop filter. Filters can be selected in ExG Settings page. LA_RA used for calculation.","ECG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+						}
 					} else {
 						spinnerNumberOfBeatsToAveECG.setEnabled(false);
 					}
@@ -1476,10 +1479,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			}
 			if (chckbxEnablePPGtoHR.isSelected()) {
 				calculateHeartRate = true;
-			} else {
-				calculateHeartRate = false;
-			}
-			if (chckbxEnableECGtoHR.isSelected()) {
+			} else if (chckbxEnableECGtoHR.isSelected()) {
 				calculateHeartRate = true;
 			} else {
 				calculateHeartRate = false;
@@ -1639,6 +1639,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			chckbxHeartRate.setVisible(true);
 			chckbxHeartRate.setBounds(10, yLocationForHeartRate, 200, 15);
 			frame.getContentPane().add(chckbxHeartRate);
+			SwingUtilities.updateComponentTreeUI(frame);
 		}
 	}
 	
@@ -2435,7 +2436,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				if (heartRate == INVALID_RESULT){
 					heartRate = Double.NaN;
 				} else {
-					System.out.println("Heart Rate: " + heartRate);
+					//System.out.println("Heart Rate: " + heartRate);
 				}
 				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
 				if (chckbxHeartRate.isSelected()) {
