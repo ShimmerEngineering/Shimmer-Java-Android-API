@@ -4,4 +4,5 @@
   - updated filter/ecgtohr/ppgtohr algorithms
   - ecgtohr algorithm examples added to MultiShimmerTemplate (Android) and ShimmerCapture (PC)
   - various bug fixes to ShimmerCapture and ShimmerConnect
+  - updates to GSR coefficients (Please update your firmware to the latest version available)
   
