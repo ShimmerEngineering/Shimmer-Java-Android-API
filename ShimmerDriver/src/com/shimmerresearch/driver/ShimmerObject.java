@@ -5565,7 +5565,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setLSM303MagRateFromFreq(mShimmerSamplingRate);
 			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-			setExGRateFromFreq(mEXG1RateSetting);
+			setExGRateFromFreq(mShimmerSamplingRate);
 		}
 	}
 	
