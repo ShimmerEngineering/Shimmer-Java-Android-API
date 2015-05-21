@@ -135,7 +135,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * 
 	 */
-	
 	private static final long serialVersionUID = -1364568867018921219L;
 	
 	public static final String ACCEL_CAL_UNIT = "m/s^2";
