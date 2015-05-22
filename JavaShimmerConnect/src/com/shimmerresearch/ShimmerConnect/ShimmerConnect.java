@@ -98,9 +98,6 @@ import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.pcdriver.CallbackObject;
 import com.shimmerresearch.pcdriver.ShimmerPC;
 import com.shimmerresearch.tools.LoggingPC;
-import com.shimmerresearch.tools.HighPassFilter;
-import com.shimmerresearch.tools.BandStopFilter;
-import com.shimmerresearch.tools.LowPassFilter;
 import com.shimmerresearch.algorithms.*;
 
 public class ShimmerConnect extends BasicProcessWithCallBack {
@@ -258,17 +255,17 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	private JButton btnOverwriteFile;
 	private JButton btnCancelWriteFile;
 
-	HighPassFilter hpfexg1ch1;
-	HighPassFilter hpfexg1ch2;
-	HighPassFilter hpfexg2ch1;
-	HighPassFilter hpfexg2ch2;
+	Filter hpfexg1ch1;
+	Filter hpfexg1ch2;
+	Filter hpfexg2ch1;
+	Filter hpfexg2ch2;
 
-	BandStopFilter bsfexg1ch1;
-	BandStopFilter bsfexg1ch2;
-	BandStopFilter bsfexg2ch1;
-	BandStopFilter bsfexg2ch2;
-	LowPassFilter lpf;
-	HighPassFilter hpf;
+	Filter bsfexg1ch1;
+	Filter bsfexg1ch2;
+	Filter bsfexg2ch1;
+	Filter bsfexg2ch2;
+	Filter lpf;
+	Filter hpf;
 
 
 	/**
@@ -317,7 +314,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	 */
 	private void initialize() {	
 		setWaitForData(mShimmer);
-		mShimmer.enableCheckifAlive(true);
+		//mShimmer.enableCheckifAlive(true);
 		frame = new JFrame("Shimmer Connect");
 		frame.setBounds(100, 100, 720, 592);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -361,18 +358,28 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		btnStartStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Create HPFs for EXG
-				lpf = new LowPassFilter(mShimmer.getSamplingRate(), 5);
-				hpf = new HighPassFilter(mShimmer.getSamplingRate(), 0.5);
-				hpfexg1ch1 = new HighPassFilter(mShimmer.getSamplingRate(), cornerFrequencyHPF);
-				hpfexg1ch2 = new HighPassFilter(mShimmer.getSamplingRate(), cornerFrequencyHPF);
-				hpfexg2ch1 = new HighPassFilter(mShimmer.getSamplingRate(), cornerFrequencyHPF);
-				hpfexg2ch2 = new HighPassFilter(mShimmer.getSamplingRate(), cornerFrequencyHPF);
+				try {
+				double [] cutoff = {5.0};
+				lpf = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRate(), cutoff);
+				cutoff[0] = 0.5;
+				hpf = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				cutoff[0] = cornerFrequencyHPF;
+				hpfexg1ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpfexg1ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpfexg2ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpfexg2ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
 				//Create BSF for EXG
-				bsfexg1ch1 = new BandStopFilter(mShimmer.getSamplingRate(), cornerFrequencyBSF1, cornerFrequencyBSF2);
-				bsfexg1ch2 = new BandStopFilter(mShimmer.getSamplingRate(), cornerFrequencyBSF1, cornerFrequencyBSF2);
-				bsfexg2ch1 = new BandStopFilter(mShimmer.getSamplingRate(), cornerFrequencyBSF1, cornerFrequencyBSF2);
-				bsfexg2ch2 = new BandStopFilter(mShimmer.getSamplingRate(), cornerFrequencyBSF1, cornerFrequencyBSF2);
-
+				cutoff = new double[2];
+				cutoff[0]= cornerFrequencyBSF1;
+				cutoff[1]= cornerFrequencyBSF2;
+				bsfexg1ch1 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				bsfexg1ch2 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				bsfexg2ch1 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				bsfexg2ch2 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				if ((Integer)spinnerNumberOfBeatsToAve.getValue() <= 0){
 					spinnerNumberOfBeatsToAve.setValue(1);
 				}
@@ -2095,11 +2102,14 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			if (highPassFilterEnabled || bandStopFilterEnabled){
 				for (int indexgnames=0;indexgnames<exgnames.length;indexgnames++){
 					Collection<FormatCluster> cf = objc.mPropertyCluster.get(exgnames[indexgnames]);
+					try {
 					if (cf.size()!=0){
 						double data =((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData;
 						if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT)) {
 							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data);
+								
+									data = hpfexg1ch1.filterData(data);
+						
 							}
 							if (bandStopFilterEnabled){
 								data = bsfexg1ch1.filterData(data);
@@ -2260,6 +2270,9 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
 							exg1Ch2Data=data;
 						}
+					}		} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
@@ -2269,11 +2282,45 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			if (numberOfSelectedSignals>maxTraces) {
 				numberOfSelectedSignals=maxTraces;
 			}
+			chart.removeAllTraces();
 			double dataArrayPPG = 0;
 			double heartRate = Double.NaN;
 
-			if (numberOfSelectedSignals > 0 || calculateHeartRate) {
-				chart.removeAllTraces();
+			if (calculateHeartRate){
+				
+				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
+				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
+				dataArrayPPG = format.mData;
+				try {
+
+					dataArrayPPG = lpf.filterData(dataArrayPPG);
+
+					dataArrayPPG = hpf.filterData(dataArrayPPG);
+
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
+				double ppgTimeStamp = ts.mData;
+				heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG, ppgTimeStamp);
+				if (heartRate == INVALID_RESULT){
+					heartRate = Double.NaN;
+				}
+				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
+				if (chckbxHeartRate.isSelected()) {
+					chart.addTrace(traceHR);
+				}
+			}
+
+			
+			if (numberOfSelectedSignals > 0  || calculateHeartRate) {
+				
+				
+				
 				Collection<FormatCluster> formats[] = new Collection[numberOfSelectedSignals];
 				FormatCluster cal[] = new FormatCluster[numberOfSelectedSignals];
 				double[] dataArray = new double[numberOfSelectedSignals];
@@ -2291,37 +2338,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 						}
 					}
 				}
-
-				Multimap<String, FormatCluster> m = objc.mPropertyCluster;
-				for(String key : m.keys()) {
-					if (key.equals(Shimmer3.ObjectClusterSensorName.INT_EXP_A13)){
-
-						Collection<FormatCluster> format;
-						FormatCluster calPPG;
-						format = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
-						calPPG = ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL"));
-						if (calPPG!=null) {
-							dataArrayPPG = (int) ((FormatCluster)ObjectCluster.returnFormatCluster(format,"CAL")).mData;
-							dataArrayPPG = lpf.filterData(dataArrayPPG);
-							dataArrayPPG = hpf.filterData(dataArrayPPG);
-						}
-					}
-				}
-
-				if (calculateHeartRate){
-					Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
-					FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
-					double ppgTimeStamp = ts.mData;
-					heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG, ppgTimeStamp);
-					if (heartRate == INVALID_RESULT){
-						heartRate = Double.NaN;
-					}
-					objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
-					if (chckbxHeartRate.isSelected()) {
-						chart.addTrace(traceHR);
-					}
-				}
-
+				
 				//Plotting data
 				downSample++;
 

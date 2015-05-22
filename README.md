@@ -1,3 +1,11 @@
+# Shimmer-Java-Android-API
+
+20 May 2015 (Beta 2.8)
+  - updated filter/ecgtohr/ppgtohr algorithms
+  - ecgtohr algorithm examples added to MultiShimmerTemplate (Android) and ShimmerCapture (PC)
+  - various bug fixes to ShimmerCapture and ShimmerConnect
+  - updates to GSR coefficients
+  
 20 October 2014 (Beta 2.7)
 - support for LogAndStream Firmware
 - support for Baud Rate modification
