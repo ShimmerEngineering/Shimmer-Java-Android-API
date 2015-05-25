@@ -2,7 +2,10 @@
 
 import java.io.*;
 import java.net.*;
+import java.util.Collection;
 
+import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 
 class TCPServer 
@@ -30,7 +33,18 @@ class TCPServer
 							ByteArrayInputStream bais = new ByteArrayInputStream(message);
 							ObjectInputStream ois = new ObjectInputStream(bais);
 							ObjectCluster rxojc =  (ObjectCluster) ois.readObject();
-							System.out.print(rxojc.mMyName + "\n");
+							
+							Collection<FormatCluster> accelXFormats = rxojc.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X);
+							FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); 
+							double x=formatCluster.mData;
+							Collection<FormatCluster> accelYFormats = rxojc.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y);
+							formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); 
+							double y=formatCluster.mData;
+							Collection<FormatCluster> accelZFormats = rxojc.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z);
+							formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); 
+							double z=formatCluster.mData;
+							System.out.print(rxojc.mMyName + "\t"+ Double.toString(x) + "\t"+ Double.toString(y) + "\t"+ Double.toString(z) + "\n");
+							
 						}
 
 

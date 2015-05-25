@@ -1,1 +1,2 @@
 - tested on python 2.7
+- this python example is to be used with ShimmerTCPExample and is not related to ShimmerPCTCP
