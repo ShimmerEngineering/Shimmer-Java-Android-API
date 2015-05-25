@@ -78,7 +78,7 @@ public class ShimmerLogExampleActivity extends Activity {
         
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mShimmerDevice1 = new Shimmer(this, mHandler,"uppertorso",10,0,4,Shimmer.SENSOR_ACCEL,true); //Right Arm is a unique identifier for the shimmer unit
-        String bluetoothAddress="00:06:66:46:B8:A2";
+        String bluetoothAddress="00:06:66:66:96:86";
         mShimmerDevice1.connect(bluetoothAddress,"default"); 
         Log.d("ConnectionStatus","Trying");
 

@@ -1,5 +1,9 @@
 # Shimmer-Java-Android-API
 
+20 May 2015 (Beta 2.9)
+ - fix to shimmersetsamplingrate method
+ - clean up to tcpip example (ShimmerTCPExample/ShimmerPCTCPExample/ShimmerTCPReceiver)
+
 20 May 2015 (Beta 2.8)
   - updated filter/ecgtohr/ppgtohr algorithms
   - ecgtohr algorithm examples added to MultiShimmerTemplate (Android) and ShimmerCapture (PC)
