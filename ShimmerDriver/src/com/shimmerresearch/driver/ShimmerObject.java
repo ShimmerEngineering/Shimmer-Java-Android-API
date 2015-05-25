@@ -113,6 +113,9 @@ import javax.vecmath.Vector3d;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
+
+
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -733,7 +736,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSamplingDividerPpg = 0;
 	protected int mSamplingDividerLsm303dlhcAccel = 0;
 
-	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) {
+	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
 		
 		objectCluster.mMyName = mMyName;
@@ -747,7 +750,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		String [] calibratedDataUnits;
 		String [] sensorNames;
 		
-		
+		if(fwIdentifier != FW_TYPE_BT && fwIdentifier != FW_TYPE_SD){
+			throw new Exception("The Firmware is not compatible");
+		}
 		
 		if (fwIdentifier == FW_TYPE_BT){
 			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
@@ -2066,6 +2071,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		
 			
+		}
+		else{
+			throw new Exception("The Hardware version is not compatible");
 		}
 		
 		
