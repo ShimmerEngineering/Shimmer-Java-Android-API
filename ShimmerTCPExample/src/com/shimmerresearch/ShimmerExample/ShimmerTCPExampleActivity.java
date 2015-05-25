@@ -72,10 +72,9 @@ public class ShimmerTCPExampleActivity extends Activity {
     boolean firstTime = true;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Configuration.setTooLegacyObjectClusterSensorNames();
         setContentView(R.layout.main);
         mShimmerDevice1 = new Shimmer(this, mHandler,"RightArm",false); 
-        String bluetoothAddress="00:06:66:66:94:0E";
+        String bluetoothAddress="00:06:66:66:96:86";
         mShimmerDevice1.connect(bluetoothAddress,"default"); 
         Log.d("ConnectionStatus","Trying"); 
         
@@ -123,13 +122,13 @@ public class ShimmerTCPExampleActivity extends Activity {
                      	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
                     	    if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
                     	    	if (firstTime){
-                    	    	mShimmerDevice1.writeEnabledSensors(ShimmerObject.SENSOR_DACCEL);
+                    	    	mShimmerDevice1.writeEnabledSensors(ShimmerObject.SENSOR_ACCEL);
                     	    	Thread thread = new Thread()
                     			{
                     			    @Override
                     			    public void run() {
                     			    	try {
-                    			    		clientSocket = new Socket("192.168.0.6", 5000);
+                    			    		clientSocket = new Socket("10.1.1.1", 5000);
                     				        dOut = new DataOutputStream(clientSocket.getOutputStream());
                     					} catch (UnknownHostException e) {
                     						// TODO Auto-generated catch block
