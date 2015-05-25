@@ -34,7 +34,7 @@ public class MultiShimmerExampleActivity extends Activity {
 		mShimmerDevice1 = new Shimmer(this, mHandler,"RightArm",false); //Right Arm is a unique identifier for the shimmer unit
 		mShimmerDevice2 = new Shimmer(this, mHandler, "LeftArm", 51.2, 0, 0, Shimmer.SENSOR_ACCEL, false); //Left Arm is a unique identifier for the shimmer unit
 
-		String bluetoothAddress="00:06:66:46:B7:BE";
+		String bluetoothAddress="00:06:66:66:8B:FF";
 		mShimmerDevice1.connect(bluetoothAddress,"default");         
 
 	}
@@ -94,7 +94,7 @@ public class MultiShimmerExampleActivity extends Activity {
 					Log.d("ConnectionStatus","Fully Initialized" + ((ObjectCluster)msg.obj).mBluetoothAddress);
 
 					if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED && mShimmerDevice2.getShimmerState()!=Shimmer.STATE_CONNECTED){
-						mShimmerDevice2.connect("00:06:66:46:B8:A2","default"); 
+						mShimmerDevice2.connect("00:06:66:66:96:86","default"); 
 					}
 					if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED && mShimmerDevice1.getStreamingStatus()==false && mShimmerDevice2.getShimmerState()==Shimmer.STATE_CONNECTED && mShimmerDevice2.getStreamingStatus()==false){
 						Log.d("ConnectionStatus","Successful!");
