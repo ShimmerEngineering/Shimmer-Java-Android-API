@@ -2009,7 +2009,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			}
 			if ((mEnabledSensors& SENSOR_EXP_BOARD_A0) > 0) {
-				int iA0 = getSignalIndex("Exp Board A0");
+				int iA0 = getSignalIndex(Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0);
 				tempData[0] = (double)newPacketInt[iA0];
 				if (getPMux()==0){
 					objectCluster.mPropertyCluster.put(Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0,new FormatCluster("RAW",NO_UNIT,(double)newPacketInt[iA0]));
