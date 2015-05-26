@@ -7034,6 +7034,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				ShimmerVerObject baseHighGAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 				ShimmerVerObject baseHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 
+				ShimmerVerObject baseMPUSensors = 			new ShimmerVerObject(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.SDLOG,0,8,0, ANY_VERSION);
+				
 				List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 						baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
 						baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
@@ -7094,6 +7096,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 				List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
 						baseHighGAccelSdLog,baseHighGAccelBtStream,baseHighGAccelLogAndStream);
+				
+				List<ShimmerVerObject> listOfCompatibleVersionInforMPUSensors = Arrays.asList(
+						baseMPUSensors);
 				
 				
 				// Assemble the channel map
@@ -7488,6 +7493,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						Configuration.Shimmer3.SensorMapKey.ECG,
 						Configuration.Shimmer3.SensorMapKey.EMG,
 						Configuration.Shimmer3.SensorMapKey.EXG_TEST);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
+						Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
+						Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO);
 				
 				//The A12 and A13 based PPG channels have the same channel exceptions as GSR with the addition of their counterpart channel 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfSensorMapKeysConflicting = new ArrayList<Integer>(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfSensorMapKeysConflicting);
@@ -7619,7 +7628,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mListOfConfigOptionKeysAssociated = Arrays.asList(
 						Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
-
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE,
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL,
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
+				
 				
 				//Sensor Grouping for Configuration Panel 'tile' generation. 
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorTileDetails(
@@ -7676,11 +7693,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 									Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
 									Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
 									Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14)));
-				//mChannelTileMap.put(Configuration.Shimmer3.GUI_LABEL_CHANNELTILE_9DOF, new ChannelTileDetails(
-				//		Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,
-				//					Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL,
-				//					Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO,
-				//					Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG)));
+				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG, new SensorTileDetails(
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
+									Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
+									Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)));
+				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER, new SensorTileDetails(
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
+									Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF)));
+				
 				//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
 				
 				// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
@@ -7701,6 +7721,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoHighGAccel;
 				//mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = listOfCompatibleVersionInfoGps;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInforMPUSensors;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInforMPUSensors;
 				
 				// For loop to automatically inherit associated channel configuration options from mSensorMap in the mSensorTileMap
 				for (String channelGroup : mSensorTileMap.keySet()) {
@@ -8523,13 +8545,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			//Set sensor state
 			mSensorMap.get(sensorMapKey).mIsEnabled = state;
 			
-			
-			
 			sensorMapConflictCheckandCorrect(sensorMapKey);
 			setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
 
 			// Automatically control internal expansion board power
 			checkIfInternalExpBrdPowerIsNeeded();
+			checkIfMPLandDMPIsNeeded();
 			
 			if(mSensorMap.get(sensorMapKey).mIsEnabled == state) {
 				return true;
@@ -8603,6 +8624,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 			
 			checkIfInternalExpBrdPowerIsNeeded();
+			checkIfMPLandDMPIsNeeded();
 		}
 		
 	}
@@ -8631,6 +8653,30 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						mInternalExpPower = 0;
 					}
 				}
+			}
+		}
+	}
+	
+	private void checkIfMPLandDMPIsNeeded(){
+		
+		if(mHardwareVersion == HW_ID.SHIMMER_3){
+			if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG){
+				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mIsEnabled
+						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mIsEnabled
+						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mIsEnabled
+						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP).mIsEnabled
+						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mIsEnabled){
+						mMPU9150DMP = 1;
+						mMPLEnable = 1;
+					}
+					else {
+						mMPU9150DMP = 0;
+						mMPLEnable = 0;
+					}
+			}
+			else{
+				mMPU9150DMP = 0;
+				mMPLEnable = 0;
 			}
 		}
 	}

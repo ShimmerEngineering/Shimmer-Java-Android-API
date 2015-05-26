@@ -380,6 +380,8 @@ public class Configuration {
 			public static final String BRIDGE_AMPLIFIER_SUPP = Configuration.Shimmer3.GuiLabelSensors.SKIN_TEMP_PROBE;
 			public static final String HIGH_G_ACCEL = Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL;
 			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
+			public static final String MPU_ACCEL_GYRO_MAG = "MPU 9DoF";
+			public static final String MPU_OTHER = "MPU Other";
 			//public static final String GPS = "GPS";
 		}
 		
@@ -844,7 +846,6 @@ public class Configuration {
 		Shimmer3.ObjectClusterSensorName.PPG2_A14 = "PPG2_A14";
 		Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 		Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC = "Timestamp_Sync";
-	
 
 		Shimmer2.ObjectClusterSensorName.TIMESTAMP = "Timestamp";
 		Shimmer2.ObjectClusterSensorName.REAL_TIME_CLOCK = "RealTime";
