@@ -853,8 +853,8 @@ public class Configuration {
 		Shimmer2.ObjectClusterSensorName.ACCEL_Z = "Accelerometer Z";
 		Shimmer2.ObjectClusterSensorName.BATTERY = "VSenseBatt";
 		Shimmer2.ObjectClusterSensorName.VOLT_REG = "VSenseReg";
-		Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_HIGH = "Bridge_Amp_High";
-		Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_LOW = "Bridge_Amp_Low";
+		Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_HIGH = "Bridge Amplifier High";
+		Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_LOW = "Bridge Amplifier Low";
 		Shimmer2.ObjectClusterSensorName.GSR = "GSR";
 		//Shimmer2.ObjectClusterSensorName.GSR_RAW = "GSR Raw";
 		Shimmer2.ObjectClusterSensorName.GSR_RES = "GSR Res";
