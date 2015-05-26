@@ -858,8 +858,8 @@ public class Configuration {
 		Shimmer2.ObjectClusterSensorName.GSR = "GSR";
 		//Shimmer2.ObjectClusterSensorName.GSR_RAW = "GSR Raw";
 		Shimmer2.ObjectClusterSensorName.GSR_RES = "GSR Res";
-		Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0 = "Exp Board A0";
-		Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7 = "Exp Board A7";
+		Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0 = "ExpBoard A0";
+		Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7 = "ExpBoard A7";
 		Shimmer2.ObjectClusterSensorName.GYRO_X = "Gyroscope X";
 		Shimmer2.ObjectClusterSensorName.GYRO_Y = "Gyroscope Y";
 		Shimmer2.ObjectClusterSensorName.GYRO_Z = "Gyroscope Z";
