@@ -155,7 +155,7 @@ public class Util {
 	}
 
 	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
+	public static String convertBytesToHexString(byte[] bytes) {
 	    char[] hexChars = new char[bytes.length * 2];
 	    for ( int j = 0; j < bytes.length; j++ ) {
 	        int v = bytes[j] & 0xFF;
@@ -173,6 +173,10 @@ public class Util {
 	                             + Character.digit(s.charAt(i+1), 16));
 	    }
 	    return data;
+	}
+
+	public static String convertByteToUnsignedIntegerString(byte b) {
+		return Integer.toString(b&0x00FF);
 	}
 	
 	

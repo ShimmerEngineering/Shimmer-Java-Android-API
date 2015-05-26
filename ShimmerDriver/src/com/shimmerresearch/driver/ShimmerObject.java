@@ -6490,7 +6490,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					
 				byte[] macIdBytes = new byte[infoMemMap.lengthMacIdBytes];
 				System.arraycopy(infoMemContents, infoMemMap.idxMacAddress, macIdBytes, 0 , infoMemMap.lengthMacIdBytes);
-				mMacIdFromInfoMem = Util.bytesToHex(macIdBytes);
+				mMacIdFromInfoMem = Util.convertBytesToHexString(macIdBytes);
 				
 
 				if(((infoMemContents[infoMemMap.idxSDConfigDelayFlag]>>infoMemMap.bitShiftSDCfgFileWriteFlag)&infoMemMap.maskSDCfgFileWriteFlag) == infoMemMap.maskSDCfgFileWriteFlag) {
@@ -6518,7 +6518,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							break;
 						}
 						else {
-							syncNodesList.add(Util.bytesToHex(macIdBytes));
+							syncNodesList.add(Util.convertBytesToHexString(macIdBytes));
 						}
 					}
 					// InfoMem B End
@@ -7812,7 +7812,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												Configuration.Shimmer3.ListOfECGReferenceElectrodeConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 												listOfCompatibleVersionInfoExg));
-				//TODO EMG vs. ECG vs. ExG Test vs. Respiration
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES, 
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.JPANEL,
+												listOfCompatibleVersionInfoExg));
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGRate, 
@@ -9594,6 +9596,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public boolean isLowPowerAccelWR() {
 		return mLowPowerAccelWR;
 	}
+
+	/**
+	 * @return the mEXG1RegisterArray
+	 */
+	public byte[] getEXG1RegisterArray() {
+		return mEXG1RegisterArray;
+	}
+
+	/**
+	 * @return the mEXG2RegisterArray
+	 */
+	public byte[] getEXG2RegisterArray() {
+		return mEXG2RegisterArray;
+	}
+
 
 
 }

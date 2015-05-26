@@ -326,6 +326,7 @@ public class Configuration {
 			public static final String GSR_RANGE = "GSR Range";
 			public static final String EXG_RESOLUTION = "Resolution";
 			public static final String EXG_GAIN = "Gain";
+			public static final String EXG_BYTES = "Bytes";
 
 			public static final String EXG_RATE = "Rate";
 			public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
