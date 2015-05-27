@@ -5526,6 +5526,38 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
+	private boolean checkIfAnyMplChannelEnabled(){
+		if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
+			if(mSensorMap.keySet().size()>0){
+				
+				int[] arrayOfMplChannels = new int[]{
+					Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG,
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW};
+				
+				for(int key:arrayOfMplChannels){
+					if (mSensorMap.get(key) != null) {
+						if(mSensorMap.get(key).mIsEnabled) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * Computes the closest compatible sampling rate for the Shimmer based on
 	 * the passed in 'rate' variable. Also computes the next highest available
@@ -5540,7 +5572,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R) {
 			maxRate = 1024.0;
 		} else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
-			maxRate = 2048.0;
+			//check if an MPL channel is enabled - limit rate to 51.2Hz
+			if(checkIfAnyMplChannelEnabled()){
+				maxRate = 51.2;
+			}
+			else{
+				maxRate = 2048.0;
+			}
 		}		
     	// don't let sampling rate < 0 OR > maxRate
     	if(rate < 1) {
@@ -6996,6 +7034,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				ShimmerVerObject baseNoIntExpBoardSdLog = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,ShimmerVerDetails.EXP_BRD_NONE_ID);
 
 				ShimmerVerObject baseSdLog = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,ANY_VERSION);
+				ShimmerVerObject baseSdLogMpl = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,10,1,ANY_VERSION);
 				ShimmerVerObject baseBtStream = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,ANY_VERSION);
 				ShimmerVerObject baseLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,ANY_VERSION);
 				
@@ -7034,8 +7073,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				ShimmerVerObject baseHighGAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 				ShimmerVerObject baseHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 
-				ShimmerVerObject baseMPUSensors = 			new ShimmerVerObject(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.SDLOG,0,8,0, ANY_VERSION);
-				
 				List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 						baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
 						baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
@@ -7097,8 +7134,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
 						baseHighGAccelSdLog,baseHighGAccelBtStream,baseHighGAccelLogAndStream);
 				
-				List<ShimmerVerObject> listOfCompatibleVersionInforMPUSensors = Arrays.asList(
-						baseMPUSensors);
+				List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl);
 				
 				
 				// Assemble the channel map
@@ -7235,19 +7271,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoIntExpA14;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoSdLog;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoExg;
@@ -7721,8 +7757,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoBrAmp;
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoHighGAccel;
 				//mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = listOfCompatibleVersionInfoGps;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInforMPUSensors;
-				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInforMPUSensors;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
+				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoMPLSensors;
 				
 				// For loop to automatically inherit associated channel configuration options from mSensorMap in the mSensorTileMap
 				for (String channelGroup : mSensorTileMap.keySet()) {
@@ -7882,27 +7918,27 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150AccelRange, 
 												Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-												listOfCompatibleVersionInfoSdLog));
+												listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
 												Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-												listOfCompatibleVersionInfoSdLog));
+												listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
 												Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-												listOfCompatibleVersionInfoSdLog));
+												listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplRate, 
 												Configuration.Shimmer3.ListofMPU9150MplRateConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-												listOfCompatibleVersionInfoSdLog));
+												listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MagRate, 
 												Configuration.Shimmer3.ListofMPU9150MagRateConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-												listOfCompatibleVersionInfoSdLog));
+												listOfCompatibleVersionInfoMPLSensors));
 
 			    mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
 			    	      new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfOnOff, 
@@ -7911,17 +7947,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				//MPL CheckBoxes
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoMPLSensors));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL, 
-						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoSdLog));
+						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,listOfCompatibleVersionInfoMPLSensors));
 				
 				//General Config
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE, 
