@@ -470,7 +470,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             				sensorName[1] = "ECG LA-LL";
             			}
             		}
-            		if (mSensorView.equals("EXG1") || mSensorView.equals("EXG2")){
+            		if (mSensorView.equals("EXG1") || mSensorView.equals("EXG2") || mSensorView.equals("EXG1 16Bit") || mSensorView.equals("EXG2 16Bit")){
             			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3)
             			{
             				if (mService.getShimmer(mBluetoothAddress).isEXGUsingECG24Configuration() ||
