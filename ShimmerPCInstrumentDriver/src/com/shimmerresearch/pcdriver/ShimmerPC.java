@@ -314,6 +314,8 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		// Send msg fully initialized, send notification message,  
 		// DO Something here
         mInitialized = true;
+        sensorAndConfigMapsCreate();
+        sensorMapUpdateWithEnabledSensors();
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress());
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
