@@ -129,8 +129,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected boolean mWaitForAck=false;                                          // This indicates whether the device is waiting for an acknowledge packet from the Shimmer Device  
 	protected boolean mWaitForResponse=false; 									// This indicates whether the device is waiting for a response packet from the Shimmer Device 
 	protected boolean mTransactionCompleted=true;									// Variable is used to ensure a command has finished execution prior to executing the next command (see initialize())
-	protected IOThread mIOThread;
-	protected ProcessingThread mPThread;
+	transient protected IOThread mIOThread;
+	transient protected ProcessingThread mPThread;
 	protected boolean mContinousSync=false;                                       // This is to select whether to continuously check the data packets 
 	protected boolean mSetupDevice=false;		
 	protected Stack<Byte> byteStack = new Stack<Byte>();
@@ -161,7 +161,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract byte readByte();
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
-	protected Timer mTimer;														// Timer variable used when waiting for an ack or response packet
+	transient protected Timer mTimer;														// Timer variable used when waiting for an ack or response packet
 	protected boolean mDummy=false;
 	protected boolean mFirstTime=true;
 	private byte mTempByteValue;												// A temporary variable used to store Byte value	
@@ -173,8 +173,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private byte[] cmdcalibrationParameters = new byte [22];  
 	private int mReadStatusPeriod=5000;
 	private int mAliveStatusPeriod=2000;
-	protected Timer mTimerToReadStatus;
-	protected Timer mAliveTimer;
+	transient protected Timer mTimerToReadStatus;
+	transient protected Timer mAliveTimer;
 	private int mCountDeadConnection = 0;
 	private boolean mCheckIfConnectionisAlive = false;
 	

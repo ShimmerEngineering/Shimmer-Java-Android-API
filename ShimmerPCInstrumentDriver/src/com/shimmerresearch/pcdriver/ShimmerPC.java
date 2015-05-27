@@ -80,7 +80,7 @@ import jssc.SerialPortException;
 
 public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializable  {
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
-	SerialPort mSerialPort=null;
+	transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
 	
 	public final static int MSG_IDENTIFIER_STATE_CHANGE = 0;
