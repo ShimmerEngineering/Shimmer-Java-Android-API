@@ -83,6 +83,7 @@ import com.androidplot.xy.XYStepMode;
 import com.google.common.collect.BiMap;
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails;
@@ -469,7 +470,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             				sensorName[1] = "ECG LA-LL";
             			}
             		}
-            		if (mSensorView.equals("EXG1") || mSensorView.equals("EXG2")){
+            		if (mSensorView.equals("EXG1") || mSensorView.equals("EXG2") || mSensorView.equals("EXG1 16Bit") || mSensorView.equals("EXG2 16Bit")){
             			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3)
             			{
             				if (mService.getShimmer(mBluetoothAddress).isEXGUsingECG24Configuration() ||
@@ -512,15 +513,16 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             			calibratedDataArray = new double[1];
             			sensorName[0] = "Heart Rate";
             		}
-            		if (mSensorView.equals("ExpBoardA0")){
+            		if (mSensorView.equals("ExpBoard A0")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			sensorName[0] = "ExpBoard A0";
+            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0;
+            			
             		}
-            		if (mSensorView.equals("ExpBoardA7")){
+            		if (mSensorView.equals("ExpBoard A7")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			sensorName[0] = "ExpBoard A7";
+            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7;
             		}
             		if (mSensorView.equals("Battery Voltage")){
             			sensorName = new String[2]; 
@@ -536,12 +538,20 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             		if (mSensorView.equals("External ADC A7")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			sensorName[0] = "External ADC A7";
-            		}
+            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_A7;
+	            		} else {
+	            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A7;
+	            		}
+            	    }
             		if (mSensorView.equals("External ADC A6")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			sensorName[0] = "External ADC A6";
+            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_A6;
+	            		} else {
+	            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A6;
+	            		}
             		}
             		if (mSensorView.equals("External ADC A15")){
             			sensorName = new String[1]; 
