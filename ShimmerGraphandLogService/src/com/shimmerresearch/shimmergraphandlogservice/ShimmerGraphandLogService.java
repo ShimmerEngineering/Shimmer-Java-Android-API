@@ -513,16 +513,16 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             			calibratedDataArray = new double[1];
             			sensorName[0] = "Heart Rate";
             		}
-            		if (mSensorView.equals("ExpBoardA0")){
+            		if (mSensorView.equals("ExpBoard A0")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0;
             			
-            			sensorName[0] = "ExpBoard A0";
             		}
-            		if (mSensorView.equals("ExpBoardA7")){
+            		if (mSensorView.equals("ExpBoard A7")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			sensorName[0] = "ExpBoard A7";
+            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7;
             		}
             		if (mSensorView.equals("Battery Voltage")){
             			sensorName = new String[2]; 
