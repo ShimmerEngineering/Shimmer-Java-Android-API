@@ -51,6 +51,7 @@
 */
 package com.shimmerresearch.algorithms;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,7 +66,7 @@ import javax.swing.JOptionPane;
  *
  */
 
-public class Filter {
+public class Filter implements Serializable{
 	
 	public static int LOW_PASS = 0;
     public static int HIGH_PASS = 1;

@@ -4208,6 +4208,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return returnValue;
 	}		
 	
+
+	
+	
+	
+	
+	
+	
+	
 	public Object slotDetailsSetMethods(String componentName, Object valueToSet) {
 
 		Object returnValue = null;
@@ -4217,47 +4225,47 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
 				setLowPowerAccelWR((boolean)valueToSet);
-				enableLowPowerGyro((boolean)valueToSet);
-            	enableLowPowerMag((boolean)valueToSet);
+				setLowPowerGyro((boolean)valueToSet);
+            	setLowPowerMag((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
 				setLowPowerAccelWR((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
-            	enableLowPowerGyro((boolean)valueToSet);
+            	setLowPowerGyro((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
-            	enableLowPowerMag((boolean)valueToSet);
+            	setLowPowerMag((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
-            	setTCXO((boolean)valueToSet);
+            	//setTCXO((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
             	setInternalExpPower((boolean)valueToSet);
 	        	break;
         	
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
-            	setMPU9150DMP((boolean)valueToSet);
+            	//setMPU9150DMP((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
-            	setMPLEnable((boolean)valueToSet);
+            	//setMPLEnable((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
-            	setMPLSensorFusion((boolean)valueToSet);
+            	//setMPLSensorFusion((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
-            	setMPLGyroCalTC((boolean)valueToSet);
+            	//setMPLGyroCalTC((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
-            	setMPLVectCompCal((boolean)valueToSet);
+            	//setMPLVectCompCal((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
-            	setMPLMagDistCal((boolean)valueToSet);
+            	//setMPLMagDistCal((boolean)valueToSet);
 	        	break;
 
 //Integers
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
-				setBluetoothBaudRate((int)valueToSet);
+				//setBluetoothBaudRate((int)valueToSet);
 	        	break;
 		        	
     		case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
@@ -4281,7 +4289,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	        	break;
 	        	
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
-				setExGResolution((int)valueToSet);
+				//setExGResolution((int)valueToSet);
 	    		break;
 	    		
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
@@ -4291,78 +4299,78 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	        	break;
 				
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
-				setLSM303DigitalAccelRate((int)valueToSet);
+				//setLSM303DigitalAccelRate((int)valueToSet);
 	    		break;
 	    		
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
-				setLSM303MagRate((int)valueToSet);
+				//setLSM303MagRate((int)valueToSet);
 	        	break;
 	        	
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
-				setMPU9150AccelRange((int)valueToSet);
+				//setMPU9150AccelRange((int)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
-				setMPU9150MotCalCfg((int)valueToSet);
+				//setMPU9150MotCalCfg((int)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF):
-				setMPU9150LPF((int)valueToSet);
+				//setMPU9150LPF((int)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
-				setMPU9150MPLSamplingRate((int)valueToSet);
+				//setMPU9150MPLSamplingRate((int)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
-				setMPU9150MagSamplingRate((int)valueToSet);
+				//setMPU9150MagSamplingRate((int)valueToSet);
 	        	break;
 	        
 	        //TODO: regenerate EXG register bytes on each change (just in case)
 	        	
         	//TODO
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
-				setEXG1RateSetting((int)valueToSet);
-				setEXG2RateSetting((int)valueToSet);
+				//setEXG1RateSetting((int)valueToSet);
+				//setEXG2RateSetting((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
-				setEXGReferenceElectrode((int)valueToSet);
+				//setEXGReferenceElectrode((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
-				setEXG2LeadOffCurrentMode((int)valueToSet);
+				//setEXG2LeadOffCurrentMode((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
-				setEXGLeadOffDetectionCurrent((int)valueToSet);
+				//setEXGLeadOffDetectionCurrent((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
-				setEXGLeadOffComparatorTreshold((int)valueToSet);
+				//setEXGLeadOffComparatorTreshold((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
-				setEXG2RespirationDetectFreq((int)valueToSet);
+				//setEXG2RespirationDetectFreq((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
-				setEXG2RespirationDetectPhase((int)valueToSet);
+				//setEXG2RespirationDetectPhase((int)valueToSet);
             	break;	        	
 			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
-				setInternalExpPower((int)valueToSet);
+				//setInternalExpPower((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
-				setPpgAdcSelectionGsrBoard((int)valueToSet);
+				//setPpgAdcSelectionGsrBoard((int)valueToSet);
 	    		break;
 			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
-				setPpg1AdcSelectionProto3DeluxeBoard((int)valueToSet);
+				//setPpg1AdcSelectionProto3DeluxeBoard((int)valueToSet);
 	    		break;
 			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
-				setPpg2AdcSelectionProto3DeluxeBoard((int)valueToSet);
+				//setPpg2AdcSelectionProto3DeluxeBoard((int)valueToSet);
 	    		break;
 	    		
 			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
-				setSamplingDividerGsr((int)valueToSet);
+				//setSamplingDividerGsr((int)valueToSet);
 	    		break;
 			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
-				setSamplingDividerLsm303dlhcAccel((int)valueToSet);
+				//setSamplingDividerLsm303dlhcAccel((int)valueToSet);
 	    		break;
 			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
-				setSamplingDividerPpg((int)valueToSet);
+				//setSamplingDividerPpg((int)valueToSet);
 	    		break;
 			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
-				setSamplingDividerVBatt((int)valueToSet);
+				//setSamplingDividerVBatt((int)valueToSet);
 	    		break;
 	
 //Strings

@@ -1496,8 +1496,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedDataUnits[iUP]=NO_UNIT;
 				if (mEnableCalibration){
 					double[] bmp180caldata= calibratePressureSensorData(UP,UT);
-					objectCluster.mPropertyCluster.put("Pressure",new FormatCluster("CAL",PRESSURE_CAL_UNIT,bmp180caldata[0]/1000));
-					objectCluster.mPropertyCluster.put("Temperature",new FormatCluster("CAL",TEMP_CAL_UNIT,bmp180caldata[1]));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,new FormatCluster("CAL",PRESSURE_CAL_UNIT,bmp180caldata[0]/1000));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,new FormatCluster("CAL",TEMP_CAL_UNIT,bmp180caldata[1]));
 					calibratedData[iUT]=bmp180caldata[1];
 					calibratedData[iUP]=bmp180caldata[0]/1000;
 					calibratedDataUnits[iUT]=TEMP_CAL_UNIT;
@@ -6546,6 +6546,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	/**
+	 * @return a refreshed version of the current mShimmerInfoMemBytes
+	 */
+	public byte[] refreshShimmerInfoMemBytes() {
+//		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
+		return infoMemByteArrayGenerate(false);
+	}
+	
+	/**
 	 * Generate the Shimmer's Information Memory byte array based on the
 	 * settings stored in ShimmerObject. These bytes can then be written to the
 	 * Shimmer via the Shimmer Dock/Consensys Base. The Information Memory is is
@@ -9595,5 +9603,60 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mLowPowerAccelWR;
 	}
 
+	protected void setDigitalAccelRange(int i){
+		mAccelRange = i;
+	}
+	
+	/**
+	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
+	 */
+	protected void setMPU9150AccelRange(int mMPU9150AccelRange) {
+		mMPU9150AccelRange = mMPU9150AccelRange;
+	}
+	
+	protected void setMPU9150GyroRange(int i){
+		mGyroRange = i;
+	}
+	
+	/**
+	 * @param state the mInternalExpPower state to set
+	 */
+	protected void setInternalExpPower(boolean state) {
+		if(state) 
+			mInternalExpPower = 0x01;
+		else 
+			mInternalExpPower = 0x00;
+	}
+	
 
+	protected void setExGGainSetting(int i){
+		mEXG1CH1GainSetting = i;
+		mEXG1CH1GainValue = convertEXGGainSettingToValue(mEXG1CH1GainSetting);
+		mEXG1CH2GainSetting = i;
+		mEXG1CH2GainValue = convertEXGGainSettingToValue(mEXG1CH2GainSetting);
+		mEXG2CH1GainSetting = i;
+		mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
+		mEXG2CH2GainSetting = i;
+		mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
+		
+		exgBytesGetFromConfig();
+		
+//		System.out.println("SlotDetails: setExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
+//		System.out.println("SlotDetails: setExGGain - Setting: = " + mEXG1CH2GainSetting + " - Value = " + mEXG1CH2GainValue);
+//		System.out.println("SlotDetails: setExGGain - Setting: = " + mEXG2CH1GainSetting + " - Value = " + mEXG2CH1GainValue);
+//		System.out.println("SlotDetails: setExGGain - Setting: = " + mEXG2CH2GainSetting + " - Value = " + mEXG2CH2GainValue);
+	}
+	
+	protected void setLSM303MagRange(int i){
+		mMagRange = i;
+	}
+	
+	protected void setPressureResolution(int i){
+		mPressureResolution = i;
+	}
+	
+	protected void setGSRRange(int i){
+		mGSRRange = i;
+	}
+	
 }
