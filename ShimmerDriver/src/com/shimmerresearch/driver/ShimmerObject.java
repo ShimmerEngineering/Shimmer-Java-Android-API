@@ -116,6 +116,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
 
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -727,6 +728,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected boolean mSensingStatus;
 	protected boolean mDockedStatus;
 	private List<String[]> mExtraSignalProperties = null;
+	
+	List<Integer> mListOfMplChannels = Arrays.asList(
+			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG,
+			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW);
 	
 	//Testing for GQ
 	protected int mGqPacketNumHeaderBytes = 0;
@@ -5526,38 +5542,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
-	private boolean checkIfAnyMplChannelEnabled(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
-			if(mSensorMap.keySet().size()>0){
-				
-				int[] arrayOfMplChannels = new int[]{
-					Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG,
-					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW};
-				
-				for(int key:arrayOfMplChannels){
-					if (mSensorMap.get(key) != null) {
-						if(mSensorMap.get(key).mIsEnabled) {
-							return true;
-						}
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	
 	/**
 	 * Computes the closest compatible sampling rate for the Shimmer based on
 	 * the passed in 'rate' variable. Also computes the next highest available
@@ -5615,6 +5599,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
 			setExGRateFromFreq(mShimmerSamplingRate);
+			
+			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG){
+				setMPU9150MagRateFromFreq(mShimmerSamplingRate);
+				setMPU9150MplRateFromFreq(mShimmerSamplingRate);
+			}
+
 		}
 	}
 	
@@ -5717,36 +5707,42 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	public int setMPU9150GyroAccelRateFromFreq(double freq) {
+		boolean setFreq = false;
 		// Check if channel is enabled 
-		if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO) != null) {
-			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled) {
-				mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz
-				return mMPU9150GyroAccelRate;
-			}
+		if(checkIfAnyMplChannelEnabled()){
+			setFreq = true;
+		}
+		else if(checkIfAMpuGyroOrAccelEnabled()){
+			setFreq = true;
 		}
 		
-		// Gyroscope Output Rate = 8kHz when the DLPF (Digital Low-pass filter) is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
-		double numerator = 1000;
-		if(mMPU9150LPF == 0) {
-			numerator = 8000;
-		}
-
-		if (!mLowPowerGyro){
-			if(freq<4) {
-				freq = 4;
+		if(setFreq){
+			// Gyroscope Output Rate = 8kHz when the DLPF (Digital Low-pass filter) is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
+			double numerator = 1000;
+			if(mMPU9150LPF == 0) {
+				numerator = 8000;
 			}
-			else if(freq>numerator) {
-				freq = numerator;
+	
+			if (!mLowPowerGyro){
+				if(freq<4) {
+					freq = 4;
+				}
+				else if(freq>numerator) {
+					freq = numerator;
+				}
+				int result = (int) Math.floor(((numerator / freq) - 1));
+				if(result>255) {
+					result = 255;
+				}
+				mMPU9150GyroAccelRate = result;
+	
 			}
-			int result = (int) Math.floor(((numerator / freq) - 1));
-			if(result>255) {
-				result = 255;
+			else {
+				mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
 			}
-			mMPU9150GyroAccelRate = result;
-
 		}
 		else {
-			mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz
+			mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
 		}
 		return mMPU9150GyroAccelRate;
 	}
@@ -5785,6 +5781,73 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		//exgBytesGetFromConfig();
 		return mEXG1RateSetting;
 	}
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	private int setMPU9150MagRateFromFreq(double freq) {
+		boolean setFreq = false;
+		// Check if channel is enabled 
+		if(checkIfAnyMplChannelEnabled()){
+			setFreq = true;
+		}
+		else if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG) != null) {
+			if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mIsEnabled) {
+				setFreq = true;
+			}
+		}
+		
+		if(setFreq){
+			if (freq<=10){
+				mMPU9150MagSamplingRate = 0; // 10Hz
+			} else if (freq<=20){
+				mMPU9150MagSamplingRate = 1; // 20Hz
+			} else if (freq<=40) {
+				mMPU9150MagSamplingRate = 2; // 40Hz
+			} else if (freq<=50) {
+				mMPU9150MagSamplingRate = 3; // 50Hz
+			} else {
+				mMPU9150MagSamplingRate = 4; // 100Hz
+			}
+		}
+		else {
+			mMPU9150MagSamplingRate = 0; // 10 Hz
+		}
+		return mMPU9150MagSamplingRate;
+	}
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	private int setMPU9150MplRateFromFreq(double freq) {
+		// Check if channel is enabled 
+		if(!checkIfAnyMplChannelEnabled()){
+			mMPU9150MPLSamplingRate = 0; // 10 Hz
+			return mMPU9150MPLSamplingRate;
+		}
+		
+		if (freq<=10){
+			mMPU9150MPLSamplingRate = 0; // 10Hz
+		} else if (freq<=20){
+			mMPU9150MPLSamplingRate = 1; // 20Hz
+		} else if (freq<=40) {
+			mMPU9150MPLSamplingRate = 2; // 40Hz
+		} else if (freq<=50) {
+			mMPU9150MPLSamplingRate = 3; // 50Hz
+		} else {
+			mMPU9150MPLSamplingRate = 4; // 100Hz
+		}
+		return mMPU9150MPLSamplingRate;
+	}
+	
 	
 	/**
 	 * Checks to see if the MPU9150 gyro is in low power mode. As determined by
@@ -6869,6 +6932,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 				// InfoMem B End
 			}
+			
 		}
 		return mInfoMemBytes;
 	}
@@ -7668,8 +7732,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE,
 						Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
-						Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL,
-						Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF,
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE,
+						Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL);
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
 						Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
 				
@@ -8154,7 +8220,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfConfigOptionKeysAssociated = Arrays.asList(
 						Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE,
 						Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR);
-
+				
 				//Sensor Grouping for Configuration Panel 'tile' generation. 
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING, new SensorTileDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.VBATT)));
@@ -8588,7 +8654,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 			// Automatically control internal expansion board power
 			checkIfInternalExpBrdPowerIsNeeded();
-			checkIfMPLandDMPIsNeeded();
 			
 			if(mSensorMap.get(sensorMapKey).mIsEnabled == state) {
 				return true;
@@ -8622,12 +8687,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				setDefaultLsm303dlhcMagSensorConfig(false);
 			}
 			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled){
-				setDefaultMpu9150GyroSensorConfig(false);
+				if(!checkIfAnyMplChannelEnabled()) {
+					setDefaultMpu9150GyroSensorConfig(false);
+				}
 			}
 			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mIsEnabled){
-				setDefaultMpu9150AccelSensorConfig(false);
+				if(!checkIfAnyMplChannelEnabled()) {
+					setDefaultMpu9150AccelSensorConfig(false);
+				}
 			}
-			
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mIsEnabled){
+				setMPU9150MagRateFromFreq(mShimmerSamplingRate);
+			}
 			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mIsEnabled) {
 				setDefaultBmp180PressureSensorConfig(false);
 			}
@@ -8646,23 +8717,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					setDefaultECGConfiguration();
 //				}
 			}
-			if((!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mIsEnabled)
-					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mIsEnabled)) {
-//				if(!checkIfOtherMplChannelEnabled()) {
-					setDefaultMpu9150MplSensorConfig(false);
-//				}
+			if(!checkIfAnyMplChannelEnabled()) {
+				setDefaultMpu9150MplSensorConfig(false);
 			}
 			
 			checkIfInternalExpBrdPowerIsNeeded();
-			checkIfMPLandDMPIsNeeded();
+//			checkIfMPLandDMPIsNeeded();
 		}
 		
 	}
@@ -8694,31 +8754,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		}
 	}
-	
-	private void checkIfMPLandDMPIsNeeded(){
-		
-		if(mHardwareVersion == HW_ID.SHIMMER_3){
-			if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG){
-				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mIsEnabled
-						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mIsEnabled
-						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mIsEnabled
-						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP).mIsEnabled
-						||mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mIsEnabled){
-						mMPU9150DMP = 1;
-						mMPLEnable = 1;
-					}
-					else {
-						mMPU9150DMP = 0;
-						mMPLEnable = 0;
-					}
-			}
-			else{
-				mMPU9150DMP = 0;
-				mMPLEnable = 0;
-			}
-		}
-	}
-	
 	
 	private void copySensorMapSensorDetails(int keyFrom, int keyTo) {
 		if(mSensorMap!=null) {
@@ -8948,13 +8983,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-//	private void setDefaultConfigForDisabledSensors() {
-//		for(Integer sensorMapKey:mSensorMap.keySet()) {
-//			if(mSensorMap.get(sensorMapKey).mIsEnabled == false) {
-//				setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
-//			}
-//		}
-//	}
 
 	//TODO set defaults when ").mIsEnabled = false)" is set manually in the code
 	private void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
@@ -8965,10 +8993,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setDefaultLsm303dlhcMagSensorConfig(state);
 		}
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO){
-			setDefaultMpu9150GyroSensorConfig(state);
+			if(!checkIfAnyMplChannelEnabled()) {
+				setDefaultMpu9150GyroSensorConfig(state);
+			}
 		}
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL){
-			setDefaultMpu9150AccelSensorConfig(state);
+			if(!checkIfAnyMplChannelEnabled()) {
+				setDefaultMpu9150AccelSensorConfig(state);
+			}
+		}
+		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MAG){
+			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
 		}
 		
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE) {
@@ -8989,26 +9024,33 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				setDefaultECGConfiguration();
 			}
 		}
-		
-		else if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW)) {
-			if(!checkIfOtherMplChannelEnabled()) {
+		else if(mListOfMplChannels.contains(sensorMapKey)){
+			if(!checkIfAnyOtherMplChannelEnabled(sensorMapKey)) {
 				setDefaultMpu9150MplSensorConfig(state);
+			}
+			else {
+//				setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+//				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO) != null) {
+//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled) {
+//						return true;
+//					}
+//				}
+//				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL) != null) {
+//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mIsEnabled) {
+//						return true;
+//					}
+//				}
 			}
 		}
 		
 	}
 	
 	private void setDefaultBmp180PressureSensorConfig(boolean state) {
-		mPressureResolution = 0;
+		if(state) {
+		}
+		else {
+			mPressureResolution = 0;
+		}
 	}
 	
 	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
@@ -9042,56 +9084,135 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	private void setDefaultMpu9150GyroSensorConfig(boolean state) {
-		if(state) {
-			setLowPowerGyro(false);
+		if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL) != null) {
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mIsEnabled) {
+				if(state) {
+					setLowPowerGyro(false);
+				}
+				else {
+					setLowPowerGyro(true);
+				}
+			}
 		}
-		else {
+		
+		if(!state){
 			mGyroRange=1;
-			setLowPowerGyro(true);
-//			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
 		}
 	}
 	
 	private void setDefaultMpu9150AccelSensorConfig(boolean state) {
-		mMPU9150AccelRange=0;
+		if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO) != null) {
+			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled) {
+				if(state) {
+					setLowPowerGyro(false);
+				}
+				else {
+					setLowPowerGyro(true);
+				}
+			}
+		}
 		
+		if(!state){
+			mMPU9150AccelRange = 0; //=-2g
+		}
 	}
 	
 	private void setDefaultMpu9150MplSensorConfig(boolean state) {
-		mMPU9150DMP = 0;
-		mMPU9150LPF = 0;
-		mMPU9150MotCalCfg = 0;
-		mMPU9150MPLSamplingRate = 0;
-		mMPU9150MagSamplingRate = 0;
-		mMPLSensorFusion = 0;
-		mMPLGyroCalTC = 0;
-		mMPLVectCompCal = 0;
-		mMPLMagDistCal = 0;
-		mMPLEnable = 0;
+		if(state){
+			mMPU9150DMP = 1;
+			mMPLEnable = 1;
+			mMPU9150LPF = 1; // 188Hz
+			mMPU9150MotCalCfg = 1; // Fast Calibration
+			mMPLGyroCalTC = 1;
+			mMPLVectCompCal = 1;
+			mMPLMagDistCal = 1;
+			mMPLSensorFusion = 0;
+			
+			//Gyro rate can not be set to 250dps when DMP is on
+			if(mGyroRange==0){
+				mGyroRange=1;
+			}
+			
+			setLowPowerGyro(false);
+			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
+			setMPU9150MplRateFromFreq(mShimmerSamplingRate);
+		}
+		else {
+			mMPU9150DMP = 0;
+			mMPLEnable = 0;
+			mMPU9150LPF = 0;
+			mMPU9150MotCalCfg = 0;
+			mMPLGyroCalTC = 0;
+			mMPLVectCompCal = 0;
+			mMPLMagDistCal = 0;
+			mMPLSensorFusion = 0;
+			
+			if(checkIfAMpuGyroOrAccelEnabled()){
+				setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+			}
+			else {
+				setLowPowerGyro(true);
+			}
+			
+			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
+			setMPU9150MplRateFromFreq(mShimmerSamplingRate);
+		}
 	}
 	
-	private boolean checkIfOtherMplChannelEnabled() {
-		for(Integer sensorMapKey:mSensorMap.keySet()) {
-			if(mSensorMap.get(sensorMapKey).mIsEnabled) {
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW)) {
-					return true;
+	private boolean checkIfAMpuGyroOrAccelEnabled(){
+		if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO) != null) {
+			if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled) {
+				return true;
+			}
+		}
+		if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL) != null) {
+			if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mIsEnabled) {
+				return true;
+			}
+		}
+//		if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG) != null) {
+//			if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mIsEnabled) {
+//				return true;
+//			}
+//		}
+		return false;
+	}	
+	
+	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
+		if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
+			if(mSensorMap.keySet().size()>0){
+				
+				for(int key:mListOfMplChannels){
+					if (mSensorMap.get(key) != null) {
+						if(key==sensorMapKey){
+							continue;
+						}
+						if(mSensorMap.get(key).mIsEnabled) {
+							return true;
+						}
+					}
 				}
 			}
 		}
 		return false;
 	}
-
+			
+	protected boolean checkIfAnyMplChannelEnabled(){
+		if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
+			if(mSensorMap.keySet().size()>0){
+				
+				for(int key:mListOfMplChannels){
+					if (mSensorMap.get(key) != null) {
+						if(mSensorMap.get(key).mIsEnabled) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 	private boolean checkIfOtherExgChannelEnabled() {
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
 			if(mSensorMap.get(sensorMapKey).mIsEnabled) {

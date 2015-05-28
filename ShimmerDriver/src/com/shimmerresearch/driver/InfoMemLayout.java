@@ -140,6 +140,7 @@ public class InfoMemLayout {
 
 	public int idxNode0 =                           128+128+0;
 
+//	public int idxMplCalibration =                  0;
 	
 	// Masks and Bitshift values
 	public int maskShimmerSamplingRate =				0xFF;
@@ -453,6 +454,10 @@ public class InfoMemLayout {
 		//Include changes to mapping below in order of oldest to newest in 
 		//seperate "if statements"
 		
+//		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,10,1)){
+//			idxMplCalibration = 128+128+128+0;
+//		}
+		
 		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,8,42))
 				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,4))) {
 			idxSensors3 =			128+0;
@@ -481,11 +486,11 @@ public class InfoMemLayout {
 	
 	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
-		if(Util.compareVersions(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionRelease,
-				FW_ID.SHIMMER3.SDLOG, 0, 10, 1)) {
-			return 512;
-		}
-		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
+//		if(Util.compareVersions(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionRelease,
+//				FW_ID.SHIMMER3.SDLOG, 0, 10, 1)) {
+//			return 512;
+//		}
+		if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
 			return 384;
 		}
 		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
