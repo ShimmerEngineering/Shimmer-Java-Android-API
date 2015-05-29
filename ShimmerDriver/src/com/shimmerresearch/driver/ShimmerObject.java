@@ -435,16 +435,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public int mFirmwareVersionInternal = 0;
 	public String mFirmwareVersionParsed = "";
 	
-	protected byte[] mExpBoardArray = null; // Array where the expansion board response is stored
+	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
+	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
+
 	public int mExpansionBoardId = -1; 
 	public int mExpansionBoardRev = -1;
 	public int mExpansionBoardSpecialRev = -1;
 	public String mExpansionBoardParsed = "";  
 	public String mExpansionBoardParsedWithVer = "";  
+	protected byte[] mExpBoardArray = null; // Array where the expansion board response is stored
 	public static final int ANY_VERSION = -1;
 	
-	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
-	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
 	
 	protected String mClassName="Shimmer";
 	private double mLastReceivedTimeStamp=0;
@@ -522,14 +523,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mExperimentDurationEstimated = 0;
 	protected int mExperimentDurationMaximum = 0;
 	
-	protected String mMyBluetoothAddress=""; //TODO: duplicate of mMacIdFromUart and doesn't needs to generate mMacIdFromUartParsed
-	
 	protected String mMacIdFromInfoMem = "";
+	
+	protected String mMyBluetoothAddress=""; //TODO: duplicate of mMacIdFromUart and doesn't needs to generate mMacIdFromUartParsed
 	protected String mMacIdFromUart = "";
 	protected String mMacIdFromUartParsed = "";
 	
 	protected String mShimmerUserAssignedName = "";  // This stores the user assigned name //TODO: duplicate of mMyName
-	
 	protected String mMyName=""; // This stores the user assigned name
 
 	protected boolean mConfigFileCreationFlag = false;
@@ -10055,72 +10055,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		exgBytesGetConfigFrom(2, EXG2RegisterArray);
 	}
 
-	
-	/**
-	 * @param mHardwareVersion the mHardwareVersion to set
-	 */
-	protected void setHardwareVersion(int mHardwareVersion) {
-		this.mHardwareVersion = mHardwareVersion;
-//		this.sensorMapCreate();
-	}
 
-	/**
-	 * @param mHardwareVersionParsed the mHardwareVersionParsed to set
-	 */
-	protected void setHardwareVersionParsed(String mHardwareVersionParsed) {
-		this.mHardwareVersionParsed = mHardwareVersionParsed;
-	}
-
-	/**
-	 * @param mFirmwareVersionCode the mFirmwareVersionCode to set
-	 */
-	protected void setFirmwareVersionCode(int mFirmwareVersionCode) {
-		this.mFirmwareVersionCode = mFirmwareVersionCode;
-	}
-
-	/**
-	 * @param mFirmwareIdentifier the mFirmwareIdentifier to set
-	 */
-	protected void setFirmwareIdentifier(int mFirmwareIdentifier) {
-		this.mFirmwareIdentifier = mFirmwareIdentifier;
-	}
-
-
-	/**
-	 * @param mFirmwareVersionMajor the mFirmwareVersionMajor to set
-	 */
-	protected void setFirmwareVersionMajor(int mFirmwareVersionMajor) {
-		this.mFirmwareVersionMajor = mFirmwareVersionMajor;
-	}
-
-	/**
-	 * @param mFirmwareVersionMinor the mFirmwareVersionMinor to set
-	 */
-	protected void setFirmwareVersionMinor(int mFirmwareVersionMinor) {
-		this.mFirmwareVersionMinor = mFirmwareVersionMinor;
-	}
-
-	/**
-	 * @param mFirmwareVersionInternal the mFirmwareVersionInternal to set
-	 */
-	protected void setFirmwareVersionInternal(int mFirmwareVersionInternal) {
-		this.mFirmwareVersionInternal = mFirmwareVersionInternal;
-	}
-
-
-	/**
-	 * @param mFirmwareVersionParsed the mFirmwareVersionParsed to set
-	 */
-	protected void setFirmwareVersionParsed(String mFirmwareVersionParsed) {
-		this.mFirmwareVersionParsed = mFirmwareVersionParsed;
-	}
-	
 	/**
 	 *This can only be used for Shimmer3 devices (EXG) 
 	 *When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
 	 */
 	 protected void enableDefaultECGConfiguration() {
-		 if (mHardwareVersion==3){
+		 if (mHardwareVersion==HW_ID.SHIMMER_3){
 			setDefaultECGConfiguration();
 		 }
 	}
@@ -10130,7 +10071,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
 	 */
 	protected void enableDefaultEMGConfiguration(){
-		if (mHardwareVersion==3){
+		if (mHardwareVersion==HW_ID.SHIMMER_3){
 			setDefaultEMGConfiguration();
 		}
 		
@@ -10140,7 +10081,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
 	 */
 	protected void enableEXGTestSignal(){
-		if (mHardwareVersion==3){
+		if (mHardwareVersion==HW_ID.SHIMMER_3){
 			setEXGTestSignal();
 		}
 	}
