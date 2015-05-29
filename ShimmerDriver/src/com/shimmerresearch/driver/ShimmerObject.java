@@ -114,6 +114,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
 
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -728,6 +729,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected boolean mSensingStatus;
 	protected boolean mDockedStatus;
 	private List<String[]> mExtraSignalProperties = null;
+	
+	protected String mChargingState = "";
+	protected String mBattVoltage = "";
+	protected String mEstimatedChargePercentage = "";
 	
 	List<Integer> mListOfMplChannels = Arrays.asList(
 			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
@@ -11408,5 +11413,26 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 		return returnValue;
 
+	}
+
+	/**
+	 * @return the mChargingState
+	 */
+	public String getChargingState() {
+		return mChargingState;
+	}
+
+	/**
+	 * @return the mBattVoltage
+	 */
+	public String getBattVoltage() {
+		return mBattVoltage;
+	}
+
+	/**
+	 * @return the mEstimatedChargePercentage
+	 */
+	public String getEstimatedChargePercentage() {
+		return mEstimatedChargePercentage;
 	}
 }
