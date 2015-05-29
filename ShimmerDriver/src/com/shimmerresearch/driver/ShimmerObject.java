@@ -9817,7 +9817,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	protected void setMPU9150GyroRange(int i){
-		mGyroRange = i;
+		//Gyro rate can not be set to 250dps when DMP is on
+				if((checkIfAnyMplChannelEnabled()) && (i==0)){
+					i=1;
+				}
+				
+				mGyroRange = i;
 	}
 	
 	/**
