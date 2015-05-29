@@ -1592,8 +1592,16 @@ public class MultiShimmerTemplateService extends Service {
 		int gainEXG1CH2 = tmp.getEXG1CH2GainValue();
 		int gainEXG2CH1 = tmp.getEXG2CH1GainValue();
 		int gainEXG2CH2 = tmp.getEXG2CH2GainValue();
-		if(gainEXG1CH1 == gainEXG1CH2 && gainEXG1CH1 == gainEXG2CH1 && gainEXG1CH1 == gainEXG2CH2) //if all the chips are set to the same gain value
-			gain = gainEXG1CH1;
+		if(!tmp.isEXGUsingDefaultEMGConfiguration()){
+			if(gainEXG1CH1 == gainEXG1CH2 && gainEXG1CH1 == gainEXG2CH1 && gainEXG1CH1 == gainEXG2CH2){ //if all the chips are set to the same gain value
+				gain = gainEXG1CH1;
+			}
+		}
+		else{
+			if(gainEXG1CH1 == gainEXG1CH2){
+				gain = gainEXG1CH1;
+			}
+		}
 		
 		return gain;
 	}
