@@ -4289,7 +4289,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	        	break;
 	        	
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
-				//setExGResolution((int)valueToSet);
+				setExGResolution((int)valueToSet);
 	    		break;
 	    		
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
@@ -4299,11 +4299,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	        	break;
 				
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
-				//setLSM303DigitalAccelRate((int)valueToSet);
+				setLSM303DigitalAccelRate((int)valueToSet);
 	    		break;
 	    		
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
-				//setLSM303MagRate((int)valueToSet);
+				setLSM303MagRate((int)valueToSet);
 	        	break;
 	        	
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):

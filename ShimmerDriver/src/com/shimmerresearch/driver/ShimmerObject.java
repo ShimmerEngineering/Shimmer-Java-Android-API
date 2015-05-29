@@ -113,6 +113,7 @@ import javax.vecmath.Vector3d;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -5526,7 +5527,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * 
 	 * @param rate
 	 */
-	public void setShimmerSamplingRate(double rate){
+	protected void setShimmerSamplingRate(double rate){
 		
 		double maxRate = 0.0;
 		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R) {
@@ -9657,6 +9658,52 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected void setGSRRange(int i){
 		mGSRRange = i;
+	}
+	protected void setExGResolution(int i){
+		mExGResolution = i;
+		
+		if(mSensorMap != null) {
+			if(i==0) { // 16-bit
+				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = false;
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = true;
+				}
+				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = false;
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = true;
+				}
+			}
+			else if(i==1) { // 24-bit
+				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = false;
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = true;
+				}
+				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = false;
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = true;
+				}
+			}
+		}
+		
+	}
+	
+	/**
+	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
+	 */
+	protected void setLSM303DigitalAccelRate(int mLSM303DigitalAccelRate) {
+		// double check that rate is compatible with LPM (8 not compatible so to higher rate)
+		if((!isLSM303DigitalAccelLPM()) && (mLSM303DigitalAccelRate==8)) {
+			mLSM303DigitalAccelRate = 9;
+		}
+		
+		mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
+	}
+	
+	/**
+	 * @param mLSM303MagRate the mLSM303MagRate to set
+	 */
+	protected void setLSM303MagRate(int mLSM303MagRate) {
+		mLSM303MagRate = mLSM303MagRate;
 	}
 	
 }
