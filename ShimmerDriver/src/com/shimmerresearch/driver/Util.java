@@ -1,5 +1,7 @@
 package com.shimmerresearch.driver;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -232,6 +234,22 @@ public class Util {
 		Date date = new Date(mili);		
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 		return formatter.format(date);
+	}
+	
+	public static File[] getArrayOfFilesWithFileType(File directory, String fileType){
+		File[] listOfFiles = directory.listFiles(new FilenameFilter() {
+	        @Override
+	        public boolean accept(File dir, String fileName) {
+	        	String extension = "";
+	        	int i = fileName.lastIndexOf('.');
+	        	int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+	        	if (i > p) {
+	        	    extension = fileName.substring(i+1);
+	        	}
+	            return extension.matches("txt");
+	        }
+	    });
+		return listOfFiles;
 	}
 	
 }
