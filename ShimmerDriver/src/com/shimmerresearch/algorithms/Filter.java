@@ -189,7 +189,7 @@ public class Filter {
                 }
                 
                 if(LoHi == BAND_PASS){
-                	coefficients[(nTaps/2)+1] = coefficients[(nTaps/2)+1] +1;
+                	coefficients[(nTaps/2)] = coefficients[(nTaps/2)] +1;
                 }
                 
                 this.validparameters = true;
