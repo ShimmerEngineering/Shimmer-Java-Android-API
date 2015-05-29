@@ -174,8 +174,16 @@ public class Filter implements Serializable{
                 this.samplingRate = samplingRate;
                 this.nTaps = nTaps;
                 
-                double fcHigh = maxCornerFrequency / samplingRate;
-                double fcLow = minCornerFrequency / samplingRate;
+                double fcHigh;
+                double fcLow;
+                if(LoHi == BAND_PASS){ //bandpass (High Pass Filter at lower corner frequency; Low Pass Filter at upper corner frequency
+                	fcHigh = minCornerFrequency / samplingRate;
+	                fcLow = maxCornerFrequency / samplingRate;
+                }
+                else{ // bandstop (High Pass Filter at upper corner frequency; Low Pass Filter at lower corner frequency
+	                fcHigh = maxCornerFrequency / samplingRate;
+	                fcLow = minCornerFrequency / samplingRate;
+                }
 
                 // calculate filter coefficients
                 double[] coefficientHighPass = calculateCoefficients(fcHigh, HIGH_PASS, nTaps);

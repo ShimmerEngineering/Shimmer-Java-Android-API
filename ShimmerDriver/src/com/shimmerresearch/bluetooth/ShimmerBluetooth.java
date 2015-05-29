@@ -220,7 +220,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						printLogDataForDebugging("Queue Size: " + mABQ.size() + "\n");
 					}
 					byte[] packet = mABQ.remove();
-					ObjectCluster objectCluster=buildMsg(packet, FW_TYPE_BT, 0);
+					ObjectCluster objectCluster = null;
+					try {
+						objectCluster = buildMsg(packet, FW_TYPE_BT, 0);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (mDataProcessing!=null){
 						objectCluster = mDataProcessing.ProcessData(objectCluster);
 					}

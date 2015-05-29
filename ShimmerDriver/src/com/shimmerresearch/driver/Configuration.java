@@ -132,77 +132,16 @@ public class Configuration {
 
 		public final static String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
 		public final static String[] ListofAccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-		public final static String[] ListofGyroRange={"+/- 250 dps","+/- 500 dps","+/- 1000 dps","+/- 2000 dps"}; 
-		public final static String[] ListofMagRange={"+/- 1.3 Ga","+/- 1.9 Ga","+/- 2.5 Ga","+/- 4.0 Ga","+/- 4.7 Ga","+/- 5.6 Ga","+/- 8.1 Ga"}; 
-		public final static String[] ListofPressureResolution={"Low","Standard","High","Very High"};
-		public final static String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
-		public final static String[] ListofDefaultEXG={"ECG","EMG","Test Signal"};
-		public final static String[] ListOfExGGain={"6","1","2","3","4","8","12"};
-		public final static String[] ListOfECGReferenceElectrode={"Inverse Wilson CT","Fixed Potential"};
-		public final static String[] ListOfEMGReferenceElectrode={"Fixed Potential", "Inverse of Ch1"};
-		public final static String[] ListOfExGLeadOffDetection={"Off","DC Current"};
-		public final static String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
-		public final static String[] ListOfExGLeadOffComparator={"Pos:95%-Neg:5%","Pos:92.5%-Neg:7.5%","Pos:90%-Neg:10%","Pos:87.5%-Neg:12.5%","Pos:85%-Neg:15%","Pos:80%-Neg:20%","Pos:75%-Neg:25%","Pos:70%-Neg:30%"};
-		public final static String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
-
-
-		//TODO: From here onwards is is Mark TESTING - not finished
-		//TODO: check all indexes below
-		public final static Integer[] ListofBluetoothBaudRatesConfigValues={0,1,2,3,4,5,6,7,8,9,10};
-
-		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
-		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
-
-		//		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","1344Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode, 1344Hz only available in full power mode
-		//		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,8,9,9};
-		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1344Hz"};
-		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
-		public final static String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
-		public final static Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
-
-		public final static String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
-		public final static Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
-		public final static String[] ListofMPU9150MplRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
-		public final static Integer[] ListofMPU9150MplRateConfigValues={0,1,2,3,4};
-		public final static String[] ListofMPU9150MagRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
-		public final static Integer[] ListofMPU9150MagRateConfigValues={0,1,2,3,4};
-
 		public final static Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};
+		public final static String[] ListofGyroRange={"+/- 250 dps","+/- 500 dps","+/- 1000 dps","+/- 2000 dps"}; 
 		public final static Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
-
-		public final static Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
-		public final static Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
+		public final static String[] ListofMagRange={"+/- 1.3 Ga","+/- 1.9 Ga","+/- 2.5 Ga","+/- 4.0 Ga","+/- 4.7 Ga","+/- 5.6 Ga","+/- 8.1 Ga"}; 
 		public final static Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option
-
-		public final static Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
-		public final static Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
-		public final static Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
-
-		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
-		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
-		public final static Integer[] ListOfExGResolutionsConfigValues={0,1};
-
-		public final static Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
-		public final static Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
-		public final static Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
-		public final static Integer[] ListOfExGLeadOffCurrentConfigValues={0,1,2,3};
-		public final static Integer[] ListOfExGLeadOffComparatorConfigValues={0,1,2,3,4,5,6,7};
-
-		public final static String[] ListOfExGRespirationDetectFreq={"32 kHz","64 kHz"};
-		public final static Integer[] ListOfExGRespirationDetectFreqConfigValues={0,1};
-		public final static String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
-		public final static Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-		public final static String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
-		public final static Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
-
-		public final static String[] ListOfExGRate={"125 Hz","250 Hz","500 Hz","1 kHz","2 kHz","4 kHz","8 kHz"};
-		public final static Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
-
-		public final static String[] ListOfOnOff={"On","Off"};
-		public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
+		public final static String[] ListofPressureResolution={"Low","Standard","High","Very High"};
+		public final static Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
 		
-		
+		public final static String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
+		public final static Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
 		public final static String[] ListOfPpgAdcSelection={"Int A13","Int A12"};
 		public final static Integer[] ListOfPpgAdcSelectionConfigValues={0,1};
 		public final static String[] ListOfPpg1AdcSelection={"Int A13","Int A12"};
@@ -210,6 +149,55 @@ public class Configuration {
 		public final static String[] ListOfPpg2AdcSelection={"Int A1","Int A14"};
 		public final static Integer[] ListOfPpg2AdcSelectionConfigValues={0,1};
 
+		public final static String[] ListofDefaultEXG={"ECG","EMG","Test Signal"};
+		public final static String[] ListOfExGGain={"6","1","2","3","4","8","12"};
+		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
+		public final static String[] ListOfECGReferenceElectrode={"Inverse Wilson CT","Fixed Potential"};
+		public final static Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
+		public final static String[] ListOfEMGReferenceElectrode={"Fixed Potential", "Inverse of Ch1"};
+		public final static Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
+		public final static String[] ListOfExGLeadOffDetection={"Off","DC Current"};
+		public final static Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
+		public final static String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
+		public final static Integer[] ListOfExGLeadOffCurrentConfigValues={0,1,2,3};
+		public final static String[] ListOfExGLeadOffComparator={"Pos:95%-Neg:5%","Pos:92.5%-Neg:7.5%","Pos:90%-Neg:10%","Pos:87.5%-Neg:12.5%","Pos:85%-Neg:15%","Pos:80%-Neg:20%","Pos:75%-Neg:25%","Pos:70%-Neg:30%"};
+		public final static Integer[] ListOfExGLeadOffComparatorConfigValues={0,1,2,3,4,5,6,7};
+		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
+		public final static Integer[] ListOfExGResolutionsConfigValues={0,1};
+		public final static String[] ListOfExGRespirationDetectFreq={"32 kHz","64 kHz"};
+		public final static Integer[] ListOfExGRespirationDetectFreqConfigValues={0,1};
+		public final static String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
+		public final static Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+		public final static String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
+		public final static Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
+		public final static String[] ListOfExGRate={"125 Hz","250 Hz","500 Hz","1 kHz","2 kHz","4 kHz","8 kHz"};
+		public final static Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
+
+		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
+		public final static Integer[] ListofBluetoothBaudRatesConfigValues={0,1,2,3,4,5,6,7,8,9,10};
+
+		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1344Hz"};
+		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
+		public final static String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
+		public final static Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
+		public final static String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
+		public final static Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
+
+		public final static String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
+		public final static Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
+		public final static String[] ListofMPU9150MagRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public final static Integer[] ListofMPU9150MagRateConfigValues={0,1,2,3,4};
+
+		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
+		public final static Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
+		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
+		public final static Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
+		public final static String[] ListofMPU9150MplRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public final static Integer[] ListofMPU9150MplRateConfigValues={0,1,2,3,4};
+
+		public final static String[] ListOfOnOff={"On","Off"};
+		public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
+		
 		
 		public class SensorMapKey{
 			/**
@@ -326,6 +314,7 @@ public class Configuration {
 			public static final String GSR_RANGE = "GSR Range";
 			public static final String EXG_RESOLUTION = "Resolution";
 			public static final String EXG_GAIN = "Gain";
+			public static final String EXG_BYTES = "Bytes";
 
 			public static final String EXG_RATE = "Rate";
 			public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
@@ -380,6 +369,8 @@ public class Configuration {
 			public static final String BRIDGE_AMPLIFIER_SUPP = Configuration.Shimmer3.GuiLabelSensors.SKIN_TEMP_PROBE;
 			public static final String HIGH_G_ACCEL = Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL;
 			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
+			public static final String MPU_ACCEL_GYRO_MAG = "MPU 9DoF";
+			public static final String MPU_OTHER = "MPU Other";
 			//public static final String GPS = "GPS";
 		}
 		
@@ -844,7 +835,6 @@ public class Configuration {
 		Shimmer3.ObjectClusterSensorName.PPG2_A14 = "PPG2_A14";
 		Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 		Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC = "Timestamp_Sync";
-	
 
 		Shimmer2.ObjectClusterSensorName.TIMESTAMP = "Timestamp";
 		Shimmer2.ObjectClusterSensorName.REAL_TIME_CLOCK = "RealTime";

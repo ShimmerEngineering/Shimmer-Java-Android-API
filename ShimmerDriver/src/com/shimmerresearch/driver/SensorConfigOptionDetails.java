@@ -20,7 +20,8 @@ public class SensorConfigOptionDetails implements Serializable {
 	public static enum GUI_COMPONENT_TYPE {
 		COMBOBOX,
 		CHECKBOX,
-		TEXTFIELD
+		TEXTFIELD,
+		JPANEL
 	};
 	
 	public String[] mGuiValues;
