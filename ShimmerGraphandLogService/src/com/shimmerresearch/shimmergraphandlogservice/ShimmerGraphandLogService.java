@@ -471,48 +471,51 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             			}
             		}
             		if (mSensorView.equals("EXG1") || mSensorView.equals("EXG2") || mSensorView.equals("EXG1 16Bit") || mSensorView.equals("EXG2 16Bit")){
-            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3)
-            			{
-            				if (mService.getShimmer(mBluetoothAddress).isEXGUsingECG24Configuration() ||
-            						mService.getShimmer(mBluetoothAddress).isEXGUsingECG16Configuration()){
-            					sensorName = new String[3]; 
-            					calibratedDataArray = new double[3];
-            					//same name for both 16 and 24 bit
-            					sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
-            					sensorName[1] = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
-            					sensorName[2] = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
-            				} else if (mService.getShimmer(mBluetoothAddress).isEXGUsingEMG24Configuration() ||
-            						mService.getShimmer(mBluetoothAddress).isEXGUsingEMG16Configuration()){
-                				sensorName = new String[2]; 
-                				calibratedDataArray = new double[2];
-                				//same name for both 16 and 24 bit
-                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT;
-                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT;
-                			} else if (mService.getShimmer(mBluetoothAddress).isEXGUsingTestSignal24Configuration()){
-                				sensorName = new String[3]; 
-                				calibratedDataArray = new double[3];
-                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
-                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
-                    			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
-                			} else if (mService.getShimmer(mBluetoothAddress).isEXGUsingTestSignal16Configuration()){
-                				sensorName = new String[3]; 
-                				calibratedDataArray = new double[3];
-                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT;
-                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT;
-                    			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
-                			} else {
-                				sensorName = new String[3]; 
-                				calibratedDataArray = new double[3];
-                				if (mSensorView.equals("EXG1 16Bit") || mSensorView.equals("EXG2 16Bit")){
-                					sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT;
-                        			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT;
-                        			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
-                				} else {
-                					sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
-                					sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
-                					sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
-                				}
-                			}
+            			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
+            			if(shmr!=null){
+            				if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3)
+	            			{
+	            				if (mService.getShimmer(mBluetoothAddress).isEXGUsingECG24Configuration() ||
+	            						mService.getShimmer(mBluetoothAddress).isEXGUsingECG16Configuration()){
+	            					sensorName = new String[3]; 
+	            					calibratedDataArray = new double[3];
+	            					//same name for both 16 and 24 bit
+	            					sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
+	            					sensorName[1] = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
+	            					sensorName[2] = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
+	            				} else if (mService.getShimmer(mBluetoothAddress).isEXGUsingEMG24Configuration() ||
+	            						mService.getShimmer(mBluetoothAddress).isEXGUsingEMG16Configuration()){
+	                				sensorName = new String[2]; 
+	                				calibratedDataArray = new double[2];
+	                				//same name for both 16 and 24 bit
+	                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT;
+	                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT;
+	                			} else if (mService.getShimmer(mBluetoothAddress).isEXGUsingTestSignal24Configuration()){
+	                				sensorName = new String[3]; 
+	                				calibratedDataArray = new double[3];
+	                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
+	                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
+	                    			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
+	                			} else if (mService.getShimmer(mBluetoothAddress).isEXGUsingTestSignal16Configuration()){
+	                				sensorName = new String[3]; 
+	                				calibratedDataArray = new double[3];
+	                    			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT;
+	                    			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT;
+	                    			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
+	                			} else {
+	                				sensorName = new String[3]; 
+	                				calibratedDataArray = new double[3];
+	                				if (mSensorView.equals("EXG1 16Bit") || mSensorView.equals("EXG2 16Bit")){
+	                					sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT;
+	                        			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT;
+	                        			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
+	                				} else {
+	                					sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
+	                					sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
+	                					sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
+	                				}
+	                			}
+	            			}
             			}
             		}
             		if (mSensorView.equals("Bridge Amplifier")){
