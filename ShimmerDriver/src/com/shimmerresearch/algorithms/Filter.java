@@ -173,16 +173,8 @@ public class Filter {
                 this.samplingRate = samplingRate;
                 this.nTaps = nTaps;
                 
-                double fcHigh;
-                double fcLow;
-                if(LoHi == BAND_PASS){ //bandpass (High Pass Filter at lower corner frequency; Low Pass Filter at upper corner frequency
-                	fcHigh = minCornerFrequency / samplingRate;
-	                fcLow = maxCornerFrequency / samplingRate;
-                }
-                else{ // bandstop (High Pass Filter at upper corner frequency; Low Pass Filter at lower corner frequency
-	                fcHigh = maxCornerFrequency / samplingRate;
-	                fcLow = minCornerFrequency / samplingRate;
-                }
+                double fcHigh = maxCornerFrequency / samplingRate;
+                double fcLow = minCornerFrequency / samplingRate;
 
                 // calculate filter coefficients
                 double[] coefficientHighPass = calculateCoefficients(fcHigh, HIGH_PASS, nTaps);
@@ -197,7 +189,7 @@ public class Filter {
                 }
                 
                 if(LoHi == BAND_PASS){
-                	coefficients[(nTaps/2)+1] = coefficients[(nTaps/2)+1] +1;
+                	coefficients[(nTaps/2)] = coefficients[(nTaps/2)] +1;
                 }
                 
                 this.validparameters = true;
