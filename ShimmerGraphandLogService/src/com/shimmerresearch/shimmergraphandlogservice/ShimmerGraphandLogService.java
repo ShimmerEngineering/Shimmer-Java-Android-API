@@ -462,12 +462,15 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             		if (mSensorView.equals("ECG")){
             			
             			calibratedDataArray = new double[2];
-            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_2 ||
-            					 mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_2R)
-            			{
-            				sensorName = new String[2]; 
-            				sensorName[0] = "ECG RA-LL";
-            				sensorName[1] = "ECG LA-LL";
+            			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
+            			if(shmr!=null){
+	            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_2 ||
+	            					 mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_2R)
+	            			{
+	            				sensorName = new String[2]; 
+	            				sensorName[0] = "ECG RA-LL";
+	            				sensorName[1] = "ECG LA-LL";
+	            			}
             			}
             		}
             		if (mSensorView.equals("EXG1") || mSensorView.equals("EXG2") || mSensorView.equals("EXG1 16Bit") || mSensorView.equals("EXG2 16Bit")){
@@ -554,20 +557,26 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             		if (mSensorView.equals("External ADC A7")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
-            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_A7;
-	            		} else {
-	            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A7;
+            			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
+            			if(shmr!=null){
+	            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+	            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_A7;
+		            		} else {
+		            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A7;
 	            		}
+            			}
             	    }
             		if (mSensorView.equals("External ADC A6")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
-            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_A6;
-	            		} else {
-	            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A6;
-	            		}
+            			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
+            			if(shmr!=null){
+	            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+	            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_A6;
+		            		} else {
+		            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A6;
+		            		}
+            			}
             		}
             		if (mSensorView.equals("External ADC A15")){
             			sensorName = new String[1]; 
