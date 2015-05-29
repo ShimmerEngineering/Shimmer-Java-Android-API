@@ -413,8 +413,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte GET_DIR_COMMAND 						= (byte) 0x89;
 	public static final byte INSTREAM_CMD_RESPONSE 					= (byte) 0x8A;
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
-	protected String mMyName="";														// This stores the user assigned name
-	protected String mMyBluetoothAddress="";
+	
 	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 //	protected int mFWCode=0;
@@ -436,6 +435,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public int mFirmwareVersionInternal = 0;
 	public String mFirmwareVersionParsed = "";
 	
+	protected byte[] mExpBoardArray = null; // Array where the expansion board response is stored
 	public int mExpansionBoardId = -1; 
 	public int mExpansionBoardRev = -1;
 	public int mExpansionBoardSpecialRev = -1;
@@ -443,9 +443,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public String mExpansionBoardParsedWithVer = "";  
 	public static final int ANY_VERSION = -1;
 	
-	//TODO: change mExpBoardArray from ShimmerObject to mShimmerExpansionBoardId or are they different?
 	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
-	protected byte[] mExpBoardArray; // Array where the expansion board response is stored
 	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
 	
 	protected String mClassName="Shimmer";
@@ -518,17 +516,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected final static int FW_TYPE_BT=0;
 	protected final static int FW_TYPE_SD=1;
 	
-	protected String mShimmerUserAssignedName = "";  //TODO: this seems to be a duplicate of mMyName and ?devicename?
-	protected String mExperimentName = ""; //TODO: this seems to be a duplicate of mMyTrial
+	protected String mExperimentName = "";
 	protected int mExperimentId = 0;
 	protected int mExperimentNumberOfShimmers = 0;
 	protected int mExperimentDurationEstimated = 0;
 	protected int mExperimentDurationMaximum = 0;
 	
+	protected String mMyBluetoothAddress=""; //TODO: duplicate of mMacIdFromUart and doesn't needs to generate mMacIdFromUartParsed
+	
 	protected String mMacIdFromInfoMem = "";
 	protected String mMacIdFromUart = "";
 	protected String mMacIdFromUartParsed = "";
 	
+	protected String mShimmerUserAssignedName = "";  // This stores the user assigned name //TODO: duplicate of mMyName
+	
+	protected String mMyName=""; // This stores the user assigned name
+
 	protected boolean mConfigFileCreationFlag = false;
 	protected boolean mCalibFileCreationFlag = false;
 	
@@ -10895,12 +10898,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	/**
-	 * @param macIdFromUartParsed the mMacIdFromUartParsed to set
-	 */
-	protected void setMacIdFromUartParsed(String macIdFromUartParsed) {
-		this.mMacIdFromUartParsed = macIdFromUartParsed;
-	}
+//	/**
+//	 * @param macIdFromUartParsed the mMacIdFromUartParsed to set
+//	 */
+//	protected void setMacIdFromUartParsed(String macIdFromUartParsed) {
+//		this.mMacIdFromUartParsed = macIdFromUartParsed;
+//	}
 	
 	
 	/**
