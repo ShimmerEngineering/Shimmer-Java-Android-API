@@ -101,6 +101,8 @@ public class ShimmerVerDetails implements Serializable {
 		public final static class SHIMMER_GQ {
 			public final static int GQ_GSR = 0;
 		}
+
+		public static final int UNKNOWN = -1;
 	}
 
 }
