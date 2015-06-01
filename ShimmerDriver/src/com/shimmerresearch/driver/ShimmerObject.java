@@ -426,7 +426,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public final static int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
 //	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
 	
-	protected int mHardwareVersion=-1;
+	protected int mHardwareVersion=HW_ID.UNKNOWN;
 	public String mHardwareVersionParsed = "";
 
 	public int mFirmwareVersionCode = 0;
@@ -439,7 +439,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
 	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
 
-	public int mExpansionBoardId = -1; 
+	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN; 
 	public int mExpansionBoardRev = -1;
 	public int mExpansionBoardSpecialRev = -1;
 	public String mExpansionBoardParsed = "";  

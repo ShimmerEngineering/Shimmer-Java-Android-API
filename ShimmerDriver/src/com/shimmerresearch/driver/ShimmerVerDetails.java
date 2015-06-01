@@ -22,6 +22,7 @@ public class ShimmerVerDetails implements Serializable {
 	public static final String EXP_BRD_NONE = "None";
 	
 	public final static class HW_ID {
+		public final static int UNKNOWN = -1;
 		public final static int SHIMMER_1 = 0;
 		public final static int SHIMMER_2 = 1;
 		public final static int SHIMMER_2R = 2;
