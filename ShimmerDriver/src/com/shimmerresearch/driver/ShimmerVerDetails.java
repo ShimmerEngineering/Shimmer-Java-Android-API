@@ -45,6 +45,7 @@ public class ShimmerVerDetails implements Serializable {
     }
     
 	public static final class HW_ID_SR_CODES {
+		public final static int UNKNOWN = -1;
 		public final static int EXP_BRD_BR_AMP = 8;
 		public final static int EXP_BRD_BR_AMP_UNIFIED = 49;
 		public final static int EXP_BRD_GSR = 14;
@@ -55,6 +56,8 @@ public class ShimmerVerDetails implements Serializable {
 		public final static int EXP_BRD_PROTO3_DELUXE = 38;
 		public final static int EXP_BRD_HIGH_G_ACCEL = 44;
 		public final static int EXP_BRD_GPS = 46;
+		
+		public final static int SHIMMER3 = 31;
 		public final static int BASE15U = 41;
 		public final static int BASE6U = 42;
 	}
