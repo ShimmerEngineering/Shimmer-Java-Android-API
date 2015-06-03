@@ -195,18 +195,7 @@ public class ConfigurationFragment extends Fragment{
         	}
         } 
 
-        if (mGSRRangeV==0) {
-        	buttonGsr.setText("GSR Range"+"\n"+"(10kOhm to 56kOhm)");
-        } else if (mGSRRangeV==1) {
-        	buttonGsr.setText("GSR Range"+"\n"+"(56kOhm to 220kOhm)");
-        } else if (mGSRRangeV==2) {
-        	buttonGsr.setText("GSR Range"+"\n"+"(220kOhm to 680kOhm)");
-        } else if (mGSRRangeV==3) {
-        	buttonGsr.setText("GSR Range"+"\n"+"(680kOhm to 4.7MOhm)");
-        } else if (mGSRRangeV==4) {
-        	buttonGsr.setText("GSR Range"+"\n"+"(Auto Range)");
-        }
-        
+        buttonGsr.setText("GSR Range"+"\n"+Configuration.Shimmer3.ListofGSRRange[mGSRRangeV]);
         
         if(shimmerConfig.getIntExpPower()==1){
   			cBoxInternalExpPower.setChecked(true);
@@ -240,7 +229,7 @@ public class ConfigurationFragment extends Fragment{
         
         if (shimmerConfig.getShimmerVersion()==ShimmerVerDetails.HW_ID.SHIMMER_3){
         	cBox5VReg.setEnabled(false);
-        	String currentGyroRange = "("+Configuration.Shimmer3.ListofGyroRange[shimmerConfig.getAccelRange()]+")";
+        	String currentGyroRange = "("+Configuration.Shimmer3.ListofGyroRange[shimmerConfig.getGyroRange()]+")";
         	buttonGyroRange.setText("Gyro Range"+"\n"+currentGyroRange);
         	String currentMagRange = "("+Configuration.Shimmer3.ListofMagRange[shimmerConfig.getMagRange()-1]+")";
     		buttonMagRange.setText("Mag Range"+"\n"+currentMagRange);
@@ -441,13 +430,13 @@ public class ConfigurationFragment extends Fragment{
                 		 Log.d("Shimmer",Configuration.Shimmer3.ListofGyroRange[item]);
              		    int gyroRange=0;
                		  
-               		    if (Configuration.Shimmer3.ListofGyroRange[item]=="250dps"){
+               		    if (Configuration.Shimmer3.ListofGyroRange[item]==Configuration.Shimmer3.ListofGyroRange[0]){
              	  		    	gyroRange=0;
-             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]=="500dps"){
+             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]==Configuration.Shimmer3.ListofGyroRange[1]){
              	  		    	gyroRange=1;
-             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]=="1000dps"){
+             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]==Configuration.Shimmer3.ListofGyroRange[2]){
              	  		    	gyroRange=2;
-             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]=="2000dps"){
+             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]==Configuration.Shimmer3.ListofGyroRange[3]){
              	  		    	gyroRange=3;
              	  		    }
 
@@ -477,21 +466,21 @@ public class ConfigurationFragment extends Fragment{
                 		 int magRange=0;
              		  
              		     
-             		    	if (Configuration.Shimmer2.ListofMagRange[item]=="+/- 0.8Ga"){
+             		    	if (Configuration.Shimmer2.ListofMagRange[item]==Configuration.Shimmer2.ListofMagRange[0]){
              		    		magRange=0;
-             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]=="+/- 1.3Ga"){
+             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]==Configuration.Shimmer2.ListofMagRange[1]){
              		    		magRange=1;
-             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]=="+/- 1.9Ga"){
+             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]==Configuration.Shimmer2.ListofMagRange[2]){
              		    		magRange=2;
-             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]=="+/- 2.5Ga"){
+             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]==Configuration.Shimmer2.ListofMagRange[3]){
              		    		magRange=3;
-             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]=="+/- 4.0Ga"){
+             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]==Configuration.Shimmer2.ListofMagRange[4]){
              		    		magRange=4;
-             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]=="+/- 4.7Ga"){
+             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]==Configuration.Shimmer2.ListofMagRange[5]){
              		    		magRange=5;
-             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]=="+/- 5.6Ga"){
+             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]==Configuration.Shimmer2.ListofMagRange[6]){
              		    		magRange=6;
-             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]=="+/- 8.1Ga"){
+             		    	} else if (Configuration.Shimmer2.ListofMagRange[item]==Configuration.Shimmer2.ListofMagRange[7]){
              		    		magRange=7;
 
              		     }
@@ -510,19 +499,19 @@ public class ConfigurationFragment extends Fragment{
                 		 Log.d("Shimmer",Configuration.Shimmer3.ListofMagRange[item]);
                 		 int magRange=0;
              		  
-             		    	if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 1.3Ga"){
+             		    	if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[0]){
              		    		magRange=1;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 1.9Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[1]){
              		    		magRange=2;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 2.5Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[2]){
              		    		magRange=3;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 4.0Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[3]){
              		    		magRange=4;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 4.7Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[4]){
              		    		magRange=5;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 5.6Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[5]){
              		    		magRange=6;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 8.1Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[6]){
              		    		magRange=7;
              		    	}
 
@@ -554,13 +543,13 @@ public class ConfigurationFragment extends Fragment{
                 		 Log.d("Shimmer",Configuration.Shimmer3.ListofPressureResolution[item]);
                 		 int pressureRes=0;
                		  
-               		    if (Configuration.Shimmer3.ListofPressureResolution[item]=="Low"){
+               		    if (Configuration.Shimmer3.ListofPressureResolution[item]==Configuration.Shimmer3.ListofPressureResolution[0]){
              	  		    	pressureRes=0;
-             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]=="Standard"){
+             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]==Configuration.Shimmer3.ListofPressureResolution[1]){
              	  		    	pressureRes=1;
-             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]=="High"){
+             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]==Configuration.Shimmer3.ListofPressureResolution[2]){
              	  		    	pressureRes=2;
-             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]=="Very High"){
+             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]==Configuration.Shimmer3.ListofPressureResolution[3]){
              	  		    	pressureRes=3;
              	  		    } 
 
@@ -588,15 +577,15 @@ public class ConfigurationFragment extends Fragment{
                 	public void onClick(DialogInterface dialog, int item) {
                 		 Log.d("Shimmer",Configuration.Shimmer3.ListofGSRRange[item]);
              		    int gsrRange=0;
-             		    if (Configuration.Shimmer3.ListofGSRRange[item]=="10kOhm to 56kOhm"){
+             		    if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[0]){
              		    	gsrRange=0;
-             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]=="56kOhm to 220kOhm"){
+             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[1]){
              		    	gsrRange=1;
-             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]=="220kOhm to 680kOhm"){
+             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[2]){
              		    	gsrRange=2;
-             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]=="680kOhm to 4.7MOhm"){
+             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[3]){
              		    	gsrRange=3;
-             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]=="Auto Range"){
+             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[4]){
              		    	gsrRange=4;
              		    }
 
