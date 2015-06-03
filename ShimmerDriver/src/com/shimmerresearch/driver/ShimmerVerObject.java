@@ -33,6 +33,32 @@ public class ShimmerVerObject implements Serializable {
 	public int mShimmerExpansionBoardId = 0;
 	
 	/**
+	 * Used specifically when finding the current information from a docked
+	 * Shimmer through the dock's UART communication channel.
+
+	 * @param hardwareVersion
+	 * @param firmwareIdentifier
+	 * @param firmwareVersionMajor
+	 * @param firmwareVersionMinor
+	 * @param firmwareVersionInternal
+	 */
+	public ShimmerVerObject(
+			int hardwareVersion, 
+			int firmwareIdentifier,
+			int firmwareVersionMajor, 
+			int firmwareVersionMinor,
+			int firmwareVersionInternal) {
+
+		mHardwareVersion = hardwareVersion;
+		mFirmwareIdentifier = firmwareIdentifier;
+		mFirmwareVersionMajor = firmwareVersionMajor;
+		mFirmwareVersionMinor = firmwareVersionMinor;
+		mFirmwareVersionInternal = firmwareVersionInternal;
+
+		parseVerDetails();
+	}
+
+	/**
 	 * Used specifically for compatible version checking
 	 * 
 	 * @param hardwareVersion
@@ -58,33 +84,6 @@ public class ShimmerVerObject implements Serializable {
 		
 		parseVerDetails();
 	}
-	
-	/**
-	 * Used specifically when finding the current information from a docked
-	 * Shimmer through the dock's UART communication channel.
-
-	 * @param hardwareVersion
-	 * @param firmwareIdentifier
-	 * @param firmwareVersionMajor
-	 * @param firmwareVersionMinor
-	 * @param firmwareVersionInternal
-	 */
-	public ShimmerVerObject(
-			int hardwareVersion, 
-			int firmwareIdentifier,
-			int firmwareVersionMajor, 
-			int firmwareVersionMinor,
-			int firmwareVersionInternal) {
-
-		mHardwareVersion = hardwareVersion;
-		mFirmwareIdentifier = firmwareIdentifier;
-		mFirmwareVersionMajor = firmwareVersionMajor;
-		mFirmwareVersionMinor = firmwareVersionMinor;
-		mFirmwareVersionInternal = firmwareVersionInternal;
-
-		parseVerDetails();
-	}
-	
 	
 	/**
 	 * Empty constructor used when finding the current information from a docked

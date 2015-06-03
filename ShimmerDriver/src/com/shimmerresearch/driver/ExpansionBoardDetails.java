@@ -16,6 +16,7 @@ public class ExpansionBoardDetails {
 	public int mExpBoardSpecialRev = -1;
 	public String mExpBoardParsed = "";
 	public String mExpBoardParsedWithVer = "";
+	public byte[] mExpBoardArray = null; 
 	
 	public ExpansionBoardDetails(
 			int boardID,
@@ -26,6 +27,7 @@ public class ExpansionBoardDetails {
 	
 	public ExpansionBoardDetails(byte[] mExpBoardArray) {
 		if(mExpBoardArray!=null){
+			this.mExpBoardArray = mExpBoardArray; 
 			int boardID = mExpBoardArray[0] & 0xFF;
 			int boardRev = mExpBoardArray[1] & 0xFF;
 			int specialRev = mExpBoardArray[2] & 0xFF;

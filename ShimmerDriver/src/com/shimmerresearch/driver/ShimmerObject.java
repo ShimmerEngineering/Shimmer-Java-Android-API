@@ -113,6 +113,8 @@ import javax.vecmath.Vector3d;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
+
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -412,8 +414,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte GET_DIR_COMMAND 						= (byte) 0x89;
 	public static final byte INSTREAM_CMD_RESPONSE 					= (byte) 0x8A;
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
-	protected String mMyName="";														// This stores the user assigned name
-	protected String mMyBluetoothAddress="";
+	
 	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 //	protected int mFWCode=0;
@@ -425,7 +426,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public final static int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
 //	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
 	
-	protected int mHardwareVersion=-1;
+	protected int mHardwareVersion=HW_ID.UNKNOWN;
 	public String mHardwareVersionParsed = "";
 
 	public int mFirmwareVersionCode = 0;
@@ -435,17 +436,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public int mFirmwareVersionInternal = 0;
 	public String mFirmwareVersionParsed = "";
 	
-	public int mExpansionBoardId = -1; 
+	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
+	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
+
+	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN; 
 	public int mExpansionBoardRev = -1;
 	public int mExpansionBoardSpecialRev = -1;
 	public String mExpansionBoardParsed = "";  
 	public String mExpansionBoardParsedWithVer = "";  
+	protected byte[] mExpBoardArray = null; // Array where the expansion board response is stored
 	public static final int ANY_VERSION = -1;
 	
-	//TODO: change mExpBoardArray from ShimmerObject to mShimmerExpansionBoardId or are they different?
-	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
-	protected byte[] mExpBoardArray; // Array where the expansion board response is stored
-	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
 	
 	protected String mClassName="Shimmer";
 	private double mLastReceivedTimeStamp=0;
@@ -517,17 +518,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected final static int FW_TYPE_BT=0;
 	protected final static int FW_TYPE_SD=1;
 	
-	protected String mShimmerUserAssignedName = "";  //TODO: this seems to be a duplicate of mMyName and ?devicename?
-	protected String mExperimentName = ""; //TODO: this seems to be a duplicate of mMyTrial
+	protected String mExperimentName = "";
 	protected int mExperimentId = 0;
 	protected int mExperimentNumberOfShimmers = 0;
 	protected int mExperimentDurationEstimated = 0;
 	protected int mExperimentDurationMaximum = 0;
 	
 	protected String mMacIdFromInfoMem = "";
+	
+	protected String mMyBluetoothAddress=""; //TODO: duplicate of mMacIdFromUart and doesn't needs to generate mMacIdFromUartParsed
 	protected String mMacIdFromUart = "";
 	protected String mMacIdFromUartParsed = "";
 	
+	protected String mShimmerUserAssignedName = "";  // This stores the user assigned name //TODO: duplicate of mMyName
+	protected String mMyName=""; // This stores the user assigned name
+
 	protected boolean mConfigFileCreationFlag = false;
 	protected boolean mCalibFileCreationFlag = false;
 	
@@ -724,6 +729,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected boolean mSensingStatus;
 	protected boolean mDockedStatus;
 	private List<String[]> mExtraSignalProperties = null;
+	
+	protected String mChargingState = "";
+	protected String mBattVoltage = "";
+	protected String mEstimatedChargePercentage = "";
 	
 	List<Integer> mListOfMplChannels = Arrays.asList(
 			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
@@ -5765,8 +5774,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mEXG1RegisterArray[0] = (byte) ((mEXG1RegisterArray[0] & ~0x07) | mEXG1RateSetting);
 		mEXG2RegisterArray[0] = (byte) ((mEXG2RegisterArray[0] & ~0x07) | mEXG2RateSetting);
 		
-		//TODO decide whether to include exgBytesGetFromConfig() here or not
-		//exgBytesGetFromConfig();
+		exgBytesGetFromConfig();
 		return mEXG1RateSetting;
 	}
 	
@@ -6641,14 +6649,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		
 	}
-
-	/**
-	 * @return a refreshed version of the current mShimmerInfoMemBytes
-	 */
-	public byte[] refreshShimmerInfoMemBytes() {
-//		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
-		return infoMemByteArrayGenerate(false);
-	}
 	
 	/**
 	 * Generate the Shimmer's Information Memory byte array based on the
@@ -6690,14 +6690,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mInfoMemBytes[infoMemMap.idxBufferSize] = (byte) 1;//(byte) (mBufferSize & infoMemMap.maskBufferSize); 
 		
 		// Sensors
-		//TODO: check version compatible?
-		mEnabledSensors = (long)0;
-		sensorMapCheckandCorrectHwDependencies();
-		for(Integer key:mSensorMap.keySet()) {
-			if(mSensorMap.get(key).mIsEnabled) {
-				mEnabledSensors |= mSensorMap.get(key).mSensorBitmapIDSDLogHeader;
-			}
-		}
+		refreshEnabledSensorsFromSensorMap();
 		mInfoMemBytes[infoMemMap.idxSensors0] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors0) & infoMemMap.maskSensors);
 		mInfoMemBytes[infoMemMap.idxSensors1] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors1) & infoMemMap.maskSensors);
 		mInfoMemBytes[infoMemMap.idxSensors2] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors2) & infoMemMap.maskSensors);
@@ -6947,6 +6940,29 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			b = (byte)0xFF;
 		}
 		return newArray;
+	}
+	
+
+	/**
+	 * @return a refreshed version of the current mShimmerInfoMemBytes
+	 */
+	public byte[] refreshShimmerInfoMemBytes() {
+//		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
+		return infoMemByteArrayGenerate(false);
+	}
+	
+	public void refreshEnabledSensorsFromSensorMap(){
+		if(mSensorMap!=null) {
+			if (mHardwareVersion == HW_ID.SHIMMER_3){
+				mEnabledSensors = (long)0;
+				sensorMapCheckandCorrectHwDependencies();
+				for(Integer key:mSensorMap.keySet()) {
+					if(mSensorMap.get(key).mIsEnabled) {
+						mEnabledSensors |= mSensorMap.get(key).mSensorBitmapIDSDLogHeader;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -8651,6 +8667,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			// Automatically control internal expansion board power
 			checkIfInternalExpBrdPowerIsNeeded();
 			
+			refreshEnabledSensorsFromSensorMap();
+			
 			if(mSensorMap.get(sensorMapKey).mIsEnabled == state) {
 				return true;
 			}
@@ -9925,15 +9943,1496 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if((!isLSM303DigitalAccelLPM()) && (mLSM303DigitalAccelRate==8)) {
 			mLSM303DigitalAccelRate = 9;
 		}
-		
-		mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
+		this.mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
 	}
 	
 	/**
 	 * @param mLSM303MagRate the mLSM303MagRate to set
 	 */
 	protected void setLSM303MagRate(int mLSM303MagRate) {
-		mLSM303MagRate = mLSM303MagRate;
+		this.mLSM303MagRate = mLSM303MagRate;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	protected void setLastReadRealTimeClockValue(long time) {
+//		mShimmerLastReadRealTimeClockValue = time;
+//		
+////		Date date = new Date(mShimmerLastReadRealTimeClockValue);
+////		mShimmerLastReadRtcValueParsed = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+//		
+//		mShimmerLastReadRtcValueParsed = Util.convertSecondsToDateString(time/1000);
+//	}
+	
+//	protected void setButtonStart(int i){
+//		mButtonStart = i; // 0 is undock start, 1 is button start
+//	}
+	
+//	/**
+//	 * @param mSyncTimeWhenLogging the mSyncTimeWhenLogging to set
+//	 */
+//	protected void setSyncTimeWhenLogging(int mSyncTimeWhenLogging) {
+//		this.mSyncTimeWhenLogging = mSyncTimeWhenLogging;
+//	}
+
+	
+//	protected void setShimmerSamplingRate(double enteredSamplingRate){
+//    	// don't let sampling rate < 0 OR > 32768
+//    	if(enteredSamplingRate <= 0) enteredSamplingRate = 1.0;
+//    	else if (enteredSamplingRate > 32768) enteredSamplingRate = 32768.0;
+//    	
+//    	 // get Shimmer compatible sampling rate
+//    	Double actualSamplingRate = 32768/Math.floor(32768/enteredSamplingRate);
+//    	 // round sampling rate to two decimal places
+//    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
+//		mSamplingRate = actualSamplingRate;
+//	}
+	
+//	protected void setDigitalAccelRange(int i){
+//		this.setDigitalAccelRange(i);
+//	}
+//	
+//	protected void setMPU9150GyroRange(int i){
+//		this.setMPU9150GyroRange(i);
+//	}
+//	
+//	protected void setPressureResolution(int i){
+//		this.setPressureResolution(i);
+//	}
+//	
+//	protected void setGSRRange(int i){
+//		this.setGSRRange(i);
+//	}
+//	
+//	protected void setExGResolution(int i){
+//		this.setExGResolution(i);
+//	}
+//	
+//	
+//	protected void setExGGainSetting(int i){
+//		this.setExGGainSetting(i);
+//	}
+
+	public int getExGGainSetting(){
+//		mEXG1CH1GainSetting = i;
+//		mEXG1CH2GainSetting = i;
+//		mEXG2CH1GainSetting = i;
+//		mEXG2CH2GainSetting = i;
+//		System.out.println("SlotDetails: getExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
+		return this.mEXG1CH1GainSetting;
 	}
 	
+	/**
+	 * @param mEXG1RegisterArray the mEXG1RegisterArray to set
+	 */
+	protected void setEXG1RegisterArray(byte[] EXG1RegisterArray) {
+		this.mEXG1RegisterArray = EXG1RegisterArray;
+		exgBytesGetConfigFrom(1, EXG1RegisterArray);
+	}
+
+	/**
+	 * @param mEXG2RegisterArray the mEXG2RegisterArray to set
+	 */
+	protected void setEXG2RegisterArray(byte[] EXG2RegisterArray) {
+		this.mEXG2RegisterArray = EXG2RegisterArray;
+		exgBytesGetConfigFrom(2, EXG2RegisterArray);
+	}
+
+
+	/**
+	 *This can only be used for Shimmer3 devices (EXG) 
+	 *When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
+	 */
+	 protected void enableDefaultECGConfiguration() {
+		 if (mHardwareVersion==HW_ID.SHIMMER_3){
+			setDefaultECGConfiguration();
+		 }
+	}
+
+	/**
+	 * This can only be used for Shimmer3 devices (EXG)
+	 * When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
+	 */
+	protected void enableDefaultEMGConfiguration(){
+		if (mHardwareVersion==HW_ID.SHIMMER_3){
+			setDefaultEMGConfiguration();
+		}
+		
+	}
+
+	/**
+	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
+	 */
+	protected void enableEXGTestSignal(){
+		if (mHardwareVersion==HW_ID.SHIMMER_3){
+			setEXGTestSignal();
+		}
+	}
+
+	/**
+	 * @param mShimmerInfoMemBytes the mShimmerInfoMemBytes to set
+	 */
+	protected void setShimmerInfoMemBytes(byte[] mShimmerInfoMemBytes) {
+		this.infoMemByteArrayParse(mShimmerInfoMemBytes);
+	}
+
+	/**
+	 * @return the mShimmerInfoMemBytes
+	 */
+	public byte[] getShimmerInfoMemBytes() {
+		return mInfoMemBytes;
+	}
+	
+//	protected void checkShimmerConfigurationBeforeConfiguring() {
+//		this.checkShimmerConfigurationBeforeConfiguring();
+//	}
+	
+	/**
+	 * @return the mShimmerInfoMemBytes generated from an empty byte array. This is called to generate the InfoMem bytes for writing to the Shimmer.
+	 */
+	protected byte[] generateShimmerInfoMemBytes() {
+//		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
+		return infoMemByteArrayGenerate(true);
+	}
+
+
+	
+//	protected void clearShimmerInfoMemBytes() {
+//		this.mShimmerInfoMemBytes = createEmptyInfoMemByteArray(512);
+//	}
+	
+	
+	/**
+	 * @param mConfigTime the mConfigTime to set
+	 */
+	protected void setConfigTime(long mConfigTime) {
+		this.mConfigTime = mConfigTime;
+	}
+
+	
+	/**
+	 * @param mBufferSize the mBufferSize to set
+	 */
+	protected void setBufferSize(int mBufferSize) {
+		this.mBufferSize = mBufferSize;
+	}
+
+	
+	protected void setShimmerSensorMap(TreeMap<Integer,SensorDetails> sensorMap) {
+		this.mSensorMap = sensorMap;	
+	}
+	
+	
+//	/**
+//	 * @param mMPU9150GyroAccelRate the mMPU9150GyroAccelRate to set in Hz
+//	 */
+//	protected void setMPU9150GyroAccelRateInHz(double mMPU9150GyroAccelRate) {
+//		// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
+//		double numerator = 1000;
+//		if(mMPU9150LPF == 0) {
+//			numerator = 8000;
+//		}
+//		
+//		if(mMPU9150GyroAccelRate<4) {
+//			mMPU9150GyroAccelRate = 4;
+//		}
+//		else if(mMPU9150GyroAccelRate>numerator) {
+//			mMPU9150GyroAccelRate = numerator;
+//		}
+//		
+//		int result = (int) (numerator / mMPU9150GyroAccelRate);
+//		if(result>255) result = 255;
+//
+//		this.mMPU9150GyroAccelRate = result;
+//	}
+	
+
+	
+
+//	/**
+//	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
+//	 */
+//	protected void setMPU9150AccelRange(int mMPU9150AccelRange) {
+//		this.setMPU9150AccelRange(mMPU9150AccelRange);
+//	}
+
+	/**
+	 * @param mMPU9150MPLSamplingRate the mMPU9150MPLSamplingRate to set
+	 */
+	protected void setMPU9150MPLSamplingRate(int mMPU9150MPLSamplingRate) {
+		this.mMPU9150MPLSamplingRate = mMPU9150MPLSamplingRate;
+	}
+
+	/**
+	 * @param mMPU9150MagSamplingRate the mMPU9150MagSamplingRate to set
+	 */
+	protected void setMPU9150MagSamplingRate(int mMPU9150MagSamplingRate) {
+		this.mMPU9150MagSamplingRate = mMPU9150MagSamplingRate;
+	}
+
+	/**
+	 * @param mExperimentName the mExperimentName to set
+	 */
+	protected void setExperimentName(String mExperimentName) {
+		if(mExperimentName.length()>12)
+			this.mExperimentName = mExperimentName.substring(0, 11);
+		else
+			this.mExperimentName = mExperimentName;
+	}
+
+	/**
+	 * @param mExperimentNumberOfShimmers the mExperimentNumberOfShimmers to set
+	 */
+	protected void setExperimentNumberOfShimmers(int mExperimentNumberOfShimmers) {
+    	int maxValue = (int) ((Math.pow(2, 8))-1); 
+    	if(mExperimentNumberOfShimmers>maxValue) {
+    		mExperimentNumberOfShimmers = maxValue;
+    	}
+    	else if(mExperimentNumberOfShimmers<=0) {
+    		mExperimentNumberOfShimmers = 1;
+    	}
+    	this.mExperimentNumberOfShimmers = mExperimentNumberOfShimmers;
+	}
+
+	/**
+	 * @param mExperimentDurationEstimated the mExperimentDurationEstimated to set.  Min value is 1.
+	 */
+	protected void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
+    	int maxValue = (int) ((Math.pow(2, 16))-1); 
+    	if(mExperimentDurationEstimated>maxValue) {
+    		mExperimentDurationEstimated = maxValue;
+    	}
+    	else if(mExperimentDurationEstimated<=0) {
+    		mExperimentDurationEstimated = 1;
+    	}
+    	this.mExperimentDurationEstimated = mExperimentDurationEstimated;
+	}
+
+	/**
+	 * @param mExperimentDurationMaximum the mExperimentDurationMaximum to set. Min value is 0.
+	 */
+	protected void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
+    	int maxValue = (int) ((Math.pow(2, 16))-1); 
+    	if(mExperimentDurationMaximum>maxValue) {
+    		mExperimentDurationMaximum = maxValue;
+    	}
+    	else if(mExperimentDurationMaximum<0) {
+    		mExperimentDurationMaximum = 1;
+    	}
+    	this.mExperimentDurationMaximum = mExperimentDurationMaximum;
+	}
+
+//	/**
+	// * This enables the low power accel option. When not enabled the sampling
+	// rate of the accel is set to the closest value to the actual sampling rate
+	// that it can achieve. In low power mode it defaults to 10Hz. Also and
+	// additional low power mode is used for the LSM303DLHC. This command will
+	// only supports the following Accel range +4g, +8g , +16g
+	//	 * @param enable
+//	 */
+////	@Override
+//	protected void enableLowPowerAccelWR(boolean enable){
+//		this.setLowPowerAccelWR(enable);
+//	}
+//
+//	/**
+//	 * @param mLSM303DigitalAccelHPM the mLSM303DigitalAccelHRM to set
+//	 */
+////	@Override
+//	protected void enableLowPowerGyro(boolean state) {
+//		this.setLowPowerGyro(state);
+//	}
+//	
+//
+//	/**
+//	 * @param mLSM303DigitalAccelLPM the mLSM303DigitalAccelLPM to set
+//	 */
+////	@Override
+//	protected void enableLowPowerMag(boolean state) {
+//		this.setLowPowerMag(state);
+//	}
+
+	/**
+	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
+	 */
+	protected void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
+		if(mShimmerUserAssignedName.length()>12) {
+			this.mShimmerUserAssignedName = mShimmerUserAssignedName.substring(0, 12);
+		}
+		else { 
+			this.mShimmerUserAssignedName = mShimmerUserAssignedName;
+		}
+	}
+
+//	/**
+//	 * @param state the mInternalExpPower state to set
+//	 */
+//	protected void setInternalExpPower(boolean state) {
+//		this.setInternalExpPower(state);
+//	}
+	
+	/**
+	 * @param state the mInternalExpPower state to set
+	 */
+	protected void setInternalExpPower(int state) {
+		this.mInternalExpPower = state;
+	}
+	
+	/**
+	 * @return the mInternalExpPower
+	 */
+	public boolean isInternalExpPower() {
+		if(mInternalExpPower > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * @param state the mMasterShimmer state to set
+	 */
+	protected void setMasterShimmer(boolean state) {
+		if(state) 
+			this.mMasterShimmer = 0x01;
+		else 
+			this.mMasterShimmer = 0x00;
+	}
+	
+	/**
+	 * @return the mMasterShimmer
+	 */
+	public boolean isMasterShimmer() {
+		if(this.mMasterShimmer > 0)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * @param state the mSingleTouch state to set
+	 */
+	protected void setSingleTouch(boolean state) {
+		if(state) 
+			this.mSingleTouch = 0x01;
+		else 
+			this.mSingleTouch = 0x00;
+	}
+
+	/**
+	 * @return the mSingleTouch
+	 */
+	public boolean isSingleTouch() {
+		if(this.mSingleTouch > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * @param state  the mTCXO state to set
+	 */
+	protected void setTCXO(boolean state) {
+		if(state) 
+			this.mTCXO = 0x01;
+		else 
+			this.mTCXO = 0x00;
+	}
+
+	/**
+	 * @return the mTCXO
+	 */
+	public boolean isTCXO() {
+		if(mTCXO > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * @return the mSyncWhenLogging
+	 */
+	public boolean isSyncWhenLogging() {
+		if(mSyncWhenLogging > 0)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * @param state the mSyncWhenLogging state to set
+	 */
+	protected void setSyncWhenLogging(boolean state) {
+		if(state) 
+			this.mSyncWhenLogging = 0x01;
+		else 
+			this.mSyncWhenLogging = 0x00;
+	}
+
+
+	/**
+	 * @return the mButtonStart
+	 */
+	public boolean isButtonStart() {
+		if(mButtonStart > 0)
+			return true;
+		else
+			return false;
+	}
+
+
+	/**
+	 * @param state the mButtonStart state to set
+	 */
+	protected void setButtonStart(boolean state) {
+		if(state) 
+			this.mButtonStart = 0x01;
+		else 
+			this.mButtonStart = 0x00;
+	}
+
+	
+	// MPL options
+	/**
+	 * @return the mMPU9150DMP
+	 */
+	public boolean isMPU9150DMP() {
+		if(mMPU9150DMP > 0)
+			return true;
+		else
+			return false;
+	}
+
+
+	/**
+	 * @param state the mMPU9150DMP state to set
+	 */
+	protected void setMPU9150DMP(boolean state) {
+		if(state) 
+			this.mMPU9150DMP = 0x01;
+		else 
+			this.mMPU9150DMP = 0x00;
+	}
+	
+	/**
+	 * @return the mMPLEnable
+	 */
+	public boolean isMPLEnable() {
+		if(mMPLEnable > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * @param state the mMPLEnable state to set
+	 */
+	protected void setMPLEnable(boolean state) {
+		if(state) 
+			this.mMPLEnable = 0x01;
+		else 
+			this.mMPLEnable = 0x00;
+	}
+
+	/**
+	 * @return the mMPLSensorFusion
+	 */
+	public boolean isMPLSensorFusion() {
+		if(mMPLSensorFusion > 0)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * @param state the mMPLSensorFusion state to set
+	 */
+	protected void setMPLSensorFusion(boolean state) {
+		if(state) 
+			this.mMPLSensorFusion = 0x01;
+		else 
+			this.mMPLSensorFusion = 0x00;
+	}
+
+	/**
+	 * @return the mMPLGyroCalTC
+	 */
+	public boolean isMPLGyroCalTC() {
+		if(mMPLGyroCalTC > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * @param state the mMPLGyroCalTC state to set
+	 */
+	protected void setMPLGyroCalTC(boolean state) {
+		if(state) 
+			this.mMPLGyroCalTC = 0x01;
+		else 
+			this.mMPLGyroCalTC = 0x00;
+	}
+
+	/**
+	 * @return the mMPLVectCompCal
+	 */
+	public boolean isMPLVectCompCal() {
+		if(mMPLVectCompCal > 0)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * @param state the mMPLVectCompCal state to set
+	 */
+	protected void setMPLVectCompCal(boolean state) {
+		if(state) 
+			this.mMPLVectCompCal = 0x01;
+		else 
+			this.mMPLVectCompCal = 0x00;
+	}
+
+	/**
+	 * @return the mMPLMagDistCal
+	 */
+	public boolean isMPLMagDistCal() {
+		if(mMPLMagDistCal > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * @param state the mMPLMagDistCal state to set
+	 */
+	protected void setMPLMagDistCal(boolean state) {
+		if(state) 
+			this.mMPLMagDistCal = 0x01;
+		else 
+			this.mMPLMagDistCal = 0x00;
+	}
+	
+	/**
+	 * @return the mMPLSensorFusion
+	 */
+	public boolean getmMPLSensorFusion() {
+		if(mMPLSensorFusion > 0)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * @param state the mMPLSensorFusion state to set
+	 */
+	protected void setmMPLSensorFusion(boolean state) {
+		if(state) 
+			this.mMPLSensorFusion = 0x01;
+		else 
+			this.mMPLSensorFusion = 0x00;
+	}
+
+
+	/**
+	 * @param mMPU9150MotCalCfg the mMPU9150MotCalCfg to set
+	 */
+	protected void setMPU9150MotCalCfg(int mMPU9150MotCalCfg) {
+		this.mMPU9150MotCalCfg = mMPU9150MotCalCfg;
+	}
+
+	/**
+	 * @param mMPU9150LPF the mMPU9150LPF to set
+	 */
+	protected void setMPU9150LPF(int mMPU9150LPF) {
+		this.mMPU9150LPF = mMPU9150LPF;
+	}
+
+//	protected void setLSM303MagRange(int i){
+//		this.setLSM303MagRange(i);
+//	}
+	
+//	/**
+//	 * @param mLSM303MagRate the mLSM303MagRate to set
+//	 */
+//	protected void setLSM303MagRate(int mLSM303MagRate) {
+//		this.setLSM303MagRate(mLSM303MagRate);
+//	}
+
+//	/**
+//	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
+//	 */
+//	protected void setLSM303DigitalAccelRate(int lsm303DigitalAccelRate) {
+//		this.setLSM303DigitalAccelRate(lsm303DigitalAccelRate);
+//	}
+
+	/**
+	 * @param mExperimentId the mExperimentId to set
+	 */
+	protected void setExperimentId(int mExperimentId) {
+    	int maxValue = (int) ((Math.pow(2, 8))-1); 
+    	if(mExperimentId>maxValue) {
+    		mExperimentId = maxValue;
+    	}
+    	else if(mExperimentId<0) {
+    		mExperimentId = 1;
+    	}
+		this.mExperimentId = mExperimentId;
+	}
+
+	
+	/**
+	 * @param syncNodesList the syncNodesList to set
+	 */
+	protected void setSyncNodesList(List<String> syncNodesList) {
+		this.syncNodesList = syncNodesList;
+	}
+
+	/**
+	 * @param mSyncBroadcastInterval the mSyncBroadcastInterval to set
+	 */
+	protected void setSyncBroadcastInterval(int mSyncBroadcastInterval) {
+    	int maxValue = (int) ((Math.pow(2, 8))-1); 
+    	if(mSyncBroadcastInterval>maxValue) {
+    		mSyncBroadcastInterval = maxValue;
+    	}
+    	else if(mSyncBroadcastInterval<=0) {
+    		mSyncBroadcastInterval = 1;
+    	}
+		this.mSyncBroadcastInterval = mSyncBroadcastInterval;
+	}
+	
+	
+	/**
+	 * @param mBluetoothBaudRate the mBluetoothBaudRate to set
+	 */
+	protected void setBluetoothBaudRate(int mBluetoothBaudRate) {
+		this.mBluetoothBaudRate = mBluetoothBaudRate;
+	}
+
+	/**
+	 * @param mEXG1RateSetting the mEXG1RateSetting to set
+	 */
+	protected void setEXG1RateSetting(int mEXG1RateSetting) {
+		this.mEXG1RateSetting = mEXG1RateSetting;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG1CH1GainSetting the mEXG1CH1GainSetting to set
+	 */
+	protected void setEXG1CH1GainSetting(int mEXG1CH1GainSetting) {
+		this.mEXG1CH1GainSetting = mEXG1CH1GainSetting;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG1CH2GainSetting the mEXG1CH2GainSetting to set
+	 */
+	protected void setEXG1CH2GainSetting(int mEXG1CH2GainSetting) {
+		this.mEXG1CH2GainSetting = mEXG1CH2GainSetting;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG2RateSetting the mEXG2RateSetting to set
+	 */
+	protected void setEXG2RateSetting(int mEXG2RateSetting) {
+		this.mEXG2RateSetting = mEXG2RateSetting;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG2CH1GainSetting the mEXG2CH1GainSetting to set
+	 */
+	protected void setEXG2CH1GainSetting(int mEXG2CH1GainSetting) {
+		this.mEXG2CH1GainSetting = mEXG2CH1GainSetting;
+		exgBytesGetFromConfig();
+	}
+
+	
+	/**
+	 * @param mEXG2CH2GainSetting the mEXG2CH2GainSetting to set
+	 */
+	protected void setEXG2CH2GainSetting(int mEXG2CH2GainSetting) {
+		this.mEXG2CH2GainSetting = mEXG2CH2GainSetting;
+		exgBytesGetFromConfig();
+	}
+	
+
+	/**
+	 * @param mEXGReferenceElectrode the mEXGReferenceElectrode to set
+	 */
+	protected void setEXGReferenceElectrode(int mEXGReferenceElectrode) {
+		this.mEXGReferenceElectrode = mEXGReferenceElectrode;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG1LeadOffCurrentMode the mEXG1LeadOffCurrentMode to set
+	 */
+	protected void setEXG1LeadOffCurrentMode(int mEXG1LeadOffCurrentMode) {
+		this.mEXG1LeadOffCurrentMode = mEXG1LeadOffCurrentMode;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG2LeadOffCurrentMode the mEXG2LeadOffCurrentMode to set
+	 */
+	protected void setEXG2LeadOffCurrentMode(int mEXG2LeadOffCurrentMode) {
+		this.mEXG2LeadOffCurrentMode = mEXG2LeadOffCurrentMode;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG1Comparators the mEXG1Comparators to set
+	 */
+	protected void setEXG1Comparators(int mEXG1Comparators) {
+		this.mEXG1Comparators = mEXG1Comparators;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG2Comparators the mEXG2Comparators to set
+	 */
+	protected void setEXG2Comparators(int mEXG2Comparators) {
+		this.mEXG2Comparators = mEXG2Comparators;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXGRLDSense the mEXGRLDSense to set
+	 */
+	protected void setEXGRLDSense(int mEXGRLDSense) {
+		this.mEXGRLDSense = mEXGRLDSense;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG1LeadOffSenseSelection the mEXG1LeadOffSenseSelection to set
+	 */
+	protected void setEXG1LeadOffSenseSelection(int mEXG1LeadOffSenseSelection) {
+		this.mEXG1LeadOffSenseSelection = mEXG1LeadOffSenseSelection;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG2LeadOffSenseSelection the mEXG2LeadOffSenseSelection to set
+	 */
+	protected void setEXG2LeadOffSenseSelection(int mEXG2LeadOffSenseSelection) {
+		this.mEXG2LeadOffSenseSelection = mEXG2LeadOffSenseSelection;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXGLeadOffDetectionCurrent the mEXGLeadOffDetectionCurrent to set
+	 */
+	protected void setEXGLeadOffDetectionCurrent(int mEXGLeadOffDetectionCurrent) {
+		this.mEXGLeadOffDetectionCurrent = mEXGLeadOffDetectionCurrent;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXGLeadOffComparatorTreshold the mEXGLeadOffComparatorTreshold to set
+	 */
+	protected void setEXGLeadOffComparatorTreshold(int mEXGLeadOffComparatorTreshold) {
+		this.mEXGLeadOffComparatorTreshold = mEXGLeadOffComparatorTreshold;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG2RespirationDetectState the mEXG2RespirationDetectState to set
+	 */
+	protected void setEXG2RespirationDetectState(int mEXG2RespirationDetectState) {
+		this.mEXG2RespirationDetectState = mEXG2RespirationDetectState;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG2RespirationDetectFreq the mEXG2RespirationDetectFreq to set
+	 */
+	protected void setEXG2RespirationDetectFreq(int mEXG2RespirationDetectFreq) {
+		this.mEXG2RespirationDetectFreq = mEXG2RespirationDetectFreq;
+		exgBytesGetFromConfig();
+	}
+
+
+	/**
+	 * @param mEXG2RespirationDetectPhase the mEXG2RespirationDetectPhase to set
+	 */
+	protected void setEXG2RespirationDetectPhase(int mEXG2RespirationDetectPhase) {
+		this.mEXG2RespirationDetectPhase = mEXG2RespirationDetectPhase;
+		exgBytesGetFromConfig();
+	}
+	
+//	public boolean isExgInEmgMode() {
+//		return isEXGUsingDefaultEMGConfiguration();
+//	}
+	
+	/**
+	 * @param ppgAdcSelectionGsrBoard the mPpgAdcSelectionGsrBoard to set
+	 */
+	protected void setPpgAdcSelectionGsrBoard(int ppgAdcSelectionGsrBoard) {
+		this.mPpgAdcSelectionGsrBoard = ppgAdcSelectionGsrBoard;
+		int key = Configuration.Shimmer3.SensorMapKey.PPG_DUMMY;
+		this.setSensorEnabledState(key, mSensorMap.get(key).mIsEnabled);
+	}
+
+	/**
+	 * @param ppg1AdcSelectionProto3DeluxeBoard the mPpg1AdcSelectionProto3DeluxeBoard to set
+	 */
+	protected void setPpg1AdcSelectionProto3DeluxeBoard(int ppg1AdcSelectionProto3DeluxeBoard) {
+		this.mPpg1AdcSelectionProto3DeluxeBoard = ppg1AdcSelectionProto3DeluxeBoard;
+		int key = Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY;
+		this.setSensorEnabledState(key, mSensorMap.get(key).mIsEnabled);
+	}
+
+	/**
+	 * @param ppg2AdcSelectionProto3DeluxeBoard the mPpg2AdcSelectionProto3DeluxeBoard to set
+	 */
+	protected void setPpg2AdcSelectionProto3DeluxeBoard(int ppg2AdcSelectionProto3DeluxeBoard) {
+		this.mPpg2AdcSelectionProto3DeluxeBoard = ppg2AdcSelectionProto3DeluxeBoard;
+		int key = Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY;
+		this.setSensorEnabledState(key, mSensorMap.get(key).mIsEnabled);
+	}
+
+	/**
+	 * @param macIdFromUart the mMacIdFromUart to set
+	 */
+	protected void setMacIdFromUart(String macIdFromUart) {
+		this.mMacIdFromUart = macIdFromUart;
+		
+		if(this.mMacIdFromUart.length()>=12) {
+			this.mMacIdFromUartParsed = this.mMacIdFromUart.substring(8, 12);
+		}
+	}
+
+//	/**
+//	 * @param macIdFromUartParsed the mMacIdFromUartParsed to set
+//	 */
+//	protected void setMacIdFromUartParsed(String macIdFromUartParsed) {
+//		this.mMacIdFromUartParsed = macIdFromUartParsed;
+//	}
+	
+	
+	/**
+	 * @param mSamplingDividerVBatt the mSamplingDividerVBatt to set
+	 */
+	protected void setSamplingDividerVBatt(int mSamplingDividerVBatt) {
+		this.mSamplingDividerVBatt = mSamplingDividerVBatt;
+	}
+
+	/**
+	 * @param mSamplingDividerGsr the mSamplingDividerGsr to set
+	 */
+	protected void setSamplingDividerGsr(int mSamplingDividerGsr) {
+		this.mSamplingDividerGsr = mSamplingDividerGsr;
+	}
+
+	/**
+	 * @param mSamplingDividerPpg the mSamplingDividerPpg to set
+	 */
+	protected void setSamplingDividerPpg(int mSamplingDividerPpg) {
+		this.mSamplingDividerPpg = mSamplingDividerPpg;
+	}
+
+	/**
+	 * @param mSamplingDividerLsm303dlhcAccel the mSamplingDividerLsm303dlhcAccel to set
+	 */
+	protected void setSamplingDividerLsm303dlhcAccel(int mSamplingDividerLsm303dlhcAccel) {
+		this.mSamplingDividerLsm303dlhcAccel = mSamplingDividerLsm303dlhcAccel;
+	}
+
+	/**
+	 * @param mHighResAccelWR the mHighResAccelWR to set
+	 */
+	protected void setHighResAccelWR(boolean mHighResAccelWR) {
+		this.mHighResAccelWR = mHighResAccelWR;
+	}
+
+//	/**
+//	 * @param mLowPowerAccelWR the mLowPowerAccelWR to set
+//	 */
+//	protected void enableLowPowerAccelWR(boolean mLowPowerAccelWR) {
+//		this.mLowPowerAccelWR = mLowPowerAccelWR;
+//	}
+	
+	
+	public Object slotDetailsGetMethods(String componentName) {
+		Object returnValue = null;
+		switch(componentName){
+//Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
+				returnValue = isButtonStart();
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
+				returnValue = isSingleTouch();
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
+				returnValue = isMasterShimmer();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING):
+				returnValue = isSyncWhenLogging();
+	        	break;
+			
+			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
+				if(isLSM303DigitalAccelLPM()&&checkLowPowerGyro()&&checkLowPowerMag()) {
+					returnValue = true;
+				}
+				else {
+					returnValue = false;
+				}
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
+				returnValue = isLSM303DigitalAccelLPM();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
+				returnValue = checkLowPowerGyro();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
+				returnValue = checkLowPowerMag();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
+				returnValue = isTCXO();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+				returnValue = isInternalExpPower();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
+				returnValue = isMPU9150DMP();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
+				returnValue = isMPLEnable();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
+				returnValue = isMPLSensorFusion();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
+				returnValue = isMPLGyroCalTC();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
+				returnValue = isMPLVectCompCal();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
+				returnValue = isMPLMagDistCal();
+	        	break;
+
+//Integers
+			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
+				returnValue = getBluetoothBaudRate();
+	        	break;
+    	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+				returnValue = getAccelRange();
+	        	break;
+	        
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
+				returnValue = getGyroRange();
+	        	break;
+	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+				//TODO check below and commented out code
+				returnValue = getMagRange();
+			
+//					// firmware sets mag range to 7 (i.e. index 6 in combobox) if user set mag range to 0 in config file
+//					if(getMagRange() == 0) cmBx.setSelectedIndex(6);
+//					else cmBx.setSelectedIndex(getMagRange()-1);
+	    		break;
+			
+			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+				returnValue = getPressureResolution();
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+				returnValue = getExGResolution();
+	    		break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+				returnValue = getExGGainSetting();
+				//consolePrintLn("Get " + configValue);
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+				int configValue = getLSM303DigitalAccelRate(); 
+				 
+	        	if(!isLSM303DigitalAccelLPM()) {
+		        	if(configValue==8) {
+		        		configValue = 9;
+		        	}
+	        	}
+				returnValue = configValue;
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
+				returnValue = getLSM303MagRate();
+	        	break;
+
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+				returnValue = getMPU9150AccelRange();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+				returnValue = getMPU9150MotCalCfg();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF):
+				returnValue = getMPU9150LPF();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
+				returnValue = getMPU9150MPLSamplingRate();
+        		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
+				returnValue = getMPU9150MagSamplingRate();
+            	break;
+            	
+        	//TODO
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+				returnValue = getEXG1RateSetting();
+				//returnValue = getEXG2RateSetting();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+				returnValue = getEXGReferenceElectrode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+				returnValue = getEXG2LeadOffCurrentMode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+				returnValue = getEXGLeadOffDetectionCurrent();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+				returnValue = getEXGLeadOffComparatorTreshold();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+				returnValue = getEXG2RespirationDetectFreq();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+				returnValue = getEXG2RespirationDetectPhase();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+				returnValue = getInternalExpPower();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+				returnValue = getPpgAdcSelectionGsrBoard();
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+				returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+				returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
+	    		break;
+            	
+
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
+				returnValue = getSamplingDividerGsr();
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
+				returnValue = getSamplingDividerLsm303dlhcAccel();
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
+				returnValue = getSamplingDividerPpg();
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
+				returnValue = getSamplingDividerVBatt();
+	    		break;
+	    		
+	    		
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+				returnValue = getShimmerUserAssignedName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NAME):
+				returnValue = getExperimentName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+		        Double readSamplingRate = getShimmerSamplingRate();
+		    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
+		    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100; // round sampling rate to two decimal places
+//			    	consolePrintLn("GET SAMPLING RATE: " + componentName);
+		    	returnValue = actualSamplingRate.toString();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
+				returnValue = Integer.toString(getBufferSize());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+	        	returnValue = getConfigTimeParsed();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
+	        	returnValue = getMacIdFromInfoMem();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID):
+	        	returnValue = Integer.toString(getExperimentId());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS):
+	        	returnValue = Integer.toString(getExperimentNumberOfShimmers());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
+	        	returnValue = Integer.toString(getExperimentDurationEstimated());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
+	        	returnValue = Integer.toString(getExperimentDurationMaximum());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
+	        	returnValue = Integer.toString(getSyncBroadcastInterval());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
+				returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+//    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
+	        	break;
+	        	
+////List<Byte[]>
+//			case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
+//				List<byte[]> listOFExGBytes = new ArrayList<byte[]>();
+//				listOFExGBytes.add(getEXG1RegisterArray());
+//				listOFExGBytes.add(getEXG2RegisterArray());
+//				returnValue = listOFExGBytes;
+//	        	break;
+	        	
+	        default:
+	        	break;
+		}
+		
+		return returnValue;
+	}		
+	
+	protected Object slotDetailsSetMethods(String componentName, Object valueToSet) {
+
+		Object returnValue = null;
+		int buf = 0;
+
+		switch(componentName){
+//Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
+				setButtonStart((boolean)valueToSet);
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
+				setSingleTouch((boolean)valueToSet);
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
+				setMasterShimmer((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING):
+				setSyncWhenLogging((boolean)valueToSet);
+	        	break;
+
+			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
+				setLowPowerAccelWR((boolean)valueToSet);
+				setLowPowerGyro((boolean)valueToSet);
+				setLowPowerMag((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
+				setLowPowerAccelWR((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
+				setLowPowerGyro((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
+				setLowPowerMag((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
+            	setTCXO((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+            	setInternalExpPower((boolean)valueToSet);
+	        	break;
+        	
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
+            	setMPU9150DMP((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
+            	setMPLEnable((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
+            	setMPLSensorFusion((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
+            	setMPLGyroCalTC((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
+            	setMPLVectCompCal((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
+            	setMPLMagDistCal((boolean)valueToSet);
+	        	break;
+
+//Integers
+			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
+				setBluetoothBaudRate((int)valueToSet);
+	        	break;
+		        	
+    		case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+				setDigitalAccelRange((int)valueToSet);
+	        	break;
+	        
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
+	        	setMPU9150GyroRange((int)valueToSet);
+	        	break;
+	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+				setLSM303MagRange((int)valueToSet);
+	    		break;
+			
+			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+				setPressureResolution((int)valueToSet);
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+	    		setGSRRange((int)valueToSet);
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+				setExGResolution((int)valueToSet);
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+				//consolePrintLn("before set " + getExGGain());
+				setExGGainSetting((int)valueToSet);
+				//consolePrintLn("after set " + getExGGain());
+	        	break;
+				
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+				setLSM303DigitalAccelRate((int)valueToSet);
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
+				setLSM303MagRate((int)valueToSet);
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+				setMPU9150AccelRange((int)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+				setMPU9150MotCalCfg((int)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF):
+				setMPU9150LPF((int)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
+				setMPU9150MPLSamplingRate((int)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
+				setMPU9150MagSamplingRate((int)valueToSet);
+	        	break;
+	        
+	        //TODO: regenerate EXG register bytes on each change (just in case)
+	        	
+        	//TODO
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+				setEXG1RateSetting((int)valueToSet);
+				setEXG2RateSetting((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+				setEXGReferenceElectrode((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+				setEXG2LeadOffCurrentMode((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+				setEXGLeadOffDetectionCurrent((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+				setEXGLeadOffComparatorTreshold((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+				setEXG2RespirationDetectFreq((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+				setEXG2RespirationDetectPhase((int)valueToSet);
+            	break;	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+				setInternalExpPower((int)valueToSet);
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+				setPpgAdcSelectionGsrBoard((int)valueToSet);
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+				setPpg1AdcSelectionProto3DeluxeBoard((int)valueToSet);
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+				setPpg2AdcSelectionProto3DeluxeBoard((int)valueToSet);
+	    		break;
+	    		
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
+				setSamplingDividerGsr((int)valueToSet);
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
+				setSamplingDividerLsm303dlhcAccel((int)valueToSet);
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
+				setSamplingDividerPpg((int)valueToSet);
+	    		break;
+			case(Configuration.Shimmer3Gq.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
+				setSamplingDividerVBatt((int)valueToSet);
+	    		break;
+	
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+        		setShimmerUserAssignedName((String)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NAME):
+        		setExperimentName((String)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+	          	// don't let sampling rate be empty
+	          	Double enteredSamplingRate;
+	          	if(((String)valueToSet).isEmpty()) {
+	          		enteredSamplingRate = 1.0;
+	          	}            	
+	          	else {
+	          		enteredSamplingRate = Double.parseDouble((String)valueToSet);
+	          	}
+	      		setShimmerSamplingRate(enteredSamplingRate);
+	      		
+	      		returnValue = Double.toString(getShimmerSamplingRate());
+	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
+//	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+//	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
+//	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID):
+            	if(!(((String)valueToSet).isEmpty())) {
+                	buf = Integer.parseInt((String)valueToSet);
+            	}
+        		setExperimentId(buf);
+        		
+        		returnValue = Integer.toString(getExperimentId());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS):
+            	if(((String)valueToSet).isEmpty()) {
+            		buf = 1;
+            	}
+            	else {
+                	buf = Integer.parseInt((String)valueToSet);
+            	}
+        		setExperimentNumberOfShimmers(buf);
+        		
+        		returnValue = Integer.toString(getExperimentNumberOfShimmers());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
+            	if(((String)valueToSet).isEmpty()) {
+            		buf = 1;
+            	}
+            	else {
+                	buf = Integer.parseInt((String)valueToSet);
+            	}
+        		setExperimentDurationEstimated(buf);
+        		
+        		returnValue = Integer.toString(getExperimentDurationEstimated());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
+            	//leave max_exp_len = 0 to not automatically stop logging.
+            	if(((String)valueToSet).isEmpty()) {
+            		buf = 1;
+            	}
+            	else {
+                	buf = Integer.parseInt((String)valueToSet);
+            	}
+        		setExperimentDurationMaximum(buf);
+        		
+        		returnValue = Integer.toString(getExperimentDurationMaximum());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
+            	buf = 1; // Minimum = 1
+            	if(!(((String)valueToSet).isEmpty())) {
+                	buf = Integer.parseInt((String)valueToSet);
+            	}
+        		setSyncBroadcastInterval(buf);
+        		
+        		returnValue = Integer.toString(getSyncBroadcastInterval());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
+            	double bufDouble = 4.0; // Minimum = 4Hz
+            	if(((String)valueToSet).isEmpty()) {
+            		bufDouble = 4.0;
+            	}
+            	else {
+            		bufDouble = Double.parseDouble((String)valueToSet);
+            	}
+            	
+            	// Since user is manually entering a freq., clear low-power mode so that their chosen rate will be set correctly. Tick box will be re-enabled automatically if they enter LPM freq. 
+            	setLowPowerGyro(false); 
+        		setMPU9150GyroAccelRateFromFreq(bufDouble);
+
+        		returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+//        		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
+
+	        	break;
+	        	
+////List<Byte[]>
+//			case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
+////				if(valueToSet instanceof List<?>){
+//					setEXG1RegisterArray(((List<byte[]>)valueToSet).get(0));
+//					setEXG2RegisterArray(((List<byte[]>)valueToSet).get(1));
+////				}
+//	        	break;
+
+	        	
+	        default:
+	        	break;
+		}
+			
+		return returnValue;
+
+	}
+
+	/**
+	 * @return the mChargingState
+	 */
+	public String getChargingState() {
+		return mChargingState;
+	}
+
+	/**
+	 * @return the mBattVoltage
+	 */
+	public String getBattVoltage() {
+		return mBattVoltage;
+	}
+
+	/**
+	 * @return the mEstimatedChargePercentage
+	 */
+	public String getEstimatedChargePercentage() {
+		return mEstimatedChargePercentage;
+	}
 }

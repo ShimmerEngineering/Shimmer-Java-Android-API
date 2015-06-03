@@ -22,6 +22,7 @@ public class ShimmerVerDetails implements Serializable {
 	public static final String EXP_BRD_NONE = "None";
 	
 	public final static class HW_ID {
+		public final static int UNKNOWN = -1;
 		public final static int SHIMMER_1 = 0;
 		public final static int SHIMMER_2 = 1;
 		public final static int SHIMMER_2R = 2;
@@ -45,6 +46,7 @@ public class ShimmerVerDetails implements Serializable {
     }
     
 	public static final class HW_ID_SR_CODES {
+		public final static int UNKNOWN = -1;
 		public final static int EXP_BRD_BR_AMP = 8;
 		public final static int EXP_BRD_BR_AMP_UNIFIED = 49;
 		public final static int EXP_BRD_GSR = 14;
@@ -55,6 +57,8 @@ public class ShimmerVerDetails implements Serializable {
 		public final static int EXP_BRD_PROTO3_DELUXE = 38;
 		public final static int EXP_BRD_HIGH_G_ACCEL = 44;
 		public final static int EXP_BRD_GPS = 46;
+		
+		public final static int SHIMMER3 = 31;
 		public final static int BASE15U = 41;
 		public final static int BASE6U = 42;
 	}
@@ -97,6 +101,8 @@ public class ShimmerVerDetails implements Serializable {
 		public final static class SHIMMER_GQ {
 			public final static int GQ_GSR = 0;
 		}
+
+		public static final int UNKNOWN = -1;
 	}
 
 }

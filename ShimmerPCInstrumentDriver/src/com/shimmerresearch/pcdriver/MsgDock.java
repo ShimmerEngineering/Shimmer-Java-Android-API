@@ -238,7 +238,7 @@ public class MsgDock {
 	 * @see SmartDockActiveSlotDetails
 	 */
 	public int mConnectionType = 0;
-
+	public int mIndicatorLEDsBitmap = 0;
 	
 //	public MsgDock(){
 //	}
