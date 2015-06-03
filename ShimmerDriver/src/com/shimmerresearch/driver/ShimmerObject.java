@@ -8240,7 +8240,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL)));
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorTileDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
-									Configuration.Shimmer3.SensorMapKey.PPG_A12)));
+									Configuration.Shimmer3.SensorMapKey.PPG_A13)));
 				
 				// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
 				mSensorTileMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING).mListOfCompatibleVersionInfo = listOfCompatibleVersionInfoGq;
