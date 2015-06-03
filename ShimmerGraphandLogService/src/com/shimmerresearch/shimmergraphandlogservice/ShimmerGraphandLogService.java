@@ -1078,7 +1078,12 @@ public class ShimmerGraphandLogService extends ServiceActivity {
         			mTextSensor1.setText("Pressure");
         			mTextSensor2.setText("Temperature");
         		}
-        		
+        		mValueSensor1.setText("");
+        		mValueSensor2.setText("");
+        		mValueSensor3.setText("");
+        		mPlotDataMap.clear();
+        		dynamicPlot.clear();
+        		mPlotSeriesMap.clear();
     			mDialog.dismiss();
 			}
 			
