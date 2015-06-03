@@ -1,4 +1,4 @@
-/*Rev 0.3
+/*Rev 0.4
  * 
 
  This is a BlackMan-Windowed-Sinc Filter. Algorithm for calculating 
@@ -38,6 +38,9 @@
  * @author Alejandro Saez 
  * 
  * @date   July, 2014
+ * 
+ * Changes since 0.3
+ * - Updated to coefficients[(nTaps/2)] = coefficients[(nTaps/2)] +1;
  * 
  * Changes since 0.2
  * - Changed the way the filtered data is calculated.
