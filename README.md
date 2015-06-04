@@ -1,6 +1,10 @@
 # Shimmer-Java-Android-API
 
-20 May 2015 (Beta 2.9)
+4 June 2015 (Beta 2.10)
+ - fixes to MultiShimmerTemaplate and ShimmerGraphandLogService (A0 and A7)
+ - update to filter (BSF) --> coefficients[(nTaps/2)] = coefficients[(nTaps/2)] +1;
+
+25 May 2015 (Beta 2.9)
  - fix to shimmersetsamplingrate method
  - clean up to tcpip example (ShimmerTCPExample/ShimmerPCTCPExample/ShimmerTCPReceiver)
 
