@@ -49,7 +49,40 @@ package com.shimmerresearch.driver;
 
 public class Configuration {
 	//Channel Contents
-	public static class Shimmer3Gq{
+	public static class ShimmerGQ{
+		public class SensorMapKey{
+			public final static int MPU9150_ACCEL = 17;
+			public final static int MPU9150_GYRO = 1;
+			public final static int MPU9150_MAG = 18;
+			public final static int VBATT = 10;
+			public final static int LSM303DLHC_ACCEL = 11;
+			public final static int PPG_A13 = 107;
+			public final static int GSR = 5;
+			public final static int BEACON = 108;
+		}
+
+		// GUI Sensor Tiles
+		public class GuiLabelSensorTiles{
+			public static final String GYRO = Configuration.ShimmerGQ.GuiLabelSensors.GYRO;
+			public static final String MAG = Configuration.ShimmerGQ.GuiLabelSensors.MAG;
+			public static final String BATTERY_MONITORING = Configuration.ShimmerGQ.GuiLabelSensors.BATTERY;
+			public static final String WIDE_RANGE_ACCEL = Configuration.ShimmerGQ.GuiLabelSensors.ACCEL_WR;
+			public static final String GSR = "GSR+";
+		}
+		
+		//GUI SENSORS
+		public class GuiLabelSensors{
+			public static final String BATTERY = "Battery Voltage";
+			public static final String GSR = "GSR";
+			public static final String GYRO = "Gyroscope";
+			public static final String ACCEL_WR = "Wide-Range Accelerometer";
+			public static final String MAG = "Magnetometer";
+			public static final String ACCEL_MPU = "Alternative Accel";
+			public static final String MAG_MPU = "Alternative Mag";
+			public static final String PPG_TO_HR = "PPG To HR";
+			public static final String PPG_A13 = "PPG A13";
+		}
+		
 		public class GuiLabelConfig{
 			public static final String SAMPLING_RATE_DIVIDER_VBATT = "VBATT Divider";
 			public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
@@ -60,6 +93,7 @@ public class Configuration {
 		public final static String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
 		public final static Integer[] ListofSamplingRateDividersValues={0,1,2,3,4,5,6,7};
 
+		
 	}
 	
 	public static class Shimmer3{
@@ -197,7 +231,6 @@ public class Configuration {
 
 		public final static String[] ListOfOnOff={"On","Off"};
 		public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
-		
 		
 		public class SensorMapKey{
 			/**
@@ -573,8 +606,6 @@ public class Configuration {
 			public static  String TIMESTAMP_SYNC = "Timestamp_Sync";
 		}
 		
-		
-		
 		//Names used for parsing the GQ configuration header file 
 		public class HeaderFileSensorName{
 			public static final String SHIMMER3 = "shimmer3";
@@ -584,8 +615,6 @@ public class Configuration {
 		}
 	}
 
-	
-	
 	public static class Shimmer2{
 		public class Channel{
 			public final static int XAccel      = 0x00;
@@ -622,62 +651,62 @@ public class Configuration {
 		}
 		
 		//DATABASE NAMES
-				//GUI AND EXPORT CHANNELS
-				public static class ObjectClusterSensorName{
-					public static String TIMESTAMP = "Timestamp";
-					public static String REAL_TIME_CLOCK = "RealTime";
-					public static String ACCEL_X = "Accel_X";
-					public static String ACCEL_Y = "Accel_Y";
-					public static String ACCEL_Z = "Accel_Z";
-					public static String BATTERY = "Battery";
-					public static String REG = "Reg";
-					public static String EXT_EXP_A7 = "Ext_Exp_A7";
-					public static String EXT_EXP_A6 = "Ext_Exp_A6";
-					public static String EXT_EXP_A15 = "Ext_Exp_A15";
-					public static String INT_EXP_A12 = "Int_Exp_A12";
-					public static String INT_EXP_A13 = "Int_Exp_A13";
-					public static String INT_EXP_A14 = "Int_Exp_A14";
-					public static String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
-					public static String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
-					public static String GSR = "GSR";
-					//public static String GSR_RAW = "GSR Raw";
-					public static String GSR_RES = "GSR Res";
-					public static String INT_EXP_A1 = "Int_Exp_A1";
-					public static String EXP_BOARD_A0 = "Exp_Board_A0";
-					public static String EXP_BOARD_A7 = "Exp_Board_A7";
-					public static String GYRO_X = "Gyro_X";
-					public static String GYRO_Y = "Gyro_Y";
-					public static String GYRO_Z = "Gyro_Z";
-					public static String MAG_X = "Mag_X";
-					public static String MAG_Y = "Mag_Y";
-					public static String MAG_Z = "Mag_Z";
-					public static String EMG = "EMG";
-					public static String ECG_RA_LL = "ECG_RA-LL";
-					public static String ECG_LA_LL = "ECG_LA-LL";
-					public static String ECG_TO_HR = "ECGtoHR";
-					public static String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";
-					public static String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";
-					public static String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";
-					public static String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";
-					public static String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";
-					public static String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";
-					public static String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";
-					public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
-					public static String EULER_6DOF_A = "Euler_6DOF_A";
-					public static String EULER_6DOF_X = "Euler_6DOF_X";
-					public static String EULER_6DOF_Y = "Euler_6DOF_Y";
-					public static String EULER_6DOF_Z = "Euler_6DOF_Z";
-					public static String EULER_9DOF_A = "Euler_9DOF_A";
-					public static String EULER_9DOF_X = "Euler_9DOF_X";
-					public static String EULER_9DOF_Y = "Euler_9DOF_Y";
-					public static String EULER_9DOF_Z = "Euler_9DOF_Z";
-					public static String HEART_RATE = "Heart_Rate"; //for the heart rate strap now no longer sold
-					public static String AXIS_ANGLE_A = "Axis_Angle_A";
-					public static String AXIS_ANGLE_X = "Axis_Angle_X";
-					public static String AXIS_ANGLE_Y = "Axis_Angle_Y";
-					public static String AXIS_ANGLE_Z = "Axis_Angle_Z";
-					public static String VOLT_REG = "VSenseReg";
-				}
+		//GUI AND EXPORT CHANNELS
+		public static class ObjectClusterSensorName{
+			public static String TIMESTAMP = "Timestamp";
+			public static String REAL_TIME_CLOCK = "RealTime";
+			public static String ACCEL_X = "Accel_X";
+			public static String ACCEL_Y = "Accel_Y";
+			public static String ACCEL_Z = "Accel_Z";
+			public static String BATTERY = "Battery";
+			public static String REG = "Reg";
+			public static String EXT_EXP_A7 = "Ext_Exp_A7";
+			public static String EXT_EXP_A6 = "Ext_Exp_A6";
+			public static String EXT_EXP_A15 = "Ext_Exp_A15";
+			public static String INT_EXP_A12 = "Int_Exp_A12";
+			public static String INT_EXP_A13 = "Int_Exp_A13";
+			public static String INT_EXP_A14 = "Int_Exp_A14";
+			public static String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
+			public static String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
+			public static String GSR = "GSR";
+			//public static String GSR_RAW = "GSR Raw";
+			public static String GSR_RES = "GSR Res";
+			public static String INT_EXP_A1 = "Int_Exp_A1";
+			public static String EXP_BOARD_A0 = "Exp_Board_A0";
+			public static String EXP_BOARD_A7 = "Exp_Board_A7";
+			public static String GYRO_X = "Gyro_X";
+			public static String GYRO_Y = "Gyro_Y";
+			public static String GYRO_Z = "Gyro_Z";
+			public static String MAG_X = "Mag_X";
+			public static String MAG_Y = "Mag_Y";
+			public static String MAG_Z = "Mag_Z";
+			public static String EMG = "EMG";
+			public static String ECG_RA_LL = "ECG_RA-LL";
+			public static String ECG_LA_LL = "ECG_LA-LL";
+			public static String ECG_TO_HR = "ECGtoHR";
+			public static String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";
+			public static String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";
+			public static String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";
+			public static String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";
+			public static String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";
+			public static String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";
+			public static String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";
+			public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
+			public static String EULER_6DOF_A = "Euler_6DOF_A";
+			public static String EULER_6DOF_X = "Euler_6DOF_X";
+			public static String EULER_6DOF_Y = "Euler_6DOF_Y";
+			public static String EULER_6DOF_Z = "Euler_6DOF_Z";
+			public static String EULER_9DOF_A = "Euler_9DOF_A";
+			public static String EULER_9DOF_X = "Euler_9DOF_X";
+			public static String EULER_9DOF_Y = "Euler_9DOF_Y";
+			public static String EULER_9DOF_Z = "Euler_9DOF_Z";
+			public static String HEART_RATE = "Heart_Rate"; //for the heart rate strap now no longer sold
+			public static String AXIS_ANGLE_A = "Axis_Angle_A";
+			public static String AXIS_ANGLE_X = "Axis_Angle_X";
+			public static String AXIS_ANGLE_Y = "Axis_Angle_Y";
+			public static String AXIS_ANGLE_Z = "Axis_Angle_Z";
+			public static String VOLT_REG = "VSenseReg";
+		}
 		
 		public final static String[] ListofCompatibleSensors={"Accelerometer","Gyroscope","Magnetometer","Battery Voltage","ECG","EMG","GSR","Exp Board","Bridge Amplifier","Heart Rate"};
 		public final static String[] ListofAccelRange={"+/- 1.5g","+/- 6g"};
