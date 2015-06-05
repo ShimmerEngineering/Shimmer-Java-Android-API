@@ -1502,6 +1502,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
 							mExpBoardArray = readBytes(numBytesToReadFromExpBoard+1);
+							getExpBoardID();
 							mInstructionStackLock=false;
 						}
 						else if(tb[0] == INSTREAM_CMD_RESPONSE) {
@@ -1941,6 +1942,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readAccelRange();
 		readGyroRange();
 		readAccelSamplingRate();
+		readExpansionBoardID();
 		readBlinkLED();
 		readCalibrationParameters("All");
 		readpressurecalibrationcoefficients();
@@ -3054,6 +3056,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(mExpBoardArray!=null){
 //			if(mExpBoardName==null){
 				int boardID = mExpBoardArray[1] & 0xFF;
+				mExpansionBoardId = boardID;
 				int boardRev = mExpBoardArray[2] & 0xFF;
 				int specialRevision = mExpBoardArray[3] & 0xFF;
 				String boardName;
