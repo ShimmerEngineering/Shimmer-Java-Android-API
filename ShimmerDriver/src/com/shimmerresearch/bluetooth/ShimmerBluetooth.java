@@ -1502,6 +1502,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
 							mExpBoardArray = readBytes(numBytesToReadFromExpBoard+1);
+							getExpBoardID();
 							mInstructionStackLock=false;
 						}
 						else if(tb[0] == INSTREAM_CMD_RESPONSE) {
@@ -1941,6 +1942,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readAccelRange();
 		readGyroRange();
 		readAccelSamplingRate();
+		readExpansionBoardID();
 		readBlinkLED();
 		readCalibrationParameters("All");
 		readpressurecalibrationcoefficients();
@@ -2290,10 +2292,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	
 	/**
-	 * writeGyroSamplingRate(range) sets the GyroSamplingRate on the Shimmer (version 3) to the value of the input range.
+	 * writeGyroSamplingRate(range) sets the GyroSamplingRate on the Shimmer (version 3) to the value of the input range. Note that when using writesamplingrate this value will be overwritten based on the lowpowergyro mode setting.
 	 * @param rate it is a value between 0 and 255; 6 = 1152Hz, 77 = 102.56Hz, 255 = 31.25Hz
 	 */
-	private void writeGyroSamplingRate(int rate) {
+	public void writeGyroSamplingRate(int rate) {
 		if (mHardwareVersion == HW_ID.SHIMMER_3){
 			mTempIntValue=rate;
 			mListofInstructions.add(new byte[]{SET_MPU9150_SAMPLING_RATE_COMMAND, (byte)rate});
@@ -2301,11 +2303,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * writeMagSamplingRate(range) sets the MagSamplingRate on the Shimmer to the value of the input range.
+	 * writeMagSamplingRate(range) sets the MagSamplingRate on the Shimmer to the value of the input range. Note that when using writesamplingrate this value will be overwritten based on the lowpowermag mode setting.
 	 * @param rate for Shimmer 2 it is a value between 1 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz, for Shimmer 3 it is a value between 0-7; 0 = 0.75Hz; 1 = 1.5Hz; 2 = 3Hz; 3 = 7.5Hz; 4 = 15Hz ; 5 = 30 Hz; 6 = 75Hz ; 7 = 220Hz 
 	 * 
 	 * */
-	private void writeMagSamplingRate(int rate) {
+	public void writeMagSamplingRate(int rate) {
 		if (mFirmwareVersionParsed.equals("BoilerPlate 0.1.0")){
 		} else {
 			mTempIntValue=rate;
@@ -2314,10 +2316,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * writeAccelSamplingRate(range) sets the AccelSamplingRate on the Shimmer (version 3) to the value of the input range.
+	 * writeAccelSamplingRate(range) sets the AccelSamplingRate on the Shimmer (version 3) to the value of the input range. Note that when using writesamplingrate this value will be overwritten based on the lowpowerwraccel mode setting.
 	 * @param rate it is a value between 1 and 7; 1 = 1 Hz; 2 = 10 Hz; 3 = 25 Hz; 4 = 50 Hz; 5 = 100 Hz; 6 = 200 Hz; 7 = 400 Hz
 	 */
-	private void writeAccelSamplingRate(int rate) {
+	public void writeAccelSamplingRate(int rate) {
 		if (mHardwareVersion == HW_ID.SHIMMER_3){
 			mTempIntValue=rate;
 			mListofInstructions.add(new byte[]{SET_ACCEL_SAMPLING_RATE_COMMAND, (byte)rate});
@@ -3054,6 +3056,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(mExpBoardArray!=null){
 //			if(mExpBoardName==null){
 				int boardID = mExpBoardArray[1] & 0xFF;
+				mExpansionBoardId = boardID;
 				int boardRev = mExpBoardArray[2] & 0xFF;
 				int specialRevision = mExpBoardArray[3] & 0xFF;
 				String boardName;
