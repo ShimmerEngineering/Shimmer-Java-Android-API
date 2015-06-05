@@ -56,7 +56,7 @@ public class Configuration {
 			public final static int MPU9150_MAG = 18;
 			public final static int VBATT = 10;
 			public final static int LSM303DLHC_ACCEL = 11;
-			public final static int PPG_A13 = 107;
+			public final static int PPG = 107;
 			public final static int GSR = 5;
 			public final static int BEACON = 108;
 		}
@@ -68,6 +68,7 @@ public class Configuration {
 			public static final String BATTERY_MONITORING = Configuration.ShimmerGQ.GuiLabelSensors.BATTERY;
 			public static final String WIDE_RANGE_ACCEL = Configuration.ShimmerGQ.GuiLabelSensors.ACCEL_WR;
 			public static final String GSR = "GSR+";
+			public static final String BEACON = Configuration.ShimmerGQ.GuiLabelSensors.BEACON;
 		}
 		
 		//GUI SENSORS
@@ -80,7 +81,8 @@ public class Configuration {
 			public static final String ACCEL_MPU = "Alternative Accel";
 			public static final String MAG_MPU = "Alternative Mag";
 			public static final String PPG_TO_HR = "PPG To HR";
-			public static final String PPG_A13 = "PPG A13";
+			public static final String PPG = "PPG";
+			public static final String BEACON = "Beacon";
 		}
 		
 		public class GuiLabelConfig{
@@ -88,6 +90,18 @@ public class Configuration {
 			public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
 			public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
 			public static final String SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL = "LSM3030DLHC Divider";
+			public static final String LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";
+			public static final String LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range";
+			public static final String GSR_RANGE = "GSR Range";
+			public static final String LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode";
+			public static final String SAMPLING_RATE_DIVIDER_BEACON = "Beacon Divider";
+			
+			public static final String SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
+			public static final String EXPERIMENT_NAME = "Experiment Name";
+			public static final String SHIMMER_SAMPLING_RATE = "Sampling Rate";
+			public static final String CONFIG_TIME = "Config Time";
+			public static final String SHIMMER_MAC_FROM_INFOMEM = "InfoMem MAC";
+
 		}
 		
 		public final static String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
