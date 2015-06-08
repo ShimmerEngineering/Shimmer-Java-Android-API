@@ -7689,6 +7689,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						Configuration.Shimmer3.SensorMapKey.ECG,
 						Configuration.Shimmer3.SensorMapKey.EMG,
 						Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+						Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
 						Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 						Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 						Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
@@ -7740,6 +7741,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						Configuration.Shimmer3.SensorMapKey.ECG,
 						Configuration.Shimmer3.SensorMapKey.EMG,
 						Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+						Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
 						Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
 						Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 						Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
@@ -8820,6 +8822,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if((!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled)
 					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled)
 					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled)
+					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled)
 					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled)
 					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
 					&&(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)
@@ -9060,7 +9063,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//Exceptions for Shimmer3 ExG
 				
 				// If ECG or ExG_Test (i.e., two ExG chips)
-				if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION))&&(mSensorMap.get(sensorMapKey).mIsEnabled)) {
+				if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
+						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
+						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)
+						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION))&&(mSensorMap.get(sensorMapKey).mIsEnabled)) {
 					if(!(((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)&&(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled))
 							||((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)&&(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled)))){
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
@@ -9125,8 +9131,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setDefaultGsrSensorConfig(state);
 		}
 		else if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EMG)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)
@@ -9329,8 +9336,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
 			if(mSensorMap.get(sensorMapKey).mIsEnabled) {
 				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
 					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EMG)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)
 					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
 					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
 					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)
