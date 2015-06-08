@@ -157,6 +157,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void logAndStreamStatusChanged();
 	
 	protected boolean mInitialized = false;
+	protected boolean mSendProgressReport = false;
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
@@ -340,7 +341,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						{	
 							msg = "Ack Received for Command: " + Byte.toString(mCurrentCommand);
 							printLogDataForDebugging(msg);
-							if (mCurrentCommand != GET_STATUS_COMMAND && mCurrentCommand != SET_BLINK_LED){
+							if (mCurrentCommand != GET_STATUS_COMMAND && mCurrentCommand != SET_BLINK_LED && mSendProgressReport){
 								sendProgressReport(new ProgressReport(mCurrentCommand,mListofInstructions.size(),mMyBluetoothAddress));
 							}
 							
@@ -4033,4 +4034,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 
+	public void sendProgressReport(boolean send){
+		mSendProgressReport = send;
+	}
 }
