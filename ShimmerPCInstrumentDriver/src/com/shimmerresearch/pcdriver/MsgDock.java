@@ -27,7 +27,7 @@ public class MsgDock {
 	public final static int MSG_ID_SMARTDOCK_IS_BUSY = 42;
 	public final static int MSG_ID_SMARTDOCK_IS_FREE = 43;
 	public final static int MSG_ID_SMARTDOCK_ACTIVE_SLOT_CHANGE = 44;
-	public final static int MSG_ID_SMARTDOCK_ERROR = 49; //USED TO INDICATE CASES WHERE THE SHIMMER SHOULD BE REDOCKED
+//	public final static int MSG_ID_SMARTDOCK_ERROR = 49; //USED TO INDICATE CASES WHERE THE SHIMMER SHOULD BE REDOCKED
 	
 	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_SUCCESS = 50;
 	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_ERROR = 58;
@@ -128,7 +128,7 @@ public class MsgDock {
         aMap.put(MSG_ID_SMARTDOCK_IS_BUSY, "MSG_ID_SMARTDOCK_IS_BUSY");
         aMap.put(MSG_ID_SMARTDOCK_IS_FREE, "MSG_ID_SMARTDOCK_IS_FREE");
         aMap.put(MSG_ID_SMARTDOCK_ACTIVE_SLOT_CHANGE, "MSG_ID_SMARTDOCK_ACTIVE_SLOT_CHANGE");
-        aMap.put(MSG_ID_SMARTDOCK_ERROR, "MSG_ID_SMARTDOCK_ERROR");
+//        aMap.put(MSG_ID_SMARTDOCK_ERROR, "MSG_ID_SMARTDOCK_ERROR");
         aMap.put(MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_SUCCESS, "MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_SUCCESS");
         aMap.put(MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_ERROR, "MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_ERROR");
         aMap.put(MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL, "MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL");
@@ -224,7 +224,7 @@ public class MsgDock {
 	/**Indicates whether the Exception is critical to the operation underway.
 	 * 
 	 */
-	public ExceptionLevel mExceptionLevel;
+	public ExceptionLevel mExceptionLevel = ExceptionLevel.HIGH;
 	public static enum ExceptionLevel {
 		LOW,
 		HIGH
