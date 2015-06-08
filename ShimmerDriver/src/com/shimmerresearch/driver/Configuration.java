@@ -51,14 +51,14 @@ public class Configuration {
 	//Channel Contents
 	public static class ShimmerGQ{
 		public class SensorMapKey{
-			public final static int MPU9150_ACCEL = 17;
-			public final static int MPU9150_GYRO = 1;
-			public final static int MPU9150_MAG = 18;
-			public final static int VBATT = 10;
-			public final static int LSM303DLHC_ACCEL = 11;
-			public final static int PPG = 107;
-			public final static int GSR = 5;
-			public final static int BEACON = 108;
+			public static final int MPU9150_ACCEL = 17;
+			public static final int MPU9150_GYRO = 1;
+			public static final int MPU9150_MAG = 18;
+			public static final int VBATT = 10;
+			public static final int LSM303DLHC_ACCEL = 11;
+			public static final int PPG = 107;
+			public static final int GSR = 5;
+			public static final int BEACON = 108;
 		}
 
 		// GUI Sensor Tiles
@@ -104,55 +104,55 @@ public class Configuration {
 
 		}
 		
-		public final static String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
-		public final static Integer[] ListofSamplingRateDividersValues={0,1,2,3,4,5,6,7};
+		public static final String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
+		public static final Integer[] ListofSamplingRateDividersValues={0,1,2,3,4,5,6,7};
 
 		
 	}
 	
 	public static class Shimmer3{
 		public class Channel{
-			public final static int XAAccel     			 = 0x00;
-			public final static int YAAccel    				 = 0x01;
-			public final static int ZAAccel     			 = 0x02;
-			public final static int VBatt       			 = 0x03;
-			public final static int XDAccel     			 = 0x04;
-			public final static int YDAccel     			 = 0x05;
-			public final static int ZDAccel     			 = 0x06;
-			public final static int XMag        			 = 0x07;
-			public final static int YMag        			 = 0x08;
-			public final static int ZMag        			 = 0x09;
-			public final static int XGyro       			 = 0x0A;
-			public final static int YGyro       			 = 0x0B;
-			public final static int ZGyro       			 = 0x0C;
-			public final static int ExtAdc7					 = 0x0D;
-			public final static int ExtAdc6					 = 0x0E;
-			public final static int ExtAdc15 				 = 0x0F;
-			public final static int IntAdc1					 = 0x10;
-			public final static int IntAdc12 				 = 0x11;
-			public final static int IntAdc13 				 = 0x12;
-			public final static int IntAdc14 				 = 0x13;
-			public final static int XAlterAccel      		 = 0x14; //Alternative Accelerometer
-			public final static int YAlterAccel     		 = 0x15;
-			public final static int ZAlterAccel     		 = 0x16;
-			public final static int XAlterMag        		 = 0x17; //Alternative Magnetometer
-			public final static int YAlterMag        		 = 0x18;
-			public final static int ZAlterMag        		 = 0x19;
-			public final static int Temperature 			 = 0x1A;
-			public final static int Pressure 				 = 0x1B;
-			public final static int GsrRaw 					 = 0x1C;
-			public final static int EXG_ADS1292R_1_STATUS 	 = 0x1D;
-			public final static int EXG_ADS1292R_1_CH1_24BIT = 0x1E;
-			public final static int EXG_ADS1292R_1_CH2_24BIT = 0x1F;
-			public final static int EXG_ADS1292R_2_STATUS 	 = 0x20;
-			public final static int EXG_ADS1292R_2_CH1_24BIT = 0x21;
-			public final static int EXG_ADS1292R_2_CH2_24BIT = 0x22;
-			public final static int EXG_ADS1292R_1_CH1_16BIT = 0x23;
-			public final static int EXG_ADS1292R_1_CH2_16BIT = 0x24;
-			public final static int EXG_ADS1292R_2_CH1_16BIT = 0x25;
-			public final static int EXG_ADS1292R_2_CH2_16BIT = 0x26;
-			public final static int BridgeAmpHigh  			 = 0x27;
-			public final static int BridgeAmpLow   			 = 0x28;
+			public static final int XAAccel     			 = 0x00;
+			public static final int YAAccel    				 = 0x01;
+			public static final int ZAAccel     			 = 0x02;
+			public static final int VBatt       			 = 0x03;
+			public static final int XDAccel     			 = 0x04;
+			public static final int YDAccel     			 = 0x05;
+			public static final int ZDAccel     			 = 0x06;
+			public static final int XMag        			 = 0x07;
+			public static final int YMag        			 = 0x08;
+			public static final int ZMag        			 = 0x09;
+			public static final int XGyro       			 = 0x0A;
+			public static final int YGyro       			 = 0x0B;
+			public static final int ZGyro       			 = 0x0C;
+			public static final int ExtAdc7					 = 0x0D;
+			public static final int ExtAdc6					 = 0x0E;
+			public static final int ExtAdc15 				 = 0x0F;
+			public static final int IntAdc1					 = 0x10;
+			public static final int IntAdc12 				 = 0x11;
+			public static final int IntAdc13 				 = 0x12;
+			public static final int IntAdc14 				 = 0x13;
+			public static final int XAlterAccel      		 = 0x14; //Alternative Accelerometer
+			public static final int YAlterAccel     		 = 0x15;
+			public static final int ZAlterAccel     		 = 0x16;
+			public static final int XAlterMag        		 = 0x17; //Alternative Magnetometer
+			public static final int YAlterMag        		 = 0x18;
+			public static final int ZAlterMag        		 = 0x19;
+			public static final int Temperature 			 = 0x1A;
+			public static final int Pressure 				 = 0x1B;
+			public static final int GsrRaw 					 = 0x1C;
+			public static final int EXG_ADS1292R_1_STATUS 	 = 0x1D;
+			public static final int EXG_ADS1292R_1_CH1_24BIT = 0x1E;
+			public static final int EXG_ADS1292R_1_CH2_24BIT = 0x1F;
+			public static final int EXG_ADS1292R_2_STATUS 	 = 0x20;
+			public static final int EXG_ADS1292R_2_CH1_24BIT = 0x21;
+			public static final int EXG_ADS1292R_2_CH2_24BIT = 0x22;
+			public static final int EXG_ADS1292R_1_CH1_16BIT = 0x23;
+			public static final int EXG_ADS1292R_1_CH2_16BIT = 0x24;
+			public static final int EXG_ADS1292R_2_CH1_16BIT = 0x25;
+			public static final int EXG_ADS1292R_2_CH2_16BIT = 0x26;
+			public static final int BridgeAmpHigh  			 = 0x27;
+			public static final int BridgeAmpLow   			 = 0x28;
 		}
 
 		public class SensorBitmap{
@@ -178,156 +178,157 @@ public class Configuration {
 			public static final int SENSOR_BRIDGE_AMP			   = 0x8000;
 		}
 
-		public final static String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
-		public final static String[] ListofAccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-		public final static Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};
-		public final static String[] ListofGyroRange={"+/- 250 dps","+/- 500 dps","+/- 1000 dps","+/- 2000 dps"}; 
-		public final static Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
-		public final static String[] ListofMagRange={"+/- 1.3 Ga","+/- 1.9 Ga","+/- 2.5 Ga","+/- 4.0 Ga","+/- 4.7 Ga","+/- 5.6 Ga","+/- 8.1 Ga"}; 
-		public final static Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option
-		public final static String[] ListofPressureResolution={"Low","Standard","High","Very High"};
-		public final static Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
+		public static final String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
+		public static final String[] ListofAccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
+		public static final Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};
+		public static final String[] ListofGyroRange={"+/- 250 dps","+/- 500 dps","+/- 1000 dps","+/- 2000 dps"}; 
+		public static final Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
+		public static final String[] ListofMagRange={"+/- 1.3 Ga","+/- 1.9 Ga","+/- 2.5 Ga","+/- 4.0 Ga","+/- 4.7 Ga","+/- 5.6 Ga","+/- 8.1 Ga"}; 
+		public static final Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option
+		public static final String[] ListofPressureResolution={"Low","Standard","High","Very High"};
+		public static final Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
 		
-		public final static String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
-		public final static Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
-		public final static String[] ListOfPpgAdcSelection={"Int A13","Int A12"};
-		public final static Integer[] ListOfPpgAdcSelectionConfigValues={0,1};
-		public final static String[] ListOfPpg1AdcSelection={"Int A13","Int A12"};
-		public final static Integer[] ListOfPpg1AdcSelectionConfigValues={0,1};
-		public final static String[] ListOfPpg2AdcSelection={"Int A1","Int A14"};
-		public final static Integer[] ListOfPpg2AdcSelectionConfigValues={0,1};
+		public static final String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
+		public static final Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
+		public static final String[] ListOfPpgAdcSelection={"Int A13","Int A12"};
+		public static final Integer[] ListOfPpgAdcSelectionConfigValues={0,1};
+		public static final String[] ListOfPpg1AdcSelection={"Int A13","Int A12"};
+		public static final Integer[] ListOfPpg1AdcSelectionConfigValues={0,1};
+		public static final String[] ListOfPpg2AdcSelection={"Int A1","Int A14"};
+		public static final Integer[] ListOfPpg2AdcSelectionConfigValues={0,1};
 
-		public final static String[] ListofDefaultEXG={"ECG","EMG","Test Signal"};
-		public final static String[] ListOfExGGain={"6","1","2","3","4","8","12"};
-		public final static Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
-		public final static String[] ListOfECGReferenceElectrode={"Inverse Wilson CT","Fixed Potential"};
-		public final static Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
-		public final static String[] ListOfEMGReferenceElectrode={"Fixed Potential", "Inverse of Ch1"};
-		public final static Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
-		public final static String[] ListOfExGLeadOffDetection={"Off","DC Current"};
-		public final static Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
-		public final static String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
-		public final static Integer[] ListOfExGLeadOffCurrentConfigValues={0,1,2,3};
-		public final static String[] ListOfExGLeadOffComparator={"Pos:95%-Neg:5%","Pos:92.5%-Neg:7.5%","Pos:90%-Neg:10%","Pos:87.5%-Neg:12.5%","Pos:85%-Neg:15%","Pos:80%-Neg:20%","Pos:75%-Neg:25%","Pos:70%-Neg:30%"};
-		public final static Integer[] ListOfExGLeadOffComparatorConfigValues={0,1,2,3,4,5,6,7};
-		public final static String[] ListOfExGResolutions={"16-bit","24-bit"};
-		public final static Integer[] ListOfExGResolutionsConfigValues={0,1};
-		public final static String[] ListOfExGRespirationDetectFreq={"32 kHz","64 kHz"};
-		public final static Integer[] ListOfExGRespirationDetectFreqConfigValues={0,1};
-		public final static String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
-		public final static Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-		public final static String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
-		public final static Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
-		public final static String[] ListOfExGRate={"125 Hz","250 Hz","500 Hz","1 kHz","2 kHz","4 kHz","8 kHz"};
-		public final static Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
+		public static final String[] ListofDefaultEXG={"ECG","EMG","Test Signal"};
+		public static final String[] ListOfExGGain={"6","1","2","3","4","8","12"};
+		public static final Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
+		public static final String[] ListOfECGReferenceElectrode={"Inverse Wilson CT","Fixed Potential"};
+		public static final Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
+		public static final String[] ListOfEMGReferenceElectrode={"Fixed Potential", "Inverse of Ch1"};
+		public static final Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
+		public static final String[] ListOfExGLeadOffDetection={"Off","DC Current"};
+		public static final Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
+		public static final String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
+		public static final Integer[] ListOfExGLeadOffCurrentConfigValues={0,1,2,3};
+		public static final String[] ListOfExGLeadOffComparator={"Pos:95%-Neg:5%","Pos:92.5%-Neg:7.5%","Pos:90%-Neg:10%","Pos:87.5%-Neg:12.5%","Pos:85%-Neg:15%","Pos:80%-Neg:20%","Pos:75%-Neg:25%","Pos:70%-Neg:30%"};
+		public static final Integer[] ListOfExGLeadOffComparatorConfigValues={0,1,2,3,4,5,6,7};
+		public static final String[] ListOfExGResolutions={"16-bit","24-bit"};
+		public static final Integer[] ListOfExGResolutionsConfigValues={0,1};
+		public static final String[] ListOfExGRespirationDetectFreq={"32 kHz","64 kHz"};
+		public static final Integer[] ListOfExGRespirationDetectFreqConfigValues={0,1};
+		public static final String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
+		public static final Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+		public static final String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
+		public static final Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
+		public static final String[] ListOfExGRate={"125 Hz","250 Hz","500 Hz","1 kHz","2 kHz","4 kHz","8 kHz"};
+		public static final Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
 
-		public final static String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
-		public final static Integer[] ListofBluetoothBaudRatesConfigValues={0,1,2,3,4,5,6,7,8,9,10};
+		public static final String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
+		public static final Integer[] ListofBluetoothBaudRatesConfigValues={0,1,2,3,4,5,6,7,8,9,10};
 
-		public final static String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1344Hz"};
-		public final static Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
-		public final static String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
-		public final static Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
-		public final static String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
-		public final static Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
+		public static final String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1344Hz"};
+		public static final Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
+		public static final String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
+		public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
+		public static final String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
+		public static final Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
 
-		public final static String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-		public final static Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
-		public final static String[] ListofMPU9150MagRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
-		public final static Integer[] ListofMPU9150MagRateConfigValues={0,1,2,3,4};
+		public static final String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
+		public static final Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
+		public static final String[] ListofMPU9150MagRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public static final Integer[] ListofMPU9150MagRateConfigValues={0,1,2,3,4};
 
-		public final static String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
-		public final static Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
-		public final static String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
-		public final static Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
-		public final static String[] ListofMPU9150MplRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
-		public final static Integer[] ListofMPU9150MplRateConfigValues={0,1,2,3,4};
+		public static final String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
+		public static final Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
+		public static final String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
+		public static final Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
+		public static final String[] ListofMPU9150MplRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public static final Integer[] ListofMPU9150MplRateConfigValues={0,1,2,3,4};
 
-		public final static String[] ListOfOnOff={"On","Off"};
-		public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
+		public static final String[] ListOfOnOff={"On","Off"};
+		public static final Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
 		public class SensorMapKey{
 			/**
 			 * Shimmer3 Low-noise analog accelerometer
 			 */
-			public final static int A_ACCEL = 0;
+			public static final int A_ACCEL = 0;
 			/**
 			 * Shimmer3 Gyroscope
 			 */
-			public final static int MPU9150_GYRO = 1;
+			public static final int MPU9150_GYRO = 1;
 			/**
 			 * Shimmer3 Primary magnetometer
 			 */
-			public final static int LSM303DLHC_MAG = 2;
-			public final static int EXG1_24BIT = 3;
-			public final static int EXG2_24BIT = 4;
-			public final static int GSR = 5;
-			public final static int EXT_EXP_ADC_A6 = 6;
-			public final static int EXT_EXP_ADC_A7 = 7;
-			public final static int BRIDGE_AMP = 8;
-			public final static int RESISTANCE_AMP = 9;
-			//public final static int HR = 9;
-			public final static int VBATT = 10;
+			public static final int LSM303DLHC_MAG = 2;
+			public static final int EXG1_24BIT = 3;
+			public static final int EXG2_24BIT = 4;
+			public static final int GSR = 5;
+			public static final int EXT_EXP_ADC_A6 = 6;
+			public static final int EXT_EXP_ADC_A7 = 7;
+			public static final int BRIDGE_AMP = 8;
+			public static final int RESISTANCE_AMP = 9;
+			//public static final int HR = 9;
+			public static final int VBATT = 10;
 			/**
 			 * Shimmer3 Wide-range digital accelerometer
 			 */
-			public final static int LSM303DLHC_ACCEL = 11;
-			public final static int EXT_EXP_ADC_A15 = 12;
-			public final static int INT_EXP_ADC_A1 = 13;
-			public final static int INT_EXP_ADC_A12 = 14;
-			public final static int INT_EXP_ADC_A13 = 15;
-			public final static int INT_EXP_ADC_A14 = 16;
+			public static final int LSM303DLHC_ACCEL = 11;
+			public static final int EXT_EXP_ADC_A15 = 12;
+			public static final int INT_EXP_ADC_A1 = 13;
+			public static final int INT_EXP_ADC_A12 = 14;
+			public static final int INT_EXP_ADC_A13 = 15;
+			public static final int INT_EXP_ADC_A14 = 16;
 			/**
 			 * Shimmer3 Alternative accelerometer
 			 */
-			public final static int MPU9150_ACCEL = 17;
+			public static final int MPU9150_ACCEL = 17;
 			/**
 			 * Shimmer3 Alternative magnetometer
 			 */
-			public final static int MPU9150_MAG = 18;
-			public final static int EXG1_16BIT = 19;
-			public final static int EXG2_16BIT = 21;
-			public final static int BMP180_PRESSURE = 22;
-			//public final static int BMP180_TEMPERATURE = 23; // not yet implemented
-			//public final static int MSP430_TEMPERATURE = 24; // not yet implemented
-			public final static int MPU9150_TEMP = 25;
-			//public final static int LSM303DLHC_TEMPERATURE = 26; // not yet implemented
-			//public final static int MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
-			public final static int MPU9150_MPL_QUAT_6DOF = 27;
-			public final static int MPU9150_MPL_QUAT_9DOF = 28;
-			public final static int MPU9150_MPL_EULER_6DOF = 29;
-			public final static int MPU9150_MPL_EULER_9DOF = 30;
-			public final static int MPU9150_MPL_HEADING = 31;
-			public final static int MPU9150_MPL_PEDOMETER = 32;
-			public final static int MPU9150_MPL_TAP = 33;
-			public final static int MPU9150_MPL_MOTION_ORIENT = 34;
-			public final static int MPU9150_MPL_GYRO = 35;
-			public final static int MPU9150_MPL_ACCEL = 36;
-			public final static int MPU9150_MPL_MAG = 37;
-			public final static int MPU9150_MPL_QUAT_6DOF_RAW = 38;
+			public static final int MPU9150_MAG = 18;
+			public static final int EXG1_16BIT = 19;
+			public static final int EXG2_16BIT = 21;
+			public static final int BMP180_PRESSURE = 22;
+			//public static final int BMP180_TEMPERATURE = 23; // not yet implemented
+			//public static final int MSP430_TEMPERATURE = 24; // not yet implemented
+			public static final int MPU9150_TEMP = 25;
+			//public static final int LSM303DLHC_TEMPERATURE = 26; // not yet implemented
+			//public static final int MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
+			public static final int MPU9150_MPL_QUAT_6DOF = 27;
+			public static final int MPU9150_MPL_QUAT_9DOF = 28;
+			public static final int MPU9150_MPL_EULER_6DOF = 29;
+			public static final int MPU9150_MPL_EULER_9DOF = 30;
+			public static final int MPU9150_MPL_HEADING = 31;
+			public static final int MPU9150_MPL_PEDOMETER = 32;
+			public static final int MPU9150_MPL_TAP = 33;
+			public static final int MPU9150_MPL_MOTION_ORIENT = 34;
+			public static final int MPU9150_MPL_GYRO = 35;
+			public static final int MPU9150_MPL_ACCEL = 36;
+			public static final int MPU9150_MPL_MAG = 37;
+			public static final int MPU9150_MPL_QUAT_6DOF_RAW = 38;
 	
 			// Combination Channels
-			public final static int ECG = 100;
-			public final static int EMG = 101;
-			public final static int EXG_TEST = 102;
+			public static final int ECG = 100;
+			public static final int EMG = 101;
+			public static final int EXG_TEST = 102;
 			
 			// Derived Channels
-			public final static int EXG_RESPIRATION = 103;
-			public final static int SKIN_TEMP_PROBE = 104;
+			public static final int EXG_RESPIRATION = 103;
+			public static final int SKIN_TEMP_PROBE = 104;
 	
 			// Derived Channels - GSR Board
-			public final static int PPG_DUMMY = 105;
-			public final static int PPG_A12 = 106;
-			public final static int PPG_A13 = 107;
+			public static final int PPG_DUMMY = 105;
+			public static final int PPG_A12 = 106;
+			public static final int PPG_A13 = 107;
 			
 			// Derived Channels - Proto3 Deluxe Board
 			
-			public final static int PPG1_DUMMY = 110;
-			public final static int PPG1_A12 = 111;
-			public final static int PPG1_A13 = 112;
-			public final static int PPG2_DUMMY = 113;
-			public final static int PPG2_A1 = 114;
-			public final static int PPG2_A14 = 115;
+			public static final int PPG1_DUMMY = 110;
+			public static final int PPG1_A12 = 111;
+			public static final int PPG1_A13 = 112;
+			public static final int PPG2_DUMMY = 113;
+			public static final int PPG2_A1 = 114;
+			public static final int PPG2_A14 = 115;
+			public static final int EXG_CUSTOM = 116;
 		}
 
 		// Sensor Options Map
@@ -486,6 +487,7 @@ public class Configuration {
 			public static final String EXG2_24BIT = "EXG2 24BIT";
 			public static final String EXG1_16BIT = "EXG1 16BIT";
 			public static final String EXG2_16BIT = "EXG2 16BIT";
+			public static final String EXG_CUSTOM = "Custom";
 		}
 
 		//DATABASE NAMES
@@ -631,25 +633,25 @@ public class Configuration {
 
 	public static class Shimmer2{
 		public class Channel{
-			public final static int XAccel      = 0x00;
-			public final static int YAccel      = 0x01;
-			public final static int ZAccel      = 0x02;
-			public final static int XGyro       = 0x03;
-			public final static int YGyro       = 0x04;
-			public final static int ZGyro       = 0x05;
-			public final static int XMag        = 0x06;
-			public final static int YMag        = 0x07;
-			public final static int ZMag        = 0x08;
-			public final static int EcgRaLl     = 0x09;
-			public final static int EcgLaLl     = 0x0A;
-			public final static int GsrRaw      = 0x0B;
-			public final static int GsrRes      = 0x0C;
-			public final static int Emg         = 0x0D;
-			public final static int AnExA0      = 0x0E;
-			public final static int AnExA7      = 0x0F;
-			public final static int BridgeAmpHigh  = 0x10;
-			public final static int BridgeAmpLow   = 0x11;
-			public final static int HeartRate   = 0x12;
+			public static final int XAccel      = 0x00;
+			public static final int YAccel      = 0x01;
+			public static final int ZAccel      = 0x02;
+			public static final int XGyro       = 0x03;
+			public static final int YGyro       = 0x04;
+			public static final int ZGyro       = 0x05;
+			public static final int XMag        = 0x06;
+			public static final int YMag        = 0x07;
+			public static final int ZMag        = 0x08;
+			public static final int EcgRaLl     = 0x09;
+			public static final int EcgLaLl     = 0x0A;
+			public static final int GsrRaw      = 0x0B;
+			public static final int GsrRes      = 0x0C;
+			public static final int Emg         = 0x0D;
+			public static final int AnExA0      = 0x0E;
+			public static final int AnExA7      = 0x0F;
+			public static final int BridgeAmpHigh  = 0x10;
+			public static final int BridgeAmpLow   = 0x11;
+			public static final int HeartRate   = 0x12;
 		}
 		public class SensorBitmap{
 			public static final int SENSOR_ACCEL				   = 0x80;
@@ -722,29 +724,29 @@ public class Configuration {
 			public static String VOLT_REG = "VSenseReg";
 		}
 		
-		public final static String[] ListofCompatibleSensors={"Accelerometer","Gyroscope","Magnetometer","Battery Voltage","ECG","EMG","GSR","Exp Board","Bridge Amplifier","Heart Rate"};
-		public final static String[] ListofAccelRange={"+/- 1.5g","+/- 6g"};
-		public final static String[] ListofMagRange={"+/- 0.8Ga","+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"};
-		public final static String[] ListofGSRRange={"10kOhm to 56kOhm","56kOhm to 220kOhm","220kOhm to 680kOhm","680kOhm to 4.7MOhm","Auto Range"};
+		public static final String[] ListofCompatibleSensors={"Accelerometer","Gyroscope","Magnetometer","Battery Voltage","ECG","EMG","GSR","Exp Board","Bridge Amplifier","Heart Rate"};
+		public static final String[] ListofAccelRange={"+/- 1.5g","+/- 6g"};
+		public static final String[] ListofMagRange={"+/- 0.8Ga","+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"};
+		public static final String[] ListofGSRRange={"10kOhm to 56kOhm","56kOhm to 220kOhm","220kOhm to 680kOhm","680kOhm to 4.7MOhm","Auto Range"};
 
 		public class SensorMapKey{
-			public final static int ACCEL = 0;
-			public final static int GYRO = 1;
-			public final static int MAG = 2;
-			public final static int EMG = 3;
-			public final static int ECG = 4;
-			public final static int GSR = 5;
-			public final static int EXP_BOARD_A7 = 6;
-			public final static int EXP_BOARD_A0 = 7;
-			public final static int EXP_BOARD = 8;
-			public final static int BRIDGE_AMP = 9;
-			public final static int HEART = 10;
-			public final static int BATT = 11;
-			public final static int EXT_ADC_A15 = 12;
-			public final static int INT_ADC_A1 = 13;
-			public final static int INT_ADC_A12 = 14;
-			public final static int INT_ADC_A13 = 15;
-			public final static int INT_ADC_A14 = 16;
+			public static final int ACCEL = 0;
+			public static final int GYRO = 1;
+			public static final int MAG = 2;
+			public static final int EMG = 3;
+			public static final int ECG = 4;
+			public static final int GSR = 5;
+			public static final int EXP_BOARD_A7 = 6;
+			public static final int EXP_BOARD_A0 = 7;
+			public static final int EXP_BOARD = 8;
+			public static final int BRIDGE_AMP = 9;
+			public static final int HEART = 10;
+			public static final int BATT = 11;
+			public static final int EXT_ADC_A15 = 12;
+			public static final int INT_ADC_A1 = 13;
+			public static final int INT_ADC_A12 = 14;
+			public static final int INT_ADC_A13 = 15;
+			public static final int INT_ADC_A14 = 16;
 		}
 	}
 
