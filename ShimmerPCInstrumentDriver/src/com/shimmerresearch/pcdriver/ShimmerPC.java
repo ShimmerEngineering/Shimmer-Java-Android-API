@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.shimmerresearch.bluetooth.ProgressReport;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -87,6 +88,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 	public final static int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
 	public final static int MSG_IDENTIFIER_DATA_PACKET = 2;
 	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
+	public final static int MSG_IDENTIFIER_PROGRESS_REPORT = 4;
 	
 	public final static int NOTIFICATION_STOP_STREAMING =0;
 	public final static int NOTIFICATION_START_STREAMING =1;
@@ -486,6 +488,12 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	protected void sendProgressReport(ProgressReport pr) {
+		// TODO Auto-generated method stub
+		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT, pr);
 	}
 	
 }
