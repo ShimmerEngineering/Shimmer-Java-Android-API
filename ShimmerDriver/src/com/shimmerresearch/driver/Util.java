@@ -236,6 +236,22 @@ public class Util {
 		return formatter.format(date);
 	}
 	
+	public static String fromMilToDateExcelCompatible(String miliseconds, Boolean showMillis){
+		
+		double miliInDouble = Double.parseDouble(miliseconds);
+		long mili = (long) miliInDouble;
+		Date date = new Date(mili);
+		DateFormat formatter;
+		if(showMillis){
+			formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+		}
+		else{
+			formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		}
+
+		return formatter.format(date);
+	}
+	
 	public static File[] getArrayOfFilesWithFileType(File directory, String fileType){
 		File[] listOfFiles = directory.listFiles(new FilenameFilter() {
 	        @Override
