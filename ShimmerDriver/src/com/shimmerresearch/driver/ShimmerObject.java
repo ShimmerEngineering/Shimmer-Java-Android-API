@@ -7852,7 +7852,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG,
 									Configuration.Shimmer3.SensorMapKey.EMG,
 									Configuration.Shimmer3.SensorMapKey.EXG_TEST,
-									Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+//									Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
 									Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)));
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI, new SensorTileDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
