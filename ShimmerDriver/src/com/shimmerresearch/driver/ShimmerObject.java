@@ -150,6 +150,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final String TEMP_CAL_UNIT = "Degrees Celsius";
 	public static final String PRESSURE_CAL_UNIT = "kPa";
 	public static final String HEARTRATE_CAL_UNIT = "bpm";
+	public static final String HEADING = "Degrees";
+	public static final String MILLISECONDS = "mSecs";
 	
 	public static final String NO_UNIT = "No Units";
 	public static final String CLOCK_UNIT = "Ticks";
@@ -831,7 +833,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 				if (mEnableCalibration){
 					double sdlogcaltimestamp = (double)sdlograwtimestamp/32768*1000;
-					objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("CAL","mSecs",sdlogcaltimestamp));
+					objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("CAL",MILLISECONDS,sdlogcaltimestamp));
 					calibratedData[iTimeStamp] = sdlogcaltimestamp;
 					calibratedDataUnits[iTimeStamp] = "mSecs";
 				}
@@ -840,7 +842,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
 				uncalibratedDataUnits[iTimeStamp] = NO_UNIT;
 				if (mEnableCalibration){
-					objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("CAL","mSecs",calibratedTS));
+					objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster("CAL",MILLISECONDS,calibratedTS));
 					calibratedData[iTimeStamp] = calibratedTS;
 					calibratedDataUnits[iTimeStamp] = "mSecs";
 				}
@@ -1779,6 +1781,50 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedData[iT] = (double)newPacketInt[iT];
 				uncalibratedDataUnits[iT] = NO_UNIT;
 			}
+			
+			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_PEDOMETER) > 0)){
+				int iPedoCnt = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_PEDOM_CNT);
+				int iPedoTime = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_PEDOM_TIME);
+				calibratedData[iPedoCnt] = (double)newPacketInt[iPedoCnt];
+				calibratedData[iPedoTime] = (double)newPacketInt[iPedoTime];
+				calibratedDataUnits[iPedoCnt] = NO_UNIT;
+				calibratedDataUnits[iPedoTime] = MILLISECONDS;
+				uncalibratedData[iPedoCnt] = (double)newPacketInt[iPedoCnt];
+				uncalibratedData[iPedoTime] = (double)newPacketInt[iPedoTime];
+				uncalibratedDataUnits[iPedoCnt] = NO_UNIT;
+				uncalibratedDataUnits[iPedoTime] = NO_UNIT;
+			}
+			
+			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_HEADING) > 0)){
+				int iH = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_HEADING);
+				calibratedData[iH] = (double)newPacketInt[iH]/Math.pow(2, 16);
+				calibratedDataUnits[iH] = HEADING;
+				uncalibratedData[iH] = (double)newPacketInt[iH];
+				uncalibratedDataUnits[iH] = NO_UNIT;
+			}
+
+			//TODO: separate out tap dir and cnt to two channels 
+			//Bits 7-5 - Direction,	Bits 4-0 - Count
+			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_TAP) > 0)){
+				int iTap = getSignalIndex(Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT);
+//				calibratedData[iTapCnt] = (double)(newPacketInt[iPedoCnt]&0x1F);
+//				calibratedData[iTapDir] = (double)((newPacketInt[iPedoTime]>>5)&0x07);
+				calibratedData[iTap] = (double)newPacketInt[iTap];
+				calibratedDataUnits[iTap] = NO_UNIT;
+				uncalibratedData[iTap] = (double)newPacketInt[iTap];
+				uncalibratedDataUnits[iTap] = NO_UNIT;
+			}
+			
+			//TODO: separate out motion and orientation to two channels
+			//Bit 7 - Motion/No motion,	Bits 5-4 - Display Orientation,	Bits 3-1 - Orientation,	Bit 0 - Flip indicator
+			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_MOTION_ORIENT) > 0)){
+				int iMotOrient = getSignalIndex(Shimmer3.ObjectClusterSensorName.MOTIONANDORIENT);
+				calibratedData[iMotOrient] = (double)newPacketInt[iMotOrient];
+				calibratedDataUnits[iMotOrient] = NO_UNIT;
+				uncalibratedData[iMotOrient] = (double)newPacketInt[iMotOrient];
+				uncalibratedDataUnits[iMotOrient] = NO_UNIT;
+			}
+			
 			objectCluster.mCalData = calibratedData;
 			objectCluster.mUncalData = uncalibratedData;
 			objectCluster.mUnitCal = calibratedDataUnits;
@@ -2970,6 +3016,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				formattedData[i]=calculatetwoscomplement((int)(xmsb + msb + lsb),24);
 				iData=iData+3;
 			} else if (dataType[i]=="u32signed") {
+				//TODO: should this be called i32?
+				//TODO: are the indexes incorrect, current '+1' to '+4', should this be '+0' to '+3' the the others listed here?
 				long offset = (((long)data[iData] & 0xFF));
 				if (offset == 255){
 					offset = 0;
@@ -2980,6 +3028,28 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				long lsb =(((long)data[iData+1] & 0xFF));
 				formattedData[i]=(1-2*offset)*(xxmsb + xmsb + msb + lsb);
 				iData=iData+5;
+			//TODO: Newly added below up to u72 - check
+			} else if (dataType[i]=="u32") {
+				long forthmsb =(((long)data[iData+3] & 0xFF) << 24);
+				long thirdmsb =(((long)data[iData+2] & 0xFF) << 16);
+				long msb =(((long)data[iData+1] & 0xFF) << 8);
+				long lsb =(((long)data[iData+0] & 0xFF) << 0);
+				formattedData[i]=forthmsb + thirdmsb + msb + lsb;
+				iData=iData+4;
+			} else if (dataType[i]=="u32r") {
+				long forthmsb =(((long)data[iData+0] & 0xFF) << 24);
+				long thirdmsb =(((long)data[iData+1] & 0xFF) << 16);
+				long msb =(((long)data[iData+2] & 0xFF) << 8);
+				long lsb =(((long)data[iData+3] & 0xFF) << 0);
+				formattedData[i]=forthmsb + thirdmsb + msb + lsb;
+				iData=iData+4;
+			} else if (dataType[i]=="i32") {
+				long xxmsb =((long)(data[iData+3] & 0xFF) << 24);
+				long xmsb =((long)(data[iData+2] & 0xFF) << 16);
+				long msb =((long)(data[iData+1] & 0xFF) << 8);
+				long lsb =((long)(data[iData+0] & 0xFF) << 0);
+				formattedData[i]=calculatetwoscomplement((long)(xxmsb + xmsb + msb + lsb),32);
+				iData=iData+4;
 			} else if (dataType[i]=="i32r") {
 				long xxmsb =((long)(data[iData+0] & 0xFF) << 24);
 				long xmsb =((long)(data[iData+1] & 0xFF) << 16);
