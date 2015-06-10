@@ -47,6 +47,16 @@
 
 package com.shimmerresearch.driver;
 
+/**
+ * The purpose of this code is to maintain the configurations constants for a
+ * Shimmer Device
+ * 
+ * @author Jong Chern Lim,
+ * @author Ruaidhri Molloy
+ * @author Mark Nolan
+ * @author Alex Saez
+ *
+ */
 public class Configuration {
 	//Channel Contents
 	public static class ShimmerGQ{

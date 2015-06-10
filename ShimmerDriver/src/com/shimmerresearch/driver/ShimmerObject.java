@@ -9322,6 +9322,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mGyroRange=1;
 			}
 			
+			//force gyro range to be 2000dps and accel range to be +-2g - other untested
+//			mGyroRange=3;
+//			mMPU9150AccelRange= 0;
+			
 			setLowPowerGyro(false);
 			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
 			setMPU9150MplRateFromFreq(mShimmerSamplingRate);
