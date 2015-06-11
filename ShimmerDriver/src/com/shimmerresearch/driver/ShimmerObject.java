@@ -705,6 +705,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mEXG2RateSetting; //setting not value
 	protected int mEXG2CH1GainSetting; // this is the setting not to be confused with the actual value
 	protected int mEXG2CH1GainValue; // this is the value
+	protected int mEXG2CH2PowerDown;
 	protected int mEXG2CH2GainSetting; // this is the setting not to be confused with the actual value
 	protected int mEXG2CH2GainValue; // this is the value
 	protected static final int EXG_CHIP1 = 0;
@@ -5991,6 +5992,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			System.arraycopy(byteArray, index, mEXG2RegisterArray, 0, 10);
 			mEXG2RateSetting = mEXG2RegisterArray[0] & 7;
 			mEXG2CH1GainSetting = (mEXG2RegisterArray[3] >> 4) & 7;
+			mEXG2CH2PowerDown = (mEXG2RegisterArray[3] >> 7) & 1;
 			mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
 			mEXG2CH2GainSetting = (mEXG2RegisterArray[4] >> 4) & 7;
 			mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
@@ -6053,6 +6055,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 		mEXG2RegisterArray[3] &= (~(0x07 << 4));
 		mEXG2RegisterArray[3] |= ((mEXG2CH1GainSetting & 0x07) << 4);
+		mEXG2RegisterArray[3] |= ((mEXG2CH2PowerDown & 0x01) << 7);
 		mEXG2RegisterArray[4] &= (~(0x07 << 4));
 		mEXG2RegisterArray[4] |= ((mEXG2CH2GainSetting & 0x07) << 4);
 		
@@ -7921,7 +7924,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG,
 									Configuration.Shimmer3.SensorMapKey.EMG,
 									Configuration.Shimmer3.SensorMapKey.EXG_TEST,
-//									Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+									Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
 									Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)));
 				mSensorTileMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI, new SensorTileDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
@@ -10970,8 +10973,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //		
 //		mEXG1RegisterArray[5] &= (~(0x0F << 0));
 //		mEXG1RegisterArray[5] |= ((mEXGReferenceElectrode & 0x0F) << 0);
-//		mEXG1RegisterArray[1] &= (~(0x04 << 0));
-//		mEXG1RegisterArray[1] |= ((mEXG1Comparators & 0x40) << 0);
 //		mEXG1RegisterArray[5] &= (~(0x10 << 0));
 //		mEXG1RegisterArray[5] |= ((mEXGRLDSense & 0x10) << 0);
 //		mEXG1RegisterArray[6] &= (~(0x0F << 0));
@@ -11013,23 +11014,75 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			this.mEXG2LeadOffCurrentMode = 0;
 			this.mEXG1Comparators &= (~(0x40 << 0));
 			this.mEXG2Comparators &= (~(0x40 << 0));
+			this.mEXGRLDSense &= (~(0x10 << 0));
+			this.mEXG1LeadOffSenseSelection &= (~(0x0F << 0));
+			this.mEXG2LeadOffSenseSelection &= (~(0x0F << 0));
+			if(isEXGUsingDefaultEMGConfiguration()){
+				this.mEXG2CH2PowerDown = 0x80;
+			}
 		}
 		else if(mode==0){//DC Current
 			this.mEXG1LeadOffCurrentMode = 0;
 			this.mEXG2LeadOffCurrentMode = 0;
 			this.mEXG1Comparators |= 0x40;
 			this.mEXG2Comparators |= 0x40;
+			this.mEXGRLDSense |= 0x10;
+			this.mEXG1LeadOffSenseSelection |=  0x07;
+			this.mEXG2LeadOffSenseSelection |=  0x04;
+			if(isEXGUsingDefaultEMGConfiguration()){
+				this.mEXG2CH2PowerDown = 0;
+			}
 		}
 		else if(mode==1){//AC Current
 			this.mEXG1LeadOffCurrentMode = 1;
 			this.mEXG2LeadOffCurrentMode = 1;
 			this.mEXG1Comparators |= 0x40;
 			this.mEXG2Comparators |= 0x40;
+			this.mEXGRLDSense |= 0x10;
+			this.mEXG1LeadOffSenseSelection |=  0x07;
+			this.mEXG2LeadOffSenseSelection |=  0x04;
+			if(isEXGUsingDefaultEMGConfiguration()){
+				this.mEXG2CH2PowerDown = 0;
+			}
 		}
 		exgBytesGetFromConfig();
 	}
 
-
+	protected int getEXGLeadOffCurrentMode(){
+//		if((this.mEXG1LeadOffCurrentMode==0)
+//				&&(this.mEXG2LeadOffCurrentMode == 0)
+//				&&(this.mEXG1Comparators == 0)
+//				&&(this.mEXG2Comparators == 0)
+//				&&(this.mEXGRLDSense == 0)
+//				&&(this.mEXG1LeadOffSenseSelection == 0)
+//				&&(this.mEXG2LeadOffSenseSelection == 0)
+//				){
+//			return -1;//Off
+//		}
+		if((this.mEXG1LeadOffCurrentMode==0)
+				&&(this.mEXG2LeadOffCurrentMode == 0)
+				&&(this.mEXG1Comparators == 0x40)
+				&&(this.mEXG2Comparators == 0x40)
+				&&(this.mEXGRLDSense == 0x10)
+				&&(this.mEXG1LeadOffSenseSelection > 0)
+				&&(this.mEXG2LeadOffSenseSelection > 0)
+				){
+			return 0;//DC Current
+		}
+		else if((this.mEXG1LeadOffCurrentMode==1)
+				&&(this.mEXG2LeadOffCurrentMode == 1)
+				&&(this.mEXG1Comparators == 0x40)
+				&&(this.mEXG2Comparators == 0x40)
+				&&(this.mEXGRLDSense == 0x10)
+				&&(this.mEXG1LeadOffSenseSelection > 0)
+				&&(this.mEXG2LeadOffSenseSelection > 0)
+				){
+			return 1;//AC Current
+		}
+		
+		return -1;//Off
+	}
+	
 	/**
 	 * @param mEXG1LeadOffCurrentMode the mEXG1LeadOffCurrentMode to set
 	 */
@@ -11353,7 +11406,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				returnValue = getEXGReferenceElectrode();
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
-				returnValue = getEXG2LeadOffCurrentMode();
+				returnValue = getEXGLeadOffCurrentMode();
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
 				returnValue = getEXGLeadOffDetectionCurrent();
@@ -11583,7 +11636,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				setEXGReferenceElectrode((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
-				//TODO
 				setEXGLeadOffCurrentMode((int)valueToSet);
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
