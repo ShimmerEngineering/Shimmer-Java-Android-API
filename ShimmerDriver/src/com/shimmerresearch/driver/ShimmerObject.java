@@ -115,6 +115,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
 
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -6201,20 +6202,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 		setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 		
-		if(mConfigOptionsMap!=null) {
-			if(mLowPowerAccelWR) {
-				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
-												Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
-												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-			}
-			else {
-				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-												Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
-												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-			}
-		}
+//		if(mConfigOptionsMap!=null) {
+//			if(mLowPowerAccelWR) {
+//				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
+//												Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
+//												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+//			}
+//			else {
+//				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+//												Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+//												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+//			}
+//		}
 	}
 	
 	/**
@@ -8044,18 +8045,26 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
 												Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-				if(mLowPowerAccelWR) {
-					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
-													Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
-													SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-				}
-				else {
-					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-													Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
-													SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-				}
+				
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+												Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
+
+//				if(mLowPowerAccelWR) {
+//					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
+//													Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
+//													SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+//				}
+//				else {
+//					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+//													Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+//													SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+//				}
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGyroRange, 
@@ -8101,6 +8110,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												Configuration.Shimmer3.ListOfECGReferenceElectrodeConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 												listOfCompatibleVersionInfoExg));
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, Configuration.Shimmer3.ListOfEMGReferenceElectrode);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, Configuration.Shimmer3.ListOfExGReferenceElectrodeAll);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, Configuration.Shimmer3.ListOfExGReferenceElectrodeConfigValuesAll);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, Configuration.Shimmer3.ListOfRespReferenceElectrode);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, Configuration.Shimmer3.ListOfRespReferenceElectrodeConfigValues);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, Configuration.Shimmer3.ListOfTestReferenceElectrode);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, Configuration.Shimmer3.ListOfTestReferenceElectrodeConfigValues);
+				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.JPANEL,
 												listOfCompatibleVersionInfoExg));
@@ -8135,6 +8153,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 												Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khzConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 												listOfCompatibleVersionInfoRespiration));
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.SIXTHY_FOUR_KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khz);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.SIXTHY_FOUR_KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khzConfigValues);
 				
 				//MPL Options
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE, 
@@ -8445,18 +8465,26 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
 												Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-				if(mLowPowerAccelWR) {
-					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
-													Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
-													SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-				}
-				else {
-					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-													Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
-													SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-				}
+				
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+												Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);
+				mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
+
+//				if(mLowPowerAccelWR) {
+//					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
+//													Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
+//													SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+//				}
+//				else {
+//					mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//							new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+//													Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+//													SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+//				}
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
@@ -8501,6 +8529,53 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX));
+			}
+		}
+	}
+	
+	
+	public void checkConfigOptionValues(String stringKey) {
+		if(mConfigOptionsMap!=null){
+			if(mConfigOptionsMap.containsKey(stringKey)){
+				if(mHardwareVersion==HW_ID.SHIMMER_3){
+			        if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)) {
+			        	if(isLSM303DigitalAccelLPM()) {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM);
+			        	}
+			        	else {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.NOT_LPM);
+		        			// double check that rate is compatible with LPM (8 not compatible so to higher rate)
+			        		setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
+			        	}
+			        }
+			        else if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)) {
+						if(isExgRespirationDetectFreq32kHz()) {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.THIRTY_TWO_KHZ);
+						}
+						else {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.SIXTHY_FOUR_KHZ);
+						}
+			        }
+			        else if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE)) {
+						if(isEXGUsingDefaultECGConfiguration()) {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.ECG);
+						}
+						else if(isEXGUsingDefaultEMGConfiguration()) {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG);
+						}
+						else if(isEXGUsingDefaultRespirationConfiguration()) {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP);
+						}
+						else if(isEXGUsingDefaultTestSignalConfiguration()) {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST);
+						}
+						else {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM);
+						}
+			        }
+				}
+				else if(mHardwareVersion==HW_ID.SHIMMER_GQ){
+				}
 			}
 		}
 	}
@@ -11419,7 +11494,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	        
 	        //TODO: regenerate EXG register bytes on each change (just in case)
 	        	
-        	//TODO
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
 				setEXG1RateSetting((int)valueToSet);
 				setEXG2RateSetting((int)valueToSet);

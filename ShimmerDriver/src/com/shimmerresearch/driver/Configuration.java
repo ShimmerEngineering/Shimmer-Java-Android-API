@@ -210,10 +210,19 @@ public class Configuration {
 		public static final String[] ListofDefaultEXG={"ECG","EMG","Test Signal"};
 		public static final String[] ListOfExGGain={"6","1","2","3","4","8","12"};
 		public static final Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
+		
 		public static final String[] ListOfECGReferenceElectrode={"Inverse Wilson CT","Fixed Potential"};
 		public static final Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
 		public static final String[] ListOfEMGReferenceElectrode={"Fixed Potential", "Inverse of Ch1"};
 		public static final Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
+		public static final String[] ListOfExGReferenceElectrodeAll={"Fixed Potential","Inverse of Ch1","Inverse Wilson CT","3-Ch Single-ended","Chip Temperature"};
+		public static final Integer[] ListOfExGReferenceElectrodeConfigValuesAll={0,3,13,7,4};
+		public static final String[] ListOfRespReferenceElectrode={"Fixed Potential"};
+		public static final Integer[] ListOfRespReferenceElectrodeConfigValues={0};
+		public static final String[] ListOfTestReferenceElectrode={"Test Signal"};
+		public static final Integer[] ListOfTestReferenceElectrodeConfigValues={5};
+
+		
 		public static final String[] ListOfExGLeadOffDetection={"Off","DC Current"};
 		public static final Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
 		public static final String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
@@ -224,20 +233,24 @@ public class Configuration {
 		public static final Integer[] ListOfExGResolutionsConfigValues={0,1};
 		public static final String[] ListOfExGRespirationDetectFreq={"32 kHz","64 kHz"};
 		public static final Integer[] ListOfExGRespirationDetectFreqConfigValues={0,1};
+		//TODO
 		public static final String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
 		public static final Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 		public static final String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
 		public static final Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
+
 		public static final String[] ListOfExGRate={"125 Hz","250 Hz","500 Hz","1 kHz","2 kHz","4 kHz","8 kHz"};
 		public static final Integer[] ListOfExGRateConfigValues={0,1,2,3,4,5,6};
 
 		public static final String[] ListofBluetoothBaudRates={"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
 		public static final Integer[] ListofBluetoothBaudRatesConfigValues={0,1,2,3,4,5,6,7,8,9,10};
 
+		//TODO
 		public static final String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1344Hz"};
 		public static final Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
 		public static final String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
 		public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
+		
 		public static final String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
 		public static final Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
 
