@@ -215,8 +215,8 @@ public class Configuration {
 		public static final Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
 		public static final String[] ListOfEMGReferenceElectrode={"Fixed Potential", "Inverse of Ch1"};
 		public static final Integer[] ListOfEMGReferenceElectrodeConfigValues={0,3};
-		public static final String[] ListOfExGReferenceElectrodeAll={"Fixed Potential","Inverse of Ch1","Inverse Wilson CT","3-Ch Single-ended","Chip Temperature"};
-		public static final Integer[] ListOfExGReferenceElectrodeConfigValuesAll={0,3,13,7,4};
+		public static final String[] ListOfExGReferenceElectrodeAll={"Fixed Potential","Inverse of Ch1","Inverse Wilson CT","3-Ch Single-ended"};//,"Inputs Shorted"
+		public static final Integer[] ListOfExGReferenceElectrodeConfigValuesAll={0,3,13,7};
 		public static final String[] ListOfRespReferenceElectrode={"Fixed Potential"};
 		public static final Integer[] ListOfRespReferenceElectrodeConfigValues={0};
 		public static final String[] ListOfTestReferenceElectrode={"Test Signal"};

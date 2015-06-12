@@ -15,7 +15,6 @@ import java.util.Date;
 public class Util {
 	
 	public String mParentClassName = "UpdateCheck";
-	
 	public Boolean mVerboseMode = true;
 	
 	public Util(String parentClassName, Boolean verboseMode){
@@ -38,7 +37,7 @@ public class Util {
 			System.out.print(message);
 		}		
 	}
-	
+
 	public void setVerboseMode(boolean verboseMode) {
 		mVerboseMode = verboseMode;
 	}
