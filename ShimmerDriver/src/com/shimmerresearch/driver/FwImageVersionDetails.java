@@ -52,7 +52,7 @@ public class FwImageVersionDetails {
 	}
 	
 	public FwImageVersionDetails(File file, boolean isLatestSampleFw) {
-		mSuccess = checkIfShimmer3FwFile(file);
+		mSuccess = checkIfTiMsp430TxtFwFile(file);
 		if(mSuccess){
 			mSuccess = parseFileName(file);
 			mIsLatestSampleFw = isLatestSampleFw;
@@ -66,7 +66,7 @@ public class FwImageVersionDetails {
 	 * @param file
 	 * @return
 	 */
-	private boolean checkIfShimmer3FwFile(File file) {
+	private boolean checkIfTiMsp430TxtFwFile(File file) {
 		//Check if it is a file
 		if(!file.exists() || file.isDirectory()) {
 			return false;
