@@ -163,7 +163,9 @@ import java.util.UUID;
 
 
 
+
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
+import com.shimmerresearch.bluetooth.ProgressReport;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -171,6 +173,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
+
 
 
 
@@ -206,6 +209,7 @@ public class Shimmer extends ShimmerBluetooth{
 	public static final int MESSAGE_PACKET_LOSS_DETECTED = 11;
 	public static final int MESSAGE_NOT_SYNC = 12;
 	public static final int MESSAGE_LOG_AND_STREAM_STATUS_CHANGED = 13;
+	public static final int MESSAGE_PROGRESS_REPORT = 14;
 	
 	// Key names received from the Shimmer Handler 
 	public static final String TOAST = "toast";
@@ -1080,6 +1084,12 @@ public class Shimmer extends ShimmerBluetooth{
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void sendProgressReport(ProgressReport pr) {
+		// TODO Auto-generated method stub
+		mHandler.obtainMessage(MESSAGE_PROGRESS_REPORT, pr).sendToTarget();
 	}
 
 //	@Override

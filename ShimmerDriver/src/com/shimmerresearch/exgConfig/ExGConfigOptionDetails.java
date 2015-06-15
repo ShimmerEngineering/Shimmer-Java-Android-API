@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.exgConfig;
 
 
 public class ExGConfigOptionDetails {
