@@ -22,19 +22,6 @@ public class ExGConfigBytesDetails {
 	public int BIT5 = 0x20;
 	public int BIT6 = 0x40;
 	public int BIT7 = 0x80;
-
-
-//	public static class ReferenceElectrode{
-//		public static enum ECG{
-//			InverseWilsonCT,
-//			FixedPotential
-//		}
-//		public static enum EMG{
-//			FixedPotential,
-//			InverseOfCh1
-//		}
-//	}
-	
 	
 	public final static String[] ListOfECGReferenceElectrode={"Inverse Wilson CT","Fixed Potential"};
 	public final static Integer[] ListOfECGReferenceElectrodeConfigValues={13,0};
@@ -52,6 +39,24 @@ public class ExGConfigBytesDetails {
 	public final static Integer[] ListOfOnOffConfigValues={0x01,0x00};
 	
 
+	
+	public static final class ALL_SETTINGS{
+		public static final class REG0{
+			public static final class CONVERSION_MODES{
+				public static final ExgConfigOption CONTINUOUS = new ExgConfigOption(0, "Continuous Conversion Mode", 0, 7, 0x01);
+				public static final ExgConfigOption SINGLE_SHOT = new ExgConfigOption(0, "Single-shot mode", 1, 7, 0x01);
+			}
+			public static final class DATA_RATE{
+				public static final ExgConfigOption RATE_125SPS = new ExgConfigOption(0, "125 SPS", 0, 0, 0x07);
+				public static final ExgConfigOption RATE_250SPS = new ExgConfigOption(0, "250 SPS", 1, 0, 0x07);
+				public static final ExgConfigOption RATE_500SPS = new ExgConfigOption(0, "500 SPS", 2, 0, 0x07);
+				public static final ExgConfigOption RATE_1KSPS = new ExgConfigOption(0, "1 kSPS", 3, 0, 0x07);
+				public static final ExgConfigOption RATE_2KSPS = new ExgConfigOption(0, "2 kSPS", 4, 0, 0x07);
+				public static final ExgConfigOption RATE_4KSPS = new ExgConfigOption(0, "4 kSPS", 5, 0, 0x07);
+				public static final ExgConfigOption RATE_8KSPS = new ExgConfigOption(0, "8 kSPS", 6, 0, 0x07);
+			}
+		}
+	}
 	
 	//0 - Configuration Register 1
     public static String REG0 = "Configuration Register 1";
@@ -310,6 +315,7 @@ public class ExGConfigBytesDetails {
         for(String key:mMapOfExGSettingsChip1.keySet()){
         	mMapOfExGSettingsChip2.put(key, mMapOfExGSettingsChip1.get(key));
         }
+        
 	}
 
 	
