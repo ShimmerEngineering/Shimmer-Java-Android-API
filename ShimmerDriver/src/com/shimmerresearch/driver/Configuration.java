@@ -58,6 +58,41 @@ package com.shimmerresearch.driver;
  *
  */
 public class Configuration {
+	
+	public static class CHANNEL_UNITS{
+		//Sensors units
+		public static final String NO_UNITS = "no units";
+		public static final String MILLISECONDS = "ms";
+		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";
+		public static final String DEGREES_PER_SECOND = "deg/s";
+		public static final String LOCAL_FLUX = "local_flux";
+		public static final String KOHMS = "kOhms";
+		public static final String MVOLTS = "mV";
+		public static final String BEATS_PER_MINUTE = "BPM";
+		public static final String KPASCAL = "kPa";
+		public static final String DEGREES_CELSUIS = "Degrees Celsius";
+		public static final String DEGREES = "Degrees";
+		public static final String U_TESLA = "uT";
+		public static final String DATE_FORMAT = "yyyy/mm/dd hh:mm:ss.000";
+		public static final String GRAVITY = "g";
+		public static final String CLOCK_UNIT = "Ticks";
+
+		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
+		public static final String ACCEL_DEFAULT_CAL_UNIT = METER_PER_SECOND_SQUARE;
+		public static final String GYRO_CAL_UNIT = DEGREES_PER_SECOND;
+		public static final String GYRO_DEFAULT_CAL_UNIT = DEGREES_PER_SECOND;
+		public static final String MAG_CAL_UNIT = LOCAL_FLUX;
+		public static final String MAG_DEFAULT_CAL_UNIT = LOCAL_FLUX;
+		
+		public static final String LOCAL = "local"; //used for axis-angle and madgewick quaternions
+	}	
+	
+	public static class CHANNEL_TYPE{
+		public static final String CAL = "CAL";
+		public static final String UNCAL = "UNCAL";
+		public static final String RAW = "RAW";
+	}
+	
 	//Channel Contents
 	public static class ShimmerGQ{
 		public class SensorMapKey{
