@@ -1,11 +1,11 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.exgConfig;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.shimmerresearch.driver.ExGConfigOptionDetails.SettingType;
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.SettingType;
 
 public class ExGConfigBytesDetails {
 	
@@ -14,14 +14,14 @@ public class ExGConfigBytesDetails {
 	HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsChip1 = new HashMap<String, ExGConfigOptionDetails>();
 	HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsChip2 = new HashMap<String, ExGConfigOptionDetails>();
 	
-	public int BIT0 = 0x01;
-	public int BIT1 = 0x02;
-	public int BIT2 = 0x04;
-	public int BIT3 = 0x08;
-	public int BIT4 = 0x10;
-	public int BIT5 = 0x20;
-	public int BIT6 = 0x40;
-	public int BIT7 = 0x80;
+	private int BIT0 = 0x01;
+	private int BIT1 = 0x02;
+	private int BIT2 = 0x04;
+	private int BIT3 = 0x08;
+	private int BIT4 = 0x10;
+	private int BIT5 = 0x20;
+	private int BIT6 = 0x40;
+	private int BIT7 = 0x80;
 
 
 //	public static class ReferenceElectrode{
@@ -309,6 +309,7 @@ public class ExGConfigBytesDetails {
 
         for(String key:mMapOfExGSettingsChip1.keySet()){
         	mMapOfExGSettingsChip2.put(key, mMapOfExGSettingsChip1.get(key));
+        	mMapOfExGSettingsChip2.get(key).chipIndex = 2;
         }
 	}
 
