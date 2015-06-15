@@ -10074,8 +10074,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
 	 */
-	protected void setMPU9150AccelRange(int mMPU9150AccelRange) {
-		mMPU9150AccelRange = mMPU9150AccelRange;
+	protected void setMPU9150AccelRange(int i) {
+		mMPU9150AccelRange = i;
 	}
 	
 	protected void setMPU9150GyroRange(int i){

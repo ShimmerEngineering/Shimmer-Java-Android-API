@@ -66,7 +66,7 @@ public class FwImageVersionDetails {
 	 * @param file
 	 * @return
 	 */
-	private static boolean checkIfTiMsp430TxtFwFile(File file) {
+	public static boolean checkIfTiMsp430TxtFwFile(File file) {
 		//Check if it is a file
 		if(!file.exists() || file.isDirectory()) {
 			return false;
