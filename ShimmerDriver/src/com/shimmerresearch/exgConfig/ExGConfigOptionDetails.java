@@ -1,9 +1,16 @@
 package com.shimmerresearch.exgConfig;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class ExGConfigOptionDetails {
 
-	public int chipIndex = 0;
+public class ExGConfigOptionDetails implements Cloneable, Serializable {
+
+	public CHIP_INDEX chipIndex = CHIP_INDEX.CHIP1;
 	public int byteIndex = 0;
 	public String GuiLabel;
 	public String[] GuiValues;
@@ -13,25 +20,30 @@ public class ExGConfigOptionDetails {
 	public int mask = 0;
 
 	public static enum SettingType{
-		combobox,
-		checkbox
+		COMBOBOX,
+		CHECKBOX
 	}
 	
-	public SettingType settingType = SettingType.checkbox;
+	public static enum CHIP_INDEX{
+		CHIP1,
+		CHIP2
+	}
+	
+	public SettingType settingType = SettingType.CHECKBOX;
 	
 	public boolean valueBool = false;
 	
-	public ExGConfigOptionDetails(int chipIndex, int byteIndex, String GuiLabel, int bitShift){
+	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, int bitShift){
 		super();
 		this.chipIndex = chipIndex;
 		this.byteIndex = byteIndex;
 		this.GuiLabel = GuiLabel;
 		this.bitShift = bitShift;
 		this.mask = 0x01;
-		this.settingType = SettingType.checkbox;
+		this.settingType = SettingType.CHECKBOX;
 	}
 	
-	public ExGConfigOptionDetails(int chipIndex, int byteIndex, String GuiLabel, String[] GuiValues, Integer[] ConfigValues, int bitShift, int mask){
+	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, String[] GuiValues, Integer[] ConfigValues, int bitShift, int mask){
 		super();
 		this.chipIndex = chipIndex;
 		this.byteIndex = byteIndex;
@@ -40,6 +52,38 @@ public class ExGConfigOptionDetails {
 		this.ConfigValues = ConfigValues;
 		this.bitShift = bitShift;
 		this.mask = mask;
-		this.settingType = SettingType.combobox;
+		this.settingType = SettingType.COMBOBOX;
 	}
+
+	public String[] getGuiValues() {
+		return GuiValues;
+	}
+
+	public Integer[] getConfigValues() {
+		return ConfigValues;
+	}
+	
+	/**Performs a deep copy of this object by Serializing
+	 * @return ExGConfigOptionDetails the deep copy of the object
+	 * @see java.io.Serializable
+	 */
+	public ExGConfigOptionDetails deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (ExGConfigOptionDetails) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	
 }

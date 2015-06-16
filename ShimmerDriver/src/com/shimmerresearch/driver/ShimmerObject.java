@@ -118,6 +118,12 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 
 
+
+
+
+
+
+
 //import sun.util.calendar.BaseCalendar.Date;
 //import sun.util.calendar.CalendarDate;
 import java.util.Date;
@@ -135,6 +141,11 @@ import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.SensorDetails;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.exgConfig.ExGConfigBytesDetails;
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails;
+import com.shimmerresearch.exgConfig.ExgConfigOption;
+import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING;
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
 public abstract class ShimmerObject extends BasicProcessWithCallBack implements Serializable {
@@ -699,6 +710,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected byte[] mPressureCalRawParams = new byte[23];
 
 	//EXG
+	protected ExGConfigBytesDetails exGConfigBytesDetails = new ExGConfigBytesDetails(); 
+
 	protected byte[] mEXG1RegisterArray = new byte[10];
 	protected byte[] mEXG2RegisterArray = new byte[10];
 	protected int mEXG1RateSetting; //setting not value
@@ -5835,7 +5848,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mEXG1RegisterArray[0] = (byte) ((mEXG1RegisterArray[0] & ~0x07) | mEXG1RateSetting);
 		mEXG2RegisterArray[0] = (byte) ((mEXG2RegisterArray[0] & ~0x07) | mEXG2RateSetting);
 		
-		exgBytesGetFromConfig();
+		//TODO:2015-06-16 Test below being removed
+//		exgBytesGetFromConfig();
 		return mEXG1RateSetting;
 	}
 	
@@ -5992,8 +6006,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mEXG2RespirationDetectPhase = (mEXG2RegisterArray[8] >> 2) & 0x0F;
 			mEXG2RespirationDetectFreq = (mEXG2RegisterArray[9] >> 2) & 0x01;
 		}
+		
+		//TODO:2015-06-16 UPDATE MAP
 	}
 
+	//TODO:2015-06-16 remove the need for this by using map
 	/**
 	 * Generates the ExG configuration byte arrays based on the individual ExG
 	 * related variables stored in ShimmerObject. The resulting arrays are
@@ -6256,8 +6273,25 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	 protected void setDefaultRespirationConfiguration() {
 		 if (mHardwareVersion==HW_ID.SHIMMER_3){
-			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 0x20,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
-			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 0xEA,(byte) 1};
+//			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
+//			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 234,(byte) 1};
+			
+			 clearExgConfig();
+			setExgPropertyBothChips(EXG_SETTING.CONVERSION_MODES.CONTINUOUS);
+			setExgPropertyBothChips(EXG_SETTING.REFERENCE_BUFFER.ON);
+			setExgPropertyBothChips(EXG_SETTING.VOLTAGE_REFERENCE.VREF_2_42V);
+
+			setExgPropertyBothChips(EXG_SETTING.GAIN_PGA_CH1.GAIN_4);
+			setExgPropertyBothChips(EXG_SETTING.GAIN_PGA_CH2.GAIN_4);
+
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT); //TODO: check!!
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_BUFFER_POWER.ENABLED);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
+
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.RESPIRATION_DEMOD_CIRCUITRY.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.RESPIRATION_MOD_CIRCUITRY.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.RESPIRATION_PHASE.FREQ32KHZ_PHASE_112_5);
+			
 			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
@@ -6272,8 +6306,26 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	 protected void setDefaultECGConfiguration() {
 		 if (mHardwareVersion==HW_ID.SHIMMER_3){
-			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
-			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+//			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
+//			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+
+			clearExgConfig();
+			setExgPropertyBothChips(EXG_SETTING.CONVERSION_MODES.CONTINUOUS);
+			setExgPropertyBothChips(EXG_SETTING.REFERENCE_BUFFER.ON);
+			setExgPropertyBothChips(EXG_SETTING.VOLTAGE_REFERENCE.VREF_2_42V);
+
+			setExgPropertyBothChips(EXG_SETTING.GAIN_PGA_CH1.GAIN_4);
+			setExgPropertyBothChips(EXG_SETTING.GAIN_PGA_CH2.GAIN_4);
+
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT);
+			
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_BUFFER_POWER.ENABLED);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_NEG_INPUTS_CH2.RLD_CONNECTED_TO_IN2N);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_POS_INPUTS_CH2.RLD_CONNECTED_TO_IN2P);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_POS_INPUTS_CH1.RLD_CONNECTED_TO_IN1P);
+			
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
+
 			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
@@ -6287,8 +6339,27 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	 protected void setDefaultEMGConfiguration(){
 		if (mHardwareVersion==HW_ID.SHIMMER_3){
-			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
-			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+//			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
+//			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+			
+			clearExgConfig();
+			setExgPropertyBothChips(EXG_SETTING.CONVERSION_MODES.CONTINUOUS);
+			setExgPropertyBothChips(EXG_SETTING.REFERENCE_BUFFER.ON);
+			setExgPropertyBothChips(EXG_SETTING.VOLTAGE_REFERENCE.VREF_2_42V);
+			
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.GAIN_PGA_CH1.GAIN_12);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.GAIN_PGA_CH2.GAIN_12);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.INPUT_SELECTION_CH1.ROUTE_CH3_TO_CH1);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.INPUT_SELECTION_CH2.NORMAL);
+			
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.POWER_DOWN_CH1.POWER_DOWN);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.INPUT_SELECTION_CH1.SHORTED);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.POWER_DOWN_CH2.POWER_DOWN);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING.INPUT_SELECTION_CH2.SHORTED);
+			
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_BUFFER_POWER.ENABLED);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1,EXG_SETTING.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
+			
 			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
@@ -6303,8 +6374,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	 protected void setEXGTestSignal(){
 		if (mHardwareVersion==HW_ID.SHIMMER_3){
-			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+//			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+//			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+			
+			clearExgConfig();
+			setExgPropertyBothChips(EXG_SETTING.CONVERSION_MODES.CONTINUOUS);
+			setExgPropertyBothChips(EXG_SETTING.REFERENCE_BUFFER.ON);
+			setExgPropertyBothChips(EXG_SETTING.VOLTAGE_REFERENCE.VREF_2_42V);
+
+			setExgPropertyBothChips(EXG_SETTING.TEST_SIGNAL_SELECTION.ON);
+			setExgPropertyBothChips(EXG_SETTING.TEST_SIGNAL_FREQUENCY.SQUARE_WAVE_1KHZ);
+
+			setExgPropertyBothChips(EXG_SETTING.INPUT_SELECTION_CH1.TEST_SIGNAL);
+			setExgPropertyBothChips(EXG_SETTING.INPUT_SELECTION_CH2.TEST_SIGNAL);
+			
 			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
@@ -6338,15 +6421,76 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	 protected void setEXGCustom(){
 		if (mHardwareVersion==HW_ID.SHIMMER_3){
-			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
-			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+//			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+//			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
+			
+			clearExgConfig();
+			setExgPropertyBothChips(EXG_SETTING.CONVERSION_MODES.CONTINUOUS);
+			setExgPropertyBothChips(EXG_SETTING.REFERENCE_BUFFER.ON);
+			setExgPropertyBothChips(EXG_SETTING.VOLTAGE_REFERENCE.VREF_2_42V);
+
+			setExgPropertyBothChips(EXG_SETTING.TEST_SIGNAL_SELECTION.ON);
+			setExgPropertyBothChips(EXG_SETTING.TEST_SIGNAL_FREQUENCY.SQUARE_WAVE_1KHZ);
+
+			setExgPropertyBothChips(EXG_SETTING.INPUT_SELECTION_CH1.RLDIN_CONNECTED_TO_NEG_INPUT);
+			setExgPropertyBothChips(EXG_SETTING.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT);
+			
 			setExGRateFromFreq(mShimmerSamplingRate);
 			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 		}
 	}
 	 
+	protected void clearExgConfig(){
+		exGConfigBytesDetails.startNewExGConig();
+
+		mEXG1RegisterArray = exGConfigBytesDetails.getEXG1RegisterArray();
+		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		mEXG2RegisterArray = exGConfigBytesDetails.getEXG2RegisterArray();
+		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+	}
+	 
+	protected void setExgPropertySingleChip(CHIP_INDEX chipIndex,ExgConfigOption option){
+		exGConfigBytesDetails.setExgPropertySingleChip(chipIndex,option);
+		if(chipIndex==CHIP_INDEX.CHIP1){
+			mEXG1RegisterArray = exGConfigBytesDetails.getEXG1RegisterArray();
+			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		}
+		else if(chipIndex==CHIP_INDEX.CHIP2){
+			mEXG2RegisterArray = exGConfigBytesDetails.getEXG2RegisterArray();
+			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		}
+	}
+	 
+	protected void setExgPropertyBothChips(ExgConfigOption option){
+		exGConfigBytesDetails.setExgPropertyBothChips(option);
+		mEXG1RegisterArray = exGConfigBytesDetails.getEXG1RegisterArray();
+		mEXG2RegisterArray = exGConfigBytesDetails.getEXG2RegisterArray();
+		
+		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+	}
 	
+	protected void setExgPropertyValue(CHIP_INDEX chipIndex, String propertyName, Object value){
+		exGConfigBytesDetails.setExgPropertyValue(chipIndex,propertyName,value);
+		if(chipIndex==CHIP_INDEX.CHIP1){
+			mEXG1RegisterArray = exGConfigBytesDetails.getEXG1RegisterArray();
+			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		}
+		else if(chipIndex==CHIP_INDEX.CHIP2){
+			mEXG2RegisterArray = exGConfigBytesDetails.getEXG2RegisterArray();
+			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		}
+	}
+	
+	public HashMap<String, ExGConfigOptionDetails> getMapOfExGSettingsChip1(){
+		return exGConfigBytesDetails.mMapOfExGSettingsChip1;
+	}
+
+	public HashMap<String, ExGConfigOptionDetails> getMapOfExGSettingsChip2(){
+		return exGConfigBytesDetails.mMapOfExGSettingsChip2;
+	}
+
 	/**Sets all default Shimmer settings in ShimmerObject.
 	 * 
 	 */
@@ -10938,64 +11082,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		exgBytesGetFromConfig();
 	}
 
-	
-//	public void exgBytesGetFromConfig() {
-//		//ExG Chip1
-//		mEXG1RegisterArray[0] &= ~(0x07 << 0);
-//		mEXG1RegisterArray[0] |= (mEXG1RateSetting & 7) << 0;
-//		
-//		mEXG1RegisterArray[1] &= (~(0x40 << 0));
-//		mEXG1RegisterArray[1] |= ((mEXG1Comparators & 0x40) << 0);
-//		
-//		mEXG1RegisterArray[2] &= (~(0x01 << 0));
-//		mEXG1RegisterArray[2] |= ((mEXG1LeadOffCurrentMode & 0x01) << 0);
-//		mEXG1RegisterArray[2] &= (~(0x03 << 2));
-//		mEXG1RegisterArray[2] |= ((mEXGLeadOffDetectionCurrent & 0x03) << 2);
-//		mEXG1RegisterArray[2] &= (~(0x07 << 5));
-//		mEXG1RegisterArray[2] |= ((mEXGLeadOffComparatorTreshold & 0x07) << 5);
-//		
-//		mEXG1RegisterArray[3] &= (~(0x07 << 4));
-//		mEXG1RegisterArray[3] |= ((mEXG1CH1GainSetting & 0x07) << 4);
-//		mEXG1RegisterArray[4] &= (~(0x07 << 4));
-//		mEXG1RegisterArray[4] |= ((mEXG1CH2GainSetting & 0x07) << 4);
-//		
-//		mEXG1RegisterArray[5] &= (~(0x0F << 0));
-//		mEXG1RegisterArray[5] |= ((mEXGReferenceElectrode & 0x0F) << 0);
-//		mEXG1RegisterArray[5] &= (~(0x10 << 0));
-//		mEXG1RegisterArray[5] |= ((mEXGRLDSense & 0x10) << 0);
-//		mEXG1RegisterArray[6] &= (~(0x0F << 0));
-//		mEXG1RegisterArray[6] |= ((mEXG1LeadOffSenseSelection & 0x0F) << 0);
-//
-//		//ExG Chip2
-//		mEXG2RegisterArray[0] &= (~(0x07 << 0));
-//		mEXG2RegisterArray[0] |= ((mEXG2RateSetting & 0x07) << 0);
-//		
-//		mEXG2RegisterArray[1] &= (~(0x40 << 0));
-//		mEXG2RegisterArray[1] |= ((mEXG2Comparators & 0x40) << 0);
-//		
-//		mEXG2RegisterArray[2] &= (~(0x01 << 0));
-//		mEXG2RegisterArray[2] |= ((mEXG2LeadOffCurrentMode & 0x01) << 0);
-//		mEXG2RegisterArray[2] &= (~(0x03 << 2));
-//		mEXG2RegisterArray[2] |= ((mEXGLeadOffDetectionCurrent & 0x03) << 2);
-//		mEXG2RegisterArray[2] &= (~(0x07 << 5));
-//		mEXG2RegisterArray[2] |= ((mEXGLeadOffComparatorTreshold & 0x07) << 5);
-//
-//		mEXG2RegisterArray[3] &= (~(0x07 << 4));
-//		mEXG2RegisterArray[3] |= ((mEXG2CH1GainSetting & 0x07) << 4);
-//		mEXG2RegisterArray[4] &= (~(0x07 << 4));
-//		mEXG2RegisterArray[4] |= ((mEXG2CH2GainSetting & 0x07) << 4);
-//		
-//		mEXG2RegisterArray[6] &= (~(0x0F << 0));
-//		mEXG2RegisterArray[6] |= ((mEXG2LeadOffSenseSelection & 0x0F) << 0);
-//		
-//		mEXG2RegisterArray[8] &= (~(0x03 << 6));
-//		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectState & 0x03) << 6);
-//		mEXG2RegisterArray[8] &= (~(0x03 << 2));
-//		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectPhase & 0x0F) << 2);
-//		mEXG2RegisterArray[9] &= (~(0x01 << 2));
-//		mEXG2RegisterArray[9] |= ((mEXG2RespirationDetectFreq & 0x01) << 2);
-//	}
-	
+
+	//TODO:2015-06-16 finish
 	protected void setEXGLeadOffCurrentMode(int mode){
 		if(mode==-1){//Off
 			this.mEXG1LeadOffCurrentMode = 0;
@@ -11036,6 +11124,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		exgBytesGetFromConfig();
 	}
 
+	//TODO:2015-06-16 finish
 	protected int getEXGLeadOffCurrentMode(){
 //		if((this.mEXG1LeadOffCurrentMode==0)
 //				&&(this.mEXG2LeadOffCurrentMode == 0)
