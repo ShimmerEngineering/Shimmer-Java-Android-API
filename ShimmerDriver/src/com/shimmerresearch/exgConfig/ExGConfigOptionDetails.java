@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
-public class ExGConfigOptionDetails implements Cloneable, Serializable {
+public class ExGConfigOptionDetails implements Serializable {
 
 	public CHIP_INDEX chipIndex = CHIP_INDEX.CHIP1;
 	public int byteIndex = 0;

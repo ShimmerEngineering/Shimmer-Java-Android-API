@@ -39,11 +39,11 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class PanelExGConfig extends JPanel {
+public class PanelExGConfigOptions extends JPanel {
 	
 	private Font labelFont = new Font("Calibri", Font.PLAIN, 13);
 	
-	PanelExGBytes pnlExGBytes;
+	PanelExGConfigBytes pnlExGBytes;
 	ShimmerAbstract selectedShimmer;
 
 //	ExGConfigBytesDetails eCBD; 
@@ -146,7 +146,7 @@ public class PanelExGConfig extends JPanel {
 			"Respiration Registers"};
 
 	
-	public PanelExGConfig() {
+	public PanelExGConfigOptions() {
 		super();
 		setLayout(new BorderLayout(0, 0));
 		
@@ -162,7 +162,7 @@ public class PanelExGConfig extends JPanel {
 //		selectedShimmer.setEXGCustom();
 		
 		
-		pnlExGBytes = new PanelExGBytes(selectedShimmer);
+		pnlExGBytes = new PanelExGConfigBytes(selectedShimmer);
 		add(pnlExGBytes, BorderLayout.SOUTH);
 		
 
@@ -499,7 +499,7 @@ public class PanelExGConfig extends JPanel {
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-            	PanelExGConfig ex = new PanelExGConfig();
+            	PanelExGConfigOptions ex = new PanelExGConfigOptions();
                 //ex.setVisible(true);
                 JFrame f = new JFrame();
                 f.getContentPane().add(ex);

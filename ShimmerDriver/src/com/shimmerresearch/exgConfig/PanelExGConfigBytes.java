@@ -22,9 +22,9 @@ import javax.swing.event.DocumentListener;
 
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Util;
-import com.shimmerresearch.exgConfig.PanelExGBytes.DisplayModeOptions;
+import com.shimmerresearch.exgConfig.PanelExGConfigBytes.DisplayModeOptions;
 
-public class PanelExGBytes extends JPanel {
+public class PanelExGConfigBytes extends JPanel {
 
 	/**
 	 * 
@@ -63,7 +63,7 @@ public class PanelExGBytes extends JPanel {
 	}
 	private DisplayModeOptions displayMode = setDisplayModeOptions();
 	
-	public PanelExGBytes(ShimmerObject selectedShimmer) {
+	public PanelExGConfigBytes(ShimmerObject selectedShimmer) {
 		try {
 			setUpLayout();
 			updateFromShimmer(selectedShimmer);
@@ -72,15 +72,15 @@ public class PanelExGBytes extends JPanel {
 		}
 	}
 	
-	public static com.shimmerresearch.exgConfig.PanelExGBytes.DisplayModeOptions setDisplayModeOptions()
+	public static com.shimmerresearch.exgConfig.PanelExGConfigBytes.DisplayModeOptions setDisplayModeOptions()
 	{
 		if(setDisplayModeOptions)
 		{
-			PanelExGBytes.DisplayModeOptions = DisplayModeOptions.INT;
+			PanelExGConfigBytes.DisplayModeOptions = DisplayModeOptions.INT;
 		}
 		else if(!setDisplayModeOptions)
 		{
-			PanelExGBytes.DisplayModeOptions = DisplayModeOptions.HEX;
+			PanelExGConfigBytes.DisplayModeOptions = DisplayModeOptions.HEX;
 		}
 		
 		return DisplayModeOptions;
@@ -415,7 +415,7 @@ public class PanelExGBytes extends JPanel {
 //	    	
 //	        public void run() {
 //	        	
-//	    		PanelExGBytes pnlExGBytes = new PanelExGBytes();
+//	        	PanelExGConfigBytes pnlExGBytes = new PanelExGConfigBytes();
 //	    		
 //	    		SlotDetails sD = new SlotDetails("Temp", 1);
 //	    		sD.setDefaultShimmerConfiguration();

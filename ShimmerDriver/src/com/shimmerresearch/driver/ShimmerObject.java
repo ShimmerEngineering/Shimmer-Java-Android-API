@@ -91,42 +91,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.vecmath.Quat4d;
 import javax.vecmath.Vector3d;
 
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
-
-
-
-
-
-
-
-
-
-
-
-
-
-//import sun.util.calendar.BaseCalendar.Date;
-//import sun.util.calendar.CalendarDate;
-import java.util.Date;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;

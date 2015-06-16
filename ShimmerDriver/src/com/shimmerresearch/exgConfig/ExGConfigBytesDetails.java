@@ -1,14 +1,12 @@
 package com.shimmerresearch.exgConfig;
 
-import java.util.Collections;
+import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.SettingType;
 
-public class ExGConfigBytesDetails {
+public class ExGConfigBytesDetails implements Serializable {
 	
 	//http://www.ti.com/lit/ds/sbas502b/sbas502b.pdf
 	
@@ -589,12 +587,12 @@ public class ExGConfigBytesDetails {
 		}
 		
 		if(mapToRef!=null){
-			if(mapToRef.containsKey(option.byteTitle)){
-				if(mapToRef.get(option.byteTitle).settingType==SettingType.CHECKBOX){
-					mapToRef.get(option.byteTitle).valueBool = (option.valueInt==1? true:false); 
+			if(mapToRef.containsKey(option.settingTitle)){
+				if(mapToRef.get(option.settingTitle).settingType==SettingType.CHECKBOX){
+					mapToRef.get(option.settingTitle).valueBool = (option.configValueInt==1? true:false); 
 				}
-				else if(mapToRef.get(option.byteTitle).settingType==SettingType.COMBOBOX){
-					mapToRef.get(option.byteTitle).valueInt = option.valueInt; 
+				else if(mapToRef.get(option.settingTitle).settingType==SettingType.COMBOBOX){
+					mapToRef.get(option.settingTitle).valueInt = option.configValueInt; 
 				}
 			}
 			else{
