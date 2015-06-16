@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -53,6 +54,8 @@ public class PanelExGBytes extends JPanel {
 	
 	protected String[] lblContent = new String[]{"Chip1","Chip2"};
 	ShimmerObject mCurrentShimmer;
+	
+	private HashMap<String, DocumentListener> mapOfTextFieldLisenters = new HashMap<String, DocumentListener>();
 	
 	public enum DisplayModeOptions{
 		HEX,
@@ -173,7 +176,15 @@ public class PanelExGBytes extends JPanel {
 				editableBox[txtBoxIndex] = new JTextField();	
 				editableBox[txtBoxIndex].setBackground(Color.white);				
 				editableBox[txtBoxIndex].setBorder(BorderFactory.createLineBorder(Color.lightGray, 1));
-				editableBox[txtBoxIndex].getDocument().addDocumentListener(new TextFieldDocumentListener(editableBox[txtBoxIndex]));
+				
+				String key = i + "" + j;
+				editableBox[txtBoxIndex].setName(key);
+    	        TextFieldDocumentListener docListener = new TextFieldDocumentListener(editableBox[txtBoxIndex]);
+    	        editableBox[txtBoxIndex].getDocument().addDocumentListener(docListener);
+    			mapOfTextFieldLisenters.put(key, docListener);
+
+//				editableBox[txtBoxIndex].getDocument().addDocumentListener(new TextFieldDocumentListener(editableBox[txtBoxIndex]));
+
 				editableBox[txtBoxIndex].setForeground(Color.gray);
 //				editableBox[txtBoxIndex].setPreferredSize(new Dimension(5,5));
 //				editableBox[txtBoxIndex].setMaximumSize(new Dimension(10, 10));
@@ -358,7 +369,8 @@ public class PanelExGBytes extends JPanel {
 		                	filtered= filtered.substring(0, 2 * maxBytes);
 //		                    Toolkit.getDefaultToolkit().beep();
 		                }
-		                textField.setText(filtered);
+//		                textField.setText(filtered);
+		                setTextFieldText(textField,filtered);
 					}
 					else if(displayMode==DisplayModeOptions.INT){
 		                // filter
@@ -376,13 +388,26 @@ public class PanelExGBytes extends JPanel {
 								value = 255;
 							}
 		                    filtered = Integer.toString(value);
-			                textField.setText(filtered);
+//			                textField.setText(filtered);
 		                }
+		                setTextFieldText(textField,filtered);
 					}
 	                filtering= false;
 	            }
 	        });
 	    }
+	}
+	
+	private void setTextFieldText(JTextField textField, String text){
+		//Remove action listener, change value and then add action listener again
+		TextFieldDocumentListener tempListener = (TextFieldDocumentListener) mapOfTextFieldLisenters.get(textField.getName());
+		if(tempListener !=null) {
+			textField.getDocument().removeDocumentListener(tempListener);
+		}
+		textField.setText(text);
+		if(tempListener !=null) {
+			textField.getDocument().addDocumentListener(tempListener);
+		}
 	}
 	
 //	public static void main(String[] args) {
