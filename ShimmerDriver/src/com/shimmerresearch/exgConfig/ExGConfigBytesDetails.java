@@ -367,6 +367,10 @@ public class ExGConfigBytesDetails implements Serializable {
 				public static final ExGConfigOption POWERED_DOWN = new ExGConfigOption(REG6_RLD_BUFFER_POWER, "Powered down", 0);
 				public static final ExGConfigOption ENABLED = new ExGConfigOption(REG6_RLD_BUFFER_POWER, "Enabled", 1);
 			}
+			public static final class RLD_LEAD_OFF_SENSE_FUNCTION{
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG6_RLD_LEAD_OFF_SENSE_FUNCTION, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG6_RLD_LEAD_OFF_SENSE_FUNCTION, "ON", 1);
+			}
 			public static final class RLD_NEG_INPUTS_CH2{
 				public static final ExGConfigOption NOT_CONNECTED = new ExGConfigOption(REG6_CH2_RLD_NEG_INPUTS, "Not connected", 0);
 				public static final ExGConfigOption RLD_CONNECTED_TO_IN2N = new ExGConfigOption(REG6_CH2_RLD_NEG_INPUTS, "Connected to IN2N", 1);
@@ -553,7 +557,16 @@ public class ExGConfigBytesDetails implements Serializable {
     		} 
     	}
     	
-    	//Set the 'Must be' bits listed in the manual
+    	setExgByteArrayConstants(byteArray);
+    	
+//		System.out.println(byteArray[5]);
+		return byteArray;
+    }
+
+    /**Set the 'Must be' bits listed in the manual
+     * @param byteArray
+     */
+    public void setExgByteArrayConstants(byte[] byteArray){
     	//CONFIG1:
     	byteArray[0] &= ~(BIT6+BIT5+BIT4+BIT3);
     	//CONFIG2:
@@ -565,16 +578,14 @@ public class ExGConfigBytesDetails implements Serializable {
     	//LOFF_SENS:
     	byteArray[6] &= ~(BIT7+BIT6);
     	//LOFF_STAT:
-    	byteArray[7] &= ~(BIT7+BIT5);
+    	byteArray[7] &= ~(BIT7+BIT5+BIT4+BIT3+BIT2+BIT1+BIT0);
     	//RESP1:
     	byteArray[8] |= BIT1;
     	//RESP2:
     	byteArray[9] &= ~(BIT6+BIT5+BIT4+BIT3);
-    	byteArray[9] |= BIT0;
-    	
-//		System.out.println(byteArray[5]);
-		return byteArray;
+    	byteArray[9] |= BIT0;    	
     }
+    
 
 	public void updateFromRegisterArray(CHIP_INDEX chipIndex, byte[] registerArray) {
     	HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsToRef = mMapOfExGSettingsChip1;

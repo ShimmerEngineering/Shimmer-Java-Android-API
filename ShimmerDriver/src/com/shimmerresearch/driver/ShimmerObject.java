@@ -11079,45 +11079,91 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 
-	//TODO:2015-06-16 finish
 	protected void setEXGLeadOffCurrentMode(int mode){
 		if(mode==-1){//Off
-			this.mEXG1LeadOffCurrentMode = 0;
-			this.mEXG2LeadOffCurrentMode = 0;
-			this.mEXG1Comparators &= (~(0x40 << 0));
-			this.mEXG2Comparators &= (~(0x40 << 0));
-			this.mEXGRLDSense &= (~(0x10 << 0));
-			this.mEXG1LeadOffSenseSelection &= (~(0x0F << 0));
-			this.mEXG2LeadOffSenseSelection &= (~(0x0F << 0));
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_FREQUENCY.DC);
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_COMPARATORS.OFF);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.RLD_LEAD_OFF_SENSE_FUNCTION.OFF);
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH2.OFF);
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
 			if(isEXGUsingDefaultEMGConfiguration()){
-				this.mEXG2CH2PowerDown = 0x80;
+				setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.POWER_DOWN_CH2.POWER_DOWN);
 			}
+			
+//			this.mEXG1LeadOffCurrentMode = 0;
+//			this.mEXG2LeadOffCurrentMode = 0;
+//			this.mEXG1Comparators &= (~(0x40 << 0));
+//			this.mEXG2Comparators &= (~(0x40 << 0));
+//			this.mEXGRLDSense &= (~(0x10 << 0));
+//			this.mEXG1LeadOffSenseSelection &= (~(0x0F << 0));
+//			this.mEXG2LeadOffSenseSelection &= (~(0x0F << 0));
+//			if(isEXGUsingDefaultEMGConfiguration()){
+//				this.mEXG2CH2PowerDown = 0x80;
+//			}
 		}
 		else if(mode==0){//DC Current
-			this.mEXG1LeadOffCurrentMode = 0;
-			this.mEXG2LeadOffCurrentMode = 0;
-			this.mEXG1Comparators |= 0x40;
-			this.mEXG2Comparators |= 0x40;
-			this.mEXGRLDSense |= 0x10;
-			this.mEXG1LeadOffSenseSelection |=  0x07;
-			this.mEXG2LeadOffSenseSelection |=  0x04;
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_FREQUENCY.DC);
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_COMPARATORS.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
+			
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
+
 			if(isEXGUsingDefaultEMGConfiguration()){
-				this.mEXG2CH2PowerDown = 0;
+				setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.POWER_DOWN_CH2.NORMAL_OPERATION);
 			}
+
+//			this.mEXG1LeadOffCurrentMode = 0;
+//			this.mEXG2LeadOffCurrentMode = 0;
+//			this.mEXG1Comparators |= 0x40;
+//			this.mEXG2Comparators |= 0x40;
+//			this.mEXGRLDSense |= 0x10;
+//			this.mEXG1LeadOffSenseSelection |=  0x07;
+//			this.mEXG2LeadOffSenseSelection |=  0x04;
+//			if(isEXGUsingDefaultEMGConfiguration()){
+//				this.mEXG2CH2PowerDown = 0;
+//			}
 		}
 		else if(mode==1){//AC Current
-			this.mEXG1LeadOffCurrentMode = 1;
-			this.mEXG2LeadOffCurrentMode = 1;
-			this.mEXG1Comparators |= 0x40;
-			this.mEXG2Comparators |= 0x40;
-			this.mEXGRLDSense |= 0x10;
-			this.mEXG1LeadOffSenseSelection |=  0x07;
-			this.mEXG2LeadOffSenseSelection |=  0x04;
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_FREQUENCY.AC);
+			setExgPropertyBothChips(EXG_SETTING.LEAD_OFF_COMPARATORS.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
+			
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+			setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
+
 			if(isEXGUsingDefaultEMGConfiguration()){
-				this.mEXG2CH2PowerDown = 0;
+				setExgPropertySingleChip(CHIP_INDEX.CHIP2, EXG_SETTING.POWER_DOWN_CH2.NORMAL_OPERATION);
 			}
+
+//			this.mEXG1LeadOffCurrentMode = 1;
+//			this.mEXG2LeadOffCurrentMode = 1;
+//			this.mEXG1Comparators |= 0x40;
+//			this.mEXG2Comparators |= 0x40;
+//			this.mEXGRLDSense |= 0x10;
+//			this.mEXG1LeadOffSenseSelection |=  0x07;
+//			this.mEXG2LeadOffSenseSelection |=  0x04;
+//			if(isEXGUsingDefaultEMGConfiguration()){
+//				this.mEXG2CH2PowerDown = 0;
+//			}
 		}
-		exgBytesGetFromConfig();
+//		exgBytesGetFromConfig();
 	}
 
 	//TODO:2015-06-16 finish

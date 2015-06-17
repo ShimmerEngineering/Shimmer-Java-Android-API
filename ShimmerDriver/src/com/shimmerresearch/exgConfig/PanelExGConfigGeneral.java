@@ -438,7 +438,7 @@ public class PanelExGConfigGeneral extends JPanel {
 					int itemIndex = Arrays.asList(configOptionsMap.get(componentName).getConfigValues()).indexOf(configValue);
 					int itemIndexInCmbx = 0;
 					if(itemIndex<0) {
-						util.consolePrintLn("ERROR");
+						util.consolePrintLn("ERROR - item index < 0");
 						itemIndexInCmbx = 0;				
 					}
 					else {
