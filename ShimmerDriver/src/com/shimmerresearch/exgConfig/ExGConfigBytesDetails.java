@@ -245,223 +245,223 @@ public class ExGConfigBytesDetails implements Serializable {
 	public static final class EXG_SETTING{
 //		public static final class REG0{
 			public static final class CONVERSION_MODES{
-				public static final ExgConfigOption CONTINUOUS = new ExgConfigOption(REG1_CONVERSION_MODES, "Continuous Conversion Mode", 0);
-				public static final ExgConfigOption SINGLE_SHOT = new ExgConfigOption(REG1_CONVERSION_MODES, "Single-shot mode", 1);
+				public static final ExGConfigOption CONTINUOUS = new ExGConfigOption(REG1_CONVERSION_MODES, "Continuous Conversion Mode", 0);
+				public static final ExGConfigOption SINGLE_SHOT = new ExGConfigOption(REG1_CONVERSION_MODES, "Single-shot mode", 1);
 			}
 			public static final class DATA_RATE{
-				public static final ExgConfigOption RATE_125SPS = new ExgConfigOption(REG1_DATA_RATE, "125 SPS", 0);
-				public static final ExgConfigOption RATE_250SPS = new ExgConfigOption(REG1_DATA_RATE, "250 SPS", 1);
-				public static final ExgConfigOption RATE_500SPS = new ExgConfigOption(REG1_DATA_RATE, "500 SPS", 2);
-				public static final ExgConfigOption RATE_1KSPS = new ExgConfigOption(REG1_DATA_RATE, "1 kSPS", 3);
-				public static final ExgConfigOption RATE_2KSPS = new ExgConfigOption(REG1_DATA_RATE, "2 kSPS", 4);
-				public static final ExgConfigOption RATE_4KSPS = new ExgConfigOption(REG1_DATA_RATE, "4 kSPS", 5);
-				public static final ExgConfigOption RATE_8KSPS = new ExgConfigOption(REG1_DATA_RATE, "8 kSPS", 6);
+				public static final ExGConfigOption RATE_125SPS = new ExGConfigOption(REG1_DATA_RATE, "125 SPS", 0);
+				public static final ExGConfigOption RATE_250SPS = new ExGConfigOption(REG1_DATA_RATE, "250 SPS", 1);
+				public static final ExGConfigOption RATE_500SPS = new ExGConfigOption(REG1_DATA_RATE, "500 SPS", 2);
+				public static final ExGConfigOption RATE_1KSPS = new ExGConfigOption(REG1_DATA_RATE, "1 kSPS", 3);
+				public static final ExGConfigOption RATE_2KSPS = new ExGConfigOption(REG1_DATA_RATE, "2 kSPS", 4);
+				public static final ExGConfigOption RATE_4KSPS = new ExGConfigOption(REG1_DATA_RATE, "4 kSPS", 5);
+				public static final ExGConfigOption RATE_8KSPS = new ExGConfigOption(REG1_DATA_RATE, "8 kSPS", 6);
 			}
 //		}
 //		public static final class REG1{
 			public static final class LEAD_OFF_COMPARATORS{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG2_LEAD_OFF_COMPARATORS, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG2_LEAD_OFF_COMPARATORS, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG2_LEAD_OFF_COMPARATORS, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG2_LEAD_OFF_COMPARATORS, "ON", 1);
 			}
 			public static final class REFERENCE_BUFFER{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG2_REFERENCE_BUFFER, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG2_REFERENCE_BUFFER, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG2_REFERENCE_BUFFER, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG2_REFERENCE_BUFFER, "ON", 1);
 			}
 			public static final class VOLTAGE_REFERENCE{
-				public static final ExgConfigOption VREF_2_42V = new ExgConfigOption(REG2_VOLTAGE_REFERENCE, "2.42 V", 0);
-				public static final ExgConfigOption VREF_4_033V = new ExgConfigOption(REG2_VOLTAGE_REFERENCE, "4.033 V", 1);
+				public static final ExGConfigOption VREF_2_42V = new ExGConfigOption(REG2_VOLTAGE_REFERENCE, "2.42 V", 0);
+				public static final ExGConfigOption VREF_4_033V = new ExGConfigOption(REG2_VOLTAGE_REFERENCE, "4.033 V", 1);
 			}
 			public static final class OSCILLATOR_CLOCK_CONNECTION{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG2_OSCILLATOR_CLOCK_CONNECTION, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG2_OSCILLATOR_CLOCK_CONNECTION, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG2_OSCILLATOR_CLOCK_CONNECTION, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG2_OSCILLATOR_CLOCK_CONNECTION, "ON", 1);
 			}
 			public static final class TEST_SIGNAL_SELECTION{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG2_TEST_SIGNAL_SELECTION, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG2_TEST_SIGNAL_SELECTION, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG2_TEST_SIGNAL_SELECTION, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG2_TEST_SIGNAL_SELECTION, "ON", 1);
 			}
 			public static final class TEST_SIGNAL_FREQUENCY{
-				public static final ExgConfigOption DC = new ExgConfigOption(REG2_TEST_SIGNAL_FREQUENCY, "DC", 0);
-				public static final ExgConfigOption SQUARE_WAVE_1KHZ = new ExgConfigOption(REG2_TEST_SIGNAL_FREQUENCY, "1 kHz Square Wave", 1);
+				public static final ExGConfigOption DC = new ExGConfigOption(REG2_TEST_SIGNAL_FREQUENCY, "DC", 0);
+				public static final ExGConfigOption SQUARE_WAVE_1KHZ = new ExGConfigOption(REG2_TEST_SIGNAL_FREQUENCY, "1 kHz Square Wave", 1);
 			}
 //		}
 
 			public static final class COMPARATOR_THRESHOLD{
-				public static final ExgConfigOption POS95NEG5 = new ExgConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:95%-Neg:5%", 0);
-				public static final ExgConfigOption POS92_5NEG7_5 = new ExgConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:92.5%-Neg:7.5%", 1);
-				public static final ExgConfigOption POS90NEG10 = new ExgConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:90%-Neg:10%", 2);
-				public static final ExgConfigOption POS87_5NEG12_5 = new ExgConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:87.5%-Neg:12.5%", 3);
-				public static final ExgConfigOption POS85NEG15 = new ExgConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:85%-Neg:15%", 4);
-				public static final ExgConfigOption POS80NEG20 = new ExgConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:80%-Neg:20%", 5);
-				public static final ExgConfigOption POS75NEG25 = new ExgConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:75%-Neg:25%", 6);
-				public static final ExgConfigOption POS70NEG30 = new ExgConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:70%-Neg:30%", 7);
+				public static final ExGConfigOption POS95NEG5 = new ExGConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:95%-Neg:5%", 0);
+				public static final ExGConfigOption POS92_5NEG7_5 = new ExGConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:92.5%-Neg:7.5%", 1);
+				public static final ExGConfigOption POS90NEG10 = new ExGConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:90%-Neg:10%", 2);
+				public static final ExGConfigOption POS87_5NEG12_5 = new ExGConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:87.5%-Neg:12.5%", 3);
+				public static final ExGConfigOption POS85NEG15 = new ExGConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:85%-Neg:15%", 4);
+				public static final ExGConfigOption POS80NEG20 = new ExGConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:80%-Neg:20%", 5);
+				public static final ExGConfigOption POS75NEG25 = new ExGConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:75%-Neg:25%", 6);
+				public static final ExGConfigOption POS70NEG30 = new ExGConfigOption(REG3_COMPARATOR_THRESHOLD, "Pos:70%-Neg:30%", 7);
 			}
 			public static final class LEAD_OFF_CURRENT{
-				public static final ExgConfigOption CURRENT_6NA = new ExgConfigOption(REG3_LEAD_OFF_CURRENT, "6 nA", 0);
-				public static final ExgConfigOption CURRENT_22NA = new ExgConfigOption(REG3_LEAD_OFF_CURRENT, "22 nA", 1);
-				public static final ExgConfigOption CURRENT_6UA = new ExgConfigOption(REG3_LEAD_OFF_CURRENT, "6 uA", 2);
-				public static final ExgConfigOption CURRENT_22UA = new ExgConfigOption(REG3_LEAD_OFF_CURRENT, "22 uA", 3);
+				public static final ExGConfigOption CURRENT_6NA = new ExGConfigOption(REG3_LEAD_OFF_CURRENT, "6 nA", 0);
+				public static final ExGConfigOption CURRENT_22NA = new ExGConfigOption(REG3_LEAD_OFF_CURRENT, "22 nA", 1);
+				public static final ExGConfigOption CURRENT_6UA = new ExGConfigOption(REG3_LEAD_OFF_CURRENT, "6 uA", 2);
+				public static final ExGConfigOption CURRENT_22UA = new ExGConfigOption(REG3_LEAD_OFF_CURRENT, "22 uA", 3);
 			}
 			public static final class LEAD_OFF_FREQUENCY{
-				public static final ExgConfigOption DC = new ExgConfigOption(REG3_LEAD_OFF_FREQUENCY, "DC lead-off detect", 0);
-				public static final ExgConfigOption AC = new ExgConfigOption(REG3_LEAD_OFF_FREQUENCY, "AC lead-off detect (fs / 4)", 1);
+				public static final ExGConfigOption DC = new ExGConfigOption(REG3_LEAD_OFF_FREQUENCY, "DC lead-off detect", 0);
+				public static final ExGConfigOption AC = new ExGConfigOption(REG3_LEAD_OFF_FREQUENCY, "AC lead-off detect (fs / 4)", 1);
 			}
 			
 			public static final class POWER_DOWN_CH1{
-				public static final ExgConfigOption NORMAL_OPERATION = new ExgConfigOption(REG4_CHANNEL_1_POWER_DOWN, "Normal operation", 0);
-				public static final ExgConfigOption POWER_DOWN = new ExgConfigOption(REG4_CHANNEL_1_POWER_DOWN, "Power-down", 1);
+				public static final ExGConfigOption NORMAL_OPERATION = new ExGConfigOption(REG4_CHANNEL_1_POWER_DOWN, "Normal operation", 0);
+				public static final ExGConfigOption POWER_DOWN = new ExGConfigOption(REG4_CHANNEL_1_POWER_DOWN, "Power-down", 1);
 			}
 			public static final class GAIN_PGA_CH1{
-				public static final ExgConfigOption GAIN_6 = new ExgConfigOption(REG4_CHANNEL_1_PGA_GAIN, "6", 0);
-				public static final ExgConfigOption GAIN_1 = new ExgConfigOption(REG4_CHANNEL_1_PGA_GAIN, "1", 1);
-				public static final ExgConfigOption GAIN_2 = new ExgConfigOption(REG4_CHANNEL_1_PGA_GAIN, "2", 2);
-				public static final ExgConfigOption GAIN_3 = new ExgConfigOption(REG4_CHANNEL_1_PGA_GAIN, "3", 3);
-				public static final ExgConfigOption GAIN_4 = new ExgConfigOption(REG4_CHANNEL_1_PGA_GAIN, "4", 4);
-				public static final ExgConfigOption GAIN_8 = new ExgConfigOption(REG4_CHANNEL_1_PGA_GAIN, "8", 5);
-				public static final ExgConfigOption GAIN_12 = new ExgConfigOption(REG4_CHANNEL_1_PGA_GAIN, "12", 6);
+				public static final ExGConfigOption GAIN_6 = new ExGConfigOption(REG4_CHANNEL_1_PGA_GAIN, "6", 0);
+				public static final ExGConfigOption GAIN_1 = new ExGConfigOption(REG4_CHANNEL_1_PGA_GAIN, "1", 1);
+				public static final ExGConfigOption GAIN_2 = new ExGConfigOption(REG4_CHANNEL_1_PGA_GAIN, "2", 2);
+				public static final ExGConfigOption GAIN_3 = new ExGConfigOption(REG4_CHANNEL_1_PGA_GAIN, "3", 3);
+				public static final ExGConfigOption GAIN_4 = new ExGConfigOption(REG4_CHANNEL_1_PGA_GAIN, "4", 4);
+				public static final ExGConfigOption GAIN_8 = new ExGConfigOption(REG4_CHANNEL_1_PGA_GAIN, "8", 5);
+				public static final ExGConfigOption GAIN_12 = new ExGConfigOption(REG4_CHANNEL_1_PGA_GAIN, "12", 6);
 			}
 			public static final class INPUT_SELECTION_CH1{
-				public static final ExgConfigOption NORMAL = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Normal electrode input", 0);
-				public static final ExgConfigOption SHORTED = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Input shorted", 1);
-				public static final ExgConfigOption RLD_MEASURE = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "RLD_MEASURE", 2);
-				public static final ExgConfigOption SUPPLY_MEASURE = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "MVDD for supply measurement", 3);
-				public static final ExgConfigOption TEMPERATURE = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Temperature sensor", 4);
-				public static final ExgConfigOption TEST_SIGNAL = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Test signal", 5);
-				public static final ExgConfigOption RLDIN_CONNECTED_TO_POS_INPUT = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "RLD_DRP (positive side connected to RLDIN)", 6);
-				public static final ExgConfigOption RLDIN_CONNECTED_TO_NEG_INPUT = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "RLD_DRM (negative side connected to RLDIN)", 7);
-				public static final ExgConfigOption RLDIN_CONNECTED_TO_POS_AND_NEG_INPUT = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "RLD_DRPM (both positive and negative sides connected to RLDIN)", 8);
-				public static final ExgConfigOption ROUTE_CH3_TO_CH1 = new ExgConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Route IN3P and IN3N to channel 1 inputs", 9);
+				public static final ExGConfigOption NORMAL = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Normal electrode input", 0);
+				public static final ExGConfigOption SHORTED = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Input shorted", 1);
+				public static final ExGConfigOption RLD_MEASURE = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "RLD_MEASURE", 2);
+				public static final ExGConfigOption SUPPLY_MEASURE = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "MVDD for supply measurement", 3);
+				public static final ExGConfigOption TEMPERATURE = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Temperature sensor", 4);
+				public static final ExGConfigOption TEST_SIGNAL = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Test signal", 5);
+				public static final ExGConfigOption RLDIN_CONNECTED_TO_POS_INPUT = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "RLD_DRP (positive side connected to RLDIN)", 6);
+				public static final ExGConfigOption RLDIN_CONNECTED_TO_NEG_INPUT = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "RLD_DRM (negative side connected to RLDIN)", 7);
+				public static final ExGConfigOption RLDIN_CONNECTED_TO_POS_AND_NEG_INPUT = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "RLD_DRPM (both positive and negative sides connected to RLDIN)", 8);
+				public static final ExGConfigOption ROUTE_CH3_TO_CH1 = new ExGConfigOption(REG4_CHANNEL_1_INPUT_SELECTION, "Route IN3P and IN3N to channel 1 inputs", 9);
 			}
 
 			public static final class POWER_DOWN_CH2{
-				public static final ExgConfigOption NORMAL_OPERATION = new ExgConfigOption(REG5_CHANNEL_2_POWER_DOWN, "Normal operation", 0);
-				public static final ExgConfigOption POWER_DOWN = new ExgConfigOption(REG5_CHANNEL_2_POWER_DOWN, "Power-down", 1);
+				public static final ExGConfigOption NORMAL_OPERATION = new ExGConfigOption(REG5_CHANNEL_2_POWER_DOWN, "Normal operation", 0);
+				public static final ExGConfigOption POWER_DOWN = new ExGConfigOption(REG5_CHANNEL_2_POWER_DOWN, "Power-down", 1);
 			}
 			public static final class GAIN_PGA_CH2{
-				public static final ExgConfigOption GAIN_6 = new ExgConfigOption(REG5_CHANNEL_2_PGA_GAIN, "6", 0);
-				public static final ExgConfigOption GAIN_1 = new ExgConfigOption(REG5_CHANNEL_2_PGA_GAIN, "1", 1);
-				public static final ExgConfigOption GAIN_2 = new ExgConfigOption(REG5_CHANNEL_2_PGA_GAIN, "2", 2);
-				public static final ExgConfigOption GAIN_3 = new ExgConfigOption(REG5_CHANNEL_2_PGA_GAIN, "3", 3);
-				public static final ExgConfigOption GAIN_4 = new ExgConfigOption(REG5_CHANNEL_2_PGA_GAIN, "4", 4);
-				public static final ExgConfigOption GAIN_8 = new ExgConfigOption(REG5_CHANNEL_2_PGA_GAIN, "8", 5);
-				public static final ExgConfigOption GAIN_12 = new ExgConfigOption(REG5_CHANNEL_2_PGA_GAIN, "12", 6);
+				public static final ExGConfigOption GAIN_6 = new ExGConfigOption(REG5_CHANNEL_2_PGA_GAIN, "6", 0);
+				public static final ExGConfigOption GAIN_1 = new ExGConfigOption(REG5_CHANNEL_2_PGA_GAIN, "1", 1);
+				public static final ExGConfigOption GAIN_2 = new ExGConfigOption(REG5_CHANNEL_2_PGA_GAIN, "2", 2);
+				public static final ExGConfigOption GAIN_3 = new ExGConfigOption(REG5_CHANNEL_2_PGA_GAIN, "3", 3);
+				public static final ExGConfigOption GAIN_4 = new ExGConfigOption(REG5_CHANNEL_2_PGA_GAIN, "4", 4);
+				public static final ExGConfigOption GAIN_8 = new ExGConfigOption(REG5_CHANNEL_2_PGA_GAIN, "8", 5);
+				public static final ExGConfigOption GAIN_12 = new ExGConfigOption(REG5_CHANNEL_2_PGA_GAIN, "12", 6);
 			}
 			public static final class INPUT_SELECTION_CH2{
-				public static final ExgConfigOption NORMAL = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Normal electrode input", 0);
-				public static final ExgConfigOption SHORTED = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Input shorted", 1);
-				public static final ExgConfigOption RLD_MEASURE = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "RLD_MEASURE", 2);
-				public static final ExgConfigOption SUPPLY_MEASURE = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "VDD / 2 for supply measurement", 3);
-				public static final ExgConfigOption TEMPERATURE = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Temperature sensor", 4);
-				public static final ExgConfigOption TEST_SIGNAL = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Test signal", 5);
-				public static final ExgConfigOption RLDIN_CONNECTED_TO_POS_INPUT = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "RLD_DRP (positive side connected to RLDIN)", 6);
-				public static final ExgConfigOption RLDIN_CONNECTED_TO_NEG_INPUT = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "RLD_DRM (negative side connected to RLDIN)", 7);
-				public static final ExgConfigOption RLDIN_CONNECTED_TO_POS_AND_NEG_INPUTS = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "RLD_DRPM (both positive and negative sides connected to RLDIN)", 8);
-				public static final ExgConfigOption ROUTE_CH3_TO_CH1 = new ExgConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Route IN3P and IN3N to channel 1 inputs", 9);
+				public static final ExGConfigOption NORMAL = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Normal electrode input", 0);
+				public static final ExGConfigOption SHORTED = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Input shorted", 1);
+				public static final ExGConfigOption RLD_MEASURE = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "RLD_MEASURE", 2);
+				public static final ExGConfigOption SUPPLY_MEASURE = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "VDD / 2 for supply measurement", 3);
+				public static final ExGConfigOption TEMPERATURE = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Temperature sensor", 4);
+				public static final ExGConfigOption TEST_SIGNAL = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Test signal", 5);
+				public static final ExGConfigOption RLDIN_CONNECTED_TO_POS_INPUT = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "RLD_DRP (positive side connected to RLDIN)", 6);
+				public static final ExGConfigOption RLDIN_CONNECTED_TO_NEG_INPUT = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "RLD_DRM (negative side connected to RLDIN)", 7);
+				public static final ExGConfigOption RLDIN_CONNECTED_TO_POS_AND_NEG_INPUTS = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "RLD_DRPM (both positive and negative sides connected to RLDIN)", 8);
+				public static final ExGConfigOption ROUTE_CH3_TO_CH1 = new ExGConfigOption(REG5_CHANNEL_2_INPUT_SELECTION, "Route IN3P and IN3N to channel 1 inputs", 9);
 			}
 
 			public static final class PGA_CHOP_FREQUENCY{
-				public static final ExgConfigOption FMOD_16 = new ExgConfigOption(REG6_PGA_CHOP_FREQUENCY, "fMOD / 16", 0);
-				public static final ExgConfigOption FMOD_2 = new ExgConfigOption(REG6_PGA_CHOP_FREQUENCY, "fMOD / 2", 2);
-				public static final ExgConfigOption FMOD_4 = new ExgConfigOption(REG6_PGA_CHOP_FREQUENCY, "fMOD / 4", 3);
+				public static final ExGConfigOption FMOD_16 = new ExGConfigOption(REG6_PGA_CHOP_FREQUENCY, "fMOD / 16", 0);
+				public static final ExGConfigOption FMOD_2 = new ExGConfigOption(REG6_PGA_CHOP_FREQUENCY, "fMOD / 2", 2);
+				public static final ExGConfigOption FMOD_4 = new ExGConfigOption(REG6_PGA_CHOP_FREQUENCY, "fMOD / 4", 3);
 			}
 			public static final class RLD_BUFFER_POWER{
-				public static final ExgConfigOption POWERED_DOWN = new ExgConfigOption(REG6_RLD_BUFFER_POWER, "Powered down", 0);
-				public static final ExgConfigOption ENABLED = new ExgConfigOption(REG6_RLD_BUFFER_POWER, "Enabled", 1);
+				public static final ExGConfigOption POWERED_DOWN = new ExGConfigOption(REG6_RLD_BUFFER_POWER, "Powered down", 0);
+				public static final ExGConfigOption ENABLED = new ExGConfigOption(REG6_RLD_BUFFER_POWER, "Enabled", 1);
 			}
 			public static final class RLD_NEG_INPUTS_CH2{
-				public static final ExgConfigOption NOT_CONNECTED = new ExgConfigOption(REG6_CH2_RLD_NEG_INPUTS, "Not connected", 0);
-				public static final ExgConfigOption RLD_CONNECTED_TO_IN2N = new ExgConfigOption(REG6_CH2_RLD_NEG_INPUTS, "Connected to IN2N", 1);
+				public static final ExGConfigOption NOT_CONNECTED = new ExGConfigOption(REG6_CH2_RLD_NEG_INPUTS, "Not connected", 0);
+				public static final ExGConfigOption RLD_CONNECTED_TO_IN2N = new ExGConfigOption(REG6_CH2_RLD_NEG_INPUTS, "Connected to IN2N", 1);
 			}
 			public static final class RLD_POS_INPUTS_CH2{
-				public static final ExgConfigOption NOT_CONNECTED = new ExgConfigOption(REG6_CH2_RLD_POS_INPUTS, "Not connected", 0);
-				public static final ExgConfigOption RLD_CONNECTED_TO_IN2P = new ExgConfigOption(REG6_CH2_RLD_POS_INPUTS, "Connected to IN2P", 1);
+				public static final ExGConfigOption NOT_CONNECTED = new ExGConfigOption(REG6_CH2_RLD_POS_INPUTS, "Not connected", 0);
+				public static final ExGConfigOption RLD_CONNECTED_TO_IN2P = new ExGConfigOption(REG6_CH2_RLD_POS_INPUTS, "Connected to IN2P", 1);
 			}
 			public static final class RLD_NEG_INPUTS_CH1{
-				public static final ExgConfigOption NOT_CONNECTED = new ExgConfigOption(REG6_CH1_RLD_NEG_INPUTS, "Not connected", 0);
-				public static final ExgConfigOption RLD_CONNECTED_TO_IN1N = new ExgConfigOption(REG6_CH1_RLD_NEG_INPUTS, "Connected to IN1N", 1);
+				public static final ExGConfigOption NOT_CONNECTED = new ExGConfigOption(REG6_CH1_RLD_NEG_INPUTS, "Not connected", 0);
+				public static final ExGConfigOption RLD_CONNECTED_TO_IN1N = new ExGConfigOption(REG6_CH1_RLD_NEG_INPUTS, "Connected to IN1N", 1);
 			}
 			public static final class RLD_POS_INPUTS_CH1{
-				public static final ExgConfigOption NOT_CONNECTED = new ExgConfigOption(REG6_CH1_RLD_POS_INPUTS, "Not connected", 0);
-				public static final ExgConfigOption RLD_CONNECTED_TO_IN1P = new ExgConfigOption(REG6_CH1_RLD_POS_INPUTS, "Connected to IN1P", 1);
+				public static final ExGConfigOption NOT_CONNECTED = new ExGConfigOption(REG6_CH1_RLD_POS_INPUTS, "Not connected", 0);
+				public static final ExGConfigOption RLD_CONNECTED_TO_IN1P = new ExGConfigOption(REG6_CH1_RLD_POS_INPUTS, "Connected to IN1P", 1);
 			}
 
 			public static final class FLIP_CURRENT_CH2{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG7_CH2_FLIP_CURRENT, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG7_CH2_FLIP_CURRENT, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG7_CH2_FLIP_CURRENT, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG7_CH2_FLIP_CURRENT, "ON", 1);
 			}
 			public static final class FLIP_CURRENT_CH1{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG7_CH1_FLIP_CURRENT, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG7_CH1_FLIP_CURRENT, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG7_CH1_FLIP_CURRENT, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG7_CH1_FLIP_CURRENT, "ON", 1);
 			}
 			public static final class LEAD_OFF_DETECT_NEG_INPUTS_CH2{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG7_CH2_LEAD_OFF_DETECT_NEG_INPUTS, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG7_CH2_LEAD_OFF_DETECT_NEG_INPUTS, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG7_CH2_LEAD_OFF_DETECT_NEG_INPUTS, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG7_CH2_LEAD_OFF_DETECT_NEG_INPUTS, "ON", 1);
 			}
 			public static final class LEAD_OFF_DETECT_POS_INPUTS_CH2{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG7_CH2_LEAD_OFF_DETECT_POS_INPUTS, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG7_CH2_LEAD_OFF_DETECT_POS_INPUTS, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG7_CH2_LEAD_OFF_DETECT_POS_INPUTS, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG7_CH2_LEAD_OFF_DETECT_POS_INPUTS, "ON", 1);
 			}
 			public static final class LEAD_OFF_DETECT_NEG_INPUTS_CH1{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG7_CH1_LEAD_OFF_DETECT_NEG_INPUTS, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG7_CH1_LEAD_OFF_DETECT_NEG_INPUTS, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG7_CH1_LEAD_OFF_DETECT_NEG_INPUTS, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG7_CH1_LEAD_OFF_DETECT_NEG_INPUTS, "ON", 1);
 			}
 			public static final class LEAD_OFF_DETECT_POS_INPUTS_CH1{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, "ON", 1);
 			}
 
 			public static final class RESPIRATION_DEMOD_CIRCUITRY{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG9_RESPIRATION_DEMOD_CIRCUITRY, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG9_RESPIRATION_DEMOD_CIRCUITRY, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG9_RESPIRATION_DEMOD_CIRCUITRY, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG9_RESPIRATION_DEMOD_CIRCUITRY, "ON", 1);
 			}
 			public static final class RESPIRATION_MOD_CIRCUITRY{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG9_RESPIRATION_MOD_CIRCUITRY, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG9_RESPIRATION_MOD_CIRCUITRY, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG9_RESPIRATION_MOD_CIRCUITRY, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG9_RESPIRATION_MOD_CIRCUITRY, "ON", 1);
 			}
 
 			//TODO:2015-06-16 handle both FREQ and PHASE together
 			public static final class RESPIRATION_PHASE{
-				public static final ExgConfigOption FREQ32KHZ_PHASE_0 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "0°", 0);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_11_25 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "11.25°", 1);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_22_5 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "22.5°", 2);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_33_75 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "33.75°", 3);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_45 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "45°", 4);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_56_25 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "56.25°", 5);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_67_5 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "67.5°", 6);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_78_75 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "78.75°", 7);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_90 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "90°", 8);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_101_25 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "101.25°", 9);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_112_5 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "112.5°", 10);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_123_75 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "123.75°", 11);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_135 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "135°", 12);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_146_25 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "146.25°", 13);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_157_5 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "157.5°", 14);
-				public static final ExgConfigOption FREQ32KHZ_PHASE_168_75 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "168.75°", 15);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_0 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "0°", 0);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_11_25 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "11.25°", 1);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_22_5 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "22.5°", 2);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_33_75 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "33.75°", 3);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_45 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "45°", 4);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_56_25 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "56.25°", 5);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_67_5 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "67.5°", 6);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_78_75 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "78.75°", 7);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_90 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "90°", 8);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_101_25 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "101.25°", 9);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_112_5 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "112.5°", 10);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_123_75 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "123.75°", 11);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_135 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "135°", 12);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_146_25 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "146.25°", 13);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_157_5 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "157.5°", 14);
+				public static final ExGConfigOption FREQ32KHZ_PHASE_168_75 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "168.75°", 15);
 				
-				public static final ExgConfigOption FREQ64KHZ_PHASE_0 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "0°", 0);
-				public static final ExgConfigOption FREQ64KHZ_PHASE_11_25 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "22.5°", 1);
-				public static final ExgConfigOption FREQ64KHZ_PHASE_22_5 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "45°", 2);
-				public static final ExgConfigOption FREQ64KHZ_PHASE_33_75 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "67.5°", 3);
-				public static final ExgConfigOption FREQ64KHZ_PHASE_45 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "90°", 4);
-				public static final ExgConfigOption FREQ64KHZ_PHASE_56_25 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "112.5°", 5);
-				public static final ExgConfigOption FREQ64KHZ_PHASE_67_5 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "135°", 6);
-				public static final ExgConfigOption FREQ64KHZ_PHASE_78_75 = new ExgConfigOption(REG9_RESPIRATION_PHASE, "157.5°", 7);
+				public static final ExGConfigOption FREQ64KHZ_PHASE_0 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "0°", 0);
+				public static final ExGConfigOption FREQ64KHZ_PHASE_11_25 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "22.5°", 1);
+				public static final ExGConfigOption FREQ64KHZ_PHASE_22_5 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "45°", 2);
+				public static final ExGConfigOption FREQ64KHZ_PHASE_33_75 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "67.5°", 3);
+				public static final ExGConfigOption FREQ64KHZ_PHASE_45 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "90°", 4);
+				public static final ExGConfigOption FREQ64KHZ_PHASE_56_25 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "112.5°", 5);
+				public static final ExGConfigOption FREQ64KHZ_PHASE_67_5 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "135°", 6);
+				public static final ExGConfigOption FREQ64KHZ_PHASE_78_75 = new ExGConfigOption(REG9_RESPIRATION_PHASE, "157.5°", 7);
 			}
 			public static final class RESPIRATION_CONTROL{
-				public static final ExgConfigOption INTERNAL_CLOCK = new ExgConfigOption(REG9_RESPIRATION_CONTROL, "Internal clock", 0);
-				public static final ExgConfigOption EXTERNAL_CLOCK = new ExgConfigOption(REG9_RESPIRATION_CONTROL, "External Clock", 1);
+				public static final ExGConfigOption INTERNAL_CLOCK = new ExGConfigOption(REG9_RESPIRATION_CONTROL, "Internal clock", 0);
+				public static final ExGConfigOption EXTERNAL_CLOCK = new ExGConfigOption(REG9_RESPIRATION_CONTROL, "External Clock", 1);
 			}
 			
 			public static final class RESPIRATION_CALIBRATION{
-				public static final ExgConfigOption OFF = new ExgConfigOption(REG10_RESPIRATION_CALIBRATION, "OFF", 0);
-				public static final ExgConfigOption ON = new ExgConfigOption(REG10_RESPIRATION_CALIBRATION, "ON", 1);
+				public static final ExGConfigOption OFF = new ExGConfigOption(REG10_RESPIRATION_CALIBRATION, "OFF", 0);
+				public static final ExGConfigOption ON = new ExGConfigOption(REG10_RESPIRATION_CALIBRATION, "ON", 1);
 			}
 			public static final class RESPIRATION_CONTROL_FREQUENCY{
-				public static final ExgConfigOption FREQ_32KHZ = new ExgConfigOption(REG10_RESPIRATION_CONTROL_FREQUENCY, "32 kHz", 0);
-				public static final ExgConfigOption FREQ_64KHZ = new ExgConfigOption(REG10_RESPIRATION_CONTROL_FREQUENCY, "64 kHz", 1);
+				public static final ExGConfigOption FREQ_32KHZ = new ExGConfigOption(REG10_RESPIRATION_CONTROL_FREQUENCY, "32 kHz", 0);
+				public static final ExGConfigOption FREQ_64KHZ = new ExGConfigOption(REG10_RESPIRATION_CONTROL_FREQUENCY, "64 kHz", 1);
 			}
 			public static final class RLD_REFERENCE_SIGNAL{
-				public static final ExgConfigOption FED_EXTERNALLY = new ExgConfigOption(REG10_RLD_REFERENCE_SIGNAL, "Fed externally", 0);
-				public static final ExgConfigOption HALF_OF_SUPPLY = new ExgConfigOption(REG10_RLD_REFERENCE_SIGNAL, "(AVDD - AVSS) / 2", 1);
+				public static final ExGConfigOption FED_EXTERNALLY = new ExGConfigOption(REG10_RLD_REFERENCE_SIGNAL, "Fed externally", 0);
+				public static final ExGConfigOption HALF_OF_SUPPLY = new ExGConfigOption(REG10_RLD_REFERENCE_SIGNAL, "(AVDD - AVSS) / 2", 1);
 			}
 			
 			
@@ -536,11 +536,8 @@ public class ExGConfigBytesDetails implements Serializable {
     
     public byte[] generateExgByteArray(CHIP_INDEX chipIndex){
     	byte[] byteArray = new byte[10];
-    	HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsToRef;
-    	if(chipIndex==CHIP_INDEX.CHIP1){
-    		mMapOfExGSettingsToRef = mMapOfExGSettingsChip1;
-    	}
-    	else{
+    	HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsToRef = mMapOfExGSettingsChip1;
+    	if(chipIndex==CHIP_INDEX.CHIP2){
     		mMapOfExGSettingsToRef = mMapOfExGSettingsChip2;
     	}
     	
@@ -579,8 +576,25 @@ public class ExGConfigBytesDetails implements Serializable {
 		return byteArray;
     }
 
+	public void updateFromRegisterArray(CHIP_INDEX chipIndex, byte[] registerArray) {
+    	HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsToRef = mMapOfExGSettingsChip1;
+    	if(chipIndex==CHIP_INDEX.CHIP2){
+    		mMapOfExGSettingsToRef = mMapOfExGSettingsChip2;
+    	}
 
-	public void setExgPropertySingleChip(CHIP_INDEX chipIndex,ExgConfigOption option) {
+    	for(ExGConfigOptionDetails eSD:mMapOfExGSettingsToRef.values()){
+    		if(eSD.settingType==SettingType.COMBOBOX){
+    			eSD.valueInt = (registerArray[eSD.byteIndex] >> eSD.bitShift) & eSD.mask; 
+    		}
+    		else if(eSD.settingType==SettingType.CHECKBOX){
+    			eSD.valueBool = (((registerArray[eSD.byteIndex] >> eSD.bitShift) & eSD.mask)>=1? true:false); 
+    		} 
+    	}
+		
+	}
+    
+
+	public void setExgPropertySingleChip(CHIP_INDEX chipIndex,ExGConfigOption option) {
 		HashMap<String, ExGConfigOptionDetails> mapToRef = mMapOfExGSettingsChip1;
 		if(chipIndex==CHIP_INDEX.CHIP2){
 			mapToRef = mMapOfExGSettingsChip2;
@@ -601,7 +615,7 @@ public class ExGConfigBytesDetails implements Serializable {
 		}
 	}
 	
-	public void setExgPropertyBothChips(ExgConfigOption option) {
+	public void setExgPropertyBothChips(ExGConfigOption option) {
 		CHIP_INDEX chipIndex = CHIP_INDEX.CHIP1;
 		for(int i=1;i<=2;i++){
 			if(i==2){

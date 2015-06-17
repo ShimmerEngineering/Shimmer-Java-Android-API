@@ -7,11 +7,15 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.ParseException;
 import java.util.HashMap;
 
+import javax.security.auth.callback.Callback;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -21,7 +25,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.ShimmerVerObject;
 import com.shimmerresearch.driver.Util;
+import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.exgConfig.PanelExGConfigBytes.DisplayModeOptions;
 
 public class PanelExGConfigBytes extends JPanel {
@@ -53,7 +61,7 @@ public class PanelExGConfigBytes extends JPanel {
 	JTextField[] editableBox = new JTextField[20];
 	
 	protected String[] lblContent = new String[]{"Chip1","Chip2"};
-	ShimmerObject mCurrentShimmer;
+	static ShimmerObject mSelectedShimmer;
 	
 	private HashMap<String, DocumentListener> mapOfTextFieldLisenters = new HashMap<String, DocumentListener>();
 	
@@ -62,6 +70,8 @@ public class PanelExGConfigBytes extends JPanel {
 		INT
 	}
 	private DisplayModeOptions displayMode = setDisplayModeOptions();
+
+	private ExGConfigChangeCallback mCallback;
 	
 	public PanelExGConfigBytes(ShimmerObject selectedShimmer) {
 		try {
@@ -72,7 +82,11 @@ public class PanelExGConfigBytes extends JPanel {
 		}
 	}
 	
-	public static com.shimmerresearch.exgConfig.PanelExGConfigBytes.DisplayModeOptions setDisplayModeOptions()
+	public void registerChangeCallback(Callback changeCallback){
+		
+	}
+	
+	public static DisplayModeOptions setDisplayModeOptions()
 	{
 		if(setDisplayModeOptions)
 		{
@@ -201,7 +215,7 @@ public class PanelExGConfigBytes extends JPanel {
 	}
 
 	public void updateFromShimmer(ShimmerObject sO) {
-		mCurrentShimmer = sO;
+		mSelectedShimmer = sO;
 		updateTextBoxes();
 	}
 	
@@ -230,8 +244,8 @@ public class PanelExGConfigBytes extends JPanel {
 	public void updateTextBoxes() {
 		String txtToDisplay = "";
 		
-		byte[] mEXG1RegisterArray = mCurrentShimmer.getEXG1RegisterArray();
-		byte[] mEXG2RegisterArray = mCurrentShimmer.getEXG2RegisterArray();
+		byte[] mEXG1RegisterArray = mSelectedShimmer.getEXG1RegisterArray();
+		byte[] mEXG2RegisterArray = mSelectedShimmer.getEXG2RegisterArray();
 		
 		for(int r = 0; r < 20; r++) {
 			byte[] bytesToRef = mEXG1RegisterArray;
@@ -286,8 +300,8 @@ public class PanelExGConfigBytes extends JPanel {
 			}
 		}
 		
-		mCurrentShimmer.exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-		mCurrentShimmer.exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		mSelectedShimmer.exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		mSelectedShimmer.exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 	}
 		
 	public class TextFieldDocumentListener implements DocumentListener {
@@ -328,6 +342,9 @@ public class PanelExGConfigBytes extends JPanel {
 //						  ||((displayMode==DisplayModeOptions.HEX)&&(textField.getText().toCharArray().length==2))){
 				  	  filterText();
 					  updateToShimmer();
+					  if(mCallback!=null){
+						  mCallback.bytesPanelChange();
+					  }
 //				  }
 			  }
 			});
@@ -410,31 +427,43 @@ public class PanelExGConfigBytes extends JPanel {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//	    SwingUtilities.invokeLater(new Runnable() {
-//	    	
-//	        public void run() {
-//	        	
-//	        	PanelExGConfigBytes pnlExGBytes = new PanelExGConfigBytes();
-//	    		
-//	    		SlotDetails sD = new SlotDetails("Temp", 1);
-//	    		sD.setDefaultShimmerConfiguration();
-//	    		
-//	    		pnlExGBytes.updateFromShimmer(sD);
-//	            JFrame f = new JFrame();
-//	            f.getContentPane().add(pnlExGBytes);
-//	            f.setSize(800, 200);
-//	            f.setVisible(true);
-//	            f.setResizable(false);
-//	            f.addWindowListener(new WindowAdapter() {
-//	    		    @Override
-//	    		    public void windowClosing(WindowEvent e) {
-//	    		        System.exit(1);
-//	    		    }
-//	    		});
-//	        }
-//	    });
-//    }
+	/**
+	 * @param callback
+	 */
+	public void registerCallback(ExGConfigChangeCallback callback){
+		this.mCallback = callback;
+	}
 
+	
+	public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+            	
+        		ShimmerObject selectedShimmer = new ShimmerAbstract();
+            	ShimmerVerObject hwfw = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,11,0);
+        		((ShimmerAbstract) selectedShimmer).setShimmerVersionInfo(hwfw);
+        		((ShimmerAbstract) selectedShimmer).setExpansionBoardId(HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED);
+        		
+//        		((ShimmerAbstract) selectedShimmer).setDefaultRespirationConfiguration();
+        		((ShimmerAbstract) selectedShimmer).setDefaultECGConfiguration();
+//        		((ShimmerAbstract) selectedShimmer).setEXGTestSignal();
+//        		((ShimmerAbstract) selectedShimmer).setEXGCustom();
+
+        		PanelExGConfigBytes pnlExGBytes = new PanelExGConfigBytes(selectedShimmer);
+            	
+                //ex.setVisible(true);
+                JFrame f = new JFrame();
+                f.getContentPane().add(pnlExGBytes);
+                f.setSize(1100, 730);
+                f.setVisible(true);
+                f.addWindowListener(new WindowAdapter() {
+        		    @Override
+        		    public void windowClosing(WindowEvent e) {
+        		        System.exit(1);
+        		    }
+        		});
+            }
+        });
+	}
 
 }
