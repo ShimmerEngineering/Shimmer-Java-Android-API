@@ -54,7 +54,7 @@ public class PanelExGConfigAll extends JPanel {
 		pnlConfigGeneral.updateShimmerConfigPanel(mSelectedShimmer);
 	}
 	
-	private static class CallbackCallerExGConfig implements ExGConfigChangeCallback{ 
+	public static class CallbackCallerExGConfig implements ExGConfigChangeCallback{ 
 		@Override
 		public void bytesPanelChange() {
 			pnlConfigOptions.updateFromShimmer(mSelectedShimmer);
