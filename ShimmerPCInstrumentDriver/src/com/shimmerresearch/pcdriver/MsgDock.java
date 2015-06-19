@@ -110,6 +110,7 @@ public class MsgDock {
 	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
 
 	public final static int MSG_ID_BT_STREAM = 140;
+	public final static int MSG_ID_PLOT_UPDATE = 150;
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
