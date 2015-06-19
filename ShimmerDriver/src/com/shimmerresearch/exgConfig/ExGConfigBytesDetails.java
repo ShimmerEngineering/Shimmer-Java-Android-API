@@ -10,6 +10,8 @@ public class ExGConfigBytesDetails implements Serializable {
 	
 	//http://www.ti.com/lit/ds/sbas502b/sbas502b.pdf
 	
+   	//TODO:2015-06-16 get rid of predefined lists.
+	
 	public HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsChip1 = new HashMap<String, ExGConfigOptionDetails>();
 	public HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsChip2 = new HashMap<String, ExGConfigOptionDetails>();
 	

@@ -699,7 +699,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mEXG2RateSetting; //setting not value
 	protected int mEXG2CH1GainSetting; // this is the setting not to be confused with the actual value
 	protected int mEXG2CH1GainValue; // this is the value
-	protected int mEXG2CH2PowerDown;
+	protected int mEXG2CH2PowerDown;//Not used in ShimmerBluetooth
 	protected int mEXG2CH2GainSetting; // this is the setting not to be confused with the actual value
 	protected int mEXG2CH2GainValue; // this is the value
 	protected static final int EXG_CHIP1 = 0;
@@ -716,9 +716,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mEXG2LeadOffSenseSelection;
 	protected int mEXGLeadOffDetectionCurrent;
 	protected int mEXGLeadOffComparatorTreshold;	
-	protected int mEXG2RespirationDetectState;
-	protected int mEXG2RespirationDetectFreq;
-	protected int mEXG2RespirationDetectPhase;
+	protected int mEXG2RespirationDetectState;//Not used in ShimmerBluetooth
+	protected int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
+	protected int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
 	
 	
 	//This features are only used in LogAndStream FW 
@@ -11516,26 +11516,32 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				returnValue = getMPU9150MagSamplingRate();
             	break;
             	
-        	//TODO
+           	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
 				returnValue = getEXG1RateSetting();
 				//returnValue = getEXG2RateSetting();
             	break;
+               	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
 				returnValue = getEXGReferenceElectrode();
             	break;
+               	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
 				returnValue = getEXGLeadOffCurrentMode();
             	break;
+               	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
 				returnValue = getEXGLeadOffDetectionCurrent();
             	break;
+               	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
 				returnValue = getEXGLeadOffComparatorTreshold();
             	break;
+               	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
 				returnValue = getEXG2RespirationDetectFreq();
             	break;
+               	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
 				returnValue = getEXG2RespirationDetectPhase();
             	break;
@@ -11763,12 +11769,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
 				setEXGLeadOffDetectionCurrent((int)valueToSet);
             	break;
+            	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
 				setEXGLeadOffComparatorTreshold((int)valueToSet);
             	break;
+            	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
 				setEXG2RespirationDetectFreq((int)valueToSet);
             	break;
+            	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
 				setEXG2RespirationDetectPhase((int)valueToSet);
             	break;	        	
