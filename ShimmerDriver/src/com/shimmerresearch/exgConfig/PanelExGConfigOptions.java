@@ -21,6 +21,7 @@ import com.shimmerresearch.driver.ShimmerVerObject;
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.SettingType;
 
@@ -157,6 +158,27 @@ public class PanelExGConfigOptions extends JPanel {
 			tab2LoffAndRld,
 			tab3RespirationRegisters};
 
+	public class UnsupportedOption{
+		public CHIP_INDEX chipIndex;
+		public String exgSetting;
+		public UnsupportedOption(CHIP_INDEX chipIndex, String exgSetting){
+			this.chipIndex = chipIndex;
+			this.exgSetting = exgSetting;
+		}
+	}
+	
+	private UnsupportedOption[] unsupportedOptions = new UnsupportedOption[]{
+			new UnsupportedOption(CHIP_INDEX.CHIP1,ExGConfigBytesDetails.REG9_RESPIRATION_DEMOD_CIRCUITRY),
+			new UnsupportedOption(CHIP_INDEX.CHIP1,ExGConfigBytesDetails.REG9_RESPIRATION_MOD_CIRCUITRY),
+			new UnsupportedOption(CHIP_INDEX.CHIP1,ExGConfigBytesDetails.REG9_RESPIRATION_PHASE),
+			new UnsupportedOption(CHIP_INDEX.CHIP1,ExGConfigBytesDetails.REG9_RESPIRATION_CONTROL),
+			new UnsupportedOption(CHIP_INDEX.CHIP1,ExGConfigBytesDetails.REG10_RESPIRATION_CALIBRATION),
+			new UnsupportedOption(CHIP_INDEX.CHIP1,ExGConfigBytesDetails.REG10_RESPIRATION_CONTROL_FREQUENCY),
+			new UnsupportedOption(CHIP_INDEX.CHIP1,ExGConfigBytesDetails.REG10_RLD_REFERENCE_SIGNAL),
+			
+			new UnsupportedOption(CHIP_INDEX.CHIP2,ExGConfigBytesDetails.REG10_RLD_REFERENCE_SIGNAL),
+	};
+	
 	private ExGConfigChangeCallback mCallback;
 
 	
@@ -242,11 +264,17 @@ public class PanelExGConfigOptions extends JPanel {
 						            }
 						        });
 						        
-						        cmBx.setEnabled(true);
+//						        cmBx.setEnabled(true);
 					    		componentMap.put(cmBx.getName(),cmBx);
 
 						        panel.add(lbl, labelAlignment);
 						        panel.add(cmBx);
+						        
+						        if(!isSupported(x, key)){
+						        	cmBx.setEnabled(false);
+						        }
+
+						        
 						        bytePanel.add(panel);
 							}
 							else if(setting.settingType == SettingType.CHECKBOX){
@@ -273,7 +301,13 @@ public class PanelExGConfigOptions extends JPanel {
 					    		componentMap.put(cBx.getName(),cBx);
 
 						        bytePanel.add(cBx);
+						        
+						        if(!isSupported(x, key)){
+									cBx.setEnabled(false);
+						        }
+
 							}
+							
 							
 							bytePanelParent.add(bytePanel);
 						}
@@ -287,6 +321,17 @@ public class PanelExGConfigOptions extends JPanel {
 			}
 		}		
 
+	}
+	
+	private boolean isSupported(int x, String key){
+		for(UnsupportedOption unsupportedOption:unsupportedOptions){
+			if(unsupportedOption.chipIndex==(x==1? CHIP_INDEX.CHIP1:CHIP_INDEX.CHIP2)){
+				if(unsupportedOption.exgSetting.equals(key)){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	
