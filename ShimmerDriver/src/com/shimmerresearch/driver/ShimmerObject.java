@@ -5438,22 +5438,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	}
 
-	/**
-	 * Checks the EXG register bytes, and determines whether default ecg/emg are being used. 
-	 * @return 0 for ECG, 1 for EMG, 3 for test signal and 4 for custom
-	 */
-	public int checkEXGConfiguration(){
-		return -1;
-	}
+//	/**
+//	 * Checks the EXG register bytes, and determines whether default ecg/emg are being used. 
+//	 * @return 0 for ECG, 1 for EMG, 3 for test signal and 4 for custom
+//	 */
+//	public int checkEXGConfiguration(){
+//		return -1;
+//	}
 
-	public boolean isEXGUsingDefaultRespirationConfiguration(){
-		boolean using = false;
-		if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&&((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)&&((mEXG2RegisterArray[8] & 0xC0)==0xC0)){
-			using = true;
-		}
-		return using;
-	}
-	
 	public boolean isEXGUsingDefaultECGConfiguration(){
 		boolean using = false;
 		if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
@@ -5462,6 +5454,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return using;
 	}
 
+	public boolean isEXGUsingDefaultEMGConfiguration(){
+		boolean using = false;
+		if(((mEXG1RegisterArray[3] & 0x0F)==9)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==1)&&((mEXG2RegisterArray[4] & 0x0F)==1)){
+			using = true;
+		}
+		return using;
+	}
+	
 	public boolean isEXGUsingDefaultTestSignalConfiguration(){
 		boolean using = false;
 		if(((mEXG1RegisterArray[3] & 0x0F)==5)&&((mEXG1RegisterArray[4] & 0x0F)==5)&& ((mEXG2RegisterArray[3] & 0x0F)==5)&&((mEXG2RegisterArray[4] & 0x0F)==5)){
@@ -5470,9 +5470,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return using;
 	}
 
-	public boolean isEXGUsingDefaultEMGConfiguration(){
+	public boolean isEXGUsingDefaultRespirationConfiguration(){
 		boolean using = false;
-		if(((mEXG1RegisterArray[3] & 0x0F)==9)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==1)&&((mEXG2RegisterArray[4] & 0x0F)==1)){
+		if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&&((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)&&((mEXG2RegisterArray[8] & 0xC0)==0xC0)){
 			using = true;
 		}
 		return using;
@@ -10009,14 +10009,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mEXG2RespirationDetectState;
 	}
 
-
 	/**
 	 * @return the mEXG2RespirationDetectFreq
 	 */
 	public int getEXG2RespirationDetectFreq() {
 		return mEXG2RespirationDetectFreq;
 	}
-
 
 	/**
 	 * @return the mEXG2RespirationDetectPhase
@@ -10025,6 +10023,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mEXG2RespirationDetectPhase;
 	}
 
+	
 	public double getShimmerSamplingRate(){
 		return mShimmerSamplingRate; 
 	}
@@ -11269,8 +11268,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @param mEXGLeadOffDetectionCurrent the mEXGLeadOffDetectionCurrent to set
 	 */
 	protected void setEXGLeadOffDetectionCurrent(int mEXGLeadOffDetectionCurrent) {
-		this.mEXGLeadOffDetectionCurrent = mEXGLeadOffDetectionCurrent;
-		exgBytesGetFromConfig();
+		setExgPropertyValue(CHIP_INDEX.CHIP1, ExGConfigBytesDetails.REG3_LEAD_OFF_CURRENT, mEXGLeadOffDetectionCurrent);
+		setExgPropertyValue(CHIP_INDEX.CHIP2, ExGConfigBytesDetails.REG3_LEAD_OFF_CURRENT, mEXGLeadOffDetectionCurrent);
+//		this.mEXGLeadOffDetectionCurrent = mEXGLeadOffDetectionCurrent;
+//		exgBytesGetFromConfig();
 	}
 
 
@@ -11278,8 +11279,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @param mEXGLeadOffComparatorTreshold the mEXGLeadOffComparatorTreshold to set
 	 */
 	protected void setEXGLeadOffComparatorTreshold(int mEXGLeadOffComparatorTreshold) {
-		this.mEXGLeadOffComparatorTreshold = mEXGLeadOffComparatorTreshold;
-		exgBytesGetFromConfig();
+		setExgPropertyValue(CHIP_INDEX.CHIP1, ExGConfigBytesDetails.REG3_COMPARATOR_THRESHOLD, mEXGLeadOffComparatorTreshold);
+		setExgPropertyValue(CHIP_INDEX.CHIP2, ExGConfigBytesDetails.REG3_COMPARATOR_THRESHOLD, mEXGLeadOffComparatorTreshold);
+
+//		this.mEXGLeadOffComparatorTreshold = mEXGLeadOffComparatorTreshold;
+//		exgBytesGetFromConfig();
 	}
 
 
@@ -11765,11 +11769,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
 				setEXGLeadOffCurrentMode((int)valueToSet);
             	break;
-            	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
 				setEXGLeadOffDetectionCurrent((int)valueToSet);
             	break;
-            	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
 				setEXGLeadOffComparatorTreshold((int)valueToSet);
             	break;
