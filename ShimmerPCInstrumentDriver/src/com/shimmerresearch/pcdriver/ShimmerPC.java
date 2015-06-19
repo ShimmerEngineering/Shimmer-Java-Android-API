@@ -495,6 +495,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		// TODO Auto-generated method stub
 		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT, pr);
 	}
+
 	
 }
 

@@ -119,9 +119,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
 	// Constants that indicate the current connection state
 	
+	public static final int STATE_UNINTIALISED = -1; // 
 	public static final int STATE_NONE = 0;       // The class is doing nothing
 	public static final int STATE_CONNECTING = 1; // The class is now initiating an outgoing connection
 	public static final int STATE_CONNECTED = 2;  // The class is now connected to a remote device
+	public static final int STATE_STREAMING = 3;  // The class is now connected to a remote device
+	
+//	public enum CONNECTION_STATE{
+//		NONE,       // The class is doing nothing
+//		CONNECTING, // The class is now initiating an outgoing connection
+//		CONNECTED   // The class is now connected to a remote device
+//	}
+	
 	protected boolean mInstructionStackLock = false;
 	protected int mState;
 	protected byte mCurrentCommand;	
@@ -3470,7 +3479,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- MISCELLANEOUS FUNCTIONS ---------
 	
 	public void reconnect(){
-        if (mState==ShimmerBluetooth.STATE_CONNECTED && !mStreaming){
+        if (mState==STATE_CONNECTED && !mStreaming){
         	String msgReconnect = "Reconnecting the Shimmer...";
 			sendStatusMSGtoUI(msgReconnect);
             stop();
