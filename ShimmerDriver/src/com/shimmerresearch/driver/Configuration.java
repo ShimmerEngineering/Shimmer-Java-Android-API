@@ -454,6 +454,11 @@ public class Configuration {
 			public static final String PPG_ADC_SELECTION = "PPG Channel";
 			public static final String PPG1_ADC_SELECTION = "PPG1 Channel";
 			public static final String PPG2_ADC_SELECTION = "PPG2 Channel";
+			
+			public static final String LSM303DLHC_ACCEL_DEFAULT_CONFIG = "Wide Range Accel Default Config";
+			public static final String MPU9150_GYRO_DEFAULT_CONFIG = "Gyro Default Config";
+			public static final String LSM303DLHC_MAG_DEFAULT_CONFIG = "Mag Default Config";
+			public static final String KXRB8_2042_ACCEL_DEFAULT_CONFIG = "Low Noise Accel Default Config";
 
 		}
 
