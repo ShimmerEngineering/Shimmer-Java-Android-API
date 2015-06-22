@@ -12,9 +12,6 @@ public class ExGConfigBytesDetails implements Serializable {
 	//ADS1292R datasheet
 	//http://www.ti.com/lit/ds/sbas502b/sbas502b.pdf
 	
-	// TODO:2015-06-16 get rid of predefined Integer and String array and
-	// replace with items from EXG_SETTING_OPTIONS.
-	
 	public HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsChip1 = new HashMap<String, ExGConfigOptionDetails>();
 	public HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsChip2 = new HashMap<String, ExGConfigOptionDetails>();
 	
@@ -42,74 +39,9 @@ public class ExGConfigBytesDetails implements Serializable {
 	public static final String[] ListOfOnOff={"On","Off"};
 	public static final Integer[] ListOfOnOffConfigValues={0x01,0x00};
 
-	public static final class EXG_REGISTERS{
-	    public static final String REG1 = "Configuration Register 1";
-	    public static final String REG2 = "Configuration Register 2";
-	    public static final String REG3 = "Lead-Off Control Register";
-	    public static final String REG4 = "Channel 1 settings";
-	    public static final String REG5 = "Channel 2 settings";
-	    public static final String REG6 = "Right leg drive sense selection";
-	    public static final String REG7 = "Lead-off sense selection";
-	    public static final String REG8 = "Lead-off status";
-	    public static final String REG9 = "Respiration control register 1";
-	    public static final String REG10 = "Respiration control register 2";
-	}
-	
-	public static final class EXG_SETTINGS{
-	    public static final String REG1_CONVERSION_MODES = "Conversion Mode";
-	    public static final String REG1_DATA_RATE = "Data Rate";
-	    
-	    public static final String REG2_LEAD_OFF_COMPARATORS = "Lead-off comparators";
-	    public static final String REG2_REFERENCE_BUFFER = "Reference buffer";
-	    public static final String REG2_VOLTAGE_REFERENCE = "Voltage reference";
-	    public static final String REG2_OSCILLATOR_CLOCK_CONNECTION = "Oscillator clock connection";
-	    public static final String REG2_TEST_SIGNAL_SELECTION = "Test signal selection";
-	    public static final String REG2_TEST_SIGNAL_FREQUENCY = "Test signal frequency";
-	    
-	    public static final String REG3_COMPARATOR_THRESHOLD = "Comparator threshold";
-	    public static final String REG3_LEAD_OFF_CURRENT = "Lead-off current";
-	    public static final String REG3_LEAD_OFF_FREQUENCY = "Lead-off frequency";
-	    
-	    public static final String REG4_CHANNEL_1_POWER_DOWN = "Channel 1 power-down";
-	    public static final String REG4_CHANNEL_1_PGA_GAIN = "Channel 1 PGA Gain";
-	    public static final String REG4_CHANNEL_1_INPUT_SELECTION = "Channel 1 Input Selection";
-	    public static final String REG5_CHANNEL_2_POWER_DOWN = "Channel 2 power-down";
-	    public static final String REG5_CHANNEL_2_PGA_GAIN = "Channel 2 PGA Gain";
-	    public static final String REG5_CHANNEL_2_INPUT_SELECTION = "Channel 2 Input Selection";
-	    
-	    public static final String REG6_PGA_CHOP_FREQUENCY = "PGA chop frequency";
-	    public static final String REG6_RLD_BUFFER_POWER = "RLD buffer power";
-	    public static final String REG6_RLD_LEAD_OFF_SENSE_FUNCTION = "RLD lead-off sense function";
-	    public static final String REG6_CH2_RLD_NEG_INPUTS = "Channel 2 RLD negative inputs";
-	    public static final String REG6_CH2_RLD_POS_INPUTS = "Channel 2 RLD positive inputs";
-	    public static final String REG6_CH1_RLD_NEG_INPUTS = "Channel 1 RLD negative inputs";
-	    public static final String REG6_CH1_RLD_POS_INPUTS = "Channel 1 RLD positive inputs";
+	// TODO:2015-06-16 get rid of predefined Integer and String array and
+	// replace with items from EXG_SETTING_OPTIONS.
 
-	    public static final String REG7_CH2_FLIP_CURRENT = "Flip current direction - channel 2";
-	    public static final String REG7_CH1_FLIP_CURRENT = "Flip current direction - channel 1";
-	    public static final String REG7_CH2_LEAD_OFF_DETECT_NEG_INPUTS = "Channel 2 lead-off detection negative inputs";
-	    public static final String REG7_CH2_LEAD_OFF_DETECT_POS_INPUTS = "Channel 2 lead-off detection positive inputs";
-	    public static final String REG7_CH1_LEAD_OFF_DETECT_NEG_INPUTS = "Channel 1 lead-off detection negative inputs";
-	    public static final String REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS = "Channel 1 lead-off detection positive inputs";
-	    
-	    public static final String REG8_CLOCK_DIVIDER_SELECTION = "Clock divider selection";
-	    public static final String REG8_RLD_LEAD_OFF_STATUS = "RLD lead-off status";
-	    public static final String REG8_CH2_NEG_ELECTRODE_STATUS = "Channel 2 negative electrode status";
-	    public static final String REG8_CH2_POS_ELECTRODE_STATUS = "Channel 2 positive electrode status";
-	    public static final String REG8_CH1_NEG_ELECTRODE_STATUS = "Channel 1 negative electrode status";
-	    public static final String REG8_CH1_POS_ELECTRODE_STATUS = "Channel 1 positive electrode status";
-	    
-	    public static final String REG9_RESPIRATION_DEMOD_CIRCUITRY = "Respiration demodulation circuitry";
-	    public static final String REG9_RESPIRATION_MOD_CIRCUITRY = "Respiration modulation circuitry";
-	    public static final String REG9_RESPIRATION_PHASE = "Respiration phase";
-	    public static final String REG9_RESPIRATION_CONTROL = "Respiration control";
-
-	    public static final String REG10_RESPIRATION_CALIBRATION = "Respiration calibration on";
-	    public static final String REG10_RESPIRATION_CONTROL_FREQUENCY = "Respiration control frequency";
-	    public static final String REG10_RLD_REFERENCE_SIGNAL = "RLD reference signal";
-	}
-	
-	
 	//0 - Configuration Register 1
 //	public static final String[] ListOfConversionModes = {"Continuous Conversion Mode", "Single-shot mode"};
 //	public static final Integer[] ListOfConversionModeConfigValues = {0,1};
@@ -203,10 +135,71 @@ public class ExGConfigBytesDetails implements Serializable {
 	public static final String[] ListOfExGRespirationRefSignal={"Fed externally","(AVDD - AVSS) / 2"};
 	public static final Integer[] ListOfExGRespirationRefSignalConfigValues={0,1};
 
+	public static final class EXG_REGISTERS{
+	    public static final String REG1 = "Configuration Register 1";
+	    public static final String REG2 = "Configuration Register 2";
+	    public static final String REG3 = "Lead-Off Control Register";
+	    public static final String REG4 = "Channel 1 settings";
+	    public static final String REG5 = "Channel 2 settings";
+	    public static final String REG6 = "Right leg drive sense selection";
+	    public static final String REG7 = "Lead-off sense selection";
+	    public static final String REG8 = "Lead-off status";
+	    public static final String REG9 = "Respiration control register 1";
+	    public static final String REG10 = "Respiration control register 2";
+	}
 	
-	public ExGConfigBytesDetails() {
-		super();
-		startNewExGConig();
+	public static final class EXG_SETTINGS{
+	    public static final String REG1_CONVERSION_MODES = "Conversion Mode";
+	    public static final String REG1_DATA_RATE = "Data Rate";
+	    
+	    public static final String REG2_LEAD_OFF_COMPARATORS = "Lead-off comparators";
+	    public static final String REG2_REFERENCE_BUFFER = "Reference buffer";
+	    public static final String REG2_VOLTAGE_REFERENCE = "Voltage reference";
+	    public static final String REG2_OSCILLATOR_CLOCK_CONNECTION = "Oscillator clock connection";
+	    public static final String REG2_TEST_SIGNAL_SELECTION = "Test signal selection";
+	    public static final String REG2_TEST_SIGNAL_FREQUENCY = "Test signal frequency";
+	    
+	    public static final String REG3_COMPARATOR_THRESHOLD = "Comparator threshold";
+	    public static final String REG3_LEAD_OFF_CURRENT = "Lead-off current";
+	    public static final String REG3_LEAD_OFF_FREQUENCY = "Lead-off frequency";
+	    
+	    public static final String REG4_CHANNEL_1_POWER_DOWN = "Channel 1 power-down";
+	    public static final String REG4_CHANNEL_1_PGA_GAIN = "Channel 1 PGA Gain";
+	    public static final String REG4_CHANNEL_1_INPUT_SELECTION = "Channel 1 Input Selection";
+	    public static final String REG5_CHANNEL_2_POWER_DOWN = "Channel 2 power-down";
+	    public static final String REG5_CHANNEL_2_PGA_GAIN = "Channel 2 PGA Gain";
+	    public static final String REG5_CHANNEL_2_INPUT_SELECTION = "Channel 2 Input Selection";
+	    
+	    public static final String REG6_PGA_CHOP_FREQUENCY = "PGA chop frequency";
+	    public static final String REG6_RLD_BUFFER_POWER = "RLD buffer power";
+	    public static final String REG6_RLD_LEAD_OFF_SENSE_FUNCTION = "RLD lead-off sense function";
+	    public static final String REG6_CH2_RLD_NEG_INPUTS = "Channel 2 RLD negative inputs";
+	    public static final String REG6_CH2_RLD_POS_INPUTS = "Channel 2 RLD positive inputs";
+	    public static final String REG6_CH1_RLD_NEG_INPUTS = "Channel 1 RLD negative inputs";
+	    public static final String REG6_CH1_RLD_POS_INPUTS = "Channel 1 RLD positive inputs";
+
+	    public static final String REG7_CH2_FLIP_CURRENT = "Flip current direction - channel 2";
+	    public static final String REG7_CH1_FLIP_CURRENT = "Flip current direction - channel 1";
+	    public static final String REG7_CH2_LEAD_OFF_DETECT_NEG_INPUTS = "Channel 2 lead-off detection negative inputs";
+	    public static final String REG7_CH2_LEAD_OFF_DETECT_POS_INPUTS = "Channel 2 lead-off detection positive inputs";
+	    public static final String REG7_CH1_LEAD_OFF_DETECT_NEG_INPUTS = "Channel 1 lead-off detection negative inputs";
+	    public static final String REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS = "Channel 1 lead-off detection positive inputs";
+	    
+	    public static final String REG8_CLOCK_DIVIDER_SELECTION = "Clock divider selection";
+	    public static final String REG8_RLD_LEAD_OFF_STATUS = "RLD lead-off status";
+	    public static final String REG8_CH2_NEG_ELECTRODE_STATUS = "Channel 2 negative electrode status";
+	    public static final String REG8_CH2_POS_ELECTRODE_STATUS = "Channel 2 positive electrode status";
+	    public static final String REG8_CH1_NEG_ELECTRODE_STATUS = "Channel 1 negative electrode status";
+	    public static final String REG8_CH1_POS_ELECTRODE_STATUS = "Channel 1 positive electrode status";
+	    
+	    public static final String REG9_RESPIRATION_DEMOD_CIRCUITRY = "Respiration demodulation circuitry";
+	    public static final String REG9_RESPIRATION_MOD_CIRCUITRY = "Respiration modulation circuitry";
+	    public static final String REG9_RESPIRATION_PHASE = "Respiration phase";
+	    public static final String REG9_RESPIRATION_CONTROL = "Respiration control";
+
+	    public static final String REG10_RESPIRATION_CALIBRATION = "Respiration calibration on";
+	    public static final String REG10_RESPIRATION_CONTROL_FREQUENCY = "Respiration control frequency";
+	    public static final String REG10_RLD_REFERENCE_SIGNAL = "RLD reference signal";
 	}
 	
 	public static final class EXG_SETTING_OPTIONS{
@@ -435,9 +428,12 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption FED_EXTERNALLY = new ExGConfigOption(EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, "Fed externally", 0);
 			public static final ExGConfigOption HALF_OF_SUPPLY = new ExGConfigOption(EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, "(AVDD - AVSS) / 2", 1);
 		}
-			
 	}
 	
+	public ExGConfigBytesDetails() {
+		super();
+		startNewExGConig();
+	}
 	
 	public void startNewExGConig(){
 		mMapOfExGSettingsChip1.clear();
