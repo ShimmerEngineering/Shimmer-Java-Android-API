@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
+
 
 public class ExGConfigOptionDetails implements Serializable {
 
@@ -53,6 +55,24 @@ public class ExGConfigOptionDetails implements Serializable {
 		this.bitShift = bitShift;
 		this.mask = mask;
 		this.settingType = SettingType.COMBOBOX;
+	}
+
+	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, ExGConfigOption[] exGConfigOptions, int bitShift, int mask) {
+		super();
+		this.chipIndex = chipIndex;
+		this.byteIndex = byteIndex;
+		this.GuiLabel = GuiLabel;
+		this.bitShift = bitShift;
+		this.mask = mask;
+		this.settingType = SettingType.COMBOBOX;
+		
+		this.GuiValues = new String[exGConfigOptions.length];
+		this.ConfigValues = new Integer[exGConfigOptions.length];
+		for(int i=0;i<exGConfigOptions.length;i++){
+			ExGConfigOption exGConfigOption = exGConfigOptions[i];
+			this.GuiValues[i] = exGConfigOption.guiValue;
+			this.ConfigValues[i] = exGConfigOption.configValueInt;
+		}
 	}
 
 	public String[] getGuiValues() {

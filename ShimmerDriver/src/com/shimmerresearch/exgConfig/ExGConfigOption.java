@@ -13,4 +13,9 @@ public class ExGConfigOption {
 		this.configValueInt = configValue;
 	}
 
+
+	public ExGConfigOption() {
+		// TODO Auto-generated constructor stub
+	}
+
 }
