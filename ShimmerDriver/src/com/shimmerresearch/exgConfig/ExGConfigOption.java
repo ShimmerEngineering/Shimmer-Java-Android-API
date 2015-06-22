@@ -1,6 +1,8 @@
 package com.shimmerresearch.exgConfig;
 
-public class ExGConfigOption {
+import java.io.Serializable;
+
+public class ExGConfigOption implements Serializable {
 	public String settingTitle = "";
 	public String guiValue;
 	public int configValueInt = 0;
@@ -11,11 +13,6 @@ public class ExGConfigOption {
 		this.settingTitle = byteTitle;
 		this.guiValue = guiValue;
 		this.configValueInt = configValue;
-	}
-
-
-	public ExGConfigOption() {
-		// TODO Auto-generated constructor stub
 	}
 
 }

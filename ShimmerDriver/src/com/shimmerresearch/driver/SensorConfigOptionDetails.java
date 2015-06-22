@@ -30,8 +30,8 @@ public class SensorConfigOptionDetails implements Serializable {
 			public static final int IS_LPM = 1;
 		}
 		public static final class EXG_RESPIRATION_DETECT_PHASE{
-			public static final int THIRTY_TWO_KHZ = 0;
-			public static final int SIXTHY_FOUR_KHZ = 1;
+			public static final int PHASE_32KHZ = 0;
+			public static final int PHASE_64KHZ = 1;
 		}
 		public static final class EXG_REFERENCE_ELECTRODE{
 			public static final int ECG = 0;

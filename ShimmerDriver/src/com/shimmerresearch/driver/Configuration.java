@@ -202,25 +202,25 @@ public class Configuration {
 
 		public class SensorBitmap{
 			//Sensor Bitmap for Shimmer 3
-			public static final int SENSOR_A_ACCEL			   = 0x80;
-			public static final int SENSOR_GYRO			   	   = 0x40;
-			public static final int SENSOR_MAG				   = 0x20;
-			public static final int SENSOR_EXG1_24BIT			   = 0x10;
-			public static final int SENSOR_EXG2_24BIT			   = 0x08;
-			public static final int SENSOR_GSR					   = 0x04;
-			public static final int SENSOR_EXT_A7				   = 0x02;
-			public static final int SENSOR_EXT_A6				   = 0x01;
-			public static final int SENSOR_VBATT				   = 0x2000;
-			public static final int SENSOR_D_ACCEL			   = 0x1000;
-			public static final int SENSOR_EXT_A15				   = 0x0800;
-			public static final int SENSOR_INT_A1				   = 0x0400;
-			public static final int SENSOR_INT_A12				   = 0x0200;
-			public static final int SENSOR_INT_A13				   = 0x0100;
-			public static final int SENSOR_INT_A14				   = 0x800000;
-			public static final int SENSOR_BMP180				   = 0x40000;
-			public static final int SENSOR_EXG1_16BIT			   = 0x100000;
-			public static final int SENSOR_EXG2_16BIT			   = 0x080000;
-			public static final int SENSOR_BRIDGE_AMP			   = 0x8000;
+			public static final int SENSOR_A_ACCEL			= 0x80;
+			public static final int SENSOR_GYRO			   	= 0x40;
+			public static final int SENSOR_MAG				= 0x20;
+			public static final int SENSOR_EXG1_24BIT		= 0x10;
+			public static final int SENSOR_EXG2_24BIT		= 0x08;
+			public static final int SENSOR_GSR				= 0x04;
+			public static final int SENSOR_EXT_A7			= 0x02;
+			public static final int SENSOR_EXT_A6			= 0x01;
+			public static final int SENSOR_VBATT			= 0x2000;
+			public static final int SENSOR_D_ACCEL			= 0x1000;
+			public static final int SENSOR_EXT_A15			= 0x0800;
+			public static final int SENSOR_INT_A1			= 0x0400;
+			public static final int SENSOR_INT_A12			= 0x0200;
+			public static final int SENSOR_INT_A13			= 0x0100;
+			public static final int SENSOR_INT_A14			= 0x800000;
+			public static final int SENSOR_BMP180			= 0x40000;
+			public static final int SENSOR_EXG1_16BIT		= 0x100000;
+			public static final int SENSOR_EXG2_16BIT		= 0x080000;
+			public static final int SENSOR_BRIDGE_AMP		= 0x8000;
 		}
 
 		public static final String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 

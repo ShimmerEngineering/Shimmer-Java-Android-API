@@ -7,20 +7,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
-
-
 public class ExGConfigOptionDetails implements Serializable {
 
-	public CHIP_INDEX chipIndex = CHIP_INDEX.CHIP1;
-	public int byteIndex = 0;
-	public String GuiLabel;
-	public String[] GuiValues;
-	public Integer[] ConfigValues;
-	public int valueInt = 0;
-	public int bitShift = 0;
-	public int mask = 0;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1545421734104890760L;
+	
 	public static enum SettingType{
 		COMBOBOX,
 		CHECKBOX
@@ -30,7 +23,18 @@ public class ExGConfigOptionDetails implements Serializable {
 		CHIP1,
 		CHIP2
 	}
-	
+
+	public CHIP_INDEX chipIndex = CHIP_INDEX.CHIP1;
+	public int byteIndex = 0;
+	public String GuiLabel;
+	public String[] GuiValues;
+	public Integer[] ConfigValues;
+	public int valueInt = 0;
+	public int bitShift = 0;
+	public int mask = 0;
+	public ExGConfigOption[] mExGConfigOptions;
+
+
 	public SettingType settingType = SettingType.CHECKBOX;
 	
 	public boolean valueBool = false;
@@ -45,17 +49,17 @@ public class ExGConfigOptionDetails implements Serializable {
 		this.settingType = SettingType.CHECKBOX;
 	}
 	
-	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, String[] GuiValues, Integer[] ConfigValues, int bitShift, int mask){
-		super();
-		this.chipIndex = chipIndex;
-		this.byteIndex = byteIndex;
-		this.GuiLabel = GuiLabel;
-		this.GuiValues = GuiValues;
-		this.ConfigValues = ConfigValues;
-		this.bitShift = bitShift;
-		this.mask = mask;
-		this.settingType = SettingType.COMBOBOX;
-	}
+//	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, String[] GuiValues, Integer[] ConfigValues, int bitShift, int mask){
+//		super();
+//		this.chipIndex = chipIndex;
+//		this.byteIndex = byteIndex;
+//		this.GuiLabel = GuiLabel;
+//		this.GuiValues = GuiValues;
+//		this.ConfigValues = ConfigValues;
+//		this.bitShift = bitShift;
+//		this.mask = mask;
+//		this.settingType = SettingType.COMBOBOX;
+//	}
 
 	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, ExGConfigOption[] exGConfigOptions, int bitShift, int mask) {
 		super();
@@ -66,10 +70,15 @@ public class ExGConfigOptionDetails implements Serializable {
 		this.mask = mask;
 		this.settingType = SettingType.COMBOBOX;
 		
-		this.GuiValues = new String[exGConfigOptions.length];
-		this.ConfigValues = new Integer[exGConfigOptions.length];
-		for(int i=0;i<exGConfigOptions.length;i++){
-			ExGConfigOption exGConfigOption = exGConfigOptions[i];
+		this.mExGConfigOptions = exGConfigOptions;
+		generateGuiAndConfigValues();
+	}
+	
+	public void generateGuiAndConfigValues(){
+		this.GuiValues = new String[mExGConfigOptions.length];
+		this.ConfigValues = new Integer[mExGConfigOptions.length];
+		for(int i=0;i<mExGConfigOptions.length;i++){
+			ExGConfigOption exGConfigOption = mExGConfigOptions[i];
 			this.GuiValues[i] = exGConfigOption.guiValue;
 			this.ConfigValues[i] = exGConfigOption.configValueInt;
 		}
