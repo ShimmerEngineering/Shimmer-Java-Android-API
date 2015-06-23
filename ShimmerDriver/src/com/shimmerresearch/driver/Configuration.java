@@ -242,6 +242,7 @@ public class Configuration {
 		public static final String[] ListOfPpg2AdcSelection={"Int A1","Int A14"};
 		public static final Integer[] ListOfPpg2AdcSelectionConfigValues={0,1};
 
+		//TODO: base ExG config in ExGConfigBytesDetails rather then here
 		public static final String[] ListofDefaultEXG={"ECG","EMG","Test Signal"};
 		public static final String[] ListOfExGGain={"6","1","2","3","4","8","12"};
 		public static final Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
@@ -267,7 +268,7 @@ public class Configuration {
 		public static final Integer[] ListOfExGResolutionsConfigValues={0,1};
 		public static final String[] ListOfExGRespirationDetectFreq={"32 kHz","64 kHz"};
 		public static final Integer[] ListOfExGRespirationDetectFreqConfigValues={0,1};
-		//TODO
+
 		public static final String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
 		public static final Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 		public static final String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};

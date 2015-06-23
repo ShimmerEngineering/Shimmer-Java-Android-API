@@ -1,12 +1,10 @@
 package com.shimmerresearch.exgConfig;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.SettingType;
 
@@ -14,6 +12,11 @@ public class ExGConfigBytesDetails implements Serializable {
 	
 	//ADS1292R datasheet
 	//http://www.ti.com/lit/ds/sbas502b/sbas502b.pdf
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6128939356278743505L;
 	
 	public HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsChip1 = new HashMap<String, ExGConfigOptionDetails>();
 	public HashMap<String, ExGConfigOptionDetails> mMapOfExGSettingsChip2 = new HashMap<String, ExGConfigOptionDetails>();
