@@ -93,6 +93,7 @@ public class SensorConfigOptionDetails implements Serializable {
 	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
+		
 		mGuiComponentType = guiComponentType;
 		
 		mCompatibleVersionInfo = compatibleVersionInfo;
@@ -179,7 +180,7 @@ public class SensorConfigOptionDetails implements Serializable {
 	 * @param index
 	 */
 	public void setIndexOfValuesToUse(int index){
-		mIndexValuesToUse = index;
+		this.mIndexValuesToUse = index;
 	}
 	
 	/**
