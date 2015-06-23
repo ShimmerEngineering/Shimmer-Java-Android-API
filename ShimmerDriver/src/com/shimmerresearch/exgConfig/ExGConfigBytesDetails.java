@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.SettingType;
 
@@ -572,7 +573,7 @@ public class ExGConfigBytesDetails implements Serializable {
 //		            System.out.print(field.getName() +  ": " + val.guiValue + ", ");
 		            fields.add(val);
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 	        }
 	    }
@@ -580,6 +581,55 @@ public class ExGConfigBytesDetails implements Serializable {
 		ExGConfigOption[] exGConfigOptions = fields.toArray(new ExGConfigOption[fields.size()]);
 	    return exGConfigOptions;
 	}
+	
+	
+//	public static Integer[] getExGConfigValues(String guiLabel) {
+//		
+//		Class c;
+//		
+//		if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE)){
+//			c = EXG_SETTING_OPTIONS.DATA_RATE.class;
+//		}
+//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE)){
+////			c = EXG_SETTING_OPTIONS.re.COMPARATOR_THRESHOLD.class;
+//		}
+//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION)){
+////			c = EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.class;
+//		}
+//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT)){
+//			c = EXG_SETTING_OPTIONS.LEAD_OFF_CURRENT.class;
+//		}
+//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR)){
+//			c = EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.class;
+//		}
+//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ)){
+//			c = EXG_SETTING_OPTIONS.RESPIRATION_CONTROL_FREQUENCY.class;
+//		}
+//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)){
+//			c = EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_32KHZ.class;
+////			c = EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_64KHZ.class;
+//		}
+//		
+//		
+//	    List<ExGConfigOption> fields = new ArrayList<ExGConfigOption>();
+//	    java.lang.reflect.Field[] f = c.getDeclaredFields();
+//	    for (java.lang.reflect.Field field : f) {
+//	        int modifier = field.getModifiers();
+//	        if (java.lang.reflect.Modifier.isStatic(modifier)){
+//				try {
+//					ExGConfigOption val = (ExGConfigOption) field.get( null );
+////		            System.out.print(field.getName() +  ": " + val.guiValue + ", ");
+//		            fields.add(val);
+//				} catch (IllegalArgumentException | IllegalAccessException e) {
+////					e.printStackTrace();
+//				}
+//	        }
+//	    }
+//	    
+//		ExGConfigOption[] exGConfigOptions = fields.toArray(new ExGConfigOption[fields.size()]);
+//	    return exGConfigOptions;
+//	}
+	
     
     public byte[] generateExgByteArray(CHIP_INDEX chipIndex){
     	byte[] byteArray = new byte[10];
@@ -757,8 +807,9 @@ public class ExGConfigBytesDetails implements Serializable {
 				EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS
 		};
 		
-		for(String s:settingsToCheck){
-			returnVal |= getExgPropertySingleChip(CHIP_INDEX.CHIP1, s);
+		for(String propertyName:settingsToCheck){
+			int value = getExgPropertySingleChip(CHIP_INDEX.CHIP1, propertyName);
+			returnVal |= (value & mMapOfExGSettingsChip1.get(propertyName).mask) << mMapOfExGSettingsChip1.get(propertyName).bitShift; 
 		}
 		
 		return returnVal;

@@ -256,7 +256,6 @@ public class Configuration {
 		public static final Integer[] ListOfRespReferenceElectrodeConfigValues={0};
 		public static final String[] ListOfTestReferenceElectrode={"Test Signal"};
 		public static final Integer[] ListOfTestReferenceElectrodeConfigValues={5};
-
 		
 		public static final String[] ListOfExGLeadOffDetection={"Off","DC Current"};
 		public static final Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};

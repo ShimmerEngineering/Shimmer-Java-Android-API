@@ -11455,7 +11455,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
-	public Object slotDetailsGetMethods(String componentName) {
+	public Object getValueUsingGuiComponent(String componentName) {
 		Object returnValue = null;
 		
         if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))
@@ -11699,7 +11699,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return returnValue;
 	}		
 	
-	protected Object slotDetailsSetMethods(String componentName, Object valueToSet) {
+	protected Object setValueUsingGuiComponent(String componentName, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
@@ -11839,11 +11839,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
 				setEXGLeadOffComparatorTreshold((int)valueToSet);
             	break;
-            	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
 				setEXG2RespirationDetectFreq((int)valueToSet);
             	break;
-            	//TODO:2015-06-16
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
 				setEXG2RespirationDetectPhase((int)valueToSet);
             	break;	        	

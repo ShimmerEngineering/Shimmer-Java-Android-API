@@ -4038,8 +4038,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//endregion
 
-	public Object slotDetailsSetMethods(String componentName, Object valueToSet) {
-		return super.slotDetailsSetMethods(componentName, valueToSet);
+	public Object setValueUsingGuiComponent(String componentName, Object valueToSet) {
+		return super.setValueUsingGuiComponent(componentName, valueToSet);
 	}
 
 
