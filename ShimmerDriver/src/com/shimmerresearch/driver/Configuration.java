@@ -67,7 +67,7 @@ public class Configuration {
 		public static final String DEGREES_PER_SECOND = "deg/s";
 		public static final String LOCAL_FLUX = "local_flux";
 		public static final String KOHMS = "kOhms";
-		public static final String MVOLTS = "mV";
+		public static final String MILLIVOLTS = "mV";
 		public static final String BEATS_PER_MINUTE = "BPM";
 		public static final String KPASCAL = "kPa";
 		public static final String DEGREES_CELSUIS = "Degrees Celsius";
