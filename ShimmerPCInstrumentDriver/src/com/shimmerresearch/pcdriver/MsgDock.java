@@ -111,6 +111,7 @@ public class MsgDock {
 
 	public final static int MSG_ID_BT_STREAM = 140;
 	public final static int MSG_ID_PLOT_UPDATE = 150;
+	public final static int MSG_ID_PLOT_CLOSED = 151;
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
@@ -195,6 +196,7 @@ public class MsgDock {
         
         aMap.put(MSG_ID_BT_STREAM, "MSG_ID_BT_STREAM");
         aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
+        aMap.put(MSG_ID_PLOT_CLOSED, "MSG_ID_PLOT_CLOSED");
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }

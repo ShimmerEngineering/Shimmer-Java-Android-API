@@ -8142,7 +8142,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
 												listOfCompatibleVersionInfoLogging));
-				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NAME, 
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
 												listOfCompatibleVersionInfoLogging));
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
@@ -8581,7 +8581,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
 								listOfCompatibleVersionInfoGq));
-				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NAME, 
+				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
 						new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
 								listOfCompatibleVersionInfoGq));
 //				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
@@ -11697,7 +11697,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
 				returnValue = getShimmerUserAssignedName();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NAME):
+			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
 				returnValue = getExperimentName();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
@@ -11927,7 +11927,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
         		setShimmerUserAssignedName((String)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NAME):
+			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
         		setExperimentName((String)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):

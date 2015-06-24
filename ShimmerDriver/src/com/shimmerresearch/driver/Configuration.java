@@ -392,7 +392,7 @@ public class Configuration {
 		// Sensor Options Map
 		public class GuiLabelConfig{
 			public static final String SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
-			public static final String EXPERIMENT_NAME = "Experiment Name";
+			public static final String TRIAL_NAME = "Trial Name";
 			public static final String SHIMMER_SAMPLING_RATE = "Sampling Rate";
 			public static final String BUFFER_SIZE = "Buffer Size";
 			public static final String CONFIG_TIME = "Config Time";
