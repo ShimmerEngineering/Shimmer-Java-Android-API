@@ -5601,28 +5601,27 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	protected void setShimmerSamplingRate(double rate){
 		
-		double maxRate = 0.0;
+		double maxGUISamplingRate = 2048.0;
+		double maxShimmerSamplingRate = 32768.0;
+		
 		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R) {
-			maxRate = 1024.0;
+			maxGUISamplingRate = 1024.0;
 		} else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
 			//check if an MPL channel is enabled - limit rate to 51.2Hz
 			if(checkIfAnyMplChannelEnabled()){
-				maxRate = 51.2;
-			}
-			else{
-				maxRate = 2048.0;
+				rate = 51.2;
 			}
 		}		
     	// don't let sampling rate < 0 OR > maxRate
     	if(rate < 1) {
     		rate = 1.0;
     	}
-    	else if (rate > maxRate) {
-    		rate = maxRate;
+    	else if (rate > maxGUISamplingRate) {
+    		rate = maxGUISamplingRate;
     	}
     	
     	 // get Shimmer compatible sampling rate
-    	Double actualSamplingRate = maxRate/Math.floor(maxRate/rate);
+    	Double actualSamplingRate = maxShimmerSamplingRate/Math.floor(maxShimmerSamplingRate/rate);
     	 // round sampling rate to two decimal places
     	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
 		mShimmerSamplingRate = actualSamplingRate;

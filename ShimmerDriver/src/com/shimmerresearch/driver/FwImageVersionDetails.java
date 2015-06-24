@@ -67,6 +67,9 @@ public class FwImageVersionDetails {
 	 * @return
 	 */
 	public static boolean checkIfTiMsp430TxtFwFile(File file) {
+		
+		BufferedReader br = null;
+		
 		//Check if it is a file
 		if(!file.exists() || file.isDirectory()) {
 			return false;
@@ -85,7 +88,7 @@ public class FwImageVersionDetails {
 		// Check if first line of file contains the MSP430 information memory
 		// address "@5c00"
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
+			br = new BufferedReader(new FileReader(file));
 		    String line = br.readLine();
 		    if(line==null){
 				return false;
@@ -100,6 +103,14 @@ public class FwImageVersionDetails {
 	    	return false;
 		} catch (IOException e) {
 	    	return false;
+		}
+		finally{
+		    try {
+				br.close(); // close buffered reader after use to ensure other classes can access the file
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
