@@ -256,7 +256,7 @@ public class Configuration {
 		public static final String[] ListOfRespReferenceElectrode={"Fixed Potential"};
 		public static final Integer[] ListOfRespReferenceElectrodeConfigValues={0};
 		public static final String[] ListOfTestReferenceElectrode={"Test Signal"};
-		public static final Integer[] ListOfTestReferenceElectrodeConfigValues={5};
+		public static final Integer[] ListOfTestReferenceElectrodeConfigValues={0};
 		
 		public static final String[] ListOfExGLeadOffDetection={"Off","DC Current"};
 		public static final Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
@@ -455,10 +455,10 @@ public class Configuration {
 			public static final String PPG1_ADC_SELECTION = "PPG1 Channel";
 			public static final String PPG2_ADC_SELECTION = "PPG2 Channel";
 			
-			public static final String LSM303DLHC_ACCEL_DEFAULT_CONFIG = "Wide Range Accel Default Config";
-			public static final String MPU9150_GYRO_DEFAULT_CONFIG = "Gyro Default Config";
-			public static final String LSM303DLHC_MAG_DEFAULT_CONFIG = "Mag Default Config";
-			public static final String KXRB8_2042_ACCEL_DEFAULT_CONFIG = "Low Noise Accel Default Config";
+			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = "Wide Range Accel Default Calibration";
+			public static final String MPU9150_GYRO_DEFAULT_CALIB = "Gyro Default Calibration";
+			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = "Mag Default Calibration";
+			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = "Low Noise Accel Default Calibration";
 
 		}
 

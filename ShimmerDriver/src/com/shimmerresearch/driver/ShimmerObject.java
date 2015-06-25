@@ -5993,69 +5993,75 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	}
 
-	//TODO:2015-06-16 remove the need for this by using map
-	/**
-	 * Generates the ExG configuration byte arrays based on the individual ExG
-	 * related variables stored in ShimmerObject. The resulting arrays are
-	 * stored in the global variables mEXG1RegisterArray and mEXG2RegisterArray.
-	 * 
-	 */
+//	//TODO:2015-06-16 remove the need for this by using map
+//	/**
+//	 * Generates the ExG configuration byte arrays based on the individual ExG
+//	 * related variables stored in ShimmerObject. The resulting arrays are
+//	 * stored in the global variables mEXG1RegisterArray and mEXG2RegisterArray.
+//	 * 
+//	 */
 	public void exgBytesGetFromConfig() {
-		//ExG Chip1
-		mEXG1RegisterArray[0] &= ~(0x07 << 0);
-		mEXG1RegisterArray[0] |= (mEXG1RateSetting & 7) << 0;
-		
-		mEXG1RegisterArray[1] &= (~(0x40 << 0));
-		mEXG1RegisterArray[1] |= ((mEXG1Comparators & 0x40) << 0);
-		
-		mEXG1RegisterArray[2] &= (~(0x01 << 0));
-		mEXG1RegisterArray[2] |= ((mEXG1LeadOffCurrentMode & 0x01) << 0);
-		mEXG1RegisterArray[2] &= (~(0x03 << 2));
-		mEXG1RegisterArray[2] |= ((mEXGLeadOffDetectionCurrent & 0x03) << 2);
-		mEXG1RegisterArray[2] &= (~(0x07 << 5));
-		mEXG1RegisterArray[2] |= ((mEXGLeadOffComparatorTreshold & 0x07) << 5);
-		
-		mEXG1RegisterArray[3] &= (~(0x07 << 4));
-		mEXG1RegisterArray[3] |= ((mEXG1CH1GainSetting & 0x07) << 4);
-		mEXG1RegisterArray[4] &= (~(0x07 << 4));
-		mEXG1RegisterArray[4] |= ((mEXG1CH2GainSetting & 0x07) << 4);
-		
-		mEXG1RegisterArray[5] &= (~(0x0F << 0));
-		mEXG1RegisterArray[5] |= ((mEXGReferenceElectrode & 0x0F) << 0);
-		mEXG1RegisterArray[5] &= (~(0x10 << 0));
-		mEXG1RegisterArray[5] |= ((mEXGRLDSense & 0x10) << 0);
-		mEXG1RegisterArray[6] &= (~(0x0F << 0));
-		mEXG1RegisterArray[6] |= ((mEXG1LeadOffSenseSelection & 0x0F) << 0);
+		mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
+		mEXG2RegisterArray = mExGConfigBytesDetails.getEXG2RegisterArray();
+		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 
-		//ExG Chip2
-		mEXG2RegisterArray[0] &= (~(0x07 << 0));
-		mEXG2RegisterArray[0] |= ((mEXG2RateSetting & 0x07) << 0);
 		
-		mEXG2RegisterArray[1] &= (~(0x40 << 0));
-		mEXG2RegisterArray[1] |= ((mEXG2Comparators & 0x40) << 0);
-		
-		mEXG2RegisterArray[2] &= (~(0x01 << 0));
-		mEXG2RegisterArray[2] |= ((mEXG2LeadOffCurrentMode & 0x01) << 0);
-		mEXG2RegisterArray[2] &= (~(0x03 << 2));
-		mEXG2RegisterArray[2] |= ((mEXGLeadOffDetectionCurrent & 0x03) << 2);
-		mEXG2RegisterArray[2] &= (~(0x07 << 5));
-		mEXG2RegisterArray[2] |= ((mEXGLeadOffComparatorTreshold & 0x07) << 5);
-
-		mEXG2RegisterArray[3] &= (~(0x07 << 4));
-		mEXG2RegisterArray[3] |= ((mEXG2CH1GainSetting & 0x07) << 4);
-		mEXG2RegisterArray[3] |= ((mEXG2CH2PowerDown & 0x01) << 7);
-		mEXG2RegisterArray[4] &= (~(0x07 << 4));
-		mEXG2RegisterArray[4] |= ((mEXG2CH2GainSetting & 0x07) << 4);
-		
-		mEXG2RegisterArray[6] &= (~(0x0F << 0));
-		mEXG2RegisterArray[6] |= ((mEXG2LeadOffSenseSelection & 0x0F) << 0);
-		
-		mEXG2RegisterArray[8] &= (~(0x03 << 6));
-		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectState & 0x03) << 6);
-		mEXG2RegisterArray[8] &= (~(0x03 << 2));
-		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectPhase & 0x0F) << 2);
-		mEXG2RegisterArray[9] &= (~(0x01 << 2));
-		mEXG2RegisterArray[9] |= ((mEXG2RespirationDetectFreq & 0x01) << 2);
+//		//ExG Chip1
+//		mEXG1RegisterArray[0] &= ~(0x07 << 0);
+//		mEXG1RegisterArray[0] |= (mEXG1RateSetting & 7) << 0;
+//		
+//		mEXG1RegisterArray[1] &= (~(0x40 << 0));
+//		mEXG1RegisterArray[1] |= ((mEXG1Comparators & 0x40) << 0);
+//		
+//		mEXG1RegisterArray[2] &= (~(0x01 << 0));
+//		mEXG1RegisterArray[2] |= ((mEXG1LeadOffCurrentMode & 0x01) << 0);
+//		mEXG1RegisterArray[2] &= (~(0x03 << 2));
+//		mEXG1RegisterArray[2] |= ((mEXGLeadOffDetectionCurrent & 0x03) << 2);
+//		mEXG1RegisterArray[2] &= (~(0x07 << 5));
+//		mEXG1RegisterArray[2] |= ((mEXGLeadOffComparatorTreshold & 0x07) << 5);
+//		
+//		mEXG1RegisterArray[3] &= (~(0x07 << 4));
+//		mEXG1RegisterArray[3] |= ((mEXG1CH1GainSetting & 0x07) << 4);
+//		mEXG1RegisterArray[4] &= (~(0x07 << 4));
+//		mEXG1RegisterArray[4] |= ((mEXG1CH2GainSetting & 0x07) << 4);
+//		
+//		mEXG1RegisterArray[5] &= (~(0x0F << 0));
+//		mEXG1RegisterArray[5] |= ((mEXGReferenceElectrode & 0x0F) << 0);
+//		mEXG1RegisterArray[5] &= (~(0x10 << 0));
+//		mEXG1RegisterArray[5] |= ((mEXGRLDSense & 0x10) << 0);
+//		mEXG1RegisterArray[6] &= (~(0x0F << 0));
+//		mEXG1RegisterArray[6] |= ((mEXG1LeadOffSenseSelection & 0x0F) << 0);
+//
+//		//ExG Chip2
+//		mEXG2RegisterArray[0] &= (~(0x07 << 0));
+//		mEXG2RegisterArray[0] |= ((mEXG2RateSetting & 0x07) << 0);
+//		
+//		mEXG2RegisterArray[1] &= (~(0x40 << 0));
+//		mEXG2RegisterArray[1] |= ((mEXG2Comparators & 0x40) << 0);
+//		
+//		mEXG2RegisterArray[2] &= (~(0x01 << 0));
+//		mEXG2RegisterArray[2] |= ((mEXG2LeadOffCurrentMode & 0x01) << 0);
+//		mEXG2RegisterArray[2] &= (~(0x03 << 2));
+//		mEXG2RegisterArray[2] |= ((mEXGLeadOffDetectionCurrent & 0x03) << 2);
+//		mEXG2RegisterArray[2] &= (~(0x07 << 5));
+//		mEXG2RegisterArray[2] |= ((mEXGLeadOffComparatorTreshold & 0x07) << 5);
+//
+//		mEXG2RegisterArray[3] &= (~(0x07 << 4));
+//		mEXG2RegisterArray[3] |= ((mEXG2CH1GainSetting & 0x07) << 4);
+//		mEXG2RegisterArray[3] |= ((mEXG2CH2PowerDown & 0x01) << 7);
+//		mEXG2RegisterArray[4] &= (~(0x07 << 4));
+//		mEXG2RegisterArray[4] |= ((mEXG2CH2GainSetting & 0x07) << 4);
+//		
+//		mEXG2RegisterArray[6] &= (~(0x0F << 0));
+//		mEXG2RegisterArray[6] |= ((mEXG2LeadOffSenseSelection & 0x0F) << 0);
+//		
+//		mEXG2RegisterArray[8] &= (~(0x03 << 6));
+//		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectState & 0x03) << 6);
+//		mEXG2RegisterArray[8] &= (~(0x03 << 2));
+//		mEXG2RegisterArray[8] |= ((mEXG2RespirationDetectPhase & 0x0F) << 2);
+//		mEXG2RegisterArray[9] &= (~(0x01 << 2));
+//		mEXG2RegisterArray[9] |= ((mEXG2RespirationDetectFreq & 0x01) << 2);
 	}
 	
 	
@@ -6953,6 +6959,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		//EXG Configuration
 		//update mEXG1Register and mEXG2Register 
 		exgBytesGetFromConfig();
+		
 		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, infoMemMap.idxEXGADS1292RChip1Config1, 10);
 		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, infoMemMap.idxEXGADS1292RChip2Config1, 10);
 //		exgBytesGetConfigFrom(1, mEXG1Register);
@@ -11152,10 +11159,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @param mEXGReferenceElectrode the mEXGReferenceElectrode to set
 	 */
 	protected void setEXGReferenceElectrode(int valueToSet) {
+		System.out.println(Util.bytesToHexStringWithSpaces(mEXG1RegisterArray) + " " + valueToSet);
 		setExgPropertyValue(CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS,((valueToSet&0x08) == 0x08)? 1:0);
 		setExgPropertyValue(CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS,((valueToSet&0x04) == 0x04)? 1:0);
 		setExgPropertyValue(CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS,((valueToSet&0x02) == 0x02)? 1:0);
 		setExgPropertyValue(CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS,((valueToSet&0x01) == 0x01)? 1:0);
+		System.out.println(Util.bytesToHexStringWithSpaces(mEXG1RegisterArray) + " " + valueToSet);
 		
 //		this.mEXGReferenceElectrode = valueToSet;
 //		exgBytesGetFromConfig();
