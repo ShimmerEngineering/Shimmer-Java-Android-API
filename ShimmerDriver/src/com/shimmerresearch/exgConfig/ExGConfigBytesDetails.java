@@ -51,98 +51,98 @@ public class ExGConfigBytesDetails implements Serializable {
 	// TODO:2015-06-16 get rid of predefined Integer and String array and
 	// replace with items from EXG_SETTING_OPTIONS.
 
-	//0 - Configuration Register 1
-	public static final String[] ListOfConversionModes = {"Continuous Conversion Mode", "Single-shot mode"};
-	public static final Integer[] ListOfConversionModeConfigValues = {0,1};
-	public static final String[] ListOfDataRates = {"125 SPS", "250 SPS", "500 SPS", "1 kSPS", "2 kSPS", "4 kSPS", "8 kSPS"};
-	public static final Integer[] ListOfDataRateConfigValues = {0,1,2,3,4,5,6};
-
-	//1 - Configuration Register 2
-	public static final String[] ListOfVoltageReference = {"2.42 V", "4.033 V"};
-	public static final Integer[] ListOfVoltageReferenceConfigValues = {0,1};
-	public static final String[] ListOfTestFreq = {"DC", "1 kHz Square Wave"};
-	public static final Integer[] ListOfTestFreqConfigValues = {0,1};
-    
-	//2 - Lead-Off Control Register
-	public static final String[] ListOfLeadOffCompThres={
-		"Pos:95%-Neg:5%",
-		"Pos:92.5%-Neg:7.5%",
-		"Pos:90%-Neg:10%",
-		"Pos:87.5%-Neg:12.5%",
-		"Pos:85%-Neg:15%",
-		"Pos:80%-Neg:20%",
-		"Pos:75%-Neg:25%",
-		"Pos:70%-Neg:30%"};
-	public static final Integer[] ListOfLeadOffCompThresConfigValues={0,1,2,3,4,5,6,7};
-	public static final String[] ListOfLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
-	public static final Integer[] ListOfLeadOffCurrentConfigValues={0,1,2,3};
-	public static final String[] ListOfLeadOffDetectionFreq={"DC lead-off detect", "AC lead-off detect (fs / 4)"};
-	public static final Integer[] ListOfLeadOffDetectionFreqConfigValues={0,1};
-	
-	//3 - Channel 1 settings
-	//4 - Channel 2 settings
-	public static final String[] ListOfChannelPowerDown={"Normal operation","Power-down"};
-	public static final Integer[] ListOfChannelPowerDownConfigValues={0,1};
-	public static final String[] ListOfExGGain={"6","1","2","3","4","8","12"};
-	public static final Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
-	public static final String[] ListOfCh1InputSelection={
-		"Normal electrode input",
-		"Input shorted",
-		"RLD_MEASURE",
-		"MVDD for supply measurement",
-		"Temperature sensor",
-		"Test signal",
-		"RLD_DRP (positive side connected to RLDIN)", 
-		"RLD_DRM (negative side connected to RLDIN)",
-		"RLD_DRPM (both positive and negative sides connected to RLDIN)",
-		"Route IN3P and IN3N to channel 1 inputs"		
-	};
-	public static final String[] ListOfCh2InputSelection={
-		"Normal electrode input",
-		"Input shorted",
-		"RLD_MEASURE",
-		"VDD / 2 for supply measurement",
-		"Temperature sensor",
-		"Test signal",
-		"RLD_DRP (positive side connected to RLDIN)", 
-		"RLD_DRM (negative side connected to RLDIN)",
-		"RLD_DRPM (both positive and negative sides connected to RLDIN)",
-		"Route IN3P and IN3N to channel 1 inputs"		
-	};
-	public static final Integer[] ListOfInputSelectionConfigValues={0,1,2,3,4,5,6,7,8,9};
-
-	//5 - Right leg drive sense selection
-	public static final String[] ListOfPgaChopFrequency={"fMOD / 16", "fMOD / 2", "fMOD / 4"};
-	public static final Integer[] ListOfPgaChopFrequencyConfigValues={0,2,3};
-	public static final String[] ListOfRldBufferPower={"Powered down", "Enabled"};
-	public static final Integer[] ListOfRldBufferPowerConfigValues={0,1};
-	public static final String[] ListOfCh2RldNegInputs={"Not connected", "Connected to IN2N"};
-	public static final Integer[] ListOfRldInputsConfigValues={0,1};
-	public static final String[] ListOfCh2RldPosInputs={"Not connected", "Connected to IN2PN"};
-	public static final String[] ListOfCh1RldNegInputs={"Not connected", "Connected to IN1N"};
-	public static final String[] ListOfCh1RldPosInputs={"Not connected", "Connected to IN1P"};
-	
-	//6 - Lead-off sense selection
-    
-    //7 - Lead-off status
-	public static final String[] ListOfClockDividerSelection={"fMOD = fCLK / 4", "fMOD = fCLK / 16"};
-	public static final Integer[] ListOfClockDividerSelectionConfigValues={0,1};
-	public static final String[] ListOfConnectedState={"Connected", "Not Connected"};
-	public static final Integer[] ListOfConnectedStateConfigValues={0,1};
-
-	//8 - Respiration control register 1
-	public static final String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
-	public static final Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-	public static final String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
-	public static final Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
-	public static final String[] ListOfRespControl={"Internal clock", "External Clock"};
-	public static final Integer[] ListOfRespControlConfigValues={0,1};
-	
-	//9 - Respiration control register 2
-	public static final String[] ListOfExGRespirationDetectFreq={"32 kHz","64 kHz"};
-	public static final Integer[] ListOfExGRespirationDetectFreqConfigValues={0,1};
-	public static final String[] ListOfExGRespirationRefSignal={"Fed externally","(AVDD - AVSS) / 2"};
-	public static final Integer[] ListOfExGRespirationRefSignalConfigValues={0,1};
+//	//0 - Configuration Register 1
+//	public static final String[] ListOfConversionModes = {"Continuous Conversion Mode", "Single-shot mode"};
+//	public static final Integer[] ListOfConversionModeConfigValues = {0,1};
+//	public static final String[] ListOfDataRates = {"125 SPS", "250 SPS", "500 SPS", "1 kSPS", "2 kSPS", "4 kSPS", "8 kSPS"};
+//	public static final Integer[] ListOfDataRateConfigValues = {0,1,2,3,4,5,6};
+//
+//	//1 - Configuration Register 2
+//	public static final String[] ListOfVoltageReference = {"2.42 V", "4.033 V"};
+//	public static final Integer[] ListOfVoltageReferenceConfigValues = {0,1};
+//	public static final String[] ListOfTestFreq = {"DC", "1 kHz Square Wave"};
+//	public static final Integer[] ListOfTestFreqConfigValues = {0,1};
+//    
+//	//2 - Lead-Off Control Register
+//	public static final String[] ListOfLeadOffCompThres={
+//		"Pos:95%-Neg:5%",
+//		"Pos:92.5%-Neg:7.5%",
+//		"Pos:90%-Neg:10%",
+//		"Pos:87.5%-Neg:12.5%",
+//		"Pos:85%-Neg:15%",
+//		"Pos:80%-Neg:20%",
+//		"Pos:75%-Neg:25%",
+//		"Pos:70%-Neg:30%"};
+//	public static final Integer[] ListOfLeadOffCompThresConfigValues={0,1,2,3,4,5,6,7};
+//	public static final String[] ListOfLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
+//	public static final Integer[] ListOfLeadOffCurrentConfigValues={0,1,2,3};
+//	public static final String[] ListOfLeadOffDetectionFreq={"DC lead-off detect", "AC lead-off detect (fs / 4)"};
+//	public static final Integer[] ListOfLeadOffDetectionFreqConfigValues={0,1};
+//	
+//	//3 - Channel 1 settings
+//	//4 - Channel 2 settings
+//	public static final String[] ListOfChannelPowerDown={"Normal operation","Power-down"};
+//	public static final Integer[] ListOfChannelPowerDownConfigValues={0,1};
+//	public static final String[] ListOfExGGain={"6","1","2","3","4","8","12"};
+//	public static final Integer[] ListOfExGGainConfigValues={0,1,2,3,4,5,6};
+//	public static final String[] ListOfCh1InputSelection={
+//		"Normal electrode input",
+//		"Input shorted",
+//		"RLD_MEASURE",
+//		"MVDD for supply measurement",
+//		"Temperature sensor",
+//		"Test signal",
+//		"RLD_DRP (positive side connected to RLDIN)", 
+//		"RLD_DRM (negative side connected to RLDIN)",
+//		"RLD_DRPM (both positive and negative sides connected to RLDIN)",
+//		"Route IN3P and IN3N to channel 1 inputs"		
+//	};
+//	public static final String[] ListOfCh2InputSelection={
+//		"Normal electrode input",
+//		"Input shorted",
+//		"RLD_MEASURE",
+//		"VDD / 2 for supply measurement",
+//		"Temperature sensor",
+//		"Test signal",
+//		"RLD_DRP (positive side connected to RLDIN)", 
+//		"RLD_DRM (negative side connected to RLDIN)",
+//		"RLD_DRPM (both positive and negative sides connected to RLDIN)",
+//		"Route IN3P and IN3N to channel 1 inputs"		
+//	};
+//	public static final Integer[] ListOfInputSelectionConfigValues={0,1,2,3,4,5,6,7,8,9};
+//
+//	//5 - Right leg drive sense selection
+//	public static final String[] ListOfPgaChopFrequency={"fMOD / 16", "fMOD / 2", "fMOD / 4"};
+//	public static final Integer[] ListOfPgaChopFrequencyConfigValues={0,2,3};
+//	public static final String[] ListOfRldBufferPower={"Powered down", "Enabled"};
+//	public static final Integer[] ListOfRldBufferPowerConfigValues={0,1};
+//	public static final String[] ListOfCh2RldNegInputs={"Not connected", "Connected to IN2N"};
+//	public static final Integer[] ListOfRldInputsConfigValues={0,1};
+//	public static final String[] ListOfCh2RldPosInputs={"Not connected", "Connected to IN2PN"};
+//	public static final String[] ListOfCh1RldNegInputs={"Not connected", "Connected to IN1N"};
+//	public static final String[] ListOfCh1RldPosInputs={"Not connected", "Connected to IN1P"};
+//	
+//	//6 - Lead-off sense selection
+//    
+//    //7 - Lead-off status
+//	public static final String[] ListOfClockDividerSelection={"fMOD = fCLK / 4", "fMOD = fCLK / 16"};
+//	public static final Integer[] ListOfClockDividerSelectionConfigValues={0,1};
+//	public static final String[] ListOfConnectedState={"Connected", "Not Connected"};
+//	public static final Integer[] ListOfConnectedStateConfigValues={0,1};
+//
+//	//8 - Respiration control register 1
+//	public static final String[] ListOfExGRespirationDetectPhase32khz={"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
+//	public static final Integer[] ListOfExGRespirationDetectPhase32khzConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+//	public static final String[] ListOfExGRespirationDetectPhase64khz={"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
+//	public static final Integer[] ListOfExGRespirationDetectPhase64khzConfigValues={0,1,2,3,4,5,6,7};
+//	public static final String[] ListOfRespControl={"Internal clock", "External Clock"};
+//	public static final Integer[] ListOfRespControlConfigValues={0,1};
+//	
+//	//9 - Respiration control register 2
+//	public static final String[] ListOfExGRespirationDetectFreq={"32 kHz","64 kHz"};
+//	public static final Integer[] ListOfExGRespirationDetectFreqConfigValues={0,1};
+//	public static final String[] ListOfExGRespirationRefSignal={"Fed externally","(AVDD - AVSS) / 2"};
+//	public static final Integer[] ListOfExGRespirationRefSignalConfigValues={0,1};
 
 	public static final class EXG_REGISTERS{
 	    public static final String REG1 = "Configuration Register 1";
