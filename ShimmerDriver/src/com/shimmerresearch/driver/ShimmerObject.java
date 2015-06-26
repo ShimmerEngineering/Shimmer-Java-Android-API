@@ -6222,8 +6222,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @param enable
 	 */
 	protected void setLowPowerGyro(boolean enable){
-		mLowPowerGyro = enable;
-		setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+		if(!checkIfAnyMplChannelEnabled()) {
+			mLowPowerGyro = enable;
+			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+		}
+		else{
+			mLowPowerGyro = false;
+			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+		}
 	}
 	
 	/**
@@ -9116,14 +9122,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				setDefaultLsm303dlhcMagSensorConfig(false);
 			}
 			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled){
-				if(!checkIfAnyMplChannelEnabled()) {
-					setDefaultMpu9150GyroSensorConfig(false);
-				}
+				setDefaultMpu9150GyroSensorConfig(false);
 			}
 			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mIsEnabled){
-				if(!checkIfAnyMplChannelEnabled()) {
-					setDefaultMpu9150AccelSensorConfig(false);
-				}
+				setDefaultMpu9150AccelSensorConfig(false);
 			}
 			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mIsEnabled){
 				setMPU9150MagRateFromFreq(mShimmerSamplingRate);
@@ -9426,14 +9428,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setDefaultLsm303dlhcMagSensorConfig(state);
 		}
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO){
-			if(!checkIfAnyMplChannelEnabled()) {
-				setDefaultMpu9150GyroSensorConfig(state);
-			}
+			setDefaultMpu9150GyroSensorConfig(state);
 		}
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL){
-			if(!checkIfAnyMplChannelEnabled()) {
-				setDefaultMpu9150AccelSensorConfig(state);
-			}
+			setDefaultMpu9150AccelSensorConfig(state);
 		}
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MAG){
 			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
@@ -9518,36 +9516,46 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	private void setDefaultMpu9150GyroSensorConfig(boolean state) {
-		if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL) != null) {
-			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mIsEnabled) {
-				if(state) {
-					setLowPowerGyro(false);
-				}
-				else {
-					setLowPowerGyro(true);
+		if(!checkIfAnyMplChannelEnabled()) {
+			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL) != null) {
+				if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mIsEnabled) {
+					if(state) {
+						setLowPowerGyro(false);
+					}
+					else {
+						setLowPowerGyro(true);
+					}
 				}
 			}
+			
+			if(!state){
+				mGyroRange=1;
+			}
 		}
-		
-		if(!state){
-			mGyroRange=1;
+		else {
+			mGyroRange=3; // 2000dps
 		}
 	}
 	
 	private void setDefaultMpu9150AccelSensorConfig(boolean state) {
-		if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO) != null) {
-			if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled) {
-				if(state) {
-					setLowPowerGyro(false);
-				}
-				else {
-					setLowPowerGyro(true);
+		if(!checkIfAnyMplChannelEnabled()) {
+			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO) != null) {
+				if(!mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mIsEnabled) {
+					if(state) {
+						setLowPowerGyro(false);
+					}
+					else {
+						setLowPowerGyro(true);
+					}
 				}
 			}
+			
+			if(!state){
+				mMPU9150AccelRange = 0; //=2g
+			}
 		}
-		
-		if(!state){
-			mMPU9150AccelRange = 0; //=-2g
+		else {
+			mMPU9150AccelRange = 0; //=2g
 		}
 	}
 	
@@ -9562,14 +9570,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mMPLMagDistCal = 1;
 			mMPLSensorFusion = 0;
 			
-			//Gyro rate can not be set to 250dps when DMP is on
-			if(mGyroRange==0){
-				mGyroRange=1;
-			}
+//			//Gyro rate can not be set to 250dps when DMP is on
+//			if(mGyroRange==0){
+//				mGyroRange=1;
+//			}
 			
-			//force gyro range to be 2000dps and accel range to be +-2g - other untested
-//			mGyroRange=3;
-//			mMPU9150AccelRange= 0;
+			//force gyro range to be 2000dps and accel range to be +-2g - others untested
+			mGyroRange=3; // 2000dps
+			mMPU9150AccelRange= 0; // 2g
 			
 			setLowPowerGyro(false);
 			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
@@ -10264,16 +10272,24 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
 	 */
 	protected void setMPU9150AccelRange(int i) {
+		if(checkIfAnyMplChannelEnabled()){
+			i=0; // 2g
+		}
+		
 		mMPU9150AccelRange = i;
 	}
 	
 	protected void setMPU9150GyroRange(int i){
-		//Gyro rate can not be set to 250dps when DMP is on
-				if((checkIfAnyMplChannelEnabled()) && (i==0)){
-					i=1;
-				}
-				
-				mGyroRange = i;
+//		//Gyro rate can not be set to 250dps when DMP is on
+//		if((checkIfAnyMplChannelEnabled()) && (i==0)){
+//			i=1;
+//		}
+		
+		if(checkIfAnyMplChannelEnabled()){
+			i=3; // 2000dps
+		}
+		
+		mGyroRange = i;
 	}
 	
 	/**
