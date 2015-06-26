@@ -29,7 +29,7 @@ public class ExGConfigOptionDetails implements Serializable {
 	public String GuiLabel;
 	public String[] GuiValues;
 	public Integer[] ConfigValues;
-	public int valueInt = 0;
+//	public int valueInt = 0;
 	public int bitShift = 0;
 	public int mask = 0;
 	public ExGConfigOption[] mExGConfigOptions;
@@ -37,7 +37,7 @@ public class ExGConfigOptionDetails implements Serializable {
 
 	public SettingType settingType = SettingType.CHECKBOX;
 	
-	public boolean valueBool = false;
+//	public boolean valueBool = false;
 	
 	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, int bitShift){
 		super();
@@ -49,17 +49,17 @@ public class ExGConfigOptionDetails implements Serializable {
 		this.settingType = SettingType.CHECKBOX;
 	}
 	
-//	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, String[] GuiValues, Integer[] ConfigValues, int bitShift, int mask){
-//		super();
-//		this.chipIndex = chipIndex;
-//		this.byteIndex = byteIndex;
-//		this.GuiLabel = GuiLabel;
-//		this.GuiValues = GuiValues;
-//		this.ConfigValues = ConfigValues;
-//		this.bitShift = bitShift;
-//		this.mask = mask;
-//		this.settingType = SettingType.COMBOBOX;
-//	}
+	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, String[] GuiValues, Integer[] ConfigValues, int bitShift, int mask){
+		super();
+		this.chipIndex = chipIndex;
+		this.byteIndex = byteIndex;
+		this.GuiLabel = GuiLabel;
+		this.GuiValues = GuiValues;
+		this.ConfigValues = ConfigValues;
+		this.bitShift = bitShift;
+		this.mask = mask;
+		this.settingType = SettingType.COMBOBOX;
+	}
 
 	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, ExGConfigOption[] exGConfigOptions, int bitShift, int mask) {
 		super();

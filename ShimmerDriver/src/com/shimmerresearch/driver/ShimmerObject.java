@@ -6471,7 +6471,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 	}
 	
-	public void setExgPropertyValue(CHIP_INDEX chipIndex, String propertyName, Object value){
+	public void setExgPropertyValue(CHIP_INDEX chipIndex, String propertyName, int value){
 		mExGConfigBytesDetails.setExgPropertyValue(chipIndex,propertyName,value);
 		if(chipIndex==CHIP_INDEX.CHIP1){
 			mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
@@ -6488,12 +6488,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
-	public HashMap<String, ExGConfigOptionDetails> getMapOfExGSettingsChip1(){
-		return mExGConfigBytesDetails.mMapOfExGSettingsChip1;
+	public HashMap<String, Integer> getMapOfExGSettingsChip1(){
+		return mExGConfigBytesDetails.mMapOfExGSettingsChip1ThisShimmer;
 	}
 
-	public HashMap<String, ExGConfigOptionDetails> getMapOfExGSettingsChip2(){
-		return mExGConfigBytesDetails.mMapOfExGSettingsChip2;
+	public HashMap<String, Integer> getMapOfExGSettingsChip2(){
+		return mExGConfigBytesDetails.mMapOfExGSettingsChip2ThisShimmer;
 	}
 
 	/**Sets all default Shimmer settings in ShimmerObject.
