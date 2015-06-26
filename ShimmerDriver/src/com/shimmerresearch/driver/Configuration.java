@@ -259,7 +259,7 @@ public class Configuration {
 		public static final Integer[] ListOfTestReferenceElectrodeConfigValues={0};
 		
 		public static final String[] ListOfExGLeadOffDetection={"Off","DC Current"};
-		public static final Integer[] ListOfExGLeadOffDetectionConfigValues={-1,0};
+		public static final Integer[] ListOfExGLeadOffDetectionConfigValues={0,1};
 		public static final String[] ListOfExGLeadOffCurrent={"6 nA","22 nA", "6 uA", "22 uA"};
 		public static final Integer[] ListOfExGLeadOffCurrentConfigValues={0,1,2,3};
 		public static final String[] ListOfExGLeadOffComparator={"Pos:95%-Neg:5%","Pos:92.5%-Neg:7.5%","Pos:90%-Neg:10%","Pos:87.5%-Neg:12.5%","Pos:85%-Neg:15%","Pos:80%-Neg:20%","Pos:75%-Neg:25%","Pos:70%-Neg:30%"};

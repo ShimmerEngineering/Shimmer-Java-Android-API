@@ -928,6 +928,13 @@ public class ExGConfigBytesDetails implements Serializable {
 		if(mapToRef!=null){
 			if(mapToRef.containsKey(option.settingTitle)){
 				
+				if(option==EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC){
+					return (mapToRef.get(option.settingTitle)==0? true:false); 
+				}
+				else if(option==EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.AC){
+					return (mapToRef.get(option.settingTitle)==1? true:false); 
+				}
+				
 				return (mapToRef.get(option.settingTitle)>=1? true:false); 
 
 				

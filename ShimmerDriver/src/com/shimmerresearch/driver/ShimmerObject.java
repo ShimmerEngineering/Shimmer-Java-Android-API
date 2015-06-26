@@ -11188,7 +11188,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 
 	protected void setEXGLeadOffCurrentMode(int mode){
-		if(mode==-1){//Off
+		if(mode==0){//Off
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.OFF);
 			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.OFF);
@@ -11211,7 +11211,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				this.mEXG2CH2PowerDown = 0x80;
 //			}
 		}
-		else if(mode==0){//DC Current
+		else if(mode==1){//DC Current
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.ON);
 			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
@@ -11241,7 +11241,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				this.mEXG2CH2PowerDown = 0;
 //			}
 		}
-		else if(mode==1){//AC Current
+		else if(mode==2){//AC Current
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.AC);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.ON);
 			setExgPropertySingleChip(CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
@@ -11286,13 +11286,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				||isExgPropertyEnabled(CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON)
 				){
 			if(isExgPropertyEnabled(CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC)){
-				return 0;//DC Current
+				return 1;//DC Current
 			}
 			else if(isExgPropertyEnabled(CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.AC)){
-				return 1;//AC Current
+				return 2;//AC Current
 			}
 		}
-		return -1;//Off
+		return 0;//Off
 
 		
 //		if((this.mEXG1LeadOffCurrentMode==0)
