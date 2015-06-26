@@ -7,6 +7,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 
 public class TCPClientTX
 {
@@ -20,9 +21,9 @@ public class TCPClientTX
 		ObjectCluster ojc = new ObjectCluster();
 		ojc.mBluetoothAddress="Shimmer:Research";
 		ojc.mMyName = "ShimmerDev1";
-		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,new FormatCluster("CAL",ShimmerObject.NO_UNIT,9.81));
-		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,new FormatCluster("CAL",ShimmerObject.NO_UNIT,0.81));
-		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,new FormatCluster("CAL",ShimmerObject.NO_UNIT,0.1));
+		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,new FormatCluster("CAL",CHANNEL_UNITS.NO_UNITS,9.81));
+		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,new FormatCluster("CAL",CHANNEL_UNITS.NO_UNITS,0.81));
+		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,new FormatCluster("CAL",CHANNEL_UNITS.NO_UNITS,0.1));
 		byte[] dataByte = ojc.serialize();
 		while (true)
 		{
