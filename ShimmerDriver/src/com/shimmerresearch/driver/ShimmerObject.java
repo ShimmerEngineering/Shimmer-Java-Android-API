@@ -11127,46 +11127,55 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	private void checkExgMode(){
 		if(mSensorMap!=null){
 			if(mHardwareVersion==HW_ID.SHIMMER_3){
-				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
-						||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)
-						||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)
-						||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled)) {
-					if(isEXGUsingDefaultRespirationConfiguration()) {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = true;
-					}
-					else if(isEXGUsingDefaultECGConfiguration()) {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = true;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else if(isEXGUsingDefaultEMGConfiguration()) {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = true;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else if(isEXGUsingDefaultTestSignalConfiguration()){
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = true;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = true;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+				
+				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT) != null 
+						&& mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT) != null 
+						&& mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT) != null
+						&& mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT) != null){
+					
+					if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
+							||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)
+							||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)
+							||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled)) {
+						if(isEXGUsingDefaultRespirationConfiguration()) {
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = true;
+						}
+						else if(isEXGUsingDefaultECGConfiguration()) {
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = true;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+						}
+						else if(isEXGUsingDefaultEMGConfiguration()) {
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = true;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+						}
+						else if(isEXGUsingDefaultTestSignalConfiguration()){
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = true;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+						}
+						else {
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = true;
+							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+						}
 					}
 				}
+				
+
 			}
 		}
 	}
