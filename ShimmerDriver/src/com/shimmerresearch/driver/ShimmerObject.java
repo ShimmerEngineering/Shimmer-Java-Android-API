@@ -11128,11 +11128,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if(mSensorMap!=null){
 			if(mHardwareVersion==HW_ID.SHIMMER_3){
 				
-				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT) != null 
-						&& mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT) != null 
-						&& mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT) != null
-						&& mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT) != null){
-					
 					if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled)
 							||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled)
 							||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled)
@@ -11173,9 +11168,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
 						}
 					}
-				}
-				
-
 			}
 		}
 	}
