@@ -107,6 +107,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ExpansionBoardDetails;
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
@@ -1517,7 +1518,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
 							mExpBoardArray = readBytes(numBytesToReadFromExpBoard+1);
-							getExpBoardID();
+							
+//							getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
+							
+							byte[] mExpBoardArraySplit = Arrays.copyOfRange(mExpBoardArray, 1, 4);
+							setExpansionBoardDetails(new ExpansionBoardDetails(mExpBoardArraySplit));
+							
 							mInstructionStackLock=false;
 						}
 						else if(tb[0] == INSTREAM_CMD_RESPONSE) {
@@ -3066,48 +3072,48 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return mEXG2Comparators;
 	}
 	
-	public String getExpBoardID(){
-		
-		if(mExpBoardArray!=null){
-//			if(mExpBoardName==null){
-				int boardID = mExpBoardArray[1] & 0xFF;
-				mExpansionBoardId = boardID;
-				int boardRev = mExpBoardArray[2] & 0xFF;
-				int specialRevision = mExpBoardArray[3] & 0xFF;
-				String boardName;
-				switch(boardID){
-					case 8:
-						boardName="Bridge Amplifier+";
-					break;
-					case 14:
-						boardName="GSR+";
-					break;
-					case 36:
-						boardName="PROTO3 Mini";
-					break;
-					case 37:
-						boardName="ExG";
-					break;
-					case 38:
-						boardName="PROTO3 Deluxe";
-					break;
-					default:
-						boardName="Unknown";
-					break;
-					
-				}
-				if(!boardName.equals("Unknown")){
-					boardName += " (SR" + boardID + "." + boardRev + "." + specialRevision +")";
-				}
-				
-				mExpBoardName = boardName;
-//			}
-		}
-		else
-			return "Need to read ExpBoard ID first";
-		
-		return mExpBoardName;
-	}
+//	public String getExpBoardID(){
+//		
+//		if(mExpBoardArray!=null){
+////			if(mExpBoardName==null){
+//				int boardID = mExpBoardArray[1] & 0xFF;
+//				mExpansionBoardId = boardID;
+//				int boardRev = mExpBoardArray[2] & 0xFF;
+//				int specialRevision = mExpBoardArray[3] & 0xFF;
+//				String boardName;
+//				switch(boardID){
+//					case 8:
+//						boardName="Bridge Amplifier+";
+//					break;
+//					case 14:
+//						boardName="GSR+";
+//					break;
+//					case 36:
+//						boardName="PROTO3 Mini";
+//					break;
+//					case 37:
+//						boardName="ExG";
+//					break;
+//					case 38:
+//						boardName="PROTO3 Deluxe";
+//					break;
+//					default:
+//						boardName="Unknown";
+//					break;
+//					
+//				}
+//				if(!boardName.equals("Unknown")){
+//					boardName += " (SR" + boardID + "." + boardRev + "." + specialRevision +")";
+//				}
+//				
+//				mExpBoardName = boardName;
+////			}
+//		}
+//		else
+//			return "Need to read ExpBoard ID first";
+//		
+//		return mExpBoardName;
+//	}
 	
 	public double getBattLimitWarning(){
 		return mLowBattLimit;

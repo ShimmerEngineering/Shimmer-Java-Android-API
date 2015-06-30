@@ -433,7 +433,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public String mFirmwareVersionParsed = "";
 	
 	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
-	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
+//	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
 
 	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN; 
 	public int mExpansionBoardRev = -1;
@@ -11529,6 +11529,39 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	protected void setSamplingDividerBeacon(int mSamplingDividerBeacon) {
 		this.mSamplingDividerBeacon = mSamplingDividerBeacon;
+	}
+	
+	
+	protected void setExpansionBoardDetails(ExpansionBoardDetails eBD){
+		mExpansionBoardId = eBD.mExpBoardId;
+		mExpansionBoardRev = eBD.mExpBoardRev;
+		mExpansionBoardSpecialRev = eBD.mExpBoardSpecialRev;
+		mExpansionBoardParsed = eBD.mExpBoardParsed;
+		mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
+		mExpBoardArray = eBD.mExpBoardArray;
+	}
+	
+	public int getExpansionBoardId(){
+		return mExpansionBoardId;
+	}
+	
+	@Deprecated
+	public String getExpBoardID(){
+		return mExpansionBoardParsed;
+	}
+	
+
+	protected void setExpansionBoardId(int expansionBoardId){
+		mExpansionBoardId = expansionBoardId;
+	}
+
+	protected void clearExpansionBoardDetails(){
+		mExpansionBoardId = -1;
+		mExpansionBoardRev = -1;
+		mExpansionBoardSpecialRev = -1;
+		mExpansionBoardParsed = "";
+		mExpansionBoardParsedWithVer = "";
+		mExpBoardArray = null;
 	}
 	
 	

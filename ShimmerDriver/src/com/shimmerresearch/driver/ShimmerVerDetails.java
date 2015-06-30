@@ -63,7 +63,7 @@ public class ShimmerVerDetails implements Serializable {
 		public final static int BASE6U = 42;
 	}
 	
-	public static final Map<Integer, String> mMapOfShimmmerHardware;
+	public static final Map<Integer, String> mMapOfShimmerHardware;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
         aMap.put(HW_ID_SR_CODES.EXP_BRD_BR_AMP, "Bridge Amplifier+");
@@ -78,7 +78,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.EXP_BRD_GPS, "GPS");
         aMap.put(HW_ID_SR_CODES.BASE15U, "Base15U");
         aMap.put(HW_ID_SR_CODES.BASE6U, "Base6U");
-        mMapOfShimmmerHardware = Collections.unmodifiableMap(aMap);
+        mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }
 
 	public final static class FW_ID {

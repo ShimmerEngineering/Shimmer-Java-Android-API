@@ -45,8 +45,8 @@ public class ExpansionBoardDetails {
 			boardName = ShimmerVerDetails.EXP_BRD_NONE;
 		}
 		else {
-			if(ShimmerVerDetails.mMapOfShimmmerHardware.containsKey(boardID)){
-				boardName = ShimmerVerDetails.mMapOfShimmmerHardware.get(boardID);
+			if(ShimmerVerDetails.mMapOfShimmerHardware.containsKey(boardID)){
+				boardName = ShimmerVerDetails.mMapOfShimmerHardware.get(boardID);
 			}
 			else {
 				boardName="Unknown";
