@@ -154,7 +154,7 @@ public class Filter implements Serializable{
             if (nTaps % 2 != 0)
             {
                 nTaps--;
-                JOptionPane.showMessageDialog(null, "Warning: nPoles is not an even number. nPoles will be rounded to " +Integer.toString(nTaps));
+                JOptionPane.showMessageDialog(null, "Warning: nTaps is not an even number. nTaps will be rounded to " +Integer.toString(nTaps));
             }
 
             if (LoHi == LOW_PASS || LoHi == HIGH_PASS) // High pass or Low pass filter
