@@ -11037,7 +11037,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param syncNodesList the syncNodesList to set
 	 */
-	protected void setSyncNodesList(List<String> syncNodesList) {
+	public void setSyncNodesList(List<String> syncNodesList) {
 		this.syncNodesList = syncNodesList;
 	}
 
