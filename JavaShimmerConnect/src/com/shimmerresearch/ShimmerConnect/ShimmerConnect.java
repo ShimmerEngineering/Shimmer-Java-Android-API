@@ -2393,7 +2393,10 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 
 
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
-			double packetReceptionRate = (Double) objectCluster;
+			CallbackObject callbackObject = (CallbackObject)objectCluster;
+			double packetReceptionRate = callbackObject.packetReceptionRate;
+
+//			double packetReceptionRate = (Double) objectCluster;
 			if(downSample%50==0){
 				textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
 			}

@@ -657,6 +657,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected long mPacketLossCount=0;
 	protected double mPacketReceptionRate=100;
+	protected double mPacketReceptionRateCurrent=100;
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	protected boolean mFirstTimeCalTime=true;
 	protected double mCalTimeStart;
@@ -4226,7 +4227,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 		return resultant;
 	}
-
+	
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
 		double calibratedTimeStamp=0;
@@ -4253,6 +4254,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mLastReceivedCalibratedTimeStamp=calibratedTimeStamp;
 		return calibratedTimeStamp;
 	}
+
 
 	//protected abstract void sendStatusMsgPacketLossDetected();
 	protected void sendStatusMsgPacketLossDetected() {
@@ -12118,5 +12120,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public String getEstimatedChargePercentage() {
 		return mEstimatedChargePercentage;
+	}
+	
+	/**
+	 * @return the mLastReceivedTimeStamp
+	 */
+	public double getLastReceivedTimeStamp(){
+		return mLastReceivedTimeStamp;
 	}
 }
