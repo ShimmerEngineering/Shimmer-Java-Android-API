@@ -40,6 +40,7 @@ public class ChannelDetails implements Serializable {
 	}
 	
 	public String mChannelName = "";
+//	public String mObjectClusterName = "";
 	public String mChannelDataType = ChannelDataType.UNKOWN;
 	public int mNumBytes = 0;
 	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
@@ -55,7 +56,9 @@ public class ChannelDetails implements Serializable {
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
 	public ChannelDetails(String channelName, String channelDataType, int numBytes, String channelDataEndian, String units){
+//	public ChannelDetails(String channelName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units){
 		mChannelName = channelName;
+//		mObjectClusterName = objectClusterName;
 		mChannelDataType = channelDataType;
 		mNumBytes = numBytes;
 		mChannelDataEndian = channelDataEndian;

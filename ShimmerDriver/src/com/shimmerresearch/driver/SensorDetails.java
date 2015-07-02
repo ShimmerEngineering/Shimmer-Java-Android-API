@@ -19,10 +19,10 @@ public class SensorDetails implements Serializable {
 	 */
 	private static final long serialVersionUID = 4567211941610864326L;
 	
-	/**
-	 * Indicates if sensors channel is enabled.
-	 */
-	public boolean mIsEnabled = false;
+//	/**
+//	 * Indicates if sensors channel is enabled.
+//	 */
+//	public boolean mIsEnabled = false;
 	/**
 	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
 	 */
@@ -32,7 +32,7 @@ public class SensorDetails implements Serializable {
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	
-	public long mDerivedSensorBitmapID = 0;
+//	public long mDerivedSensorBitmapID = 0;
 	
 	public String mLabel = "";
 	public List<Integer> mListOfSensorMapKeysRequired = null;
@@ -60,8 +60,9 @@ public class SensorDetails implements Serializable {
 	 * @param sensorBitmapIDSDLogHeader
 	 * @param label
 	 */
-	public SensorDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
-		mIsEnabled = isChannelEnabled;
+	public SensorDetails(long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
+//	public SensorDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
+//		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mLabel = label;
@@ -78,28 +79,29 @@ public class SensorDetails implements Serializable {
 	 * @param isChannelEnabled
 	 * @param label
 	 */
-	public SensorDetails(boolean isChannelEnabled, String label) {
-		mIsEnabled = isChannelEnabled;
+	public SensorDetails(String label) {
+//	public SensorDetails(boolean isChannelEnabled, String label) {
+//		mIsEnabled = isChannelEnabled;
 		mLabel = label;
 		mIntExpBoardPowerRequired = false;
 		mListOfCompatibleVersionInfo = null;
 	}
 
-	public void setEnabledState(boolean state) {
-		mIsEnabled = state;
-	}
+//	public void setEnabledState(boolean state) {
+//		mIsEnabled = state;
+//	}
 	
-	public boolean isDerivedChannel() {
-		if(mDerivedSensorBitmapID>0) {
-			return true;
-		}
-		return false;
-	}
-
-	public void resetMapKeyLists() {
-		mListOfSensorMapKeysRequired = null;
-		mListOfSensorMapKeysConflicting = null;
-		mListOfConfigOptionKeysAssociated = null;
-	}
+//	public boolean isDerivedChannel() {
+//		if(mDerivedSensorBitmapID>0) {
+//			return true;
+//		}
+//		return false;
+//	}
+//
+//	public void resetMapKeyLists() {
+//		mListOfSensorMapKeysRequired = null;
+//		mListOfSensorMapKeysConflicting = null;
+//		mListOfConfigOptionKeysAssociated = null;
+//	}
 
 }
