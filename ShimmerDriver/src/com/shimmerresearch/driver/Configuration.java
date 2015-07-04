@@ -832,7 +832,7 @@ public class Configuration {
 		
 	    public static final Map<Integer, SensorDetails> mSensorMapRef;
 	    static {
-	        Map<Integer, SensorDetails> aMap = new TreeMap<Integer, SensorDetails>();
+	        Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer, SensorDetails>();
 
 //			mSensorMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, new SensorDetails(true, 0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP));
 	        
@@ -1601,7 +1601,7 @@ public class Configuration {
 	    
 	    public static final Map<String, SensorGroupingDetails> mSensorGroupingMap;
 	    static {
-	        Map<String, SensorGroupingDetails> aMap = new TreeMap<String, SensorGroupingDetails>();
+	        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		
 			//Sensor Grouping for Configuration Panel 'tile' generation. 
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorGroupingDetails(
@@ -1716,7 +1716,7 @@ public class Configuration {
 
 	    public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMap;
 	    static {
-	        Map<String, SensorConfigOptionDetails> aMap = new HashMap<String, SensorConfigOptionDetails>();
+	        Map<String, SensorConfigOptionDetails> aMap = new LinkedHashMap<String, SensorConfigOptionDetails>();
 	        
 			// Assemble the channel configuration options map
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
