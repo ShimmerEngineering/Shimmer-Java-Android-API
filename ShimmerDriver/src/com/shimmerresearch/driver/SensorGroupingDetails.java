@@ -12,7 +12,7 @@ import java.util.List;
  * @author Mark Nolan
  *
  */
-public class SensorTileDetails implements Serializable {
+public class SensorGroupingDetails implements Serializable {
 
 	/**
 	 * 
@@ -34,7 +34,7 @@ public class SensorTileDetails implements Serializable {
 	 * 
 	 * @param listOfChannelMapKeysAssociated
 	 */
-	public SensorTileDetails(List<Integer> listOfChannelMapKeysAssociated) {
+	public SensorGroupingDetails(List<Integer> listOfChannelMapKeysAssociated) {
 		mListOfSensorMapKeysAssociated = listOfChannelMapKeysAssociated;
 		mListOfCompatibleVersionInfo = null;
 	}
@@ -46,9 +46,9 @@ public class SensorTileDetails implements Serializable {
 	 * @param listOfChannelMapKeysAssociated
 	 * @param listOfCompatibleVersionInfo
 	 */
-	public SensorTileDetails(List<Integer> listOfChannelMapKeysAssociated, List<ShimmerVerObject> listOfCompatibleVersionInfo) {
+	public SensorGroupingDetails(List<Integer> listOfChannelMapKeysAssociated, List<ShimmerVerObject> listOfCompatibleVersionInfo) {
 		mListOfSensorMapKeysAssociated = listOfChannelMapKeysAssociated;
 		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}
-
+	
 }

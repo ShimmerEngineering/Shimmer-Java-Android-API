@@ -301,11 +301,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}  
 	 */
 	
-	protected LinkedHashMap<Integer,SensorEnabledDetails> mSensorMap = new LinkedHashMap<Integer,SensorEnabledDetails>();
-	protected LinkedHashMap<String,SensorTileDetails> mSensorTileMap = new LinkedHashMap<String,SensorTileDetails>();
-	protected HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
+	protected Map<Integer,SensorEnabledDetails> mSensorMap = new LinkedHashMap<Integer,SensorEnabledDetails>();
+	protected Map<String,SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
+	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 
-	public class SensorEnabledDetails{
+	public class SensorEnabledDetails implements Serializable{
 		public boolean mIsEnabled = false;
 		public long mDerivedSensorBitmapID = 0;
 		public SensorDetails mSensorDetails;
@@ -7288,12 +7288,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //		mSensorMapRef = new LinkedHashMap<Integer,SensorDetails>();
 		mSensorMap = new LinkedHashMap<Integer, SensorEnabledDetails>();
 		
-		mSensorTileMap = new LinkedHashMap<String,SensorTileDetails>();
+		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 		
 		if (mHardwareVersion != -1){
 			if (mHardwareVersion == HW_ID.SHIMMER_2R){
-				LinkedHashMap<Integer,SensorDetails> sensorMapRef = (LinkedHashMap<Integer, SensorDetails>) Configuration.Shimmer2.mSensorMapRef;
+				Map<Integer,SensorDetails> sensorMapRef = Configuration.Shimmer2.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
 					mSensorMap.put(key, new SensorEnabledDetails(false, 0, sensorMapRef.get(key)));
 				}
@@ -7301,7 +7301,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if (mHardwareVersion == HW_ID.SHIMMER_3) {
 				InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
 
-				LinkedHashMap<Integer,SensorDetails> sensorMapRef = (LinkedHashMap<Integer, SensorDetails>) Configuration.Shimmer3.mSensorMapRef;
+				Map<Integer,SensorDetails> sensorMapRef = Configuration.Shimmer3.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
 					
 					int derivedChannelBitmapID = 0;
@@ -7333,8 +7333,29 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mSensorMap.put(key, new SensorEnabledDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
 				}
 				
-				mSensorTileMap = (LinkedHashMap<String, SensorTileDetails>) Configuration.Shimmer3.mSensorTileMap;
-				mConfigOptionsMap = (HashMap<String, SensorConfigOptionDetails>) Configuration.Shimmer3.mConfigOptionsMap;
+				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMap;
+				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMap;
+				
+				
+				
+				// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
+				for (String channelGroup : mSensorGroupingMap.keySet()) {
+					// Ok to clear here because variable is initiated in the class
+					mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
+					for (Integer sensor:mSensorGroupingMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
+						if(mSensorMap.containsKey(sensor)){
+							List<String> associatedConfigOptions = mSensorMap.get(sensor).mSensorDetails.mListOfConfigOptionKeysAssociated;
+							if (associatedConfigOptions != null) {
+								for (String configOption : associatedConfigOptions) {
+									// do not add duplicates
+									if (!(mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+										mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+									}
+								}
+							}
+						}
+					}
+				}
 				
 
 			}
@@ -8734,22 +8755,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mSensorMap
 	 */
-	public LinkedHashMap<Integer, SensorEnabledDetails> getSensorMap() {
+	public Map<Integer, SensorEnabledDetails> getSensorMap() {
 		return mSensorMap;
 	}
 
 	/**
 	 * @return the mConfigOptionsMap
 	 */
-	public HashMap<String, SensorConfigOptionDetails> getConfigOptionsMap() {
+	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
 		return mConfigOptionsMap;
 	}
 
 	/**
 	 * @return the mChannelTileMap
 	 */
-	public LinkedHashMap<String, SensorTileDetails> getChannelTileMap() {
-		return mSensorTileMap;
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		return mSensorGroupingMap;
 	}
 
 
