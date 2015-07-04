@@ -1690,22 +1690,24 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
 			
-//			// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
-//			for (String channelGroup : aMap.keySet()) {
-//				// Ok to clear here because variable is initiated in the class
-//				aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
-//				for (Integer channel : aMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
-//					List<String> associatedConfigOptions = Configuration.Shimmer3.mSensorMapRef.get(channel).mListOfConfigOptionKeysAssociated;
-//					if (associatedConfigOptions != null) {
-//						for (String configOption : associatedConfigOptions) {
-//							// do not add duplicates
-//							if (!(aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-//								aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
-//							}
-//						}
-//					}
-//				}
-//			}
+			// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
+			for (String channelGroup : aMap.keySet()) {
+				// Ok to clear here because variable is initiated in the class
+				aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
+				for (Integer sensor : aMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
+					if(Configuration.Shimmer3.mSensorMapRef.containsKey(sensor)){
+						List<String> associatedConfigOptions = Configuration.Shimmer3.mSensorMapRef.get(sensor).mListOfConfigOptionKeysAssociated;
+						if (associatedConfigOptions != null) {
+							for (String configOption : associatedConfigOptions) {
+								// do not add duplicates
+								if (!(aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+									aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+								}
+							}
+						}
+					}
+				}
+			}
 			
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION);

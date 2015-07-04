@@ -7338,24 +7338,24 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				
 				
-				// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
-				for (String channelGroup : mSensorGroupingMap.keySet()) {
-					// Ok to clear here because variable is initiated in the class
-					mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
-					for (Integer sensor:mSensorGroupingMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
-						if(mSensorMap.containsKey(sensor)){
-							List<String> associatedConfigOptions = mSensorMap.get(sensor).mSensorDetails.mListOfConfigOptionKeysAssociated;
-							if (associatedConfigOptions != null) {
-								for (String configOption : associatedConfigOptions) {
-									// do not add duplicates
-									if (!(mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-										mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
-									}
-								}
-							}
-						}
-					}
-				}
+//				// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
+//				for (String channelGroup : mSensorGroupingMap.keySet()) {
+//					// Ok to clear here because variable is initiated in the class
+//					mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
+//					for (Integer sensor:mSensorGroupingMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
+//						if(mSensorMap.containsKey(sensor)){
+//							List<String> associatedConfigOptions = mSensorMap.get(sensor).mSensorDetails.mListOfConfigOptionKeysAssociated;
+//							if (associatedConfigOptions != null) {
+//								for (String configOption : associatedConfigOptions) {
+//									// do not add duplicates
+//									if (!(mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+//										mSensorGroupingMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
 				
 
 			}
