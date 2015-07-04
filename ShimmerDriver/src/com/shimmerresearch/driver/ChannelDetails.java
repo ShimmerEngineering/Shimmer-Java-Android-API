@@ -72,5 +72,10 @@ public class ChannelDetails implements Serializable {
 	public ChannelDetails() {
 		// TODO Auto-generated constructor stub
 	}
+
+
+	public ChannelDetails(String channelName, long mSensorBitmapIDStreaming, long mSensorBitmapIDSDLogHeader) {
+		// TODO Auto-generated constructor stub
+	}
 	
 }

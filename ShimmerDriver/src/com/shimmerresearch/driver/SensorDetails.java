@@ -35,11 +35,11 @@ public class SensorDetails implements Serializable {
 //	public long mDerivedSensorBitmapID = 0;
 	
 	public String mLabel = "";
-	public List<Integer> mListOfSensorMapKeysRequired = null;
-	public List<Integer> mListOfSensorMapKeysConflicting = null;
+	public List<Integer> mListOfSensorMapKeysRequired = new ArrayList<Integer>();
+	public List<Integer> mListOfSensorMapKeysConflicting = new ArrayList<Integer>();
 	public boolean mIntExpBoardPowerRequired = false;
-	public List<String> mListOfConfigOptionKeysAssociated = null;
-	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null;  
+	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
 	
 	//Testing for GQ
 	public String mHeaderFileLabel = "";
@@ -47,6 +47,8 @@ public class SensorDetails implements Serializable {
 	public int mNumChannels = 0;
 	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
 	public List<ChannelDetails> mListOfChannels = new ArrayList<ChannelDetails>();
+
+	public LinkedHashMap<String,SensorDetails> mMapOfChildSensorDetails = new LinkedHashMap<String,SensorDetails>();
 
 	/**
 	 * Holds all information related individual sensor channels for dynamic GUI
