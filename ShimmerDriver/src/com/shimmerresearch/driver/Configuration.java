@@ -970,7 +970,7 @@ public class Configuration {
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
 			
 //			// Derived Channels - GSR Board
-//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_DUMMY));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_DUMMY));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_A12, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_A12));
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
@@ -981,7 +981,7 @@ public class Configuration {
 ////			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
 //			
 //			// Derived Channels - Proto3 Board
-//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_DUMMY));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_DUMMY));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_A12, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A12));
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
@@ -990,7 +990,7 @@ public class Configuration {
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
 ////			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
-//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_DUMMY));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_DUMMY));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_A1, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A1));
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
@@ -1691,17 +1691,17 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
 			
 			// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
-			for (String channelGroup : aMap.keySet()) {
+			for (String sensorGroup : aMap.keySet()) {
 				// Ok to clear here because variable is initiated in the class
-				aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
-				for (Integer sensor : aMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
+				aMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.clear();
+				for (Integer sensor : aMap.get(sensorGroup).mListOfSensorMapKeysAssociated) {
 					if(Configuration.Shimmer3.mSensorMapRef.containsKey(sensor)){
 						List<String> associatedConfigOptions = Configuration.Shimmer3.mSensorMapRef.get(sensor).mListOfConfigOptionKeysAssociated;
 						if (associatedConfigOptions != null) {
 							for (String configOption : associatedConfigOptions) {
 								// do not add duplicates
-								if (!(aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-									aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+								if (!(aMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+									aMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
 								}
 							}
 						}

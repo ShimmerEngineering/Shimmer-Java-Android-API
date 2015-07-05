@@ -23,7 +23,7 @@ public class SensorGroupingDetails implements Serializable {
 	 */
 	public boolean mIsEnabled = false;
 	
-	public List<Integer> mListOfSensorMapKeysAssociated = null;
+	public List<Integer> mListOfSensorMapKeysAssociated = new ArrayList<Integer>();
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 	
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null;  
@@ -32,10 +32,10 @@ public class SensorGroupingDetails implements Serializable {
 	 * Holds all information related the sensor 'tiles' used in Consensys for
 	 * dynamic GUI and configuration purposes.
 	 * 
-	 * @param listOfChannelMapKeysAssociated
+	 * @param listOfSensorMapKeysAssociated
 	 */
-	public SensorGroupingDetails(List<Integer> listOfChannelMapKeysAssociated) {
-		mListOfSensorMapKeysAssociated = listOfChannelMapKeysAssociated;
+	public SensorGroupingDetails(List<Integer> listOfSensorMapKeysAssociated) {
+		mListOfSensorMapKeysAssociated = listOfSensorMapKeysAssociated;
 		mListOfCompatibleVersionInfo = null;
 	}
 
