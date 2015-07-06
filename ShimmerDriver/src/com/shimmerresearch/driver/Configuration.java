@@ -834,7 +834,7 @@ public class Configuration {
 	    static {
 	        Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer, SensorDetails>();
 
-//			mSensorMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, new SensorDetails(true, 0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP));
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, new SensorDetails(0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP));
 	        
 			// Assemble the channel map
 			// NV_SENSORS0
