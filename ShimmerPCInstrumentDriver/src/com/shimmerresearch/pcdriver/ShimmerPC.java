@@ -110,6 +110,21 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		mContinousSync=continousSync;
 		mSetupDevice=false;
 	}
+	
+	/**
+	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors.
+	 * @param context  The UI Activity Context
+	 * @param handler  A Handler to send messages back to the UI Activity
+	 * @param myname  To allow the user to set a unique identifier for each Shimmer device
+	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
+	 */
+	public ShimmerPC(String comPort, String myBluetoothAddress, String myName, Boolean continousSync) {
+		mUniqueID=comPort;
+		mMyBluetoothAddress=myBluetoothAddress;
+		mMyName=myName;
+		mContinousSync=continousSync;
+		mSetupDevice=false;
+	}
 
 	/**Shimmer 3 Constructor
 	 * @param myname  To allow the user to set a unique identifier for each Shimmer device
@@ -192,7 +207,8 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 	public synchronized void connect(final String address, String a) {
 		mIamAlive = false;
 		if (mSerialPort==null){
-		mMyBluetoothAddress = address;
+		mUniqueID = address;
+//		mMyBluetoothAddress = address;
 		mSerialPort = new SerialPort(address);
 		mListofInstructions.clear();
 		mFirstTime=true;

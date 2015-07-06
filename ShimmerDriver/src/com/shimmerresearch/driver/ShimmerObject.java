@@ -520,11 +520,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mExperimentDurationEstimated = 0;
 	protected int mExperimentDurationMaximum = 0;
 	
-	protected String mMacIdFromInfoMem = "";
-	
 	protected String mMyBluetoothAddress=""; //TODO: duplicate of mMacIdFromUart and doesn't needs to generate mMacIdFromUartParsed
+//	protected String mMacIdFromBtParsed = "";
 	protected String mMacIdFromUart = "";
-	protected String mMacIdFromUartParsed = "";
+//	protected String mMacIdFromUartParsed = "";
+	protected String mMacIdFromInfoMem = "";
 	
 	protected String mShimmerUserAssignedName = "";  // This stores the user assigned name //TODO: duplicate of mMyName
 	protected String mMyName=""; // This stores the user assigned name
@@ -6883,10 +6883,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mShimmerUserAssignedName = new String(shimmerName);
 		}
 		else {
-			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
-			if(!mMacIdFromUartParsed.isEmpty()) {
-				mShimmerUserAssignedName += "_" + mMacIdFromUartParsed;
-			}
+			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
+//			if(!mMacIdFromUartParsed.isEmpty()) {
+//				mShimmerUserAssignedName += "_" + getMacIdFromUartParsed();
+//			}
 		}
 		
 	}
@@ -9015,7 +9015,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mMacIdFromUartParsed
 	 */
 	public String getMacIdFromUartParsed() {
-		return mMacIdFromUartParsed;
+		if(this.mMacIdFromUart.length()>=12) {
+			return this.mMacIdFromUart.substring(8, 12);
+		}
+		return "0000";
+	}
+
+	/**
+	 * @return the mMacIdFromBtParsed
+	 */
+	public String getMacIdFromBtParsed() {
+		if(this.mMyBluetoothAddress.length()>=12) {
+			return this.mMyBluetoothAddress.substring(8, 12);
+		}
+		return "0000";
 	}
 
 	/**
@@ -10306,10 +10319,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	protected void setMacIdFromUart(String macIdFromUart) {
 		this.mMacIdFromUart = macIdFromUart;
-		
-		if(this.mMacIdFromUart.length()>=12) {
-			this.mMacIdFromUartParsed = this.mMacIdFromUart.substring(8, 12);
-		}
+	}
+
+	/**
+	 * @param myBluetoothAddress the myBluetoothAddress to set
+	 */
+	protected void setMacIdFromBt(String myBluetoothAddress){
+		this.mMyBluetoothAddress = myBluetoothAddress;
 	}
 	
 	/**
