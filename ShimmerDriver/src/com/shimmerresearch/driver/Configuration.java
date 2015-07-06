@@ -47,6 +47,21 @@
 
 package com.shimmerresearch.driver;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.shimmerresearch.driver.ChannelDetails.ChannelDataEndian;
+import com.shimmerresearch.driver.ChannelDetails.ChannelDataType;
+import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
+
 /**
  * The purpose of this code is to maintain the configurations constants for a
  * Shimmer Device
@@ -374,19 +389,23 @@ public class Configuration {
 			public static final int SKIN_TEMP_PROBE = 104;
 	
 			// Derived Channels - GSR Board
-			public static final int PPG_DUMMY = 105;
 			public static final int PPG_A12 = 106;
 			public static final int PPG_A13 = 107;
 			
 			// Derived Channels - Proto3 Deluxe Board
 			
-			public static final int PPG1_DUMMY = 110;
 			public static final int PPG1_A12 = 111;
 			public static final int PPG1_A13 = 112;
-			public static final int PPG2_DUMMY = 113;
 			public static final int PPG2_A1 = 114;
 			public static final int PPG2_A14 = 115;
 			public static final int EXG_CUSTOM = 116;
+			
+			public static final int TIMESTAMP = 150;
+
+			public static final int PPG_DUMMY = 105;
+			public static final int PPG1_DUMMY = 110;
+			public static final int PPG2_DUMMY = 113;
+
 		}
 
 		// Sensor Options Map
@@ -692,6 +711,1265 @@ public class Configuration {
 			public static final String GSR = "GSR";
 			public static final String LSM303DLHC_ACCEL = "LSM303DLHC_ACCEL";
 		}
+		
+		
+		private static class CompatibilityInfoForMaps{
+			public static final int ANY_VERSION = -1;
+
+			// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
+			private static final ShimmerVerObject baseAnyIntExpBoardAndFw = 			new ShimmerVerObject(HW_ID.SHIMMER_3,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+			private static final ShimmerVerObject baseAnyIntExpBoardAndSdlog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+			private static final ShimmerVerObject baseAnyIntExpBoardAndBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+			private static final ShimmerVerObject baseAnyIntExpBoardAndLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+
+			private static final ShimmerVerObject baseNoIntExpBoardSdLog = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,ShimmerVerDetails.EXP_BRD_NONE_ID);
+
+			private static final ShimmerVerObject baseSdLog = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,ANY_VERSION);
+			private static final ShimmerVerObject baseSdLogMpl = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,10,1,ANY_VERSION);
+			private static final ShimmerVerObject baseBtStream = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,ANY_VERSION);
+			private static final ShimmerVerObject baseLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,ANY_VERSION);
+			
+			private static final ShimmerVerObject baseExgSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_EXG); 
+			private static final ShimmerVerObject baseExgUnifiedSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED);
+			private static final ShimmerVerObject baseExgBtStream = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_EXG);
+			private static final ShimmerVerObject baseExgUnifiedBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED);
+			private static final ShimmerVerObject baseExgLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_EXG);
+			private static final ShimmerVerObject baseExgUnifiedLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED);
+			
+			private static final ShimmerVerObject baseGsrSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_GSR);
+			private static final ShimmerVerObject baseGsrUnifiedSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
+			private static final ShimmerVerObject baseGsrBtStream = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_GSR);
+			private static final ShimmerVerObject baseGsrUnifiedBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
+			private static final ShimmerVerObject baseGsrLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_GSR);
+			private static final ShimmerVerObject baseGsrUnifiedLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
+			private static final ShimmerVerObject baseGsrGq = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR);
+			private static final ShimmerVerObject baseGsrUnifiedGq = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
+
+			private static final ShimmerVerObject baseBrAmpSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP);
+			private static final ShimmerVerObject baseBrAmpUnifiedSdLog = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED);
+			private static final ShimmerVerObject baseBrAmpBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP);
+			private static final ShimmerVerObject baseBrAmpUnifiedBtStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED);
+			private static final ShimmerVerObject baseBrAmpLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_BR_AMP);
+			private static final ShimmerVerObject baseBrAmpUnifiedLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED);
+			
+			private static final ShimmerVerObject baseProto3MiniSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
+			private static final ShimmerVerObject baseProto3MiniBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
+			private static final ShimmerVerObject baseProto3MiniLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
+
+			private static final ShimmerVerObject baseProto3DeluxeSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
+			private static final ShimmerVerObject baseProto3DeluxeBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
+			private static final ShimmerVerObject baseProto3DeluxeLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
+
+			private static final ShimmerVerObject baseHighGAccelSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
+			private static final ShimmerVerObject baseHighGAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
+			private static final ShimmerVerObject baseHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
+
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
+					baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
+					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
+					baseAnyIntExpBoardAndSdlog,baseAnyIntExpBoardAndBtStream,baseAnyIntExpBoardAndLogAndStream);
+
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
+					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGq,
+					baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, baseGsrUnifiedGq);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
+					baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
+					baseBrAmpUnifiedSdLog,  baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
+
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoProto3Mini = Arrays.asList(
+					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoProto3Deluxe = Arrays.asList(
+					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
+					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA12 = Arrays.asList(
+					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
+					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream,
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA13 = Arrays.asList(
+					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
+					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
+					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream 
+					);
+
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
+					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
+					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream 
+					);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoStreaming = Arrays.asList(
+					baseBtStream, baseLogAndStream);
+
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoLogging = Arrays.asList(
+					baseSdLog, baseLogAndStream);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoRespiration = Arrays.asList(
+					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
+
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
+					baseHighGAccelSdLog,baseHighGAccelBtStream,baseHighGAccelLogAndStream);
+			
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl);
+		}
+
+
+		
+	    public static final Map<Integer, SensorDetails> mSensorMapRef;
+	    static {
+	        Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer, SensorDetails>();
+
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, new SensorDetails(0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP));
+	        
+			// Assemble the channel map
+			// NV_SENSORS0
+			long streamingByteIndex = 0;
+			long logHeaderByteIndex = 0;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.A_ACCEL, new SensorDetails(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_LN));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO, new SensorDetails(0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GYRO));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG, new SensorDetails(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MAG));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT, new SensorDetails(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG1_24BIT));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT, new SensorDetails(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_24BIT));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.GSR, new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GSR));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7, new SensorDetails(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A7));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6, new SensorDetails(0x01<<(streamingByteIndex*8), 0x01<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A6));
+			
+			// NV_SENSORS1
+			streamingByteIndex = 1;
+			logHeaderByteIndex = 1;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP, new SensorDetails(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.BRIDGE_AMPLIFIER));
+			//shimmerChannels.put(, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), "")); // unused? - new PPG bit might be here now
+			aMap.put(Configuration.Shimmer3.SensorMapKey.VBATT, new SensorDetails(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.BATTERY));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL, new SensorDetails(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_WR));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A15, new SensorDetails(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A15));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1, new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A1));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12, new SensorDetails(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A12));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13, new SensorDetails(0x01<<(streamingByteIndex*8), 0x01<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A13));
+
+			// NV_SENSORS2
+			streamingByteIndex = 2;
+			logHeaderByteIndex = 2;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14, new SensorDetails(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A14));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL, new SensorDetails(0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_MPU));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG, new SensorDetails(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MAG_MPU));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT, new SensorDetails(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG1_16BIT));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT, new SensorDetails(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_16BIT));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP, new SensorDetails(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE));
+			//shimmerChannels.put(SENSOR_SHIMMER3_MSP430_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
+			//shimmerChannels.put(SENSOR_SHIMMER3_LSM303DLHC_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
+
+			// NV_SENSORS3				
+			streamingByteIndex = 3;
+			logHeaderByteIndex = 3;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF, new SensorDetails((long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.QUAT_MPL_6DOF));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF, new SensorDetails((long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.QUAT_MPL_9DOF));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF, new SensorDetails((long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EULER_ANGLES_6DOF));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF, new SensorDetails((long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EULER_ANGLES_9DOF));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING, new SensorDetails((long)0, (long)0x08<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_HEADING));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER, new SensorDetails((long)0, (long)0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_PEDOM_CNT));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP, new SensorDetails((long)0, (long)0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TAPDIRANDTAPCNT));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT, new SensorDetails((long)0, (long)0x01<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_MOTIONANDORIENT));
+
+			// NV_SENSORS4
+			streamingByteIndex = 4;
+			logHeaderByteIndex = 4;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO, new SensorDetails((long)0, (long)0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GYRO_MPU_MPL));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL, new SensorDetails((long)0, (long)0x40<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_MPU_MPL));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG, new SensorDetails((long)0, (long)0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MAG_MPU_MPL));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW, new SensorDetails((long)0, (long)0x10<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.QUAT_DMP_6DOF));
+			//shimmerChannels.put(, new ChannelDetails(false, 0, 0x08<<(loggingHeaderByteIndex*8), "")); // unused
+			//shimmerChannels.put(, new ChannelDetails(false, 0, 0x04<<(loggingHeaderByteIndex*8), "")); // unused
+			//shimmerChannels.put(, new ChannelDetails(false, 0, 0x02<<(loggingHeaderByteIndex*8), "")); // unused
+			//shimmerChannels.put(, new ChannelDetails(false, 0, 0x01<<(loggingHeaderByteIndex*8), "")); // unused
+			
+			aMap.put(Configuration.Shimmer3.SensorMapKey.ECG, new SensorDetails(0, 0, Shimmer3.GuiLabelSensors.ECG));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG_TEST, new SensorDetails(0, 0, Shimmer3.GuiLabelSensors.EXG_TEST));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_RESPIRATION));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EMG, new SensorDetails(0, 0, Shimmer3.GuiLabelSensors.EMG));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM, new SensorDetails(0, 0, Shimmer3.GuiLabelSensors.EXG_CUSTOM));
+
+			// Derived Channels - Bridge Amp Board
+			aMap.put(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP, new SensorDetails(0, 0, Shimmer3.GuiLabelSensors.RESISTANCE_AMP));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelResAmp;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE, new SensorDetails(0, 0, Shimmer3.GuiLabelSensors.SKIN_TEMP_PROBE));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelSkinTemp;
+
+
+//			// Derived Channels - GSR Board
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_DUMMY));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mMapOfChildSensorDetails.put(Configuration.Shimmer3.GuiLabelSensors.PPG_A12 ,new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_A12));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG_A12).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG_A12).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mMapOfChildSensorDetails.put(Configuration.Shimmer3.GuiLabelSensors.PPG_A13 ,new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_A13));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG_A13).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG_A13).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
+//			
+//			// Derived Channels - Proto3 Board
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_DUMMY));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mMapOfChildSensorDetails.put(Configuration.Shimmer3.GuiLabelSensors.PPG1_A12 ,new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A12));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG1_A12).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG1_A12).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mMapOfChildSensorDetails.put(Configuration.Shimmer3.GuiLabelSensors.PPG1_A13 ,new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A13));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG1_A13).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG1_A13).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
+//
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_DUMMY));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mMapOfChildSensorDetails.put(Configuration.Shimmer3.GuiLabelSensors.PPG2_A1 ,new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A1));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG2_A1).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG2_A1).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mMapOfChildSensorDetails.put(Configuration.Shimmer3.GuiLabelSensors.PPG2_A14 ,new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A14));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG2_A14).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mMapOfChildSensorDetails.get(Configuration.Shimmer3.GuiLabelSensors.PPG2_A14).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDSDLogHeader;
+
+//			// Derived Channels - GSR Board
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_A12, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_A12));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
+////			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_A13, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_A13));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
+////			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+//			
+//			// Derived Channels - Proto3 Board
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_A12, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A12));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
+////			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_A13, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A13));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
+////			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_A1, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A1));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
+////			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_A14, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A14));
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDStreaming;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDSDLogHeader;
+////			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
+			
+//			// Derived Channels - GSR Board
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_DUMMY));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_A12, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_A12));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG_A13, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG_A13));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+//			
+//			// Derived Channels - Proto3 Board
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_DUMMY));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_A12, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A12));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG1_A13, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG1_A13));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_DUMMY));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_A1, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A1));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
+			aMap.put(Configuration.Shimmer3.SensorMapKey.PPG2_A14, new SensorDetails(0, 0, Configuration.Shimmer3.GuiLabelSensors.PPG2_A14));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mSensorBitmapIDStreaming = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDStreaming;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDSDLogHeader;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
+
+			
+			// Now that channel map is assembled we can add compatiblity
+			// information, internal expansion board power requirements,
+			// associated required channels, conflicting channels and
+			// associated configuration options.
+			
+			// Channels that have compatibility considerations (used to auto-hide/disable channels/config options in GUI)
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA1;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA12;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA13;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA14;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A15).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			
+			// Channels that require Internal Expansion board power (automatically enabled internal expansion board power when each Channel is enabled)
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIntExpBoardPowerRequired = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIntExpBoardPowerRequired = true;
+			
+			// Required Channels - these get auto enabled/disabled when the parent channel is enabled/disabled
+			//mSensorMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfSensorMapKeysRequired = Arrays.asList(
+			//		Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1);
+			//mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mListOfSensorMapKeysRequired = Arrays.asList(
+			//		Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1);
+			
+			// Conflicting Channels (stop two conflicting channels from being enabled and the same time)
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY,
+					Configuration.Shimmer3.SensorMapKey.PPG2_A1,
+					Configuration.Shimmer3.SensorMapKey.PPG2_A14,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.PPG_DUMMY,
+					Configuration.Shimmer3.SensorMapKey.PPG_A12,
+					Configuration.Shimmer3.SensorMapKey.PPG_A13,
+					Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY,
+					Configuration.Shimmer3.SensorMapKey.PPG1_A12,
+					Configuration.Shimmer3.SensorMapKey.PPG1_A13,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.PPG_DUMMY,
+					Configuration.Shimmer3.SensorMapKey.PPG_A12,
+					Configuration.Shimmer3.SensorMapKey.PPG_A13,
+					Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY,
+					Configuration.Shimmer3.SensorMapKey.PPG1_A12,
+					Configuration.Shimmer3.SensorMapKey.PPG1_A13,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY,
+					Configuration.Shimmer3.SensorMapKey.PPG2_A1,
+					Configuration.Shimmer3.SensorMapKey.PPG2_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO);
+			
+			//The A12 and A13 based PPG channels have the same channel exceptions as GSR with the addition of their counterpart channel 
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfSensorMapKeysConflicting = new ArrayList<Integer>(aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfSensorMapKeysConflicting);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfSensorMapKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.PPG_A13);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfSensorMapKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfSensorMapKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mListOfSensorMapKeysConflicting = new ArrayList<Integer>(aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfSensorMapKeysConflicting);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mListOfSensorMapKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.PPG_A12);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mListOfSensorMapKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mListOfSensorMapKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13);
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.PPG1_A13,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13);
+			
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.PPG1_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13);
+					
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.PPG2_A14,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14);
+					
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mListOfSensorMapKeysConflicting = Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.GSR,
+					Configuration.Shimmer3.SensorMapKey.ECG,
+					Configuration.Shimmer3.SensorMapKey.EMG,
+					Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.PPG2_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14);
+			
+			// Associated config options for each channel (currently used for the ChannelTileMap)
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,
+					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE,
+					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE,
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF,
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE,
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
+			
+			
+			
+			// All Information required for parsing each of the channels
+//			mSensorMap.get(Configuration.Shimmer3.SensorMapKey.TIMESTAMP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,ChannelDataType.UINT16,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLISECONDS));
+			
+			aMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.A_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+			
+			aMap.get(Configuration.Shimmer3.SensorMapKey.VBATT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+
+			//ADC
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A15).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A1,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A12,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A13,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_A14,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+
+			//Bridge Amp High
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,ChannelDataType.UINT12,2,ChannelDataEndian.LSB, CHANNEL_UNITS.MILLIVOLTS));
+			
+			//GSR
+			aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GSR,ChannelDataType.UINT16,2,ChannelDataEndian.LSB, CHANNEL_UNITS.KOHMS));
+
+			//GyroMPU
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES_PER_SECOND));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES_PER_SECOND));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES_PER_SECOND));
+			
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,ChannelDataType.INT16,2,ChannelDataEndian.LSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,ChannelDataType.INT16,2,ChannelDataEndian.LSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,ChannelDataType.INT16,2,ChannelDataEndian.LSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+			
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.LOCAL_FLUX));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.LOCAL_FLUX));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.LOCAL_FLUX));
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.METER_PER_SECOND_SQUARE));
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_X,ChannelDataType.INT16,2,ChannelDataEndian.LSB, CHANNEL_UNITS.LOCAL_FLUX));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Y,ChannelDataType.INT16,2,ChannelDataEndian.LSB, CHANNEL_UNITS.LOCAL_FLUX));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Z,ChannelDataType.INT16,2,ChannelDataEndian.LSB, CHANNEL_UNITS.LOCAL_FLUX));
+
+			//bmp180 - pressure
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,ChannelDataType.UINT24,3,ChannelDataEndian.MSB, CHANNEL_UNITS.KPASCAL));
+			//bmp180 - temp
+			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,ChannelDataType.UINT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES_CELSUIS));
+			
+			//exg
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB, CHANNEL_UNITS.MILLIVOLTS));
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,ChannelDataType.INT24,3,ChannelDataEndian.MSB, CHANNEL_UNITS.MILLIVOLTS));
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.MILLIVOLTS));
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,ChannelDataType.UINT8,1,ChannelDataEndian.LSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,ChannelDataType.INT16,2,ChannelDataEndian.MSB, CHANNEL_UNITS.MILLIVOLTS));
+			
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_9DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			
+			//euler
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.EULER_MPL_9DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+
+			//heading
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_HEADING,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES));
+
+			//mpu temp
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES_CELSUIS));
+
+			//mpl pedom
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_PEDOM_CNT,ChannelDataType.UINT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MPL_PEDOM_TIME,ChannelDataType.UINT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+
+			//mpl tap
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT,ChannelDataType.UINT8,1,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+
+			//mpl motion orient
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT,ChannelDataType.UINT8,1,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+
+			//mpl gyro cal
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES_PER_SECOND));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES_PER_SECOND));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.DEGREES_PER_SECOND));
+
+			//mpl accel cal
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.GRAVITY));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.GRAVITY));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.GRAVITY));
+
+			//mpl mag cal
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.U_TESLA));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.U_TESLA));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.U_TESLA));
+			
+			// Raw 6DOF quaterians from the DMP hardware module of the MPU9150
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_W,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_X,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Y,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannels.add(new ChannelDetails(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z,ChannelDataType.INT32,4,ChannelDataEndian.MSB, CHANNEL_UNITS.NO_UNITS));
+			
+			
+			mSensorMapRef = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<String, SensorGroupingDetails> mSensorGroupingMap;
+	    static {
+	        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		
+			//Sensor Grouping for Configuration Panel 'tile' generation. 
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.VBATT)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6,
+								Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7,
+								Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A15)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
+								Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
+	//							Configuration.Shimmer3.SensorMapKey.PPG_A12,
+	//							Configuration.Shimmer3.SensorMapKey.PPG_A13)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG,
+								Configuration.Shimmer3.SensorMapKey.EMG,
+								Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+								Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+								Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY,
+								Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
+								Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP)));
+			//aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorTileDetails(
+			//		Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12, //X-axis
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13, //Y-axis
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14, //Z-axis
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1))); //unused but accessible
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
+								Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
+								Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
+								Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF)));
+			
+			//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
+			
+			// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			//aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Mini;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
+			//aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoHighGAccel;
+			//mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGps;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			
+			// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
+			for (String sensorGroup : aMap.keySet()) {
+				// Ok to clear here because variable is initiated in the class
+				aMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.clear();
+				for (Integer sensor : aMap.get(sensorGroup).mListOfSensorMapKeysAssociated) {
+					if(Configuration.Shimmer3.mSensorMapRef.containsKey(sensor)){
+						List<String> associatedConfigOptions = Configuration.Shimmer3.mSensorMapRef.get(sensor).mListOfConfigOptionKeysAssociated;
+						if (associatedConfigOptions != null) {
+							for (String configOption : associatedConfigOptions) {
+								// do not add duplicates
+								if (!(aMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+									aMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION);
+			
+	        mSensorGroupingMap = Collections.unmodifiableMap(aMap);
+	    }
+
+	    public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMap;
+	    static {
+	        Map<String, SensorConfigOptionDetails> aMap = new LinkedHashMap<String, SensorConfigOptionDetails>();
+	        
+			// Assemble the channel configuration options map
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+											new ArrayList(){}));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofBluetoothBaudRates, 
+											Configuration.Shimmer3.ListofBluetoothBaudRatesConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
+											Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+											Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
+
+//			if(mLowPowerAccelWR) {
+//				aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
+//												Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
+//												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+//			}
+//			else {
+//				aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+//												Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+//												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+//			}
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGyroRange, 
+											Configuration.Shimmer3.ListofMPU9150GyroRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMagRange, 
+											Configuration.Shimmer3.ListofMagRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCMagRate, 
+											Configuration.Shimmer3.ListofLSM303DLHCMagRateConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
+											Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
+											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGGain, 
+											Configuration.Shimmer3.ListOfExGGainConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGResolutions, 
+											Configuration.Shimmer3.ListOfExGResolutionsConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+
+			//Advanced ExG		
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfECGReferenceElectrode, 
+											Configuration.Shimmer3.ListOfECGReferenceElectrodeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, Configuration.Shimmer3.ListOfEMGReferenceElectrode);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, Configuration.Shimmer3.ListOfExGReferenceElectrodeAll);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, Configuration.Shimmer3.ListOfExGReferenceElectrodeConfigValuesAll);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, Configuration.Shimmer3.ListOfRespReferenceElectrode);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, Configuration.Shimmer3.ListOfRespReferenceElectrodeConfigValues);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, Configuration.Shimmer3.ListOfTestReferenceElectrode);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, Configuration.Shimmer3.ListOfTestReferenceElectrodeConfigValues);
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.JPANEL,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGRate, 
+											Configuration.Shimmer3.ListOfExGRateConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffDetection, 
+											Configuration.Shimmer3.ListOfExGLeadOffDetectionConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffCurrent, 
+											Configuration.Shimmer3.ListOfExGLeadOffCurrentConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffComparator, 
+											Configuration.Shimmer3.ListOfExGLeadOffComparatorConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGRespirationDetectFreq, 
+											Configuration.Shimmer3.ListOfExGRespirationDetectFreqConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khz, 
+											Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khzConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration));
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khz);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khzConfigValues);
+			
+			//MPL Options
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150AccelRange, 
+											Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
+											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
+											Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplRate, 
+											Configuration.Shimmer3.ListofMPU9150MplRateConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MagRate, 
+											Configuration.Shimmer3.ListofMPU9150MagRateConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+
+		    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
+		    	      new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfOnOff, 
+				    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
+				    	        SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			
+			//MPL CheckBoxes
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			
+			//General Config
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfPpgAdcSelection, 
+											Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfPpg1AdcSelection, 
+											Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfPpg2AdcSelection, 
+											Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
+	        
+	        mConfigOptionsMap = Collections.unmodifiableMap(aMap);
+	    }
+
+
+
+
+
+		
 	}
 
 	public static class Shimmer2{
@@ -811,6 +2089,81 @@ public class Configuration {
 			public static final int INT_ADC_A13 = 15;
 			public static final int INT_ADC_A14 = 16;
 		}
+		
+	    public static final Map<Integer, SensorDetails> mSensorMapRef;
+	    static {
+	        Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer,SensorDetails>();
+		
+	        aMap.put(Configuration.Shimmer2.SensorMapKey.ACCEL, new SensorDetails(0x80, 0, "Accelerometer"));
+	        aMap.put(Configuration.Shimmer2.SensorMapKey.GYRO, new SensorDetails(0x40, 0, "Gyroscope"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.MAG, new SensorDetails(0x20, 0, "Magnetometer"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.EMG, new SensorDetails(0x08, 0, "EMG"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.ECG, new SensorDetails(0x10, 0, "ECG"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.GSR, new SensorDetails(0x04, 0, "GSR"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.EXP_BOARD_A7, new SensorDetails(0x02, 0, "Exp Board A7"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.EXP_BOARD_A0, new SensorDetails(0x01, 0, "Exp Board A0"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.EXP_BOARD, new SensorDetails(0x02|0x01, 0, "Exp Board"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.BRIDGE_AMP, new SensorDetails(0x8000, 0, "Bridge Amplifier"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.HEART, new SensorDetails(0x4000, 0, "Heart Rate"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.BATT, new SensorDetails(0x2000, 0, "Battery Voltage"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.EXT_ADC_A15, new SensorDetails(0x0800, 0, "External ADC A15"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.INT_ADC_A1, new SensorDetails(0x0400, 0, "Internal ADC A1"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.INT_ADC_A12, new SensorDetails(0x0200, 0, "Internal ADC A12"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.INT_ADC_A13, new SensorDetails(0x0100, 0, "Internal ADC A13"));
+			aMap.put(Configuration.Shimmer2.SensorMapKey.INT_ADC_A14, new SensorDetails(0x800000, 0, "Internal ADC A14"));
+			
+			// Conflicting Channels
+			aMap.get(Configuration.Shimmer2.SensorMapKey.GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.ECG,
+				Configuration.Shimmer2.SensorMapKey.EMG,
+				Configuration.Shimmer2.SensorMapKey.GSR,
+				Configuration.Shimmer2.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.MAG).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.ECG,
+				Configuration.Shimmer2.SensorMapKey.EMG,
+				Configuration.Shimmer2.SensorMapKey.GSR,
+				Configuration.Shimmer2.SensorMapKey.BRIDGE_AMP);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.EMG).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.GSR,
+				Configuration.Shimmer2.SensorMapKey.ECG,
+				Configuration.Shimmer2.SensorMapKey.BRIDGE_AMP,
+				Configuration.Shimmer2.SensorMapKey.GYRO,
+				Configuration.Shimmer2.SensorMapKey.MAG);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.ECG).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.GSR,
+				Configuration.Shimmer2.SensorMapKey.EMG,
+				Configuration.Shimmer2.SensorMapKey.BRIDGE_AMP,
+				Configuration.Shimmer2.SensorMapKey.GYRO,
+				Configuration.Shimmer2.SensorMapKey.MAG);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.GSR).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.ECG,
+				Configuration.Shimmer2.SensorMapKey.EMG,
+				Configuration.Shimmer2.SensorMapKey.BRIDGE_AMP,
+				Configuration.Shimmer2.SensorMapKey.GYRO,
+				Configuration.Shimmer2.SensorMapKey.MAG);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.EXP_BOARD_A7).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.HEART,
+				Configuration.Shimmer2.SensorMapKey.BATT);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.EXP_BOARD_A0).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.HEART,
+				Configuration.Shimmer2.SensorMapKey.BATT);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.BRIDGE_AMP).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.ECG,
+				Configuration.Shimmer2.SensorMapKey.EMG,
+				Configuration.Shimmer2.SensorMapKey.GSR,
+				Configuration.Shimmer2.SensorMapKey.GYRO,
+				Configuration.Shimmer2.SensorMapKey.MAG);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.HEART).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.EXP_BOARD_A0,
+				Configuration.Shimmer2.SensorMapKey.EXP_BOARD_A7);
+			aMap.get(Configuration.Shimmer2.SensorMapKey.BATT).mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer2.SensorMapKey.EXP_BOARD_A0,
+				Configuration.Shimmer2.SensorMapKey.EXP_BOARD_A7);
+			mSensorMapRef = Collections.unmodifiableMap(aMap);
+	    }
+				
+		
+
 	}
 
 	

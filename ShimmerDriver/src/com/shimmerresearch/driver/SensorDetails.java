@@ -19,10 +19,10 @@ public class SensorDetails implements Serializable {
 	 */
 	private static final long serialVersionUID = 4567211941610864326L;
 	
-	/**
-	 * Indicates if sensors channel is enabled.
-	 */
-	public boolean mIsEnabled = false;
+//	/**
+//	 * Indicates if sensors channel is enabled.
+//	 */
+//	public boolean mIsEnabled = false;
 	/**
 	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
 	 */
@@ -32,14 +32,14 @@ public class SensorDetails implements Serializable {
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	
-	public long mDerivedSensorBitmapID = 0;
+//	public long mDerivedSensorBitmapID = 0;
 	
 	public String mLabel = "";
-	public List<Integer> mListOfSensorMapKeysRequired = null;
-	public List<Integer> mListOfSensorMapKeysConflicting = null;
+	public List<Integer> mListOfSensorMapKeysRequired = new ArrayList<Integer>();
+	public List<Integer> mListOfSensorMapKeysConflicting = new ArrayList<Integer>();
 	public boolean mIntExpBoardPowerRequired = false;
-	public List<String> mListOfConfigOptionKeysAssociated = null;
-	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null;  
+	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
 	
 	//Testing for GQ
 	public String mHeaderFileLabel = "";
@@ -47,6 +47,8 @@ public class SensorDetails implements Serializable {
 	public int mNumChannels = 0;
 	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
 	public List<ChannelDetails> mListOfChannels = new ArrayList<ChannelDetails>();
+
+	public LinkedHashMap<String,SensorDetails> mMapOfChildSensorDetails = new LinkedHashMap<String,SensorDetails>();
 
 	/**
 	 * Holds all information related individual sensor channels for dynamic GUI
@@ -60,8 +62,9 @@ public class SensorDetails implements Serializable {
 	 * @param sensorBitmapIDSDLogHeader
 	 * @param label
 	 */
-	public SensorDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
-		mIsEnabled = isChannelEnabled;
+	public SensorDetails(long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
+//	public SensorDetails(boolean isChannelEnabled, long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
+//		mIsEnabled = isChannelEnabled;
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mLabel = label;
@@ -78,28 +81,29 @@ public class SensorDetails implements Serializable {
 	 * @param isChannelEnabled
 	 * @param label
 	 */
-	public SensorDetails(boolean isChannelEnabled, String label) {
-		mIsEnabled = isChannelEnabled;
+	public SensorDetails(String label) {
+//	public SensorDetails(boolean isChannelEnabled, String label) {
+//		mIsEnabled = isChannelEnabled;
 		mLabel = label;
 		mIntExpBoardPowerRequired = false;
 		mListOfCompatibleVersionInfo = null;
 	}
 
-	public void setEnabledState(boolean state) {
-		mIsEnabled = state;
-	}
+//	public void setEnabledState(boolean state) {
+//		mIsEnabled = state;
+//	}
 	
-	public boolean isDerivedChannel() {
-		if(mDerivedSensorBitmapID>0) {
-			return true;
-		}
-		return false;
-	}
-
-	public void resetMapKeyLists() {
-		mListOfSensorMapKeysRequired = null;
-		mListOfSensorMapKeysConflicting = null;
-		mListOfConfigOptionKeysAssociated = null;
-	}
+//	public boolean isDerivedChannel() {
+//		if(mDerivedSensorBitmapID>0) {
+//			return true;
+//		}
+//		return false;
+//	}
+//
+//	public void resetMapKeyLists() {
+//		mListOfSensorMapKeysRequired = null;
+//		mListOfSensorMapKeysConflicting = null;
+//		mListOfConfigOptionKeysAssociated = null;
+//	}
 
 }

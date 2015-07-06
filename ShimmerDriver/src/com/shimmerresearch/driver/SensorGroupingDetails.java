@@ -12,7 +12,7 @@ import java.util.List;
  * @author Mark Nolan
  *
  */
-public class SensorTileDetails implements Serializable {
+public class SensorGroupingDetails implements Serializable {
 
 	/**
 	 * 
@@ -23,7 +23,7 @@ public class SensorTileDetails implements Serializable {
 	 */
 	public boolean mIsEnabled = false;
 	
-	public List<Integer> mListOfSensorMapKeysAssociated = null;
+	public List<Integer> mListOfSensorMapKeysAssociated = new ArrayList<Integer>();
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 	
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null;  
@@ -32,10 +32,10 @@ public class SensorTileDetails implements Serializable {
 	 * Holds all information related the sensor 'tiles' used in Consensys for
 	 * dynamic GUI and configuration purposes.
 	 * 
-	 * @param listOfChannelMapKeysAssociated
+	 * @param listOfSensorMapKeysAssociated
 	 */
-	public SensorTileDetails(List<Integer> listOfChannelMapKeysAssociated) {
-		mListOfSensorMapKeysAssociated = listOfChannelMapKeysAssociated;
+	public SensorGroupingDetails(List<Integer> listOfSensorMapKeysAssociated) {
+		mListOfSensorMapKeysAssociated = listOfSensorMapKeysAssociated;
 		mListOfCompatibleVersionInfo = null;
 	}
 
@@ -46,9 +46,9 @@ public class SensorTileDetails implements Serializable {
 	 * @param listOfChannelMapKeysAssociated
 	 * @param listOfCompatibleVersionInfo
 	 */
-	public SensorTileDetails(List<Integer> listOfChannelMapKeysAssociated, List<ShimmerVerObject> listOfCompatibleVersionInfo) {
+	public SensorGroupingDetails(List<Integer> listOfChannelMapKeysAssociated, List<ShimmerVerObject> listOfCompatibleVersionInfo) {
 		mListOfSensorMapKeysAssociated = listOfChannelMapKeysAssociated;
 		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}
-
+	
 }

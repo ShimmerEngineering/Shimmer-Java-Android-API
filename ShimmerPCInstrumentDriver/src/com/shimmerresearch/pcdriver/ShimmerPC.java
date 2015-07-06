@@ -89,10 +89,14 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 	public final static int MSG_IDENTIFIER_DATA_PACKET = 2;
 	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
 	public final static int MSG_IDENTIFIER_PROGRESS_REPORT = 4;
+	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 5;
 	
 	public final static int NOTIFICATION_STOP_STREAMING =0;
 	public final static int NOTIFICATION_START_STREAMING =1;
 	public final static int NOTIFICATION_FULLY_INITIALIZED =2;
+	
+	double mLastSavedCalibratedTimeStamp = 0.0;
+	
 	
 	/**
 	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors.
@@ -322,10 +326,33 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
 
+
+	public void calculatePacketReceptionRateCurrent(int intervalMs) {
+		
+		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * mShimmerSamplingRate;
+		
+		if (mLastReceivedCalibratedTimeStamp!=-1){
+			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
+			double numPacketsReceived= ((timeDifference/1000) * mShimmerSamplingRate);
+			mPacketReceptionRateCurrent = (numPacketsReceived/numPacketsShouldHaveReceived)*100.0;
+		}	
+
+		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent>100.0? 100.0:mPacketReceptionRateCurrent);
+		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent<0? 0.0:mPacketReceptionRateCurrent);
+
+		mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
+
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getBluetoothAddress(), mPacketReceptionRateCurrent);
+		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+	}
+	
 	@Override
 	protected void dataHandler(ObjectCluster ojc) {
-		// TODO Auto-generated method stub
-		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getPacketReceptionRate());
+		
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress(), getPacketReceptionRate());
+		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, callBackObject);
+		
+//		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress());
 		sendCallBackMsg(MSG_IDENTIFIER_DATA_PACKET, ojc);
 	}
 
