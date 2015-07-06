@@ -147,6 +147,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected int numBytesToReadFromExpBoard=0;
 	ArrayBlockingQueue<byte[]> mABQ = new ArrayBlockingQueue<byte[]>(10000);
 	protected boolean mIamAlive = false;
+	public String mUniqueID = "";
 	protected abstract void connect(String address,String bluetoothLibrary);
 	protected abstract void dataHandler(ObjectCluster ojc);
 	protected abstract boolean bytesToBeRead();
@@ -3496,6 +3497,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				e.printStackTrace();
 			}
             connect(mMyBluetoothAddress,"default");
+            mUniqueID = this.mMacIdFromUart; 
         }
     }
 

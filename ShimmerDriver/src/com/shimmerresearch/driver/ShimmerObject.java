@@ -5601,7 +5601,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * 
 	 * @param rate
 	 */
-	protected void setShimmerSamplingRate(double rate){
+	public void setShimmerSamplingRate(double rate){
 		
 		double maxGUISamplingRate = 2048.0;
 		double maxShimmerSamplingRate = 32768.0;
@@ -9374,7 +9374,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param mConfigTime the mConfigTime to set
 	 */
-	protected void setConfigTime(long mConfigTime) {
+	public void setConfigTime(long mConfigTime) {
 		this.mConfigTime = mConfigTime;
 	}
 
@@ -9442,7 +9442,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param mExperimentName the mExperimentName to set
 	 */
-	protected void setExperimentName(String mExperimentName) {
+	public void setExperimentName(String mExperimentName) {
 		if(mExperimentName.length()>12)
 			this.mExperimentName = mExperimentName.substring(0, 11);
 		else
@@ -9452,7 +9452,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param mExperimentNumberOfShimmers the mExperimentNumberOfShimmers to set
 	 */
-	protected void setExperimentNumberOfShimmers(int mExperimentNumberOfShimmers) {
+	public void setExperimentNumberOfShimmers(int mExperimentNumberOfShimmers) {
     	int maxValue = (int) ((Math.pow(2, 8))-1); 
     	if(mExperimentNumberOfShimmers>maxValue) {
     		mExperimentNumberOfShimmers = maxValue;
@@ -9466,7 +9466,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param mExperimentDurationEstimated the mExperimentDurationEstimated to set.  Min value is 1.
 	 */
-	protected void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
+	public void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
     	int maxValue = (int) ((Math.pow(2, 16))-1); 
     	if(mExperimentDurationEstimated>maxValue) {
     		mExperimentDurationEstimated = maxValue;
@@ -9480,7 +9480,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param mExperimentDurationMaximum the mExperimentDurationMaximum to set. Min value is 0.
 	 */
-	protected void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
+	public void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
     	int maxValue = (int) ((Math.pow(2, 16))-1); 
     	if(mExperimentDurationMaximum>maxValue) {
     		mExperimentDurationMaximum = maxValue;
@@ -9524,7 +9524,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
 	 */
-	protected void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
+	public void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
 		if(mShimmerUserAssignedName.length()>12) {
 			this.mShimmerUserAssignedName = mShimmerUserAssignedName.substring(0, 12);
 		}
@@ -9560,7 +9560,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param state the mMasterShimmer state to set
 	 */
-	protected void setMasterShimmer(boolean state) {
+	public void setMasterShimmer(boolean state) {
 		if(state) 
 			this.mMasterShimmer = 0x01;
 		else 
@@ -9580,7 +9580,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param state the mSingleTouch state to set
 	 */
-	protected void setSingleTouch(boolean state) {
+	public void setSingleTouch(boolean state) {
 		if(state) 
 			this.mSingleTouch = 0x01;
 		else 
@@ -9630,7 +9630,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param state the mSyncWhenLogging state to set
 	 */
-	protected void setSyncWhenLogging(boolean state) {
+	public void setSyncWhenLogging(boolean state) {
 		if(state) 
 			this.mSyncWhenLogging = 0x01;
 		else 
@@ -9652,7 +9652,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param state the mButtonStart state to set
 	 */
-	protected void setButtonStart(boolean state) {
+	public void setButtonStart(boolean state) {
 		if(state) 
 			this.mButtonStart = 0x01;
 		else 
@@ -9838,7 +9838,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param mExperimentId the mExperimentId to set
 	 */
-	protected void setExperimentId(int mExperimentId) {
+	public void setExperimentId(int mExperimentId) {
     	int maxValue = (int) ((Math.pow(2, 8))-1); 
     	if(mExperimentId>maxValue) {
     		mExperimentId = maxValue;
@@ -9853,7 +9853,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @param syncNodesList the syncNodesList to set
 	 */
-	protected void setSyncNodesList(List<String> syncNodesList) {
+	public void setSyncNodesList(List<String> syncNodesList) {
 		this.syncNodesList = syncNodesList;
 	}
 
