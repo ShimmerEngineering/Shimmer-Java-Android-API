@@ -40,10 +40,10 @@ public class FwImageVersionDetails {
 	
 	public final static int FW_ID_UNKNOWN = -1;
 	
-	private final static class FW_STRING {
-		private final static String SHIMMER3_BTSTREAM = "BtStream_Shimmer3";
-		private final static String SHIMMER3_SDLOG = "SDLog_Shimmer3";
-		private final static String SHIMMER3_LOGANDSTREAM = "LogAndStream_Shimmer3";
+	public final static class FW_STRING {
+		public final static String SHIMMER3_BTSTREAM = "BtStream_Shimmer3";
+		public final static String SHIMMER3_SDLOG = "SDLog_Shimmer3";
+		public final static String SHIMMER3_LOGANDSTREAM = "LogAndStream_Shimmer3";
 		private final static String SHIMMER3_GQ_GSR = "GQ_GSR";
 		private final static String SMARTDOCK15U_REV2 = "CBase15_SR41-2";
 		private final static String SMARTDOCK15U_REV4 = "Consensys_Base15";
