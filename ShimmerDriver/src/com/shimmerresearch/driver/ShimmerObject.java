@@ -10003,12 +10003,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @param mEXGReferenceElectrode the mEXGReferenceElectrode to set
 	 */
 	protected void setEXGReferenceElectrode(int valueToSet) {
-		System.out.println(Util.bytesToHexStringWithSpaces(mEXG1RegisterArray) + " " + valueToSet);
+//		System.out.println(Util.bytesToHexStringWithSpaces(mEXG1RegisterArray) + " " + valueToSet);
 		setExgPropertyValue(CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS,((valueToSet&0x08) == 0x08)? 1:0);
 		setExgPropertyValue(CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS,((valueToSet&0x04) == 0x04)? 1:0);
 		setExgPropertyValue(CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS,((valueToSet&0x02) == 0x02)? 1:0);
 		setExgPropertyValue(CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS,((valueToSet&0x01) == 0x01)? 1:0);
-		System.out.println(Util.bytesToHexStringWithSpaces(mEXG1RegisterArray) + " " + valueToSet);
+//		System.out.println(Util.bytesToHexStringWithSpaces(mEXG1RegisterArray) + " " + valueToSet);
 		
 //		this.mEXGReferenceElectrode = valueToSet;
 //		exgBytesGetFromConfig();
