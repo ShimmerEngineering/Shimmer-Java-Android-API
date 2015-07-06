@@ -305,24 +305,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected Map<String,SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 
-	public class SensorEnabledDetails implements Serializable{
-		public boolean mIsEnabled = false;
-		public long mDerivedSensorBitmapID = 0;
-		public SensorDetails mSensorDetails;
-		
-		public SensorEnabledDetails(boolean isEnabled, long derivedSensorBitmapID, SensorDetails sensorDetails){
-			mIsEnabled = isEnabled;
-			mDerivedSensorBitmapID = derivedSensorBitmapID;
-			mSensorDetails = sensorDetails;
-		}
-
-		public boolean isDerivedChannel() {
-			if(mDerivedSensorBitmapID>0) {
-				return true;
-			}
-			return false;
-		}
-	}
 	
 	//Constants describing the packet type
 	public static final byte DATA_PACKET                      		= (byte) 0x00;
@@ -7701,54 +7683,54 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				// single PPG channel with a selectable ADC based on different
 				// hardware versions.
 				
-//				//Used for Shimmer GSR hardware
-//				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIsEnabled)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mIsEnabled = true;
-//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled) {
+				//Used for Shimmer GSR hardware
+				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIsEnabled)) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mIsEnabled = true;
+					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mIsEnabled) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG_A12, Configuration.Shimmer3.SensorMapKey.PPG_DUMMY);
-//						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
-//					}
-//					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIsEnabled) {
+						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
+					}
+					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mIsEnabled) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG_A13, Configuration.Shimmer3.SensorMapKey.PPG_DUMMY);
-//						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
-//					}
-//				}
-//				else {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mIsEnabled = false;
+						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
+					}
+				}
+				else {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mIsEnabled = false;
 //					mSensorMapRef.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).resetMapKeyLists();
-//				}
-//				//Used for Shimmer Proto3 Deluxe hardware
-//				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mIsEnabled)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mIsEnabled = true;
-//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mIsEnabled) {
+				}
+				//Used for Shimmer Proto3 Deluxe hardware
+				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mIsEnabled)) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mIsEnabled = true;
+					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mIsEnabled) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG1_A12, Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY);
-//						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
-//					}
-//					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mIsEnabled) {
+						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
+					}
+					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mIsEnabled) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG1_A13, Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY);
-//						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
-//					}
-//				}
-//				else {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mIsEnabled = false;
+						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
+					}
+				}
+				else {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mIsEnabled = false;
 //					mSensorMapRef.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).resetMapKeyLists();
-//				}
-//				//Used for Shimmer Proto3 Deluxe hardware
-//				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mIsEnabled)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mIsEnabled = true;
-//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mIsEnabled) {
+				}
+				//Used for Shimmer Proto3 Deluxe hardware
+				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mIsEnabled)||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mIsEnabled)) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mIsEnabled = true;
+					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mIsEnabled) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG2_A1, Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY);
-//						mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
-//					}
-//					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mIsEnabled) {
+						mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
+					}
+					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mIsEnabled) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG2_A14, Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY);
-//						mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
-//					}
-//				}
-//				else {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mIsEnabled = false;
+						mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
+					}
+				}
+				else {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mIsEnabled = false;
 //					mSensorMapRef.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).resetMapKeyLists();
-//				}
+				}
 			}
 			else if (mHardwareVersion == HW_ID.SHIMMER_GQ) {
 				
@@ -7817,7 +7799,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				// Special case for Dummy entries in the Sensor Map
 				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.PPG_DUMMY) {
-//					mSensorMap.get(sensorMapKey).mIsEnabled = state;
+					mSensorMap.get(sensorMapKey).mIsEnabled = state;
 					if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG_A12, sensorMapKey);
 						sensorMapKey = Configuration.Shimmer3.SensorMapKey.PPG_A12;
@@ -7828,7 +7810,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}		
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY) {
-//					mSensorMap.get(sensorMapKey).mIsEnabled = state;
+					mSensorMap.get(sensorMapKey).mIsEnabled = state;
 					if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG1_A12, sensorMapKey);
 						sensorMapKey = Configuration.Shimmer3.SensorMapKey.PPG1_A12;
@@ -7839,7 +7821,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}		
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY) {
-//					mSensorMap.get(sensorMapKey).mIsEnabled = state;
+					mSensorMap.get(sensorMapKey).mIsEnabled = state;
 					if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
 //						copySensorMapSensorDetails(Configuration.Shimmer3.SensorMapKey.PPG2_A14, sensorMapKey);
 						sensorMapKey = Configuration.Shimmer3.SensorMapKey.PPG2_A14;
