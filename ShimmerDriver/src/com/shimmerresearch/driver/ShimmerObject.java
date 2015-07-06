@@ -520,10 +520,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mExperimentDurationEstimated = 0;
 	protected int mExperimentDurationMaximum = 0;
 	
-	protected String mMyBluetoothAddress=""; //TODO: duplicate of mMacIdFromUart and doesn't needs to generate mMacIdFromUartParsed
-//	protected String mMacIdFromBtParsed = "";
+	protected String mMyBluetoothAddress="";
 	protected String mMacIdFromUart = "";
-//	protected String mMacIdFromUartParsed = "";
 	protected String mMacIdFromInfoMem = "";
 	
 	protected String mShimmerUserAssignedName = "";  // This stores the user assigned name //TODO: duplicate of mMyName
