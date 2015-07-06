@@ -471,8 +471,8 @@ public class Configuration {
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 			
 			public static final String PPG_ADC_SELECTION = "PPG Channel";
-			public static final String PPG1_ADC_SELECTION = "PPG1 Channel";
-			public static final String PPG2_ADC_SELECTION = "PPG2 Channel";
+			public static final String PPG1_ADC_SELECTION = "Channel1";
+			public static final String PPG2_ADC_SELECTION = "Channel2";
 			
 			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = "Wide Range Accel Default Calibration";
 			public static final String MPU9150_GYRO_DEFAULT_CALIB = "Gyro Default Calibration";
