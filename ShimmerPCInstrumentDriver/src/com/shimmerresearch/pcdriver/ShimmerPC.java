@@ -95,7 +95,6 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 	public final static int NOTIFICATION_STOP_STREAMING =0;
 	public final static int NOTIFICATION_START_STREAMING =1;
 	public final static int NOTIFICATION_FULLY_INITIALIZED =2;
-	public static boolean mConnectionFailed = false;
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	
