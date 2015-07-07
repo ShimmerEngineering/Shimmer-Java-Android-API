@@ -212,7 +212,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		mUniqueID = address;
 //		mMyBluetoothAddress = address;
 		mSerialPort = new SerialPort(address);
-		mListofInstructions.clear();
+		getmListofInstructions().clear();
 		mFirstTime=true;
 		try {
 			setState(STATE_CONNECTING);
@@ -316,7 +316,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 		// Do something here
 		
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_START_STREAMING, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_START_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
 
@@ -329,7 +329,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 	@Override
 	protected void inquiryDone() {
 		// TODO Auto-generated method stub
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 		isReadyForStreaming();
 	}
@@ -342,7 +342,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
         mInitialized = true;
         sensorAndConfigMapsCreate();
         sensorMapUpdateWithEnabledSensors();
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
 
@@ -362,14 +362,14 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 
 		mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
 
-		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getBluetoothAddress(), mPacketReceptionRateCurrent);
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getBluetoothAddress(), mUniqueID, mPacketReceptionRateCurrent);
 		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
 	}
 	
 	@Override
 	protected void dataHandler(ObjectCluster ojc) {
 		
-		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress(), getPacketReceptionRate());
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress(), mUniqueID, getPacketReceptionRate());
 		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, callBackObject);
 		
 //		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress());
@@ -425,7 +425,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 			setState(STATE_NONE);
 			e.printStackTrace();
 		}
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 
@@ -486,7 +486,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		}
 		mState = state;
 		
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	
@@ -500,7 +500,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		// TODO Auto-generated method stub
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 				// Do something here
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 
 	}

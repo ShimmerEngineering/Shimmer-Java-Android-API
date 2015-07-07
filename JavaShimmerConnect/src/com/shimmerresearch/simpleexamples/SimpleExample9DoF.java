@@ -324,7 +324,7 @@ public class SimpleExample9DoF extends BasicProcessWithCallBack {
 		if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
 			int state = callbackObject.mIndicator;
-			String bAdd = callbackObject.bluetoothAddress;
+			String bAdd = callbackObject.mBluetoothAddress;
 			if (state == ShimmerBluetooth.STATE_CONNECTING) {
 
 			} else if (state == ShimmerBluetooth.STATE_CONNECTED) {

@@ -755,6 +755,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSamplingDividerLsm303dlhcAccel = 0;
 	protected int mSamplingDividerBeacon = 0;
 
+	public String mUniqueID = ""; // Holds unique location information on a dock or COM port number for bluetooth connection  
+
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
 		
@@ -10375,11 +10377,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mExpansionBoardId;
 	}
 	
-	@Deprecated
-	public String getExpBoardID(){
+	public String getExpansionBoardIdParsed(){
 		return mExpansionBoardParsed;
 	}
-	
 
 	protected void setExpansionBoardId(int expansionBoardId){
 		mExpansionBoardId = expansionBoardId;

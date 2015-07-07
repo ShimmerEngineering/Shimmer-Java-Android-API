@@ -41,17 +41,32 @@ package com.shimmerresearch.pcdriver;
 
 public class CallbackObject {
 	public int mIndicator;
-	public String bluetoothAddress;
-	public double packetReceptionRate;
+	public String mBluetoothAddress;
+	public String mComPort;
+	public double mPacketReceptionRate;
 	
-	public CallbackObject(int ind, String myBlueAdd){
+//	public CallbackObject(int ind, String myBlueAdd){
+//		mIndicator = ind;
+//		mBluetoothAddress = myBlueAdd;
+//	}
+//	
+//	public CallbackObject(int ind, String myBlueAdd, double packetReceptionRate){
+//		mIndicator = ind;
+//		mBluetoothAddress = myBlueAdd;
+//		this.mPacketReceptionRate = packetReceptionRate;
+//	}
+	
+	public CallbackObject(int ind, String myBlueAdd, String comPort){
 		mIndicator = ind;
-		bluetoothAddress = myBlueAdd;
+		mBluetoothAddress = myBlueAdd;
+		mComPort = comPort;
 	}
 	
-	public CallbackObject(int ind, String myBlueAdd, double packetReceptionRate){
+	public CallbackObject(int ind, String myBlueAdd, String comPort, double packetReceptionRate){
 		mIndicator = ind;
-		bluetoothAddress = myBlueAdd;
-		this.packetReceptionRate = packetReceptionRate;
+		mBluetoothAddress = myBlueAdd;
+		mComPort = comPort;
+		this.mPacketReceptionRate = packetReceptionRate;
 	}
+
 }

@@ -57,8 +57,8 @@ public class ProgressReportAll implements Serializable {
 		
 		mMapOfOperationProgressInfo.clear();
 		for(ShimmerObject shimmer:lso){
-			mMapOfOperationProgressInfo.put(shimmer.getBluetoothAddress(), new ProgressReportPerDevice(shimmer));
-			mMapOfOperationProgressInfo.get(shimmer.getBluetoothAddress()).mProgressEndValue = total;
+			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer));
+			mMapOfOperationProgressInfo.get(shimmer.mUniqueID).mProgressEndValue = total;
 		}
 		updateProgressTotal();
 	}

@@ -2522,7 +2522,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
 			CallbackObject callbackObject = (CallbackObject)object;
-			double packetReceptionRate = callbackObject.packetReceptionRate;
+			double packetReceptionRate = callbackObject.mPacketReceptionRate;
 
 //			double packetReceptionRate = (Double) object;
 			if(downSample%50==0){

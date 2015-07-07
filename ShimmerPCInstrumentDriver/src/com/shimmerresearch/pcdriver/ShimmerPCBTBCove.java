@@ -179,7 +179,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		mIamAlive = false;
 		if (conn==null){
 		mMyBluetoothAddress = address;
-		mListofInstructions.clear();
+		getmListofInstructions().clear();
 		mFirstTime=true;
 		try {
 			setState(STATE_CONNECTING);
@@ -279,7 +279,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 		// Do something here
 
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_START_STREAMING, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_START_STREAMING, getBluetoothAddress(), mUniqueID);
 		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
 
@@ -292,7 +292,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	@Override
 	protected void inquiryDone() {
 		// TODO Auto-generated method stub
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
 		myUIThread.callBackMethod(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 		isReadyForStreaming();
 	}
@@ -303,7 +303,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		// Send msg fully initialized, send notification message,  
 		// DO Something here
         mInitialized = true;
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
 
@@ -356,7 +356,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
 		myUIThread.callBackMethod(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 
@@ -417,7 +417,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		// TODO Auto-generated method stub
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 				// Do something here
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress());
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
 		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 
 	}
