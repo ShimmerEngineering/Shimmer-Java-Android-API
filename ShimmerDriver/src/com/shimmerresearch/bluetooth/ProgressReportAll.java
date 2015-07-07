@@ -11,13 +11,15 @@ import java.util.List;
 
 import com.shimmerresearch.driver.ShimmerObject;
 
+/** Hold all progress details for Bluetooth activity.
+ * @author mnolan
+ *
+ */
+//TODO add proper comments
+//TODO remove unnecessary code carried over from dock progress details
 public class ProgressReportAll implements Serializable {
 
-	public int mCommandCompleted;
-	public int mNumberofRemainingCMDsInBuffer;
-	public String mBluetoothAddress;
-	
-//	public List<ShimmerObject> mListOfShimmers;
+	public List<ShimmerObject> mListOfShimmers;
 	public LinkedHashMap<String, ProgressReportPerDevice> mMapOfOperationProgressInfo = new LinkedHashMap<String, ProgressReportPerDevice>();
 	
 	public enum BLUETOOTH_JOB{
@@ -49,14 +51,9 @@ public class ProgressReportAll implements Serializable {
 //	public List<Integer> mListOfFailedCmds = new ArrayList<Integer>();
 	public int mProgressPercentageComplete = 0;
 
-	
-	public ProgressReportAll() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public ProgressReportAll(BLUETOOTH_JOB currentJob, List<ShimmerObject> lso, int total) {
 		this.currentJob = currentJob;
-//		mListOfShimmers = lso;
+		mListOfShimmers = lso;
 		
 		mMapOfOperationProgressInfo.clear();
 		for(ShimmerObject shimmer:lso){

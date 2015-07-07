@@ -7,18 +7,24 @@ import java.util.Map;
 
 import com.shimmerresearch.driver.ShimmerObject;
 
+/** Hold progress details per device for Bluetooth activity.
+ * @author mnolan
+ *
+ */
+//TODO add proper comments
+//TODO remove unnecessary code carried over from dock progress details
 public class ProgressReportPerDevice implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7997745169511235203L;
+	
 	
 	public int mCommandCompleted;
 	public int mNumberofRemainingCMDsInBuffer;
 	public String mBluetoothAddress;
 	
-//	public ProgressReportPerDevice(int command, int numberofcmdsleft, String address){
-//		mCommandCompleted = command;
-//		mNumberofRemainingCMDsInBuffer = numberofcmdsleft;
-//		mBluetoothAddress = address;
-//	}
-
 	public ProgressReportPerDevice(ShimmerObject shimmerObject) {
 		if(shimmerObject instanceof ShimmerBluetooth){
 			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerObject;
@@ -55,34 +61,21 @@ public class ProgressReportPerDevice implements Serializable {
 	public int mProgressPercentageComplete = 0;
 	public int mProgressEndValue = 0;
 	public float mProgressSpeed = 0;
-//	public String mOperationTimeRemaining = 0;
 
-	
-//	public DockProgressDetailsPerDevice(ShimmerDocked shimmerBluetooth) {
-//		setshimmerBluetooth(shimmerBluetooth);
-//	}
-//	
-//	public DockProgressDetailsPerDevice(String dockID) {
-//		// TODO Auto-generated constructor stub
-//		
-//		mSmartDockMini.mDockID = dockID;
-////		mSmartDockMini.mDrivePath = drivePath;
-////		mSmartDockMini.mListOfFailMsg = smartDock.mListOfFailMsg;
-//		
-//	}
-
-//	/** Used to calculated the percentage progress based on the pre-set mOperationEndValue and the passed in operationProgress. 
-//	 * @param operationProgress
-//	 */
-//	public void updateProgress(int operationProgress) {
-//		if(mProgressEndValue!=0) {
-//			mProgressPercentageComplete = (int)(((double)operationProgress / (double)mProgressEndValue) * 100);
-//		}
-//	}
-	
+	/**
+	 * Used to calculated the percentage progress based on the pre-set
+	 * mOperationEndValue and the passed in ProgressReportPerCmd.
+	 * 
+	 * @param pRPC the ProgressReportPerCmd
+	 */
 	public void updateProgress(ProgressReportPerCmd pRPC) {
-		mProgressCounter = mProgressEndValue - pRPC.mNumberofRemainingCMDsInBuffer;
+		mProgressCounter = mProgressEndValue - pRPC.mNumberofRemainingCMDsInBuffer + 1;
+		
+		mCommandCompleted = pRPC.mCommandCompleted;
 
+		if(mProgressCounter<0) mProgressCounter=0;
+		if(mProgressCounter>mProgressEndValue) mProgressCounter=mProgressEndValue;
+		
 		if(mProgressEndValue!=0) {
 			mProgressPercentageComplete = (int)(((double)mProgressCounter / (double)mProgressEndValue) * 100);
 		}

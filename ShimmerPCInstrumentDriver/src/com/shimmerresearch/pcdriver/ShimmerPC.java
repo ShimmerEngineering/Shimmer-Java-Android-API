@@ -481,11 +481,10 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		if (state==STATE_NONE && mStreaming==true){
 			disconnect();
 		}
-		// TODO Auto-generated method stub
 		mState = state;
-		// Give the new state to the UI through a callback (use a msg identifier state change)
-		// Do something here
 		
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress());
+		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	
 	@Override
@@ -509,6 +508,13 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	protected void sendProgressReport(ProgressReportPerCmd pr) {
+		// TODO Auto-generated method stub
+		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT, pr);
+	}
+
 
 
 	/**Performs a deep copy of SlotDetails by Serializing
@@ -534,11 +540,6 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		}
 	}
 
-	@Override
-	protected void sendProgressReport(ProgressReportPerCmd pr) {
-		// TODO Auto-generated method stub
-		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT, pr);
-	}
 
 	
 }
