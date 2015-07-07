@@ -125,6 +125,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int STATE_CONNECTING = 1; // The class is now initiating an outgoing connection
 	public static final int STATE_CONNECTED = 2;  // The class is now connected to a remote device
 	public static final int STATE_STREAMING = 3;  // The class is now connected to a remote device
+	public static final int STATE_FAILED = 4;  // The class is now connected to a remote device
 	
 //	public enum CONNECTION_STATE{
 //		NONE,       // The class is doing nothing
@@ -1571,7 +1572,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				
 				if (mWaitForAck==false && mWaitForResponse == false && mStreaming ==false && availableBytes()!=0 && mFirmwareIdentifier==3) {
 					tb=readBytes(1);
-					if(tb[0]==ACK_COMMAND_PROCESSED){
+					if(tb[0]==ACK_COMMAND_PROCESSED) {
 						System.out.println("ACK RECEIVED , Connected State!!");
 						tb = readBytes(1);
 						if (tb[0]==ACK_COMMAND_PROCESSED){

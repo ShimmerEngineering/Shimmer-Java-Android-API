@@ -94,6 +94,7 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 	public final static int NOTIFICATION_STOP_STREAMING =0;
 	public final static int NOTIFICATION_START_STREAMING =1;
 	public final static int NOTIFICATION_FULLY_INITIALIZED =2;
+	public static boolean mConnectionFailed = false;
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	
@@ -231,8 +232,10 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 			}
 		}
 		catch (SerialPortException ex){
-			setState(STATE_NONE);
+			
+			
 			connectionLost();
+			mState = STATE_FAILED;
 			System.out.println(ex);
 		}
 		}
@@ -485,6 +488,11 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 		// Give the new state to the UI through a callback (use a msg identifier state change)
 		// Do something here
 		
+	}
+	
+	@Override
+	public int getState() {
+		return mState;
 	}
 	
 	@Override
