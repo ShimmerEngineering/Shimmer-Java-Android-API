@@ -69,7 +69,7 @@ import java.util.TimerTask;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
-import com.shimmerresearch.bluetooth.ProgressReport;
+import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Callable;
@@ -435,7 +435,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void sendProgressReport(ProgressReport pr) {
+	protected void sendProgressReport(ProgressReportPerCmd pr) {
 		// TODO Auto-generated method stub
 		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT, pr);
 	}

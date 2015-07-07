@@ -165,7 +165,7 @@ import java.util.UUID;
 
 
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
-import com.shimmerresearch.bluetooth.ProgressReport;
+import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -1087,7 +1087,7 @@ public class Shimmer extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void sendProgressReport(ProgressReport pr) {
+	protected void sendProgressReport(ProgressReportPerCmd pr) {
 		// TODO Auto-generated method stub
 		mHandler.obtainMessage(MESSAGE_PROGRESS_REPORT, pr).sendToTarget();
 	}
