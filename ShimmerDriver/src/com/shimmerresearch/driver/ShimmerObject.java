@@ -403,13 +403,40 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte SET_BAUD_RATE_COMMAND 					= (byte) 0x6A;
 	public static final byte BAUD_RATE_RESPONSE 					= (byte) 0x6B;
 	public static final byte GET_BAUD_RATE_COMMAND 					= (byte) 0x6C;
+//	#define SET_DERIVED_CHANNEL_BYTES                     0x6D
+//	#define DERIVED_CHANNEL_BYTES_RESPONSE                0x6E
+//	#define GET_DERIVED_CHANNEL_BYTES                     0x6F
 	public static final byte START_SDBT_COMMAND 					= (byte) 0x70;
 	public static final byte STATUS_RESPONSE	 					= (byte) 0x71;
 	public static final byte GET_STATUS_COMMAND 					= (byte) 0x72;
+//	#define SET_TRIAL_CONFIG_COMMAND                      0x73
+//	#define TRIAL_CONFIG_RESPONSE                         0x74
+//	#define GET_TRIAL_CONFIG_COMMAND                      0x75
+//	#define SET_CENTER_COMMAND                            0x76
+//	#define CENTER_RESPONSE                               0x77
+//	#define GET_CENTER_COMMAND                            0x78
+//	#define SET_SHIMMERNAME_COMMAND                       0x79
+//	#define SHIMMERNAME_RESPONSE                          0x7a
+//	#define GET_SHIMMERNAME_COMMAND                       0x7b
+//	#define SET_EXPID_COMMAND                             0x7c
+//	#define EXPID_RESPONSE                                0x7d
+//	#define GET_EXPID_COMMAND                             0x7e
+//	#define SET_MYID_COMMAND                              0x7F
+//	#define MYID_RESPONSE                                 0x80
+//	#define GET_MYID_COMMAND                              0x81
+//	#define SET_NSHIMMER_COMMAND                          0x82
+//	#define NSHIMMER_RESPONSE                             0x83
+//	#define GET_NSHIMMER_COMMAND                          0x84
+//	#define SET_CONFIGTIME_COMMAND                        0x85
+//	#define CONFIGTIME_RESPONSE                           0x86
+//	#define GET_CONFIGTIME_COMMAND                        0x87
 	public static final byte DIR_RESPONSE		 					= (byte) 0x88;
 	public static final byte GET_DIR_COMMAND 						= (byte) 0x89;
 	public static final byte INSTREAM_CMD_RESPONSE 					= (byte) 0x8A;
+//	#define SET_CRC_COMMAND                               0x8B
+//	#define ROUTINE_COMMUNICATION                         0xE0
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
+	
 	
 	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
