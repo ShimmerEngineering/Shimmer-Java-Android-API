@@ -881,12 +881,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(mCurrentCommand==GET_TRIAL_CONFIG_COMMAND){
 								
 							}
-							else if(mCurrentCommand==SET_CENTER_COMMAND){
-								
-							}
-							else if(mCurrentCommand==GET_CENTER_COMMAND){
-								
-							}
+//							else if(mCurrentCommand==SET_CENTER_COMMAND){
+//								
+//							}
+//							else if(mCurrentCommand==GET_CENTER_COMMAND){
+//								
+//							}
 							else if(mCurrentCommand==SET_SHIMMERNAME_COMMAND){
 								
 							}
@@ -899,18 +899,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(mCurrentCommand==GET_EXPID_COMMAND){
 								
 							}
-							else if(mCurrentCommand==SET_MYID_COMMAND){
-								
-							}
-							else if(mCurrentCommand==GET_MYID_COMMAND){
-								
-							}
-							else if(mCurrentCommand==SET_NSHIMMER_COMMAND){
-								
-							}
-							else if(mCurrentCommand==GET_NSHIMMER_COMMAND){
-								
-							}
+//							else if(mCurrentCommand==SET_MYID_COMMAND){
+//								
+//							}
+//							else if(mCurrentCommand==GET_MYID_COMMAND){
+//								
+//							}
+//							else if(mCurrentCommand==SET_NSHIMMER_COMMAND){
+//								
+//							}
+//							else if(mCurrentCommand==GET_NSHIMMER_COMMAND){
+//								
+//							}
 							else if(mCurrentCommand==SET_CONFIGTIME_COMMAND){
 								
 							}
