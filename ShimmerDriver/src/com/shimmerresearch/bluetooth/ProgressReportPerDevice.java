@@ -59,7 +59,7 @@ public class ProgressReportPerDevice implements Serializable {
 //	public String mLog = "";
 	public int mProgressCounter = 0;
 	public int mProgressPercentageComplete = 0;
-	public int mProgressEndValue = 0;
+	public int mProgressEndValue = 100;
 	public float mProgressSpeed = 0;
 
 	/**

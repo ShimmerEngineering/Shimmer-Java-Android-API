@@ -39,8 +39,8 @@ public class ChannelDetails implements Serializable {
 		public static final String MSB = "MSB";
 	}
 	
-	public String mChannelName = "";
-//	public String mObjectClusterName = "";
+	public String mGuiName = "";
+	public String mObjectClusterName = "";
 	public String mChannelDataType = ChannelDataType.UNKOWN;
 	public int mNumBytes = 0;
 	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
@@ -50,15 +50,15 @@ public class ChannelDetails implements Serializable {
 	 * Holds Channel details for parsing. Experimental feature not used
 	 * currently in standard Shimmer operations.
 	 * 
-	 * @param channelName the String name to assign to the channel 
+	 * @param guiName the String name to assign to the channel 
 	 * @param channelDataType the ChannelDataType of the channel
 	 * @param numBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
-	public ChannelDetails(String channelName, String channelDataType, int numBytes, String channelDataEndian, String units){
-//	public ChannelDetails(String channelName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units){
-		mChannelName = channelName;
-//		mObjectClusterName = objectClusterName;
+//	public ChannelDetails(String channelName, String channelDataType, int numBytes, String channelDataEndian, String units){
+	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units){
+		mGuiName = guiName;
+		mObjectClusterName = objectClusterName;
 		mChannelDataType = channelDataType;
 		mNumBytes = numBytes;
 		mChannelDataEndian = channelDataEndian;

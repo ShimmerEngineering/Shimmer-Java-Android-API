@@ -88,8 +88,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import com.shimmerresearch.bluetooth.ProgressReportAll.BLUETOOTH_JOB;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ExpansionBoardDetails;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
@@ -2019,9 +2021,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void initializeShimmer3(){
 		
 		if(mSendProgressReport){
-			//TODO: stop timer if logAndStream
-			//TODO: wait for instruction stack to clear			
-			//TODO: lock the instruction stack 
+			operationPrepare();
 		}
 			
 		readSamplingRate();
@@ -2054,7 +2054,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} else {
 			inquiry();
 		}
-		
+
+		if(mSendProgressReport){
+			// Just unlock instruction stack and leave logAndStream timer as
+			// this is handled in the next step, i.e., no need for
+			// operationStart() here
+			setInstructionStackLock(false);
+
+			//TODO: send start progress report
+		}
 		
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, read its status perdiocally
 			stopTimerToReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
@@ -2062,16 +2070,26 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			startTimerToReadStatus();
 		}
 		
-		if(mSendProgressReport){
-			//TODO: send start progress report
-			//TODO: unlock the instruction stack 
-
-			//TODO: restart timer if logAndStream, where?
-		}
 	}
 	
 	//endregion
 
+	
+	public void operationPrepare(){
+		// stop timer if logAndStream
+		stopTimerToReadStatus();
+		// wait for instruction stack to clear			
+		while(getmListofInstructions().size()>0); //TODO add timeout
+		// lock the instruction stack
+		setInstructionStackLock(true);
+	}
+	
+	public void operationStart(BLUETOOTH_JOB job){
+		//unlock instruction stack
+		setInstructionStackLock(false);
+		startTimerToReadStatus();
+	}
+	
 	
 	//region  --------- START/STOP STREAMING FUNCTIONS --------- 
 	

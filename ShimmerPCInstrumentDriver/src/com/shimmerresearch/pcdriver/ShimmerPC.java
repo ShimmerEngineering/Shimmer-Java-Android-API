@@ -79,7 +79,7 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 
 
-public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializable  {
+public class ShimmerPC extends ShimmerBluetooth {
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
@@ -208,36 +208,34 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 	public synchronized void connect(final String address, String a) {
 		mIamAlive = false;
 		if (mSerialPort==null){
-		mUniqueID = address;
-//		mMyBluetoothAddress = address;
-		mSerialPort = new SerialPort(address);
-		getmListofInstructions().clear();
-		mFirstTime=true;
-		try {
-			setState(STATE_CONNECTING);
-			System.out.println("Port open: " + mSerialPort.openPort());
-			System.out.println("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
-			System.out.println("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
-			if (mIOThread != null) { 
-				mIOThread = null;
-				mPThread = null;
+			mUniqueID = address;
+	//		mMyBluetoothAddress = address;
+			mSerialPort = new SerialPort(address);
+			getmListofInstructions().clear();
+			mFirstTime=true;
+			try {
+				setState(STATE_CONNECTING);
+				System.out.println("Port open: " + mSerialPort.openPort());
+				System.out.println("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
+				System.out.println("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
+				if (mIOThread != null) { 
+					mIOThread = null;
+					mPThread = null;
 				}
-			if (mSerialPort.isOpened()){
-				setState(STATE_CONNECTED);
-				mIOThread = new IOThread();
-				mIOThread.start();
-				mPThread = new ProcessingThread();
-				mPThread.start();
-				initialize();
+				if (mSerialPort.isOpened()){
+					setState(STATE_CONNECTED);
+					mIOThread = new IOThread();
+					mIOThread.start();
+					mPThread = new ProcessingThread();
+					mPThread.start();
+					initialize();
+				}
 			}
-		}
-		catch (SerialPortException ex){
-			
-			
-			connectionLost();
-			mState = STATE_FAILED;
-			System.out.println(ex);
-		}
+			catch (SerialPortException ex){
+				connectionLost();
+				mState = STATE_FAILED;
+				System.out.println(ex);
+			}
 		}
 	}
 	
@@ -524,28 +522,28 @@ public class ShimmerPC extends ShimmerBluetooth  implements Cloneable, Serializa
 
 
 
-	/**Performs a deep copy of SlotDetails by Serializing
-	 * @return SlotDetails the deep copy of the current SlotDetails
-	 * @see java.io.Serializable
-	 */
-	public ShimmerPC deepClone() {
-//		System.out.println("Cloning:" + mUniqueID);
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
-
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (ShimmerPC) ois.readObject();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	/**Performs a deep copy of SlotDetails by Serializing
+//	 * @return SlotDetails the deep copy of the current SlotDetails
+//	 * @see java.io.Serializable
+//	 */
+//	public ShimmerPC deepClone() {
+////		System.out.println("Cloning:" + mUniqueID);
+//		try {
+//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//			ObjectOutputStream oos = new ObjectOutputStream(baos);
+//			oos.writeObject(this);
+//
+//			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+//			ObjectInputStream ois = new ObjectInputStream(bais);
+//			return (ShimmerPC) ois.readObject();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return null;
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 
 
 	

@@ -45,20 +45,31 @@ public class ProgressReportAll implements Serializable {
     	"Cancelled"
     };
 	
-	public int mProgressEndValue = 0;
+	public int mProgressEndValue = 100;
 	public int mProgressCounter = 0;
 	public int mNumberOfFails = 0;
 //	public List<Integer> mListOfFailedCmds = new ArrayList<Integer>();
 	public int mProgressPercentageComplete = 0;
 
-	public ProgressReportAll(BLUETOOTH_JOB currentJob, List<ShimmerObject> lso, int total) {
+//	public ProgressReportAll(BLUETOOTH_JOB currentJob, List<ShimmerObject> lso, int total) {
+//		this.currentJob = currentJob;
+//		mListOfShimmers = lso;
+//		
+//		mMapOfOperationProgressInfo.clear();
+//		for(ShimmerObject shimmer:lso){
+//			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer));
+//			mMapOfOperationProgressInfo.get(shimmer.mUniqueID).mProgressEndValue = total;
+//		}
+//		updateProgressTotal();
+//	}
+
+	public ProgressReportAll(BLUETOOTH_JOB currentJob, List<ShimmerObject> lso) {
 		this.currentJob = currentJob;
 		mListOfShimmers = lso;
 		
 		mMapOfOperationProgressInfo.clear();
 		for(ShimmerObject shimmer:lso){
 			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer));
-			mMapOfOperationProgressInfo.get(shimmer.mUniqueID).mProgressEndValue = total;
 		}
 		updateProgressTotal();
 	}
