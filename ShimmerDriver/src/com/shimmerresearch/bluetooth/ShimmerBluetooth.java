@@ -2109,6 +2109,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mPacketLossCount = 0;
 		mPacketReceptionRate = 100;
 		mFirstTimeCalTime=true;
+		resetCalibratedTimeStamp();
 		mLastReceivedCalibratedTimeStamp = -1;
 		mSync=true; // a backup sync done every time you start streaming
 		mByteArrayOutputStream.reset();
@@ -2130,6 +2131,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mPacketLossCount = 0;
 			mPacketReceptionRate = 100;
 			mFirstTimeCalTime=true;
+			resetCalibratedTimeStamp();
 			mLastReceivedCalibratedTimeStamp = -1;
 			mSync=true; // a backup sync done every time you start streaming
 			getmListofInstructions().add(new byte[]{START_SDBT_COMMAND});
@@ -4130,6 +4132,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void resetCalibratedTimeStamp(){
+		mLastReceivedTimeStamp = 0;
 		mLastReceivedCalibratedTimeStamp = -1;
 		mFirstTimeCalTime = true;
 		mCurrentTimeStampCycle = 0;

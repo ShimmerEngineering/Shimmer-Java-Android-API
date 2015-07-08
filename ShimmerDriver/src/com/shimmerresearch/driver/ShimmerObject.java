@@ -472,7 +472,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	
 	protected String mClassName="Shimmer";
-	private double mLastReceivedTimeStamp=0;
+	protected double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
 	protected double mShimmerSamplingRate; 	                                        	// 51.2Hz is the default sampling rate 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors

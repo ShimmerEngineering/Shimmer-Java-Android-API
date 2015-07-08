@@ -590,6 +590,7 @@ public class Configuration {
 			public static  String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
 			public static  String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
 			public static  String GSR = "GSR";
+			public static  String GSR_CONDUCTANCE = "GSR_Conductance";
 			public static  String INT_EXP_A1 = "Int_Exp_A1";
 			public static  String RESISTANCE_AMP = "Resistance_Amp";
 			public static  String GYRO_X = "Gyro_X";
