@@ -72,9 +72,9 @@ public class ProgressReportAll implements Serializable {
 		mProgressPercentageComplete = ((int)(((double)mProgressCounter/(double)mProgressEndValue)*100));
 	}
 	
-	public void updateProgressPerDevice(String bluetoothAddress, ProgressReportPerCmd pRPC){
-		mMapOfOperationProgressInfo.get(bluetoothAddress).updateProgress(pRPC);
-		if(mMapOfOperationProgressInfo.get(bluetoothAddress).mProgressCounter == mMapOfOperationProgressInfo.get(bluetoothAddress).mProgressEndValue){
+	public void updateProgressPerDevice(String comPort, ProgressReportPerCmd pRPC){
+		mMapOfOperationProgressInfo.get(comPort).updateProgress(pRPC);
+		if(mMapOfOperationProgressInfo.get(comPort).mProgressCounter == mMapOfOperationProgressInfo.get(comPort).mProgressEndValue){
 			updateProgressCount();
 		}
 	}
