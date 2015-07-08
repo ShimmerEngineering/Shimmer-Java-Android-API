@@ -403,38 +403,38 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte SET_BAUD_RATE_COMMAND 					= (byte) 0x6A;
 	public static final byte BAUD_RATE_RESPONSE 					= (byte) 0x6B;
 	public static final byte GET_BAUD_RATE_COMMAND 					= (byte) 0x6C;
-//	#define SET_DERIVED_CHANNEL_BYTES                     0x6D
-//	#define DERIVED_CHANNEL_BYTES_RESPONSE                0x6E
-//	#define GET_DERIVED_CHANNEL_BYTES                     0x6F
+	public static final byte SET_DERIVED_CHANNEL_BYTES				= (byte) 0x6D; //MN
+	public static final byte DERIVED_CHANNEL_BYTES_RESPONSE			= (byte) 0x6E; //MN
+	public static final byte GET_DERIVED_CHANNEL_BYTES				= (byte) 0x6F; //MN
 	public static final byte START_SDBT_COMMAND 					= (byte) 0x70;
 	public static final byte STATUS_RESPONSE	 					= (byte) 0x71;
 	public static final byte GET_STATUS_COMMAND 					= (byte) 0x72;
-//	#define SET_TRIAL_CONFIG_COMMAND                      0x73
-//	#define TRIAL_CONFIG_RESPONSE                         0x74
-//	#define GET_TRIAL_CONFIG_COMMAND                      0x75
-//	#define SET_CENTER_COMMAND                            0x76
-//	#define CENTER_RESPONSE                               0x77
-//	#define GET_CENTER_COMMAND                            0x78
-//	#define SET_SHIMMERNAME_COMMAND                       0x79
-//	#define SHIMMERNAME_RESPONSE                          0x7a
-//	#define GET_SHIMMERNAME_COMMAND                       0x7b
-//	#define SET_EXPID_COMMAND                             0x7c
-//	#define EXPID_RESPONSE                                0x7d
-//	#define GET_EXPID_COMMAND                             0x7e
-//	#define SET_MYID_COMMAND                              0x7F
-//	#define MYID_RESPONSE                                 0x80
-//	#define GET_MYID_COMMAND                              0x81
-//	#define SET_NSHIMMER_COMMAND                          0x82
-//	#define NSHIMMER_RESPONSE                             0x83
-//	#define GET_NSHIMMER_COMMAND                          0x84
-//	#define SET_CONFIGTIME_COMMAND                        0x85
-//	#define CONFIGTIME_RESPONSE                           0x86
-//	#define GET_CONFIGTIME_COMMAND                        0x87
+	public static final byte SET_TRIAL_CONFIG_COMMAND				= (byte) 0x73; //MN
+	public static final byte TRIAL_CONFIG_RESPONSE					= (byte) 0x74; //MN
+	public static final byte GET_TRIAL_CONFIG_COMMAND				= (byte) 0x75; //MN
+	public static final byte SET_CENTER_COMMAND						= (byte) 0x76; //MN
+	public static final byte CENTER_RESPONSE						= (byte) 0x77; //MN
+	public static final byte GET_CENTER_COMMAND						= (byte) 0x78; //MN
+	public static final byte SET_SHIMMERNAME_COMMAND				= (byte) 0x79; //MN
+	public static final byte SHIMMERNAME_RESPONSE					= (byte) 0x7a; //MN
+	public static final byte GET_SHIMMERNAME_COMMAND				= (byte) 0x7b; //MN
+	public static final byte SET_EXPID_COMMAND						= (byte) 0x7c; //MN
+	public static final byte EXPID_RESPONSE							= (byte) 0x7d; //MN
+	public static final byte GET_EXPID_COMMAND						= (byte) 0x7e; //MN
+	public static final byte SET_MYID_COMMAND						= (byte) 0x7F; //MN
+	public static final byte MYID_RESPONSE							= (byte) 0x80; //MN
+	public static final byte GET_MYID_COMMAND						= (byte) 0x81; //MN
+	public static final byte SET_NSHIMMER_COMMAND					= (byte) 0x82; //MN
+	public static final byte NSHIMMER_RESPONSE						= (byte) 0x83; //MN
+	public static final byte GET_NSHIMMER_COMMAND					= (byte) 0x84; //MN
+	public static final byte SET_CONFIGTIME_COMMAND					= (byte) 0x85; //MN
+	public static final byte CONFIGTIME_RESPONSE					= (byte) 0x86; //MN
+	public static final byte GET_CONFIGTIME_COMMAND					= (byte) 0x87; //MN
 	public static final byte DIR_RESPONSE		 					= (byte) 0x88;
 	public static final byte GET_DIR_COMMAND 						= (byte) 0x89;
 	public static final byte INSTREAM_CMD_RESPONSE 					= (byte) 0x8A;
-//	#define SET_CRC_COMMAND                               0x8B
-//	#define ROUTINE_COMMUNICATION                         0xE0
+	public static final byte SET_CRC_COMMAND						= (byte) 0x8B; //MN
+	public static final byte ROUTINE_COMMUNICATION					= (byte) 0xE0; //MN
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
 	
 	

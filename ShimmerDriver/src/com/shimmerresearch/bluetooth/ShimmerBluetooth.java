@@ -867,6 +867,56 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForAck=false;
 								getmListofInstructions().remove(0);
 							}
+							
+							
+							else if(mCurrentCommand==SET_DERIVED_CHANNEL_BYTES){
+								
+							}
+							else if(mCurrentCommand==GET_DERIVED_CHANNEL_BYTES){
+								
+							}
+							else if(mCurrentCommand==SET_TRIAL_CONFIG_COMMAND){
+								
+							}
+							else if(mCurrentCommand==GET_TRIAL_CONFIG_COMMAND){
+								
+							}
+							else if(mCurrentCommand==SET_CENTER_COMMAND){
+								
+							}
+							else if(mCurrentCommand==GET_CENTER_COMMAND){
+								
+							}
+							else if(mCurrentCommand==SET_SHIMMERNAME_COMMAND){
+								
+							}
+							else if(mCurrentCommand==GET_SHIMMERNAME_COMMAND){
+								
+							}
+							else if(mCurrentCommand==SET_EXPID_COMMAND){
+								
+							}
+							else if(mCurrentCommand==GET_EXPID_COMMAND){
+								
+							}
+							else if(mCurrentCommand==SET_MYID_COMMAND){
+								
+							}
+							else if(mCurrentCommand==GET_MYID_COMMAND){
+								
+							}
+							else if(mCurrentCommand==SET_NSHIMMER_COMMAND){
+								
+							}
+							else if(mCurrentCommand==GET_NSHIMMER_COMMAND){
+								
+							}
+							else if(mCurrentCommand==SET_CONFIGTIME_COMMAND){
+								
+							}
+							else if(mCurrentCommand==GET_CONFIGTIME_COMMAND){
+								
+							}
 
 						}
 
@@ -1519,6 +1569,30 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							setExpansionBoardDetails(new ExpansionBoardDetails(mExpBoardArraySplit));
 							
 							setInstructionStackLock(false);
+						}
+						else if(tb[0] == DERIVED_CHANNEL_BYTES_RESPONSE) {
+							
+						}
+						else if(tb[0] == TRIAL_CONFIG_RESPONSE) {
+							
+						}
+						else if(tb[0] == CENTER_RESPONSE) {
+							
+						}
+						else if(tb[0] == SHIMMERNAME_RESPONSE) {
+							
+						}
+						else if(tb[0] == EXPID_RESPONSE) {
+							
+						}
+						else if(tb[0] == MYID_RESPONSE) {
+							
+						}
+						else if(tb[0] == NSHIMMER_RESPONSE) {
+							
+						}
+						else if(tb[0] == CONFIGTIME_RESPONSE) {
+							
 						}
 						else if(tb[0] == INSTREAM_CMD_RESPONSE) {
 							mTimer.cancel(); //cancel the ack timer
