@@ -1773,6 +1773,38 @@ public class Configuration {
 							ChannelDataType.INT16, 2, ChannelDataEndian.MSB,
 							CHANNEL_UNITS.MILLIVOLTS));
 
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfChannels
+					.add(new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
+							ChannelDataType.UINT8, 1, ChannelDataEndian.LSB,
+							CHANNEL_UNITS.NO_UNITS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfChannels
+					.add(new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,
+							ChannelDataType.INT16, 2, ChannelDataEndian.MSB,
+							CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfChannels
+					.add(new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,
+							ChannelDataType.INT16, 2, ChannelDataEndian.MSB,
+							CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfChannels
+					.add(new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,
+							ChannelDataType.INT24, 3, ChannelDataEndian.MSB,
+							CHANNEL_UNITS.MILLIVOLTS));
+			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfChannels
+					.add(new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,
+							ChannelDataType.INT24, 3, ChannelDataEndian.MSB,
+							CHANNEL_UNITS.MILLIVOLTS));
+			
+			
 			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF).mListOfChannels
 					.add(new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_W,
@@ -1993,6 +2025,8 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z,
 							ChannelDataType.INT32, 4, ChannelDataEndian.MSB,
 							CHANNEL_UNITS.NO_UNITS));			
+
+			
 			
 			mSensorMapRef = Collections.unmodifiableMap(aMap);
 	    }
