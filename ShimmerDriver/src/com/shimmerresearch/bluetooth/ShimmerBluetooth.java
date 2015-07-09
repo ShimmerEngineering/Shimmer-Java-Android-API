@@ -156,7 +156,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected boolean mSendProgressReport = false;
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
-	private List<byte []> mListofInstructions = new  ArrayList<byte[]>();
+	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
 	transient protected Timer mTimer;														// Timer variable used when waiting for an ack or response packet
 	protected boolean mDummy=false;
