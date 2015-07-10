@@ -113,11 +113,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int STATE_STREAMING = 3;  // The class is now connected to a remote device
 	public static final int STATE_FAILED = 4;  // The class is now connected to a remote device
 	
-//	public enum CONNECTION_STATE{
-//		NONE,       // The class is doing nothing
-//		CONNECTING, // The class is now initiating an outgoing connection
-//		CONNECTED   // The class is now connected to a remote device
-//	}
+	public enum OPERATION_STATE{
+		NONE,
+		INITIALISING,       // The class is doing nothing
+		CONFIGURING, // The class is now initiating an outgoing connection
+		STREAMING   // The class is now connected to a remote device
+	}
+	public OPERATION_STATE operationState = OPERATION_STATE.NONE;
 	
 	private boolean mInstructionStackLock = false;
 	protected int mState;
