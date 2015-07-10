@@ -297,4 +297,22 @@ public class Util {
 		return listOfFiles;
 	}
 	
+	
+	public static boolean stringContainsItemFromListUpperCaseCheck(String inputString, String[] items) {
+	    for(int i =0; i < items.length; i++) {
+	        if(inputString.toUpperCase().contains(items[i].toUpperCase())) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
+	public static boolean stringContainsItemFromList(String inputString, String[] items) {
+	    for(int i =0; i < items.length; i++) {
+	        if(inputString.contains(items[i])) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 }
