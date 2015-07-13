@@ -83,6 +83,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.pcdriver.CallbackObject;
+import com.shimmerresearch.pcdriver.ShimmerPC;
 import com.shimmerresearch.pcdriver.ShimmerPCBTBCove;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
@@ -2051,7 +2052,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 				textFieldState.setText("Shimmer Connected");
 				btnConnect.setEnabled(false);
 				btnDisconnect.setEnabled(true);
-				connected();
+				//connected();
 			} else {
 				textFieldState.setText("Shimmer Disconnected");
 				textFieldMessage.setText("");
@@ -2066,6 +2067,9 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 		} else if (ind == ShimmerPCBTBCove.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)objectCluster;
 			int msg = callbackObject.mIndicator;
+			if (msg== ShimmerPC.NOTIFICATION_FULLY_INITIALIZED){
+				connected();
+			}
 			if (msg == ShimmerPCBTBCove.NOTIFICATION_STOP_STREAMING) {
 				menuItemConfigure.setEnabled(true);
 				if (mShimmer.getShimmerVersion()==SHIMMER_3 || mShimmer.getShimmerVersion()==SHIMMER_SR30) {

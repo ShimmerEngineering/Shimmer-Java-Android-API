@@ -535,6 +535,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSyncBroadcastInterval = 0;
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
+	protected String mCenter = "";
 	
 	protected long mInitialTimeStamp;
 
@@ -4270,7 +4271,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
-			if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
+			double expectedTimeDifference = (1/mShimmerSamplingRate)*1000;
+			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
+			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
+			if (timeDifference>expectedTimeDifferenceLimit){
 				mPacketLossCount=mPacketLossCount+1;
 				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/mShimmerSamplingRate*1000));
 
@@ -10982,5 +10986,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public double getLastReceivedTimeStamp(){
 		return mLastReceivedTimeStamp;
+	}
+	
+	public String getCenter(){
+		return mCenter;
+	}
+	
+	public void setCenter(String value){
+		mCenter = value;
 	}
 }
