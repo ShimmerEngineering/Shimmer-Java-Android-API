@@ -1638,7 +1638,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							
 							byte[] mExpBoardArraySplit = Arrays.copyOfRange(mExpBoardArray, 1, 4);
 							setExpansionBoardDetails(new ExpansionBoardDetails(mExpBoardArraySplit));
-							
 							setInstructionStackLock(false);
 						}
 						else if(tb[0] == DERIVED_CHANNEL_BYTES_RESPONSE) {
@@ -1658,9 +1657,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mWaitForResponse=false;
 							printLogDataForDebugging(msg);
 							byte[] data = readBytes(3);
+							fillTrialShimmer3(data);
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
-						
 						}
 						else if(tb[0] == CENTER_RESPONSE) {
 							mTimer.cancel(); //cancel the ack timer
@@ -2639,37 +2638,62 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	/**Writes trial config, note only userbutton only works (FW)
+	 * 
+	 */
 	public void writeTrial(){
-        byte[] trial_config_byte = combineTrialConfig();
-        byte[] tosend = new byte[4];
-        tosend[0] = SET_TRIAL_CONFIG_COMMAND;
-        tosend[1] = trial_config_byte[0];
-        tosend[2] = trial_config_byte[1];
-        tosend[3] = (byte)getSyncBroadcastInterval();
-        getmListofInstructions().add(tosend);
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			byte[] trial_config_byte = combineTrialConfig();
+			byte[] tosend = new byte[4];
+			tosend[0] = SET_TRIAL_CONFIG_COMMAND;
+			tosend[1] = trial_config_byte[0];
+			tosend[2] = trial_config_byte[1];
+			tosend[3] = (byte)getSyncBroadcastInterval();
+			getmListofInstructions().add(tosend);
+		}
 	}
 	
+    public void fillTrialShimmer3(byte[] packet)
+    {
+        SplitTrialConfig(packet[0] + (packet[1] << 8));
+        setSyncBroadcastInterval((int)packet[2]);
+    }
+	
+    // btsd changes
+    public void SplitTrialConfig(int val)
+    {
+        //trialConfig = val;
+        mSync = ((val >> 2) & 0x01) == 1;
+        setButtonStart(((val >> 5) & 0x01) == 1); // currently FW only supports this
+        setMasterShimmer(((val >> 1) & 0x01) == 1);
+        setSingleTouch(((val >> 15) & 0x01) == 1);
+        setTCXO(((val >> 12) & 0x01) == 1);
+        setInternalExpPower(((val >> 11) & 0x01) == 1);
+        //monitor = ((val >> 10) & 0x01) == 1;
+        
+    }
+    
 	// btsd changes
     public byte[] combineTrialConfig()
     {
-        /*short trialConfig = (short) ((((mSync ? 1 : 0) & 0x01) << 2) +
-                      (((isButtonStart() ? 1 : 0) & 0x01) << 5) +
+        short trialConfig = (short) ((((mSync ? 1 : 0) & 0x01) << 2) +
+                      (((isButtonStart() ? 1 : 0) & 0x01) << 5) +  //currently only this is supported
                       (((isMasterShimmer() ? 1 : 0) & 0x01) << 1) +
                       (((isSingleTouch() ? 1 : 0) & 0x01) << 15) +
                       (((isTCXO() ? 1 : 0) & 0x01) << 12) +
                       (((isInternalExpPower() ? 1 : 0) & 0x01) << 11) +
                       (((true ? 1 : 0) & 0x01) << 10));
-                      //(((monitor ? 1 : 0) & 0x01) << 10);*/
-    	short trialConfig = (short) ((((true ? 1 : 0) & 0x01) << 2) +
+                      //(((monitor ? 1 : 0) & 0x01) << 10);
+    	/*short trialConfig = (short) ((((true ? 1 : 0) & 0x01) << 2) +
                 (((true ? 1 : 0) & 0x01) << 5) +
                 (((true ? 1 : 0) & 0x01) << 1) +
                 (((true ? 1 : 0) & 0x01) << 15) +
                 (((true ? 1 : 0) & 0x01) << 12) +
                 (((true ? 1 : 0) & 0x01) << 11) +
-                (((true ? 1 : 0) & 0x01) << 10));
+                (((true ? 1 : 0) & 0x01) << 10));*/
         byte[] ret = new byte[2];
-        ret[1] = (byte)(trialConfig & 0xff);
-        ret[0] = (byte)((trialConfig >> 8) & 0xff);
+        ret[0] = (byte)(trialConfig & 0xff);
+        ret[1] = (byte)((trialConfig >> 8) & 0xff);
         return ret;
     }
 	
