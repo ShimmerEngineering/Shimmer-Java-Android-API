@@ -2185,6 +2185,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readEXGConfigurations(1);
 		readEXGConfigurations(2);
 		//enableLowPowerMag(mLowPowerMag);
+		
+		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, read its status perdiocally
+			readTrial();
+			readConfigTime();
+			readShimmerName();
+		}
+		
 		if (mSetupDevice==true){
 			//writeAccelRange(mDigitalAccelRange);
 			if (mSetupEXG){
@@ -2209,9 +2216,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
 			setInstructionStackLock(false);
-//			operationWaitForFinish();
 			
-			setOperationState(OPERATION_STATE.NONE);
+//			operationWaitForFinish();
+//			setOperationState(OPERATION_STATE.NONE);
 
 			//TODO: send start progress report
 		}

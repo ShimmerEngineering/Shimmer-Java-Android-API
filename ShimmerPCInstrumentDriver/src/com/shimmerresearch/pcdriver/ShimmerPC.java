@@ -342,6 +342,8 @@ public class ShimmerPC extends ShimmerBluetooth {
         sensorMapUpdateWithEnabledSensors();
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		
+		setOperationState(OPERATION_STATE.NONE);
 	}
 
 
