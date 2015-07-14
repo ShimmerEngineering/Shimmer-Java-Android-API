@@ -108,7 +108,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPC(String myName, Boolean continousSync) {
-		mMyName=myName;
+		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
 		mSetupDevice=false;
 	}
@@ -123,7 +123,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 	public ShimmerPC(String comPort, String myBluetoothAddress, String myName, Boolean continousSync) {
 		mUniqueID=comPort;
 		mMyBluetoothAddress=myBluetoothAddress;
-		mMyName=myName;
+		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
 		mSetupDevice=false;
 	}
@@ -149,7 +149,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 		mLowPowerMag = enableLowPowerMag;
@@ -179,7 +179,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 	}
@@ -195,7 +195,7 @@ public class ShimmerPC extends ShimmerBluetooth {
     	mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 	}

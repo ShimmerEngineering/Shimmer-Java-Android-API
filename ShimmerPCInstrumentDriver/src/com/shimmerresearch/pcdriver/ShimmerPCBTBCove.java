@@ -104,7 +104,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPCBTBCove(String myName, Boolean continousSync) {
-		mMyName=myName;
+		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
 		mSetupDevice=false;
 	}
@@ -114,7 +114,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 	}
@@ -136,7 +136,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 		mLowPowerMag = enableLowPowerMag;
@@ -165,7 +165,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 	}

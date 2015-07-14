@@ -852,7 +852,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								byte[] nameArray = new byte[instruction[1]];
 								System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
 								String name = new String(nameArray);
-								setShimmerName(name);
+								setShimmerUserAssignedName(name);
 								getmListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							}
@@ -1688,7 +1688,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							byte[] length = readBytes(1);
 							byte[] data = readBytes(length[0]);
 							String name = new String(data);
-							setShimmerName(name);
+							setShimmerUserAssignedName(name);
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
 						}
@@ -2682,7 +2682,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void writeShimmerName(){
 		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
-			writeShimmerName(getShimmerName());
+			writeShimmerName(getShimmerUserAssignedName());
 		}
 	}
 	
@@ -3571,13 +3571,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return mHardwareVersion;
 	}
 
-	public String getShimmerName(){
-		return mMyName;
-	}
-	
-	public void setShimmerName(String name){
-		mMyName = name;
-	}
+//	public String getShimmerName(){
+//		return mShimmerUserAssignedName;
+//	}
+//	
+//	public void setShimmerName(String name){
+//		mShimmerUserAssignedName = name;
+//	}
 	
 	/**
 	 * Get the Gain value for the ExG1 Channel 1

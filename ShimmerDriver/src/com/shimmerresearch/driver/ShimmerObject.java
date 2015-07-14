@@ -552,8 +552,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected String mMacIdFromUart = "";
 	protected String mMacIdFromInfoMem = "";
 	
-	protected String mShimmerUserAssignedName = "";  // This stores the user assigned name //TODO: duplicate of mMyName
-	protected String mMyName=""; // This stores the user assigned name
+	protected String mShimmerUserAssignedName=""; // This stores the user assigned name
 
 	protected boolean mConfigFileCreationFlag = false;
 	protected boolean mCalibFileCreationFlag = false;
@@ -788,7 +787,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
 		
-		objectCluster.mMyName = mMyName;
+		objectCluster.mMyName = mShimmerUserAssignedName;
 		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
 		objectCluster.mRawData = newPacket;
 		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
@@ -4605,14 +4604,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		mEnabledSensors=enabledSensors;	
 	}
+	/** replaced with getShimmerUserAssignedName()
+	 * @return
+	 */
+	@Deprecated 
 	public String getDeviceName(){
-		return mMyName;
+		return mShimmerUserAssignedName;
 	}
 	public String getBluetoothAddress(){
 		return  mMyBluetoothAddress;
 	}
+	/** replaced with setShimmerUserAssignedName()
+	 * @return
+	 */
+	@Deprecated 
 	public void setDeviceName(String deviceName) {
-		mMyName = deviceName;
+		mShimmerUserAssignedName = deviceName;
 	}
 	public byte[] getRawInquiryResponse(){
 		return mInquiryResponseBytes;
@@ -4767,9 +4774,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		List<String[]> listofSignals = new ArrayList<String[]>();
 		 
 		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
-			String[] channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS};
+			String[] channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS};
 			listofSignals.add(channel);
-			channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+			channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 			listofSignals.add(channel);
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				String unit = CHANNEL_UNITS.METER_PER_SECOND_SQUARE;
@@ -4777,19 +4784,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					unit += "*";
 				}
 				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ACCEL_X,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ACCEL_X,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ACCEL_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
-				listofSignals.add(channel);
-				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ACCEL_Y,CHANNEL_TYPE.CAL,unit};
-				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ACCEL_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ACCEL_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ACCEL_Z,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ACCEL_Y,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ACCEL_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ACCEL_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				listofSignals.add(channel);
+				
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ACCEL_Z,CHANNEL_TYPE.CAL,unit};
+				listofSignals.add(channel);
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ACCEL_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
 			}
@@ -4798,19 +4805,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				if (mDefaultCalibrationParametersGyro == true) {
 					unit += "*";
 				} 
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
-				listofSignals.add(channel);
-				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.CAL,unit};
-				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				listofSignals.add(channel);
+				
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.CAL,unit};
+				listofSignals.add(channel);
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0) {
@@ -4818,25 +4825,25 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				if (mDefaultCalibrationParametersGyro == true) {
 					unit += "*";
 				} 
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
-				listofSignals.add(channel);
-				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.CAL,unit};
-				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				listofSignals.add(channel);
+				
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.CAL,unit};
+				listofSignals.add(channel);
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF) & SENSOR_GSR) > 0) {
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GSR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.KOHMS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GSR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.KOHMS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GSR,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GSR,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
 				//channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.GSR_RES,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
@@ -4849,14 +4856,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					unit += "*";
 				}
 				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ECG_RA_LL,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ECG_RA_LL,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ECG_RA_LL,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ECG_RA_LL,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ECG_LA_LL,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ECG_LA_LL,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.ECG_LA_LL,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.ECG_LA_LL,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
 			}
@@ -4866,70 +4873,70 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					unit += "*";
 				}
 				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.EMG,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.EMG,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.EMG,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.EMG,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF00) & SENSOR_BRIDGE_AMP) > 0) {
 				String unit = CHANNEL_UNITS.MILLIVOLTS;
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF00) & SENSOR_HEART) > 0) {
 				String unit = CHANNEL_UNITS.BEATS_PER_MINUTE;
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.HEART_RATE,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.HEART_RATE,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.HEART_RATE,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.HEART_RATE,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if ((((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A0) > 0) && getPMux() == 0) {
 				String unit = CHANNEL_UNITS.MILLIVOLTS;
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if ((((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A7) > 0 && getPMux() == 0)) {
 				String unit = CHANNEL_UNITS.MILLIVOLTS;
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFF) & SENSOR_BATT) > 0) {
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.REG,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.REG,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.REG,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.REG,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
 			}
 //			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
@@ -4946,9 +4953,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 		} else if (mHardwareVersion==HW_ID.SHIMMER_3) {
 
-			String[] channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS};
+			String[] channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS};
 			listofSignals.add(channel);
-			channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+			channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 			listofSignals.add(channel);
 			if ((mEnabledSensors & SENSOR_ACCEL) >0){
 
@@ -4957,19 +4964,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					unit += "*";
 				}
 				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
-				listofSignals.add(channel);
-				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,CHANNEL_TYPE.CAL,unit};
-				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				listofSignals.add(channel);
+				
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,CHANNEL_TYPE.CAL,unit};
+				listofSignals.add(channel);
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
 			}
@@ -4981,19 +4988,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					unit += "*";
 				}
 				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
-				listofSignals.add(channel);
-				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,CHANNEL_TYPE.CAL,unit};
-				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				listofSignals.add(channel);
+				
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,CHANNEL_TYPE.CAL,unit};
+				listofSignals.add(channel);
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
 			
@@ -5003,19 +5010,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				if (mDefaultCalibrationParametersGyro == true) {
 					unit += "*";
 				} 
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
-				listofSignals.add(channel);
-				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.CAL,unit};
-				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				listofSignals.add(channel);
+				
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.CAL,unit};
+				listofSignals.add(channel);
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0) {
@@ -5023,87 +5030,87 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				if (mDefaultCalibrationParametersGyro == true) {
 					unit += "*";
 				} 
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
-				listofSignals.add(channel);
-				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.CAL,unit};
-				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.CAL,unit};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.CAL,unit};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				listofSignals.add(channel);
+				
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.CAL,unit};
+				listofSignals.add(channel);
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			} 
 			if (((mEnabledSensors & 0xFFFF) & SENSOR_BATT) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A15) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A7) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A6) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A1) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.INT_EXP_A1,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A1,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.INT_EXP_A1,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A1,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A12) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.INT_EXP_A12,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A12,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.INT_EXP_A12,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A12,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A13) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.INT_EXP_A13,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A13,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.INT_EXP_A13,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A13,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A14) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.INT_EXP_A14,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A14,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.INT_EXP_A14,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A14,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if ((((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 || ((mEnabledSensors & 0xFFFF)& SENSOR_DACCEL) > 0)&& ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
 			}
 //			if ((((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 || ((mEnabledSensors & 0xFFFF)& SENSOR_DACCEL) > 0) && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
@@ -5118,180 +5125,180 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				listofSignals.add(channel);
 //			}
 			if ((mEnabledSensors & SENSOR_BMP180)>0){
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,CHANNEL_TYPE.CAL,CHANNEL_UNITS.KPASCAL};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,CHANNEL_TYPE.CAL,CHANNEL_UNITS.KPASCAL};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,CHANNEL_TYPE.CAL,CHANNEL_UNITS.DEGREES_CELSUIS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,CHANNEL_TYPE.CAL,CHANNEL_UNITS.DEGREES_CELSUIS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if ((mEnabledSensors & SENSOR_GSR)>0){
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.GSR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.KOHMS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GSR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.KOHMS};
 				listofSignals.add(channel);
 				//channel = new String[]{mMyName,"Magnetometer X",CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				//listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & SENSOR_EXG1_24BIT)>0)|| ((mEnabledSensors & SENSOR_EXG1_16BIT)>0)){
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_STATUS,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_STATUS,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & SENSOR_EXG2_24BIT)>0)|| ((mEnabledSensors & SENSOR_EXG2_16BIT)>0)){
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_STATUS,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_STATUS,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0){
 				if (isEXGUsingDefaultECGConfiguration()){
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				}
 				else if (isEXGUsingDefaultEMGConfiguration()){
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				} else {
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				}
 
 			}
 			if ((mEnabledSensors & SENSOR_EXG2_24BIT)>0){
 				if (isEXGUsingDefaultECGConfiguration()){
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				}
 				else if (isEXGUsingDefaultEMGConfiguration()){
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				}
 				else {
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 
 				}
 			}
 			if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0){
 				if (isEXGUsingDefaultECGConfiguration()){
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				}
 				else if (isEXGUsingDefaultEMGConfiguration()){
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				} else {
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				}
 
 			}
 			if ((mEnabledSensors & SENSOR_EXG2_16BIT)>0){
 				if (isEXGUsingDefaultECGConfiguration()){
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				}
 				else if (isEXGUsingDefaultEMGConfiguration()){
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 					
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 				}
 				else {
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 					listofSignals.add(channel);
-					channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+					channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 					listofSignals.add(channel);
 
 				}
 			}
 			if (((mEnabledSensors & 0xFF00) & SENSOR_BRIDGE_AMP) > 0) {
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mMyName,Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 		}

@@ -249,7 +249,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
-		mMyName=myName;
+		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
 		mSetupDevice=false;
 	}
@@ -258,7 +258,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
-		mMyName=myName;
+		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
 		mSetupDevice=false;
 	}
@@ -283,7 +283,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 	}
@@ -308,7 +308,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 	}
@@ -333,7 +333,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 		mLowPowerMag = enableLowPowerMag;
@@ -363,7 +363,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mMyName = myName;
+		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
 		mLowPowerMag = enableLowPowerMag;
@@ -385,7 +385,7 @@ public class Shimmer extends ShimmerBluetooth{
 	protected synchronized void setState(int state) {
 		mState = state;
 		// Give the new state to the Handler so the UI Activity can update
-		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, state, -1, new ObjectCluster(mMyName,getBluetoothAddress())).sendToTarget();
+		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, state, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
 	}
 
 	/**
@@ -851,7 +851,7 @@ public class Shimmer extends ShimmerBluetooth{
 			//only do this during the initialization process to indicate that it is fully initialized, dont do this for a normal inqiuiry
 			mInitialized = true;
 		}
-		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_FULLY_INITIALIZED, -1, new ObjectCluster(mMyName,getBluetoothAddress())).sendToTarget();
+		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_FULLY_INITIALIZED, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" Initialization completed and is ready for Streaming");
 	}
 
@@ -863,7 +863,7 @@ public class Shimmer extends ShimmerBluetooth{
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" is now Streaming");
-		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STREAMING, -1, new ObjectCluster(mMyName,getBluetoothAddress())).sendToTarget();
+		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STREAMING, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
 		
 	}
 
@@ -926,7 +926,7 @@ public class Shimmer extends ShimmerBluetooth{
 	@Override
 	protected void sendStatusMsgPacketLossDetected() {
 		// TODO Auto-generated method stub
-		mHandler.obtainMessage(Shimmer.MESSAGE_PACKET_LOSS_DETECTED,  new ObjectCluster(mMyName,getBluetoothAddress())).sendToTarget();
+		mHandler.obtainMessage(Shimmer.MESSAGE_PACKET_LOSS_DETECTED,  new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
 	}
 	
 
@@ -1056,7 +1056,7 @@ public class Shimmer extends ShimmerBluetooth{
 		bundle.putString(TOAST, "Device " + mMyBluetoothAddress +" stopped streaming");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
-		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STOP_STREAMING, -1, new ObjectCluster(mMyName,getBluetoothAddress())).sendToTarget();
+		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STOP_STREAMING, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
 		
 	}
 
