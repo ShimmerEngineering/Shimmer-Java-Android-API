@@ -161,7 +161,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected boolean mSendProgressReport = false;
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
-	private List<byte []> mListofInstructions = new  ArrayList<byte[]>();
+	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
 	transient protected Timer mTimer;														// Timer variable used when waiting for an ack or response packet
 	protected boolean mDummy=false;
@@ -833,6 +833,80 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								getmListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							}
+							else if(mCurrentCommand==SET_DERIVED_CHANNEL_BYTES){
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								mDerivedSensors=(long)(((((byte[])getmListofInstructions().get(0))[0]&0xFF)<<16) + ((((byte[])getmListofInstructions().get(0))[1]&0xFF)<<8)+(((byte[])getmListofInstructions().get(0))[2]&0xFF));
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
+							else if(mCurrentCommand==SET_SHIMMERNAME_COMMAND){
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								byte[] instruction =getmListofInstructions().get(0);
+								byte[] nameArray = new byte[instruction[1]];
+								System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
+								String name = new String(nameArray);
+								setShimmerName(name);
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
+							else if(mCurrentCommand==SET_EXPID_COMMAND){
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								byte[] instruction =getmListofInstructions().get(0);
+								byte[] nameArray = new byte[instruction[1]];
+								System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
+								String name = new String(nameArray);
+								setExperimentName(name);
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
+							else if(mCurrentCommand==SET_CONFIGTIME_COMMAND){
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								byte[] instruction =getmListofInstructions().get(0);
+								byte[] timeArray = new byte[instruction[1]];
+								System.arraycopy(instruction, 2, timeArray, 0, instruction[1]);
+								String time = new String(timeArray);
+								setConfigTime(Long.parseLong(time));
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
+							else if(mCurrentCommand==SET_CENTER_COMMAND){
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								byte[] instruction =getmListofInstructions().get(0);
+								byte[] centerArray = new byte[instruction[1]];
+								System.arraycopy(instruction, 2, centerArray, 0, instruction[1]);
+								String center = new String(centerArray);
+								//setConfigTime(Long.parseLong(time));
+								setCenter(center);
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
+							else if(mCurrentCommand==SET_TRIAL_CONFIG_COMMAND){
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								byte[] instruction =getmListofInstructions().get(0);
+								byte[] dataArray = new byte[3];
+								System.arraycopy(instruction, 1, dataArray, 0, 3);
+								//settrial
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
 							else if (mCurrentCommand==TOGGLE_LED_COMMAND){
 								//mGSRRange=mTempIntValue;
 								mTransactionCompleted = true;
@@ -872,36 +946,51 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForAck=false;
 								getmListofInstructions().remove(0);
 							}
-							
-							else if(mCurrentCommand==SET_DERIVED_CHANNEL_BYTES){
-								
-							}
 							else if(mCurrentCommand==GET_DERIVED_CHANNEL_BYTES){
-								
+								mWaitForResponse = true;
+								mWaitForAck=false;
+								getmListofInstructions().remove(0);
 							}
-							else if(mCurrentCommand==SET_TRIAL_CONFIG_COMMAND){
-								
-							}
+							
 							else if(mCurrentCommand==GET_TRIAL_CONFIG_COMMAND){
-								
+								mWaitForResponse = true;
+								mWaitForAck=false;
+								getmListofInstructions().remove(0);
 							}
-							else if(mCurrentCommand==SET_SHIMMERNAME_COMMAND){
-								
+
+							else if(mCurrentCommand==GET_CENTER_COMMAND){
+								mWaitForResponse = true;
+								mWaitForAck=false;
+								getmListofInstructions().remove(0);
 							}
+							
 							else if(mCurrentCommand==GET_SHIMMERNAME_COMMAND){
-								
+								mWaitForResponse = true;
+								mWaitForAck=false;
+								getmListofInstructions().remove(0);
 							}
-							else if(mCurrentCommand==SET_EXPID_COMMAND){
-								
-							}
+							
 							else if(mCurrentCommand==GET_EXPID_COMMAND){
-								
+								mWaitForResponse = true;
+								mWaitForAck=false;
+								getmListofInstructions().remove(0);
 							}
-							else if(mCurrentCommand==SET_CONFIGTIME_COMMAND){
-								
-							}
+//							else if(mCurrentCommand==SET_MYID_COMMAND){
+//								
+//							}
+//							else if(mCurrentCommand==GET_MYID_COMMAND){
+//								
+//							}
+//							else if(mCurrentCommand==SET_NSHIMMER_COMMAND){
+//								
+//							}
+//							else if(mCurrentCommand==GET_NSHIMMER_COMMAND){
+//								
+//							}							
 							else if(mCurrentCommand==GET_CONFIGTIME_COMMAND){
-								
+								mWaitForResponse = true;
+								mWaitForAck=false;
+								getmListofInstructions().remove(0);
 							}
 
 						}
@@ -1553,23 +1642,69 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							
 							byte[] mExpBoardArraySplit = Arrays.copyOfRange(mExpBoardArray, 1, 4);
 							setExpansionBoardDetails(new ExpansionBoardDetails(mExpBoardArraySplit));
-							
 							setInstructionStackLock(false);
 						}
 						else if(tb[0] == DERIVED_CHANNEL_BYTES_RESPONSE) {
-							
+
+							mTimer.cancel(); //cancel the ack timer
+							mTimer.purge();
+							mWaitForResponse=false;
+							mTransactionCompleted=true;
+							printLogDataForDebugging(msg);
+							byte[] byteArray = readBytes(3);
+							mDerivedSensors=(long)(((byteArray[0]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[2]&0xFF));
+//							setInstructionStackLock(false);
 						}
 						else if(tb[0] == TRIAL_CONFIG_RESPONSE) {
-							
+							mTimer.cancel(); //cancel the ack timer
+							mTimer.purge();
+							mWaitForResponse=false;
+							printLogDataForDebugging(msg);
+							byte[] data = readBytes(3);
+							fillTrialShimmer3(data);
+							mTransactionCompleted=true;
+							setInstructionStackLock(false);
 						}
 						else if(tb[0] == CENTER_RESPONSE) {
-							
+							mTimer.cancel(); //cancel the ack timer
+							mTimer.purge();
+							mWaitForResponse=false;
+							mTransactionCompleted=true;
+							printLogDataForDebugging(msg);
+							byte[] length = readBytes(1);
+							byte[] data = readBytes(length[0]);
+							String center = new String(data);
+							setCenter(center);
+							mTransactionCompleted=true;
+							setInstructionStackLock(false);
 						}
 						else if(tb[0] == SHIMMERNAME_RESPONSE) {
-							
+							mTimer.cancel(); //cancel the ack timer
+							mTimer.purge();
+							mWaitForResponse=false;
+							mTransactionCompleted=true;
+							printLogDataForDebugging(msg);
+							byte[] length = readBytes(1);
+							byte[] data = readBytes(length[0]);
+							String name = new String(data);
+							setShimmerName(name);
+							mTransactionCompleted=true;
+							setInstructionStackLock(false);
 						}
 						else if(tb[0] == EXPID_RESPONSE) {
-							
+
+							mTimer.cancel(); //cancel the ack timer
+							mTimer.purge();
+							mWaitForResponse=false;
+							mTransactionCompleted=true;
+							printLogDataForDebugging(msg);
+							byte[] length = readBytes(1);
+							byte[] data = readBytes(length[0]);
+							String name = new String(data);
+							setExperimentName(name);
+							mTransactionCompleted=true;
+							setInstructionStackLock(false);
+						
 						}
 						else if(tb[0] == MYID_RESPONSE) {
 							
@@ -1578,7 +1713,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							
 						}
 						else if(tb[0] == CONFIGTIME_RESPONSE) {
-							
+							mTimer.cancel(); //cancel the ack timer
+							mTimer.purge();
+							mWaitForResponse=false;
+							mTransactionCompleted=true;
+							printLogDataForDebugging(msg);
+							byte[] length = readBytes(1);
+							byte[] data = readBytes(length[0]);
+							String time = new String(data);
+							setConfigTime(Long.parseLong(time));
+							mTransactionCompleted=true;
+							setInstructionStackLock(false);
 						}
 						else if(tb[0] == INSTREAM_CMD_RESPONSE) {
 							mTimer.cancel(); //cancel the ack timer
@@ -2063,8 +2208,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// Just unlock instruction stack and leave logAndStream timer as
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
-//			setInstructionStackLock(false);
-			operationWaitForFinish();
+			setInstructionStackLock(false);
+//			operationWaitForFinish();
 			
 			setOperationState(OPERATION_STATE.NONE);
 
@@ -2503,7 +2648,186 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mAccelRange=(int)range;
 		
 	}
+	
+	
+	/** Only applicable for Log and Stream
+	 * @param channel The derived channels (3 bytes), first array element = MSB (channel[0]), and channel[2]) = LSB
+	 */
+	public void writeDerivedChannelBytes(byte[] channel) {
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			getmListofInstructions().add(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2]});
+		}
+		
+	}
 
+	/**Write the current shimmer name to the Shimmer device. Only applicable for Log and Stream.
+	 * 
+	 */
+	public void writeShimmerName(){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			writeShimmerName(getShimmerName());
+		}
+	}
+	
+	/**Writes trial config, note only userbutton only works (FW)
+	 * 
+	 */
+	public void writeTrial(){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			byte[] trial_config_byte = combineTrialConfig();
+			byte[] tosend = new byte[4];
+			tosend[0] = SET_TRIAL_CONFIG_COMMAND;
+			tosend[1] = trial_config_byte[0];
+			tosend[2] = trial_config_byte[1];
+			tosend[3] = (byte)getSyncBroadcastInterval();
+			getmListofInstructions().add(tosend);
+		}
+	}
+	
+    public void fillTrialShimmer3(byte[] packet)
+    {
+        SplitTrialConfig(packet[0] + (packet[1] << 8));
+        setSyncBroadcastInterval((int)packet[2]);
+    }
+	
+    // btsd changes
+    public void SplitTrialConfig(int val)
+    {
+        //trialConfig = val;
+        mSync = ((val >> 2) & 0x01) == 1;
+        setButtonStart(((val >> 5) & 0x01) == 1); // currently FW only supports this
+        setMasterShimmer(((val >> 1) & 0x01) == 1);
+        setSingleTouch(((val >> 15) & 0x01) == 1);
+        setTCXO(((val >> 12) & 0x01) == 1);
+        setInternalExpPower(((val >> 11) & 0x01) == 1);
+        //monitor = ((val >> 10) & 0x01) == 1;
+        
+    }
+    
+	// btsd changes
+    public byte[] combineTrialConfig()
+    {
+        short trialConfig = (short) ((((mSync ? 1 : 0) & 0x01) << 2) +
+                      (((isButtonStart() ? 1 : 0) & 0x01) << 5) +  //currently only this is supported
+                      (((isMasterShimmer() ? 1 : 0) & 0x01) << 1) +
+                      (((isSingleTouch() ? 1 : 0) & 0x01) << 15) +
+                      (((isTCXO() ? 1 : 0) & 0x01) << 12) +
+                      (((isInternalExpPower() ? 1 : 0) & 0x01) << 11) +
+                      (((true ? 1 : 0) & 0x01) << 10));
+                      //(((monitor ? 1 : 0) & 0x01) << 10);
+    	/*short trialConfig = (short) ((((true ? 1 : 0) & 0x01) << 2) +
+                (((true ? 1 : 0) & 0x01) << 5) +
+                (((true ? 1 : 0) & 0x01) << 1) +
+                (((true ? 1 : 0) & 0x01) << 15) +
+                (((true ? 1 : 0) & 0x01) << 12) +
+                (((true ? 1 : 0) & 0x01) << 11) +
+                (((true ? 1 : 0) & 0x01) << 10));*/
+        byte[] ret = new byte[2];
+        ret[0] = (byte)(trialConfig & 0xff);
+        ret[1] = (byte)((trialConfig >> 8) & 0xff);
+        return ret;
+    }
+	
+	/**Write the config time to the Shimmer device. Only applicable for Log and Stream.
+	 * 
+	 */
+	public void writeConfigTime(String time){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			byte[] toSendTime = time.getBytes();
+			byte[] toSend = new byte[2+toSendTime.length];
+			toSend[0]= SET_CONFIGTIME_COMMAND;
+			toSend[1]= (byte)toSendTime.length;
+			System.arraycopy(toSendTime, 0, toSend, 2, toSendTime.length);
+			getmListofInstructions().add(toSend);
+		}
+	}
+	
+	
+	
+	/**
+	 * @param name Name to write to shimmer device
+	 */
+	public void writeShimmerName(String name){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			byte[] toSendName = name.getBytes();
+			byte[] toSend = new byte[2+toSendName.length];
+			toSend[0]= SET_SHIMMERNAME_COMMAND;
+			toSend[1]= (byte)toSendName.length;
+			System.arraycopy(toSendName, 0, toSend, 2, toSendName.length);
+			getmListofInstructions().add(toSend);
+		}
+	}
+	
+
+	/** 
+	 * @param center 
+	 */
+	public void writeCenter(String center){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			byte[] toSendCenter = center.getBytes();
+			byte[] toSend = new byte[2+toSendCenter.length];
+			toSend[0]= SET_CENTER_COMMAND;
+			toSend[1]= (byte)toSendCenter.length;
+			System.arraycopy(toSendCenter, 0, toSend, 2, toSendCenter.length);
+			getmListofInstructions().add(toSend);
+		}
+	}
+	
+	
+	/**
+	 * @param name Name to write to shimmer device
+	 */
+	public void writeExperimentName(String name){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			byte[] toSendName = name.getBytes();
+			byte[] toSend = new byte[2+toSendName.length];
+			toSend[0]= SET_EXPID_COMMAND;
+			toSend[1]= (byte)toSendName.length;
+			System.arraycopy(toSendName, 0, toSend, 2, toSendName.length);
+			getmListofInstructions().add(toSend);
+		}
+	}
+	
+	
+	/**Read the derived channel bytes. Currently only supported on logandstream
+	 * 
+	 */
+	public void readDerivedChannelBytes() {
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			getmListofInstructions().add(new byte[]{GET_DERIVED_CHANNEL_BYTES});
+		}
+	}
+	
+	public void readShimmerName(){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			getmListofInstructions().add(new byte[]{GET_SHIMMERNAME_COMMAND});
+		}
+	}
+	
+	public void readExperimentName(){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			getmListofInstructions().add(new byte[]{GET_EXPID_COMMAND});
+		}
+	}
+
+	public void readTrial(){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			getmListofInstructions().add(new byte[]{GET_TRIAL_CONFIG_COMMAND});
+		}
+	}
+	
+	public void readConfigTime(){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			getmListofInstructions().add(new byte[]{GET_CONFIGTIME_COMMAND});
+		}
+	}
+	
+	public void readCenter(){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			getmListofInstructions().add(new byte[]{GET_CENTER_COMMAND});
+		}
+	}
+	
 	/**
 	 * writeGyroRange(range) sets the Gyroscope range on the Shimmer3 to the value of the input range. When setting/changing the range, please ensure you have the correct calibration parameters.
 	 * @param range is a numeric value defining the desired gyroscope range. 
@@ -4181,6 +4505,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void setInstructionStackLock(boolean state) {
 		this.mInstructionStackLock = state;
 	}
+
 	
 	public void consolePrintLn(String message) {
 		if(mVerboseMode) {

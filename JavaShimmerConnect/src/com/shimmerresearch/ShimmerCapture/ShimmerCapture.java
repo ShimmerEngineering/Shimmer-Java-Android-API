@@ -973,6 +973,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 					comboBoxAccelRange.addItem(Configuration.Shimmer3.ListofAccelRange[j]);
 				}
 				for (int k=0; k<Configuration.Shimmer3.ListofGyroRange.length; k++) {
+					System.out.print("SetComboBox");
 					comboBoxGyroRange.addItem(Configuration.Shimmer3.ListofGyroRange[k]);
 				}
 				for (int l=0; l<Configuration.Shimmer3.ListofMagRange.length; l++) {
@@ -1044,6 +1045,9 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		comboBoxMagRange.setSelectedIndex(mShimmer.getMagRange()-1);
 		comboBoxGsrRange.setSelectedIndex(mShimmer.getGSRRange());			
 		if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3) {
+			System.out.print("Gyro Range  "+  comboBoxGyroRange.getItemCount()  + " "+ mShimmer.getGyroRange() + "\n");
+			
+			
 			comboBoxGyroRange.setSelectedIndex(mShimmer.getGyroRange());
 			comboBoxPressureResolution.setSelectedIndex(mShimmer.getPressureResolution());
 			menuItemExgSettings.setEnabled(true);
@@ -2167,7 +2171,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				textFieldState.setText("Shimmer Connected");
 				btnConnect.setEnabled(false);
 				btnDisconnect.setEnabled(true);
-				connected();
+				
 			} else {
 				textFieldState.setText("Shimmer Disconnected");
 				textFieldMessage.setText("");
@@ -2182,6 +2186,9 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
 			int msg = callbackObject.mIndicator;
+			if (msg== ShimmerPC.NOTIFICATION_FULLY_INITIALIZED){
+				connected();
+			}
 			if (msg == ShimmerPC.NOTIFICATION_STOP_STREAMING) {
 				menuItemConfigure.setEnabled(true);
 				if (mShimmer.getShimmerVersion()==SHIMMER_3 || mShimmer.getShimmerVersion()==SHIMMER_SR30) {
