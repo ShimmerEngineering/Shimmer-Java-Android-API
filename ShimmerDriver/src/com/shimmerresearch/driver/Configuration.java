@@ -61,6 +61,39 @@ public class Configuration {
 		public final static Integer[] ListofSamplingRateDividersValues={0,1,2,3,4,5,6,7};
 
 	}
+	public static class CHANNEL_UNITS{
+		//Sensors units
+		public static final String NO_UNITS = "no units";
+		public static final String MILLISECONDS = "ms";
+		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";
+		public static final String DEGREES_PER_SECOND = "deg/s";
+		public static final String LOCAL_FLUX = "local_flux";
+		public static final String KOHMS = "kOhms";
+		public static final String MILLIVOLTS = "mV";
+		public static final String BEATS_PER_MINUTE = "BPM";
+		public static final String KPASCAL = "kPa";
+		public static final String DEGREES_CELSUIS = "Degrees Celsius";
+		public static final String DEGREES = "Degrees";
+		public static final String U_TESLA = "uT";
+		public static final String DATE_FORMAT = "yyyy/mm/dd hh:mm:ss.000";
+		public static final String GRAVITY = "g";
+		public static final String CLOCK_UNIT = "Ticks";
+
+		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
+		public static final String ACCEL_DEFAULT_CAL_UNIT = METER_PER_SECOND_SQUARE+"*";
+		public static final String GYRO_CAL_UNIT = DEGREES_PER_SECOND;
+		public static final String GYRO_DEFAULT_CAL_UNIT = DEGREES_PER_SECOND+"*";
+		public static final String MAG_CAL_UNIT = LOCAL_FLUX;
+		public static final String MAG_DEFAULT_CAL_UNIT = LOCAL_FLUX+"*";
+		
+		public static final String LOCAL = "local"; //used for axis-angle and madgewick quaternions
+	}	
+	
+	public static class CHANNEL_TYPE{
+		public static final String CAL = "CAL";
+		public static final String UNCAL = "UNCAL";
+		public static final String RAW = "RAW";
+	}
 	
 	public static class Shimmer3{
 		public class Channel{
@@ -468,6 +501,7 @@ public class Configuration {
 			public static  String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
 			public static  String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
 			public static  String GSR = "GSR";
+			public static  String GSR_CONDUCTANCE = "GSR_Conductance";
 			public static  String INT_EXP_A1 = "Int_Exp_A1";
 			public static  String RESISTANCE_AMP = "Resistance_Amp";
 			public static  String GYRO_X = "Gyro_X";
