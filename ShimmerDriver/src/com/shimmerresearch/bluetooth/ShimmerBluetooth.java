@@ -119,7 +119,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		CONFIGURING, // The class is now initiating an outgoing connection
 		STREAMING   // The class is now connected to a remote device
 	}
-	public OPERATION_STATE operationState = OPERATION_STATE.NONE;
+	public OPERATION_STATE mOperationState = OPERATION_STATE.NONE;
 	
 	private boolean mInstructionStackLock = false;
 	protected int mState;
@@ -154,6 +154,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void isReadyForStreaming();
 	protected abstract void connectionLost();
 	protected abstract void setState(int state);
+	protected abstract void setOperationState(OPERATION_STATE operationState);
 	protected abstract void logAndStreamStatusChanged();
 	
 	protected boolean mInitialized = false;
@@ -2024,6 +2025,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if(mSendProgressReport){
 			operationPrepare();
+			setOperationState(OPERATION_STATE.INITIALISING);
 		}
 			
 		readSamplingRate();
@@ -2061,7 +2063,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// Just unlock instruction stack and leave logAndStream timer as
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
-			setInstructionStackLock(false);
+//			setInstructionStackLock(false);
+			operationWaitForFinish();
+			
+			setOperationState(OPERATION_STATE.NONE);
 
 			//TODO: send start progress report
 		}
@@ -2084,6 +2089,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		while(getmListofInstructions().size()>0); //TODO add timeout
 		// lock the instruction stack
 		setInstructionStackLock(true);
+	}
+	
+	public void operationWaitForFinish(){
+		// unlock the instruction stack
+		setInstructionStackLock(false);
+		// wait for instruction stack to clear			
+		while(getmListofInstructions().size()>0); //TODO add timeout
 	}
 	
 	public void operationStart(BLUETOOTH_JOB job){
@@ -4169,7 +4181,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void setInstructionStackLock(boolean state) {
 		this.mInstructionStackLock = state;
 	}
-
 	
 	public void consolePrintLn(String message) {
 		if(mVerboseMode) {

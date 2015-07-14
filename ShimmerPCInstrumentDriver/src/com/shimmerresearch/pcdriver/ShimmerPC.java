@@ -71,6 +71,7 @@ import java.util.TimerTask;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.OPERATION_STATE;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -491,6 +492,16 @@ public class ShimmerPC extends ShimmerBluetooth {
 	public int getState() {
 		return mState;
 	}
+	
+	@Override
+	public void setOperationState(OPERATION_STATE operationState){
+		this.mOperationState = operationState;
+		
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
+		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+	}
+	
+
 	
 	@Override
 	protected void hasStopStreaming() {

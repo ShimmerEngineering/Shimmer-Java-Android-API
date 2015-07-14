@@ -440,6 +440,12 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT, pr);
 	}
 
+	@Override
+	protected void setOperationState(OPERATION_STATE operationState) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 	
 }
