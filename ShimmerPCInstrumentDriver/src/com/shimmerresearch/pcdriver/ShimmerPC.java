@@ -499,6 +499,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 	public void setOperationState(OPERATION_STATE operationState){
 		this.mOperationState = operationState;
 		
+//		CallbackObject callBackObject = new CallbackObject(mState, mOperationState, getBluetoothAddress(), mUniqueID);
 		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}

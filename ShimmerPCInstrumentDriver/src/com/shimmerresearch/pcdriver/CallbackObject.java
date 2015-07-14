@@ -39,25 +39,24 @@
  */
 package com.shimmerresearch.pcdriver;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.OPERATION_STATE;
+
 public class CallbackObject {
 	public int mIndicator;
+	public OPERATION_STATE mOperationState;
 	public String mBluetoothAddress;
 	public String mComPort;
 	public double mPacketReceptionRate;
 	
-//	public CallbackObject(int ind, String myBlueAdd){
-//		mIndicator = ind;
-//		mBluetoothAddress = myBlueAdd;
-//	}
-//	
-//	public CallbackObject(int ind, String myBlueAdd, double packetReceptionRate){
-//		mIndicator = ind;
-//		mBluetoothAddress = myBlueAdd;
-//		this.mPacketReceptionRate = packetReceptionRate;
-//	}
-	
 	public CallbackObject(int ind, String myBlueAdd, String comPort){
 		mIndicator = ind;
+		mBluetoothAddress = myBlueAdd;
+		mComPort = comPort;
+	}
+	
+	public CallbackObject(int ind, OPERATION_STATE operationState, String myBlueAdd, String comPort){
+		mIndicator = ind;
+		mOperationState = operationState;
 		mBluetoothAddress = myBlueAdd;
 		mComPort = comPort;
 	}

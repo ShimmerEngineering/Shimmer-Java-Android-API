@@ -97,6 +97,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerObject;
+import com.shimmerresearch.driver.Util;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
 	
@@ -1763,6 +1764,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							}
 							setInstructionStackLock(false);
 						}
+						else {
+							consolePrintLn("Unknown BT response: " + tb[0]);
+						}
 					}
 				} 
 				
@@ -2186,10 +2190,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readEXGConfigurations(2);
 		//enableLowPowerMag(mLowPowerMag);
 		
-		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, read its status perdiocally
+		if(isThisVerCompatibleWith(FW_ID.SHIMMER3.LOGANDSTREAM, 0, 5, 2)){
 			readTrial();
 			readConfigTime();
 			readShimmerName();
+			readExperimentName();
 		}
 		
 		if (mSetupDevice==true){
@@ -2232,7 +2237,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	//endregion
-
+	
+	
+	public boolean isThisVerCompatibleWith(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
+		return Util.compareVersions(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal,
+				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
 	
 	public void operationPrepare(){
 		// stop timer if logAndStream
