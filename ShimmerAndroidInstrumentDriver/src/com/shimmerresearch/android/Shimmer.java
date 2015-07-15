@@ -1092,6 +1092,12 @@ public class Shimmer extends ShimmerBluetooth{
 		mHandler.obtainMessage(MESSAGE_PROGRESS_REPORT, pr).sendToTarget();
 	}
 
+	@Override
+	protected void setOperationState(OPERATION_STATE operationState) {
+		// TODO Auto-generated method stub
+		
+	}
+
 //	@Override
 //	protected void checkBatteryShimmer2r() {
 //		if (!mWaitForAck) {	
