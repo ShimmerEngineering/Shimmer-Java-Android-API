@@ -68,7 +68,8 @@ public class ShimmerBattStatusDetails {
         }
 
         if(adcVoltageError == false) {
-        	mBattVoltage = String.format(Locale.UK, "%,.1f",battVoltage) + " V";
+//        	mBattVoltage = String.format(Locale.UK, "%,.1f",battVoltage) + " V";
+        	mBattVoltage = String.format("%,.1f",battVoltage) + " V";
         	
         	// equations are only valid when: 3.2 < x < 4.167. Leaving a 0.2v either side just incase
             if (battVoltage > (4.167 + 0.2)) { 
@@ -93,7 +94,8 @@ public class ShimmerBattStatusDetails {
             }
 
             if ((chargeStatus&0xFF) != 0xC0) {// Bad battery
-            	mEstimatedChargePercentage = String.format(Locale.UK, "%,.1f",battPercentage) + "%";
+//            	mEstimatedChargePercentage = String.format(Locale.UK, "%,.1f",battPercentage) + "%";
+            	mEstimatedChargePercentage = String.format("%,.1f",battPercentage) + "%";
             }
             else {
             	mEstimatedChargePercentage = "0.0%";
