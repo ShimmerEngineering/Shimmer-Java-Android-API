@@ -441,7 +441,14 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void setOperationState(OPERATION_STATE operationState) {
+	protected void startOperation(OPERATION_STATE operationState) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void startOperation(OPERATION_STATE operationState,
+			int totalNumOfCmds) {
 		// TODO Auto-generated method stub
 		
 	}

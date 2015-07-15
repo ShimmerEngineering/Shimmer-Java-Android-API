@@ -155,7 +155,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void isReadyForStreaming();
 	protected abstract void connectionLost();
 	protected abstract void setState(int state);
-	protected abstract void setOperationState(OPERATION_STATE operationState);
+	protected abstract void startOperation(OPERATION_STATE operationState);
+	protected abstract void startOperation(OPERATION_STATE operationState, int totalNumOfCmds);
 	protected abstract void logAndStreamStatusChanged();
 	
 	protected boolean mInitialized = false;
@@ -2174,7 +2175,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if(mSendProgressReport){
 			operationPrepare();
-			setOperationState(OPERATION_STATE.INITIALISING);
 		}
 			
 		readSamplingRate();
@@ -2220,12 +2220,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// Just unlock instruction stack and leave logAndStream timer as
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
+			startOperation(OPERATION_STATE.INITIALISING, getmListofInstructions().size());
 			setInstructionStackLock(false);
-			
-//			operationWaitForFinish();
-//			setOperationState(OPERATION_STATE.NONE);
-
-			//TODO: send start progress report
 		}
 		
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, read its status perdiocally

@@ -70,6 +70,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
+import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.OPERATION_STATE;
 import com.shimmerresearch.driver.Callable;
@@ -98,6 +99,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 	public final static int NOTIFICATION_FULLY_INITIALIZED =2;
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
+	public ProgressReportPerDevice progressReportPerDevice;
 	
 	
 	/**
@@ -343,7 +345,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
-		setOperationState(OPERATION_STATE.NONE);
+		startOperation(OPERATION_STATE.NONE);
 	}
 
 
@@ -496,8 +498,10 @@ public class ShimmerPC extends ShimmerBluetooth {
 	}
 	
 	@Override
-	public void setOperationState(OPERATION_STATE operationState){
+	public void startOperation(OPERATION_STATE operationState){
 		this.mOperationState = operationState;
+		
+//		progressReportPerDevice.
 		
 //		CallbackObject callBackObject = new CallbackObject(mState, mOperationState, getBluetoothAddress(), mUniqueID);
 		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
@@ -505,6 +509,14 @@ public class ShimmerPC extends ShimmerBluetooth {
 	}
 	
 
+	@Override
+	public void startOperation(OPERATION_STATE operationState, int totalNumOfCmds){
+		this.mOperationState = operationState;
+		
+//		CallbackObject callBackObject = new CallbackObject(mState, mOperationState, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
+		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+	}
 	
 	@Override
 	protected void hasStopStreaming() {

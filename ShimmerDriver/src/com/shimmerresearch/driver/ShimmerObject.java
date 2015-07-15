@@ -415,13 +415,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte SET_CENTER_COMMAND						= (byte) 0x76; 
 	public static final byte CENTER_RESPONSE						= (byte) 0x77; 
 	public static final byte GET_CENTER_COMMAND						= (byte) 0x78; 
-	public static final byte SET_SHIMMERNAME_COMMAND				= (byte) 0x79; 
+	public static final byte SET_SHIMMERNAME_COMMAND				= (byte) 0x79; //Shimmer Name
 	public static final byte SHIMMERNAME_RESPONSE					= (byte) 0x7a; 
 	public static final byte GET_SHIMMERNAME_COMMAND				= (byte) 0x7b; 
-	public static final byte SET_EXPID_COMMAND						= (byte) 0x7c; 
+	public static final byte SET_EXPID_COMMAND						= (byte) 0x7c; //Experiment Name
 	public static final byte EXPID_RESPONSE							= (byte) 0x7d; 
 	public static final byte GET_EXPID_COMMAND						= (byte) 0x7e; 
-	public static final byte SET_MYID_COMMAND						= (byte) 0x7F; 
+	public static final byte SET_MYID_COMMAND						= (byte) 0x7F; //Shimmer ID in trial
 	public static final byte MYID_RESPONSE							= (byte) 0x80; 
 	public static final byte GET_MYID_COMMAND						= (byte) 0x81; 
 	public static final byte SET_NSHIMMER_COMMAND					= (byte) 0x82; 
