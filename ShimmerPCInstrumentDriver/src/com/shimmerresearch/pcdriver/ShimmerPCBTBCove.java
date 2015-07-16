@@ -66,11 +66,13 @@ import java.util.TimerTask;
 
 
 
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -441,14 +443,13 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void startOperation(OPERATION_STATE operationState) {
+	protected void startOperation(CURRENT_OPERATION currentOperation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void startOperation(OPERATION_STATE operationState,
-			int totalNumOfCmds) {
+	protected void startOperation(CURRENT_OPERATION currentOperation, int totalNumOfCmds) {
 		// TODO Auto-generated method stub
 		
 	}

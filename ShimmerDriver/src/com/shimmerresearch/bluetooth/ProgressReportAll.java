@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
 
 /** Hold all progress details for Bluetooth activity.
@@ -22,11 +23,12 @@ public class ProgressReportAll implements Serializable {
 	public List<ShimmerObject> mListOfShimmers;
 	public LinkedHashMap<String, ProgressReportPerDevice> mMapOfOperationProgressInfo = new LinkedHashMap<String, ProgressReportPerDevice>();
 	
-	public enum BLUETOOTH_JOB{
-		NONE,
-		CONFIGURE
-	}
-	public BLUETOOTH_JOB currentJob = BLUETOOTH_JOB.NONE;
+//	public enum BLUETOOTH_JOB{
+//		NONE,
+//		CONFIGURE
+//	}
+//	public BLUETOOTH_JOB currentJob = BLUETOOTH_JOB.NONE;
+	public CURRENT_OPERATION currentOperation = CURRENT_OPERATION.NONE;
 	
 	public static enum OperationState {
 		PENDING,
@@ -63,13 +65,13 @@ public class ProgressReportAll implements Serializable {
 //		updateProgressTotal();
 //	}
 
-	public ProgressReportAll(BLUETOOTH_JOB currentJob, List<ShimmerObject> lso) {
-		this.currentJob = currentJob;
+	public ProgressReportAll(CURRENT_OPERATION currentOperation, List<ShimmerObject> lso) {
+		this.currentOperation = currentOperation;
 		mListOfShimmers = lso;
 		
 		mMapOfOperationProgressInfo.clear();
 		for(ShimmerObject shimmer:lso){
-			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer));
+			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer, currentOperation, 1));
 		}
 		updateProgressTotal();
 	}
@@ -83,8 +85,8 @@ public class ProgressReportAll implements Serializable {
 		mProgressPercentageComplete = ((int)(((double)mProgressCounter/(double)mProgressEndValue)*100));
 	}
 	
-	public void updateProgressPerDevice(String comPort, ProgressReportPerCmd pRPC){
-		mMapOfOperationProgressInfo.get(comPort).updateProgress(pRPC);
+	public void updateProgressPerDevice(String comPort, ProgressReportPerDevice pRPD){
+//		mMapOfOperationProgressInfo.get(comPort).updateProgress(pRPD);
 		if(mMapOfOperationProgressInfo.get(comPort).mProgressCounter == mMapOfOperationProgressInfo.get(comPort).mProgressEndValue){
 			updateProgressCount();
 		}

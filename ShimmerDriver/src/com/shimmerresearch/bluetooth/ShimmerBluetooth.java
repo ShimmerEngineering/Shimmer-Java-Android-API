@@ -88,7 +88,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import com.shimmerresearch.bluetooth.ProgressReportAll.BLUETOOTH_JOB;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ExpansionBoardDetails;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -112,15 +111,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public static final int STATE_UNINTIALISED = -1; // 
 	public static final int STATE_STREAMING = 3;  // The class is now connected to a remote device
-	public static final int STATE_FAILED = 4;  // The class is now connected to a remote device
+//	public static final int STATE_FAILED = 4;  // The class is now connected to a remote device
 	
-	public enum OPERATION_STATE{
+	public enum CURRENT_OPERATION{
 		NONE,
 		INITIALISING,       // The class is doing nothing
 		CONFIGURING, // The class is now initiating an outgoing connection
 		STREAMING   // The class is now connected to a remote device
 	}
-	public OPERATION_STATE mOperationState = OPERATION_STATE.NONE;
+	public CURRENT_OPERATION mOperation = CURRENT_OPERATION.NONE;
 	
 	private boolean mInstructionStackLock = false;
 	protected int mState;
@@ -155,8 +154,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void isReadyForStreaming();
 	protected abstract void connectionLost();
 	protected abstract void setState(int state);
-	protected abstract void startOperation(OPERATION_STATE operationState);
-	protected abstract void startOperation(OPERATION_STATE operationState, int totalNumOfCmds);
+	protected abstract void startOperation(CURRENT_OPERATION currentOperation);
+	protected abstract void startOperation(CURRENT_OPERATION currentOperation, int totalNumOfCmds);
 	protected abstract void logAndStreamStatusChanged();
 	
 	protected boolean mInitialized = false;
@@ -2220,7 +2219,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// Just unlock instruction stack and leave logAndStream timer as
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
-			startOperation(OPERATION_STATE.INITIALISING, getmListofInstructions().size());
+			startOperation(CURRENT_OPERATION.INITIALISING, getmListofInstructions().size());
+			
 			setInstructionStackLock(false);
 		}
 		
@@ -2256,7 +2256,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		while(getmListofInstructions().size()>0); //TODO add timeout
 	}
 	
-	public void operationStart(BLUETOOTH_JOB job){
+	public void operationStart(CURRENT_OPERATION currentOperation){
+		startOperation(currentOperation, getmListofInstructions().size());
 		//unlock instruction stack
 		setInstructionStackLock(false);
 		startTimerToReadStatus();

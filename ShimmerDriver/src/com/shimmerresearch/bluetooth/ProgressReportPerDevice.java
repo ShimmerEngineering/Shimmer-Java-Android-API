@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
 
 /** Hold progress details per device for Bluetooth activity.
@@ -24,13 +25,7 @@ public class ProgressReportPerDevice implements Serializable {
 	public int mCommandCompleted;
 	public int mNumberofRemainingCMDsInBuffer;
 	public String mBluetoothAddress;
-	
-	public ProgressReportPerDevice(ShimmerObject shimmerObject) {
-		if(shimmerObject instanceof ShimmerBluetooth){
-			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerObject;
-			setShimmerBluetooth(shimmerBluetooth);
-		}
-	}
+	public String mComPort;
 	
 	
 	public static enum OperationState {
@@ -50,17 +45,29 @@ public class ProgressReportPerDevice implements Serializable {
     	"Fail",
     	"Cancelled"
     };
+	public OperationState mOperationState = OperationState.PENDING;
+
+	public CURRENT_OPERATION mCurrentOperation = CURRENT_OPERATION.NONE;
     
 	public ShimmerBluetoothDetailsMini mShimmerBluetoothDetailsMini = new ShimmerBluetoothDetailsMini();
 //	public List<ErrorDetails> mListOfErrors = new ArrayList<ErrorDetails>(); 
 	
-	public OperationState mOperationState = OperationState.PENDING;
 	
 //	public String mLog = "";
 	public int mProgressCounter = 0;
 	public int mProgressPercentageComplete = 0;
 	public int mProgressEndValue = 100;
 	public float mProgressSpeed = 0;
+	
+	public ProgressReportPerDevice(ShimmerObject shimmerObject, CURRENT_OPERATION currentOperation, int endValue) {
+		if(shimmerObject instanceof ShimmerBluetooth){
+			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerObject;
+			setShimmerBluetooth(shimmerBluetooth);
+			mComPort = shimmerBluetooth.mUniqueID;
+			mCurrentOperation = currentOperation;
+			mProgressEndValue = endValue;
+		}
+	}
 
 	/**
 	 * Used to calculated the percentage progress based on the pre-set
@@ -164,6 +171,11 @@ public class ProgressReportPerDevice implements Serializable {
 		public String mFirmwareVersionParsed = "";
 		
 		public String mShimmerUserAssignedName = "";
+	}
+
+	public void finishOperation() {
+		mProgressCounter = mProgressEndValue;
+		mProgressPercentageComplete = 100;
 	}
 
 

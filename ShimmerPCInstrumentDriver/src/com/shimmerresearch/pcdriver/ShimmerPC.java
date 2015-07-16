@@ -57,25 +57,12 @@
 
 package com.shimmerresearch.pcdriver;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.OPERATION_STATE;
-import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.Util;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -85,12 +72,13 @@ public class ShimmerPC extends ShimmerBluetooth {
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
+	public Util util = new Util("ShimmerPC", true);
 	
 	public final static int MSG_IDENTIFIER_STATE_CHANGE = 0;
 	public final static int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
 	public final static int MSG_IDENTIFIER_DATA_PACKET = 2;
 	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
-	public final static int MSG_IDENTIFIER_PROGRESS_REPORT = 4;
+	public final static int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
 	public final static int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
 	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
 	
@@ -218,9 +206,9 @@ public class ShimmerPC extends ShimmerBluetooth {
 			mFirstTime=true;
 			try {
 				setState(STATE_CONNECTING);
-				System.out.println("Port open: " + mSerialPort.openPort());
-				System.out.println("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
-				System.out.println("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
+				util.consolePrintLn("Port open: " + mSerialPort.openPort());
+				util.consolePrintLn("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
+				util.consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
 				if (mIOThread != null) { 
 					mIOThread = null;
 					mPThread = null;
@@ -236,7 +224,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 			}
 			catch (SerialPortException ex){
 				connectionLost();
-				mState = STATE_FAILED;
+//				mState = STATE_FAILED;
 				System.out.println(ex);
 			}
 		}
@@ -342,10 +330,13 @@ public class ShimmerPC extends ShimmerBluetooth {
         mInitialized = true;
         sensorAndConfigMapsCreate();
         sensorMapUpdateWithEnabledSensors();
+        
+		finishOperation(CURRENT_OPERATION.INITIALISING);
+        
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
-		startOperation(OPERATION_STATE.NONE);
+//		startOperation(OPERATION_STATE.NONE);
 	}
 
 
@@ -481,7 +472,7 @@ public class ShimmerPC extends ShimmerBluetooth {
 	}
 
 	@Override
-	protected void setState(int state) {
+	public void setState(int state) {
 		
 		if (state==STATE_NONE && mStreaming==true){
 			disconnect();
@@ -498,24 +489,51 @@ public class ShimmerPC extends ShimmerBluetooth {
 	}
 	
 	@Override
-	public void startOperation(OPERATION_STATE operationState){
-		this.mOperationState = operationState;
+	public void startOperation(CURRENT_OPERATION currentOperation){
+//		this.mOperationState = operationState;
 		
-//		progressReportPerDevice.
+		util.consolePrintLn(currentOperation + " START");
+		
+		progressReportPerDevice = new ProgressReportPerDevice(this, currentOperation, 1);
 		
 //		CallbackObject callBackObject = new CallbackObject(mState, mOperationState, getBluetoothAddress(), mUniqueID);
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
-		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
+		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 	}
 	
 
 	@Override
-	public void startOperation(OPERATION_STATE operationState, int totalNumOfCmds){
-		this.mOperationState = operationState;
+	public void startOperation(CURRENT_OPERATION currentOperation, int totalNumOfCmds){
+//		this.mCurr = currentOperation;
+		
+		util.consolePrintLn(currentOperation + " START");
+
+		progressReportPerDevice = new ProgressReportPerDevice(this, currentOperation, totalNumOfCmds);
 		
 //		CallbackObject callBackObject = new CallbackObject(mState, mOperationState, getBluetoothAddress(), mUniqueID);
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
-		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
+		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+	}
+	
+//	@Override
+	public void finishOperation(CURRENT_OPERATION currentOperation){
+//		this.mCurr = currentOperation;
+		
+		util.consolePrintLn(currentOperation + " FINISH");
+		
+		if(progressReportPerDevice.mCurrentOperation == currentOperation){
+
+			progressReportPerDevice.finishOperation();
+			
+//			CallbackObject callBackObject = new CallbackObject(mState, mOperationState, getBluetoothAddress(), mUniqueID);
+			CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
+			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+			
+			progressReportPerDevice = new ProgressReportPerDevice(this, CURRENT_OPERATION.NONE, 1);
+			callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
+			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+		}
+
 	}
 	
 	@Override
@@ -541,9 +559,15 @@ public class ShimmerPC extends ShimmerBluetooth {
 	}
 	
 	@Override
-	protected void sendProgressReport(ProgressReportPerCmd pr) {
-		// TODO Auto-generated method stub
-		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT, pr);
+	protected void sendProgressReport(ProgressReportPerCmd pRPC) {
+		if(progressReportPerDevice!=null){
+			if(progressReportPerDevice.mCurrentOperation!=CURRENT_OPERATION.NONE){
+				progressReportPerDevice.updateProgress(pRPC);
+				
+				CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
+				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+			}
+		}
 	}
 
 
