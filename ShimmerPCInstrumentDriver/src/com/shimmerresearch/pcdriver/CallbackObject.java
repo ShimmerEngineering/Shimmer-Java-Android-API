@@ -40,11 +40,12 @@
 package com.shimmerresearch.pcdriver;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
+//import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 
 public class CallbackObject {
 	public int mIndicator;
-	public CURRENT_OPERATION mCurrentOperation;
+//	public CURRENT_OPERATION mCurrentOperation;
+	public int mCurrentOperation;
 	public String mBluetoothAddress;
 	public String mComPort;
 	public double mPacketReceptionRate;
@@ -56,7 +57,8 @@ public class CallbackObject {
 		mComPort = comPort;
 	}
 	
-	public CallbackObject(int ind, CURRENT_OPERATION currentOperation, String myBlueAdd, String comPort){
+	public CallbackObject(int ind, int currentOperation, String myBlueAdd, String comPort){
+//	public CallbackObject(int ind, CURRENT_OPERATION currentOperation, String myBlueAdd, String comPort){
 		mIndicator = ind;
 		mCurrentOperation = currentOperation;
 		mBluetoothAddress = myBlueAdd;

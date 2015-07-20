@@ -50,29 +50,11 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -304,7 +286,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		// TODO Auto-generated method stub
 		// Send msg fully initialized, send notification message,  
 		// DO Something here
-        mInitialized = true;
+        mIsInitialised = true;
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 	}
@@ -345,8 +327,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 				mPThread.stop = true;
 				mPThread = null;
 			}
-			mStreaming = false;
-			mInitialized = false;
+			mIsStreaming = false;
+			mIsInitialised = false;
 			mIN.close();
 			mOUT.close();
 			conn.close();
@@ -378,8 +360,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 				mPThread.stop = true;
 				mPThread = null;
 			}
-			mStreaming = false;
-			mInitialized = false;
+			mIsStreaming = false;
+			mIsInitialised = false;
 			conn.close();
 			conn = null;
 			setState(STATE_NONE);
@@ -443,16 +425,17 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void startOperation(CURRENT_OPERATION currentOperation) {
+	protected void startOperation(int currentOperation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void startOperation(CURRENT_OPERATION currentOperation, int totalNumOfCmds) {
+	protected void startOperation(int currentOperation, int totalNumOfCmds) {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 	
 	

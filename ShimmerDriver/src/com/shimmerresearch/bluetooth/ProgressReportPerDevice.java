@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
+//import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
 
 /** Hold progress details per device for Bluetooth activity.
@@ -47,7 +47,8 @@ public class ProgressReportPerDevice implements Serializable {
     };
 	public OperationState mOperationState = OperationState.PENDING;
 
-	public CURRENT_OPERATION mCurrentOperation = CURRENT_OPERATION.NONE;
+//	public CURRENT_OPERATION mCurrentOperation = CURRENT_OPERATION.NONE;
+	public int mCurrentOperation = ShimmerBluetooth.STATE_NONE;
     
 	public ShimmerBluetoothDetailsMini mShimmerBluetoothDetailsMini = new ShimmerBluetoothDetailsMini();
 //	public List<ErrorDetails> mListOfErrors = new ArrayList<ErrorDetails>(); 
@@ -59,7 +60,8 @@ public class ProgressReportPerDevice implements Serializable {
 	public int mProgressEndValue = 100;
 	public float mProgressSpeed = 0;
 	
-	public ProgressReportPerDevice(ShimmerObject shimmerObject, CURRENT_OPERATION currentOperation, int endValue) {
+	public ProgressReportPerDevice(ShimmerObject shimmerObject, int currentOperation, int endValue) {
+//	public ProgressReportPerDevice(ShimmerObject shimmerObject, CURRENT_OPERATION currentOperation, int endValue) {
 		if(shimmerObject instanceof ShimmerBluetooth){
 			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerObject;
 			setShimmerBluetooth(shimmerBluetooth);
