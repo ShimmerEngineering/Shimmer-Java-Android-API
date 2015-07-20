@@ -241,9 +241,9 @@ public class Configuration {
 		public static final String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
 		public static final String[] ListofAccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
 		public static final Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};
-		public static final String[] ListofGyroRange={"+/- 250 dps","+/- 500 dps","+/- 1000 dps","+/- 2000 dps"}; 
+		public static final String[] ListofGyroRange={"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"}; 
 		public static final Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
-		public static final String[] ListofMagRange={"+/- 1.3 Ga","+/- 1.9 Ga","+/- 2.5 Ga","+/- 4.0 Ga","+/- 4.7 Ga","+/- 5.6 Ga","+/- 8.1 Ga"}; 
+		public static final String[] ListofMagRange={"+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"}; 
 		public static final Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option
 		public static final String[] ListofPressureResolution={"Low","Standard","High","Very High"};
 		public static final Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
