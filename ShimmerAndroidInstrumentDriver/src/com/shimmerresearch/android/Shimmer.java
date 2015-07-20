@@ -496,8 +496,8 @@ public class Shimmer extends ShimmerBluetooth{
 			mTimer.purge();
 		}
 		setState(STATE_NONE);
-		mStreaming = false;
-		mInitialized = false;
+		mIsStreaming = false;
+		mIsInitialised = false;
 		if (mIOThread != null) {
 			mIOThread.stop = true;
 			mIOThread = null;
@@ -538,7 +538,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 */
 	private void connectionFailed() {
 		setState(STATE_NONE);
-		mInitialized = false;
+		mIsInitialised = false;
 		// Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
@@ -559,7 +559,7 @@ public class Shimmer extends ShimmerBluetooth{
 			
 		}
 		setState(STATE_NONE);
-		mInitialized = false;
+		mIsInitialised = false;
 		// Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
@@ -847,9 +847,9 @@ public class Shimmer extends ShimmerBluetooth{
 		bundle.putString(TOAST, "Device " + mMyBluetoothAddress +" is ready for Streaming");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
-		if (mInitialized == false){
+		if (mIsInitialised == false){
 			//only do this during the initialization process to indicate that it is fully initialized, dont do this for a normal inqiuiry
-			mInitialized = true;
+			mIsInitialised = true;
 		}
 		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_FULLY_INITIALIZED, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" Initialization completed and is ready for Streaming");
@@ -875,7 +875,7 @@ public class Shimmer extends ShimmerBluetooth{
 	}
 
 	public boolean getStreamingStatus(){
-		return mStreaming;
+		return mIsStreaming;
 	}
 
 	

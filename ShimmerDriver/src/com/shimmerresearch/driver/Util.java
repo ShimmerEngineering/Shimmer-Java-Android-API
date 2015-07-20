@@ -2,6 +2,7 @@ package com.shimmerresearch.driver;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,7 +13,7 @@ import java.util.Date;
  * @author Mark Nolan
  *
  */
-public class Util {
+public class Util implements Serializable {
 	
 	public String mParentClassName = "UpdateCheck";
 	public Boolean mVerboseMode = true;

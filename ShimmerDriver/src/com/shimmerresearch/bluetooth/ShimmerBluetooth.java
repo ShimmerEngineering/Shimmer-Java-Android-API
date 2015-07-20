@@ -108,21 +108,27 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int STATE_NONE = 0;       // The class is doing nothing
 	public static final int STATE_CONNECTING = 1; // The class is now initiating an outgoing connection
 	public static final int STATE_CONNECTED = 2;  // The class is now connected to a remote device
-	
-	public static final int STATE_UNINTIALISED = -1; // 
 	public static final int STATE_STREAMING = 3;  // The class is now connected to a remote device
+	public static final int STATE_INITIALISING = 4; // 
+	public static final int STATE_INITIALISED = 5; // 
+	public static final int STATE_CONFIGURING = 6; // 
+	public static final int STATE_CONFIGURED = 7; // 
+	
 //	public static final int STATE_FAILED = 4;  // The class is now connected to a remote device
 	
-	public enum CURRENT_OPERATION{
-		NONE,
-		INITIALISING,       // The class is doing nothing
-		CONFIGURING, // The class is now initiating an outgoing connection
-		STREAMING   // The class is now connected to a remote device
-	}
-	public CURRENT_OPERATION mOperation = CURRENT_OPERATION.NONE;
+//	public enum CURRENT_OPERATION{
+//		NONE,
+//		INITIALISING,       // The class is doing nothing
+//		CONFIGURING, // The class is now initiating an outgoing connection
+//		STREAMING   // The class is now connected to a remote device
+//	}
+//	public CURRENT_OPERATION mOperation = CURRENT_OPERATION.NONE;
 	
 	private boolean mInstructionStackLock = false;
 	protected int mState;
+	protected boolean mIsConnected = false;
+	protected boolean mIsInitialised = false;
+	protected boolean mSendProgressReport = false;
 	protected byte mCurrentCommand;	
 	protected boolean mWaitForAck=false;                                          // This indicates whether the device is waiting for an acknowledge packet from the Shimmer Device  
 	protected boolean mWaitForResponse=false; 									// This indicates whether the device is waiting for a response packet from the Shimmer Device 
@@ -154,12 +160,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void isReadyForStreaming();
 	protected abstract void connectionLost();
 	protected abstract void setState(int state);
-	protected abstract void startOperation(CURRENT_OPERATION currentOperation);
-	protected abstract void startOperation(CURRENT_OPERATION currentOperation, int totalNumOfCmds);
+//	protected abstract void startOperation(CURRENT_OPERATION currentOperation);
+//	protected abstract void startOperation(CURRENT_OPERATION currentOperation, int totalNumOfCmds);
+	protected abstract void startOperation(int currentOperation);
+	protected abstract void startOperation(int currentOperation, int totalNumOfCmds);
 	protected abstract void logAndStreamStatusChanged();
 	
-	protected boolean mInitialized = false;
-	protected boolean mSendProgressReport = false;
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
@@ -272,7 +278,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						String msg = "Command Transmitted: " + Arrays.toString(insBytes);
 						printLogDataForDebugging(msg);
 
-						if(!mStreaming){
+						if(!mIsStreaming){
 							while(availableBytes()>0){ //this is to clear the buffer 
 								tb=readBytes(availableBytes());
 							}
@@ -283,7 +289,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 						
 						if (mCurrentCommand==STOP_STREAMING_COMMAND){
-							mStreaming=false;
+							mIsStreaming=false;
 							getmListofInstructions().removeAll(Collections.singleton(null));
 						} else {
 							if (mCurrentCommand==GET_FW_VERSION_COMMAND){
@@ -293,7 +299,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							} else if (mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){
 								startResponseTimer(ACK_TIMER_DURATION);
 							} else {
-								if(mStreaming){
+								if(mIsStreaming){
 									startResponseTimer(ACK_TIMER_DURATION);
 								} else {
 									startResponseTimer(ACK_TIMER_DURATION+10);
@@ -309,7 +315,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 				
 				
-				if (mWaitForAck==true && mStreaming ==false) {
+				if (mWaitForAck==true && mIsStreaming ==false) {
 
 					if (bytesToBeRead()){
 						tb=readBytes(1);
@@ -321,7 +327,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						if (mCurrentCommand==STOP_STREAMING_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
 							mTimer.cancel();
 							mTimer.purge();
-							mStreaming=false;
+							mIsStreaming=false;
 							mTransactionCompleted=true;
 							mWaitForAck=false;
 							try {
@@ -354,7 +360,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							if (mCurrentCommand==START_STREAMING_COMMAND || mCurrentCommand==START_SDBT_COMMAND) {
 								mTimer.cancel();
 								mTimer.purge();
-								mStreaming=true;
+								mIsStreaming=true;
 								mTransactionCompleted=true;
 								byteStack.clear();
 								isNowStreaming();
@@ -998,7 +1004,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 
 					}
-				} else if (mWaitForResponse==true && !mStreaming) {
+				} else if (mWaitForResponse==true && !mIsStreaming) {
 					if (mFirstTime){
 						while (availableBytes()!=0){
 								int avaible = availableBytes();
@@ -1345,7 +1351,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTimer.cancel(); //cancel the ack timer
 							mTimer.purge();
 							mWaitForResponse=false;
-							if(mStreaming==false) {
+							if(mIsStreaming==false) {
 								if (mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
 									byte[] bufferSR = readBytes(1);
 									if (mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
@@ -1771,7 +1777,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				
 				
-				if (mWaitForAck==false && mWaitForResponse == false && mStreaming ==false && availableBytes()!=0 && mFirmwareIdentifier==3) {
+				if (mWaitForAck==false && mWaitForResponse == false && mIsStreaming ==false && availableBytes()!=0 && mFirmwareIdentifier==3) {
 					tb=readBytes(1);
 					if(tb[0]==ACK_COMMAND_PROCESSED) {
 						consolePrintLn("ACK RECEIVED , Connected State!!");
@@ -1828,7 +1834,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 				
 				
-				if (mStreaming==true) {
+				if (mIsStreaming==true) {
 					
 					tb = readBytes(1);
 					if (tb!=null){
@@ -1992,7 +1998,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					getmListofInstructions().remove(0);
 					setInstructionStackLock(false);
 					initializeBoilerPlate();
-				} else if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND && mInitialized==false){
+				} else if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND && mIsInitialised==false){
 					printLogDataForDebugging("Get Sampling Rate Timeout");
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
@@ -2022,10 +2028,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
 					setInstructionStackLock(false);
 					
-					if (mStreaming && getPacketReceptionRate()<100){
+					if (mIsStreaming && getPacketReceptionRate()<100){
 						getmListofInstructions().clear();
 						printLogDataForDebugging("Response not received for Get_Status_Command. Loss bytes detected.");
-					} else if(!mStreaming) {
+					} else if(!mIsStreaming) {
 						//CODE TO BE USED
 						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection. Packet RR:  " + Double.toString(getPacketReceptionRate()));
 						if (mWaitForResponse){
@@ -2044,10 +2050,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
 					setInstructionStackLock(false);
-					if (mStreaming && getPacketReceptionRate()<100){
+					if (mIsStreaming && getPacketReceptionRate()<100){
 						printLogDataForDebugging("Response not received for Get_Dir_Command. Loss bytes detected.");
 						getmListofInstructions().clear();
-					} else  if(!mStreaming){
+					} else  if(!mIsStreaming){
 						//CODE TO BE USED
 						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection  ");
 						if (mWaitForResponse){
@@ -2059,7 +2065,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 				else {
 					
-					if(!mStreaming){
+					if(!mIsStreaming){
 						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection  ");
 						if (mWaitForResponse){
 							printLogDataForDebugging("Response not received");
@@ -2174,6 +2180,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if(mSendProgressReport){
 			operationPrepare();
+			setState(ShimmerBluetooth.STATE_INITIALISING);
 		}
 			
 		readSamplingRate();
@@ -2219,7 +2226,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// Just unlock instruction stack and leave logAndStream timer as
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
-			startOperation(CURRENT_OPERATION.INITIALISING, getmListofInstructions().size());
+//			startOperation(CURRENT_OPERATION.INITIALISING, getmListofInstructions().size());
+			startOperation(STATE_INITIALISING, getmListofInstructions().size());
 			
 			setInstructionStackLock(false);
 		}
@@ -2256,7 +2264,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		while(getmListofInstructions().size()>0); //TODO add timeout
 	}
 	
-	public void operationStart(CURRENT_OPERATION currentOperation){
+	public void operationStart(int currentOperation){
+//	public void operationStart(CURRENT_OPERATION currentOperation){
 		startOperation(currentOperation, getmListofInstructions().size());
 		//unlock instruction stack
 		setInstructionStackLock(false);
@@ -2395,7 +2404,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void readCalibrationParameters(String sensor) {
 	
-			if (!mInitialized){
+			if (!mIsInitialised){
 				if (mFirmwareVersionCode==1 && mFirmwareVersionInternal==0  && mHardwareVersion!=3) {
 					//mFirmwareVersionParsed="BoilerPlate 0.1.0";
 					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
@@ -2857,7 +2866,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
 	 */
 	public void writeSamplingRate(double rate) {
-		if (mInitialized=true) {
+		if (mIsInitialised=true) {
 			setShimmerSamplingRate(rate);
 			if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
 
@@ -3416,7 +3425,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public boolean getInitialized(){
-		return mInitialized;
+		return mIsInitialised;
 	}
 
 	public double getPacketReceptionRate(){
@@ -3644,7 +3653,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
      * @return
      */
     public boolean isStreaming(){
-    	return mStreaming;
+    	return mIsStreaming;
     }
     
     /**** SET FUNCTIONS *****/
@@ -3930,7 +3939,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- MISCELLANEOUS FUNCTIONS ---------
 	
 	public void reconnect(){
-        if (mState==STATE_CONNECTED && !mStreaming){
+        if (mState==STATE_CONNECTED && !mIsStreaming){
         	String msgReconnect = "Reconnecting the Shimmer...";
 			sendStatusMSGtoUI(msgReconnect);
             stop();
@@ -4438,7 +4447,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	@Override
 	protected void checkBattery(){
-		if (mStreaming ){
+		if (mIsStreaming ){
 			if(mHardwareVersion == HW_ID.SHIMMER_3 && mFirmwareIdentifier==3){
 				if (!mWaitForAck) {	
 					if (mVSenseBattMA.getMean()<mLowBattLimit*1000*0.8) {
