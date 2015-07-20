@@ -1093,7 +1093,14 @@ public class Shimmer extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void setOperationState(OPERATION_STATE operationState) {
+	protected void startOperation(CURRENT_OPERATION currentOperation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void startOperation(CURRENT_OPERATION currentOperation,
+			int totalNumOfCmds) {
 		// TODO Auto-generated method stub
 		
 	}
