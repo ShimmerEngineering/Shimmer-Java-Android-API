@@ -1092,15 +1092,16 @@ public class Shimmer extends ShimmerBluetooth{
 		mHandler.obtainMessage(MESSAGE_PROGRESS_REPORT, pr).sendToTarget();
 	}
 
+
+
 	@Override
-	protected void startOperation(CURRENT_OPERATION currentOperation) {
+	protected void startOperation(int currentOperation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void startOperation(CURRENT_OPERATION currentOperation,
-			int totalNumOfCmds) {
+	protected void startOperation(int currentOperation, int totalNumOfCmds) {
 		// TODO Auto-generated method stub
 		
 	}
