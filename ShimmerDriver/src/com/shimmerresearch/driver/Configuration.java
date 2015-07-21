@@ -2078,7 +2078,8 @@ public class Configuration {
 								Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
-								Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP)));
+								Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+								Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
 			//aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorTileDetails(
 			//		Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL, new SensorGroupingDetails(
