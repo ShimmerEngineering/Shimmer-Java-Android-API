@@ -10661,4 +10661,5 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public void setCenter(String value){
 		mCenter = value;
 	}
+
 }
