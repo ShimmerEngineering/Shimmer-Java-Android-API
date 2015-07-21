@@ -5417,6 +5417,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public long getEnabledSensors() {
 		return mEnabledSensors;
 	}
+	
+	public long getRTCOffset(){
+		return mRTCOffset;
+	}
 
 	public String[] getListofSupportedSensors(){
 		String[] sensorNames = null;
@@ -8504,6 +8508,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public int getMPU9150LPF() {
 		return mMPU9150LPF;
 	}
+	
+	public int getMPU9150DMP() {
+		return mMPU9150DMP;
+	}
 
 	/**
 	 * @return the mMPU9150MPLSamplingRate
@@ -9032,6 +9040,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mSamplingDividerLsm303dlhcAccel;
 	}
 
+	public long getInitialTimeStamp(){
+		return mInitialTimeStamp;
+	}
 	/**
 	 * @return the mHighResAccelWR
 	 */
