@@ -7249,10 +7249,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						derivedChannelBitmapID = infoMemMap.maskDerivedChannelResAmp;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+						derivedChannelBitmapID = infoMemMap.maskDerivedChannelSkinTemp;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A12){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelSkinTemp;
+						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A13){
 						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;

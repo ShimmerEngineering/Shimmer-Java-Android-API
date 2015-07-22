@@ -2079,8 +2079,8 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
 								Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP)));
-			//aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorTileDetails(
-			//		Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12, //X-axis
 								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13, //Y-axis
@@ -2116,7 +2116,7 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
-			//aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoHighGAccel;
 			//mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGps;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
