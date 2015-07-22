@@ -545,6 +545,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected String mExperimentName = "";
 	protected int mExperimentId = 0;
 	protected int mExperimentNumberOfShimmers = 0;
+
 	protected int mExperimentDurationEstimated = 0;
 	protected int mExperimentDurationMaximum = 0;
 	
@@ -10661,6 +10662,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mLastReceivedTimeStamp;
 	}
 	
+//	/**
+//	 * @return
+//	 */
+//	public int getmExperimentNumberOfShimmers() {
+//		return mExperimentNumberOfShimmers;
+//	}
+//	
 	public String getCenter(){
 		return mCenter;
 	}
