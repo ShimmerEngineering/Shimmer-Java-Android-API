@@ -561,7 +561,7 @@ public class Configuration {
 			public static final String PPG2_A1 = "PPG2 A1";
 			public static final String PPG2_A14 = "PPG2 A14";
 			public static final String EXG_RESPIRATION = "Respiration";
-			public static final String SKIN_TEMP_PROBE = "Temperature Probe";
+			public static final String SKIN_TEMP_PROBE = "Skin Temperature";
 			public static final String BRAMP_HIGHGAIN = "High Gain";
 			public static final String BRAMP_LOWGAIN = "Low Gain";
 	
@@ -701,6 +701,7 @@ public class Configuration {
 			public static  String PPG1_A13 = "PPG1_A13";
 			public static  String PPG2_A1 = "PPG2_A1";
 			public static  String PPG2_A14 = "PPG2_A14";
+			public static  String SKIN_TEMPERATURE = "Skin_Temperature";
 			public static  String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 			public static  String TIMESTAMP_SYNC = "Timestamp_Sync";
 		}
@@ -1576,6 +1577,14 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,
 							ChannelDataType.UINT12, 2, ChannelDataEndian.LSB,
 							CHANNEL_UNITS.MILLIVOLTS));
+			
+			// Phillps Skin Temperature Probe (through Bridge Amp)
+			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mListOfChannels
+				.add(new ChannelDetails(
+					Configuration.Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE,
+					Configuration.Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE,
+					ChannelDataType.UINT12, 2, ChannelDataEndian.LSB,
+					CHANNEL_UNITS.DEGREES_CELSUIS));
 			
 			//GSR
 			aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfChannels

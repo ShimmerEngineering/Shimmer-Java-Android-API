@@ -1214,20 +1214,29 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						//change name based on derived sensor value
 						if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG2_1_14)>0){
 							sensorName = Shimmer3.ObjectClusterSensorName.PPG2_A1;
-						} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.RES_AMP)>0){
+						}else if ((mDerivedSensors & SDLogHeaderDerivedSensors.RES_AMP)>0){
 							sensorName = Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP;
+						}else if((mDerivedSensors & SDLogHeaderDerivedSensors.SKIN_TEMP)>0){
+							sensorName = Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE;
 						}
+						
 					}
 					sensorNames[iA1]=sensorName;
 					objectCluster.mPropertyCluster.put(sensorName,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA1]));
 					uncalibratedData[iA1]=(double)newPacketInt[iA1];
 					uncalibratedDataUnits[iA1]=CHANNEL_UNITS.NO_UNITS;
 					if (mEnableCalibration){
-						calibratedData[iA1]=calibrateU12AdcValue(tempData[0],0,3,1);
-						calibratedDataUnits[iA1] = CHANNEL_UNITS.MILLIVOLTS;
-						objectCluster.mPropertyCluster.put(sensorName,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA1]));
+						if((mDerivedSensors & SDLogHeaderDerivedSensors.SKIN_TEMP)>0){
+							calibratedData[iA1]=calibratePhillipsSkinTemperatureData(tempData[0]);
+							calibratedDataUnits[iA1] = CHANNEL_UNITS.DEGREES_CELSUIS;
+							objectCluster.mPropertyCluster.put(sensorName,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.DEGREES_CELSUIS,calibratedData[iA1]));
+						}
+						else{
+							calibratedData[iA1]=calibrateU12AdcValue(tempData[0],0,3,1);
+							calibratedDataUnits[iA1] = CHANNEL_UNITS.MILLIVOLTS;
+							objectCluster.mPropertyCluster.put(sensorName,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA1]));
+						}
 					}
-				
 			}
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A12) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A12) > 0)
@@ -4351,6 +4360,25 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected double calibrateU12AdcValue(double uncalibratedData,double offset,double vRefP,double gain){
 		double calibratedData=(uncalibratedData-offset)*(((vRefP*1000)/gain)/4095);
 		return calibratedData;
+	}
+	
+	protected double calibratePhillipsSkinTemperatureData(double uncalibratedData){
+		
+		/* 
+		 * SEE Bridge Amplifer+ User Manual for Details
+		 * 
+		 * y = -27.42ln(x) + 56.502 
+		 * where y = temperature in degC
+		 * where x = (200*Vo)/((10.1)Pv-Vo)
+		 * where Pv = 3000mV
+		 * where Vo = Uncalibrated output of the resistance amplifier channel
+		 * 
+		*/
+		
+		double x = (200.0/uncalibratedData)/((10.1)*3000-uncalibratedData);
+		double y = -27.42*Math.log(x) + 56.502;
+		
+		return y;
 	}
 
 	protected double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
