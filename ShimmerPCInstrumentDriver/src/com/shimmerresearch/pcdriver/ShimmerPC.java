@@ -76,17 +76,17 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	ObjectCluster objectClusterTemp = null;
 	public Util util = new Util("ShimmerPC", true);
 	
-	public final static int MSG_IDENTIFIER_STATE_CHANGE = 0;
-	public final static int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
-	public final static int MSG_IDENTIFIER_DATA_PACKET = 2;
-	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
-	public final static int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
-	public final static int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
-	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
+	public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
+	public static final int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
+	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
+	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
+	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
+	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
+	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
 	
-	public final static int NOTIFICATION_STOP_STREAMING =0;
-	public final static int NOTIFICATION_START_STREAMING =1;
-	public final static int NOTIFICATION_FULLY_INITIALIZED =2;
+	public static final int NOTIFICATION_STOP_STREAMING =0;
+	public static final int NOTIFICATION_START_STREAMING =1;
+	public static final int NOTIFICATION_FULLY_INITIALIZED =2;
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	public ProgressReportPerDevice progressReportPerDevice;
@@ -403,28 +403,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			mTimer.cancel();
 			mTimer.purge();
 		}
-		try {
-			if (mIOThread != null) {
-				mIOThread.stop = true;
-				mIOThread = null;
-				mPThread.stop = true;
-				mPThread = null;
-			}
-			mIsStreaming = false;
-			mIsInitialised = false;
-			if (mSerialPort != null && mSerialPort.isOpened()) {
-				  mSerialPort.purgePort (1);
-				  mSerialPort.purgePort (2);
-				  mSerialPort.closePort ();
-				}
-			
-			mSerialPort = null;
-			setState(STATE_NONE);
-		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
-			setState(STATE_NONE);
-			e.printStackTrace();
-		}
+		closeConnection();
+		setState(STATE_DISCONNECTED);
 	}
 
 	@Override
@@ -435,7 +415,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void connectionLost() {
+		closeConnection();
 		System.out.println("Connection Lost");
+		setState(STATE_CONNECTION_LOST);
+	}
+	
+	private void closeConnection(){
 		try {
 			if (mIOThread != null) {
 				mIOThread.stop = true;
@@ -458,8 +443,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			// TODO Auto-generated catch block
 			setState(STATE_NONE);
 			e.printStackTrace();
-		}	
-		
+		}			
 	}
 
 	@Override
@@ -479,27 +463,32 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public void setState(int state) {
 		
-		if (state==STATE_NONE && mIsStreaming==true){
-			disconnect();
-		}
+		//TODO: below not needed any more?
+//		if (state==STATE_NONE && mIsStreaming==true){
+//			disconnect();
+//		}
 		mState = state;
 		
 		if(mState==STATE_CONNECTED){
 			mIsConnected = true;
 			mIsStreaming = false;
 		}
-		else if(mState==STATE_NONE){
-			mIsConnected = false;
-			mIsInitialised = false;
-		}
 		else if(mState==STATE_INITIALISED){
 			mIsInitialised = true;
+			mIsStreaming = false;
 		}
 		else if(mState==STATE_STREAMING){
 			mIsStreaming = true;
 		}		
+		else if((mState==STATE_DISCONNECTED)
+				||(mState==STATE_CONNECTION_LOST)
+				||(mState==STATE_NONE)){
+			mIsConnected = false;
+			mIsStreaming = false;
+			mIsInitialised = false;
+		}
 		
-		System.out.println("SetState: " + mUniqueID + "\tState:" + mState + "\tisConnected:" + mIsConnected + "\tisInitialised:" + mIsInitialised + "\tisStreaming:" + mIsStreaming);
+//		System.out.println("SetState: " + mUniqueID + "\tState:" + mState + "\tisConnected:" + mIsConnected + "\tisInitialised:" + mIsInitialised + "\tisStreaming:" + mIsStreaming);
 		
 		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
