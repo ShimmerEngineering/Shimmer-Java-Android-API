@@ -8579,7 +8579,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mExperimentName
 	 */
-	public String getExperimentName() {
+	public String getTrialName() {
 		return mExperimentName;
 	}
 
@@ -10311,7 +10311,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				returnValue = getShimmerUserAssignedName();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
-				returnValue = getExperimentName();
+				returnValue = getTrialName();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 		        Double readSamplingRate = getShimmerSamplingRate();
