@@ -236,7 +236,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		}
 	
 	    };
-	    if (getState()==STATE_NONE){
+	    if (getState()==STATE_NONE
+	    		|| getState()==STATE_CONNECTION_LOST
+	    		|| getState()==STATE_DISCONNECTED){
 	    	thread.start();
 	    }
 	}
