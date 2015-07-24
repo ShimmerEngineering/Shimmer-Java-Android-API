@@ -198,38 +198,47 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param empty  This is for forward compatibility, in the event a choice of library is offered, any string value can be entered now ~ does nothing
 	 */
 	@Override
-	public synchronized void connect(final String address, String a) {
-		setState(STATE_CONNECTING);
-		mIamAlive = false;
-		if (mSerialPort==null){
-			mUniqueID = address;
-	//		mMyBluetoothAddress = address;
-			mSerialPort = new SerialPort(address);
-			getmListofInstructions().clear();
-			mFirstTime=true;
-			try {
-				util.consolePrintLn("Port open: " + mSerialPort.openPort());
-				util.consolePrintLn("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
-				util.consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
-				if (mIOThread != null) { 
-					mIOThread = null;
-					mPThread = null;
+	public synchronized void connect(final String address, String a) {Thread thread = new Thread(){
+		public void run(){
+			
+			setState(STATE_CONNECTING);
+			mIamAlive = false;
+			if (mSerialPort==null){
+				mUniqueID = address;
+		//		mMyBluetoothAddress = address;
+				mSerialPort = new SerialPort(address);
+				getmListofInstructions().clear();
+				mFirstTime=true;
+				try {
+					util.consolePrintLn("Port open: " + mSerialPort.openPort());
+					util.consolePrintLn("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
+					util.consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
+					if (mIOThread != null) { 
+						mIOThread = null;
+						mPThread = null;
+					}
+					if (mSerialPort.isOpened()){
+						setState(STATE_CONNECTED);
+						mIOThread = new IOThread();
+						mIOThread.start();
+						mPThread = new ProcessingThread();
+						mPThread.start();
+						initialize();
+					}
 				}
-				if (mSerialPort.isOpened()){
-					setState(STATE_CONNECTED);
-					mIOThread = new IOThread();
-					mIOThread.start();
-					mPThread = new ProcessingThread();
-					mPThread.start();
-					initialize();
+				catch (SerialPortException ex){
+					connectionLost();
+//					mState = STATE_FAILED;
+					System.out.println(ex);
 				}
 			}
-			catch (SerialPortException ex){
-				connectionLost();
-//				mState = STATE_FAILED;
-				System.out.println(ex);
-			}
+			
 		}
+	
+	    };
+	    if (getState()==STATE_NONE){
+	    	thread.start();
+	    }
 	}
 	
 	
