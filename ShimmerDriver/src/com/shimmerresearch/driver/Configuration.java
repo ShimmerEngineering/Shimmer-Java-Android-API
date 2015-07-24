@@ -1534,8 +1534,8 @@ public class Configuration {
 			//ADC
 			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7).mListOfChannels
 					.add(new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,
-							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,
+							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,
+							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,
 							ChannelDataType.UINT12, 2, ChannelDataEndian.LSB,
 							CHANNEL_UNITS.MILLIVOLTS));
 			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6).mListOfChannels
