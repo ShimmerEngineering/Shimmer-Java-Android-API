@@ -564,7 +564,7 @@ public class Configuration {
 			public static final String PPG2_A1 = "PPG2 A1";
 			public static final String PPG2_A14 = "PPG2 A14";
 			public static final String EXG_RESPIRATION = "Respiration";
-			public static final String SKIN_TEMP_PROBE = "Temperature Probe";
+			public static final String SKIN_TEMP_PROBE = "Skin Temperature";
 			public static final String BRAMP_HIGHGAIN = "High Gain";
 			public static final String BRAMP_LOWGAIN = "Low Gain";
 	
@@ -704,6 +704,7 @@ public class Configuration {
 			public static  String PPG1_A13 = "PPG1_A13";
 			public static  String PPG2_A1 = "PPG2_A1";
 			public static  String PPG2_A14 = "PPG2_A14";
+			public static  String SKIN_TEMPERATURE = "Skin_Temperature";
 			public static  String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 			public static  String TIMESTAMP_SYNC = "Timestamp_Sync";
 		}
@@ -1590,6 +1591,14 @@ public class Configuration {
 							ChannelDataType.UINT12, 2, ChannelDataEndian.LSB,
 							CHANNEL_UNITS.MILLIVOLTS));
 			
+			// Phillps Skin Temperature Probe (through Bridge Amp)
+			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE).mListOfChannels
+				.add(new ChannelDetails(
+					Configuration.Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE,
+					Configuration.Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE,
+					ChannelDataType.UINT12, 2, ChannelDataEndian.LSB,
+					CHANNEL_UNITS.DEGREES_CELSUIS));
+			
 			//GSR
 			aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfChannels
 					.add(new ChannelDetails(
@@ -2092,8 +2101,8 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP,
 								Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP)));
-			//aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorTileDetails(
-			//		Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
+			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12, //X-axis
 								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13, //Y-axis
@@ -2129,7 +2138,7 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
-			//aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoHighGAccel;
 			//mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGps;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;

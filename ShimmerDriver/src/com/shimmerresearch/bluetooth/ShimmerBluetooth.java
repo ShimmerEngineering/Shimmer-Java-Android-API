@@ -113,6 +113,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int STATE_INITIALISED = 5; // 
 	public static final int STATE_CONFIGURING = 6; // 
 	public static final int STATE_CONFIGURED = 7; // 
+	public static final int STATE_DISCONNECTED = 8;
+	public static final int STATE_CONNECTION_LOST = 9;
+	
+	public static final String[] STATE_PARSED = new String[]{
+		"None",
+		"Connecting",
+		"Connected",
+		"Streaming",
+		"Initialising",
+		"Initialised",
+		"Configuring",
+		"Configured",
+		"Disconnected",
+		"Lost connection"
+	};
+
 	
 //	public static final int STATE_FAILED = 4;  // The class is now connected to a remote device
 	
