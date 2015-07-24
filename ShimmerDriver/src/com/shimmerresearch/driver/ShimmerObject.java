@@ -545,6 +545,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected String mExperimentName = "";
 	protected int mExperimentId = 0;
 	protected int mExperimentNumberOfShimmers = 0;
+
 	protected int mExperimentDurationEstimated = 0;
 	protected int mExperimentDurationMaximum = 0;
 	
@@ -7616,6 +7617,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							}
 						}
 					}
+					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
+							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK 
+							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
+						mSensorMap.get(sensorMapKey).mIsEnabled = false;
+						skipKey = true;
+					}
+
 
 					// Process remaining channels
 					if(!skipKey) {
@@ -8579,7 +8587,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mExperimentName
 	 */
-	public String getExperimentName() {
+	public String getTrialName() {
 		return mExperimentName;
 	}
 
@@ -10311,7 +10319,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				returnValue = getShimmerUserAssignedName();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
-				returnValue = getExperimentName();
+				returnValue = getTrialName();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 		        Double readSamplingRate = getShimmerSamplingRate();
@@ -10682,6 +10690,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mLastReceivedTimeStamp;
 	}
 	
+//	/**
+//	 * @return
+//	 */
+//	public int getmExperimentNumberOfShimmers() {
+//		return mExperimentNumberOfShimmers;
+//	}
+//	
 	public String getCenter(){
 		return mCenter;
 	}

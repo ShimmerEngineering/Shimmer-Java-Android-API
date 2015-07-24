@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+
 //import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
 
@@ -88,7 +89,7 @@ public class ProgressReportAll implements Serializable {
 	}
 	
 	public void updateProgressPerDevice(String comPort, ProgressReportPerDevice pRPD){
-//		mMapOfOperationProgressInfo.get(comPort).updateProgress(pRPD);
+		mMapOfOperationProgressInfo.put(comPort, pRPD);
 		if(mMapOfOperationProgressInfo.get(comPort).mProgressCounter == mMapOfOperationProgressInfo.get(comPort).mProgressEndValue){
 			updateProgressCount();
 		}

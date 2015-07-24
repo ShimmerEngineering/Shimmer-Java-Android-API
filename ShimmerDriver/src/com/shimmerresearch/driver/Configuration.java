@@ -401,6 +401,9 @@ public class Configuration {
 			public static final int EXG_CUSTOM = 116;
 			
 			public static final int TIMESTAMP = 150;
+			public static final int TIMESTAMP_SYNC = 151;
+			public static final int REAL_TIME_CLOCK = 152;
+			public static final int REAL_TIME_CLOCK_SYNC = 153;
 
 			public static final int PPG_DUMMY = 105;
 			public static final int PPG1_DUMMY = 110;
@@ -837,6 +840,9 @@ public class Configuration {
 	        Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer, SensorDetails>();
 
 	        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, new SensorDetails(0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP));
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC, new SensorDetails(0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC));
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK, new SensorDetails(0, 0, Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK));
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC, new SensorDetails(0, 0, Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC));
 	        
 			// Assemble the channel map
 			// NV_SENSORS0
@@ -1479,14 +1485,21 @@ public class Configuration {
 							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
 							CHANNEL_UNITS.MILLISECONDS));
 			//TODO: set type, byte number, endian and units
-			aMap.get(Configuration.Shimmer3.SensorMapKey.TIMESTAMP).mListOfChannels
+			aMap.get(Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC).mListOfChannels
 					.add(new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
 							Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
 							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
 							CHANNEL_UNITS.MILLISECONDS));
 			//TODO: set type, byte number, endian and units
-			aMap.get(Configuration.Shimmer3.SensorMapKey.TIMESTAMP).mListOfChannels
+			aMap.get(Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK).mListOfChannels
+					.add(new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
+							CHANNEL_UNITS.MILLISECONDS));
+			//TODO: set type, byte number, endian and units
+			aMap.get(Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC).mListOfChannels
 					.add(new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
