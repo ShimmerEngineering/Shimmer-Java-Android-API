@@ -2172,7 +2172,10 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				btnConnect.setEnabled(false);
 				btnDisconnect.setEnabled(true);
 				
-			} else {
+			} else if (state == ShimmerBluetooth.STATE_DISCONNECTED
+					|| state == ShimmerBluetooth.STATE_NONE
+					|| state == ShimmerBluetooth.STATE_CONNECTION_LOST){
+				
 				textFieldState.setText("Shimmer Disconnected");
 				textFieldMessage.setText("");
 				btnDisconnect.setEnabled(false);
