@@ -7618,7 +7618,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						}
 					}
 					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
-							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK 
+//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK 
 							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
 						skipKey = true;
