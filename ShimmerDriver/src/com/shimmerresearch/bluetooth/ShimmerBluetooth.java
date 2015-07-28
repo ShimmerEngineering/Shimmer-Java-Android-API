@@ -78,6 +78,7 @@ package com.shimmerresearch.bluetooth;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -2218,6 +2219,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readShimmerName();
 			readExperimentName();
 		}
+//		else if(isThisVerCompatibleWith(FW_ID.SHIMMER3.BTSTREAM, 0, 7, 2)){
+//			readInfoMem();
+//		}
 		
 		if (mSetupDevice==true){
 			//writeAccelRange(mDigitalAccelRange);
@@ -2704,7 +2708,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void writeShimmerName(){
 		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
-			writeShimmerName(getShimmerUserAssignedName());
+			writeShimmerUserAssignedName(getShimmerUserAssignedName());
 		}
 	}
 	
@@ -2723,6 +2727,35 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+//	public void writeInfoMem(int address, byte[] infoMemBytes) {
+//		if ((Util.compareVersions(
+//				this.mFirmwareIdentifier, 
+//				this.mFirmwareVersionMajor,
+//				this.mFirmwareVersionMinor, 
+//				this.mFirmwareVersionInternal, 
+//				FW_ID.SHIMMER3.BTSTREAM, 
+//				0,7,2))
+//				||(Util.compareVersions(
+//						this.mFirmwareIdentifier, 
+//						this.mFirmwareVersionMajor,
+//						this.mFirmwareVersionMinor, 
+//						this.mFirmwareVersionInternal, 
+//						FW_ID.SHIMMER3.LOGANDSTREAM, 
+//						0,5,4))){
+//			
+//			
+//			byte[] trial_config_byte = combineTrialConfig();
+//			byte dataLength = (byte)(infoMemBytes.length&0xFF);
+//			byte[] tosend = new byte[4+dataLength];
+//			tosend[0] = SET_INFOMEM_COMMAND;
+//			tosend[1] = dataLength;
+//			tosend[2] = (byte)((address>>8)&0xFF);
+//			tosend[3] = (byte)(address&0xFF);
+//			tosend[4] = (byte)getSyncBroadcastInterval();
+//			getmListofInstructions().add(tosend);
+//		}
+//	}
+
     public void fillTrialShimmer3(byte[] packet)
     {
         SplitTrialConfig(packet[0] + (packet[1] << 8));
@@ -2780,13 +2813,27 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			getmListofInstructions().add(toSend);
 		}
 	}
-	
-	
+
+	/**Write the config time to the Shimmer device. Only applicable for Log and Stream.
+	 * 
+	 */
+	public void writeConfigTime(long time){
+		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			String timeString = Long.toString(time);
+			byte[] toSendTime = timeString.getBytes();
+			byte[] toSend = new byte[2+toSendTime.length];
+			toSend[0]= SET_CONFIGTIME_COMMAND;
+			toSend[1]= (byte)toSendTime.length;
+			System.arraycopy(toSendTime, 0, toSend, 2, toSendTime.length);
+			getmListofInstructions().add(toSend);
+		}
+	}
+
 	
 	/**
 	 * @param name Name to write to shimmer device
 	 */
-	public void writeShimmerName(String name){
+	public void writeShimmerUserAssignedName(String name){
 		if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
 			byte[] toSendName = name.getBytes();
 			byte[] toSend = new byte[2+toSendName.length];
@@ -4544,6 +4591,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void setInstructionStackLock(boolean state) {
 		this.mInstructionStackLock = state;
 	}
+	
+	/**
+	 * @return the mShimmerInfoMemBytes generated from an empty byte array. This
+	 *         is called to generate the InfoMem bytes for writing to the
+	 *         Shimmer.
+	 */
+	public byte[] generateShimmerInfoMemBytes() {
+		return super.infoMemByteArrayGenerate(true);
+	}
+
 
 	
 	public void consolePrintLn(String message) {

@@ -490,21 +490,24 @@ public class InfoMemLayout {
 //				FW_ID.SHIMMER3.SDLOG, 0, 10, 1)) {
 //			return 512;
 //		}
-		if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
-			return 384;
-		}
-		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
-			return 128;
-		}
-		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM) {
-			return 384;
-		}
-		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.GQ_GSR) {
-			return 128;
-		}
-		else {
-			return 512; 
-		}
+		
+//		if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
+//			return 384;
+//		}
+//		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
+//			return 128;
+//		}
+//		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM) {
+//			return 384;
+//		}
+//		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.GQ_GSR) {
+//			return 128;
+//		}
+//		else {
+//			return 512; 
+//		}
+		
+		return 384;
 	}
 
 }

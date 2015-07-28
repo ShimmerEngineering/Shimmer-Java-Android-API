@@ -433,10 +433,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte DIR_RESPONSE		 					= (byte) 0x88;
 	public static final byte GET_DIR_COMMAND 						= (byte) 0x89;
 	public static final byte INSTREAM_CMD_RESPONSE 					= (byte) 0x8A;
+	
+	public static final byte SET_INFOMEM_COMMAND   					= (byte) 0x88;
+	public static final byte INFOMEM_RESPONSE      					= (byte) 0x89;
+	public static final byte GET_INFOMEM_COMMAND   					= (byte) 0x8A;
+	
 	public static final byte SET_CRC_COMMAND						= (byte) 0x8B; 
 	public static final byte ROUTINE_COMMUNICATION					= (byte) 0xE0; 
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
-	
 	
 	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
@@ -542,12 +546,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected final static int FW_TYPE_BT=0;
 	protected final static int FW_TYPE_SD=1;
 	
-	protected String mExperimentName = "";
-	protected int mExperimentId = 0;
-	protected int mExperimentNumberOfShimmers = 0;
+	protected String mTrialName = "";
+	protected int mTrialId = 0;
+	protected int mTrialNumberOfShimmers = 0;
 
-	protected int mExperimentDurationEstimated = 0;
-	protected int mExperimentDurationMaximum = 0;
+	protected int mTrialDurationEstimated = 0;
+	protected int mTrialDurationMaximum = 0;
 	
 	protected String mMyBluetoothAddress="";
 	protected String mMacIdFromUart = "";
@@ -6486,10 +6490,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (mHardwareVersion != -1){
 			
 			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
-			mExperimentName = DEFAULT_EXPERIMENT_NAME;
+			mTrialName = DEFAULT_EXPERIMENT_NAME;
 			
-			mExperimentNumberOfShimmers = 1;
-			mExperimentId = 0;
+			mTrialNumberOfShimmers = 1;
+			mTrialId = 0;
 			mButtonStart = 1;
 			
 			mBluetoothBaudRate=0;
@@ -6697,11 +6701,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 			// InfoMem D - End
 
-			//SDLog and LogAndStream
-			if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
-				
-				// InfoMem C - Start - used by SdLog and LogAndStream
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+//			//SDLog and LogAndStream
+//			if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
+//				
+//				// InfoMem C - Start - used by SdLog and LogAndStream
+//				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 					mMPU9150DMP = (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150DMP) & infoMemMap.maskMPU9150DMP;
 					mMPU9150LPF = (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150LPF) & infoMemMap.maskMPU9150LPF;
 					mMPU9150MotCalCfg =  (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150MotCalCfg) & infoMemMap.maskMPU9150MotCalCfg;
@@ -6765,7 +6769,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					AlignmentMatrixMPLGyro = alignmentMatrixMPLGyro; 			
 					SensitivityMatrixMPLGyro = sensitivityMatrixMPLGyro; 	
 					OffsetVectorMPLGyro = offsetVectorMPLGyro;
-				}
+//				}
 				
 				// Shimmer Name
 				byte[] shimmerNameBuffer = new byte[infoMemMap.lengthShimmerName];
@@ -6787,7 +6791,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 					experimentName += (char)b;
 				}
-				mExperimentName = new String(experimentName);
+				mTrialName = new String(experimentName);
 	
 				//Configuration Time
 				int bitShift = (infoMemMap.lengthConfigTimeBytes-1) * 8;
@@ -6796,19 +6800,24 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mConfigTime += (((long)(infoMemContents[infoMemMap.idxSDConfigTime0+x] & 0xFF)) << bitShift);
 					bitShift -= 8;
 				}
+//				//TODO can be replaced by more efficient implementation
+//				long value = 0;
+//				for (int i = 0; i < by.length; i++){
+//				   value = (value << 8) + (by[i] & 0xff);
+//				}
 //				//if ConfigTime is all F's, reset the time to 0 
 //				if((mConfigTime&(2^32)) == (2^32)) {
 //					mConfigTime = 0;
 //				}
 
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
-					mExperimentId = infoMemContents[infoMemMap.idxSDMyTrialID] & 0xFF;
-					mExperimentNumberOfShimmers = infoMemContents[infoMemMap.idxSDNumOfShimmers] & 0xFF;
-				}
+//				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+					mTrialId = infoMemContents[infoMemMap.idxSDMyTrialID] & 0xFF;
+					mTrialNumberOfShimmers = infoMemContents[infoMemMap.idxSDNumOfShimmers] & 0xFF;
+//				}
 				
 				mButtonStart = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftButtonStart) & infoMemMap.maskButtonStart;
 
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+//				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 					mSyncWhenLogging = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftTimeSyncWhenLogging) & infoMemMap.maskTimeSyncWhenLogging;
 					mMasterShimmer = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftMasterShimmer) & infoMemMap.maskTimeMasterShimmer;
 					mSingleTouch = (infoMemContents[infoMemMap.idxSDExperimentConfig1] >> infoMemMap.bitShiftSingleTouch) & infoMemMap.maskTimeSingleTouch;
@@ -6817,9 +6826,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mSyncBroadcastInterval = (int)(infoMemContents[infoMemMap.idxSDBTInterval] & 0xFF);
 					
 					// Maximum and Estimated Length in minutes
-					mExperimentDurationEstimated =  ((int)(infoMemContents[infoMemMap.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemContents[infoMemMap.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
-					mExperimentDurationMaximum =  ((int)(infoMemContents[infoMemMap.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemContents[infoMemMap.idxMaxExpLengthMsb] & 0xFF)) << 8));
-				}
+					mTrialDurationEstimated =  ((int)(infoMemContents[infoMemMap.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemContents[infoMemMap.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
+					mTrialDurationMaximum =  ((int)(infoMemContents[infoMemMap.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemContents[infoMemMap.idxMaxExpLengthMsb] & 0xFF)) << 8));
+//				}
 					
 				byte[] macIdBytes = new byte[infoMemMap.lengthMacIdBytes];
 				System.arraycopy(infoMemContents, infoMemMap.idxMacAddress, macIdBytes, 0 , infoMemMap.lengthMacIdBytes);
@@ -6841,7 +6850,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 				// InfoMem C - End
 					
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+//				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					syncNodesList.clear();
 					for (int i = 0; i < infoMemMap.maxNumOfExperimentNodes; i++) {
@@ -6855,8 +6864,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						}
 					}
 					// InfoMem B End
-				}
-			}
+//				}
+//			}
 			
 			//TODO Complete and tidy below
 			sensorAndConfigMapsCreate();
@@ -7045,10 +7054,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		
 		//TODO: Add full FW version checking here to support future changes to FW
 		//SDLog and LogAndStream
-		if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
+//		if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
 
 			// InfoMem C - Start - used by SdLog and LogAndStream
-			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+//			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & infoMemMap.maskMPU9150DMP) << infoMemMap.bitShiftMPU9150DMP);
 				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & infoMemMap.maskMPU9150LPF) << infoMemMap.bitShiftMPU9150LPF);
 				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & infoMemMap.maskMPU9150MotCalCfg) << infoMemMap.bitShiftMPU9150MotCalCfg);
@@ -7069,7 +7078,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//MPL Accel Calibration Parameters
 				//MPL Mag Calibration Configuration
 				//MPL Gyro Calibration Configuration
-			}
+//			}
 
 			// Shimmer Name
 			for (int i = 0; i < infoMemMap.lengthShimmerName; i++) {
@@ -7083,8 +7092,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			// Experiment Name
 			for (int i = 0; i < infoMemMap.lengthExperimentName; i++) {
-				if (i < mExperimentName.length()) {
-					mInfoMemBytes[infoMemMap.idxSDEXPIDName + i] = (byte) mExperimentName.charAt(i);
+				if (i < mTrialName.length()) {
+					mInfoMemBytes[infoMemMap.idxSDEXPIDName + i] = (byte) mTrialName.charAt(i);
 				}
 				else {
 					mInfoMemBytes[infoMemMap.idxSDEXPIDName + i] = (byte) 0xFF;
@@ -7097,15 +7106,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInfoMemBytes[infoMemMap.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemMap.bitShiftSDConfigTime2) & 0xFF);
 			mInfoMemBytes[infoMemMap.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemMap.bitShiftSDConfigTime3) & 0xFF);
 			
-			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
-				mInfoMemBytes[infoMemMap.idxSDMyTrialID] = (byte) (mExperimentId & 0xFF);
+//			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				mInfoMemBytes[infoMemMap.idxSDMyTrialID] = (byte) (mTrialId & 0xFF);
 	
-				mInfoMemBytes[infoMemMap.idxSDNumOfShimmers] = (byte) (mExperimentNumberOfShimmers & 0xFF);
-			}
+				mInfoMemBytes[infoMemMap.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
+//			}
 			
 			mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] = (byte) ((mButtonStart & infoMemMap.maskButtonStart) << infoMemMap.bitShiftButtonStart);
 			
-			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+//			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & infoMemMap.maskTimeSyncWhenLogging) << infoMemMap.bitShiftTimeSyncWhenLogging);
 				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & infoMemMap.maskTimeMasterShimmer) << infoMemMap.bitShiftMasterShimmer);
 				
@@ -7115,11 +7124,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mInfoMemBytes[infoMemMap.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
 			
 				// Maximum and Estimated Length in minutes
-				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthLsb] = (byte) ((mExperimentDurationEstimated >> 0) & 0xFF);
-				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthMsb] = (byte) ((mExperimentDurationEstimated >> 8) & 0xFF);
-				mInfoMemBytes[infoMemMap.idxMaxExpLengthLsb] = (byte) ((mExperimentDurationMaximum >> 0) & 0xFF);
-				mInfoMemBytes[infoMemMap.idxMaxExpLengthMsb] = (byte) ((mExperimentDurationMaximum >> 8) & 0xFF);
-			}
+				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthLsb] = (byte) ((mTrialDurationEstimated >> 0) & 0xFF);
+				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthMsb] = (byte) ((mTrialDurationEstimated >> 8) & 0xFF);
+				mInfoMemBytes[infoMemMap.idxMaxExpLengthLsb] = (byte) ((mTrialDurationMaximum >> 0) & 0xFF);
+				mInfoMemBytes[infoMemMap.idxMaxExpLengthMsb] = (byte) ((mTrialDurationMaximum >> 8) & 0xFF);
+//			}
 			
 			if(generateForWritingToShimmer) {
 				// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
@@ -7136,7 +7145,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 			// InfoMem C - End
 				
-			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+//			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 				for (int i = 0; i < infoMemMap.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 					byte[] macIdArray;
@@ -7149,9 +7158,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					System.arraycopy(macIdArray, 0, mInfoMemBytes, infoMemMap.idxNode0 + (i*infoMemMap.lengthMacIdBytes), infoMemMap.lengthMacIdBytes);
 				}
 				// InfoMem B End
-			}
+//			}
 			
-		}
+//		}
 		return mInfoMemBytes;
 	}
 	
@@ -8585,31 +8594,31 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	/**
-	 * @return the mExperimentName
+	 * @return the mTrialName
 	 */
 	public String getTrialName() {
-		return mExperimentName;
+		return mTrialName;
 	}
 
 	/**
-	 * @return the mExperimentNumberOfShimmers
+	 * @return the mTrialNumberOfShimmers
 	 */
-	public int getExperimentNumberOfShimmers() {
-		return mExperimentNumberOfShimmers;
+	public int getTrialNumberOfShimmers() {
+		return mTrialNumberOfShimmers;
 	}
 	
 	/**
-	 * @return the mExperimentDurationEstimated
+	 * @return the mTrialDurationEstimated
 	 */
-	public int getExperimentDurationEstimated() {
-		return mExperimentDurationEstimated;
+	public int getTrialDurationEstimated() {
+		return mTrialDurationEstimated;
 	}
 
 	/**
-	 * @return the mExperimentDurationMaximum
+	 * @return the mTrialDurationMaximum
 	 */
-	public int getExperimentDurationMaximum() {
-		return mExperimentDurationMaximum;
+	public int getTrialDurationMaximum() {
+		return mTrialDurationMaximum;
 	}
 
 	/**
@@ -8683,7 +8692,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mExperimentId
 	 */
 	public int getExperimentId() {
-		return mExperimentId;
+		return mTrialId;
 	}
 
 	/**
@@ -9458,9 +9467,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public void setExperimentName(String mExperimentName) {
 		if(mExperimentName.length()>12)
-			this.mExperimentName = mExperimentName.substring(0, 11);
+			this.mTrialName = mExperimentName.substring(0, 11);
 		else
-			this.mExperimentName = mExperimentName;
+			this.mTrialName = mExperimentName;
 	}
 
 	/**
@@ -9474,7 +9483,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
     	else if(mExperimentNumberOfShimmers<=0) {
     		mExperimentNumberOfShimmers = 1;
     	}
-    	this.mExperimentNumberOfShimmers = mExperimentNumberOfShimmers;
+    	this.mTrialNumberOfShimmers = mExperimentNumberOfShimmers;
 	}
 
 	/**
@@ -9488,7 +9497,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
     	else if(mExperimentDurationEstimated<=0) {
     		mExperimentDurationEstimated = 1;
     	}
-    	this.mExperimentDurationEstimated = mExperimentDurationEstimated;
+    	this.mTrialDurationEstimated = mExperimentDurationEstimated;
 	}
 
 	/**
@@ -9502,7 +9511,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
     	else if(mExperimentDurationMaximum<0) {
     		mExperimentDurationMaximum = 1;
     	}
-    	this.mExperimentDurationMaximum = mExperimentDurationMaximum;
+    	this.mTrialDurationMaximum = mExperimentDurationMaximum;
 	}
 
 	/**
@@ -9805,7 +9814,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
     	else if(mExperimentId<0) {
     		mExperimentId = 1;
     	}
-		this.mExperimentId = mExperimentId;
+		this.mTrialId = mExperimentId;
 	}
 
 	
@@ -10341,13 +10350,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	        	returnValue = Integer.toString(getExperimentId());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS):
-	        	returnValue = Integer.toString(getExperimentNumberOfShimmers());
+	        	returnValue = Integer.toString(getTrialNumberOfShimmers());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
-	        	returnValue = Integer.toString(getExperimentDurationEstimated());
+	        	returnValue = Integer.toString(getTrialDurationEstimated());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
-	        	returnValue = Integer.toString(getExperimentDurationMaximum());
+	        	returnValue = Integer.toString(getTrialDurationMaximum());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
 	        	returnValue = Integer.toString(getSyncBroadcastInterval());
@@ -10587,7 +10596,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
             	}
         		setExperimentNumberOfShimmers(buf);
         		
-        		returnValue = Integer.toString(getExperimentNumberOfShimmers());
+        		returnValue = Integer.toString(getTrialNumberOfShimmers());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
             	if(((String)valueToSet).isEmpty()) {
@@ -10598,7 +10607,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
             	}
         		setExperimentDurationEstimated(buf);
         		
-        		returnValue = Integer.toString(getExperimentDurationEstimated());
+        		returnValue = Integer.toString(getTrialDurationEstimated());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
             	//leave max_exp_len = 0 to not automatically stop logging.
@@ -10610,7 +10619,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
             	}
         		setExperimentDurationMaximum(buf);
         		
-        		returnValue = Integer.toString(getExperimentDurationMaximum());
+        		returnValue = Integer.toString(getTrialDurationMaximum());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
             	buf = 1; // Minimum = 1

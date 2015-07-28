@@ -2176,20 +2176,26 @@ public class Configuration {
 	        
 			// Assemble the channel configuration options map
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
-					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
+//					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
+//					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
-					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
+//					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
-					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
