@@ -4380,7 +4380,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		 * 
 		*/
 		
-		double x = (200.0/uncalibratedData)/((10.1)*3000-uncalibratedData);
+		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
 		double y = -27.42*Math.log(x) + 56.502;
 		
 		return y;
