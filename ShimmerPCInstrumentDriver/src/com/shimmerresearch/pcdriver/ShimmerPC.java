@@ -345,8 +345,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
         mIsInitialised = true;
         sensorAndConfigMapsCreate();
         sensorMapUpdateWithEnabledSensors();
-        
-		finishOperation(STATE_INITIALISING);
+
+        if (mSendProgressReport){
+        	finishOperation(STATE_INITIALISING);
+        }
 //		finishOperation(CURRENT_OPERATION.INITIALISING);
         
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
