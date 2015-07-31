@@ -296,24 +296,24 @@ public class Configuration {
 		public static final Integer[] ListofBluetoothBaudRatesConfigValues={0,1,2,3,4,5,6,7,8,9,10};
 
 		//TODO
-		public static final String[] ListofLSM303DLHCAccelRate={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1344Hz"};
+		public static final String[] ListofLSM303DLHCAccelRate={"Power-down","1.0Hz","10.0Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","1344.0Hz"};
 		public static final Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
 		public static final String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
 		public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
 		
-		public static final String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
+		public static final String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3.0Hz","7.5Hz","15.0Hz","30.0Hz","75.0Hz","220.0Hz"};
 		public static final Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
 
 		public static final String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
 		public static final Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
-		public static final String[] ListofMPU9150MagRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public static final String[] ListofMPU9150MagRate={"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
 		public static final Integer[] ListofMPU9150MagRateConfigValues={0,1,2,3,4};
 
 		public static final String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
 		public static final Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
-		public static final String[] ListofMPU9150MplLpfOptions={"No LPF","188Hz","98Hz","42Hz","20Hz","10Hz","5Hz"};
+		public static final String[] ListofMPU9150MplLpfOptions={"No LPF","188.0Hz","98.0Hz","42.0Hz","20.0Hz","10.0Hz","5.0Hz"};
 		public static final Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
-		public static final String[] ListofMPU9150MplRate={"10Hz","20Hz","40Hz","50Hz","100Hz"};
+		public static final String[] ListofMPU9150MplRate={"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
 		public static final Integer[] ListofMPU9150MplRateConfigValues={0,1,2,3,4};
 
 		public static final String[] ListOfOnOff={"On","Off"};
