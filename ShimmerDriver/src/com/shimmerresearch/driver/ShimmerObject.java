@@ -5677,7 +5677,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			maxGUISamplingRate = 1024.0;
 		} else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ) {
 			//check if an MPL channel is enabled - limit rate to 51.2Hz
-			if(checkIfAnyMplChannelEnabled()){
+			if(checkIfAnyMplChannelEnabled() && mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.SDLOG){
 				rate = 51.2;
 			}
 		}		
