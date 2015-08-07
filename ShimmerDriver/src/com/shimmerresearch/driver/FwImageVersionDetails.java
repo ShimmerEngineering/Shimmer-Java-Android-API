@@ -171,7 +171,7 @@ public class FwImageVersionDetails {
 						mFirmwareIdentifier = FW_ID_UNKNOWN;
 					}
 				}
-				else if(fileNameWithExtension.equals(FW_STRING.GPIO_TEST)) {
+				else if(fileNameWithExtension.contains(FW_STRING.GPIO_TEST)) {
 					System.err.println(mFileName);
 					mHardwareVersion = HW_ID.SHIMMER_3;
 					mFirmwareIdentifier = FW_ID.SHIMMER3.GPIO_TEST;
