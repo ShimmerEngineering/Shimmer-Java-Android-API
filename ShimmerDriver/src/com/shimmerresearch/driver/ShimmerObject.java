@@ -7057,7 +7057,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //		if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
 
 			// InfoMem C - Start - used by SdLog and LogAndStream
-//			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & infoMemMap.maskMPU9150DMP) << infoMemMap.bitShiftMPU9150DMP);
 				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & infoMemMap.maskMPU9150LPF) << infoMemMap.bitShiftMPU9150LPF);
 				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & infoMemMap.maskMPU9150MotCalCfg) << infoMemMap.bitShiftMPU9150MotCalCfg);
@@ -7078,7 +7078,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				//MPL Accel Calibration Parameters
 				//MPL Mag Calibration Configuration
 				//MPL Gyro Calibration Configuration
-//			}
+			}
 
 			// Shimmer Name
 			for (int i = 0; i < infoMemMap.lengthShimmerName; i++) {
@@ -7106,15 +7106,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInfoMemBytes[infoMemMap.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemMap.bitShiftSDConfigTime2) & 0xFF);
 			mInfoMemBytes[infoMemMap.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemMap.bitShiftSDConfigTime3) & 0xFF);
 			
-//			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 				mInfoMemBytes[infoMemMap.idxSDMyTrialID] = (byte) (mTrialId & 0xFF);
 	
 				mInfoMemBytes[infoMemMap.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
-//			}
+			}
 			
 			mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] = (byte) ((mButtonStart & infoMemMap.maskButtonStart) << infoMemMap.bitShiftButtonStart);
 			
-//			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & infoMemMap.maskTimeSyncWhenLogging) << infoMemMap.bitShiftTimeSyncWhenLogging);
 				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & infoMemMap.maskTimeMasterShimmer) << infoMemMap.bitShiftMasterShimmer);
 				
@@ -7128,24 +7128,26 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthMsb] = (byte) ((mTrialDurationEstimated >> 8) & 0xFF);
 				mInfoMemBytes[infoMemMap.idxMaxExpLengthLsb] = (byte) ((mTrialDurationMaximum >> 0) & 0xFF);
 				mInfoMemBytes[infoMemMap.idxMaxExpLengthMsb] = (byte) ((mTrialDurationMaximum >> 8) & 0xFF);
-//			}
+			}
 			
-			if(generateForWritingToShimmer) {
-				// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
-				// (already set to 0xFF at start of method but just incase)
-				System.arraycopy(infoMemMap.invalidMacId, 0, mInfoMemBytes, infoMemMap.idxMacAddress, infoMemMap.lengthMacIdBytes);
-
-				//TODO base below off mCalibFileCreationFlag and mCfgFileCreationFlag global variables? 
-				
-				 // Tells the Shimmer to create a new config file on undock/power cycle
-				mInfoMemBytes[infoMemMap.idxSDConfigDelayFlag] = (byte) (infoMemMap.maskSDCfgFileWriteFlag << infoMemMap.bitShiftSDCfgFileWriteFlag);
-
-				//TODO decide what to do about calibration info
-				//mInfoMemBytes[infoMemMap.idxSDConfigDelayFlag] = (byte) (infoMemMap.maskSDCalibFileWriteFlag << infoMemMap.bitShiftSDCalibFileWriteFlag);
+			if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))) {
+				if(generateForWritingToShimmer) {
+					// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
+					// (already set to 0xFF at start of method but just incase)
+					System.arraycopy(infoMemMap.invalidMacId, 0, mInfoMemBytes, infoMemMap.idxMacAddress, infoMemMap.lengthMacIdBytes);
+	
+					//TODO base below off mCalibFileCreationFlag and mCfgFileCreationFlag global variables? 
+					
+					 // Tells the Shimmer to create a new config file on undock/power cycle
+					mInfoMemBytes[infoMemMap.idxSDConfigDelayFlag] = (byte) (infoMemMap.maskSDCfgFileWriteFlag << infoMemMap.bitShiftSDCfgFileWriteFlag);
+	
+					//TODO decide what to do about calibration info
+					//mInfoMemBytes[infoMemMap.idxSDConfigDelayFlag] = (byte) (infoMemMap.maskSDCalibFileWriteFlag << infoMemMap.bitShiftSDCalibFileWriteFlag);
+				}
 			}
 			// InfoMem C - End
 				
-//			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 				for (int i = 0; i < infoMemMap.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 					byte[] macIdArray;
@@ -7158,7 +7160,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					System.arraycopy(macIdArray, 0, mInfoMemBytes, infoMemMap.idxNode0 + (i*infoMemMap.lengthMacIdBytes), infoMemMap.lengthMacIdBytes);
 				}
 				// InfoMem B End
-//			}
+			}
 			
 //		}
 		return mInfoMemBytes;
