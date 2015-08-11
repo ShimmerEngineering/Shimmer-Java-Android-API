@@ -133,23 +133,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	private static final long serialVersionUID = -1364568867018921219L;
 	
-	//Replaced by CHANNEL_UNITS in Configuration
-//	public static final String ACCEL_CAL_UNIT = "m/s^2";
-//	public static final String ACCEL_DEFAULT_CAL_UNIT = "m/s^2";
-//	public static final String ADC_CAL_UNIT = "mV";
-//	public static final String GSR_CAL_UNIT = "kOhms";
-//	public static final String GYRO_CAL_UNIT = "deg/s";
-//	public static final String GYRO_DEFAULT_CAL_UNIT = "deg/s";
-//	public static final String MAG_CAL_UNIT = "local flux";
-//	public static final String MAG_DEFAULT_CAL_UNIT = "local flux";
-//	public static final String TEMP_CAL_UNIT = "Degrees Celsius";
-//	public static final String PRESSURE_CAL_UNIT = "kPa";
-//	public static final String HEARTRATE_CAL_UNIT = "bpm";
-//	public static final String HEADING = "Degrees";
-//	public static final String MILLISECONDS = "mSecs";
-//	public static final String NO_UNIT = "No Units";
-//	public static final String CLOCK_UNIT = "Ticks";
-	
 	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
 	public final static String DEFAULT_EXPERIMENT_NAME = "Trial";
 
@@ -763,6 +746,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected String mChargingState = "";
 	protected String mBattVoltage = "";
 	protected String mEstimatedChargePercentage = "";
+
+	protected boolean mIsInitialised = false;
+	protected boolean mDocked = false;
+	protected boolean mHaveAttemptedToRead = false;
 	
 	List<Integer> mListOfMplChannels = Arrays.asList(
 			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
@@ -10715,5 +10702,34 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public void setCenter(String value){
 		mCenter = value;
 	}
+
+	/**
+	 * @return the mHaveAttemptedToRead
+	 */
+	public boolean isHaveAttemptedToRead() {
+		return haveAttemptedToRead();
+	}
+
+	/**
+	 * @return the mDocked
+	 */
+	public boolean isDocked() {
+		return mDocked;
+	}
+
+	/**
+	 * @return the mIsInitialized
+	 */
+	public boolean isInitialized() {
+		return mIsInitialised;
+	}
+
+	/**
+	 * @return the mHaveAttemptedToRead
+	 */
+	public boolean haveAttemptedToRead() {
+		return mHaveAttemptedToRead;
+	}
+
 
 }

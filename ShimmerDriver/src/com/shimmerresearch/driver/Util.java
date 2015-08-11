@@ -316,4 +316,13 @@ public class Util implements Serializable {
 	    }
 	    return false;
 	}
+	
+	public void millisecondDelay(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			consolePrintLn("Thread sleep FAIL");
+		//	e.printStackTrace();
+	}
+}
 }
