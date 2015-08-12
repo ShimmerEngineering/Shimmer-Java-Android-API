@@ -749,7 +749,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	protected boolean mIsInitialised = false;
 	protected boolean mDocked = false;
-	protected boolean mHaveAttemptedToRead = false;
+	protected boolean mHaveAttemptedToReadConfig = false;
 	
 	List<Integer> mListOfMplChannels = Arrays.asList(
 			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
@@ -10728,7 +10728,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mHaveAttemptedToRead
 	 */
 	public boolean haveAttemptedToRead() {
-		return mHaveAttemptedToRead;
+		return mHaveAttemptedToReadConfig;
 	}
 
 

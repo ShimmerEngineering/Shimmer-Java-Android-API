@@ -2195,6 +2195,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	private void initializeShimmer3(){
 		
+		mHaveAttemptedToReadConfig = true;
+		
 		if(mSendProgressReport){
 			operationPrepare();
 			setState(ShimmerBluetooth.STATE_INITIALISING);
