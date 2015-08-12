@@ -782,7 +782,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		objectCluster.mMyName = mShimmerUserAssignedName;
 		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
 		objectCluster.mRawData = newPacket;
-		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
+		long systemTime = System.currentTimeMillis();
+		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
+		objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS,systemTime));
 		
 		double [] calibratedData;
 		double [] uncalibratedData;

@@ -580,6 +580,7 @@ public class Configuration {
 		public static class ObjectClusterSensorName{
 			public static  String TIMESTAMP = "Timestamp";
 			public static  String REAL_TIME_CLOCK = "RealTime";
+			public static  String SYSTEM_TIMESTAMP = "System_Timestamp";
 			public static  String ACCEL_LN_X = "Accel_LN_X";
 			public static  String ACCEL_LN_Y = "Accel_LN_Y";
 			public static  String ACCEL_LN_Z = "Accel_LN_Z";
