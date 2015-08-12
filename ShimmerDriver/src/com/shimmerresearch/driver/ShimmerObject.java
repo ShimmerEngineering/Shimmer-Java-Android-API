@@ -740,7 +740,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected String mDirectoryName;
 	protected int mDirectoryNameLength;
 	protected boolean mSensingStatus;
-	protected boolean mDockedStatus;
+//	protected boolean mDockedStatus;
 	private List<String[]> mExtraSignalProperties = null;
 	
 	protected String mChargingState = "";
@@ -748,7 +748,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected String mEstimatedChargePercentage = "";
 
 	protected boolean mIsInitialised = false;
-	protected boolean mDocked = false;
+	protected boolean mDockedStatus = false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 	
 	List<Integer> mListOfMplChannels = Arrays.asList(
@@ -10716,7 +10716,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mDocked
 	 */
 	public boolean isDocked() {
-		return mDocked;
+		return mDockedStatus;
 	}
 
 	/**
