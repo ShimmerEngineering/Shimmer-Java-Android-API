@@ -451,7 +451,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN; 
 	public int mExpansionBoardRev = -1;
-	public int mExpansionBoardSpecialRev = -1;
+	public int mExpansionBoardRevSpecial = -1;
 	public String mExpansionBoardParsed = "";  
 	public String mExpansionBoardParsedWithVer = "";  
 	protected byte[] mExpBoardArray = null; // Array where the expansion board response is stored
@@ -775,6 +775,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSamplingDividerBeacon = 0;
 
 	public String mUniqueID = ""; // Holds unique location information on a dock or COM port number for bluetooth connection  
+
+	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
+	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
@@ -10098,9 +10101,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	
 	protected void setExpansionBoardDetails(ExpansionBoardDetails eBD){
+		this.mExpansionBoardDetails  = eBD;
 		mExpansionBoardId = eBD.mExpBoardId;
 		mExpansionBoardRev = eBD.mExpBoardRev;
-		mExpansionBoardSpecialRev = eBD.mExpBoardSpecialRev;
+		mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
 		mExpansionBoardParsed = eBD.mExpBoardParsed;
 		mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
 		mExpBoardArray = eBD.mExpBoardArray;
@@ -10108,6 +10112,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	public int getExpansionBoardId(){
 		return mExpansionBoardId;
+	}
+	
+	public int getExpansionBoardRev(){
+		return mExpansionBoardRev;
+	}
+	
+	public int getExpansionBoardRevSpecial(){
+		return mExpansionBoardRevSpecial;
 	}
 	
 	public String getExpansionBoardIdParsed(){
@@ -10121,7 +10133,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void clearExpansionBoardDetails(){
 		mExpansionBoardId = -1;
 		mExpansionBoardRev = -1;
-		mExpansionBoardSpecialRev = -1;
+		mExpansionBoardRevSpecial = -1;
 		mExpansionBoardParsed = "";
 		mExpansionBoardParsedWithVer = "";
 		mExpBoardArray = null;
@@ -10731,6 +10743,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public boolean haveAttemptedToRead() {
 		return mHaveAttemptedToReadConfig;
+	}
+
+	public ExpansionBoardDetails getExpansionBoardDetails() {
+		return mExpansionBoardDetails;
+	}
+
+	public ShimmerVerObject getShimmerVerDetails() {
+		return mShimmerVerObject;
 	}
 
 

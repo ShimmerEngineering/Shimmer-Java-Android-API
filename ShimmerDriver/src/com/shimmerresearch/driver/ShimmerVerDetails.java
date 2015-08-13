@@ -82,8 +82,12 @@ public class ShimmerVerDetails implements Serializable {
     }
 
 	public final static class FW_ID {
-		public final static class SHIMMER3 {
+		public final static class SHIMMER2R {
 			public final static int BOILER_PLATE = 0;
+			public final static int BTSTREAM = 1;
+		}
+		
+		public final static class SHIMMER3 {
 			public final static int BTSTREAM = 1;
 			public final static int SDLOG = 2;
 			public final static int LOGANDSTREAM = 3;
@@ -104,5 +108,16 @@ public class ShimmerVerDetails implements Serializable {
 
 		public static final int UNKNOWN = -1;
 	}
+	
+	public final static class FW_LABEL {
+		public final static String BOILERPLATE = "BoilerPlate";
+		public final static String BTSTREAM = "BtStream";
+		public final static String SDLOG = "SDLog";
+		public final static String LOGANDSTREAM = "LogAndStream";
+		public final static String DCU_SWEATSENSOR = "Swatch";
+		public final static String GQ_GSR = "GQ_GSR";
+		public final static String GPIO_TEST = "GPIO_TEST";
+	}
+
 
 }
