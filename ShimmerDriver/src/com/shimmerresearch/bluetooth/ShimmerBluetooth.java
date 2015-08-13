@@ -1935,7 +1935,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									mTransactionCompleted = true;   
 									mTimer.cancel(); //cancel the ack timer
 									mTimer.purge();
-									getmListofInstructions().remove(0);
+									if (getmListofInstructions().size()>0){
+										getmListofInstructions().remove(0);
+									}
 									setInstructionStackLock(false);
 									newPacket = new byte[mPacketSize];
 									System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);

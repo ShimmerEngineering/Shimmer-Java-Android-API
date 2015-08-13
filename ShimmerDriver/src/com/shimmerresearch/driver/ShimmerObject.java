@@ -677,7 +677,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	private double mLastKnownHeartRate=0;
 	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024);
 	Quat4d mQ = new Quat4d();
-	GradDes3DOrientation mOrientationAlgo;
+	transient GradDes3DOrientation mOrientationAlgo;
 	protected boolean mOrientationEnabled = false;
 	protected boolean mEnableOntheFlyGyroOVCal = false;
 
