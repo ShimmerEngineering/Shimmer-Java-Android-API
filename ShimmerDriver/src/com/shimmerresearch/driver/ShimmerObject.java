@@ -464,7 +464,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected double mShimmerSamplingRate; 	                                        	// 51.2Hz is the default sampling rate 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 	protected long mDerivedSensors = (long)0;												// This stores the sensors channels derived in SW
-	protected int mBluetoothBaudRate=0;
+	protected int mBluetoothBaudRate=9; //460800
 
 	protected int mPacketSize=0; 													// Default 2 bytes for time stamp and 6 bytes for accelerometer 
 	protected int mAccelRange=0;													// This stores the current accelerometer range being used. The accelerometer range is stored during two instances, once an ack packet is received after a writeAccelRange(), and after a response packet has been received after readAccelRange()  	
@@ -6488,7 +6488,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mTrialId = 0;
 			mButtonStart = 1;
 			
-			mBluetoothBaudRate=0;
+			mBluetoothBaudRate=9; //460800
 
 			mInternalExpPower=0;
 
@@ -6522,6 +6522,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
+	public boolean checkInfoMemValid(byte[] infoMemContents){
+		// Check first 6 bytes of InfoMem for 0xFF to determine if contents are valid 
+		byte[] comparisonBuffer = new byte[]{-1,-1,-1,-1,-1,-1};
+		byte[] detectionBuffer = new byte[comparisonBuffer.length];
+		System.arraycopy(infoMemContents, 0, detectionBuffer, 0, detectionBuffer.length);
+		if(Arrays.equals(comparisonBuffer, detectionBuffer)) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 	/**
 	 * Parse the Shimmer's Information Memory when read through the Shimmer
 	 * Dock/Consensys Base. The Information Memory is a region of the Shimmer's
@@ -6533,11 +6545,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void infoMemByteArrayParse(byte[] infoMemContents) {
 		String shimmerName = "";
 
-		// Check first 6 bytes of InfoMem for 0xFF to determine if contents are valid 
-		byte[] comparisonBuffer = new byte[]{-1,-1,-1,-1,-1,-1};
-		byte[] detectionBuffer = new byte[comparisonBuffer.length];
-		System.arraycopy(infoMemContents, 0, detectionBuffer, 0, detectionBuffer.length);
-		if(Arrays.equals(comparisonBuffer, detectionBuffer)) {
+		if(checkInfoMemValid(infoMemContents)){
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
 			mShimmerUsingConfigFromInfoMem = false;
