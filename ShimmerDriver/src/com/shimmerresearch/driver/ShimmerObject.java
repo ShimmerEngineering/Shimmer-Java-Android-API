@@ -422,8 +422,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte GET_INFOMEM_COMMAND   					= (byte) 0x8A;
 	
 	public static final byte SET_CRC_COMMAND						= (byte) 0x8B; 
+	public static final byte SET_RWC_COMMAND                        = (byte) 0x8F;
+	public static final byte RWC_RESPONSE                           = (byte) 0x90;
+	public static final byte GET_RWC_COMMAND                        = (byte) 0x91;
+	
 	public static final byte ROUTINE_COMMUNICATION					= (byte) 0xE0; 
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
+	
+	public static final byte START_LOGGING_ONLY_COMMAND                    = (byte) 0x92;
+	public static final byte STOP_LOGGING_ONLY_COMMAND                     = (byte) 0x93;
+	public static final byte VBATT_RESPONSE                                = (byte) 0x94;
+	public static final byte GET_VBATT_COMMAND                             = (byte) 0x95;
 	
 	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
@@ -677,7 +686,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	private double mLastKnownHeartRate=0;
 	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024);
 	Quat4d mQ = new Quat4d();
-	GradDes3DOrientation mOrientationAlgo;
+	transient GradDes3DOrientation mOrientationAlgo;
 	protected boolean mOrientationEnabled = false;
 	protected boolean mEnableOntheFlyGyroOVCal = false;
 
@@ -774,6 +783,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSamplingDividerLsm303dlhcAccel = 0;
 	protected int mSamplingDividerBeacon = 0;
 
+	protected int mTimeStampPacketByteSize = 2;
+	protected byte[] mSetRWC;
+	protected byte[] mGetRWC;
+	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
+	
 	public String mUniqueID = ""; // Holds unique location information on a dock or COM port number for bluetooth connection  
 
 	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
@@ -3040,6 +3054,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				long lsb =((long)(data[iData+2] & 0xFF));
 				formattedData[i]=xmsb + msb + lsb;
 				iData=iData+3;
+			}  else if (dataType[i]=="u24") {				
+				long xmsb =((long)(data[iData+2] & 0xFF) << 16);
+				long msb =((long)(data[iData+1] & 0xFF) << 8);
+				long lsb =((long)(data[iData+0] & 0xFF));
+				formattedData[i]=xmsb + msb + lsb;
+				iData=iData+3;
 			} else if (dataType[i]=="i24r") {
 				long xmsb =((long)(data[iData+0] & 0xFF) << 16);
 				long msb =((long)(data[iData+1] & 0xFF) << 8);
@@ -3185,9 +3205,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	{
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
+		
 		signalNameArray[0]="TimeStamp";
-		signalDataTypeArray[0]="u16";
-		int packetSize=2; // Time stamp
+		
+		int packetSize=mTimeStampPacketByteSize; // Time stamp
+		if (mTimeStampPacketByteSize==2){
+			signalDataTypeArray[0]="u16";
+		} else if (mTimeStampPacketByteSize==3) {
+			signalDataTypeArray[0]="u24";
+		}
+		
 		int enabledSensors= 0x00;
 		for (int i=0;i<nC;i++) {
 			if ((byte)signalid[i]==(byte)0x00)
@@ -4264,11 +4291,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
 		double calibratedTimeStamp=0;
-		if (mLastReceivedTimeStamp>(timeStamp+(65536*mCurrentTimeStampCycle))){ 
+		if (mLastReceivedTimeStamp>(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle))){ 
 			mCurrentTimeStampCycle=mCurrentTimeStampCycle+1;
 		}
 
-		mLastReceivedTimeStamp=(timeStamp+(65536*mCurrentTimeStampCycle));
+		mLastReceivedTimeStamp=(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
 		calibratedTimeStamp=mLastReceivedTimeStamp/32768*1000;   // to convert into mS
 		if (mFirstTimeCalTime){
 			mFirstTimeCalTime=false;
@@ -4431,7 +4458,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void interpretInqResponse(byte[] bufferInquiry){
 		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
 
-			mPacketSize = 2+bufferInquiry[3]*2; 
+			
+			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
 			mShimmerSamplingRate = (double)1024/bufferInquiry[0];
 			if (mLSM303MagRate==3 && mShimmerSamplingRate>10){
 				mLowPowerMag = true;
@@ -4447,7 +4475,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInquiryResponseBytes = new byte[5+mNChannels];
 			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
 		} else if (mHardwareVersion==HW_ID.SHIMMER_3) {
-			mPacketSize = 2+bufferInquiry[6]*2; 
+			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
 			mShimmerSamplingRate = (32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8)));
 			mNChannels = bufferInquiry[6];
 			mBufferSize = bufferInquiry[7];
@@ -4477,7 +4505,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			updateEnabledSensorsFromChannels(signalIdArray);
 			interpretdatapacketformat(mNChannels,signalIdArray);
 		} else if (mHardwareVersion==HW_ID.SHIMMER_SR30) {
-			mPacketSize = 2+bufferInquiry[2]*2; 
+			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
 			mShimmerSamplingRate = (double)1024/bufferInquiry[0];
 			mAccelRange = bufferInquiry[1];
 			mNChannels = bufferInquiry[2];
