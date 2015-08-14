@@ -2107,6 +2107,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//endregion
 	
 	public void setShimmerVersionInfo(ShimmerVerObject hwfw) {
+		super.mShimmerVerObject = hwfw;
 		super.mHardwareVersion = hwfw.mHardwareVersion;
 		super.mHardwareVersionParsed = hwfw.mHardwareVersionParsed;
 		super.mFirmwareIdentifier = hwfw.mFirmwareIdentifier;
@@ -2119,6 +2120,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public void clearShimmerVersionInfo() {
+		super.mShimmerVerObject = new ShimmerVerObject();
 		super.mHardwareVersion = 0;
 		super.mHardwareVersionParsed = "";
 		super.mFirmwareIdentifier = 0;
@@ -3534,6 +3536,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public int getFirmwareMinorVersion(){
 		return mFirmwareVersionMinor;
 	}
+
+	public int getFirmwareInternalVersion(){
+		return mFirmwareVersionInternal;
+	}
+	
 	
 	public int getFirmwareCode(){
 		return mFirmwareVersionCode;

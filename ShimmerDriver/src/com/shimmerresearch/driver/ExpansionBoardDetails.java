@@ -1,5 +1,7 @@
 package com.shimmerresearch.driver;
 
+import java.io.Serializable;
+
 import com.shimmerresearch.driver.ShimmerVerDetails;
 
 /**
@@ -9,14 +11,14 @@ import com.shimmerresearch.driver.ShimmerVerDetails;
  * @author Mark Nolan
  *
  */
-public class ExpansionBoardDetails {
+public class ExpansionBoardDetails implements Serializable {
 	
 	public int mExpBoardId = -1;
 	public int mExpBoardRev = -1;
-	public int mExpBoardSpecialRev = -1;
+	public int mExpBoardRevSpecial = -1;
 	public String mExpBoardParsed = "";
 	public String mExpBoardParsedWithVer = "";
-	public byte[] mExpBoardArray = null; 
+	public byte[] mExpBoardArray = new byte[]{}; 
 	
 	public ExpansionBoardDetails(
 			int boardID,
@@ -35,6 +37,10 @@ public class ExpansionBoardDetails {
 		}
 	}
 	
+	public ExpansionBoardDetails() {
+		// TODO Auto-generated constructor stub
+	}
+
 	private void parseExpansionBoardDetails(int boardID,
 											int boardRev,
 											int specialRev) {
@@ -59,7 +65,7 @@ public class ExpansionBoardDetails {
 		}
 		mExpBoardId = boardID;
 		mExpBoardRev = boardRev;
-		mExpBoardSpecialRev = specialRev;
+		mExpBoardRevSpecial = specialRev;
 		mExpBoardParsed = boardName;
 		mExpBoardParsedWithVer = boardNameWithVer;
 	}
