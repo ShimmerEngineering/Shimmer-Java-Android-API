@@ -6573,7 +6573,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void infoMemByteArrayParse(byte[] infoMemContents) {
 		String shimmerName = "";
 
-		if(checkInfoMemValid(infoMemContents)){
+		if(!checkInfoMemValid(infoMemContents)){
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
 			mShimmerUsingConfigFromInfoMem = false;
@@ -6935,9 +6935,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //		mShimmerInfoMemBytes = createEmptyInfoMemByteArray(getExpectedInfoMemByteLength());
 		
 		// InfoMem defaults to 0xFF on firmware flash
-		for(int i =0; i < mInfoMemBytes.length; i++) {
-			mInfoMemBytes[i] = (byte) 0xFF;
-		}
+		mInfoMemBytes = createEmptyInfoMemByteArray(mInfoMemBytes.length);
+//		for(int i =0; i < mInfoMemBytes.length; i++) {
+//			mInfoMemBytes[i] = (byte) 0xFF;
+//		}
 		
 		// If not being generated from scratch then copy across exisiting InfoMem contents
 		if(!generateForWritingToShimmer) {
