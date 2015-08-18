@@ -700,6 +700,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected boolean mEnableCalibration = true;
 	protected byte[] mInquiryResponseBytes;
 	protected boolean mIsStreaming =false;											// This is used to monitor whether the device is in streaming mode
+	protected boolean mIsSDLogging =false;											// This is used to monitor whether the device is in sd log mode
 	//all raw params should start with a 1 byte identifier in position [0]
 	protected byte[] mAccelCalRawParams = new byte[22];
 	protected byte[] mDigiAccelCalRawParams  = new byte[22];

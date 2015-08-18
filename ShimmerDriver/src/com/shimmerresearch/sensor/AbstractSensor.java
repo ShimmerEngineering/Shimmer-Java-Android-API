@@ -1,10 +1,54 @@
 package com.shimmerresearch.sensor;
 
+import java.util.HashMap;
+
+import com.shimmerresearch.driver.SensorConfigOptionDetails;
+
 public abstract class AbstractSensor {
+	protected String mSensorName;
+	protected String[] mSignalOutputNameArray;
+	protected String[] mSignalOutputFormatArray;
+	protected String[] mSignalOutputUnitArray;
+	private int mFirmwareType;
+	private int mHardwareID;
+	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
+	public abstract String getSensorName();
+	public abstract Object getSettings(String componentName);
+	public abstract void setSettings(String componentName, Object valueToSet);
+	public abstract Object processData(byte[] rawData,int FWType, int sensorFWID);
 	
-	public String mSensorName;
+	public AbstractSensor(int hardwareID, int firmwareType){
+		mFirmwareType = firmwareType;
+		mHardwareID = hardwareID;
+	}
 	
-	public abstract double parseData(byte[] byteArray,int mFWID,int mHWID);
+	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
+	 * @return
+	 */
+	public String[] getSignalOutputNameArray() {
+		// TODO Auto-generated method stub
+		return mSignalOutputNameArray;
+	}
+
+	/** This returns a String array of the output signal format, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputNameArray
+	 * @return
+	 */
+	public String[] getSignalOutputFormatArray() {
+		// TODO Auto-generated method stub
+		return mSignalOutputFormatArray;
+	}
+
+	/** This returns a String array of the output signal format, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputNameArray
+	 * @return
+	 */
+	public String[] getSignalOutputUnitArray() {
+		// TODO Auto-generated method stub
+		return mSignalOutputUnitArray;
+	}
 	
-	
+	public HashMap<String, SensorConfigOptionDetails> getConfigMap() {
+		// TODO Auto-generated method stub
+		return mConfigOptionsMap;
+	}
+
 }

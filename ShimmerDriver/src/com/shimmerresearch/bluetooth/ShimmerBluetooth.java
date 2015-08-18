@@ -509,6 +509,24 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								getmListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							}
+							else if (mCurrentCommand==START_LOGGING_ONLY_COMMAND) {
+
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
+							else if (mCurrentCommand==STOP_LOGGING_ONLY_COMMAND) {
+
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
 							else if (mCurrentCommand==GET_SAMPLING_RATE_COMMAND) {
 								mWaitForResponse=true;
 								mWaitForAck=false;
@@ -2355,7 +2373,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region  --------- START/STOP STREAMING FUNCTIONS --------- 
 	
 	public void startStreaming() {
-		if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM){
+		if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM && mFirmwareVersionCode >=6){
 			readRealWorldClock();
 		}
 		//mCurrentLEDStatus=-1;	
@@ -2377,6 +2395,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mSync=true; // a backup sync done every time you start streaming
 		mByteArrayOutputStream.reset();
 		getmListofInstructions().add(new byte[]{START_STREAMING_COMMAND});
+	}
+	
+	public void startSDLogging(){
+		if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM && mFirmwareVersionCode >=6){
+			getmListofInstructions().add(new byte[]{START_LOGGING_ONLY_COMMAND});
+		}	
+	}
+	
+	public void stopSDLogging(){
+		if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM && mFirmwareVersionCode >=6){
+			getmListofInstructions().add(new byte[]{STOP_LOGGING_ONLY_COMMAND});
+		}	
 	}
 	
 	public void startDataLogAndStreaming(){
