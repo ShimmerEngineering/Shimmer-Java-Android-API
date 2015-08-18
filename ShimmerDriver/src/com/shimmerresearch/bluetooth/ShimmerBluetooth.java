@@ -106,47 +106,43 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- CLASS VARIABLES AND ABSTRACT METHODS ---------
 	
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
-	// Constants that indicate the current connection state
 	
-	public static final int STATE_NONE = 0;       // The class is doing nothing
-	public static final int STATE_CONNECTING = 1; // The class is now initiating an outgoing connection
-	public static final int STATE_CONNECTED = 2;  // The class is now connected to a remote device
-	public static final int STATE_STREAMING = 3;  // The class is now connected to a remote device
-	public static final int STATE_INITIALISING = 4; // 
-	public static final int STATE_INITIALISED = 5; // 
-	public static final int STATE_CONFIGURING = 6; // 
-	public static final int STATE_CONFIGURED = 7; // 
-	public static final int STATE_DISCONNECTED = 8;
-	public static final int STATE_CONNECTION_LOST = 9;
-	
-	public static final String[] STATE_PARSED = new String[]{
-		"None",
-		"Connecting",
-		"Connected",
-		"Streaming",
-		"Initialising",
-		"Initialised",
-		"Configuring",
-		"Configured",
-		"Disconnected",
-		"Lost connection"
-	};
+	public enum BT_STATE{
+		NONE("None"),       // The class is doing nothing
+		CONNECTING("Connecting"), // The class is now initiating an outgoing connection
+		CONNECTED("Connected"),  // The class is now connected to a remote device
+		STREAMING("Streaming"),  // The class is now connected to a remote device
+		INITIALISING("Initialising"), // 
+		INITIALISED("Initialised"), // 
+		CONFIGURING("Configuring"), // The class is now initiating an outgoing connection 
+		CONFIGURED("Configured"), // 
+		DISCONNECTED("Disconnected"),
+		CONNECTION_LOST("Lost connection"),
+		CONNECTION_FAILED("Connection Failed");
+//		FAILED(),  // The class is now connected to a remote device
+		
+	    private final String text;
 
-	
-//	public static final int STATE_FAILED = 4;  // The class is now connected to a remote device
-	
-//	public enum CURRENT_OPERATION{
-//		NONE,
-//		INITIALISING,       // The class is doing nothing
-//		CONFIGURING, // The class is now initiating an outgoing connection
-//		STREAMING   // The class is now connected to a remote device
-//	}
-//	public CURRENT_OPERATION mOperation = CURRENT_OPERATION.NONE;
+	    /**
+	     * @param text
+	     */
+	    private BT_STATE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
+	public BT_STATE mState = BT_STATE.NONE;
+
+	protected boolean mIsConnected = false;
 	
 	private boolean mInstructionStackLock = false;
-	protected int mState;
-	protected boolean mIsConnected = false;
-//	protected boolean mIsInitialised = false;
 	protected boolean mSendProgressReport = false;
 	protected byte mCurrentCommand;	
 	protected boolean mWaitForAck=false;                                          // This indicates whether the device is waiting for an acknowledge packet from the Shimmer Device  
@@ -170,19 +166,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void writeBytes(byte[] data);
 	protected abstract void stop();
 	protected abstract void sendProgressReport(ProgressReportPerCmd pr);
+	protected abstract void isReadyForStreaming();
 	protected abstract void isNowStreaming();
 	protected abstract void hasStopStreaming();
 	protected abstract void sendStatusMsgPacketLossDetected();
 	protected abstract void inquiryDone();
 	protected abstract void sendStatusMSGtoUI(String msg);
 	protected abstract void printLogDataForDebugging(String msg);
-	protected abstract void isReadyForStreaming();
 	protected abstract void connectionLost();
-	protected abstract void setState(int state);
-//	protected abstract void startOperation(CURRENT_OPERATION currentOperation);
-//	protected abstract void startOperation(CURRENT_OPERATION currentOperation, int totalNumOfCmds);
-	protected abstract void startOperation(int currentOperation);
-	protected abstract void startOperation(int currentOperation, int totalNumOfCmds);
+	protected abstract void setState(BT_STATE state);
+	protected abstract void startOperation(BT_STATE currentOperation);
+	protected abstract void startOperation(BT_STATE currentOperation, int totalNumOfCmds);
 	protected abstract void logAndStreamStatusChanged();
 	
 	protected abstract byte[] readBytes(int numberofBytes);
@@ -2255,7 +2249,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if(mSendProgressReport){
 			operationPrepare();
-			setState(ShimmerBluetooth.STATE_INITIALISING);
+			setState(BT_STATE.INITIALISING);
 		}
 			
 		readSamplingRate();
@@ -2306,7 +2300,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
 //			startOperation(CURRENT_OPERATION.INITIALISING, getmListofInstructions().size());
-			startOperation(STATE_INITIALISING, getmListofInstructions().size());
+			startOperation(BT_STATE.INITIALISING, getmListofInstructions().size());
 			
 			setInstructionStackLock(false);
 		}
@@ -2343,7 +2337,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		while(getmListofInstructions().size()>0); //TODO add timeout
 	}
 	
-	public void operationStart(int currentOperation){
+	public void operationStart(BT_STATE currentOperation){
 //	public void operationStart(CURRENT_OPERATION currentOperation){
 		startOperation(currentOperation, getmListofInstructions().size());
 		//unlock instruction stack
@@ -2652,7 +2646,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mCountDeadConnection++;
 				writeLEDCommand(0);
 				if (mCountDeadConnection>5){
-					setState(STATE_NONE);
+					setState(BT_STATE.NONE);
 				}
 			} else {
 				mCountDeadConnection = 0;
@@ -3797,7 +3791,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return gain;
 	}
 	
-    public int getState(){
+    public BT_STATE getState(){
         return mState;
     }
 
@@ -4091,7 +4085,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- MISCELLANEOUS FUNCTIONS ---------
 	
 	public void reconnect(){
-        if (mState==STATE_CONNECTED && !mIsStreaming){
+        if (mIsConnected && !mIsStreaming){
         	String msgReconnect = "Reconnecting the Shimmer...";
 			sendStatusMSGtoUI(msgReconnect);
             stop();
