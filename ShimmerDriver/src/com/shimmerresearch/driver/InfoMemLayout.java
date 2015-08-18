@@ -16,6 +16,7 @@ import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 public class InfoMemLayout {
 
 	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+	public byte[] invalidMacId2 = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
 	public int maxNumOfExperimentNodes = 21;
 
 	int mFirmwareIdentifier = -1;

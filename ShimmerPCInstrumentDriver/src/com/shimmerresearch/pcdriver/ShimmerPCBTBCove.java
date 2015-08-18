@@ -77,9 +77,11 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
 	public final static int MSG_IDENTIFIER_PROGRESS_REPORT = 4;
 	
-	public final static int NOTIFICATION_STOP_STREAMING =0;
-	public final static int NOTIFICATION_START_STREAMING =1;
-	public final static int NOTIFICATION_FULLY_INITIALIZED =2;
+	public final static int NOTIFICATION_STOP_STREAMING = 0;
+	public final static int NOTIFICATION_START_STREAMING = 1;
+	public final static int NOTIFICATION_FULLY_INITIALIZED = 2;
+	public final static int NOTIFICATION_STATE_CHANGE = 3;
+
 	/**
 	 * Constructor. Prepares a new Bluetooth session.
 	 * @param context  The UI Activity Context
@@ -115,7 +117,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPCBTBCove(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
-		mState = STATE_NONE;
+		mState = BT_STATE.NONE;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
@@ -143,7 +145,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPCBTBCove(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
-		mState = STATE_NONE;
+		mState = BT_STATE.NONE;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mMagRange = magGain;
@@ -166,7 +168,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		getmListofInstructions().clear();
 		mFirstTime=true;
 		try {
-			setState(STATE_CONNECTING);
+			setState(BT_STATE.CONNECTING);
 			conn = (StreamConnection)Connector.open(address);
 			mIN = new DataInputStream(conn.openInputStream());
 			mOUT = conn.openOutputStream();
@@ -179,7 +181,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mPThread = new ProcessingThread();
 			mPThread.start();
 			initialize();
-			setState(STATE_CONNECTED);
+			setState(BT_STATE.CONNECTED);
 		}
 		catch ( IOException e ) { 
 			System.err.print(e.toString()); 
@@ -254,7 +256,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	@Override
 	protected void stop() {
 		// TODO Auto-generated method stub
-		setState(STATE_NONE);
+		setState(BT_STATE.NONE);
 	}
 	
 	@Override
@@ -276,7 +278,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	@Override
 	protected void inquiryDone() {
 		// TODO Auto-generated method stub
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
 		myUIThread.callBackMethod(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 		isReadyForStreaming();
 	}
@@ -333,14 +335,14 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mOUT.close();
 			conn.close();
 			conn = null;
-			setState(STATE_NONE);
+			setState(BT_STATE.NONE);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			setState(STATE_NONE);
+			setState(BT_STATE.NONE);
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}
-		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
 		myUIThread.callBackMethod(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 
@@ -364,10 +366,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mIsInitialised = false;
 			conn.close();
 			conn = null;
-			setState(STATE_NONE);
+			setState(BT_STATE.NONE);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			setState(STATE_NONE);
+			setState(BT_STATE.NONE);
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}	
@@ -389,7 +391,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void setState(int state) {
+	protected void setState(BT_STATE state) {
 		// TODO Auto-generated method stub
 		mState = state;
 		// Give the new state to the UI through a callback (use a msg identifier state change)
@@ -425,13 +427,13 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 
 	@Override
-	protected void startOperation(int currentOperation) {
+	protected void startOperation(BT_STATE currentOperation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void startOperation(int currentOperation, int totalNumOfCmds) {
+	protected void startOperation(BT_STATE currentOperation, int totalNumOfCmds) {
 		// TODO Auto-generated method stub
 		
 	}

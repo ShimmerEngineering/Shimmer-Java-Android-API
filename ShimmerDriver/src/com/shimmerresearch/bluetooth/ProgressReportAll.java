@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 
+
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 //import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
 
@@ -30,7 +32,7 @@ public class ProgressReportAll implements Serializable {
 //	}
 //	public BLUETOOTH_JOB currentJob = BLUETOOTH_JOB.NONE;
 //	public CURRENT_OPERATION currentOperation = CURRENT_OPERATION.NONE;
-	public int currentOperation = ShimmerBluetooth.STATE_NONE;
+	public BT_STATE currentState = BT_STATE.NONE;
 	
 	public static enum OperationState {
 		PENDING,
@@ -67,14 +69,14 @@ public class ProgressReportAll implements Serializable {
 //		updateProgressTotal();
 //	}
 
-	public ProgressReportAll(int currentOperation, List<ShimmerObject> lso) {
+	public ProgressReportAll(BT_STATE currentState, List<ShimmerObject> lso) {
 //	public ProgressReportAll(CURRENT_OPERATION currentOperation, List<ShimmerObject> lso) {
-		this.currentOperation = currentOperation;
+		this.currentState = currentState;
 		mListOfShimmers = lso;
 		
 		mMapOfOperationProgressInfo.clear();
 		for(ShimmerObject shimmer:lso){
-			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer, currentOperation, 1));
+			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer, currentState, 1));
 		}
 		updateProgressTotal();
 	}

@@ -501,7 +501,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected boolean mDefaultCalibrationParametersAccel = true;
 	protected boolean mDefaultCalibrationParametersDigitalAccel = true; //Also known as the wide range accelerometer
 	protected int mPressureResolution = 0;
-	protected int mExGResolution = 0;
+	protected int mExGResolution = 0;	// 0 = 16 bit, 1 = 24 bit
 	protected int mShimmer2MagRate=0;
 	
 	//TODO add comments and default values
@@ -6573,7 +6573,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void infoMemByteArrayParse(byte[] infoMemContents) {
 		String shimmerName = "";
 
-		if(checkInfoMemValid(infoMemContents)){
+		if(!checkInfoMemValid(infoMemContents)){
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
 			mShimmerUsingConfigFromInfoMem = false;
@@ -6731,9 +6731,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 //			//SDLog and LogAndStream
 //			if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
-//				
-//				// InfoMem C - Start - used by SdLog and LogAndStream
-//				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				
+				// InfoMem C - Start - used by SdLog and LogAndStream
+				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 					mMPU9150DMP = (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150DMP) & infoMemMap.maskMPU9150DMP;
 					mMPU9150LPF = (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150LPF) & infoMemMap.maskMPU9150LPF;
 					mMPU9150MotCalCfg =  (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150MotCalCfg) & infoMemMap.maskMPU9150MotCalCfg;
@@ -6797,7 +6797,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					AlignmentMatrixMPLGyro = alignmentMatrixMPLGyro; 			
 					SensitivityMatrixMPLGyro = sensitivityMatrixMPLGyro; 	
 					OffsetVectorMPLGyro = offsetVectorMPLGyro;
-//				}
+				}
 				
 				// Shimmer Name
 				byte[] shimmerNameBuffer = new byte[infoMemMap.lengthShimmerName];
@@ -6838,14 +6838,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //					mConfigTime = 0;
 //				}
 
-//				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 					mTrialId = infoMemContents[infoMemMap.idxSDMyTrialID] & 0xFF;
 					mTrialNumberOfShimmers = infoMemContents[infoMemMap.idxSDNumOfShimmers] & 0xFF;
-//				}
+				}
 				
 				mButtonStart = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftButtonStart) & infoMemMap.maskButtonStart;
 
-//				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 					mSyncWhenLogging = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftTimeSyncWhenLogging) & infoMemMap.maskTimeSyncWhenLogging;
 					mMasterShimmer = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftMasterShimmer) & infoMemMap.maskTimeMasterShimmer;
 					mSingleTouch = (infoMemContents[infoMemMap.idxSDExperimentConfig1] >> infoMemMap.bitShiftSingleTouch) & infoMemMap.maskTimeSingleTouch;
@@ -6856,7 +6856,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					// Maximum and Estimated Length in minutes
 					mTrialDurationEstimated =  ((int)(infoMemContents[infoMemMap.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemContents[infoMemMap.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
 					mTrialDurationMaximum =  ((int)(infoMemContents[infoMemMap.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemContents[infoMemMap.idxMaxExpLengthMsb] & 0xFF)) << 8));
-//				}
+				}
 					
 				byte[] macIdBytes = new byte[infoMemMap.lengthMacIdBytes];
 				System.arraycopy(infoMemContents, infoMemMap.idxMacAddress, macIdBytes, 0 , infoMemMap.lengthMacIdBytes);
@@ -6878,12 +6878,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 				// InfoMem C - End
 					
-//				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					syncNodesList.clear();
 					for (int i = 0; i < infoMemMap.maxNumOfExperimentNodes; i++) {
 						System.arraycopy(infoMemContents, infoMemMap.idxNode0 + (i*infoMemMap.lengthMacIdBytes), macIdBytes, 0 , infoMemMap.lengthMacIdBytes);
-						if(Arrays.equals(macIdBytes, infoMemMap.invalidMacId)) {
+						if((Arrays.equals(macIdBytes, infoMemMap.invalidMacId))||(Arrays.equals(macIdBytes, infoMemMap.invalidMacId))) {
 //						if(Arrays.equals(macIdBytes, new byte[]{-1,-1,-1,-1,-1,-1})) {
 							break;
 						}
@@ -6892,7 +6892,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						}
 					}
 					// InfoMem B End
-//				}
+				}
 //			}
 			
 			//TODO Complete and tidy below
@@ -6935,9 +6935,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //		mShimmerInfoMemBytes = createEmptyInfoMemByteArray(getExpectedInfoMemByteLength());
 		
 		// InfoMem defaults to 0xFF on firmware flash
-		for(int i =0; i < mInfoMemBytes.length; i++) {
-			mInfoMemBytes[i] = (byte) 0xFF;
-		}
+		mInfoMemBytes = createEmptyInfoMemByteArray(mInfoMemBytes.length);
+//		for(int i =0; i < mInfoMemBytes.length; i++) {
+//			mInfoMemBytes[i] = (byte) 0xFF;
+//		}
 		
 		// If not being generated from scratch then copy across exisiting InfoMem contents
 		if(!generateForWritingToShimmer) {
@@ -7657,7 +7658,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						}
 					}
 					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
-//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK 
+//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
+//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK
 							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
 						skipKey = true;
@@ -7974,7 +7976,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * could have saved incorrect configuration to the Shimmer.
 	 * 
 	 */
-	public void checkShimmerConfigurationBeforeConfiguring() {
+	public void checkShimmerConfigBeforeConfiguring() {
 		
 		if (mHardwareVersion == HW_ID.SHIMMER_3){
 			

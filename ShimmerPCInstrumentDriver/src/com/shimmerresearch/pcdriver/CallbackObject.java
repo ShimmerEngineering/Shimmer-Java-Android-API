@@ -40,31 +40,48 @@
 package com.shimmerresearch.pcdriver;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
-//import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 
 public class CallbackObject {
 	public int mIndicator;
-//	public CURRENT_OPERATION mCurrentOperation;
-	public int mCurrentOperation;
+	public BT_STATE mState = BT_STATE.NONE;
 	public String mBluetoothAddress;
 	public String mComPort;
 	public double mPacketReceptionRate;
 	public ProgressReportPerDevice mProgressReportPerDevice;
+
 	
+	/**used for hasStopStreaming, isNowStreaming and isReadyForStreaming notifications
+	 * @param ind
+	 * @param myBlueAdd
+	 * @param comPort
+	 */
 	public CallbackObject(int ind, String myBlueAdd, String comPort){
 		mIndicator = ind;
 		mBluetoothAddress = myBlueAdd;
 		mComPort = comPort;
 	}
 	
-	public CallbackObject(int ind, int currentOperation, String myBlueAdd, String comPort){
-//	public CallbackObject(int ind, CURRENT_OPERATION currentOperation, String myBlueAdd, String comPort){
+	
+	/**not used
+	 * @param ind
+	 * @param state
+	 * @param myBlueAdd
+	 * @param comPort
+	 */
+	public CallbackObject(int ind, BT_STATE state, String myBlueAdd, String comPort){
 		mIndicator = ind;
-		mCurrentOperation = currentOperation;
+		mState = state;
 		mBluetoothAddress = myBlueAdd;
 		mComPort = comPort;
 	}
 	
+	/** used for unwrapped callbacks -> currently used by packetratereception callbacks
+	 * @param ind
+	 * @param myBlueAdd
+	 * @param comPort
+	 * @param packetReceptionRate
+	 */
 	public CallbackObject(int ind, String myBlueAdd, String comPort, double packetReceptionRate){
 		mIndicator = ind;
 		mBluetoothAddress = myBlueAdd;
@@ -72,8 +89,14 @@ public class CallbackObject {
 		this.mPacketReceptionRate = packetReceptionRate;
 	}
 
-	public CallbackObject(int ind, String myBlueAdd, String comPort, ProgressReportPerDevice progressReportPerDevice) {
-		mIndicator = ind;
+	/**used by progress report callbacks
+	 * @param state
+	 * @param myBlueAdd
+	 * @param comPort
+	 * @param progressReportPerDevice
+	 */
+	public CallbackObject(BT_STATE state, String myBlueAdd, String comPort, ProgressReportPerDevice progressReportPerDevice) {
+		mState = state;
 		mBluetoothAddress = myBlueAdd;
 		mComPort = comPort;
 		mProgressReportPerDevice = progressReportPerDevice;
