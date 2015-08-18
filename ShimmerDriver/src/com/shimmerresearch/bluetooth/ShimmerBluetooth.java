@@ -72,8 +72,6 @@
  *  
  */
 
-
-
 package com.shimmerresearch.bluetooth;
 
 import java.io.ByteArrayOutputStream;
@@ -103,6 +101,11 @@ import com.shimmerresearch.driver.Util;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8439353551730215801L;
+
 	//region --------- CLASS VARIABLES AND ABSTRACT METHODS ---------
 	
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();

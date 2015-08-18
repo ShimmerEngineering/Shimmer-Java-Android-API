@@ -71,10 +71,16 @@ import jssc.SerialPortException;
 
 
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5927054314345918072L;
+	
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
-	public Util util = new Util("ShimmerPC", true);
+	public boolean mVerboseMode = true;
+	public Util util = new Util("ShimmerPC", mVerboseMode);
 	
 	public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
 	public static final int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
