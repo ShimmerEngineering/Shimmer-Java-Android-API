@@ -10709,7 +10709,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return returnValue;
 
 	}
-
+	
+	public Boolean checkShimmerStreaming(ShimmerObject obj)
+	{
+		return obj.mIsStreaming;
+	}
+	
 	/**
 	 * @return the mChargingState
 	 */
