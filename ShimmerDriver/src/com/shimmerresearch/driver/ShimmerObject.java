@@ -864,22 +864,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				double unwrappedrawtimestamp = calibratedTS*32768/1000;
 				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
 				long sdlograwtimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp;
-				objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.CLOCK_UNIT,(double)sdlograwtimestamp));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.CLOCK_UNIT,(double)sdlograwtimestamp));
 				uncalibratedData[iTimeStamp] = (double)sdlograwtimestamp;
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
 
 				if (mEnableCalibration){
 					double sdlogcaltimestamp = (double)sdlograwtimestamp/32768*1000;
-					objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS,sdlogcaltimestamp));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS,sdlogcaltimestamp));
 					calibratedData[iTimeStamp] = sdlogcaltimestamp;
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
 				}
 			} else if (fwIdentifier == FW_TYPE_BT){
-				objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]));
 				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS,calibratedTS));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS,calibratedTS));
 					calibratedData[iTimeStamp] = calibratedTS;
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
 				}

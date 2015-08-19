@@ -71,6 +71,7 @@ import jssc.SerialPortException;
 
 
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
+	
 	/**
 	 * 
 	 */

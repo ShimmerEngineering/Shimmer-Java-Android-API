@@ -1,6 +1,8 @@
 package com.shimmerresearch.driver;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_TYPE;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -39,23 +41,35 @@ public class ChannelDetails implements Serializable {
 		public static final String MSB = "MSB";
 	}
 	
-//	public static class ChannelType {
-//		public static final String RAW = "RAW";
-//		public static final String CAL = "CAL";
-//	}
+	public enum ChannelType{
+		RAW("RAW"),
+		CAL("CAL");
+		
+	    private final String text;
 
-	public static enum ChannelsAvailable {
-		RAW,
-		CAL
+	    /**
+	     * @param text
+	     */
+	    private ChannelType(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
 	}
-
+	
 	public String mGuiName = "";
 	public String mObjectClusterName = "";
 	public String mChannelDataType = ChannelDataType.UNKOWN;
 	public int mNumBytes = 0;
 	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
 	public String mCalibratedUnits = CHANNEL_UNITS.NO_UNITS;
-	public ChannelsAvailable[] mChannelsAvailable = new ChannelsAvailable[]{};
+	public List<ChannelType> mListOfChannelTypes = new ArrayList<ChannelType>();
 
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
@@ -66,15 +80,15 @@ public class ChannelDetails implements Serializable {
 	 * @param numBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
-//	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units, ChannelsAvailable[] channelsAvailable){
-	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units){
+	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units, List<ChannelType> listOfChannelTypes){
+//	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units){
 		mGuiName = guiName;
 		mObjectClusterName = objectClusterName;
 		mChannelDataType = channelDataType;
 		mNumBytes = numBytes;
 		mChannelDataEndian = channelDataEndian;
 		mCalibratedUnits = units;
-//		mChannelsAvailable = channelsAvailable;
+		mListOfChannelTypes = listOfChannelTypes;
 	}
 
 	/**
@@ -85,9 +99,4 @@ public class ChannelDetails implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-
-//	public ChannelDetails(String channelName, long mSensorBitmapIDStreaming, long mSensorBitmapIDSDLogHeader) {
-//		// TODO Auto-generated constructor stub
-//	}
-	
 }
