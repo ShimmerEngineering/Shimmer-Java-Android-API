@@ -7,6 +7,11 @@ import com.shimmerresearch.driver.SensorConfigOptionDetails;
 
 public class KionixKXRB52042 extends AbstractSensor{
 
+	public KionixKXRB52042(int hardwareID, int firmwareType) {
+		super(hardwareID, firmwareType);
+		// TODO Auto-generated constructor stub
+	}
+
 	{
 		mSensorName = "KionixKXRB52042";
 	}
@@ -24,9 +29,9 @@ public class KionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public void setSettings(String componentName, Object valueToSet) {
+	public ActionSetting setSettings(String componentName, Object valueToSet) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override

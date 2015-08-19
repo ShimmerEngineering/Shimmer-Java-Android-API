@@ -4,8 +4,16 @@ import java.util.HashMap;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.SensorConfigOptionDetails;
+import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 
 public class STMICROLSM303DLHC extends AbstractSensor{
+
+	public STMICROLSM303DLHC(int hardwareID, int firmwareType) {
+		super(hardwareID, firmwareType);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	{
 		mSensorName ="STMICROLSM303DLHC";
@@ -40,16 +48,20 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet) {
 		// 		Object returnValue = null;
-		ActionSetting as = new ActionSetting();
+		ActionSetting actionsetting = new ActionSetting();
 		switch(componentName){
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
 				mAccelRange = ((int)valueToSet);
 				//
-			if(mFirmwareType==Configuration.Shimmer3)
-				return as;
+			if(mFirmwareType==FW_ID.SHIMMER3.BTSTREAM||mFirmwareType==FW_ID.SHIMMER3.LOGANDSTREAM){
+				actionsetting.mActionByteArray = new byte[]{ShimmerObject.SET_ACCEL_SENSITIVITY_COMMAND, (byte)mAccelRange};
+				return actionsetting;
+			} else if (mFirmwareType==FW_ID.SHIMMER3.SDLOG){
+				
+			}
         	break;
 		}
-    
+		return actionsetting;
 	}
 
 	/**
@@ -61,12 +73,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	 * 
 	 * @param enable
 	 */
-	protected void setLowPowerAccelWR(boolean enable){
-		mLowPowerAccelWR = enable;
-		mHighResAccelWR = !enable;
-
-		setLSM303AccelRateFromFreq(mShimmerSamplingRate);
-	}
+	protected void setLowPowerAccelWR(boolean enable){}
 	
 	
 	@Override

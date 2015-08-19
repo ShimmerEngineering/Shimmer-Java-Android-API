@@ -9,12 +9,12 @@ public abstract class AbstractSensor {
 	protected String[] mSignalOutputNameArray;
 	protected String[] mSignalOutputFormatArray;
 	protected String[] mSignalOutputUnitArray;
-	private int mFirmwareType;
-	private int mHardwareID;
+	protected int mFirmwareType;
+	protected int mHardwareID;
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 	public abstract String getSensorName();
 	public abstract Object getSettings(String componentName);
-	public abstract void setSettings(String componentName, Object valueToSet);
+	public abstract ActionSetting setSettings(String componentName, Object valueToSet);
 	public abstract Object processData(byte[] rawData,int FWType, int sensorFWID);
 	
 	public AbstractSensor(int hardwareID, int firmwareType){
