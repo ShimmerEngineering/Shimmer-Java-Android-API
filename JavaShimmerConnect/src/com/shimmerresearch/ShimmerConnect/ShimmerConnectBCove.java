@@ -2281,7 +2281,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 				
 				Multimap<String, FormatCluster> m = objc.mPropertyCluster;
 				
-				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
+				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
 				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
 				dataArrayPPG = format.mData;
 				try {

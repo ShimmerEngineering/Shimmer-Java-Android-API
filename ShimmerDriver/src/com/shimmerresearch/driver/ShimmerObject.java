@@ -1174,52 +1174,52 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A7) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A7) > 0)
 					) {
-				int iA7 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_A7);
+				int iA7 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7);
 				tempData[0] = (double)newPacketInt[iA7];
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA7]));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA7]));
 				uncalibratedData[iA7]=(double)newPacketInt[iA7];
 				uncalibratedDataUnits[iA7]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
 					calibratedData[iA7]=calibrateU12AdcValue(tempData[0],0,3,1);
 					calibratedDataUnits[iA7] = CHANNEL_UNITS.MILLIVOLTS;
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]));
 				}
 			}
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A6) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A6) > 0)
 					) {
-				int iA6 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_A6);
+				int iA6 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6);
 				tempData[0] = (double)newPacketInt[iA6];
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA6]));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA6]));
 				uncalibratedData[iA6]=(double)newPacketInt[iA6];
 				uncalibratedDataUnits[iA6]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
 					calibratedData[iA6]=calibrateU12AdcValue(tempData[0],0,3,1);
 					calibratedDataUnits[iA6] = CHANNEL_UNITS.MILLIVOLTS;
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA6]));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA6]));
 				}
 			}
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A15) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A15) > 0)
 					) {
-				int iA15 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_A15);
+				int iA15 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15);
 				tempData[0] = (double)newPacketInt[iA15];
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA15]));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA15]));
 				uncalibratedData[iA15]=(double)newPacketInt[iA15];
 				uncalibratedDataUnits[iA15]=CHANNEL_UNITS.NO_UNITS;
 
 				if (mEnableCalibration){
 					calibratedData[iA15]=calibrateU12AdcValue(tempData[0],0,3,1);
 					calibratedDataUnits[iA15] = CHANNEL_UNITS.MILLIVOLTS;
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA15]));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA15]));
 				}
 			}
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A1) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A1) > 0)
 					) {
-					int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A1);
+					int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1);
 					tempData[0] = (double)newPacketInt[iA1];
-					String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A1;
+					String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1;
 					
 					//to Support derived sensor renaming
 					if (fwIdentifier == FW_TYPE_SD){
@@ -1229,7 +1229,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						}else if ((mDerivedSensors & SDLogHeaderDerivedSensors.RES_AMP)>0){
 							sensorName = Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP;
 						}else if((mDerivedSensors & SDLogHeaderDerivedSensors.SKIN_TEMP)>0){
-							sensorName = Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE;
+							sensorName = Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE;
 						}
 						
 					}
@@ -1253,9 +1253,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A12) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A12) > 0)
 					) {
-				int iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A12);
+				int iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12);
 				tempData[0] = (double)newPacketInt[iA12];
-				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A12;
+				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12;
 				//to Support derived sensor renaming
 				if (fwIdentifier == FW_TYPE_SD){
 					//change name based on derived sensor value
@@ -1280,9 +1280,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A13) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A13) > 0)
 					) {
-				int iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
+				int iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
 				tempData[0] = (double)newPacketInt[iA13];
-				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A13;
+				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
 				//to Support derived sensor renaming
 				if (fwIdentifier == FW_TYPE_SD){
 					//change name based on derived sensor value
@@ -1306,9 +1306,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A14) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A14) > 0)
 					) {
-				int iA14 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_A14);
+				int iA14 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14);
 				tempData[0] = (double)newPacketInt[iA14];
-				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_A14;
+				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14;
 				//to Support derived sensor renaming
 				if (fwIdentifier == FW_TYPE_SD){
 					//change name based on derived sensor value
@@ -3463,7 +3463,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if ((byte)signalid[i]==(byte)0x0D)
 			{
 				if (mHardwareVersion==HW_ID.SHIMMER_3){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_A7;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|SENSOR_EXT_ADC_A7);
@@ -3477,7 +3477,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if ((byte)signalid[i]==(byte)0x0E)
 			{
 				if (mHardwareVersion==HW_ID.SHIMMER_3){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_A6;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|SENSOR_EXT_ADC_A6);
@@ -3491,7 +3491,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if ((byte)signalid[i]==(byte)0x0F)
 			{
 				if (mHardwareVersion==HW_ID.SHIMMER_3){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_A15;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|SENSOR_EXT_ADC_A15);
@@ -3505,7 +3505,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if ((byte)signalid[i]==(byte)0x10)
 			{
 				if (mHardwareVersion==HW_ID.SHIMMER_3){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_A1;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|SENSOR_INT_ADC_A1);
@@ -3520,7 +3520,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if ((byte)signalid[i]==(byte)0x11)
 			{
 				if (mHardwareVersion==HW_ID.SHIMMER_3){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_A12;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|SENSOR_INT_ADC_A12);
@@ -3534,7 +3534,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if ((byte)signalid[i]==(byte)0x12)
 			{
 				if (mHardwareVersion==HW_ID.SHIMMER_3){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_A13;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|SENSOR_INT_ADC_A13);
@@ -3553,7 +3553,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			else if ((byte)signalid[i]==(byte)0x13)
 			{
 				if (mHardwareVersion==HW_ID.SHIMMER_3){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_A14;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|SENSOR_INT_ADC_A14);
@@ -3921,25 +3921,25 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.BATTERY);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A15) > 0) {
-				listofSignals.add(Shimmer3.ObjectClusterSensorName.EXT_EXP_A15);
+				listofSignals.add(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A7) > 0) {
-				listofSignals.add(Shimmer3.ObjectClusterSensorName.EXT_EXP_A7);
+				listofSignals.add(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A6) > 0) {
-				listofSignals.add(Shimmer3.ObjectClusterSensorName.EXT_EXP_A6);
+				listofSignals.add(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A1) > 0) {
-				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_A1);
+				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A12) > 0) {
-				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_A12);
+				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A13) > 0) {
-				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_A13);
+				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A14) > 0) {
-				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_A14);
+				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14);
 			}
 			if ((((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 || ((mEnabledSensors & 0xFFFF)& SENSOR_DACCEL) > 0)&& ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A);
@@ -5107,46 +5107,46 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A15) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A15,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 				
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A7) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A7,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_EXT_ADC_A6) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_A6,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A1) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A1,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A1,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A12) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A12,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A12,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A13) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A13,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A13,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A14) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A14,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_A14,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,CHANNEL_TYPE.RAW,CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if ((((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 || ((mEnabledSensors & 0xFFFF)& SENSOR_DACCEL) > 0)&& ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
@@ -7318,7 +7318,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					if(key==Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP){
 						derivedChannelBitmapID = infoMemMap.maskDerivedChannelResAmp;
 					}
-					else if(key==Configuration.Shimmer3.SensorMapKey.SKIN_TEMP_PROBE){
+					else if(key==Configuration.Shimmer3.SensorMapKey.SKIN_TEMPERATURE_PROBE){
 						derivedChannelBitmapID = infoMemMap.maskDerivedChannelSkinTemp;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A12){
