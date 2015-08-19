@@ -506,6 +506,24 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								getmListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							}
+							else if (mCurrentCommand==START_LOGGING_ONLY_COMMAND) {
+
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
+							else if (mCurrentCommand==STOP_LOGGING_ONLY_COMMAND) {
+
+								mTransactionCompleted = true;
+								mWaitForAck=false;
+								mTimer.cancel(); //cancel the ack timer
+								mTimer.purge();
+								getmListofInstructions().remove(0);
+								setInstructionStackLock(false);
+							}
 							else if (mCurrentCommand==GET_SAMPLING_RATE_COMMAND) {
 								mWaitForResponse=true;
 								mWaitForAck=false;
@@ -1801,6 +1819,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("Directory Name = "+ mDirectoryName);
 							}
 							else if(bufferLogCommandType[0]==STATUS_RESPONSE){
+								int stream = bufferLogCommandType[1] & 4;
+								if (stream>0){
+									mIsStreaming = true;
+								} else {
+									mIsStreaming = false;
+								}
+								int log = bufferLogCommandType[1] & 3;
+								if (log>0){
+									mIsSDLogging = true;
+								} else {
+									mIsSDLogging = false;
+								}
 								int sensing = bufferLogCommandType[1] & 2;
 								if(sensing==2){
 									mSensingStatus = true;
@@ -1817,7 +1847,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									mDockedStatus = true;
 								else
 									mDockedStatus = false;
-								
+								consolePrintLn("BTStream = "+mIsStreaming);
+								consolePrintLn("SDLog = "+ mIsSDLogging);
 								consolePrintLn("Sensing = "+sensing);
 								consolePrintLn("Sensing status = "+mSensingStatus);
 								consolePrintLn("Docked = "+docked);
@@ -1854,6 +1885,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("DIR RESP : " + mDirectoryName);
 							}
 							else if(command[0]==STATUS_RESPONSE){
+								int stream = command[1] & 4;
+								if (stream>0){
+									mIsStreaming = true;
+								} else {
+									mIsStreaming = false;
+								}
+								int log = command[1] & 3;
+								if (log>0){
+									mIsSDLogging = true;
+								} else {
+									mIsSDLogging = false;
+								}
 								int sensing = command[1] & 2;
 								if(sensing==2)
 									mSensingStatus = true;
@@ -1875,7 +1918,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								}
 								
 								logAndStreamStatusChanged();
-								
+								consolePrintLn("BTStream = "+mIsStreaming);
+								consolePrintLn("SDLog = "+ mIsSDLogging);
 								consolePrintLn("Sensing = "+sensing);
 								consolePrintLn("Sensing status = "+mSensingStatus);
 								consolePrintLn("Docked = "+docked);
@@ -2352,7 +2396,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region  --------- START/STOP STREAMING FUNCTIONS --------- 
 	
 	public void startStreaming() {
-		if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM){
+		if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM && mFirmwareVersionCode >=6){
 			readRealWorldClock();
 		}
 		//mCurrentLEDStatus=-1;	
@@ -2374,6 +2418,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mSync=true; // a backup sync done every time you start streaming
 		mByteArrayOutputStream.reset();
 		getmListofInstructions().add(new byte[]{START_STREAMING_COMMAND});
+	}
+	
+	public void startSDLogging(){
+		if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM && mFirmwareVersionCode >=6){
+			getmListofInstructions().add(new byte[]{START_LOGGING_ONLY_COMMAND});
+		}	
+	}
+	
+	public void stopSDLogging(){
+		if (mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM && mFirmwareVersionCode >=6){
+			getmListofInstructions().add(new byte[]{STOP_LOGGING_ONLY_COMMAND});
+		}	
 	}
 	
 	public void startDataLogAndStreaming(){
