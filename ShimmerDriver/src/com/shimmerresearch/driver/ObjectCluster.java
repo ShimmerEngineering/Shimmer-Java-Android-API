@@ -54,6 +54,7 @@ import java.util.List;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 
 final public class ObjectCluster implements Cloneable,Serializable{
 	/**
@@ -69,7 +70,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public String[] mSensorNames;
 	public String[] mUnitCal;
 	public String[] mUnitUncal;
-	
+	public BT_STATE mState;
 	
 	String[] mSensorFormats;
 	String[] mSensorUnits;
@@ -89,6 +90,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mBluetoothAddress=myBlueAdd;
 	}
 
+	public ObjectCluster(String myName, String myBlueAdd, BT_STATE state){
+		mMyName = myName;
+		mBluetoothAddress=myBlueAdd;
+		mState = state;
+	}
+	
 	/**
 	 * Takes in a collection of Format Clusters and returns the Format Cluster specified by the string format
 	 * @param collectionFormatCluster

@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.FormatCluster;
@@ -325,9 +326,9 @@ public class SimpleExample9DoF extends BasicProcessWithCallBack {
 			CallbackObject callbackObject = (CallbackObject)object;
 			int state = callbackObject.mIndicator;
 			String bAdd = callbackObject.mBluetoothAddress;
-			if (state == ShimmerBluetooth.STATE_CONNECTING) {
+			if (callbackObject.mState == BT_STATE.CONNECTING) {
 
-			} else if (state == ShimmerBluetooth.STATE_CONNECTED) {
+			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				if(mFirstTime && bAdd.equals(mShimmer.getBluetoothAddress())){
 					mShimmer.writeSamplingRate(10.1);
 					mShimmer.writeEnabledSensors(ShimmerObject.SENSOR_ACCEL|ShimmerObject.SENSOR_GYRO|ShimmerObject.SENSOR_MAG);

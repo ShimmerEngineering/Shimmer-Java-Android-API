@@ -378,22 +378,22 @@ public class ShimmerGraphandLogService extends ServiceActivity {
 			switch (msg.what) {
             
             case Shimmer.MESSAGE_STATE_CHANGE:
-                switch (msg.arg1) {
-                case Shimmer.STATE_CONNECTED:
+                switch (((ObjectCluster)msg.obj).mState) {
+                case CONNECTED:
                 	//this has been deprecated
                     break;
-                case Shimmer.MSG_STATE_FULLY_INITIALIZED:
+                case INITIALISED:
                 	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
                     mTitle.setText(R.string.title_connected_to);
                     mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress;
                     mTitle.append(mBluetoothAddress);    
                     mService.enableGraphingHandler(true);
                     break;
-                case Shimmer.STATE_CONNECTING:
+                case CONNECTING:
                 	Log.d("ShimmerActivity","Driver is attempting to establish connection with Shimmer device");
                     mTitle.setText(R.string.title_connecting);
                     break;
-                case Shimmer.STATE_NONE:
+                case NONE:
                 	Log.d("ShimmerActivity","Shimmer No State");
                     mTitle.setText(R.string.title_not_connected);;
                     mBluetoothAddress=null;
