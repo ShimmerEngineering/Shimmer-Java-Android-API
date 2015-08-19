@@ -115,6 +115,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		CONNECTING("Connecting"), // The class is now initiating an outgoing connection
 		CONNECTED("Connected"),  // The class is now connected to a remote device
 		STREAMING("Streaming"),  // The class is now connected to a remote device
+		STREAMING_AND_SDLOGGING("Streaming and SD Logging"),
+		SDLOGGING("SD Logging"),
 		INITIALISING("Initialising"), // 
 		INITIALISED("Initialised"), // 
 		CONFIGURING("Configuring"), // The class is now initiating an outgoing connection 
@@ -1853,6 +1855,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("Sensing status = "+mSensingStatus);
 								consolePrintLn("Docked = "+docked);
 								consolePrintLn("Docked status = "+mDockedStatus);
+								
+//								if(mIsStreaming && mIsSDLogging){
+//									setState(BT_STATE.STREAMING_AND_SDLOGGING);
+//								}
+//								else if(mIsSDLogging){
+//									setState(BT_STATE.SDLOGGING);
+//								}
 								
 							}
 							setInstructionStackLock(false);

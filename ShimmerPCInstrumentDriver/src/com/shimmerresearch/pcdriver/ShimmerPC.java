@@ -541,6 +541,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public boolean isStreaming(){
 		return mIsStreaming;
 	}
+	
+	public boolean isSDLogging(){
+		return mIsSDLogging;
+	}
 
 	@Override
 	public BT_STATE getState() {
