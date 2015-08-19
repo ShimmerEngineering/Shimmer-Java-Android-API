@@ -19,7 +19,7 @@ public class ChannelDetails implements Serializable {
 	 */
 	private static final long serialVersionUID = -2662151922286820989L;
 
-	public class ChannelDataType {
+	public static class ChannelDataType {
 		public static final String UNKOWN = "";
 		public static final String UINT8 = "uint8";
 		public static final String UINT12 = "uint12";
@@ -33,18 +33,29 @@ public class ChannelDetails implements Serializable {
 		public static final String UINT48 = "uint48";
 	}
 	
-	public class ChannelDataEndian {
+	public static class ChannelDataEndian {
 		public static final String UNKOWN = "";
 		public static final String LSB = "LSB";
 		public static final String MSB = "MSB";
 	}
 	
+//	public static class ChannelType {
+//		public static final String RAW = "RAW";
+//		public static final String CAL = "CAL";
+//	}
+
+	public static enum ChannelsAvailable {
+		RAW,
+		CAL
+	}
+
 	public String mGuiName = "";
 	public String mObjectClusterName = "";
 	public String mChannelDataType = ChannelDataType.UNKOWN;
 	public int mNumBytes = 0;
 	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
 	public String mCalibratedUnits = CHANNEL_UNITS.NO_UNITS;
+	public ChannelsAvailable[] mChannelsAvailable = new ChannelsAvailable[]{};
 
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
@@ -55,7 +66,7 @@ public class ChannelDetails implements Serializable {
 	 * @param numBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
-//	public ChannelDetails(String channelName, String channelDataType, int numBytes, String channelDataEndian, String units){
+//	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units, ChannelsAvailable[] channelsAvailable){
 	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units){
 		mGuiName = guiName;
 		mObjectClusterName = objectClusterName;
@@ -63,6 +74,7 @@ public class ChannelDetails implements Serializable {
 		mNumBytes = numBytes;
 		mChannelDataEndian = channelDataEndian;
 		mCalibratedUnits = units;
+//		mChannelsAvailable = channelsAvailable;
 	}
 
 	/**
@@ -74,8 +86,8 @@ public class ChannelDetails implements Serializable {
 	}
 
 
-	public ChannelDetails(String channelName, long mSensorBitmapIDStreaming, long mSensorBitmapIDSDLogHeader) {
-		// TODO Auto-generated constructor stub
-	}
+//	public ChannelDetails(String channelName, long mSensorBitmapIDStreaming, long mSensorBitmapIDSDLogHeader) {
+//		// TODO Auto-generated constructor stub
+//	}
 	
 }

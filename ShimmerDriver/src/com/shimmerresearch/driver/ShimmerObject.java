@@ -1597,8 +1597,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					calibratedData[iBALow]=calibrateU12AdcValue(tempData[1],1950,3,183.7);
 					calibratedDataUnits[iBAHigh]=CHANNEL_UNITS.MILLIVOLTS;
 					calibratedDataUnits[iBALow]=CHANNEL_UNITS.MILLIVOLTS;
-					objectCluster.mPropertyCluster.put("Bridge Amplifier High",new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBAHigh]));
-					objectCluster.mPropertyCluster.put("Bridge Amplifier Low",new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBALow]));	
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBAHigh]));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBALow]));	
 				}
 			}
 
