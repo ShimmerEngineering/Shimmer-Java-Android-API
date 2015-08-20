@@ -46,7 +46,7 @@ public class SensorDetails implements Serializable {
 	public int mHeaderByteMask = 0;
 	public int mNumChannels = 0;
 	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
-	public List<ChannelDetails> mListOfChannels = new ArrayList<ChannelDetails>();
+	public List<String> mListOfChannels = new ArrayList<String>();
 
 	public LinkedHashMap<String,SensorDetails> mMapOfChildSensorDetails = new LinkedHashMap<String,SensorDetails>();
 

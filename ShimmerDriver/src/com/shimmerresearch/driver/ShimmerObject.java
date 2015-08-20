@@ -285,6 +285,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	
 	protected Map<Integer,SensorEnabledDetails> mSensorMap = new LinkedHashMap<Integer,SensorEnabledDetails>();
+	protected Map<String, ChannelDetails> mChannelMap = new LinkedHashMap<String, ChannelDetails>();
 	protected Map<String,SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 
@@ -7295,8 +7296,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public void sensorAndConfigMapsCreate() {
 		
-//		mSensorMapRef = new LinkedHashMap<Integer,SensorDetails>();
 		mSensorMap = new LinkedHashMap<Integer, SensorEnabledDetails>();
+		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
 		
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
@@ -7343,6 +7344,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mSensorMap.put(key, new SensorEnabledDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
 				}
 				
+				mChannelMap = Configuration.Shimmer3.mChannelMap;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMap;
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMap;
 				
@@ -8780,7 +8782,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public Map<Integer, SensorEnabledDetails> getSensorMap() {
 		return mSensorMap;
 	}
+	
+	/**
+	 * @return the mChannelMap
+	 */
+	public Map<String, ChannelDetails> getChannelMap() {
+		return mChannelMap;
+	}
 
+	
 	/**
 	 * @return the mConfigOptionsMap
 	 */
