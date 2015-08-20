@@ -387,6 +387,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							
+							else if(mCurrentCommand==START_LOGGING_ONLY_COMMAND || mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
+								logAndStreamStatusChanged();
+								//TODO need to query the Bluetooth connection here!
+							}
 							else if (mCurrentCommand==SET_SAMPLING_RATE_COMMAND) {
 								mTimer.cancel(); //cancel the ack timer
 								mTimer.purge();
@@ -509,7 +513,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==START_LOGGING_ONLY_COMMAND) {
-
 								mTransactionCompleted = true;
 								mWaitForAck=false;
 								mTimer.cancel(); //cancel the ack timer
@@ -1077,6 +1080,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						//printLogDataForDebugging(msg);
 						
 						if (tb[0]==FW_VERSION_RESPONSE){
+							
 							mTimer.cancel(); //cancel the ack timer
 							mTimer.purge();
 
@@ -1855,24 +1859,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("Sensing status = "+mSensingStatus);
 								consolePrintLn("Docked = "+docked);
 								consolePrintLn("Docked status = "+mDockedStatus);
+
+								logAndStreamStatusChanged();
 								
-								if(mIsStreaming && mIsSDLogging){
-									setState(BT_STATE.STREAMING_AND_SDLOGGING);
-								}
-								else if(mIsStreaming){
-									setState(BT_STATE.STREAMING);
-								}
-								else if(mIsSDLogging){
-									setState(BT_STATE.SDLOGGING);
-								}
-								else{
-									if(getBTState() == BT_STATE.INITIALISED){
-										
-									}
-									else if(getBTState() != BT_STATE.CONNECTED){
-										setState(BT_STATE.CONNECTED);
-									}
-								}
 							}
 							setInstructionStackLock(false);
 						}
