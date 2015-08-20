@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.shimmerresearch.driver.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.driver.ChannelDetails.ChannelDataEndian;
 import com.shimmerresearch.driver.ChannelDetails.ChannelDataType;
 import com.shimmerresearch.driver.ChannelDetails.ChannelType;
@@ -582,6 +583,9 @@ public class Configuration {
 			public static  String TIMESTAMP = "Timestamp";
 			public static  String REAL_TIME_CLOCK = "RealTime";
 			public static  String SYSTEM_TIMESTAMP = "System_Timestamp";
+			public static  String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
+			public static  String TIMESTAMP_SYNC = "Timestamp_Sync";
+			
 			public static  String ACCEL_LN_X = "Accel_LN_X";
 			public static  String ACCEL_LN_Y = "Accel_LN_Y";
 			public static  String ACCEL_LN_Z = "Accel_LN_Z";
@@ -615,27 +619,8 @@ public class Configuration {
 			public static  String MAG_MPU_Z = "Mag_MPU_Z";
 			public static  String TEMPERATURE_BMP180 = "Temperature_BMP180";
 			public static  String PRESSURE_BMP180 = "Pressure_BMP180";
-			public static  String EMG_CH1_24BIT = "EMG_CH1_24BIT";
-			public static  String EMG_CH2_24BIT = "EMG_CH2_24BIT";
-			public static  String EMG_CH1_16BIT = "EMG_CH1_16BIT";
-			public static  String EMG_CH2_16BIT = "EMG_CH2_16BIT";
-			public static  String ECG_LL_RA_24BIT = "ECG_LL-RA_24BIT";
-			public static  String ECG_LA_RA_24BIT = "ECG_LA-RA_24BIT";
-			public static  String ECG_LL_RA_16BIT = "ECG_LL-RA_16BIT";
-			public static  String ECG_LA_RA_16BIT = "ECG_LA-RA_16BIT";
-			public static  String TEST_CHIP1_CH1_24BIT = "Test_CHIP1_CH1_24BIT";
-			public static  String TEST_CHIP1_CH2_24BIT = "Test_CHIP1_CH2_24BIT";
-			public static  String TEST_CHIP2_CH1_24BIT = "Test_CHIP2_CH1_24BIT";
-			public static  String TEST_CHIP2_CH2_24BIT = "Test_CHIP2_CH2_24BIT";
-			public static  String TEST_CHIP1_CH1_16BIT = "Test_CHIP1_CH1_16BIT";
-			public static  String TEST_CHIP1_CH2_16BIT = "Test_CHIP1_CH2_16BIT";
-			public static  String TEST_CHIP2_CH1_16BIT = "Test_CHIP2_CH1_16BIT";
-			public static  String TEST_CHIP2_CH2_16BIT = "Test_CHIP2_CH2_16BIT";
 			public static  String EXG1_STATUS = "ECG_EMG_Status1";
-			public static  String ECG_RESP_24BIT = "ECG_RESP_24BIT";
-			public static  String ECG_VX_RL_24BIT = "ECG_Vx-RL_24BIT";
-			public static  String ECG_RESP_16BIT = "ECG_RESP_16BIT";
-			public static  String ECG_VX_RL_16BIT = "ECG_Vx-RL_16BIT";
+			public static  String EXG2_STATUS = "ECG_EMG_Status2";
 			public static  String EXG1_CH1_24BIT = "ExG1_CH1_24BIT";
 			public static  String EXG1_CH2_24BIT = "ExG1_CH2_24BIT";
 			public static  String EXG1_CH1_16BIT = "ExG1_CH1_16BIT";
@@ -644,7 +629,26 @@ public class Configuration {
 			public static  String EXG2_CH2_24BIT = "ExG2_CH2_24BIT";
 			public static  String EXG2_CH1_16BIT = "ExG2_CH1_16BIT";
 			public static  String EXG2_CH2_16BIT = "ExG2_CH2_16BIT";
-			public static  String EXG2_STATUS = "ECG_EMG_Status2";
+			public static  String EMG_CH1_24BIT = "EMG_CH1_24BIT";
+			public static  String EMG_CH2_24BIT = "EMG_CH2_24BIT";
+			public static  String EMG_CH1_16BIT = "EMG_CH1_16BIT";
+			public static  String EMG_CH2_16BIT = "EMG_CH2_16BIT";
+			public static  String ECG_LA_RA_24BIT = "ECG_LA-RA_24BIT";
+			public static  String ECG_LL_RA_24BIT = "ECG_LL-RA_24BIT";
+			public static  String ECG_RESP_24BIT = "ECG_RESP_24BIT";
+			public static  String ECG_VX_RL_24BIT = "ECG_Vx-RL_24BIT";
+			public static  String ECG_LA_RA_16BIT = "ECG_LA-RA_16BIT";
+			public static  String ECG_LL_RA_16BIT = "ECG_LL-RA_16BIT";
+			public static  String ECG_RESP_16BIT = "ECG_RESP_16BIT";
+			public static  String ECG_VX_RL_16BIT = "ECG_Vx-RL_16BIT";
+			public static  String TEST_CHIP1_CH1_24BIT = "Test_CHIP1_CH1_24BIT";
+			public static  String TEST_CHIP1_CH2_24BIT = "Test_CHIP1_CH2_24BIT";
+			public static  String TEST_CHIP2_CH1_24BIT = "Test_CHIP2_CH1_24BIT";
+			public static  String TEST_CHIP2_CH2_24BIT = "Test_CHIP2_CH2_24BIT";
+			public static  String TEST_CHIP1_CH1_16BIT = "Test_CHIP1_CH1_16BIT";
+			public static  String TEST_CHIP1_CH2_16BIT = "Test_CHIP1_CH2_16BIT";
+			public static  String TEST_CHIP2_CH1_16BIT = "Test_CHIP2_CH1_16BIT";
+			public static  String TEST_CHIP2_CH2_16BIT = "Test_CHIP2_CH2_16BIT";
 			public static  String QUAT_MPL_6DOF_W = "Quat_MPL_6DOF_W";
 			public static  String QUAT_MPL_6DOF_X = "Quat_MPL_6DOF_X";
 			public static  String QUAT_MPL_6DOF_Y = "Quat_MPL_6DOF_Y";
@@ -678,8 +682,20 @@ public class Configuration {
 			public static  String QUAT_DMP_6DOF_X = "Quat_DMP_6DOF_X";
 			public static  String QUAT_DMP_6DOF_Y = "Quat_DMP_6DOF_Y";
 			public static  String QUAT_DMP_6DOF_Z = "Quat_DMP_6DOF_Z";
-			public static  String ECG_TO_HR = "ECGtoHR";
-			public static  String PPG_TO_HR = "PPGtoHR";
+
+			public static  String SKIN_TEMPERATURE_PROBE = "Skin_Temperature";
+			
+			public static  String PPG_A12 = "PPG_A12";
+			public static  String PPG_A13 = "PPG_A13";
+			public static  String PPG1_A12 = "PPG1_A12";
+			public static  String PPG1_A13 = "PPG1_A13";
+			public static  String PPG2_A1 = "PPG2_A1";
+			public static  String PPG2_A14 = "PPG2_A14";
+			
+
+			//TODO: move to algorithms class (JC).
+			//Algorithms
+			//TODO separate entries for LN accel vs. WR accel. 
 			public static  String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";
 			public static  String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";
 			public static  String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";
@@ -700,15 +716,20 @@ public class Configuration {
 			public static  String AXIS_ANGLE_X = "Axis_Angle_X";
 			public static  String AXIS_ANGLE_Y = "Axis_Angle_Y";
 			public static  String AXIS_ANGLE_Z = "Axis_Angle_Z";
-			public static  String PPG_A12 = "PPG_A12";
-			public static  String PPG_A13 = "PPG_A13";
-			public static  String PPG1_A12 = "PPG1_A12";
-			public static  String PPG1_A13 = "PPG1_A13";
-			public static  String PPG2_A1 = "PPG2_A1";
-			public static  String PPG2_A14 = "PPG2_A14";
-			public static  String SKIN_TEMPERATURE_PROBE = "Skin_Temperature";
-			public static  String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
-			public static  String TIMESTAMP_SYNC = "Timestamp_Sync";
+			
+			public static  String ECG_TO_HR_LA_RA = "ECGtoHR_LA-RA";
+			public static  String ECG_TO_HR_LL_RA = "ECGtoHR_LL-RA";
+			public static  String ECG_TO_HR_VX_RL = "ECGtoHR_VX-RL";
+
+			public static  String PPG_TO_HR_A12 = "PPGtoHR_A12";
+			public static  String PPG_TO_HR_A13 = "PPGtoHR_A13";
+			public static  String PPG_TO_HR_A1 = "PPGtoHR_A1";
+			public static  String PPG_TO_HR_A14 = "PPGtoHR_A14";
+
+			//TODO: remove two old channels names below
+			public static  String ECG_TO_HR = "ECGtoHR";
+			public static  String PPG_TO_HR = "PPGtoHR";
+			
 		}
 		
 		//Names used for parsing the GQ configuration header file 
@@ -2836,8 +2857,67 @@ public class Configuration {
 	    }
 
 
+	    public static final Map<String, AlgorithmDetails> mAlgorithmChannelsMap;
+	    static {
+	        Map<String, AlgorithmDetails> aMap = new LinkedHashMap<String, AlgorithmDetails>();
+	        
+			// Assemble the channel configuration options map
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,new AlgorithmDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG),
+					CHANNEL_UNITS.BEATS_PER_MINUTE));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,new AlgorithmDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG),
+					CHANNEL_UNITS.BEATS_PER_MINUTE));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,new AlgorithmDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG),
+					CHANNEL_UNITS.BEATS_PER_MINUTE));
 
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A12,new AlgorithmDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A12,
+							Configuration.Shimmer3.SensorMapKey.PPG_A12),
+					CHANNEL_UNITS.BEATS_PER_MINUTE,
+					SENSOR_CHECK_METHOD.ANY));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A13,new AlgorithmDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A13,
+							Configuration.Shimmer3.SensorMapKey.PPG_A13),
+					CHANNEL_UNITS.BEATS_PER_MINUTE,
+					SENSOR_CHECK_METHOD.ANY));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A1,new AlgorithmDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG2_A1),
+					CHANNEL_UNITS.BEATS_PER_MINUTE));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A14,new AlgorithmDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG2_A14),
+					CHANNEL_UNITS.BEATS_PER_MINUTE));
 
+			//TODO choose best method, PPG requires either sensor, quat will require all
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,new AlgorithmDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,
+							Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO),
+					CHANNEL_UNITS.BEATS_PER_MINUTE));
+			//TODO: finish
+//			public static  String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";
+//			public static  String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";
+//			public static  String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";
+//			public static  String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";
+//			public static  String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";
+//			public static  String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";
+//			public static  String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";
+//			public static  String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
+//			public static  String EULER_6DOF_A = "Euler_6DOF_A";
+//			public static  String EULER_6DOF_X = "Euler_6DOF_X";
+//			public static  String EULER_6DOF_Y = "Euler_6DOF_Y";
+//			public static  String EULER_6DOF_Z = "Euler_6DOF_Z";
+//			public static  String EULER_9DOF_A = "Euler_9DOF_A";
+//			public static  String EULER_9DOF_X = "Euler_9DOF_X";
+//			public static  String EULER_9DOF_Y = "Euler_9DOF_Y";
+//			public static  String EULER_9DOF_Z = "Euler_9DOF_Z";
+//			public static  String AXIS_ANGLE_A = "Axis_Angle_A";
+//			public static  String AXIS_ANGLE_X = "Axis_Angle_X";
+//			public static  String AXIS_ANGLE_Y = "Axis_Angle_Y";
+//			public static  String AXIS_ANGLE_Z = "Axis_Angle_Z";
+			
+			mAlgorithmChannelsMap = Collections.unmodifiableMap(aMap);
+	    }
 
 		
 	}

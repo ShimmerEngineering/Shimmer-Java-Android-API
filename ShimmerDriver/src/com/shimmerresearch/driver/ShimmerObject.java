@@ -108,6 +108,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
+import com.shimmerresearch.driver.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.driver.ChannelDetails.ChannelDataEndian;
 import com.shimmerresearch.driver.ChannelDetails.ChannelDataType;
 import com.shimmerresearch.driver.Configuration.CHANNEL_TYPE;
@@ -286,6 +287,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected Map<Integer,SensorEnabledDetails> mSensorMap = new LinkedHashMap<Integer,SensorEnabledDetails>();
 	protected Map<String, ChannelDetails> mChannelMap = new LinkedHashMap<String, ChannelDetails>();
+	protected Map<String, AlgorithmDetails> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+	
 	protected Map<String,SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 
@@ -7298,7 +7301,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		
 		mSensorMap = new LinkedHashMap<Integer, SensorEnabledDetails>();
 		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
-		
+		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 		
@@ -7345,6 +7348,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 				
 				mChannelMap = Configuration.Shimmer3.mChannelMap;
+				mAlgorithmChannelsMap = Configuration.Shimmer3.mAlgorithmChannelsMap;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMap;
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMap;
 				
@@ -8790,7 +8794,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mChannelMap;
 	}
 
-	
+	/**
+	 * @return the mAlgorithmChannelsMap
+	 */
+	public Map<String, AlgorithmDetails> getAlgorithmChannelsMap() {
+		return mAlgorithmChannelsMap;
+	}
+
 	/**
 	 * @return the mConfigOptionsMap
 	 */
@@ -8805,7 +8815,48 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mSensorGroupingMap;
 	}
 
+	public List<AlgorithmDetails> getListOfSupportAlgorithmChannels() {
+		
+		List<AlgorithmDetails> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetails>();
+		parentLoop:
+    	for(AlgorithmDetails algorithmDetails:mAlgorithmChannelsMap.values()) {
+    		if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
+        		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
+        			if(mSensorMap.containsKey(sensorMapKey)){
+        				if(mSensorMap.get(sensorMapKey).mIsEnabled){
+        					listOfSupportAlgorihmChannels.add(algorithmDetails);
+        					continue parentLoop;
+        				}
+        			}
+        		}
+    		}
+    		else if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
+        		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
+        			if(!mSensorMap.containsKey(sensorMapKey)){
+    					continue parentLoop;
+        			}
+        			else{
+        				if(!mSensorMap.get(sensorMapKey).mIsEnabled){
+        					continue parentLoop;
+        				}
+        			}
+        			
+        			//made it to past the last sensor
+        			if(sensorMapKey==algorithmDetails.mListOfRequiredSensors.get(algorithmDetails.mListOfRequiredSensors.size()-1)){
+    					listOfSupportAlgorihmChannels.add(algorithmDetails);
+        			}
+        		}
+    		}
+    		
+    		
+    	}
 
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
 	/**
 	 * @return the mEXG1RateSetting
 	 */
