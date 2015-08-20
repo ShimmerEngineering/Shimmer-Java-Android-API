@@ -469,8 +469,10 @@ public class Shimmer extends ShimmerBluetooth{
 		mConnectedThread = new ConnectedThread(socket);
 		mIOThread = new IOThread();
 		mIOThread.start();
-		mPThread = new ProcessingThread();
-		mPThread.start();
+		if (mUseProcessingThread){
+			mPThread = new ProcessingThread();
+			mPThread.start();
+		}
 				
 		mMyBluetoothAddress = device.getAddress();
 		// Send the name of the connected device back to the UI Activity
@@ -506,8 +508,10 @@ public class Shimmer extends ShimmerBluetooth{
 		if (mIOThread != null) {
 			mIOThread.stop = true;
 			mIOThread = null;
-			mPThread.stop =true;
-			mPThread = null;
+			if(mUseProcessingThread){ 
+				mPThread.stop =true;
+				mPThread = null;
+			}
 			
 		}
 		if (mConnectThread != null) {
@@ -559,8 +563,10 @@ public class Shimmer extends ShimmerBluetooth{
 		if (mIOThread != null) {
 			mIOThread.stop = true;
 			mIOThread = null;
+			if(mUseProcessingThread){
 			mPThread.stop =true;
 			mPThread = null;
+			}
 			
 		}
 		setState(BT_STATE.NONE);
@@ -726,8 +732,10 @@ public class Shimmer extends ShimmerBluetooth{
 			Log.d(mClassName, "ConnectedThread is about to start");
 			mIOThread = new IOThread();
 			mIOThread.start();
+			if(mUseProcessingThread){
 			mPThread = new ProcessingThread();
 			mPThread.start();
+			}
 			// Send the name of the connected device back to the UI Activity
 			mMyBluetoothAddress = mDevice.getAddress();
 			Message msg = mHandler.obtainMessage(Shimmer.MESSAGE_DEVICE_NAME);

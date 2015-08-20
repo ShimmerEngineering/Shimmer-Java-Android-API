@@ -229,8 +229,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							setState(BT_STATE.CONNECTED);
 							mIOThread = new IOThread();
 							mIOThread.start();
+							if(mUseProcessingThread){
 							mPThread = new ProcessingThread();
 							mPThread.start();
+							}
 							initialize();
 						}
 					}
@@ -460,8 +462,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
+				if(mUseProcessingThread){
 				mPThread.stop = true;
 				mPThread = null;
+				}
 				
 			}
 			mIsStreaming = false;

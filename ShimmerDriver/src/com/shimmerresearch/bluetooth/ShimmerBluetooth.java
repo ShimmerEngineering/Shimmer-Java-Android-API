@@ -208,6 +208,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean mVerboseMode = true;
 	public String mParentClassName = "ShimmerBluetooth";
 	
+	protected boolean mUseProcessingThread = false;
+	
 	//endregion
 	
 	/**
@@ -249,17 +251,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						printLogDataForDebugging("Queue Size: " + mABQ.size() + "\n");
 					}
 					byte[] packet = mABQ.remove();
-					ObjectCluster objectCluster = null;
-					try {
-						objectCluster = buildMsg(packet, FW_TYPE_BT, 0);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (mDataProcessing!=null){
-						objectCluster = mDataProcessing.ProcessData(objectCluster);
-					}
-					dataHandler(objectCluster);
+					buildAndSendMsg(packet, FW_TYPE_BT, 0);
 				}
 			}
 		}
@@ -1952,7 +1944,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						if (bufferTemp[0]==DATA_PACKET && bufferTemp[mPacketSize+1]==DATA_PACKET){
 							newPacket = new byte[mPacketSize];
 							System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
-							mABQ.add(newPacket);
+							if (mUseProcessingThread){
+								mABQ.add(newPacket);
+							} else {
+								buildAndSendMsg(newPacket, FW_TYPE_BT, 0);
+							}
+							
 							//Finally clear the parsed packet from the bytearrayoutputstream, NOTE the last two bytes(seq number of next packet) are added back on after the reset
 							//consolePrint("Byte size reset: " + mByteArrayOutputStream.size() + "\n");
 							mByteArrayOutputStream.reset();
@@ -1964,7 +1961,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								if (bufferTemp[mPacketSize+2]==DATA_PACKET){
 									newPacket = new byte[mPacketSize];
 									System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
-									mABQ.add(newPacket);
+									if (mUseProcessingThread){
+										mABQ.add(newPacket);
+									} else {
+										buildAndSendMsg(newPacket, FW_TYPE_BT, 0);
+									}
 									//Finally clear the parsed packet from the bytearrayoutputstream, NOTE the last two bytes(seq number of next packet) are added back on after the reset
 									mByteArrayOutputStream.reset();
 									mByteArrayOutputStream.write(bufferTemp[mPacketSize+2]);
@@ -2024,13 +2025,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									setInstructionStackLock(false);
 									newPacket = new byte[mPacketSize];
 									System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
-									mABQ.add(newPacket);
+									if (mUseProcessingThread){
+										mABQ.add(newPacket);
+									} else {
+										buildAndSendMsg(newPacket, FW_TYPE_BT, 0);
+									}
 									mByteArrayOutputStream.reset();
 								} else {
 									consolePrintLn("??");
 								}
 							} 
 							if (mByteArrayOutputStream.size()>mPacketSize+2){ //throw the first byte away
+								
 								byte[] bTemp = mByteArrayOutputStream.toByteArray();
 								mByteArrayOutputStream.reset();
 								mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
@@ -4766,4 +4772,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mVerboseMode = verboseMode;
 	}
 	
+	private void buildAndSendMsg(byte[] packet, int fwID, int timeSync){
+		ObjectCluster objectCluster = null;
+		try {
+			objectCluster = buildMsg(packet, fwID, timeSync);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (mDataProcessing!=null){
+			objectCluster = mDataProcessing.ProcessData(objectCluster);
+		}
+		dataHandler(objectCluster);
+	}
 }
