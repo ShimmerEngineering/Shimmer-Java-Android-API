@@ -1856,13 +1856,23 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("Docked = "+docked);
 								consolePrintLn("Docked status = "+mDockedStatus);
 								
-//								if(mIsStreaming && mIsSDLogging){
-//									setState(BT_STATE.STREAMING_AND_SDLOGGING);
-//								}
-//								else if(mIsSDLogging){
-//									setState(BT_STATE.SDLOGGING);
-//								}
-								
+								if(mIsStreaming && mIsSDLogging){
+									setState(BT_STATE.STREAMING_AND_SDLOGGING);
+								}
+								else if(mIsStreaming){
+									setState(BT_STATE.STREAMING);
+								}
+								else if(mIsSDLogging){
+									setState(BT_STATE.SDLOGGING);
+								}
+								else{
+									if(getBTState() == BT_STATE.INITIALISED){
+										
+									}
+									else if(getBTState() != BT_STATE.CONNECTED){
+										setState(BT_STATE.CONNECTED);
+									}
+								}
 							}
 							setInstructionStackLock(false);
 						}
@@ -3859,7 +3869,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return gain;
 	}
 	
-    public BT_STATE getState(){
+    public BT_STATE getBTState(){
         return mState;
     }
 
