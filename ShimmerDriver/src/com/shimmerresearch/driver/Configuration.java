@@ -2457,14 +2457,12 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z,
 							ChannelDataType.INT32, 4, ChannelDataEndian.MSB,
 							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(ChannelType.RAW, ChannelType.CAL)));		
-	        
+							Arrays.asList(ChannelType.RAW, ChannelType.CAL)));
 
-	        mChannelMap = Collections.unmodifiableMap(aMap);
+			mChannelMap = Collections.unmodifiableMap(aMap);
 	    }
-	    
-	    
-	    
+
+
 	    public static final Map<String, SensorGroupingDetails> mSensorGroupingMap;
 	    static {
 	        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
