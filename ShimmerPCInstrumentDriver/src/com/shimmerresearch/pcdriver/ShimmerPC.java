@@ -548,7 +548,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	public BT_STATE getState() {
+	public BT_STATE getBTState() {
 		return mState;
 	}
 	
@@ -606,6 +606,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	protected void logAndStreamStatusChanged() {
 		// TODO Auto-generated method stub
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
 	}
 
