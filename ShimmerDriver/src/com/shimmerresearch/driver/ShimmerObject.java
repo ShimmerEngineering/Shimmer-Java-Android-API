@@ -8852,7 +8852,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
     	}
 
 		// TODO Auto-generated method stub
-		return null;
+		return listOfSupportAlgorihmChannels;
 	}
 
 
