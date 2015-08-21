@@ -172,6 +172,14 @@ public class Util implements Serializable {
 		}
 	}
 	
+	public static String byteToHexString(byte bytes) {
+	    char hexChars[] = new char[2];
+        int v = bytes & 0xFF;
+        hexChars[0] = hexArray[v >>> 4];
+        hexChars[1] = hexArray[v & 0x0F];
+	    return new String(hexChars);
+	}
+	
 	public static String bytesToHexStringWithSpaces(byte[] bytes) {
 		if(bytes!=null){
 		    char[] hexChars = new char[bytes.length * 3];

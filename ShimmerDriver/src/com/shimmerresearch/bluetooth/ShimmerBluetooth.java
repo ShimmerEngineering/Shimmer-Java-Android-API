@@ -184,6 +184,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void startOperation(BT_STATE currentOperation);
 	protected abstract void startOperation(BT_STATE currentOperation, int totalNumOfCmds);
 	protected abstract void logAndStreamStatusChanged();
+	protected abstract void batteryStatusChanged();
 	
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
@@ -216,22 +217,34 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//endregion
 	
 	/**
-	 * Provides an interface directly to the method BuildMSG. This can be used to implement algorithm/filters/etc. Two methods are provided, processdata to implement your methods, and InitializeProcessData which is called everytime you startstreaming, in the event you need to reinitialize your method/algorithm everytime a Shimmer starts streaming
+	 * Provides an interface directly to the method BuildMSG. This can be used
+	 * to implement algorithm/filters/etc. Two methods are provided, processdata
+	 * to implement your methods, and InitializeProcessData which is called
+	 * everytime you startstreaming, in the event you need to reinitialize your
+	 * method/algorithm everytime a Shimmer starts streaming
 	 *
 	 */
 	public interface DataProcessing {
 
 		/**
-		 * Initialise your method/algorithm here, this callback is called when startstreaming is called
+		 * Initialise your method/algorithm here, this callback is called when
+		 * startstreaming is called
 		 */
 		
-		/** Initialise Process Data here. This is called whenever the startStreaming command is called and can be used to initialise algorithms
+		/**
+		 * Initialise Process Data here. This is called whenever the
+		 * startStreaming command is called and can be used to initialise
+		 * algorithms
 		 * 
 		 */
 		public void InitializeProcessData();
 		
-		/** Process data here, algorithms can access the object cluster built by the buildMsg method here
-		 * @param ojc the objectCluster built by the buildMsg method
+		/**
+		 * Process data here, algorithms can access the object cluster built by
+		 * the buildMsg method here
+		 * 
+		 * @param ojc
+		 *            the objectCluster built by the buildMsg method
 		 * @return the processed objectCluster
 		 */
 		public ObjectCluster ProcessData(ObjectCluster ojc);
@@ -1835,41 +1848,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("Directory Name = "+ mDirectoryName);
 							}
 							else if(bufferLogCommandType[0]==STATUS_RESPONSE){
-								int stream = bufferLogCommandType[1] & 4;
-								if (stream>0){
-									mIsStreaming = true;
-								} else {
-									mIsStreaming = false;
-								}
-								int log = bufferLogCommandType[1] & 3;
-								if (log>0){
-									mIsSDLogging = true;
-								} else {
-									mIsSDLogging = false;
-								}
-								int sensing = bufferLogCommandType[1] & 2;
-								if(sensing==2){
-									mSensingStatus = true;
-								}
-								else{
-									mSensingStatus = false;
+								parseStatusByte(bufferLogCommandType[1]);
+
+								if(!mIsSensing){
 									if (!isInitialized()){
 										writeRealWorldClock();
 									}
 								}
 								
-								int docked = bufferLogCommandType[1] & 1;
-								if(docked==1)
-									mDockedStatus = true;
-								else
-									mDockedStatus = false;
-								consolePrintLn("BTStream = "+mIsStreaming);
-								consolePrintLn("SDLog = "+ mIsSDLogging);
-								consolePrintLn("Sensing = "+sensing);
-								consolePrintLn("Sensing status = "+mSensingStatus);
-								consolePrintLn("Docked = "+docked);
-								consolePrintLn("Docked status = "+mDockedStatus);
-
 								logAndStreamStatusChanged();
 								
 							} else if(bufferLogCommandType[0] == VBATT_RESPONSE) {
@@ -1877,7 +1863,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								//mBattVoltage=Integer.toString(((bufferAns[0]&0xFF)<<8)+(bufferLogCommandType[1]&0xFF));
 								setBattStatusDetails(new ShimmerBattStatusDetails(((bufferAns[0]&0xFF)<<8)+(bufferLogCommandType[1]&0xFF),bufferAns[1]));
 								consolePrintLn("Batt data " + mBattVoltage);
-								
 							}  
 							setInstructionStackLock(false);
 						}
@@ -1888,7 +1873,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				
 				
-				if (mWaitForAck==false && mWaitForResponse == false && mIsStreaming ==false && availableBytes()!=0 && mFirmwareIdentifier==3) {
+				if (mWaitForAck==false && mWaitForResponse == false && mIsStreaming ==false && availableBytes()!=0 && mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM) {
 					tb=readBytes(1);
 					if(tb[0]==ACK_COMMAND_PROCESSED) {
 						consolePrintLn("ACK RECEIVED , Connected State!!");
@@ -1909,31 +1894,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("DIR RESP : " + mDirectoryName);
 							}
 							else if(command[0]==STATUS_RESPONSE){
-								int stream = command[1] & 4;
-								if (stream>0){
-									mIsStreaming = true;
-								} else {
-									mIsStreaming = false;
-								}
-								int log = command[1] & 3;
-								if (log>0){
-									mIsSDLogging = true;
-								} else {
-									mIsSDLogging = false;
-								}
-								int sensing = command[1] & 2;
-								if(sensing==2)
-									mSensingStatus = true;
-								else
-									mSensingStatus = false;
+								parseStatusByte(command[1]);
 
-								int docked = command[1] & 1;
-								if(docked==1)
-									mDockedStatus = true;
-								else
-									mDockedStatus = false;
-
-								if (mSensingStatus){
+								if (mIsStreaming){
+//								if (mIsSensing){
 									//flush all the bytes
 									while(availableBytes()!=0){
 										consolePrintLn("Throwing away = "+readBytes(1));
@@ -1942,19 +1906,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								}
 								
 								logAndStreamStatusChanged();
-								consolePrintLn("BTStream = "+mIsStreaming);
-								consolePrintLn("SDLog = "+ mIsSDLogging);
-								consolePrintLn("Sensing = "+sensing);
-								consolePrintLn("Sensing status = "+mSensingStatus);
-								consolePrintLn("Docked = "+docked);
-								consolePrintLn("Docked status = "+mDockedStatus);
 							}  else if(command[0] == VBATT_RESPONSE) {
 								byte[] bufferAns = readBytes(2); 
 							//	mBattVoltage=Integer.toString(((bufferAns[0]&0xFF)<<8)+(command[1]&0xFF));
 							//	consolePrintLn("Batt data " + mBattVoltage);
 								setBattStatusDetails(new ShimmerBattStatusDetails(((bufferAns[0]&0xFF)<<8)+(command[1]&0xFF),bufferAns[1]));
 								consolePrintLn("Batt data " + mBattVoltage);
-								
 							}  
 						}
 					}
@@ -2052,27 +2009,30 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 										consolePrintLn("DIR RESP : " + mDirectoryName);
 									}
 									else if(command[0]==STATUS_RESPONSE){
-										int sensing = command[1] & 2;
-										if(sensing==2)
-											mSensingStatus = true;
-										else
-											mSensingStatus = false;
-
-										int docked = command[1] & 1;
-										if(docked==1)
-											mDockedStatus = true;
-										else
-											mDockedStatus = false;
-
-										consolePrintLn("Sensing = "+sensing);
-										consolePrintLn("Sensing status = "+mSensingStatus);
-										consolePrintLn("Docked = "+docked);
-										consolePrintLn("Docked status = "+mDockedStatus);
+										
+										parseStatusByte(command[1]);
+										logAndStreamStatusChanged();
+										
+//										int sensing = command[1] & 2;
+//										if(sensing==2)
+//											mIsSensing = true;
+//										else
+//											mIsSensing = false;
+//
+//										int docked = command[1] & 1;
+//										if(docked==1)
+//											mDockedStatus = true;
+//										else
+//											mDockedStatus = false;
+//
+//										consolePrintLn("Sensing = "+sensing);
+//										consolePrintLn("Sensing status = "+mIsSensing);
+//										consolePrintLn("Docked = "+docked);
+//										consolePrintLn("Docked status = "+mDockedStatus);
 									}  else if(command[0] == VBATT_RESPONSE) {
 										byte[] bufferAns = readBytes(2); 
 										setBattStatusDetails(new ShimmerBattStatusDetails(((bufferAns[0]&0xFF)<<8)+(command[1]&0xFF),bufferAns[1]));
 										consolePrintLn("Batt data " + mBattVoltage);
-										
 									}  
 									
 									mWaitForAck=false;
@@ -2113,6 +2073,23 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 			}
 		}
+	}
+	
+	
+	private void parseStatusByte(byte statusByte){
+		
+		mIsDocked = ((statusByte & 0x01) > 0)? true:false;
+		mIsSensing = ((statusByte & 0x02) > 0)? true:false;
+//		reserved = ((statusByte & 0x03) > 0)? true:false;
+		mIsSDLogging = ((statusByte & 0x04) > 0)? true:false;
+		mIsStreaming = ((statusByte & 0x10) > 0)? true:false; 
+
+		consolePrintLn("Status Response = 0x" + Util.byteToHexString(statusByte)
+				+ "\t" + "IsDocked = " + mIsDocked
+				+ "\t" + "IsSensing = " + mIsSensing
+				+ "\t" + "IsSDLogging = "+ mIsSDLogging
+				+ "\t" + "IsStreaming = " + mIsStreaming
+				);
 	}
 	
 	private byte[] convertstacktobytearray(Stack<Byte> b,int packetSize) {
@@ -2311,6 +2288,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		super.mFirmwareVersionParsed = "";
 		super.mFirmwareVersionCode = 0;
 	}
+	
+	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
+		super.mExpansionBoardDetails  = eBD;
+		super.mExpansionBoardId = eBD.mExpBoardId;
+		super.mExpansionBoardRev = eBD.mExpBoardRev;
+		super.mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
+		super.mExpansionBoardParsed = eBD.mExpBoardParsed;
+		super.mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
+		super.mExpBoardArray = eBD.mExpBoardArray;
+	}
+
 
 	//region --------- INITIALIZE SHIMMER FUNCTIONS --------- 
 	
@@ -2406,6 +2394,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readConfigTime();
 			readShimmerName();
 			readExperimentName();
+		}
+		if(isThisVerCompatibleWith(FW_ID.SHIMMER3.LOGANDSTREAM, 0, 5, 9)){
+			readBattery();
 		}
 //		else if(isThisVerCompatibleWith(FW_ID.SHIMMER3.BTSTREAM, 0, 7, 2)){
 //			readInfoMem();
@@ -3998,11 +3989,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @return
 	 */
 	public boolean isSensing(){
-		return mSensingStatus;
+		return mIsSensing;
 	}
 	
 	public boolean isDocked(){
-		return mDockedStatus;
+		return mIsDocked;
 	}
 	
 	public boolean isLowPowerAccelEnabled() {
@@ -4859,16 +4850,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void setBattStatusDetails(ShimmerBattStatusDetails s) {
-	  super.mBattVoltage = s.mBattVoltage;
-	  super.mEstimatedChargePercentage = s.mEstimatedChargePercentage;
-	  super.mChargingState = s.mChargingStatusParsed;
-	 }
+		super.mBattVoltage = s.mBattVoltage;
+		super.mEstimatedChargePercentage = s.mEstimatedChargePercentage;
+		super.mEstimatedChargePercentageParsed = s.mEstimatedChargePercentageParsed;
+		super.mChargingState = s.mChargingStatusParsed;
+		batteryStatusChanged();
+	}
 
-	 public void clearBattStatusDetails() {
-	  super.mBattVoltage = "";
-	  super.mEstimatedChargePercentage = "";
-	  super.mChargingState = "";
-	 }
+	public void clearBattStatusDetails() {
+		super.mBattVoltage = "";
+		super.mEstimatedChargePercentage = 0.0;
+		super.mEstimatedChargePercentageParsed = "";
+		super.mChargingState = "";
+		batteryStatusChanged();
+	}
 	
 	private void buildAndSendMsg(byte[] packet, int fwID, int timeSync){
 		ObjectCluster objectCluster = null;
