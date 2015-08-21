@@ -91,6 +91,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ExpansionBoardDetails;
+import com.shimmerresearch.driver.ShimmerBattStatusDetails;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -986,6 +987,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForAck=false;
 								getmListofInstructions().remove(0);
 							}
+							else if (mCurrentCommand==GET_VBATT_COMMAND) {
+								mWaitForAck=false;
+								mWaitForResponse=true;
+								getmListofInstructions().remove(0);
+								
+							}
 							else if(mCurrentCommand==GET_STATUS_COMMAND){
 								mWaitForResponse = true;
 								mWaitForAck=false;
@@ -1237,7 +1244,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							byte[] bufferAns = readBytes(1); 
 							mLSM303DigitalAccelRate=bufferAns[0];
 							setInstructionStackLock(false);
-						} else if(tb[0] == 	EXG_REGS_RESPONSE){
+						}else if(tb[0] == VBATT_RESPONSE) {
+							mTimer.cancel(); //cancel the ack timer
+							mTimer.purge();
+							mWaitForResponse=false;
+							mTransactionCompleted=true;
+							byte[] bufferAns = readBytes(3); 
+							mBattVoltage=Integer.toString(((bufferAns[1]&0xFF)<<8)+(bufferAns[0]&0xFF));
+							consolePrintLn("Batt data " + mBattVoltage);
+							setInstructionStackLock(false);
+						}  
+						
+						else if(tb[0] == 	EXG_REGS_RESPONSE){
 							mTimer.cancel(); //cancel the ack timer
 							mTimer.purge();
 							mWaitForResponse=false;
@@ -1801,7 +1819,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							printLogDataForDebugging(msg);
 							byte[] bufferLogCommandType = new byte[2];
 							bufferLogCommandType =	readBytes(2);
-							consolePrintLn("Instrucction received (113 = STATUS_RESPONSE) = "+bufferLogCommandType[0]);
+							consolePrintLn("Instream received = "+bufferLogCommandType[0]);
 							if(bufferLogCommandType[0]==DIR_RESPONSE){
 								mDirectoryNameLength = bufferLogCommandType[1];
 								byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
@@ -1846,7 +1864,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("Docked = "+docked);
 								consolePrintLn("Docked status = "+mDockedStatus);
 								
-							}
+							} else if(bufferLogCommandType[0] == VBATT_RESPONSE) {
+								byte[] bufferAns = readBytes(2); 
+								//mBattVoltage=Integer.toString(((bufferAns[0]&0xFF)<<8)+(bufferLogCommandType[1]&0xFF));
+								setBattStatusDetails(new ShimmerBattStatusDetails(((bufferAns[0]&0xFF)<<8)+(bufferLogCommandType[1]&0xFF),bufferAns[1]));
+								consolePrintLn("Batt data " + mBattVoltage);
+								
+							}  
 							setInstructionStackLock(false);
 						}
 						else {
@@ -1916,7 +1940,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								consolePrintLn("Sensing status = "+mSensingStatus);
 								consolePrintLn("Docked = "+docked);
 								consolePrintLn("Docked status = "+mDockedStatus);
-							}
+							}  else if(command[0] == VBATT_RESPONSE) {
+								byte[] bufferAns = readBytes(2); 
+							//	mBattVoltage=Integer.toString(((bufferAns[0]&0xFF)<<8)+(command[1]&0xFF));
+							//	consolePrintLn("Batt data " + mBattVoltage);
+								setBattStatusDetails(new ShimmerBattStatusDetails(((bufferAns[0]&0xFF)<<8)+(command[1]&0xFF),bufferAns[1]));
+								consolePrintLn("Batt data " + mBattVoltage);
+								
+							}  
 						}
 					}
 					
@@ -1980,6 +2011,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 										mWaitForAck=false;
 										mTransactionCompleted = true;
 										setInstructionStackLock(false);
+									} else if (mCurrentCommand==START_LOGGING_ONLY_COMMAND){
+										consolePrintLn("START LOGGING ACK RECEIVED");
+										getmListofInstructions().remove(0);
+										mTimer.cancel(); //cancel the ack timer
+										mTimer.purge();
+										mWaitForAck=false;
+										mTransactionCompleted = true;
+										setInstructionStackLock(false);
+									}  else if (mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
+										consolePrintLn("STOP LOGGING ACK RECEIVED");
+										getmListofInstructions().remove(0);
+										mTimer.cancel(); //cancel the ack timer
+										mTimer.purge();
+										mWaitForAck=false;
+										mTransactionCompleted = true;
+										setInstructionStackLock(false);
 									} 
 									
 									
@@ -2013,7 +2060,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 										consolePrintLn("Sensing status = "+mSensingStatus);
 										consolePrintLn("Docked = "+docked);
 										consolePrintLn("Docked status = "+mDockedStatus);
-									}
+									}  else if(command[0] == VBATT_RESPONSE) {
+										byte[] bufferAns = readBytes(2); 
+										setBattStatusDetails(new ShimmerBattStatusDetails(((bufferAns[0]&0xFF)<<8)+(command[1]&0xFF),bufferAns[1]));
+										consolePrintLn("Batt data " + mBattVoltage);
+										
+									}  
 									
 									mWaitForAck=false;
 									mTransactionCompleted = true;   
@@ -2126,6 +2178,28 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					getmListofInstructions().remove(0);
 					setInstructionStackLock(false);
 					readShimmerVersionDepracated();
+				}
+				else if(mCurrentCommand==GET_VBATT_COMMAND){
+					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
+					consolePrintLn("Command " + Integer.toString(mCurrentCommand) +" failed");
+					mTimer.cancel(); //Terminate the timer thread
+					mTimer.purge();
+					mWaitForAck=false;
+					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
+					setInstructionStackLock(false);
+					
+					if (mIsStreaming && getPacketReceptionRate()<100){
+						getmListofInstructions().clear();
+						printLogDataForDebugging("Response not received for Get_Status_Command. Loss bytes detected.");
+					} else if(!mIsStreaming) {
+						//CODE TO BE USED
+						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection. Packet RR:  " + Double.toString(getPacketReceptionRate()));
+						if (mWaitForResponse){
+							printLogDataForDebugging("Response not received");
+							sendStatusMSGtoUI("Connection lost." + mMyBluetoothAddress);
+						}
+						stop(); //If command fail exit device
+					}
 				}
 				else if(mCurrentCommand==GET_STATUS_COMMAND){
 					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
@@ -2589,6 +2663,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		getmListofInstructions().add(new byte[]{GET_ACCEL_SENSITIVITY_COMMAND});
 	}
 
+	public void readBattery(){
+		getmListofInstructions().add(new byte[]{GET_VBATT_COMMAND});
+	}
+	
 	public void readGyroRange() {
 		getmListofInstructions().add(new byte[]{GET_MPU9150_GYRO_RANGE_COMMAND});
 	}
@@ -4771,6 +4849,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void setVerboseMode(boolean verboseMode) {
 		mVerboseMode = verboseMode;
 	}
+	
+	public void setBattStatusDetails(ShimmerBattStatusDetails s) {
+	  super.mBattVoltage = s.mBattVoltage;
+	  super.mEstimatedChargePercentage = s.mEstimatedChargePercentage;
+	  super.mChargingState = s.mChargingStatusParsed;
+	 }
+
+	 public void clearBattStatusDetails() {
+	  super.mBattVoltage = "";
+	  super.mEstimatedChargePercentage = "";
+	  super.mChargingState = "";
+	 }
 	
 	private void buildAndSendMsg(byte[] packet, int fwID, int timeSync){
 		ObjectCluster objectCluster = null;
