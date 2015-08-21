@@ -107,8 +107,8 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
-import com.shimmerresearch.driver.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.driver.ChannelDetails.ChannelDataEndian;
 import com.shimmerresearch.driver.ChannelDetails.ChannelDataType;
 import com.shimmerresearch.driver.Configuration.CHANNEL_TYPE;
@@ -125,6 +125,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
+import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
 public abstract class ShimmerObject extends BasicProcessWithCallBack implements Serializable {
@@ -288,6 +289,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected Map<Integer,SensorEnabledDetails> mSensorMap = new LinkedHashMap<Integer,SensorEnabledDetails>();
 	protected Map<String, ChannelDetails> mChannelMap = new LinkedHashMap<String, ChannelDetails>();
 	protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
+	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	
 	protected Map<String,SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
@@ -7302,6 +7304,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mSensorMap = new LinkedHashMap<Integer, SensorEnabledDetails>();
 		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
 		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
+		mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 		
@@ -7349,6 +7352,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				mChannelMap = Configuration.Shimmer3.mChannelMap;
 				mAlgorithmChannelsMap = Configuration.Shimmer3.mAlgorithmChannelsMap;
+				mAlgorithmGroupingMap = Configuration.Shimmer3.mAlgorithmGroupingMap;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMap;
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMap;
 				
@@ -8809,13 +8813,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	/**
-	 * @return the mChannelTileMap
+	 * @return the mSensorGroupingMap
 	 */
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
 		return mSensorGroupingMap;
 	}
 
-	public List<AlgorithmDetailsNew> getListOfSupportAlgorithmChannels() {
+	public List<AlgorithmDetailsNew> getListOfSupportedAlgorithmChannels() {
 		
 		List<AlgorithmDetailsNew> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetailsNew>();
 		parentLoop:
@@ -8848,14 +8852,23 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
         		}
     		}
     		
-    		
     	}
 
 		// TODO Auto-generated method stub
 		return listOfSupportAlgorihmChannels;
 	}
 
-
+	/**
+	 * @return the mAlgorithmGroupingMap
+	 */
+	public Map<String, List<String>> getAlgorithmGroupingMap() {
+		return mAlgorithmGroupingMap;
+	}
+	
+	//TODO: finish. Similar approach to above in getListOfSupportedAlgorithmChannels()
+	public List<String> getListOfSupportedAlgorithmGroups() {
+		return new ArrayList<String>();
+	}
 	
 	/**
 	 * @return the mEXG1RateSetting

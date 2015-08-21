@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.algorithms;
 
 import java.io.Serializable;
 import java.util.List;

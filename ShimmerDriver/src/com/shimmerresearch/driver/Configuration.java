@@ -56,7 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.shimmerresearch.driver.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
+import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
+import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.driver.ChannelDetails.ChannelDataEndian;
 import com.shimmerresearch.driver.ChannelDetails.ChannelDataType;
 import com.shimmerresearch.driver.ChannelDetails.ChannelType;
@@ -576,6 +577,14 @@ public class Configuration {
 			public static final String EXG2_16BIT = "EXG2 16BIT";
 			public static final String EXG_CUSTOM = "Custom";
 		}
+		
+		// GUI Algorithm Grouping
+		public class GuiLabelAlgorithmGrouping{
+			public static final String ECG_TO_HR = "ECG-to-HR";
+			public static final String PPG_TO_HR = "PPG-to-HR";
+			public static final String ORIENTATION_9DOF = "9DOF";
+			public static final String ORIENTATION_6DOF = "6DOF";
+		}
 
 		//DATABASE NAMES
 		//GUI AND EXPORT CHANNELS
@@ -712,6 +721,7 @@ public class Configuration {
 			public static  String EULER_9DOF_X = "Euler_9DOF_X";
 			public static  String EULER_9DOF_Y = "Euler_9DOF_Y";
 			public static  String EULER_9DOF_Z = "Euler_9DOF_Z";
+			//TODO: axis angle 9DOF vs 6DOF??
 			public static  String AXIS_ANGLE_A = "Axis_Angle_A";
 			public static  String AXIS_ANGLE_X = "Axis_Angle_X";
 			public static  String AXIS_ANGLE_Y = "Axis_Angle_Y";
@@ -1725,7 +1735,6 @@ public class Configuration {
 	    public static final Map<String, ChannelDetails> mChannelMap;
 	    static {
 	        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-	        
 	        
 			// All Information required for parsing each of the channels
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
@@ -2920,6 +2929,49 @@ public class Configuration {
 	    }
 
 		
+	    public static final Map<String, List<String>> mAlgorithmGroupingMap;
+	    static {
+	        Map<String, List<String>> aMap = new LinkedHashMap<String, List<String>>();
+	        
+			// Assemble the channel configuration options map
+			aMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,
+					Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL));
+			aMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.PPG_TO_HR,
+					Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A12,
+							Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A13,
+							Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A1,
+							Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A14));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
+					Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
+							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
+							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
+							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
+							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
+							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
+							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
+							Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+							Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+							Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z
+							));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
+					Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
+							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
+							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
+							Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+							Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+							Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z
+							));
+			
+			mAlgorithmGroupingMap = Collections.unmodifiableMap(aMap);
+	    }
 	}
 
 	public static class Shimmer2{
