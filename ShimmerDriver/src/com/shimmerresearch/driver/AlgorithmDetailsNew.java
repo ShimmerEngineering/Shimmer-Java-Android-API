@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
-public class AlgorithmDetails implements Serializable {
+public class AlgorithmDetailsNew implements Serializable {
 	
 	public List<Integer> mListOfRequiredSensors = new ArrayList<Integer>();
 	public String mUnits = "";
@@ -15,16 +15,15 @@ public class AlgorithmDetails implements Serializable {
 		ANY
 	}
 
-	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units){
+	public AlgorithmDetailsNew(List<Integer> listOfRequiredSensors, String units){
 		mListOfRequiredSensors = listOfRequiredSensors;
 		mUnits = units;
 	}
 
-	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units, SENSOR_CHECK_METHOD sensorCheckMethod){
+	public AlgorithmDetailsNew(List<Integer> listOfRequiredSensors, String units, SENSOR_CHECK_METHOD sensorCheckMethod){
 		mListOfRequiredSensors = listOfRequiredSensors;
 		mUnits = units;
 		mSensorCheckMethod = sensorCheckMethod;
 	}
-	
 
 }
