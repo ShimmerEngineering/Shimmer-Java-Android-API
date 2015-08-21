@@ -89,6 +89,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.google.common.collect.Multimap;
 import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
@@ -2057,9 +2058,9 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
 			CallbackObject callbackObject = (CallbackObject)objectCluster;
 			int state = callbackObject.mIndicator;
-			if (state == ShimmerBluetooth.STATE_CONNECTING) {	//Never called
+			if (callbackObject.mState == BT_STATE.CONNECTING) {	//Never called
 				textFieldState.setText("Shimmer Connecting");
-			} else if (state == ShimmerBluetooth.STATE_CONNECTED) {
+			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				textFieldState.setText("Shimmer Connected");
 				btnConnect.setEnabled(false);
 				btnDisconnect.setEnabled(true);
