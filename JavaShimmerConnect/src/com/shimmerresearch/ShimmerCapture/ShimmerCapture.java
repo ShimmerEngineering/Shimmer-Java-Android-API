@@ -81,6 +81,7 @@ import com.google.common.collect.Multimap;
 import com.shimmerresearch.biophysicalprocessing.ECGtoHRAlgorithm;
 import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
@@ -2164,17 +2165,17 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 
 		if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
-			int state = callbackObject.mIndicator;
-			if (state == ShimmerBluetooth.STATE_CONNECTING) {	//Never called
+			
+			if (callbackObject.mState == BT_STATE.CONNECTING) {	//Never called
 				textFieldState.setText("Shimmer Connecting");
-			} else if (state == ShimmerBluetooth.STATE_CONNECTED) {
+			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				textFieldState.setText("Shimmer Connected");
 				btnConnect.setEnabled(false);
 				btnDisconnect.setEnabled(true);
 				
-			} else if (state == ShimmerBluetooth.STATE_DISCONNECTED
-					|| state == ShimmerBluetooth.STATE_NONE
-					|| state == ShimmerBluetooth.STATE_CONNECTION_LOST){
+			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
+					|| callbackObject.mState == BT_STATE.NONE
+					|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
 				
 				textFieldState.setText("Shimmer Disconnected");
 				textFieldMessage.setText("");

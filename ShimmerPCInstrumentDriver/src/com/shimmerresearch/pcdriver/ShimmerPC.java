@@ -62,6 +62,7 @@ import java.io.Serializable;
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Util;
@@ -230,8 +231,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							setState(BT_STATE.CONNECTED);
 							mIOThread = new IOThread();
 							mIOThread.start();
+							if(mUseProcessingThread){
 							mPThread = new ProcessingThread();
 							mPThread.start();
+							}
 							initialize();
 						}
 					}
@@ -461,8 +464,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
+				if(mUseProcessingThread){
 				mPThread.stop = true;
 				mPThread = null;
+				}
 				
 			}
 			mIsStreaming = false;
@@ -600,13 +605,49 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
-		setState(BT_STATE.CONNECTED);
+		setState(BT_STATE.INITIALISED);
 	}
 
 	@Override
 	protected void logAndStreamStatusChanged() {
 		// TODO Auto-generated method stub
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+		
+//		if(mCurrentCommand==START_LOGGING_ONLY_COMMAND){
+//			TODO this causing a problem Shimmer Bluetooth disconnects
+//			setState(BT_STATE.SDLOGGING);
+//		}
+		if(mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
+			//TODO need to query the Bluetooth connection here!
+			if(mIsStreaming){
+				setState(BT_STATE.STREAMING);
+			}
+			else if(mIsConnected){
+				setState(BT_STATE.CONNECTED);
+			}
+			else{
+				setState(BT_STATE.DISCONNECTED);
+			}
+		}
+		else{
+			if(mIsStreaming && mIsSDLogging){
+				setState(BT_STATE.STREAMING_AND_SDLOGGING);
+			}
+			else if(mIsStreaming){
+				setState(BT_STATE.STREAMING);
+			}
+			else if(mIsSDLogging){
+				setState(BT_STATE.SDLOGGING);
+			}
+			else{
+				if(getBTState() == BT_STATE.INITIALISED){
+					
+				}
+				else if(getBTState() != BT_STATE.CONNECTED){
+					setState(BT_STATE.CONNECTED);
+				}
+			}
+		}
 		
 	}
 

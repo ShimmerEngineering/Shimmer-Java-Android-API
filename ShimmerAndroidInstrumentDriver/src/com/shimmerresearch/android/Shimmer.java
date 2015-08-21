@@ -164,15 +164,20 @@ import java.util.UUID;
 
 
 
+
+
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
+
+
 
 
 
@@ -247,7 +252,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 */
 	public Shimmer(Handler handler, String myName, Boolean continousSync) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
-		mState = STATE_NONE;
+		mState = BT_STATE.NONE;
 		mHandler = handler;
 		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
@@ -256,7 +261,7 @@ public class Shimmer extends ShimmerBluetooth{
 	
 	public Shimmer(Context context, Handler handler, String myName, Boolean continousSync) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
-		mState = STATE_NONE;
+		mState = BT_STATE.NONE;
 		mHandler = handler;
 		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
@@ -277,7 +282,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 */
 	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, long setEnabledSensors, boolean continousSync) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
-		mState = STATE_NONE;
+		mState = BT_STATE.NONE;
 		mHandler = handler;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
@@ -301,7 +306,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 */
 	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, long setEnabledSensors, boolean continousSync, int magGain) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
-		mState = STATE_NONE;
+		mState = BT_STATE.NONE;
 		mHandler = handler;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
@@ -327,7 +332,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 */
 	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, long setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
-		mState = STATE_NONE;
+		mState = BT_STATE.NONE;
 		mHandler = handler;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
@@ -357,7 +362,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 */
 	public Shimmer(Context context, Handler handler, String myName, double samplingRate, int accelRange, int gsrRange, long setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
-		mState = STATE_NONE;
+		mState = BT_STATE.NONE;
 		mHandler = handler;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
@@ -382,18 +387,18 @@ public class Shimmer extends ShimmerBluetooth{
 	 * Set the current state of the chat connection
 	 * @param state  An integer defining the current connection state
 	 */
-	protected synchronized void setState(int state) {
+	/*protected synchronized void setState(int state) {
 		mState = state;
 		// Give the new state to the Handler so the UI Activity can update
 		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, state, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
-	}
+	}*/
 
 	/**
 	 * Return the current connection state. */
-	public synchronized int getShimmerState() {
+	/*public synchronized int getShimmerState() {
 		return mState;
 	}
-
+*/
 	/**
 	 * Start the ConnectThread to initiate a connection to a remote device. The purpose of having two libraries is because some Stock firmware do not implement the full Bluetooth Stack. In such cases use 'gerdavax'. If problems persist consider installing an aftermarket firmware, with a mature Bluetooth stack.
 	 * @param address Bluetooth Address of Device to connect too
@@ -409,7 +414,7 @@ public class Shimmer extends ShimmerBluetooth{
 			BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
 
 			// Cancel any thread attempting to make a connection
-			if (mState == STATE_CONNECTING) {
+			if (mState == BT_STATE.CONNECTING) {
 				if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
 			}
 			// Cancel any thread currently running a connection
@@ -418,11 +423,11 @@ public class Shimmer extends ShimmerBluetooth{
 			// Start the thread to connect with the given device
 			mConnectThread = new ConnectThread(device);
 			mConnectThread.start();
-			setState(STATE_CONNECTING);
+			setState(BT_STATE.CONNECTING);
 		} else if (bluetoothLibrary=="gerdavax"){
 			mMyBluetoothAddress=address;
 			// Cancel any thread attempting to make a connection
-			if (mState == STATE_CONNECTING) {
+			if (mState == BT_STATE.CONNECTING) {
 				if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
 			}
 			// Cancel any thread currently running a connection
@@ -433,8 +438,8 @@ public class Shimmer extends ShimmerBluetooth{
 
 			localDevice = LocalDevice.getInstance();
 			RemoteDevice device = localDevice.getRemoteForAddr(address);
-			new ConnectThreadArduino(device).start();
-			setState(STATE_CONNECTING);
+			new ConnectThreadArduino(device, this).start();
+			setState(BT_STATE.CONNECTING);
 			/*localDevice.init(this, new ReadyListener() {
    			@Override
    			public synchronized void ready() {
@@ -464,14 +469,16 @@ public class Shimmer extends ShimmerBluetooth{
 		mConnectedThread = new ConnectedThread(socket);
 		mIOThread = new IOThread();
 		mIOThread.start();
-		mPThread = new ProcessingThread();
-		mPThread.start();
+		if (mUseProcessingThread){
+			mPThread = new ProcessingThread();
+			mPThread.start();
+		}
 				
 		mMyBluetoothAddress = device.getAddress();
 		// Send the name of the connected device back to the UI Activity
 		Message msg = mHandler.obtainMessage(Shimmer.MESSAGE_DEVICE_NAME);
 		mHandler.sendMessage(msg);
-		setState(STATE_CONNECTED);
+		setState(BT_STATE.CONNECTED);
 		initialize();
 	}
 
@@ -495,14 +502,16 @@ public class Shimmer extends ShimmerBluetooth{
 			mTimer.cancel();
 			mTimer.purge();
 		}
-		setState(STATE_NONE);
+		setState(BT_STATE.NONE);
 		mIsStreaming = false;
 		mIsInitialised = false;
 		if (mIOThread != null) {
 			mIOThread.stop = true;
 			mIOThread = null;
-			mPThread.stop =true;
-			mPThread = null;
+			if(mUseProcessingThread){ 
+				mPThread.stop =true;
+				mPThread = null;
+			}
 			
 		}
 		if (mConnectThread != null) {
@@ -526,7 +535,7 @@ public class Shimmer extends ShimmerBluetooth{
 		ConnectedThread r;
 		// Synchronize a copy of the ConnectedThread
 		synchronized (this) {
-			if (mState != STATE_CONNECTED) return;
+			if (mState != BT_STATE.CONNECTED && mState != BT_STATE.INITIALISED && mState != BT_STATE.STREAMING) return;
 			r = mConnectedThread;
 		}
 		// Perform the write unsynchronized
@@ -537,7 +546,7 @@ public class Shimmer extends ShimmerBluetooth{
 	 * Indicate that the connection attempt failed and notify the UI Activity.
 	 */
 	private void connectionFailed() {
-		setState(STATE_NONE);
+		setState(BT_STATE.NONE);
 		mIsInitialised = false;
 		// Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
@@ -554,11 +563,13 @@ public class Shimmer extends ShimmerBluetooth{
 		if (mIOThread != null) {
 			mIOThread.stop = true;
 			mIOThread = null;
+			if(mUseProcessingThread){
 			mPThread.stop =true;
 			mPThread = null;
+			}
 			
 		}
-		setState(STATE_NONE);
+		setState(BT_STATE.NONE);
 		mIsInitialised = false;
 		// Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
@@ -632,8 +643,9 @@ public class Shimmer extends ShimmerBluetooth{
 
 		private final RemoteDevice mDevice;
 		private BtSocket mSocket;
-
-		public ConnectThreadArduino(RemoteDevice device) {
+		Shimmer shimmer;
+		public ConnectThreadArduino(RemoteDevice device, Shimmer shimmer) {
+			this.shimmer = shimmer;
 			mDevice = device;
 			Log.d(mClassName," Start of ArduinoConnectThread");
 		}
@@ -680,7 +692,7 @@ public class Shimmer extends ShimmerBluetooth{
 
 					// Do work to manage the connection (in a separate thread)
 					Log.d(mClassName, "Going to Manage Socket");
-					if (getShimmerState() != STATE_NONE){
+					if (shimmer.getState() != BT_STATE.NONE){
 						Log.d(mClassName, "ManagingSocket");
 						manageConnectedSocket(mSocket);
 					}
@@ -720,8 +732,10 @@ public class Shimmer extends ShimmerBluetooth{
 			Log.d(mClassName, "ConnectedThread is about to start");
 			mIOThread = new IOThread();
 			mIOThread.start();
+			if(mUseProcessingThread){
 			mPThread = new ProcessingThread();
 			mPThread.start();
+			}
 			// Send the name of the connected device back to the UI Activity
 			mMyBluetoothAddress = mDevice.getAddress();
 			Message msg = mHandler.obtainMessage(Shimmer.MESSAGE_DEVICE_NAME);
@@ -729,7 +743,7 @@ public class Shimmer extends ShimmerBluetooth{
 			// Send the name of the connected device back to the UI Activity
 			while(!mIOThread.isAlive()){}; 
 			Log.d(mClassName, "alive!!");
-			setState(STATE_CONNECTED);
+			shimmer.setState(BT_STATE.CONNECTED);
 			//startStreaming();
 			initialize();
 		}
@@ -851,7 +865,8 @@ public class Shimmer extends ShimmerBluetooth{
 			//only do this during the initialization process to indicate that it is fully initialized, dont do this for a normal inqiuiry
 			mIsInitialised = true;
 		}
-		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_FULLY_INITIALIZED, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
+		setState(BT_STATE.INITIALISED);
+		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, -1, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),mState)).sendToTarget();
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" Initialization completed and is ready for Streaming");
 	}
 
@@ -863,7 +878,8 @@ public class Shimmer extends ShimmerBluetooth{
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" is now Streaming");
-		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STREAMING, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
+		setState(BT_STATE.STREAMING);
+		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STREAMING, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),mState)).sendToTarget();
 		
 	}
 
@@ -913,7 +929,7 @@ public class Shimmer extends ShimmerBluetooth{
 
 
 	public void writeInstruction(){
-		if (getShimmerState() == STATE_CONNECTED) {
+		if (getState() == BT_STATE.CONNECTED || getState() == BT_STATE.INITIALISED|| getState() == BT_STATE.STREAMING) {
 			byte[] instruction = (byte[]) mListofInstructions.get(0);
 			write(instruction);
 		}
@@ -1055,8 +1071,9 @@ public class Shimmer extends ShimmerBluetooth{
 		Bundle bundle = new Bundle();
 		bundle.putString(TOAST, "Device " + mMyBluetoothAddress +" stopped streaming");
 		msg.setData(bundle);
+		setState(BT_STATE.INITIALISED);
 		mHandler.sendMessage(msg);
-		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STOP_STREAMING, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress())).sendToTarget();
+		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STOP_STREAMING, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),mState)).sendToTarget();
 		
 	}
 
@@ -1091,17 +1108,28 @@ public class Shimmer extends ShimmerBluetooth{
 		// TODO Auto-generated method stub
 		mHandler.obtainMessage(MESSAGE_PROGRESS_REPORT, pr).sendToTarget();
 	}
-
-
+	
+	@Override
+	public BT_STATE getState() {
+		return mState;
+	}
+	
+	@Override
+	protected void setState(BT_STATE state) {
+		// TODO Auto-generated method stub
+		mState = state;
+		// Give the new state to the Handler so the UI Activity can update
+		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, -1, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),state)).sendToTarget();
+	}
 
 	@Override
-	protected void startOperation(int currentOperation) {
+	protected void startOperation(BT_STATE currentOperation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void startOperation(int currentOperation, int totalNumOfCmds) {
+	protected void startOperation(BT_STATE currentOperation, int totalNumOfCmds) {
 		// TODO Auto-generated method stub
 		
 	}

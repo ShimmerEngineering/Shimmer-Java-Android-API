@@ -52,6 +52,7 @@ import java.util.TimerTask;
 
 import com.shimmerresearch.driver.*;
 import com.shimmerresearch.android.*;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 
 
 public class ShimmerExampleActivity extends Activity {
@@ -82,10 +83,10 @@ public class ShimmerExampleActivity extends Activity {
 		super.onResume();
 		// this is an example of how to do something to the device depending on state when you resume an application
 		if(mShimmerDevice1 !=null ){ 
-			if (mShimmerDevice1.getState()==Shimmer.STATE_CONNECTED){
+			if (mShimmerDevice1.getState()==BT_STATE.CONNECTED){
 				mShimmerDevice1.startStreaming();
 			}
-			if (mShimmerDevice1.getState()==Shimmer.STATE_NONE){
+			if (mShimmerDevice1.getState()==BT_STATE.NONE){
 				mShimmerDevice1 = new Shimmer(this, mHandler,"RightArm", 51.2, 0, 0, Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO|Shimmer.SENSOR_MAG, false);
 			      String bluetoothAddress="00:06:66:66:96:86";
 			      mShimmerDevice1.connect(bluetoothAddress,"default");
@@ -146,20 +147,15 @@ public class ShimmerExampleActivity extends Activity {
                 break;
 
                  case Shimmer.MESSAGE_STATE_CHANGE:
+                	 ObjectCluster ojcC = (ObjectCluster)msg.obj; 
                 	 switch (msg.arg1) {
                      	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
-                    	    if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
+                    	    if (mShimmerDevice1.getState()==BT_STATE.CONNECTED){
                     	        Log.d("ConnectionStatus","Successful");
                     	        mShimmerDevice1.startStreaming();
                     	        shimmerTimer(30); //Disconnect in 30 seconds
                     	     }
                     	    break;
-	                    case Shimmer.STATE_CONNECTING:
-	                    	Log.d("ConnectionStatus","Connecting");
-                	        break;
-	                    case Shimmer.STATE_NONE:
-	                    	Log.d("ConnectionStatus","No State");
-	                    	break;
                      }
                 break;
                 
