@@ -1109,7 +1109,6 @@ public class Shimmer extends ShimmerBluetooth{
 		mHandler.obtainMessage(MESSAGE_PROGRESS_REPORT, pr).sendToTarget();
 	}
 	
-	@Override
 	public BT_STATE getState() {
 		return mState;
 	}
