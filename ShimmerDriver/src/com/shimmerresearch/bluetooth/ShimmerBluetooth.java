@@ -500,13 +500,21 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								getmListofInstructions().remove(0);
 							}
 							else if (mCurrentCommand==SET_BLINK_LED) {
-								mCurrentLEDStatus=(int)((byte[])getmListofInstructions().get(0))[1];
-								mTransactionCompleted = true;
-								//mWaitForAck=false;
-								mTimer.cancel(); //cancel the ack timer
-								mTimer.purge();
-								getmListofInstructions().remove(0);
-								setInstructionStackLock(false);
+								
+								// TODO: check for null and size were put in
+								// because if Shimmer was abruptly disconnected
+								// there is sometimes indexoutofboundsexceptions
+								if(getmListofInstructions().get(0)!=null){
+									if(((byte[])getmListofInstructions().get(0)).length>2){
+										mCurrentLEDStatus=(int)((byte[])getmListofInstructions().get(0))[1];
+									}
+									mTransactionCompleted = true;
+									//mWaitForAck=false;
+									mTimer.cancel(); //cancel the ack timer
+									mTimer.purge();
+									getmListofInstructions().remove(0);
+									setInstructionStackLock(false);
+								}
 							}
 							else if (mCurrentCommand==SET_GSR_RANGE_COMMAND) {
 
@@ -3743,35 +3751,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return mCurrentLEDStatus;
 	}
 
-	public int getFirmwareMajorVersion(){
-		return mFirmwareVersionMajor;
-	}
-	
-	public int getFirmwareMinorVersion(){
-		return mFirmwareVersionMinor;
-	}
-
-	public int getFirmwareInternalVersion(){
-		return mFirmwareVersionInternal;
-	}
-	
-	
-	public int getFirmwareCode(){
-		return mFirmwareVersionCode;
-	}
-	
-	public String getFWVersionName(){
-		return mFirmwareVersionParsed;
-	}
-	
-	/**
-	 * Get the FW Identifier. It is equal to 3 when LogAndStream, and equal to 4 when BTStream. 
-	 * @return The FW identifier
-	 */
-	public int getFWIdentifier(){
-		return (int) mFirmwareIdentifier;
-	}
-	
 	public int getBaudRate(){
 		return mBluetoothBaudRate;
 	}

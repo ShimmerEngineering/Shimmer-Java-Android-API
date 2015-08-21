@@ -9042,6 +9042,35 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mFirmwareIdentifier;
 	}
 	
+	public int getFirmwareMajorVersion(){
+		return mFirmwareVersionMajor;
+	}
+	
+	public int getFirmwareMinorVersion(){
+		return mFirmwareVersionMinor;
+	}
+
+	public int getFirmwareInternalVersion(){
+		return mFirmwareVersionInternal;
+	}
+	
+	
+	public int getFirmwareCode(){
+		return mFirmwareVersionCode;
+	}
+	
+	public String getFWVersionName(){
+		return mFirmwareVersionParsed;
+	}
+	
+	/**
+	 * Get the FW Identifier. It is equal to 3 when LogAndStream, and equal to 4 when BTStream. 
+	 * @return The FW identifier
+	 */
+	public int getFWIdentifier(){
+		return (int) mFirmwareIdentifier;
+	}
+	
 	public double getPressTempAC1(){
 		return AC1;
 	}
