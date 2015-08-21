@@ -227,7 +227,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							mIOThread = null;
 							mPThread = null;
 						}
-						if (mSerialPort.isOpened()){
+						if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
 							setState(BT_STATE.CONNECTED);
 							mIOThread = new IOThread();
 							mIOThread.start();
@@ -236,13 +236,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							mPThread.start();
 							}
 							initialize();
+						} else {
+							disconnect();
 						}
 					}
 					catch (SerialPortException ex){
 						connectionLost();
 						closeConnection();
 						setState(BT_STATE.CONNECTION_FAILED);
-						System.out.println(ex);
+						//System.out.println(ex);
 					}
 				}
 				
@@ -472,18 +474,21 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			}
 			mIsStreaming = false;
 			mIsInitialised = false;
-			if (mSerialPort != null && mSerialPort.isOpened ()) {
+
+			setState(BT_STATE.NONE);
+			if (mSerialPort != null){
+				
+				if(mSerialPort.isOpened ()) {
 				  mSerialPort.purgePort (1);
 				  mSerialPort.purgePort (2);
 				  mSerialPort.closePort ();
+				  mSerialPort = null;
 				}
-			
-			mSerialPort = null;
-			setState(BT_STATE.NONE);
+			}
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
 			setState(BT_STATE.NONE);
-			e.printStackTrace();
+			
 		}			
 	}
 
