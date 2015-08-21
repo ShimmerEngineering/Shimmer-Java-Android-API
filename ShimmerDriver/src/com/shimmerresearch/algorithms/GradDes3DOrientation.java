@@ -44,18 +44,12 @@ package com.shimmerresearch.algorithms;
  * 
  */
 
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Quat4d;
-import javax.vecmath.Tuple3d;
-import javax.vecmath.Vector3d;
-
 public class GradDes3DOrientation {
 
 	double mBeta = 1;
     double mSamplingPeriod = 1;
     double q1, q2, q3, q4;
-    public GradDes3DOrientation(double beta, double samplingPeriod, double q1, double q2, double q3, double q4)
-    {
+    public GradDes3DOrientation(double beta, double samplingPeriod, double q1, double q2, double q3, double q4) {
         mBeta = beta;
         this.q1 = q1;
         this.q2 = q2;
@@ -63,8 +57,6 @@ public class GradDes3DOrientation {
         this.q4 = q4;
         mSamplingPeriod = samplingPeriod;
     }
-	
-	
 	
 	/**
 	 * @param ax Accelerometer X in m/(sec^2)
@@ -78,10 +70,7 @@ public class GradDes3DOrientation {
 	 * @param mz Magnetometer X in local
 	 * @return Calculated Quaternion value
 	 */
-	public Quaternion update(double ax,double ay,double az,double gx, double gy, double gz, double mx, double my, double mz)
-    {
-        
-	
+	public Quaternion update(double ax,double ay,double az,double gx, double gy, double gz, double mx, double my, double mz) {
 	    double norm;
 	    double hx, hy, _2bx, _2bz;
 	    double s1, s2, s3, s4;
@@ -127,8 +116,6 @@ public class GradDes3DOrientation {
 	
 	    }
 	
-	
-	
 	    hx = mx * q1q1 - (2 * q1 * my) * q4 + (2 * q1 * mz) * q3 + mx * q2q2 + (2.0 * q2) * my * q3 + (2.0 * q2) * mz * q4 - mx * q3q3 - mx * q4q4;
 	    hy = (2 * q1 * mx) * q4 + my * q1q1 - (2 * q1 * mz) * q2 + (2 * q2 * mx) * q3 - my * q2q2 + my * q3q3 + (2.0 * q3) * mz * q4 - my * q4q4;
 	    _2bx = Math.sqrt(hx * hx + hy * hy);
@@ -172,11 +159,9 @@ public class GradDes3DOrientation {
 	
 
     public class Quaternion{
-        
         public double q1, q2, q3, q4;
 
-        public Quaternion(double q1, double q2, double q3, double q4)
-        {
+        public Quaternion(double q1, double q2, double q3, double q4){
             this.q1 = q1;
             this.q2 = q2;
             this.q3 = q3;

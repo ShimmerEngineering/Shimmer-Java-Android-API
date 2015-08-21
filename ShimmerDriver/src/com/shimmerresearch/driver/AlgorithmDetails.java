@@ -1,9 +1,10 @@
 package com.shimmerresearch.driver;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
-public class AlgorithmDetails {
+public class AlgorithmDetails implements Serializable {
 	
 	public List<Integer> mListOfRequiredSensors = new ArrayList<Integer>();
 	public String mUnits = "";

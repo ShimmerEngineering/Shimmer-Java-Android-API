@@ -77,24 +77,12 @@ package com.shimmerresearch.algorithms;
  * @date   October, 2013
  */
 
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Quat4d;
-import javax.vecmath.Tuple3d;
-import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4d;
-import javax.vecmath.Vector4f;
-
-import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
-
 public class GradDes3DOrientation6DoF {
 
 	double mBeta = 1;
 	double mSamplingPeriod = 1;
 	double q0, q1, q2, q3;
-	public GradDes3DOrientation6DoF(double beta, double samplingPeriod, double q1, double q2, double q3, double q4)
-	{
+	public GradDes3DOrientation6DoF(double beta, double samplingPeriod, double q1, double q2, double q3, double q4) {
 		mBeta = beta;
 		this.q0 = q1;
 		this.q1 = q2;
@@ -114,8 +102,7 @@ public class GradDes3DOrientation6DoF {
 	 * @param gz Gyroscope X in rad/sec
 	 * @return Calculated Quaternion value
 	 */
-	public Quaternion update(double ax,double ay,double az,double gx, double gy, double gz)
-	{
+	public Quaternion update(double ax,double ay,double az,double gx, double gy, double gz) {
 		double norm;
 		double s0, s1, s2, s3;
 		double qDot1, qDot2, qDot3, qDot4;
@@ -168,7 +155,6 @@ public class GradDes3DOrientation6DoF {
 		    s1 *= norm;
 		    s2 *= norm;
 		    s3 *= norm;
-			
 
 			// Apply feedback step
 			qDot1 -= mBeta * s0;
@@ -176,8 +162,6 @@ public class GradDes3DOrientation6DoF {
 			qDot3 -= mBeta * s2;
 			qDot4 -= mBeta * s3;
 		}
-
-		
 		
 		 // Integrate to yield quaternion
         q0 += qDot1 * mSamplingPeriod;
@@ -193,23 +177,18 @@ public class GradDes3DOrientation6DoF {
 
 	    
 	    return new Quaternion(q0,q1,q2,q3);
-		}
+	}
 
 
-	public class Quaternion{
-
+	public class Quaternion {
 		public double q1, q2, q3, q4;
 
-		public Quaternion(double q1, double q2, double q3, double q4)
-		{
+		public Quaternion(double q1, double q2, double q3, double q4) {
 			this.q1 = q1;
 			this.q2 = q2;
 			this.q3 = q3;
 			this.q4 = q4;
 		}
 	}
-
-
-
 
 }
