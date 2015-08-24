@@ -30,7 +30,7 @@ public class ShimmerVerObject implements Serializable {
 	public int mFirmwareVersionCode = 0;
 	public String mFirmwareIdentifierParsed = "";
 	public String mFirmwareVersionParsed = "";
-	public String mFirmwareVersionParsedJustVersionNumber = "";
+	public String mFirmwareVersionParsedJustVersionNumber = "Unknown";
 
 	public int mShimmerExpansionBoardId = 0;
 	

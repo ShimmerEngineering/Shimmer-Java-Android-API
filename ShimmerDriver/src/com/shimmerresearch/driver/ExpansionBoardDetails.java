@@ -16,8 +16,8 @@ public class ExpansionBoardDetails implements Serializable {
 	public int mExpBoardId = -1;
 	public int mExpBoardRev = -1;
 	public int mExpBoardRevSpecial = -1;
-	public String mExpBoardParsed = "";
-	public String mExpBoardParsedWithVer = "";
+	public String mExpBoardParsed = "Unknown";
+	public String mExpBoardParsedWithVer = "Unknown";
 	public byte[] mExpBoardArray = new byte[]{}; 
 	
 	public ExpansionBoardDetails(
