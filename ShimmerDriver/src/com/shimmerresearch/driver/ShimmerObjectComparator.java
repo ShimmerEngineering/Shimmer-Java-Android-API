@@ -15,7 +15,7 @@ public class ShimmerObjectComparator implements Comparator<ShimmerObject> {
 			case BT_RADIO_ID: return shimmerObject1.getMacIdFromUartParsed().compareTo(shimmerObject2.getMacIdFromUartParsed());
 			case EXPANSION: return shimmerObject1.mExpansionBoardParsed.compareTo(shimmerObject2.mExpansionBoardParsed);
 			case FIRMWARE: return shimmerObject1.mFirmwareVersionParsed.compareTo(shimmerObject2.mFirmwareVersionParsed);
-			case BATTERY: return shimmerObject1.getEstimatedChargePercentage().compareTo(shimmerObject2.getEstimatedChargePercentage());
+			case BATTERY: return shimmerObject1.getEstimatedChargePercentageParsed().compareTo(shimmerObject2.getEstimatedChargePercentageParsed());
 			case NAME: return shimmerObject1.getShimmerUserAssignedName().compareTo(shimmerObject2.getShimmerUserAssignedName());
 			default: return 0;
 		}

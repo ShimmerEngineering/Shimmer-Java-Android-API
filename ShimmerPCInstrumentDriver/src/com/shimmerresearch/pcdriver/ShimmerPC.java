@@ -608,7 +608,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	@Override
 	protected void hasStopStreaming() {
-		// TODO Auto-generated method stub
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 				// Do something here
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
@@ -619,8 +618,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void logAndStreamStatusChanged() {
-		// TODO Auto-generated method stub
-
 		
 //		if(mCurrentCommand==START_LOGGING_ONLY_COMMAND){
 //			TODO this causing a problem Shimmer Bluetooth disconnects
@@ -649,12 +646,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setState(BT_STATE.SDLOGGING);
 			}
 			else{
-				if(getBTState() == BT_STATE.INITIALISED){
-					
-				}
-				else if(getBTState() != BT_STATE.CONNECTED){
-					setState(BT_STATE.CONNECTED);
-				}
+//				if(getBTState() == BT_STATE.INITIALISED){
+//					
+//				}
+//				else if(getBTState() != BT_STATE.CONNECTED){
+//					setState(BT_STATE.CONNECTED);
+//				}
+				
+				CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+				sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 			}
 		}
 		
@@ -676,6 +676,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 			}
 		}
+	}
+
+	@Override
+	protected void batteryStatusChanged() {
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	
 }

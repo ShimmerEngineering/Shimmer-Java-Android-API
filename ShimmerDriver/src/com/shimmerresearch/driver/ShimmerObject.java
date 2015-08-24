@@ -755,16 +755,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	//This features are only used in LogAndStream FW 
 	protected String mDirectoryName;
 	protected int mDirectoryNameLength;
-	protected boolean mSensingStatus;
-//	protected boolean mDockedStatus;
+	protected boolean mIsSensing;
 	private List<String[]> mExtraSignalProperties = null;
 	
 	protected String mChargingState = "";
+	protected int mChargingStatus = 0;
 	protected String mBattVoltage = "";
-	protected String mEstimatedChargePercentage = "";
+	protected Double mEstimatedChargePercentage = 0.0;
+	protected String mEstimatedChargePercentageParsed = "";
 
 	protected boolean mIsInitialised = false;
-	protected boolean mDockedStatus = false;
+	protected boolean mIsDocked = false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 	
 	List<Integer> mListOfMplChannels = Arrays.asList(
@@ -8854,6 +8855,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
     		
     	}
 
+		// TODO Auto-generated method stub
 		return listOfSupportAlgorihmChannels;
 	}
 
@@ -9038,6 +9040,35 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public int getFirmwareIdentifier() {
 		return mFirmwareIdentifier;
+	}
+	
+	public int getFirmwareMajorVersion(){
+		return mFirmwareVersionMajor;
+	}
+	
+	public int getFirmwareMinorVersion(){
+		return mFirmwareVersionMinor;
+	}
+
+	public int getFirmwareInternalVersion(){
+		return mFirmwareVersionInternal;
+	}
+	
+	
+	public int getFirmwareCode(){
+		return mFirmwareVersionCode;
+	}
+	
+	public String getFWVersionName(){
+		return mFirmwareVersionParsed;
+	}
+	
+	/**
+	 * Get the FW Identifier. It is equal to 3 when LogAndStream, and equal to 4 when BTStream. 
+	 * @return The FW identifier
+	 */
+	public int getFWIdentifier(){
+		return (int) mFirmwareIdentifier;
 	}
 	
 	public double getPressTempAC1(){
@@ -10212,16 +10243,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
-	protected void setExpansionBoardDetails(ExpansionBoardDetails eBD){
-		this.mExpansionBoardDetails  = eBD;
-		mExpansionBoardId = eBD.mExpBoardId;
-		mExpansionBoardRev = eBD.mExpBoardRev;
-		mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
-		mExpansionBoardParsed = eBD.mExpBoardParsed;
-		mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
-		mExpBoardArray = eBD.mExpBoardArray;
-	}
-	
 	public int getExpansionBoardId(){
 		return mExpansionBoardId;
 	}
@@ -10806,9 +10827,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	/**
+	 * @return the mEstimatedChargePercentageParsed
+	 */
+	public String getEstimatedChargePercentageParsed() {
+		return mEstimatedChargePercentageParsed;
+	}
+	
+	/**
 	 * @return the mEstimatedChargePercentage
 	 */
-	public String getEstimatedChargePercentage() {
+	public Double getEstimatedChargePercentage() {
 		return mEstimatedChargePercentage;
 	}
 	
@@ -10845,7 +10873,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mDocked
 	 */
 	public boolean isDocked() {
-		return mDockedStatus;
+		return mIsDocked;
 	}
 
 	/**

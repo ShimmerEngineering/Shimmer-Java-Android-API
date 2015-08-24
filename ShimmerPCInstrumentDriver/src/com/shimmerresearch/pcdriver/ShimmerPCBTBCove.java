@@ -438,6 +438,12 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		
 	}
 
+	@Override
+	protected void batteryStatusChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	
 	

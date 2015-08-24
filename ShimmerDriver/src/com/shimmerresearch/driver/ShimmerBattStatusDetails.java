@@ -10,20 +10,21 @@ import java.util.Locale;
  *
  */
 public class ShimmerBattStatusDetails {
-	public int mChargingStatus;
-	public String mChargingStatusParsed;
-	public int mBattAdcValue;
-	public String mBattVoltage;
-	public String mEstimatedChargePercentage;
+	public int mChargingStatus = 0;
+	public String mChargingStatusParsed = "";
+	public int mBattAdcValue = 0;
+	public String mBattVoltage = "";
+	public Double mEstimatedChargePercentage = 0.0;
+	public String mEstimatedChargePercentageParsed = "";
 	
 	public ShimmerBattStatusDetails() {
 	}
 
-	public ShimmerBattStatusDetails(int battAdcValue, int chargeStatus) {
+	public ShimmerBattStatusDetails(int battAdcValue, int chargingStatus) {
         boolean adcVoltageError = false;
         
         mBattAdcValue = battAdcValue;
-        mChargingStatus = chargeStatus;
+        mChargingStatus = chargingStatus;
 
 		// Calibration method copied from
 		// com.shimmerresearch.driver.ShimmerObject.calibrateU12AdcValue
@@ -35,13 +36,13 @@ public class ShimmerBattStatusDetails {
         	mChargingStatusParsed = "Checking...";
             adcVoltageError = true;
         }
-        else if((chargeStatus & 0xFF) == 0x00) {
+        else if((chargingStatus & 0xFF) == 0x00) {
         	mChargingStatusParsed = "Charging suspended";
         }
-        else if ((chargeStatus & 0xFF) == 0x40) {
+        else if ((chargingStatus & 0xFF) == 0x40) {
         	mChargingStatusParsed = "Fully charged";
         }
-        else if ((chargeStatus & 0xFF) == 0x80) {
+        else if ((chargingStatus & 0xFF) == 0x80) {
             String chargingStage = "";
             if (battVoltage < 3.0) {// from lm3658 datasheet
                 chargingStage = " (Preconditioning)";
@@ -60,7 +61,7 @@ public class ShimmerBattStatusDetails {
 
             mChargingStatusParsed = "Charging" + chargingStage;
         }
-        else if ((chargeStatus & 0xFF) == 0xC0) {
+        else if ((chargingStatus & 0xFF) == 0xC0) {
         	mChargingStatusParsed = "Bad battery";
         }
         else {
@@ -79,26 +80,25 @@ public class ShimmerBattStatusDetails {
             	battVoltage = 3.2;
             }
         	
-            double battPercentage = 0;
             // 4th order polynomial fit - good enough for purpose
-            battPercentage = (1109.739792 * Math.pow(battVoltage, 4)) - (17167.12674 * Math.pow(battVoltage, 3)) + (99232.71686 * Math.pow(battVoltage, 2)) - (253825.397 * battVoltage) + 242266.0527;
+            mEstimatedChargePercentage = (1109.739792 * Math.pow(battVoltage, 4)) - (17167.12674 * Math.pow(battVoltage, 3)) + (99232.71686 * Math.pow(battVoltage, 2)) - (253825.397 * battVoltage) + 242266.0527;
 
             // 6th order polynomial fit - best fit -> think there is a bug with this one
             //battPercentage = -(29675.10393 * Math.pow(battVoltage, 6)) + (675893.9095 * Math.pow(battVoltage, 5)) - (6404308.2798 * Math.pow(battVoltage, 4)) + (32311485.5704 * Math.pow(battVoltage, 3)) - (91543800.1720 * Math.pow(battVoltage, 2)) + (138081754.0880 * battVoltage) - 86624424.6584;
 
-            if (battPercentage > 100) {
-                battPercentage = 100.0;
+            if (mEstimatedChargePercentage > 100) {
+            	mEstimatedChargePercentage = 100.0;
             }
-            else if (battPercentage < 0) {
-                battPercentage = 0.0;
+            else if (mEstimatedChargePercentage < 0) {
+            	mEstimatedChargePercentage = 0.0;
             }
 
-            if ((chargeStatus&0xFF) != 0xC0) {// Bad battery
+            if ((chargingStatus&0xFF) != 0xC0) {// Bad battery
 //            	mEstimatedChargePercentage = String.format(Locale.UK, "%,.1f",battPercentage) + "%";
-            	mEstimatedChargePercentage = String.format("%,.1f",battPercentage) + "%";
+            	mEstimatedChargePercentageParsed = String.format("%,.1f",mEstimatedChargePercentage) + "%";
             }
             else {
-            	mEstimatedChargePercentage = "0.0%";
+            	mEstimatedChargePercentageParsed = "0.0%";
             }
         }
 	}
