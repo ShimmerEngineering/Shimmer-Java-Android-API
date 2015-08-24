@@ -246,6 +246,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 						setState(BT_STATE.CONNECTION_FAILED);
 						//System.out.println(ex);
 					}
+				} else {
+					
 				}
 				
 			}
@@ -482,9 +484,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				  mSerialPort.purgePort (1);
 				  mSerialPort.purgePort (2);
 				  mSerialPort.closePort ();
-				  mSerialPort = null;
+				 
 				}
+				
 			}
+			 mSerialPort = null;
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
 			setState(BT_STATE.NONE);
