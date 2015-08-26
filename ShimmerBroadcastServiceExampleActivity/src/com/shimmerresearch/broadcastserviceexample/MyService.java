@@ -152,20 +152,32 @@ public class MyService extends Service {
 	                            Toast.LENGTH_SHORT).show();
 	                break;
 	                 case Shimmer.MESSAGE_STATE_CHANGE:
-	                	 switch (msg.arg1) {
-	                     	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
-	                    	    if (shimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
-	                    	        Log.d("ConnectionStatus","Successful");
-	                    	        shimmerDevice1.startStreaming();
-	                    	     }
-	                    	    break;
-		                    case Shimmer.STATE_CONNECTING:
-		                    	Log.d("ConnectionStatus","Connecting");
-	                	        break;
-		                    case Shimmer.STATE_NONE:
-		                    	Log.d("ConnectionStatus","No State");
-		                    	break;
+	                     switch (((ObjectCluster)msg.obj).mState) {
+	                     case CONNECTED:
+	       
+	                         break;
+	                     case INITIALISED:
+
+	                    	 Log.d("ConnectionStatus","Successful");
+	                    	 shimmerDevice1.startStreaming();
+
+	                         break;
+	                     case CONNECTING:
+	                    	 Log.d("ConnectionStatus","Connecting");
+	                         break;
+	                     case STREAMING:
+	                     	break;
+	                     case STREAMING_AND_SDLOGGING:
+	                     	break;
+	                     case SDLOGGING:
+	                    	 break;
+	                     case NONE:
+	                    	 Log.d("ConnectionStatus","No State");
+	                         break;
 	                     }
+	                	 
+	                	 
+	                	 
 	                break;
 	            }
 	        }

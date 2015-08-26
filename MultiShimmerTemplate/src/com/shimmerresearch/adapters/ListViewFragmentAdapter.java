@@ -3,6 +3,7 @@ package com.shimmerresearch.adapters;
 import java.util.ArrayList;
 
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerDetails;
@@ -39,12 +40,12 @@ public class ListViewFragmentAdapter extends ArrayAdapter<String>{
 	private final Context context;
 	private String[] bluetooth_addresses;
 	private String[] devices_names;
-	private int[] devices_states;
+	private BT_STATE[] devices_states;
 	private int currentPosition;
 	private static DevicesFragment dF;
 	
 	
-	public ListViewFragmentAdapter(Context context, String[] bluetoothAddresses, String[] devicesNames, int [] devicesStates, DevicesFragment dF) {
+	public ListViewFragmentAdapter(Context context, String[] bluetoothAddresses, String[] devicesNames, BT_STATE[] devicesStates, DevicesFragment dF) {
 		super(context, R.layout.devices_fragment_item, bluetoothAddresses);
 		// TODO Auto-generated constructor stub
 		this.context = context;
@@ -70,16 +71,16 @@ public class ListViewFragmentAdapter extends ArrayAdapter<String>{
 	    deviceName.setText(devices_names[position]);
 	    if(!bluetooth_addresses[position].equals("")){
 	    	switch(devices_states[position]){
-		    	case 0: // DISCONNECTED
+		    	case NONE: // DISCONNECTED
 		    		state.setImageResource(R.drawable.circle_red);
 		    	break;
-		    	case 1: // CONNECTING
+		    	case CONNECTING: // CONNECTING
 		    		state.setImageResource(R.drawable.circle_yellow);
 		    	break;
-		    	case 2: // CONNECTED
+		    	case INITIALISED: // CONNECTED
 		    		state.setImageResource(R.drawable.circle_green);
 		    	break;
-		    	case 3: // STREAMING
+		    	case STREAMING: // STREAMING
 		    		state.setImageResource(R.drawable.circle_blue);
 		    	break;
 		    	default:
@@ -355,29 +356,25 @@ public class ListViewFragmentAdapter extends ArrayAdapter<String>{
 				else{
 					
 					switch(dF.mService.getShimmerState(dF.deviceBluetoothAddresses[currentPosition])){							
-						case 0: // DISCONNECTED
+						case NONE: // DISCONNECTED
 							dF.arrayAdapter.add(dF.CONNECT);
 							dF.arrayAdapter.add(dF.DELETE);
 						break;
-						case 1: // CONNECTING
+						case CONNECTING: // CONNECTING
 							Toast.makeText(dF.getActivity(), "The device is trying to connect", Toast.LENGTH_SHORT).show();
 						break;
-						case 2: // CONNECTED
-							if(dF.fully_initialized[currentPosition]){	
-								dF.arrayAdapter.add(dF.DISCONNECT);
-								if(dF.mService.deviceStreaming(dF.deviceBluetoothAddresses[currentPosition])){
-									dF.arrayAdapter.add(dF.STOP_STREAMING);
-									dF.arrayAdapter.add(dF.TOGGLE_LED);
-								}
-								else{
-									dF.arrayAdapter.add(dF.START_STREAMING);
-									dF.arrayAdapter.add(dF.TOGGLE_LED);
-//									dF.arrayAdapter.add(dF.ENABLE_SENSOR);
-									dF.arrayAdapter.add(dF.CONFIGURATION);
-								}
-								
-							}
+						case INITIALISED: // CONNECTED
+							dF.arrayAdapter.add(dF.DISCONNECT);
+							
+							dF.arrayAdapter.add(dF.START_STREAMING);
+							dF.arrayAdapter.add(dF.TOGGLE_LED);
+//							dF.arrayAdapter.add(dF.ENABLE_SENSOR);
+							dF.arrayAdapter.add(dF.CONFIGURATION);
 						break;
+						case STREAMING: // CONNECTED
+							dF.arrayAdapter.add(dF.STOP_STREAMING);
+							dF.arrayAdapter.add(dF.TOGGLE_LED);
+							break;
 						default:
 							dF.arrayAdapter.add(dF.CONNECT);
 							dF.arrayAdapter.add(dF.DELETE);

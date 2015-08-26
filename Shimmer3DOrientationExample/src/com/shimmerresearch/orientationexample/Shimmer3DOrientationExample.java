@@ -179,26 +179,31 @@ public class Shimmer3DOrientationExample extends Activity {
 	                break;
 
 	                 case Shimmer.MESSAGE_STATE_CHANGE:
-	                	 switch (msg.arg1) {
-	                     	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
-	                    	    if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
-	                    	        Log.d("ConnectionStatus","Successful");
-	                    	        //because the default mag range for Shimmer2 and 3 are 0 and 1 respectively, please be aware of what range you use when calibrating using Shimmer 9DOF Cal App, and use the same range here
-	                    	        if (mShimmerDevice1.getShimmerVersion()==ShimmerVerDetails.HW_ID.SHIMMER_2R){ 
-	                    	        	mShimmerDevice1.writeMagRange(0);
-	                    	        } else if (mShimmerDevice1.getShimmerVersion()==ShimmerVerDetails.HW_ID.SHIMMER_3){
-	                    	        	mShimmerDevice1.writeMagRange(1);
-	                    	        }
-	                    	        mShimmerDevice1.startStreaming();
-	                    	     }
-	                    	    break;
-		                    case Shimmer.STATE_CONNECTING:
-		                    	Log.d("ConnectionStatus","Connecting");
-	                	        break;
-		                    case Shimmer.STATE_NONE:
-		                    	Log.d("ConnectionStatus","No State");
-		                    	break;
+	                     switch (((ObjectCluster)msg.obj).mState) {
+	                     case CONNECTED:
+	       
+	                         break;
+	                     case INITIALISED:
+
+                 	        Log.d("ConnectionStatus","Successful");
+                 	        //because the default mag range for Shimmer2 and 3 are 0 and 1 respectively, please be aware of what range you use when calibrating using Shimmer 9DOF Cal App, and use the same range here
+                 	        mShimmerDevice1.startStreaming();
+	                         break;
+	                     case CONNECTING:
+	                    	 Log.d("ConnectionStatus","Connecting");
+	                         break;
+	                     case STREAMING:
+	                     	break;
+	                     case STREAMING_AND_SDLOGGING:
+	                     	break;
+	                     case SDLOGGING:
+	                    	 break;
+	                     case NONE:
+	                    	 Log.d("ConnectionStatus","No State");
+	                         break;
 	                     }
+	                	 
+	                	
 	                break;
 	                
 	            }

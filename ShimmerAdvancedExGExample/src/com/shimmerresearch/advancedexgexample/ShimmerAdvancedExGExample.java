@@ -352,6 +352,46 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 				switch (msg.what) {
 	            
 	            case Shimmer.MESSAGE_STATE_CHANGE:
+                    switch (((ObjectCluster)msg.obj).mState) {
+                    case CONNECTED:
+      
+                        break;
+                    case INITIALISED:
+	                	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
+	                    mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress; 
+	                    mService.enableGraphingHandler(true);
+	                    deviceState = "Connected";
+	                    textDeviceName.setText(mBluetoothAddress);
+	                    textDeviceState.setText(deviceState);
+	                    buttonMenu.setEnabled(true);
+	                    printExGArrays();
+                        break;
+                    case CONNECTING:
+                    	Log.d("ShimmerActivity","Driver is attempting to establish connection with Shimmer device");
+	                	deviceState = "Connecting";
+	                    textDeviceName.setText(mBluetoothAddress);
+	                    textDeviceState.setText(deviceState);
+                        break;
+                    case STREAMING:
+                    	break;
+                    case STREAMING_AND_SDLOGGING:
+                    	break;
+                    case SDLOGGING:
+                   	 break;
+                    case NONE:
+	                	Log.d("ShimmerActivity","Shimmer No State");
+	                    mBluetoothAddress=null;
+	                    // this also stops streaming
+	                    deviceState = "Disconnected";
+	                    textDeviceName.setText("Unknown");
+	                    textDeviceState.setText(deviceState);
+	                    buttonMenu.setEnabled(true);
+	                    break;
+                        
+                    }
+               	 
+	            	
+	            	/*
 	                switch (msg.arg1) {
 	                case Shimmer.STATE_CONNECTED:
 	                	//this has been deprecated
@@ -381,7 +421,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 	                    textDeviceState.setText(deviceState);
 	                    buttonMenu.setEnabled(true);
 	                    break;
-	                }
+	                }*/
 	                break;
 	            case Shimmer.MESSAGE_READ:
 
