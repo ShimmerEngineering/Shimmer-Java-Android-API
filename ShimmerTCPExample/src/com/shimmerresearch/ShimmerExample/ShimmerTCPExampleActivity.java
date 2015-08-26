@@ -58,6 +58,7 @@ import java.util.TimerTask;
 import com.shimmerresearch.ShimmerExample.R;
 import com.shimmerresearch.driver.*;
 import com.shimmerresearch.android.*;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 
 
 public class ShimmerTCPExampleActivity extends Activity {
@@ -118,45 +119,62 @@ public class ShimmerTCPExampleActivity extends Activity {
                 break;
 
                  case Shimmer.MESSAGE_STATE_CHANGE:
-                	 switch (msg.arg1) {
-                     	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
-                    	    if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
-                    	    	if (firstTime){
-                    	    	mShimmerDevice1.writeEnabledSensors(ShimmerObject.SENSOR_ACCEL);
-                    	    	Thread thread = new Thread()
-                    			{
-                    			    @Override
-                    			    public void run() {
-                    			    	try {
-                    			    		clientSocket = new Socket("10.1.1.1", 5000);
-                    				        dOut = new DataOutputStream(clientSocket.getOutputStream());
-                    					} catch (UnknownHostException e) {
-                    						// TODO Auto-generated catch block
-                    						e.printStackTrace();
-                    					} catch (IOException e) {
-                    						// TODO Auto-generated catch block
-                    						e.printStackTrace();
-                    					}
-                    			    }
-                    			};
 
-                    			thread.start();
-                    	    	
-                    	    	
-                    	        Log.d("ConnectionStatus","Successful");
-                    	
-                    	        mShimmerDevice1.startStreaming();
-                    	        firstTime = false;
-                    	    	}
-                    	     }
-                    	    break;
-	                    case Shimmer.STATE_CONNECTING:
+
+                     switch (((ObjectCluster)msg.obj).mState) {
+                     case CONNECTED:
+       
+                         break;
+                     case INITIALISED:
+
+           
+                 	    	if (firstTime){
+                 	    	mShimmerDevice1.writeEnabledSensors(ShimmerObject.SENSOR_ACCEL);
+                 	    	Thread thread = new Thread()
+                 			{
+                 			    @Override
+                 			    public void run() {
+                 			    	try {
+                 			    		clientSocket = new Socket("10.1.1.1", 5000);
+                 				        dOut = new DataOutputStream(clientSocket.getOutputStream());
+                 					} catch (UnknownHostException e) {
+                 						// TODO Auto-generated catch block
+                 						e.printStackTrace();
+                 					} catch (IOException e) {
+                 						// TODO Auto-generated catch block
+                 						e.printStackTrace();
+                 					}
+                 			    }
+                 			};
+
+                 			thread.start();
+                 	    	
+                 	    	
+                 	        Log.d("ConnectionStatus","Successful");
+                 	
+                 	        mShimmerDevice1.startStreaming();
+                 	        firstTime = false;
+                 	    	}
+                 	  
+                         break;
+                     case CONNECTING:
+
 	                    	Log.d("ConnectionStatus","Connecting");
-                	        break;
-	                    case Shimmer.STATE_NONE:
-	                    	Log.d("ConnectionStatus","No State");
-	                    	break;
+                         break;
+                     case STREAMING:
+                     	break;
+                     case STREAMING_AND_SDLOGGING:
+                     	break;
+                     case SDLOGGING:
+                    	 break;
+                     case NONE:
+                    	 	Log.d("ConnectionStatus","No State");
+                         break;
                      }
+                	 
+                	 
+                	 
+                	
                 break;
                 
             }

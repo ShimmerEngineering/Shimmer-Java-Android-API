@@ -88,73 +88,81 @@ public class ShimmerLogExampleActivity extends Activity {
     private final Handler mHandler = new Handler() {
         @SuppressWarnings("null")
 		public void handleMessage(Message msg) {
-            switch (msg.what) { // handlers have a what identifier which is used to identify the type of msg
-            case Shimmer.MESSAGE_READ:
+        	switch (msg.what) { // handlers have a what identifier which is used to identify the type of msg
+        	case Shimmer.MESSAGE_READ:
         		String[] signalNameArray=new String[4]; 
         		String myAddress="";
         		double[] dataValues=new double[4]; 
-            	if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
-            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
-            	    log.logData(objectCluster);
-            	    Collection<FormatCluster> accelXFormats = objectCluster.mPropertyCluster.get("Accelerometer X");  // first retrieve all the possible formats for the current sensor device
-					FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
-					if (formatCluster!=null){
-						Log.d("CalibratedData",objectCluster.mMyName + " AccelX: " + formatCluster.mData + " "+ formatCluster.mUnits);
-					}
-					Collection<FormatCluster> accelYFormats = objectCluster.mPropertyCluster.get("Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
-					formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
-					if (formatCluster!=null){
-						Log.d("CalibratedData",objectCluster.mMyName + " AccelY: " + formatCluster.mData + " "+formatCluster.mUnits);
-					}
-					Collection<FormatCluster> accelZFormats = objectCluster.mPropertyCluster.get("Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
-					formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
-					if (formatCluster!=null){
-						Log.d("CalibratedData",objectCluster.mMyName + " AccelZ: " + formatCluster.mData + " "+formatCluster.mUnits);
-					}
+        		if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
+        			ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
+        			log.logData(objectCluster);
+        			Collection<FormatCluster> accelXFormats = objectCluster.mPropertyCluster.get("Accelerometer X");  // first retrieve all the possible formats for the current sensor device
+        			FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
+        			if (formatCluster!=null){
+        				Log.d("CalibratedData",objectCluster.mMyName + " AccelX: " + formatCluster.mData + " "+ formatCluster.mUnits);
+        			}
+        			Collection<FormatCluster> accelYFormats = objectCluster.mPropertyCluster.get("Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
+        			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
+        			if (formatCluster!=null){
+        				Log.d("CalibratedData",objectCluster.mMyName + " AccelY: " + formatCluster.mData + " "+formatCluster.mUnits);
+        			}
+        			Collection<FormatCluster> accelZFormats = objectCluster.mPropertyCluster.get("Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
+        			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
+        			if (formatCluster!=null){
+        				Log.d("CalibratedData",objectCluster.mMyName + " AccelZ: " + formatCluster.mData + " "+formatCluster.mUnits);
+        			}
 
 
-					accelXFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer X");  // first retrieve all the possible formats for the current sensor device
-					formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
-					if (formatCluster!=null){
-						Log.d("CalibratedData",objectCluster.mMyName + " AccelLNX: " + formatCluster.mData + " "+ formatCluster.mUnits);
-					}
-					accelYFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
-					formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
-					if (formatCluster!=null){
-						Log.d("CalibratedData",objectCluster.mMyName + " AccelLNY: " + formatCluster.mData + " "+formatCluster.mUnits);
-					}
-					accelZFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
-					formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
-					if (formatCluster!=null){
-						Log.d("CalibratedData",objectCluster.mMyName + " AccelLNZ: " + formatCluster.mData + " "+formatCluster.mUnits);
-					}
+        			accelXFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer X");  // first retrieve all the possible formats for the current sensor device
+        			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
+        			if (formatCluster!=null){
+        				Log.d("CalibratedData",objectCluster.mMyName + " AccelLNX: " + formatCluster.mData + " "+ formatCluster.mUnits);
+        			}
+        			accelYFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
+        			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
+        			if (formatCluster!=null){
+        				Log.d("CalibratedData",objectCluster.mMyName + " AccelLNY: " + formatCluster.mData + " "+formatCluster.mUnits);
+        			}
+        			accelZFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
+        			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
+        			if (formatCluster!=null){
+        				Log.d("CalibratedData",objectCluster.mMyName + " AccelLNZ: " + formatCluster.mData + " "+formatCluster.mUnits);
+        			}
 
-            	}
-            	
-                break;
-                 case Shimmer.MESSAGE_TOAST:
-                	Log.d("toast",msg.getData().getString(Shimmer.TOAST));
-                	Toast.makeText(getApplicationContext(), msg.getData().getString(Shimmer.TOAST),
-                            Toast.LENGTH_SHORT).show();
-                break;
-                 case Shimmer.MESSAGE_STATE_CHANGE:
-                switch (msg.arg1) {
-             	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
-            	    if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
-            	        Log.d("ConnectionStatus","Successful");
-            	        mShimmerDevice1.startStreaming();
-            	        shimmerTimer(30); //Disconnect in 30 seconds
-            	     }
-            	    break;
-                case Shimmer.STATE_CONNECTING:
-                	Log.d("ConnectionStatus","Connecting");
-        	        break;
-                case Shimmer.STATE_NONE:
-                	Log.d("ConnectionStatus","No State");
-                	break;
-             }
-        break;
-            }
+        		}
+
+        		break;
+        	case Shimmer.MESSAGE_TOAST:
+        		Log.d("toast",msg.getData().getString(Shimmer.TOAST));
+        		Toast.makeText(getApplicationContext(), msg.getData().getString(Shimmer.TOAST),
+        				Toast.LENGTH_SHORT).show();
+        		break;
+        	case Shimmer.MESSAGE_STATE_CHANGE:
+        		switch (((ObjectCluster)msg.obj).mState) {
+        		case CONNECTED:
+
+        			break;
+        		case INITIALISED:
+        			Log.d("ConnectionStatus","Successful");
+        			mShimmerDevice1.startStreaming();
+        			shimmerTimer(30); //Disconnect in 30 seconds
+        			break;
+        		case CONNECTING:
+        			Log.d("ConnectionStatus","Connecting");
+        			break;
+        		case STREAMING:
+        			break;
+        		case STREAMING_AND_SDLOGGING:
+        			break;
+        		case SDLOGGING:
+        			break;
+        		case NONE:
+        			Log.d("ConnectionStatus","No State");
+        			break;
+        		}
+
+        		break;
+        	}
         }
     };
 

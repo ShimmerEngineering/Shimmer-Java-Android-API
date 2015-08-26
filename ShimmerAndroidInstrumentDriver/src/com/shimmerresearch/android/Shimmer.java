@@ -156,16 +156,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-
-
-
-
-
-
-
-
-
-
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
@@ -176,17 +166,6 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
-
-
-
-
-
-
-
-
-
-
-
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -1079,8 +1058,50 @@ public class Shimmer extends ShimmerBluetooth{
 
 	@Override
 	protected void logAndStreamStatusChanged() {
-		// TODO Auto-generated method stub
+
 		
+//		if(mCurrentCommand==START_LOGGING_ONLY_COMMAND){
+//			TODO this causing a problem Shimmer Bluetooth disconnects
+//			setState(BT_STATE.SDLOGGING);
+//		}
+		if(mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
+			//TODO need to query the Bluetooth connection here!
+			if(mIsStreaming){
+				setState(BT_STATE.STREAMING);
+			}
+			else if(mIsConnected){
+				setState(BT_STATE.CONNECTED);
+			}
+			else{
+				setState(BT_STATE.DISCONNECTED);
+			}
+		}
+		else{
+			if(mIsStreaming && mIsSDLogging){
+				setState(BT_STATE.STREAMING_AND_SDLOGGING);
+			}
+			else if(mIsStreaming){
+				setState(BT_STATE.STREAMING);
+			}
+			else if(mIsSDLogging){
+				setState(BT_STATE.SDLOGGING);
+			}
+			else{
+//				if(getBTState() == BT_STATE.INITIALISED){
+//					
+//				}
+//				else if(getBTState() != BT_STATE.CONNECTED){
+//					setState(BT_STATE.CONNECTED);
+//				}
+				
+				mHandler.obtainMessage(MESSAGE_STATE_CHANGE, -1, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),getBTState())).sendToTarget();
+				
+			}
+		}
+		
+	
+		// TODO Auto-generated method stub
+		/*
 		int docked, sensing;
 		
 		if(isDocked())
@@ -1095,6 +1116,7 @@ public class Shimmer extends ShimmerBluetooth{
 		
 		mHandler.obtainMessage(Shimmer.MESSAGE_LOG_AND_STREAM_STATUS_CHANGED, docked, sensing).sendToTarget();
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" Status has changed. Docked: "+docked+" Sensing: "+sensing);
+		*/
 	}
 
 	@Override

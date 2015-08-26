@@ -258,11 +258,12 @@ public class LogAndStreamExample extends Activity{
 			switch (msg.what) {
             
             case Shimmer.MESSAGE_STATE_CHANGE:
-                switch (msg.arg1) {
-                case Shimmer.STATE_CONNECTED:
+
+                switch (((ObjectCluster)msg.obj).mState) {
+                case CONNECTED:
                 	//this has been deprecated
                     break;
-                case Shimmer.MSG_STATE_FULLY_INITIALIZED:
+                case INITIALISED:
                 	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
                     mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress; 
                     deviceState = "Connected";
@@ -292,32 +293,54 @@ public class LogAndStreamExample extends Activity{
             	    else
             	    	textSensing.setText("No");
                     break;
-                case Shimmer.STATE_CONNECTING:
+                case CONNECTING:
                 	Log.d("ShimmerActivity","Driver is attempting to establish connection with Shimmer device");
                 	deviceState = "Connecting";
                     textDeviceName.setText(mBluetoothAddress);
                     textDeviceState.setText(deviceState);
                     buttonConnectDisconnect.setEnabled(false);
                     break;
-                case Shimmer.MSG_STATE_STREAMING:
+                case STREAMING:
+                	if(logAndStreamShimmer.isDocked())
+                		textDocked.setText("Yes");
+                	else
+                		textDocked.setText("No");
+                	
+                	if(logAndStreamShimmer.isSensing())
+                		textSensing.setText("Yes");
+                	else
+                		textSensing.setText("No");
                 	buttonStreaming.setEnabled(false);
             	    buttonStreamingAndLogging.setEnabled(false);
             	    buttonStopStreaming.setEnabled(true);
-            	    buttonReadDirectory.setEnabled(false);
-            	    buttonStatus.setEnabled(false);
+            	    buttonReadDirectory.setEnabled(true);
+            	    buttonStatus.setEnabled(true);
             	    textDeviceState.setText("Streaming");
             	    textSensing.setText("Yes");
                 	break;
-                case Shimmer.MSG_STATE_STOP_STREAMING:
-                	buttonStreaming.setEnabled(true);
-            	    buttonStreamingAndLogging.setEnabled(true);
-            	    buttonStopStreaming.setEnabled(false);
-            	    buttonReadDirectory.setEnabled(true);
-            	    buttonStatus.setEnabled(true);
-            	    textDeviceState.setText("Connected");
-           	    	textSensing.setText("No");
-                	break;
-                case Shimmer.STATE_NONE:
+                case STREAMING_AND_SDLOGGING:
+                	if(logAndStreamShimmer.isDocked())
+                		textDocked.setText("Yes");
+                	else
+                		textDocked.setText("No");
+                	
+                	if(logAndStreamShimmer.isSensing())
+                		textSensing.setText("Yes");
+                	else
+                		textSensing.setText("No");
+                break;
+                case SDLOGGING:
+                	if(logAndStreamShimmer.isDocked())
+                		textDocked.setText("Yes");
+                	else
+                		textDocked.setText("No");
+                	
+                	if(logAndStreamShimmer.isSensing())
+                		textSensing.setText("Yes");
+                	else
+                		textSensing.setText("No");
+                break;
+                case NONE:
                 	Log.d("ShimmerActivity","Shimmer No State");
                     mBluetoothAddress=null;
                     // this also stops streaming
@@ -331,44 +354,12 @@ public class LogAndStreamExample extends Activity{
             	    buttonStreamingAndLogging.setEnabled(false);
             	    buttonReadDirectory.setEnabled(false);
             	    buttonStatus.setEnabled(false);
+                    // this also stops streaming
                     break;
                 }
-                break;
-            case Shimmer.MESSAGE_READ:
-
-
-				
-                break;
-            case Shimmer.MESSAGE_ACK_RECEIVED:
-            	
-            	break;
-            case Shimmer.MESSAGE_DEVICE_NAME:
-                // save the connected device's name
+             
                 
-                Toast.makeText(getContext(), "Connected to "
-                               + mBluetoothAddress, Toast.LENGTH_SHORT).show();
-                break;
-       
-            	
-            case Shimmer.MESSAGE_TOAST:
-                Toast.makeText(getContext(), msg.getData().getString(Shimmer.TOAST),
-                               Toast.LENGTH_SHORT).show();
-                break;
-                
-            case Shimmer.MESSAGE_LOG_AND_STREAM_STATUS_CHANGED:
-            	int docked = msg.arg1;
-            	int sensing = msg.arg2;
-            	if(docked==1)
-            		textDocked.setText("Yes");
-            	else
-            		textDocked.setText("No");
-            	
-            	if(sensing==1)
-            		textSensing.setText("Yes");
-            	else
-            		textSensing.setText("No");
-            	break;
-           
+          
             }
 			
 			

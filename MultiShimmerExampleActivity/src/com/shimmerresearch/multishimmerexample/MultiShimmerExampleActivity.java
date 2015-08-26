@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
@@ -93,10 +94,10 @@ public class MultiShimmerExampleActivity extends Activity {
 					//Next connect the next device
 					Log.d("ConnectionStatus","Fully Initialized" + ((ObjectCluster)msg.obj).mBluetoothAddress);
 
-					if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED && mShimmerDevice2.getShimmerState()!=Shimmer.STATE_CONNECTED){
+					if (mShimmerDevice2.getBTState()!=BT_STATE.CONNECTED){
 						mShimmerDevice2.connect("00:06:66:66:96:86","default"); 
 					}
-					if (mShimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED && mShimmerDevice1.getStreamingStatus()==false && mShimmerDevice2.getShimmerState()==Shimmer.STATE_CONNECTED && mShimmerDevice2.getStreamingStatus()==false){
+					if (mShimmerDevice1.getState()==BT_STATE.INITIALISED && mShimmerDevice1.getStreamingStatus()==false && mShimmerDevice2.getBTState()==BT_STATE.INITIALISED && mShimmerDevice2.getStreamingStatus()==false){
 						Log.d("ConnectionStatus","Successful!");
 
 						mShimmerDevice1.writeEnabledSensors(Shimmer.SENSOR_ACCEL);

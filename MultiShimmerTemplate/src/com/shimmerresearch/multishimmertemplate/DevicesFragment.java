@@ -7,6 +7,7 @@ import com.google.common.collect.BiMap;
 import com.shimmerresearch.adapters.ListViewFragmentAdapter;
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -55,7 +56,7 @@ public class DevicesFragment extends Fragment{
 	DatabaseHandler db;
     public String[] deviceNames;
 	public static String[] deviceBluetoothAddresses;
-	public static int[] devicesStates;
+	public static BT_STATE[] devicesStates;
 	public static boolean[] fully_initialized;
     String[] shimmerVersions;
 	String[][] mShimmerCommands;
@@ -540,6 +541,111 @@ public class DevicesFragment extends Fragment{
 		        	Toast.makeText(mActivity, msg.getData().getString(Shimmer.TOAST), Toast.LENGTH_SHORT).show();
 		        break;
 		        case Shimmer.MESSAGE_STATE_CHANGE:
+                    switch (((ObjectCluster)msg.obj).mState) {
+                    case CONNECTED:
+                     	//check to see if there are other Shimmer Devices which need to be connected
+    		           	//sendBroadcast(intent);
+    		       	 		
+    		       	 		connectedShimmerAddresses.add(((ObjectCluster)msg.obj).mBluetoothAddress);
+                        break;
+                    case INITIALISED:
+                    	int indexFully=0;
+//		            	if(currentPosition==1){
+		            		String addressInitialized = ((ObjectCluster) msg.obj).mBluetoothAddress;
+			        		for(int i=0; i<deviceBluetoothAddresses.length; i++)
+			        			if(deviceBluetoothAddresses[i].equals(addressInitialized)){
+			        				indexFully=i;
+			        				break;
+			        			}
+
+		           	Log.d("ShimmerCA","Fully Initialized");
+		           	devicesStates[indexFully] = ((ObjectCluster) msg.obj).mState;
+		           	fully_initialized[indexFully] = true;
+		            mActivity.runOnUiThread(new Runnable() {
+		    		    public void run() {
+		    		    	//update the children array in mAdapter first
+		    		    	mAdapter.notifyDataSetChanged();
+		    		    }
+		    		});
+		            
+		            mService.readAndSaveConfiguration(indexFully-2, addressInitialized);
+		        	
+                        break;
+                    case CONNECTING:
+
+		            	int indexConnecting=0;
+//			    		if(currentPosition==1){
+			    			String addressConnecting = ((ObjectCluster) msg.obj).mBluetoothAddress;
+			        		for(int i=0; i<deviceBluetoothAddresses.length; i++)
+			        			if(deviceBluetoothAddresses[i].equals(addressConnecting)){
+			        				indexConnecting=i;
+			        				break;
+			        			} 
+//			        	}
+//			    		else if(currentPosition==0)
+//		            		indexConnecting=deviceBluetoothAddresses.length-1;
+//			    		else
+//			    			indexConnecting = currentPosition;
+			            devicesStates[indexConnecting] = BT_STATE.CONNECTING;
+			            fully_initialized[indexConnecting] = false;
+			            mActivity.runOnUiThread(new Runnable() {
+			    		    public void run() {
+			    		    	//update the children array in mAdapter first
+			    		    	mAdapter.notifyDataSetChanged();
+			    		    }
+			    		});
+                        break;
+                    case STREAMING:
+                    	int indexStreaming=0;
+		            	if(currentPosition==1){
+		            		String addressStreaming = ((ObjectCluster) msg.obj).mBluetoothAddress;
+			        		for(int i=0; i<deviceBluetoothAddresses.length; i++)
+			        			if(deviceBluetoothAddresses[i].equals(addressStreaming)){
+			        				indexStreaming=i;
+			        				break;
+			        			}
+			        	}
+		            	else
+		            		indexStreaming=currentPosition;
+			           	Log.d("ShimmerCA","Streaming");
+			           	streamingShimmerAddresses.add(((ObjectCluster)msg.obj).mBluetoothAddress);
+			           	devicesStates[indexStreaming] = ((ObjectCluster)msg.obj).mState;
+			           	mAdapter.notifyDataSetChanged();
+                    	break;
+                    case STREAMING_AND_SDLOGGING:
+                    	break;
+                    case SDLOGGING:
+                   	 break;
+                    case NONE:
+
+		            	int indexNone=0;
+//		            	if(currentPosition==1){
+		            		String addressNone = ((ObjectCluster) msg.obj).mBluetoothAddress;
+			        		for(int i=0; i<deviceBluetoothAddresses.length; i++)
+			        			if(deviceBluetoothAddresses[i].equals(addressNone)){
+			        				indexNone=i;
+			        				break;
+			        			}
+//			        	}
+//		            	else if(currentPosition==0)
+//		            		indexNone=deviceBluetoothAddresses.length-1;
+//		            	else
+//		            		indexNone=currentPosition;
+		            connectedShimmerAddresses.remove(((ObjectCluster)msg.obj).mBluetoothAddress);
+		           	Log.d("Shimmer","NO_State" + ((ObjectCluster)msg.obj).mBluetoothAddress);
+		           	devicesStates[indexNone] = BT_STATE.NONE;
+		           	fully_initialized[indexNone] = false;
+		            mActivity.runOnUiThread(new Runnable() {
+		    		    public void run() {
+		    		    	//update the children array in mAdapter first
+		    		    	mAdapter.notifyDataSetChanged();
+		    		    }
+		    		});
+
+                        break;
+                    }
+               	 
+		        	/*
 		       	 switch (msg.arg1) {
 		       	 	case Shimmer.STATE_CONNECTED:
 		           	//check to see if there are other Shimmer Devices which need to be connected
@@ -654,6 +760,7 @@ public class DevicesFragment extends Fragment{
 			           	mAdapter.notifyDataSetChanged();
 			    		break;
 		        }
+		        */
 		       	 break;
 	        
 			}    
@@ -672,7 +779,7 @@ public class DevicesFragment extends Fragment{
     
     public void updateShimmerListView(List<ShimmerConfiguration> shimmerConfigurationList){
     	deviceNames=new String[shimmerConfigurationList.size()+2]; //+2 to include All Devices && Add New Device
-    	devicesStates=new int[shimmerConfigurationList.size()+2]; //+2 to include All Devices && Add New Device
+    	devicesStates=new BT_STATE[shimmerConfigurationList.size()+2]; //+2 to include All Devices && Add New Device
     	fully_initialized=new boolean[shimmerConfigurationList.size()+2]; //+2 to include All Devices && Add New Device
     	shimmerVersions=new String[shimmerConfigurationList.size()+2]; //+2 to include All Devices && Add New Device
     	deviceBluetoothAddresses=new String[shimmerConfigurationList.size()+2]; //+2 to include All Devices && Add New Device
@@ -692,13 +799,11 @@ public class DevicesFragment extends Fragment{
   			deviceNames[pos]=sc.getDeviceName();
   			shimmerVersions[pos]=Integer.toString(sc.getShimmerVersion());
       		deviceBluetoothAddresses[pos]=sc.getBluetoothAddress();
-      		int state = mService.getShimmerState(sc.getBluetoothAddress());
-      		if( mService.getShimmerState(sc.getBluetoothAddress()) == 2 && 
-      				mService.deviceStreaming(sc.getBluetoothAddress())) //if the device is connected and streaming, the state is set to 3
-      				state = 3;
+      		BT_STATE state = mService.getShimmerState(sc.getBluetoothAddress());
+
       		
       		devicesStates[pos] = state;
-      		if(state == ShimmerBluetooth.STATE_CONNECTED || state == 3)
+      		if(state == BT_STATE.INITIALISED || state == BT_STATE.STREAMING)
       			fully_initialized[pos] = true;
       		else
       			fully_initialized[pos] = false;

@@ -2259,28 +2259,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//endregion
 	
-	public void setShimmerVersionInfo(ShimmerVerObject hwfw) {
-		super.mShimmerVerObject = hwfw;
-		super.mHardwareVersion = hwfw.mHardwareVersion;
-		super.mHardwareVersionParsed = hwfw.mHardwareVersionParsed;
-		super.mFirmwareIdentifier = hwfw.mFirmwareIdentifier;
-		super.mFirmwareVersionMajor = hwfw.mFirmwareVersionMajor;
-		super.mFirmwareVersionMinor = hwfw.mFirmwareVersionMinor;
-		super.mFirmwareVersionInternal = hwfw.mFirmwareVersionInternal;
-		super.mFirmwareVersionParsed = hwfw.mFirmwareVersionParsed;
-		super.mFirmwareVersionCode = hwfw.mFirmwareVersionCode;
-		
-		//Once the version is known update settings accordingly 
-		if (super.mFirmwareVersionCode>=6){
-			mTimeStampPacketByteSize =3;
-			mTimeStampPacketRawMaxValue = 16777216;
-		} else if (super.mFirmwareVersionCode<6){
-			mTimeStampPacketByteSize =2;
-			mTimeStampPacketRawMaxValue = 65536;
-		}
-		
-//		super.sensorAndConfigMapsCreate();
-	}
+	
 
 	public void clearShimmerVersionInfo() {
 		super.mShimmerVerObject = new ShimmerVerObject();
