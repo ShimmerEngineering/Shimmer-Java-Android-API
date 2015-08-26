@@ -10898,5 +10898,27 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject;
 	}
 
+	public void setShimmerVersionInfo(ShimmerVerObject hwfw) {
+		mShimmerVerObject = hwfw;
+		mHardwareVersion = hwfw.mHardwareVersion;
+		mHardwareVersionParsed = hwfw.mHardwareVersionParsed;
+		mFirmwareIdentifier = hwfw.mFirmwareIdentifier;
+		mFirmwareVersionMajor = hwfw.mFirmwareVersionMajor;
+		mFirmwareVersionMinor = hwfw.mFirmwareVersionMinor;
+		mFirmwareVersionInternal = hwfw.mFirmwareVersionInternal;
+		mFirmwareVersionParsed = hwfw.mFirmwareVersionParsed;
+		mFirmwareVersionCode = hwfw.mFirmwareVersionCode;
+		
+		//Once the version is known update settings accordingly 
+		if (mFirmwareVersionCode>=6){
+			mTimeStampPacketByteSize =3;
+			mTimeStampPacketRawMaxValue = 16777216;
+		} else if (mFirmwareVersionCode<6){
+			mTimeStampPacketByteSize =2;
+			mTimeStampPacketRawMaxValue = 65536;
+		}
+		
+//		super.sensorAndConfigMapsCreate();
+	}
 
 }

@@ -560,7 +560,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
             			if(shmr!=null){
 	            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
-	            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_A7;
+	            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7;
 		            		} else {
 		            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A7;
 	            		}
@@ -572,7 +572,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
             			if(shmr!=null){
 	            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
-	            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_A6;
+	            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6;
 		            		} else {
 		            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A6;
 		            		}
