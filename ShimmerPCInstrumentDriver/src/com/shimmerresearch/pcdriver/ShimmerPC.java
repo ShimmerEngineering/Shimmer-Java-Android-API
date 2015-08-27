@@ -350,7 +350,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_START_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
-		setState(BT_STATE.STREAMING);
+		if (mIsSDLogging){
+			setState(BT_STATE.STREAMING_AND_SDLOGGING);
+		} else {
+			setState(BT_STATE.STREAMING);
+		}
+		
 	}
 
 	@Override
