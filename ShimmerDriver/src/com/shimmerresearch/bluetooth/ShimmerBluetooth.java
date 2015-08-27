@@ -526,6 +526,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForAck=false;
 								mTimer.cancel(); //cancel the ack timer
 								mTimer.purge();
+								mIsSDLogging = true;
 								logAndStreamStatusChanged();
 								getmListofInstructions().remove(0);
 								setInstructionStackLock(false);
@@ -536,6 +537,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForAck=false;
 								mTimer.cancel(); //cancel the ack timer
 								mTimer.purge();
+								mIsSDLogging = false;
 								logAndStreamStatusChanged();
 								getmListofInstructions().remove(0);
 								setInstructionStackLock(false);
@@ -1986,6 +1988,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 										getmListofInstructions().remove(0);
 										mTimer.cancel(); //cancel the ack timer
 										mTimer.purge();
+										mIsSDLogging = true;
+										logAndStreamStatusChanged();
 										mWaitForAck=false;
 										mTransactionCompleted = true;
 										setInstructionStackLock(false);
@@ -1994,6 +1998,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 										getmListofInstructions().remove(0);
 										mTimer.cancel(); //cancel the ack timer
 										mTimer.purge();
+										mIsSDLogging = false;
+										logAndStreamStatusChanged();
 										mWaitForAck=false;
 										mTransactionCompleted = true;
 										setInstructionStackLock(false);
