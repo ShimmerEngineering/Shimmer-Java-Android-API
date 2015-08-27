@@ -385,6 +385,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mTimer.cancel();
 								mTimer.purge();
 								mIsStreaming=true;
+								if (mCurrentCommand==START_SDBT_COMMAND){
+									mIsSDLogging = true;
+								}
 								mTransactionCompleted=true;
 								byteStack.clear();
 								isNowStreaming();

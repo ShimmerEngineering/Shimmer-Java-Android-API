@@ -857,7 +857,13 @@ public class Shimmer extends ShimmerBluetooth{
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" is now Streaming");
-		setState(BT_STATE.STREAMING);
+		if (mIsSDLogging){
+			setState(BT_STATE.STREAMING_AND_SDLOGGING);
+			
+		} else{
+			setState(BT_STATE.STREAMING);
+				
+		}
 		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STREAMING, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),mState)).sendToTarget();
 		
 	}
