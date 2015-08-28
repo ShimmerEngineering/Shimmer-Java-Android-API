@@ -44,12 +44,13 @@ import com.shimmerresearch.gesturerecogexample.MyService.LocalBinder;
 
 
 
+
 public class ShimmerGestureRecogActivity extends Activity implements OnClickListener{
 	static final int REQUEST_ENABLE_BT = 1;
 	static final int REQUEST_CONNECT_SHIMMER = 2;
 	static final int REQUEST_CONFIGURE_SHIMMER = 3;
 	static final int REQUEST_CONFIGURE_VIEW_SENSOR = 4;
-	MyService mService;
+	static MyService mService;
 	static Timer mTimer = new Timer();
 	static MediaPlayer mp        = null;
 	static int MusicId=0;
@@ -137,21 +138,25 @@ public class ShimmerGestureRecogActivity extends Activity implements OnClickList
         ActionBar.Tab PlayerTab = actionbar.newTab().setText("Home");
         ActionBar.Tab StationsTab = actionbar.newTab().setText("Connect Shimmer");
         ActionBar.Tab DisconnectTab = actionbar.newTab().setText("Disconnect Shimmer");
- 
+        ActionBar.Tab StartTab = actionbar.newTab().setText("Start Streaming");
+        
      //create the two fragments we want to use for display content
         Fragment PlayerFragment = new AFragment();
         Fragment StationsFragment = new BFragment();
         Fragment DisconnectFragment = new CFragment();
+        Fragment StartFragment = new DFragment();
  
     //set the Tab listener. Now we can listen for clicks.
         PlayerTab.setTabListener(new MyTabsListener(PlayerFragment));
         StationsTab.setTabListener(new MyTabsListener(StationsFragment));
         DisconnectTab.setTabListener(new MyTabsListener(DisconnectFragment));
- 
+        StartTab.setTabListener(new MyTabsListener(StartFragment));
+        
    //add the two tabs to the actionbar
         actionbar.addTab(PlayerTab);
         actionbar.addTab(StationsTab);
         actionbar.addTab(DisconnectTab);
+        actionbar.addTab(StartTab);
         
 
         mGraph = (GraphView)findViewById(R.id.graph);
@@ -225,7 +230,9 @@ public class ShimmerGestureRecogActivity extends Activity implements OnClickList
 				getApplicationContext().unbindService(mTestServiceConnection);
 				stopService(new Intent(ShimmerGestureRecogActivity.this, MyService.class));
 			}
-			
+			if (arg0.getText()=="Start Streaming"){
+				mService.shimmerDevice1.startStreaming();
+			}
 		}
 
 		public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
@@ -261,6 +268,17 @@ public class ShimmerGestureRecogActivity extends Activity implements OnClickList
     
     public static class CFragment extends Fragment {
       	 
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            // Inflate the layout for this fragment
+        	Log.d("Shimmer","InflateB");
+            return inflater.inflate(R.layout.activity_main, container, false);
+        }
+     
+    }
+
+    public static class DFragment extends Fragment {
+     	 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             // Inflate the layout for this fragment
@@ -306,6 +324,27 @@ public class ShimmerGestureRecogActivity extends Activity implements OnClickList
 public static final Handler mHandler = new Handler() {
       public void handleMessage(Message msg) {
           switch (msg.what) { // handlers have a what identifier which is used to identify the type of msg
+          case Shimmer.MESSAGE_STATE_CHANGE:
+              switch (((ObjectCluster)msg.obj).mState) {
+              case CONNECTED:
+              	//this has been deprecated
+                  break;
+              case INITIALISED:
+
+      	        Log.d("ConnectionStatus","Successful");
+      	        
+      	        
+              
+                  break;
+              case CONNECTING:
+              	
+                  break;
+              case NONE:
+              	Log.d("ShimmerActivity","Shimmer No State");
+            
+                  break;
+              }
+              break;
           case Shimmer.MESSAGE_READ:
           	if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
           	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 

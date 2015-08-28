@@ -11,6 +11,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 
 public class MyService extends Service {
 	private static final String TAG = "MyService";
@@ -47,16 +49,11 @@ public class MyService extends Service {
 	
 	public void initialize(String bluetoothAddress,Handler mHandler, Context context){
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        shimmerDevice1=new Shimmer(context, mHandler,"RightArm", false);
+		
+        shimmerDevice1=new Shimmer(context, mHandler,"RightArm", 51.2, 0, 0, ShimmerBluetooth.SENSOR_GYRO, false);
         shimmerDevice1.connect(bluetoothAddress,"default"); //Right Arm is a unique identifier for the shimmer unit
         Log.d("ConnectionStatus","Trying" + Integer.toString(test));
-        while (shimmerDevice1.getInitialized()!=true){}; // wait for the connecting state to finish, users should note that this is considered bad practice, official examples show how to wait for the device to reach an initialized staged
-        if (shimmerDevice1.getShimmerState()==Shimmer.STATE_CONNECTED){
-	        Log.d("ConnectionStatus","Successful");
-	        shimmerDevice1.writeSamplingRate(51.2);
-	        shimmerDevice1.writeEnabledSensors(Shimmer.SENSOR_GYRO);
-	        shimmerDevice1.startStreaming();
-        }
+       
 	}
 	@Override
 	public void onStart(Intent intent, int startid) {
