@@ -1143,12 +1143,42 @@ public class Shimmer extends ShimmerBluetooth{
 	
 	@Override
 	protected void setState(BT_STATE state) {
-		// TODO Auto-generated method stub
+
+		
+		//TODO: below not needed any more?
+//		if (state==STATE.NONE && mIsStreaming==true){
+//			disconnect();
+//		}
 		mState = state;
+		
+		if(mState==BT_STATE.CONNECTED){
+			mIsConnected = true;
+			mIsStreaming = false;
+		}
+		else if(mState==BT_STATE.INITIALISED){
+			mIsInitialised = true;
+			mIsStreaming = false;
+		}
+		else if(mState==BT_STATE.STREAMING){
+			mIsStreaming = true;
+		}		
+		else if((mState==BT_STATE.DISCONNECTED)
+				||(mState==BT_STATE.CONNECTION_LOST)
+				||(mState==BT_STATE.NONE)
+				||(mState==BT_STATE.CONNECTION_FAILED)){
+			mIsConnected = false;
+			mIsStreaming = false;
+			mIsInitialised = false;
+		}
+		
 		// Give the new state to the Handler so the UI Activity can update
 		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, -1, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),state)).sendToTarget();
 	}
 
+	public boolean isConnected(){
+		return mIsConnected;
+	}
+	
 	@Override
 	protected void startOperation(BT_STATE currentOperation) {
 		// TODO Auto-generated method stub
