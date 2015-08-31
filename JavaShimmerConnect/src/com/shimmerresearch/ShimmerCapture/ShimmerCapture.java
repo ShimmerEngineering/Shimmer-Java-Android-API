@@ -1900,7 +1900,9 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				if (chckbxEmgConfig.isSelected()) {
 					chckbxEcgConfig.setSelected(false);
 					chckbxTestSignal.setSelected(false);
-					exgConfigurationChip1 = new int[] {2, 160, 16, 105, 96, 0, 0, 0, 2, 3};
+					//1) (byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3
+					//2) (byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1
+					exgConfigurationChip1 = new int[] {2, 160, 16, 105, 96, 32, 0, 0, 2, 3};
 					exgConfigurationChip2 = new int[] {2, 160, 16, 129, 129, 0, 0, 0, 2, 1};
 					for(int i=0; i<textFieldChip1.length; i++) {
 						textFieldChip1[i].setText(Integer.toString(exgConfigurationChip1[i]));
