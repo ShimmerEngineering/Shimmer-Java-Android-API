@@ -1793,6 +1793,8 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				if (chckbxEmgConfig.isSelected()) {
 					chckbxEcgConfig.setSelected(false);
 					chckbxTestSignal.setSelected(false);
+					//1) (byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3
+					//2) (byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1
 					exgConfigurationChip1 = new int[] {2, 160, 16, 105, 96, 0, 0, 0, 2, 3};
 					exgConfigurationChip2 = new int[] {2, 160, 16, 129, 129, 0, 0, 0, 2, 1};
 					for(int i=0; i<textFieldChip1.length; i++) {
