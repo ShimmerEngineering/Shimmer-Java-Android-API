@@ -1949,6 +1949,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
 						if (bufferTemp[0]==DATA_PACKET && bufferTemp[mPacketSize+1]==DATA_PACKET){
 							newPacket = new byte[mPacketSize];
+							//Skip the first byte as it is the identifier DATA_PACKET
 							System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
 							if (mUseProcessingThread){
 								mABQ.add(newPacket);

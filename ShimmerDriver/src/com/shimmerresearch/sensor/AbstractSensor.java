@@ -11,6 +11,7 @@ public abstract class AbstractSensor {
 	protected String[] mSignalOutputUnitArray;
 	protected int mFirmwareType;
 	protected int mHardwareID;
+	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor 
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 	public abstract String getSensorName();
 	public abstract Object getSettings(String componentName);

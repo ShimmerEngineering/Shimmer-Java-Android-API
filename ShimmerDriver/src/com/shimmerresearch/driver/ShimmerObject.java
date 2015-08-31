@@ -125,6 +125,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.CHIP_INDEX;
+import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
@@ -791,6 +792,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSamplingDividerLsm303dlhcAccel = 0;
 	protected int mSamplingDividerBeacon = 0;
 
+	/* A shimmer device will have multiple sensors, depending on HW type and revision, 
+	 * these type of sensors can change, this holds a list of all the sensors for different versions.
+	 * This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ
+	 * 
+	 */
+	protected List<AbstractSensor> mListOfSensors = new ArrayList<AbstractSensor>();
+	
+	
 	protected int mTimeStampPacketByteSize = 2;
 	protected byte[] mSetRWC;
 	protected byte[] mGetRWC;
@@ -801,6 +810,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 
+	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
+	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
+	 *  
+	 *  Future hardware which WON'T be using this will start with ShimmerEmotionalGQ HW. 
+	 * 
+	 * @param newPacket
+	 * @param fwIdentifier
+	 * @param timeSync
+	 * @return
+	 * @throws Exception
+	 */
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
 		
