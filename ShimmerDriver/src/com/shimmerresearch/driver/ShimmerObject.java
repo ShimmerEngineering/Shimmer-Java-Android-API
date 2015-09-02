@@ -819,16 +819,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @param newPacket
 	 * @param fwIdentifier
 	 * @param timeSync
+	 * @param pctimestamp this is only used by shimmerbluetooth, set to -1 if not using
 	 * @return
 	 * @throws Exception
 	 */
-	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) throws Exception {
+	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync, long pctimestamp) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
 		
 		objectCluster.mMyName = mShimmerUserAssignedName;
 		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
 		objectCluster.mRawData = newPacket;
 		long systemTime = System.currentTimeMillis();
+		if(fwIdentifier == FW_TYPE_BT){
+			systemTime = pctimestamp;
+		}
 		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 		objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MILLISECONDS,systemTime));
 		
