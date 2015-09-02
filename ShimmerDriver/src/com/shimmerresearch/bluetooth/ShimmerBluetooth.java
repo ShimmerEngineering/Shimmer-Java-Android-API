@@ -514,6 +514,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									setInstructionStackLock(false);
 								}
 							}
+							else if (mCurrentCommand==TEST_CONNECTION_COMMAND) {
+								
+								// TODO: check for null and size were put in
+								// because if Shimmer was abruptly disconnected
+								// there is sometimes indexoutofboundsexceptions
+								if(getmListofInstructions().get(0)!=null){
+									mTransactionCompleted = true;
+									//mWaitForAck=false;
+									mTimer.cancel(); //cancel the ack timer
+									mTimer.purge();
+									getmListofInstructions().remove(0);
+									setInstructionStackLock(false);
+								}
+							}
 							else if (mCurrentCommand==SET_GSR_RANGE_COMMAND) {
 
 								mTransactionCompleted = true;
@@ -3512,6 +3526,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //		}
 	}
 
+	public void writeTestConnectionCommand() {
+		if (mFirmwareVersionCode>=6)
+		{
+			getmListofInstructions().add(new byte[]{TEST_CONNECTION_COMMAND});
+		}
+	}
+	
 	public void writeAccelCalibrationParameters(byte[] calibrationParameters) {
 		cmdcalibrationParameters[0] = SET_ACCEL_CALIBRATION_COMMAND;
 		System.arraycopy(calibrationParameters, 0, cmdcalibrationParameters, 1, 21);

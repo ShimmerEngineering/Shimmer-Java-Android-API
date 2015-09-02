@@ -433,7 +433,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte RWC_RESPONSE                           = (byte) 0x90;
 	public static final byte GET_RWC_COMMAND                        = (byte) 0x91;
 	
-	public static final byte ROUTINE_COMMUNICATION					= (byte) 0xE0; 
+	public static final byte ROUTINE_COMMUNICATION					= (byte) 0xE0;
+	public static final byte TEST_CONNECTION_COMMAND            		= (byte) 0xFE;
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
 	
 	public static final byte START_LOGGING_ONLY_COMMAND                    = (byte) 0x92;

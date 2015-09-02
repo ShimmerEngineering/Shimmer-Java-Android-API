@@ -41,12 +41,12 @@ public class ShimmerByteDataProcessor implements Serializable {
 	}
 	
 	/** Used to process byte array data from the Shimmer device into calibrated formats
-	 * @param dataArray
-	 * @param ojc
+	 * @param dataArray this is the packet dataarray to be processed
+	 * @param ojc the same objectCluster is returned
 	 * @return
 	 */
 	private ObjectCluster processData(byte[] dataArray, ObjectCluster ojc){
-		
+		long[] parsedFromByteArray = parseByteArrayPacket(dataArray);
 		return ojc;
 	}
 	
