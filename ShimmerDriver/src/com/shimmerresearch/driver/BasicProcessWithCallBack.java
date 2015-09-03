@@ -30,6 +30,10 @@ public abstract class BasicProcessWithCallBack {
 		}
 	}
 	
+	public int getQueueSize(){
+		return mQueue.size();
+	}
+	
 	/**This is a seperate thread running on the callback msgs from lower layer
 	 * @param shimmerMSG
 	 */
