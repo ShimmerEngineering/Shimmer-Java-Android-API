@@ -165,7 +165,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		mIamAlive = false;
 		if (conn==null){
 		mMyBluetoothAddress = address;
-		getmListofInstructions().clear();
+		getListofInstructions().clear();
 		mFirstTime=true;
 		try {
 			setState(BT_STATE.CONNECTING);
@@ -317,10 +317,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 	
 	public synchronized void disconnect(){
-		if (mAliveTimer!=null){
-			mAliveTimer.cancel();
-			mAliveTimer.purge();
-			mAliveTimer = null;
+		if (mTimerCheckAlive!=null){
+			mTimerCheckAlive.cancel();
+			mTimerCheckAlive.purge();
+			mTimerCheckAlive = null;
 		}
 		try {
 			if (mIOThread != null) {

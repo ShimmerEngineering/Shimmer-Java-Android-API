@@ -1633,9 +1633,11 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,
 							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,
 							Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,
 							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,
 							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,
-							Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT);
 			
 			//ExG - Test signal
 			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfChannels = Arrays.asList(

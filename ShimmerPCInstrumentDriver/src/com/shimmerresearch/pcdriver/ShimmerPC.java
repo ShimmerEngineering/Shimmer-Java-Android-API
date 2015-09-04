@@ -217,7 +217,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 					mUniqueID = address;
 			//		mMyBluetoothAddress = address;
 					mSerialPort = new SerialPort(address);
-					getmListofInstructions().clear();
+					getListofInstructions().clear();
 					mFirstTime=true;
 					try {
 						util.consolePrintLn("Port open: " + mSerialPort.openPort());
@@ -436,20 +436,20 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	public synchronized void disconnect(){
-		if (mTimerToReadStatus!=null) {
-			mTimerToReadStatus.cancel();
-			mTimerToReadStatus.purge();
+		if (mTimerReadStatus!=null) {
+			mTimerReadStatus.cancel();
+			mTimerReadStatus.purge();
 		}
 		
-		if (mAliveTimer!=null){
-			mAliveTimer.cancel();
-			mAliveTimer.purge();
-			mAliveTimer = null;
+		if (mTimerCheckAlive!=null){
+			mTimerCheckAlive.cancel();
+			mTimerCheckAlive.purge();
+			mTimerCheckAlive = null;
 		}
 		
-		if (mTimer!=null){
-			mTimer.cancel();
-			mTimer.purge();
+		if (mTimerWaitForAckOrResp!=null){
+			mTimerWaitForAckOrResp.cancel();
+			mTimerWaitForAckOrResp.purge();
 		}
 		closeConnection();
 		setState(BT_STATE.DISCONNECTED);
@@ -511,8 +511,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public String message;
 	@Override
 	protected void printLogDataForDebugging(String msg) {
-		// TODO Auto-generated method stub
-		System.out.println(msg);
+		util.consolePrintLn(msg);
+//		System.out.println(msg);
 	}
 
 	@Override

@@ -442,7 +442,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
-//	protected int mFWCode=0;
 
 	public final static int MSP430_5XX_INFOMEM_D_ADDRESS = 0x001800; 
 	public final static int MSP430_5XX_INFOMEM_C_ADDRESS = 0x001880; 
@@ -451,9 +450,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public final static int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
 //	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
 	
+	//TODO switch to just using ShimmerVerObject rather then individual variables 
+	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	protected int mHardwareVersion=HW_ID.UNKNOWN;
 	public String mHardwareVersionParsed = "";
-
 	public int mFirmwareVersionCode = 0;
 	public int mFirmwareIdentifier = 0;
 	public int mFirmwareVersionMajor = 0;
@@ -461,17 +461,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public int mFirmwareVersionInternal = 0;
 	public String mFirmwareVersionParsed = "";
 	
-	//TODO: change mExpBoardName from ShimmerObject to mShimmerExpansionBoardParsed and mShimmerExpansionBoardParsedWithVer 
-//	protected String mExpBoardName; // Name of the expansion board. ONLY SHIMMER 3
-
+	//TODO switch to just using ExpansionBoardDetails rather then individual variables 
+	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
 	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN; 
 	public int mExpansionBoardRev = -1;
 	public int mExpansionBoardRevSpecial = -1;
 	public String mExpansionBoardParsed = "";  
 	public String mExpansionBoardParsedWithVer = "";  
 	protected byte[] mExpBoardArray = null; // Array where the expansion board response is stored
-	public static final int ANY_VERSION = -1;
 	
+	public static final int ANY_VERSION = -1;
 	
 	protected String mClassName="Shimmer";
 	protected double mLastReceivedTimeStamp=0;
@@ -797,9 +796,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
 	
 	public String mUniqueID = ""; // Holds unique location information on a dock or COM port number for bluetooth connection  
-
-	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
-	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
