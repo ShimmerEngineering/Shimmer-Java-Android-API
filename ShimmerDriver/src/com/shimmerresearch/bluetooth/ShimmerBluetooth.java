@@ -1211,7 +1211,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferAns = readBytes(3); 
-							mBattVoltage=Integer.toString(((bufferAns[1]&0xFF)<<8)+(bufferAns[0]&0xFF));
+							
+							setBattStatusDetails(new ShimmerBattStatusDetails(((bufferAns[1]&0xFF)<<8)+(bufferAns[0]&0xFF),bufferAns[2]));
+//							mBattVoltage=Integer.toString(((bufferAns[1]&0xFF)<<8)+(bufferAns[0]&0xFF));
+							
 							consolePrintLn("Batt data " + mBattVoltage);
 							setInstructionStackLock(false);
 						}  
