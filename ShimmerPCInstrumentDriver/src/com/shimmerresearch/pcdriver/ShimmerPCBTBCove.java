@@ -317,11 +317,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 	
 	public synchronized void disconnect(){
-		if (mTimerCheckAlive!=null){
-			mTimerCheckAlive.cancel();
-			mTimerCheckAlive.purge();
-			mTimerCheckAlive = null;
-		}
+		stopAllTimers();
+		
 		try {
 			if (mIOThread != null) {
 				mIOThread.stop = true;

@@ -58,6 +58,7 @@
 package com.shimmerresearch.pcdriver;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
@@ -81,8 +82,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
-	public boolean mVerboseMode = true;
-	public Util util = new Util("ShimmerPC", mVerboseMode);
+	
+	private boolean mVerboseMode = true;
+	private String mParentClassName = "ShimmerPC";
 	
 	public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
 	public static final int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
@@ -220,9 +222,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 					getListofInstructions().clear();
 					mFirstTime=true;
 					try {
-						util.consolePrintLn("Port open: " + mSerialPort.openPort());
-						util.consolePrintLn("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
-						util.consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
+						consolePrintLn("Port open: " + mSerialPort.openPort());
+						consolePrintLn("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
+						consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
 						if (mIOThread != null) { 
 							mIOThread = null;
 							mPThread = null;
@@ -424,21 +426,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	public synchronized void disconnect(){
-		if (mTimerReadStatus!=null) {
-			mTimerReadStatus.cancel();
-			mTimerReadStatus.purge();
-		}
-		
-		if (mTimerCheckAlive!=null){
-			mTimerCheckAlive.cancel();
-			mTimerCheckAlive.purge();
-			mTimerCheckAlive = null;
-		}
-		
-		if (mTimerWaitForAckOrResp!=null){
-			mTimerWaitForAckOrResp.cancel();
-			mTimerWaitForAckOrResp.purge();
-		}
+		stopAllTimers();
 		closeConnection();
 		setState(BT_STATE.DISCONNECTED);
 	}
@@ -499,7 +487,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public String message;
 	@Override
 	protected void printLogDataForDebugging(String msg) {
-		util.consolePrintLn(msg);
+		consolePrintLn(msg);
 //		System.out.println(msg);
 	}
 
@@ -561,7 +549,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	@Override
 	public void startOperation(BT_STATE currentOperation){
-		util.consolePrintLn(currentOperation + " START");
+		consolePrintLn(currentOperation + " START");
 		
 		progressReportPerDevice = new ProgressReportPerDevice(this, currentOperation, 1);
 		
@@ -572,7 +560,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void startOperation(BT_STATE currentOperation, int totalNumOfCmds){
-		util.consolePrintLn(currentOperation + " START");
+		consolePrintLn(currentOperation + " START");
 
 		progressReportPerDevice = new ProgressReportPerDevice(this, currentOperation, totalNumOfCmds);
 		
@@ -583,7 +571,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	@Override
 	public void finishOperation(BT_STATE btState){
 		
-		util.consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + btState);
+		consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + btState);
 		
 		if(progressReportPerDevice.mCurrentOperationBtState == btState){
 
@@ -683,5 +671,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	
+	
+	private void consolePrintLn(String message) {
+		if(mVerboseMode) {
+			Calendar rightNow = Calendar.getInstance();
+			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+			System.out.println(rightNowString + " " + mParentClassName + ": " + mUniqueID + " " + getMacIdFromBtParsed() + " " + message);
+		}		
+	}
 }
 
