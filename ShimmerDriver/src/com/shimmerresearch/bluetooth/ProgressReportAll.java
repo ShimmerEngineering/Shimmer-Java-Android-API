@@ -26,13 +26,7 @@ public class ProgressReportAll implements Serializable {
 	public List<ShimmerObject> mListOfShimmers;
 	public LinkedHashMap<String, ProgressReportPerDevice> mMapOfOperationProgressInfo = new LinkedHashMap<String, ProgressReportPerDevice>();
 	
-//	public enum BLUETOOTH_JOB{
-//		NONE,
-//		CONFIGURE
-//	}
-//	public BLUETOOTH_JOB currentJob = BLUETOOTH_JOB.NONE;
-//	public CURRENT_OPERATION currentOperation = CURRENT_OPERATION.NONE;
-	public BT_STATE currentState = BT_STATE.NONE;
+	public BT_STATE currentOperationBtState = BT_STATE.NONE;
 	
 	public static enum OperationState {
 		PENDING,
@@ -57,26 +51,13 @@ public class ProgressReportAll implements Serializable {
 //	public List<Integer> mListOfFailedCmds = new ArrayList<Integer>();
 	public int mProgressPercentageComplete = 0;
 
-//	public ProgressReportAll(BLUETOOTH_JOB currentJob, List<ShimmerObject> lso, int total) {
-//		this.currentJob = currentJob;
-//		mListOfShimmers = lso;
-//		
-//		mMapOfOperationProgressInfo.clear();
-//		for(ShimmerObject shimmer:lso){
-//			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer));
-//			mMapOfOperationProgressInfo.get(shimmer.mUniqueID).mProgressEndValue = total;
-//		}
-//		updateProgressTotal();
-//	}
-
-	public ProgressReportAll(BT_STATE currentState, List<ShimmerObject> lso) {
-//	public ProgressReportAll(CURRENT_OPERATION currentOperation, List<ShimmerObject> lso) {
-		this.currentState = currentState;
+	public ProgressReportAll(BT_STATE currentOperationBtState, List<ShimmerObject> lso) {
+		this.currentOperationBtState = currentOperationBtState;
 		mListOfShimmers = lso;
 		
 		mMapOfOperationProgressInfo.clear();
 		for(ShimmerObject shimmer:lso){
-			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer, currentState, 1));
+			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer, currentOperationBtState, 1));
 		}
 		updateProgressTotal();
 	}

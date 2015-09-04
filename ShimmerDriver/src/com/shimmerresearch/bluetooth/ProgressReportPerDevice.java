@@ -49,26 +49,24 @@ public class ProgressReportPerDevice implements Serializable {
     };
 	public OperationState mOperationState = OperationState.PENDING;
 
-//	public CURRENT_OPERATION mCurrentOperation = CURRENT_OPERATION.NONE;
-	public BT_STATE mCurrentOperation = BT_STATE.NONE;
+	public BT_STATE mCurrentOperationBtState = BT_STATE.NONE;
     
 	public ShimmerBluetoothDetailsMini mShimmerBluetoothDetailsMini = new ShimmerBluetoothDetailsMini();
-//	public List<ErrorDetails> mListOfErrors = new ArrayList<ErrorDetails>(); 
 	
-	
-//	public String mLog = "";
 	public int mProgressCounter = 0;
 	public int mProgressPercentageComplete = 0;
 	public int mProgressEndValue = 100;
 	public float mProgressSpeed = 0;
-	
-	public ProgressReportPerDevice(ShimmerObject shimmerObject, BT_STATE currentOperation, int endValue) {
-//	public ProgressReportPerDevice(ShimmerObject shimmerObject, CURRENT_OPERATION currentOperation, int endValue) {
+
+//	public List<ErrorDetails> mListOfErrors = new ArrayList<ErrorDetails>(); 
+//	public String mLog = "";
+
+	public ProgressReportPerDevice(ShimmerObject shimmerObject, BT_STATE currentOperationBtState, int endValue) {
 		if(shimmerObject instanceof ShimmerBluetooth){
 			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerObject;
 			setShimmerBluetooth(shimmerBluetooth);
 			mComPort = shimmerBluetooth.mUniqueID;
-			mCurrentOperation = currentOperation;
+			mCurrentOperationBtState = currentOperationBtState;
 			mProgressEndValue = endValue;
 		}
 	}

@@ -330,20 +330,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		return null;
 	}
 
-
-
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		disconnect();
 	}
 
-
-
-
 	@Override
 	protected void isNowStreaming() {
-		// TODO Auto-generated method stub
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 		// Do something here
 		
@@ -366,7 +359,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void inquiryDone() {
-		// TODO Auto-generated method stub
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 		isReadyForStreaming();
@@ -374,9 +366,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void isReadyForStreaming() {
-		// TODO Auto-generated method stub
 		// Send msg fully initialized, send notification message,  
-		// DO Something here
+		// Do something here
         mIsInitialised = true;
         sensorAndConfigMapsCreate();
         sensorMapUpdateWithEnabledSensors();
@@ -384,14 +375,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
         if (mSendProgressReport){
         	finishOperation(BT_STATE.INITIALISING);
         }
-//		finishOperation(CURRENT_OPERATION.INITIALISING);
         
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
 		setState(BT_STATE.INITIALISED);
-
-//		startOperation(OPERATION_STATE.NONE);
 	}
 
 
@@ -593,13 +581,14 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 //	@Override
-	public void finishOperation(BT_STATE currentOperation){
+	public void finishOperation(BT_STATE btState){
 		
-		util.consolePrintLn(currentOperation + " FINISH");
+		util.consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + btState);
 		
-		if(progressReportPerDevice.mCurrentOperation == currentOperation){
+		if(progressReportPerDevice.mCurrentOperationBtState == btState){
 
 			progressReportPerDevice.finishOperation();
+			super.operationFinished();
 			
 			CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
 			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
@@ -674,11 +663,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	protected void sendProgressReport(ProgressReportPerCmd pRPC) {
 		if(progressReportPerDevice!=null){
-			if(progressReportPerDevice.mCurrentOperation!=BT_STATE.NONE){
+			if(progressReportPerDevice.mCurrentOperationBtState!=BT_STATE.NONE){
 				progressReportPerDevice.updateProgress(pRPC);
 				
 				CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
 				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+				
+//				System.out.println("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
+				if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
+					finishOperation(progressReportPerDevice.mCurrentOperationBtState);
+				}
 			}
 		}
 	}

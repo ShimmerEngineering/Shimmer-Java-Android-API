@@ -196,6 +196,43 @@ public class Util implements Serializable {
 		}
 	}
 	
+	public static String byteToHexStringFormatted(byte bytes) {
+		int charCntPerByte = 4;
+	    char hexChars[] = new char[charCntPerByte];
+        int v = bytes & 0xFF;
+        hexChars[0] = '0';
+        hexChars[1] = 'x';
+        hexChars[2] = hexArray[v >>> 4];
+        hexChars[3] = hexArray[v & 0x0F];
+	    String returnString = new String(hexChars);
+	    returnString = "[" + returnString + "]";
+	    return returnString;
+	}
+	
+	public static String bytesToHexStringWithSpacesFormatted(byte[] bytes) {
+		if(bytes!=null){
+			int charCntPerByte = 5;
+		    char[] hexChars = new char[(bytes.length * charCntPerByte)-1];
+		    for ( int j = 0; j < bytes.length; j++ ) {
+		        int v = bytes[j] & 0xFF;
+		        hexChars[j * charCntPerByte] = '0';
+		        hexChars[j * charCntPerByte + 1] = 'x';
+
+		        hexChars[j * charCntPerByte + 2] = hexArray[v >>> 4];
+		        hexChars[j * charCntPerByte + 3] = hexArray[v & 0x0F];
+		        if(j!=bytes.length-1){
+			        hexChars[j * charCntPerByte + 4] = ' ';
+		        }
+		    }
+		    String returnString = new String(hexChars);
+		    returnString = "[" + returnString + "]";
+		    return returnString;
+		}
+		else {
+			return null;
+		}
+	}	
+	
 	public static byte[] hexStringToByteArray(String s) {
 	    int len = s.length();
 	    byte[] data = new byte[1];

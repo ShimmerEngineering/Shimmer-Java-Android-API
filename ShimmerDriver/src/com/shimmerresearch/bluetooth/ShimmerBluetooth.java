@@ -306,7 +306,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						setInstructionStackLock(true);
 						mWaitForAck=true;
 						
-						String msg = "Command Transmitted: " + Arrays.toString(insBytes);
+						String msg = "Command Transmitted: \t\t\t" + Util.bytesToHexStringWithSpacesFormatted(insBytes);
 						printLogDataForDebugging(msg);
 
 						if(!mIsStreaming){
@@ -356,8 +356,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						//	printLogDataForDebugging(msg);
 
 						if (mCurrentCommand==STOP_STREAMING_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
-							mTimerWaitForAckOrResp.cancel();
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp();
 							mIsStreaming=false;
 							mTransactionCompleted=true;
 							mWaitForAck=false;
@@ -381,7 +380,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 						if ((byte)tb[0]==ACK_COMMAND_PROCESSED)
 						{	
-							msg = "Ack Received for Command: " + Byte.toString(mCurrentCommand);
+							msg = "Ack Received for Command: \t\t" + Util.byteToHexStringFormatted(mCurrentCommand);
 							printLogDataForDebugging(msg);
 							if (mCurrentCommand != GET_STATUS_COMMAND && mCurrentCommand != SET_BLINK_LED && mSendProgressReport){
 //								sendProgressReport(new ProgressReportPerCmd(mCurrentCommand,getmListofInstructions().size(),mMyBluetoothAddress));
@@ -389,8 +388,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							}
 							
 							if (mCurrentCommand==START_STREAMING_COMMAND || mCurrentCommand==START_SDBT_COMMAND) {
-								mTimerWaitForAckOrResp.cancel();
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp();
 								mIsStreaming=true;
 								if (mCurrentCommand==START_SDBT_COMMAND){
 									mIsSDLogging = true;
@@ -403,8 +401,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==SET_SAMPLING_RATE_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mTransactionCompleted=true;
 								mWaitForAck=false;
 								byte[] instruction=getListofInstructions().get(0);
@@ -434,8 +431,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								
 							}
 							else if (mCurrentCommand==SET_BUFFER_SIZE_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mTransactionCompleted = true;
 								mWaitForAck=false;
 								mBufferSize=(int)((byte[])getListofInstructions().get(0))[1];
@@ -516,8 +512,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 										}
 										mTransactionCompleted = true;
 										//mWaitForAck=false;
-										mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-										mTimerWaitForAckOrResp.purge();
+										stopTimerWaitForAckOrResp(); //cancel the ack timer
 										getListofInstructions().remove(0);
 										setInstructionStackLock(false);
 									}
@@ -527,8 +522,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mGSRRange=(int)((byte [])getListofInstructions().get(0))[1];
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
@@ -536,8 +530,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if (mCurrentCommand==START_LOGGING_ONLY_COMMAND) {
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mIsSDLogging = true;
 								logAndStreamStatusChanged();
 								getListofInstructions().remove(0);
@@ -547,8 +540,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mIsSDLogging = false;
 								logAndStreamStatusChanged();
 								getListofInstructions().remove(0);
@@ -565,31 +557,27 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								getListofInstructions().remove(0);
 							}
 							else if (mCurrentCommand==SET_CONFIG_BYTE0_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mConfigByte0=(int)((byte [])getListofInstructions().get(0))[1];
 								mWaitForAck=false;
 								mTransactionCompleted=true;
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							} else if (mCurrentCommand==SET_LSM303DLHC_ACCEL_LPMODE_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mWaitForAck=false;
 								mTransactionCompleted=true;
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							} else if (mCurrentCommand==SET_LSM303DLHC_ACCEL_HRMODE_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mWaitForAck=false;
 								mTransactionCompleted=true;
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==SET_PMUX_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								if (((byte[])getListofInstructions().get(0))[1]==1) {
 									mConfigByte0=(byte) ((byte) (mConfigByte0|64)&(0xFF)); 
 								}
@@ -602,7 +590,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if(mCurrentCommand==SET_BMP180_PRES_RESOLUTION_COMMAND){
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mPressureResolution=(int)((byte [])getListofInstructions().get(0))[1];
 								mTransactionCompleted=true;
 								mWaitForAck=false;
@@ -610,15 +598,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==SET_GYRO_TEMP_VREF_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mTransactionCompleted=true;
 								mConfigByte0=mTempByteValue;
 								mWaitForAck=false;
 							}
 							else if (mCurrentCommand==SET_5V_REGULATOR_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								if (((byte[])getListofInstructions().get(0))[1]==1) {
 									mConfigByte0=(byte) (mConfigByte0|128); 
 								}
@@ -631,8 +617,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==SET_INTERNAL_EXP_POWER_ENABLE_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								if (((byte[])getListofInstructions().get(0))[1]==1) {
 									mConfigByte0 = (mConfigByte0|16777216); 
 									mInternalExpPower = 1;
@@ -647,8 +632,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==SET_ACCEL_SENSITIVITY_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mAccelRange=(int)(((byte[])getListofInstructions().get(0))[1]);
 								if (mDefaultCalibrationParametersAccel == true){
 									if (mHardwareVersion != HW_ID.SHIMMER_3){
@@ -696,8 +680,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							} 
 							
 							else if (mCurrentCommand==SET_ACCEL_CALIBRATION_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								retrievekinematiccalibrationparametersfrompacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), ACCEL_CALIBRATION_RESPONSE);	
 								mTransactionCompleted = true;
 								mWaitForAck=false;
@@ -705,8 +688,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 								}
 							else if (mCurrentCommand==SET_GYRO_CALIBRATION_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();	
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								retrievekinematiccalibrationparametersfrompacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), GYRO_CALIBRATION_RESPONSE);	
 								mTransactionCompleted = true;
 								mWaitForAck=false;
@@ -714,8 +696,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==SET_MAG_CALIBRATION_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								retrievekinematiccalibrationparametersfrompacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), MAG_CALIBRATION_RESPONSE);	
 								mTransactionCompleted = true;
 								mWaitForAck=false;
@@ -723,8 +704,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								retrievekinematiccalibrationparametersfrompacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);	
 								mTransactionCompleted = true;
 								mWaitForAck=false;
@@ -733,8 +713,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							}
 							
 							else if (mCurrentCommand==SET_MPU9150_GYRO_RANGE_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mGyroRange=(int)(((byte[])getListofInstructions().get(0))[1]);
 								if (mDefaultCalibrationParametersGyro == true){
 									if(mHardwareVersion == HW_ID.SHIMMER_3){
@@ -761,8 +740,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							} 
 							else if (mCurrentCommand==SET_MAG_SAMPLING_RATE_COMMAND){
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mTransactionCompleted = true;
 								mLSM303MagRate = mTempIntValue;
 								mWaitForAck = false;
@@ -773,24 +751,21 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForResponse=true;
 								getListofInstructions().remove(0);
 							} else if (mCurrentCommand==SET_ACCEL_SAMPLING_RATE_COMMAND){
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mTransactionCompleted = true;
 								mLSM303DigitalAccelRate = mTempIntValue;
 								mWaitForAck = false;
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							} else if (mCurrentCommand==SET_MPU9150_SAMPLING_RATE_COMMAND){
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mTransactionCompleted = true;
 								mMPU9150GyroAccelRate = mTempIntValue;
 								mWaitForAck = false;
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							} else if (mCurrentCommand==SET_EXG_REGS_COMMAND){
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								byte[] bytearray = getListofInstructions().get(0);
 								if (bytearray[1]==EXG_CHIP1){  //0 = CHIP 1
 									System.arraycopy(bytearray, 4, mEXG1RegisterArray, 0, 10);
@@ -814,8 +789,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							} else if (mCurrentCommand==SET_SENSORS_COMMAND) {
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mWaitForAck=false;
 								mEnabledSensors=tempEnabledSensors;
 								byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
@@ -824,8 +798,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								setInstructionStackLock(false);
 							}
 							else if (mCurrentCommand==SET_MAG_GAIN_COMMAND){
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mTransactionCompleted = true;
 								mWaitForAck = false;
 								mMagRange=(int)((byte [])getListofInstructions().get(0))[1];
@@ -885,8 +858,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								GainECGLALL=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
 								OffsetECGRALL=(double)((((byte[])getListofInstructions().get(0))[4]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[5]&0xFF);
 								GainECGRALL=(double)((((byte[])getListofInstructions().get(0))[6]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[7]&0xFF);
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mTransactionCompleted = true;
 								mWaitForAck=false;
 								getListofInstructions().remove(0);
@@ -899,16 +871,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								GainEMG=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							}
 							else if(mCurrentCommand==SET_DERIVED_CHANNEL_BYTES){
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mDerivedSensors=(long)(((((byte[])getListofInstructions().get(0))[0]&0xFF)<<16) + ((((byte[])getListofInstructions().get(0))[1]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[2]&0xFF));
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
@@ -916,8 +886,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(mCurrentCommand==SET_SHIMMERNAME_COMMAND){
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								byte[] instruction =getListofInstructions().get(0);
 								byte[] nameArray = new byte[instruction[1]];
 								System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
@@ -929,8 +898,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(mCurrentCommand==SET_EXPID_COMMAND){
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								byte[] instruction =getListofInstructions().get(0);
 								byte[] nameArray = new byte[instruction[1]];
 								System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
@@ -942,8 +910,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(mCurrentCommand==SET_RWC_COMMAND){
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								byte[] instruction =getListofInstructions().get(0);
 								byte[] byteTime = new byte[8];
 								System.arraycopy(instruction, 1, byteTime, 0, 8);
@@ -954,8 +921,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(mCurrentCommand==SET_CONFIGTIME_COMMAND){
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								byte[] instruction =getListofInstructions().get(0);
 								byte[] timeArray = new byte[instruction[1]];
 								System.arraycopy(instruction, 2, timeArray, 0, instruction[1]);
@@ -967,8 +933,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(mCurrentCommand==SET_CENTER_COMMAND){
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								byte[] instruction =getListofInstructions().get(0);
 								byte[] centerArray = new byte[instruction[1]];
 								System.arraycopy(instruction, 2, centerArray, 0, instruction[1]);
@@ -981,8 +946,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(mCurrentCommand==SET_TRIAL_CONFIG_COMMAND){
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								byte[] instruction =getListofInstructions().get(0);
 								byte[] dataArray = new byte[3];
 								System.arraycopy(instruction, 1, dataArray, 0, 3);
@@ -994,8 +958,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								//mGSRRange=mTempIntValue;
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
 							}
@@ -1007,8 +970,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if (mCurrentCommand==SET_BAUD_RATE_COMMAND) {
 								mTransactionCompleted = true;
 								mWaitForAck=false;
-								mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-								mTimerWaitForAckOrResp.purge();
+								stopTimerWaitForAckOrResp(); //cancel the ack timer
 								mBluetoothBaudRate=(int)((byte [])getListofInstructions().get(0))[1];
 								getListofInstructions().remove(0);
 								setInstructionStackLock(false);
@@ -1096,7 +1058,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								int avaible = availableBytes();
 								if (bytesToBeRead()){
 									tb=readBytes(1);
-									String msg = "First Time : " + Arrays.toString(tb);
+									String msg = "First Time : " + Util.bytesToHexStringWithSpacesFormatted(tb);
 									printLogDataForDebugging(msg);
 								}
 							
@@ -1112,8 +1074,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						
 						if (tb[0]==FW_VERSION_RESPONSE){
 							
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 
 							try {
 								Thread.sleep(200);	// Wait to ensure the packet has been fully received
@@ -1178,8 +1139,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							
 //							readShimmerVersion();
 						} else if (tb[0]==BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							
@@ -1201,8 +1161,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							printLogDataForDebugging(msg);
 							setInstructionStackLock(false);
 						} else if (tb[0]==INQUIRY_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							try {
 								Thread.sleep(500);	// Wait to ensure the packet has been fully received
 							} catch (InterruptedException e) {
@@ -1241,7 +1200,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								bufferInquiry[i] = (byte) buffer.get(i);
 							}
 								
-							msg = "Inquiry Response Received: " + Arrays.toString(bufferInquiry);
+							msg = "Inquiry Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferInquiry);
 							printLogDataForDebugging(msg);
 							interpretInqResponse(bufferInquiry);
 							inquiryDone();
@@ -1249,36 +1208,32 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
 						} else if(tb[0] == GSR_RANGE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferGSRRange = readBytes(1); 
 							mGSRRange=bufferGSRRange[0];
-							msg = "GSR Range Response Received: " + Arrays.toString(bufferGSRRange);
+							msg = "GSR Range Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferGSRRange);
 							printLogDataForDebugging(msg);
 							setInstructionStackLock(false);
 						} else if(tb[0] == MAG_SAMPLING_RATE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferAns = readBytes(1); 
 							mLSM303MagRate=bufferAns[0];
-							msg = "Mag Sampling Rate Response Received: " + Arrays.toString(bufferAns);
+							msg = "Mag Sampling Rate Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferAns);
 							printLogDataForDebugging(msg);
 							setInstructionStackLock(false);
 						} else if(tb[0] == ACCEL_SAMPLING_RATE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferAns = readBytes(1); 
 							mLSM303DigitalAccelRate=bufferAns[0];
 							setInstructionStackLock(false);
 						}else if(tb[0] == VBATT_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferAns = readBytes(3); 
@@ -1288,8 +1243,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						}  
 						
 						else if(tb[0] == 	EXG_REGS_RESPONSE){
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							try {
@@ -1335,46 +1289,40 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							}
 							setInstructionStackLock(false);
 						} else if(tb[0] == MAG_GAIN_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferAns = readBytes(1); 
 							mMagRange=bufferAns[0];
 							setInstructionStackLock(false);
 						} else if(tb[0] == LSM303DLHC_ACCEL_HRMODE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferAns = readBytes(1);
 							setInstructionStackLock(false);
 						} else if(tb[0] == LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferAns = readBytes(1);
 							setInstructionStackLock(false);
 						} else if(tb[0]==BUFFER_SIZE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] byteled = readBytes(1);
 							mBufferSize = byteled[0] & 0xFF;
 							setInstructionStackLock(false);
 						} else if(tb[0]==BLINK_LED_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] byteled = readBytes(1);
 							mCurrentLEDStatus = byteled[0]&0xFF;
 							setInstructionStackLock(false);
 						} else if(tb[0]==ACCEL_SENSITIVITY_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferAccelSensitivity = readBytes(1);
@@ -1413,8 +1361,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							getListofInstructions().remove(0);
 							setInstructionStackLock(false);
 						} else if(tb[0]==MPU9150_GYRO_RANGE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferGyroSensitivity = readBytes(1);
@@ -1440,8 +1387,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							getListofInstructions().remove(0);
 							setInstructionStackLock(false);
 						}else if (tb[0]==SAMPLING_RATE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							if(mIsStreaming==false) {
 								if (mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
@@ -1462,8 +1408,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							getListofInstructions().remove(0);
 							setInstructionStackLock(false);
 						} else if (tb[0]==ACCEL_CALIBRATION_RESPONSE ) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 								try {
 								Thread.sleep(100);	// Due to the nature of the Bluetooth SPP stack a delay has been added to ensure the buffer is filled before it is read
 							} catch (InterruptedException e) {
@@ -1483,8 +1428,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
 						}  else if (tb[0]==ALL_CALIBRATION_RESPONSE ) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 					
 							try {
@@ -1604,8 +1548,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 							}
 						} else if (tb[0]==GYRO_CALIBRATION_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							try {
 								Thread.sleep(100);	// Due to the nature of the Bluetooth SPP stack a delay has been added to ensure the buffer is filled before it is read
 							} catch (InterruptedException e) {
@@ -1624,8 +1567,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
 						} else if (tb[0]==MAG_CALIBRATION_RESPONSE ) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							try {
 								Thread.sleep(100);	// Due to the nature of the Bluetooth SPP stack a delay has been added to ensure the buffer is filled before it is read
@@ -1643,8 +1585,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
 						} else if(tb[0]==CONFIG_BYTE0_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							
 							if (mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
 								byte[] bufferConfigByte0 = readBytes(1);
@@ -1658,8 +1599,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
 						} else if(tb[0]==GET_SHIMMER_VERSION_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							try {
 								Thread.sleep(100);	// Due to the nature of the Bluetooth SPP stack a delay has been added to ensure the buffer is filled before it is read
 							} catch (InterruptedException e) {
@@ -1675,12 +1615,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //							} else if (mShimmerVersion == HW_ID.SHIMMER_3) {
 //								initializeShimmer3();
 //							}
-							msg = "Shimmer Version (HW) Response Received: " + Arrays.toString(bufferShimmerVersion);
+							msg = "Shimmer Version (HW) Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion);
 							printLogDataForDebugging(msg);
 							readFWVersion();
 						} else if (tb[0]==ECG_CALIBRATION_RESPONSE){
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							try {
 								Thread.sleep(100);	// Due to the nature of the Bluetooth SPP stack a delay has been added to ensure the buffer is filled before it is read
 							} catch (InterruptedException e) {
@@ -1699,8 +1638,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
 						} else if (tb[0]==EMG_CALIBRATION_RESPONSE){
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							try {
 								Thread.sleep(100);	// Due to the nature of the Bluetooth SPP stack a delay has been added to ensure the buffer is filled before it is read
 							} catch (InterruptedException e) {
@@ -1721,8 +1659,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						}
 						else if(tb[0] == RWC_RESPONSE) {
 
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
@@ -1733,8 +1670,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						
 						}
 						else if(tb[0] == BAUD_RATE_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							byte[] bufferBaud = readBytes(1); 
@@ -1743,8 +1679,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							setInstructionStackLock(false);
 						}
 						else if(tb[0] == DAUGHTER_CARD_ID_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
@@ -1758,8 +1693,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						}
 						else if(tb[0] == DERIVED_CHANNEL_BYTES_RESPONSE) {
 
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
@@ -1768,8 +1702,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //							setInstructionStackLock(false);
 						}
 						else if(tb[0] == TRIAL_CONFIG_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							printLogDataForDebugging(msg);
 							byte[] data = readBytes(3);
@@ -1778,8 +1711,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							setInstructionStackLock(false);
 						}
 						else if(tb[0] == CENTER_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
@@ -1791,8 +1723,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							setInstructionStackLock(false);
 						}
 						else if(tb[0] == SHIMMERNAME_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
@@ -1805,8 +1736,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						}
 						else if(tb[0] == EXPID_RESPONSE) {
 
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
@@ -1826,8 +1756,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							
 						}
 						else if(tb[0] == CONFIGTIME_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
@@ -1844,14 +1773,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							setInstructionStackLock(false);
 						}
 						else if(tb[0] == INSTREAM_CMD_RESPONSE) {
-							mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-							mTimerWaitForAckOrResp.purge();
+							stopTimerWaitForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
 							mTransactionCompleted=true;
 							printLogDataForDebugging(msg);
 							byte[] bufferLogCommandType = new byte[2];
 							bufferLogCommandType =	readBytes(2);
-							consolePrintLn("Instream received = "+bufferLogCommandType[0]);
+							consolePrintLn("Instream received = " + Util.byteToHexStringFormatted(bufferLogCommandType[0]));
 							if(bufferLogCommandType[0]==DIR_RESPONSE){
 								mDirectoryNameLength = bufferLogCommandType[1];
 								byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
@@ -1913,7 +1841,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //								if (mIsSensing){
 									//flush all the bytes
 									while(availableBytes()!=0){
-										consolePrintLn("Throwing away = "+readBytes(1));
+										consolePrintLn("Throwing away = " + Util.bytesToHexStringWithSpacesFormatted(readBytes(1)));
 									}
 									startStreaming();
 								}
@@ -1930,7 +1858,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					
 					while(availableBytes()!=0){
-						consolePrintLn("Throwing away = "+readBytes(1));
+						consolePrintLn("Throwing away = " + Util.bytesToHexStringWithSpacesFormatted(readBytes(1)));
 					}
 				}
 				
@@ -1984,16 +1912,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 										consolePrintLn("LED COMMAND ACK RECEIVED");
 										mCurrentLEDStatus=(int)((byte[])getListofInstructions().get(0))[1];
 										getListofInstructions().remove(0);
-										mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-										mTimerWaitForAckOrResp.purge();
+										stopTimerWaitForAckOrResp(); //cancel the ack timer
 										mWaitForAck=false;
 										mTransactionCompleted = true;
 										setInstructionStackLock(false);
 									} else if (mCurrentCommand==START_LOGGING_ONLY_COMMAND){
 										consolePrintLn("START LOGGING ACK RECEIVED");
 										getListofInstructions().remove(0);
-										mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-										mTimerWaitForAckOrResp.purge();
+										stopTimerWaitForAckOrResp(); //cancel the ack timer
 										mIsSDLogging = true;
 										logAndStreamStatusChanged();
 										mWaitForAck=false;
@@ -2002,8 +1928,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									}  else if (mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
 										consolePrintLn("STOP LOGGING ACK RECEIVED");
 										getListofInstructions().remove(0);
-										mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-										mTimerWaitForAckOrResp.purge();
+										stopTimerWaitForAckOrResp(); //cancel the ack timer
 										mIsSDLogging = false;
 										logAndStreamStatusChanged();
 										mWaitForAck=false;
@@ -2054,8 +1979,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									
 									mWaitForAck=false;
 									mTransactionCompleted = true;   
-									mTimerWaitForAckOrResp.cancel(); //cancel the ack timer
-									mTimerWaitForAckOrResp.purge();
+									stopTimerWaitForAckOrResp(); //cancel the ack timer
 									if (getListofInstructions().size()>0){
 										getListofInstructions().remove(0);
 									}
@@ -2101,7 +2025,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mIsSDLogging = ((statusByte & 0x08) > 0)? true:false;
 		mIsStreaming = ((statusByte & 0x10) > 0)? true:false; 
 
-		consolePrintLn("Status Response = 0x" + Util.byteToHexString(statusByte)
+		consolePrintLn("Status Response = " + Util.byteToHexStringFormatted(statusByte)
 				+ "\t" + "IsDocked = " + mIsDocked
 				+ "\t" + "IsSensing = " + mIsSensing
 				+ "\t" + "IsSDLogging = "+ mIsSDLogging
@@ -2138,7 +2062,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mTimerWaitForAckOrResp.cancel();
 			mTimerWaitForAckOrResp.purge();
 		}
-		printLogDataForDebugging("Waiting for ack/response for command: " + Integer.toString(mCurrentCommand));
+		printLogDataForDebugging("Waiting for ack/response for command:\t" + Util.byteToHexStringFormatted(mCurrentCommand));
 		mTimerWaitForAckOrResp = new Timer();
 		mTimerWaitForAckOrResp.schedule(new responseTask(), seconds*1000);
 	}
@@ -2164,8 +2088,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-					mTimerWaitForAckOrResp.cancel(); //Terminate the timer thread
-					mTimerWaitForAckOrResp.purge();
+					stopTimerWaitForAckOrResp();  //Terminate the timer thread
 					mFirstTime=false;
 					getListofInstructions().remove(0);
 					setInstructionStackLock(false);
@@ -2174,8 +2097,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					printLogDataForDebugging("Get Sampling Rate Timeout");
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-					mTimerWaitForAckOrResp.cancel(); //Terminate the timer thread
-					mTimerWaitForAckOrResp.purge();
+					stopTimerWaitForAckOrResp();  //Terminate the timer thread
 					mFirstTime=false;
 					getListofInstructions().remove(0);
 					setInstructionStackLock(false);
@@ -2184,8 +2106,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					printLogDataForDebugging("Shimmer Version Response Timeout. Trying the old version command");
 					mWaitForAck=false;
 					mTransactionCompleted=true; 
-					mTimerWaitForAckOrResp.cancel(); //Terminate the timer thread
-					mTimerWaitForAckOrResp.purge();
+					stopTimerWaitForAckOrResp(); //Terminate the timer thread
 					mFirstTime=false;
 					getListofInstructions().remove(0);
 					setInstructionStackLock(false);
@@ -2194,8 +2115,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(mCurrentCommand==GET_VBATT_COMMAND){
 					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
 					consolePrintLn("Command " + Integer.toString(mCurrentCommand) +" failed");
-					mTimerWaitForAckOrResp.cancel(); //Terminate the timer thread
-					mTimerWaitForAckOrResp.purge();
+					stopTimerWaitForAckOrResp(); //Terminate the timer thread
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
 					setInstructionStackLock(false);
@@ -2216,8 +2136,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(mCurrentCommand==GET_STATUS_COMMAND){
 					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
 					consolePrintLn("Command " + Integer.toString(mCurrentCommand) +" failed");
-					mTimerWaitForAckOrResp.cancel(); //Terminate the timer thread
-					mTimerWaitForAckOrResp.purge();
+					stopTimerWaitForAckOrResp(); //Terminate the timer thread
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
 					setInstructionStackLock(false);
@@ -2239,8 +2158,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
 
 					consolePrintLn("Command " + Integer.toString(mCurrentCommand) +" failed");
-					mTimerWaitForAckOrResp.cancel(); //Terminate the timer thread
-					mTimerWaitForAckOrResp.purge();
+					stopTimerWaitForAckOrResp(); //Terminate the timer thread
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
 					setInstructionStackLock(false);
@@ -2470,11 +2388,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		while(getListofInstructions().size()>0); //TODO add timeout
 	}
 	
-	public void operationStart(BT_STATE currentOperation){
-		startOperation(currentOperation, getListofInstructions().size());
+	public void operationStart(BT_STATE btState){
+		startOperation(btState, getListofInstructions().size());
 		//unlock instruction stack
 		setInstructionStackLock(false);
-		
+	}
+	
+	public void operationFinished(){
 		startTimerCheckIfAlive();
 		startTimerReadStatus();
 		startTimerReadBattStatus();
@@ -2810,6 +2730,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		public void run() {
 			if (!mIamAlive){
 				mCountDeadConnection++;
+				System.out.println("CHECKALIVETASK");
 				writeLEDCommand(0);
 				if (mCountDeadConnection>5){
 					setState(BT_STATE.NONE);
@@ -2846,6 +2767,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 		@Override
 		public void run() {
+			System.out.println("READBATTTASK");
 			readBattery();
 		}
 
