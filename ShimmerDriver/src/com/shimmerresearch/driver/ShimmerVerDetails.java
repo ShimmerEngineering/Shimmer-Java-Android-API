@@ -104,6 +104,7 @@ public class ShimmerVerDetails implements Serializable {
 		
 		public final static class SHIMMER_GQ {
 			public final static int GQ_GSR = 0;
+			public final static int GQ_802154 = 1; //this is used to identify the 802154 radio for GQ
 		}
 
 		public static final int UNKNOWN = -1;

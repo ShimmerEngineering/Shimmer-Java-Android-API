@@ -163,7 +163,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected double mLowBattLimit=3.4;
 	protected int numBytesToReadFromExpBoard=0;
-	ArrayBlockingQueue<byte[]> mABQ = new ArrayBlockingQueue<byte[]>(10000);
+	
+	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
+	List<Long> mListofPCTimeStamps = new ArrayList<Long>();
+	
 	protected boolean mIamAlive = false;
 //	public String mUniqueID = ""; //Stores the Bluetooth Com port
 	protected abstract void connect(String address,String bluetoothLibrary);
@@ -267,14 +270,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		int count=0;
 		public synchronized void run() {
 			while (!stop) {
-				if (!mABQ.isEmpty()){
+				if (!mABQPacketByeArray.isEmpty()){
 					count++;
 					if (count%1000==0){
-						consolePrintLn("Queue Size: " + mABQ.size());
-						printLogDataForDebugging("Queue Size: " + mABQ.size() + "\n");
+						consolePrintLn("Queue Size: " + mABQPacketByeArray.size());
+						printLogDataForDebugging("Queue Size: " + mABQPacketByeArray.size() + "\n");
 					}
-					byte[] packet = mABQ.remove();
-					buildAndSendMsg(packet, FW_TYPE_BT, 0);
+					RawBytePacketWithPCTimeStamp rbp = mABQPacketByeArray.remove();
+					buildAndSendMsg(rbp.mDataArray, FW_TYPE_BT, 0,rbp.mSystemTimeStamp);
 				}
 			}
 		}
@@ -382,7 +385,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						{	
 							msg = "Ack Received for Command: \t\t" + Util.byteToHexStringFormatted(mCurrentCommand);
 							printLogDataForDebugging(msg);
-							if (mCurrentCommand != GET_STATUS_COMMAND && mCurrentCommand != SET_BLINK_LED && mSendProgressReport){
+							if (mCurrentCommand != GET_STATUS_COMMAND && mCurrentCommand != TEST_CONNECTION_COMMAND && mCurrentCommand != SET_BLINK_LED && mSendProgressReport){
 //								sendProgressReport(new ProgressReportPerCmd(mCurrentCommand,getmListofInstructions().size(),mMyBluetoothAddress));
 								sendProgressReport(new ProgressReportPerCmd(mCurrentCommand,getListofInstructions().size(),mMyBluetoothAddress, mUniqueID));
 							}
@@ -516,6 +519,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 										getListofInstructions().remove(0);
 										setInstructionStackLock(false);
 									}
+								}
+							}
+							else if (mCurrentCommand==TEST_CONNECTION_COMMAND) {
+								
+								// TODO: check for null and size were put in
+								// because if Shimmer was abruptly disconnected
+								// there is sometimes indexoutofboundsexceptions
+								if(getListofInstructions().get(0)!=null){
+									mTransactionCompleted = true;
+									//mWaitForAck=false;
+									stopTimerWaitForAckOrResp(); //cancel the ack timer
+									getListofInstructions().remove(0);
+									setInstructionStackLock(false);
 								}
 							}
 							else if (mCurrentCommand==SET_GSR_RANGE_COMMAND) {
@@ -1868,6 +1884,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					tb = readBytes(1);
 					if (tb!=null){
 						mByteArrayOutputStream.write(tb[0]);
+						//Everytime a byte is received the timestamp is taken
+						mListofPCTimeStamps.add(System.currentTimeMillis());
 					} else {
 						consolePrint("readbyte null");
 					}
@@ -1875,22 +1893,28 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					
 
 					//If there is a full packet and the subsequent sequence number of following packet
-					if (mByteArrayOutputStream.size()>=mPacketSize+2){
+					if (mByteArrayOutputStream.size()>=mPacketSize+2){ // +2 because there are two acks
 						mIamAlive = true;
 						byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
 						if (bufferTemp[0]==DATA_PACKET && bufferTemp[mPacketSize+1]==DATA_PACKET){
 							newPacket = new byte[mPacketSize];
+							//Skip the first byte as it is the identifier DATA_PACKET
 							System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
 							if (mUseProcessingThread){
-								mABQ.add(newPacket);
+								
+								mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
 							} else {
-								buildAndSendMsg(newPacket, FW_TYPE_BT, 0);
+								buildAndSendMsg(newPacket, FW_TYPE_BT, 0, mListofPCTimeStamps.get(0));
 							}
 							
 							//Finally clear the parsed packet from the bytearrayoutputstream, NOTE the last two bytes(seq number of next packet) are added back on after the reset
 							//consolePrint("Byte size reset: " + mByteArrayOutputStream.size() + "\n");
 							mByteArrayOutputStream.reset();
 							mByteArrayOutputStream.write(bufferTemp[mPacketSize+1]);
+							for (int i=0;i<mPacketSize+1;i++){
+								mListofPCTimeStamps.remove(0);
+							}
+							
 							//consolePrint(bufferTemp[mPacketSize+1] + "\n");
 							
 						} else if (bufferTemp[0]==DATA_PACKET && bufferTemp[mPacketSize+1]==ACK_COMMAND_PROCESSED){
@@ -1899,18 +1923,28 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									newPacket = new byte[mPacketSize];
 									System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
 									if (mUseProcessingThread){
-										mABQ.add(newPacket);
+										mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
 									} else {
-										buildAndSendMsg(newPacket, FW_TYPE_BT, 0);
+										buildAndSendMsg(newPacket, FW_TYPE_BT, 0, mListofPCTimeStamps.get(0));
 									}
 									//Finally clear the parsed packet from the bytearrayoutputstream, NOTE the last two bytes(seq number of next packet) are added back on after the reset
 									mByteArrayOutputStream.reset();
 									mByteArrayOutputStream.write(bufferTemp[mPacketSize+2]);
 									consolePrintLn(Integer.toString(bufferTemp[mPacketSize+2]));
+									for (int i=0;i<mPacketSize+2;i++){
+										mListofPCTimeStamps.remove(0);
+									}
 									
 									if (mCurrentCommand==SET_BLINK_LED){
 										consolePrintLn("LED COMMAND ACK RECEIVED");
 										mCurrentLEDStatus=(int)((byte[])getListofInstructions().get(0))[1];
+										getListofInstructions().remove(0);
+										stopTimerWaitForAckOrResp(); //cancel the ack timer
+										mWaitForAck=false;
+										mTransactionCompleted = true;
+										setInstructionStackLock(false);
+									} else if (mCurrentCommand==TEST_CONNECTION_COMMAND){
+										consolePrintLn("Test Connection Ack Received");
 										getListofInstructions().remove(0);
 										stopTimerWaitForAckOrResp(); //cancel the ack timer
 										mWaitForAck=false;
@@ -1987,11 +2021,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									newPacket = new byte[mPacketSize];
 									System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
 									if (mUseProcessingThread){
-										mABQ.add(newPacket);
+										mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
 									} else {
-										buildAndSendMsg(newPacket, FW_TYPE_BT, 0);
+										buildAndSendMsg(newPacket, FW_TYPE_BT, 0, mListofPCTimeStamps.get(0));
 									}
 									mByteArrayOutputStream.reset();
+									mListofPCTimeStamps.clear();
+									
 								} else {
 									consolePrintLn("??");
 								}
@@ -2001,6 +2037,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								byte[] bTemp = mByteArrayOutputStream.toByteArray();
 								mByteArrayOutputStream.reset();
 								mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
+								mListofPCTimeStamps.remove(0);
 								consolePrintLn("Throw Byte");
 							}
 							
@@ -2008,6 +2045,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							byte[] bTemp = mByteArrayOutputStream.toByteArray();
 							mByteArrayOutputStream.reset();
 							mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
+							mListofPCTimeStamps.remove(0);
 							consolePrintLn("Throw Byte");
 						}
 					} 
@@ -2425,6 +2463,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mLastReceivedCalibratedTimeStamp = -1;
 		mSync=true; // a backup sync done every time you start streaming
 		mByteArrayOutputStream.reset();
+		mListofPCTimeStamps.clear();
 		getListofInstructions().add(new byte[]{START_STREAMING_COMMAND});
 	}
 	
@@ -2731,7 +2770,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if (!mIamAlive){
 				mCountDeadConnection++;
 				System.out.println("CHECKALIVETASK");
-				writeLEDCommand(0);
+				if(isThisVerCompatibleWith(FW_ID.SHIMMER3.LOGANDSTREAM, 0, 5, 11)){
+					writeTestConnectionCommand();
+				} else {
+					writeLEDCommand(0);
+				}
 				if (mCountDeadConnection>5){
 					setState(BT_STATE.NONE);
 				}
@@ -3491,6 +3534,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //		}
 	}
 
+	public void writeTestConnectionCommand() {
+		if (mFirmwareVersionCode>=6){
+			getListofInstructions().add(new byte[]{TEST_CONNECTION_COMMAND});
+		}
+	}
+	
 	public void writeAccelCalibrationParameters(byte[] calibrationParameters) {
 		cmdcalibrationParameters[0] = SET_ACCEL_CALIBRATION_COMMAND;
 		System.arraycopy(calibrationParameters, 0, cmdcalibrationParameters, 1, 21);
@@ -4809,10 +4858,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		batteryStatusChanged();
 	}
 	
-	private void buildAndSendMsg(byte[] packet, int fwID, int timeSync){
+	private void buildAndSendMsg(byte[] packet, int fwID, int timeSync, long pcTimeStamp){
 		ObjectCluster objectCluster = null;
 		try {
-			objectCluster = buildMsg(packet, fwID, timeSync);
+			objectCluster = buildMsg(packet, fwID, timeSync, pcTimeStamp);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
