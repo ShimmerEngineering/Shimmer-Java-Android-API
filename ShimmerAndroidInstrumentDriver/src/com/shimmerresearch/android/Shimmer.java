@@ -465,21 +465,20 @@ public class Shimmer extends ShimmerBluetooth{
 	 * Stop all threads
 	 */
 	public synchronized void stop() {
-		
-		if (mTimerToReadStatus!=null) {
-			mTimerToReadStatus.cancel();
-			mTimerToReadStatus.purge();
+		if (mTimerReadStatus!=null) {
+			mTimerReadStatus.cancel();
+			mTimerReadStatus.purge();
 		}
 		
-		if (mAliveTimer!=null){
-			mAliveTimer.cancel();
-			mAliveTimer.purge();
-			mAliveTimer = null;
+		if (mTimerCheckAlive!=null){
+			mTimerCheckAlive.cancel();
+			mTimerCheckAlive.purge();
+			mTimerCheckAlive = null;
 		}
 		
-		if (mTimer!=null){
-			mTimer.cancel();
-			mTimer.purge();
+		if (mTimerWaitForAckOrResp!=null){
+			mTimerWaitForAckOrResp.cancel();
+			mTimerWaitForAckOrResp.purge();
 		}
 		setState(BT_STATE.NONE);
 		mIsStreaming = false;
