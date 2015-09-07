@@ -526,12 +526,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								// TODO: check for null and size were put in
 								// because if Shimmer was abruptly disconnected
 								// there is sometimes indexoutofboundsexceptions
-								if(getListofInstructions().get(0)!=null){
-									mTransactionCompleted = true;
-									//mWaitForAck=false;
-									stopTimerWaitForAckOrResp(); //cancel the ack timer
-									getListofInstructions().remove(0);
-									setInstructionStackLock(false);
+								if(getListofInstructions().size() > 0){
+									if(getListofInstructions().get(0)!=null){
+										mTransactionCompleted = true;
+										//mWaitForAck=false;
+										stopTimerWaitForAckOrResp(); //cancel the ack timer
+										getListofInstructions().remove(0);
+										setInstructionStackLock(false);
+									}
 								}
 							}
 							else if (mCurrentCommand==SET_GSR_RANGE_COMMAND) {
