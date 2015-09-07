@@ -15,6 +15,12 @@ public class BtCommandDetails{
 		this.waitForResponse = waitForResponse;
 	}
 	
+	
+	/**Used by responses
+	 * @param command
+	 * @param description
+	 * @param expectedResponseByteLength
+	 */
 	public BtCommandDetails(byte command, String description, int expectedResponseByteLength){
 		this.command = command;
 		this.description = description;

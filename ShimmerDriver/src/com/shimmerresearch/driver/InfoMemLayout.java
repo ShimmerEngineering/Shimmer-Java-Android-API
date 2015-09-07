@@ -283,7 +283,10 @@ public class InfoMemLayout {
 	// SD logging related
 	public int bitShiftButtonStart = 			5;
 	public int maskButtonStart = 				0x01;
-	
+
+	public int bitShiftShowRwcErrorLeds = 		4;
+	public int maskShowRwcErrorLeds =	 		0; // Only applicable for certain FW
+
 	public int bitShiftTimeSyncWhenLogging =	2;
 	public int maskTimeSyncWhenLogging = 		0x01;
 
@@ -482,7 +485,13 @@ public class InfoMemLayout {
 			idxLSM303DLHCMagCalibration =   76;
 			idxLSM303DLHCAccelCalibration = 97;
 		}
-		
+
+		//TODO update with relative SDLog version number
+		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,11,3))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,12))) {
+			maskShowRwcErrorLeds =	 		0x01;
+		}
+
 	}
 	
 	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
