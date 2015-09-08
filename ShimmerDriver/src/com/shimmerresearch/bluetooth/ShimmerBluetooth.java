@@ -1236,8 +1236,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					printLogDataForDebugging("Batt data " + getBattVoltage());
 				}  
 			}
-			
-			
 			else if(tb[0]==LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
 				byte[] bufferAns = readBytes(1);
 				//TODO: MN -> nothing is done with read bytes
@@ -1258,7 +1256,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			else if(tb[0]==BMP180_PRES_RESOLUTION_RESPONSE) {
 				//TODO: MN -> do something
 			}
-			else if(tb[0]==BMP180_PRES_CALIBRATION_RESPONSE) {
+			else if(tb[0]==BMP180_PRES_CALIBRATION_RESPONSE) { //<- MN
 				//TODO: MN -> do something
 			}
 			else if(tb[0]==MPU9150_MAG_SENS_ADJ_VALS_RESPONSE) {
@@ -1266,8 +1264,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			else if(tb[0]==INTERNAL_EXP_POWER_ENABLE_RESPONSE) {
 				//TODO: MN -> do something
+//				setInternalExpPower();
 			}
-			else if(tb[0]==INFOMEM_RESPONSE) {
+			else if(tb[0]==INFOMEM_RESPONSE) { //<- MN
 				//TODO: MN -> do something
 			}
 			else {
@@ -1633,7 +1632,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					getListofInstructions().remove(0);
 				}
 				
-			}		}
+			}
+		}
 	}
 	
 	/**
