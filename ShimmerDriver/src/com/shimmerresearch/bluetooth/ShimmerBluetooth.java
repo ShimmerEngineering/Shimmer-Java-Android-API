@@ -174,7 +174,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected double mLowBattLimit=3.4;
 	protected int numBytesToReadFromExpBoard=0;
-	private String boilerPlateString = "BoilerPlate 0.1.0"; 		//TODO: MN -> "BoilerPlate 0.1.0" is old and probably not working any more
+	private String boilerPlateStringDescription = "BoilerPlate 0.1.0"; 		//TODO: MN -> "BoilerPlate 0.1.0" is old and probably not working any more
 	
 	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
 	List<Long> mListofPCTimeStamps = new ArrayList<Long>();
@@ -235,10 +235,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	protected boolean mUseProcessingThread = false;
 	
-    
-	//TODO link response to commands
-	//TODO set correct values for booleans
-	//TODO create variable for byte response length for BT responses
     public static final Map<Byte, BtCommandDetails> mBtCommandMapOther;
     static {
         Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
@@ -247,13 +243,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(ROUTINE_COMMUNICATION, 		new BtCommandDetails(ROUTINE_COMMUNICATION, "ROUTINE_COMMUNICATION"));
         aMap.put(ACK_COMMAND_PROCESSED, 		new BtCommandDetails(ACK_COMMAND_PROCESSED, "ACK_COMMAND_PROCESSED"));
 
-
         mBtCommandMapOther = Collections.unmodifiableMap(aMap);
     }
     
-	//TODO link response to commands
-	//TODO set correct values for booleans
-	//TODO create variable for byte response length for BT responses
     public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
     static {
         Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
@@ -364,7 +356,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(SET_INFOMEM_COMMAND, 			new BtCommandDetails(SET_INFOMEM_COMMAND, "SET_INFOMEM_COMMAND"));
         aMap.put(SET_CRC_COMMAND, 				new BtCommandDetails(SET_CRC_COMMAND, "SET_CRC_COMMAND"));
         aMap.put(SET_RWC_COMMAND, 				new BtCommandDetails(SET_RWC_COMMAND, "SET_RWC_COMMAND"));
-        
         
         mBtSetCommandMap = Collections.unmodifiableMap(aMap);
     }
@@ -711,7 +702,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(command[0]==VBATT_RESPONSE) {
 								byte[] data = readBytes(3); 
 								setBattStatusDetails(new ShimmerBattStatusDetails(((data[1]&0xFF)<<8)+(data[0]&0xFF),data[2]));
-								consolePrintLn("Batt data " + mBattVoltage);
+								consolePrintLn("Batt data " + getBattVoltage());
 							}  
 						}
 					}
@@ -840,7 +831,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									else if(responseCommand[0]==VBATT_RESPONSE) {
 										byte[] responseData = readBytes(3); 
 										setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
-										consolePrintLn("Batt data " + mBattVoltage);
+										consolePrintLn("Batt data " + getBattVoltage());
 									}  
 									
 									mWaitForAck=false;
@@ -1202,7 +1193,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				byte[] responseData = readBytes(3); 
 				setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
 				
-				consolePrintLn("Batt data " + mBattVoltage);
+				consolePrintLn("Batt data " + getBattVoltage());
 			}
 			else if(tb[0]==STATUS_RESPONSE){ // response to GET or Instream response
 				byte[] responseData = readBytes(1);
@@ -1242,7 +1233,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] responseData = readBytes(3); 
 					//mBattVoltage=Integer.toString(((bufferAns[0]&0xFF)<<8)+(bufferLogCommandType[1]&0xFF));
 					setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
-					printLogDataForDebugging("Batt data " + mBattVoltage);
+					printLogDataForDebugging("Batt data " + getBattVoltage());
 				}  
 			}
 			
@@ -1771,30 +1762,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-
-	public void clearShimmerVersionInfo() {
-		super.mShimmerVerObject = new ShimmerVerObject();
-		super.mHardwareVersion = 0;
-		super.mHardwareVersionParsed = "";
-		super.mFirmwareIdentifier = 0;
-		super.mFirmwareVersionMajor = 0;
-		super.mFirmwareVersionMinor = 0;
-		super.mFirmwareVersionInternal = 0;
-		super.mFirmwareVersionParsed = "";
-		super.mFirmwareVersionCode = 0;
-	}
-	
-	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
-		super.mExpansionBoardDetails  = eBD;
-		super.mExpansionBoardId = eBD.mExpBoardId;
-		super.mExpansionBoardRev = eBD.mExpBoardRev;
-		super.mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
-		super.mExpansionBoardParsed = eBD.mExpBoardParsed;
-		super.mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
-		super.mExpBoardArray = eBD.mExpBoardArray;
-	}
-
-
 	//region --------- INITIALIZE SHIMMER FUNCTIONS --------- 
 	
 	protected synchronized void initialize() {	    	//See two constructors for Shimmer
@@ -1849,7 +1816,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			setContinuousSync(mContinousSync);
 		} 
 		else {
-			if(mFirmwareVersionParsed.equals(boilerPlateString)){
+			if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 			
 			} 
 			else {
@@ -2160,7 +2127,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public void readMagSamplingRate() {
-		if(mFirmwareVersionParsed.equals(boilerPlateString)){
+		if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 		} 
 		else {
 			getListofInstructions().add(new byte[]{GET_MAG_SAMPLING_RATE_COMMAND});
@@ -2187,7 +2154,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void readECGCalibrationParameters() {
-		if(mFirmwareVersionParsed.equals(boilerPlateString)){
+		if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 		} 
 		else {
 			getListofInstructions().add(new byte[]{GET_ECG_CALIBRATION_COMMAND});
@@ -2195,7 +2162,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public void readEMGCalibrationParameters() {
-		if(mFirmwareVersionParsed.equals(boilerPlateString)){
+		if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 		} 
 		else {
 			getListofInstructions().add(new byte[]{GET_EMG_CALIBRATION_COMMAND});
@@ -2257,10 +2224,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//region --------- TIMERS --------- 
 	
-	//	protected void startTimerWaitForAckOrResp(int duration) {
-	//	responseTimer(duration);
-	//}
-	
 	public void stopTimerCheckForAckOrResp(){
 		//Terminate the timer thread
 		if(mTimerCheckForAckOrResp!=null){
@@ -2281,6 +2244,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
 	}
 	
+	/** Handles command response timeout
+	 *
+	 */
 	class checkForAckOrRespTask extends TimerTask {
 		public void run() {
 			{
@@ -2291,7 +2257,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mFirmwareVersionMinor=1;
 					mFirmwareVersionInternal=0;
 					mFirmwareVersionCode=0;
-					mFirmwareVersionParsed=boilerPlateString;
+					mFirmwareVersionParsed=boilerPlateStringDescription;
 					mHardwareVersion = HW_ID.SHIMMER_2R; // on Shimmer2r has
 					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
 	      	        Bundle bundle = new Bundle();
@@ -2300,16 +2266,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					if(!mDummy){
 						//mHandler.sendMessage(msg);
 					}
+					
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
 					stopTimerCheckForAckOrResp();  //Terminate the timer thread
 					mFirstTime=false;
 	//				getListofInstructions().remove(0); //removed by MN - already removed in the GET command initialisation section
 					setInstructionStackLock(false);
+					
 					initializeBoilerPlate();
 				}
 				else if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND && !mIsInitialised){
 					printLogDataForDebugging("Get Sampling Rate Timeout");
+					
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
 					stopTimerCheckForAckOrResp();  //Terminate the timer thread
@@ -2320,6 +2289,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				else if(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){ //in case the new command doesn't work, try the old command
 					printLogDataForDebugging("Shimmer Version Response Timeout. Trying the old version command");
+					
 					mWaitForAck=false;
 					mTransactionCompleted=true; 
 					stopTimerCheckForAckOrResp(); //Terminate the timer thread
@@ -2327,10 +2297,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//				getListofInstructions().remove(0); //removed by MN - already removed in the GET command initialisation section
 					setInstructionStackLock(false);
 					readShimmerVersionDepracated();
+					
 				}
 				else if(mCurrentCommand==GET_VBATT_COMMAND){
 					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
 					consolePrintLn("Command " + btCommandToString(mCurrentCommand) +" failed");
+					
 					stopTimerCheckForAckOrResp(); //Terminate the timer thread
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
@@ -2349,6 +2321,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						}
 						stop(); //If command fail exit device
 					}
+					
 				}
 				else if(mCurrentCommand==GET_STATUS_COMMAND){
 					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
@@ -2552,7 +2525,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 * */
 	public void writeMagSamplingRate(int rate) {
-		if(mFirmwareVersionParsed.equals(boilerPlateString)){
+		if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 		} 
 		else {
 			mTempIntValue=rate;
@@ -3150,7 +3123,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param range is the mag rang
 	 */
 	public void writeMagRange(int range) {
-		if(mFirmwareVersionParsed.equals(boilerPlateString)){
+		if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 		} 
 		else {
 			getListofInstructions().add(new byte[]{SET_MAG_GAIN_COMMAND, (byte)range});
@@ -3160,7 +3133,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeLEDCommand(int command) {
 		
 //		if(mShimmerVersion!=HW_ID.SHIMMER_3){
-			if(mFirmwareVersionParsed.equals(boilerPlateString)){
+			if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 			}
 			else {
 				getListofInstructions().add(new byte[]{SET_BLINK_LED, (byte)command});
@@ -3210,7 +3183,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		data[5] = (byte) ((offsetrall)& 0xFF);
 		data[6] = (byte) ((gainrall>>8)& 0xFF); //MSB gain
 		data[7] = (byte) ((gainrall)& 0xFF);
-		if(mFirmwareVersionParsed.equals(boilerPlateString)){
+		if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 		} 
 		else {
 			getListofInstructions().add(new byte[]{SET_ECG_CALIBRATION_COMMAND,data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]});
@@ -3223,7 +3196,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		data[1] = (byte) ((offset)& 0xFF);
 		data[2] = (byte) ((gain>>8)& 0xFF); //MSB gain
 		data[3] = (byte) ((gain)& 0xFF);
-		if(mFirmwareVersionParsed.equals(boilerPlateString)){
+		if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
 		} 
 		else {
 			getListofInstructions().add(new byte[]{SET_EMG_CALIBRATION_COMMAND,data[0],data[1],data[2],data[3]});
@@ -3458,7 +3431,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	/**
 	 * Get the Gain value for the ExG1 Channel 1
-	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8 or 12. The function return -1 when it is not possible to get the value.
+	 * 
+	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8
+	 *         or 12. The function return -1 when it is not possible to get the
+	 *         value.
 	 */
 	public int getEXG1CH1GainValue(){
 		
@@ -3473,7 +3449,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	/**
 	 * Get the Gain value for the ExG1 Channel 1
-	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8 or 12. The function return -1 when it is not possible to get the value.
+	 * 
+	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8
+	 *         or 12. The function return -1 when it is not possible to get the
+	 *         value.
 	 */
 	public int getEXG1CH2GainValue(){
 		
@@ -3488,7 +3467,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	/**
 	 * Get the Gain value for the ExG1 Channel 1
-	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8 or 12. The function return -1 when it is not possible to get the value.
+	 * 
+	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8
+	 *         or 12. The function return -1 when it is not possible to get the
+	 *         value.
 	 */
 	public int getEXG2CH1GainValue(){
 		
@@ -3503,7 +3485,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	/**
 	 * Get the Gain value for the ExG1 Channel 1
-	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8 or 12. The function return -1 when it is not possible to get the value.
+	 * 
+	 * @return the value of the gain. The Gain can be 1, 2, 3, 4, 6 (default), 8
+	 *         or 12. The function return -1 when it is not possible to get the
+	 *         value.
 	 */
 	public int getEXG2CH2GainValue(){
 	
@@ -3529,18 +3514,26 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
     
     /**** SET FUNCTIONS *****/
     
-    /**
+	/**
 	 * 
-	 * Register a callback to be invoked after buildmsg has executed (A new packet has been successfully received -> raw bytes interpreted into Raw and Calibrated Sensor data)
+	 * Register a callback to be invoked after buildmsg has executed (A new
+	 * packet has been successfully received -> raw bytes interpreted into Raw
+	 * and Calibrated Sensor data)
 	 * 
-	 * @param d The callback that will be invoked
+	 * @param d
+	 *            The callback that will be invoked
 	 */
 	public void setDataProcessing(DataProcessing d) {
 		mDataProcessing=d;
 	}
     
 	/**
-	 * Set the battery voltage limit, when the Shimmer device goes below the limit while streaming the LED on the Shimmer device will turn Yellow, in order to use battery voltage monitoring the Battery has to be enabled. See writeenabledsensors. Only to be used with Shimmer2. Calibration also has to be enabled, see enableCalibration.
+	 * Set the battery voltage limit, when the Shimmer device goes below the
+	 * limit while streaming the LED on the Shimmer device will turn Yellow, in
+	 * order to use battery voltage monitoring the Battery has to be enabled.
+	 * See writeenabledsensors. Only to be used with Shimmer2. Calibration also
+	 * has to be enabled, see enableCalibration.
+	 * 
 	 * @param limit
 	 */
 	public void setBattLimitWarning(double limit){
@@ -3580,12 +3573,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public boolean isLowPowerAccelEnabled() {
-		// TODO Auto-generated method stub
 		return mLowPowerAccelWR;
 	}
 
 	public boolean isLowPowerGyroEnabled() {
-		// TODO Auto-generated method stub
 		return mLowPowerGyro;
 	}
 	
@@ -3621,7 +3612,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	
 	/**
-	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
+	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not
+	 * use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
 	 * @return true if 16 bit ECG is set
 	 */
 	@Override
@@ -3631,7 +3626,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
+	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not
+	 * use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
 	 * @return true if 24 bit ECG is set
 	 */
 	@Override
@@ -3641,7 +3640,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * Checks if 16 bit EMG configuration is set on the Shimmer device.  Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received. 
+	 * Checks if 16 bit EMG configuration is set on the Shimmer device. Do not
+	 * use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
 	 * @return true if 16 bit EMG is set
 	 */
 	@Override
@@ -3651,7 +3654,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * Checks if 24 bit EMG configuration is set on the Shimmer device.  Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
+	 * Checks if 24 bit EMG configuration is set on the Shimmer device. Do not
+	 * use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
 	 * @return true if 24 bit EMG is set
 	 */
 	@Override
@@ -3661,7 +3668,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * Checks if 16 bit test signal configuration is set on the Shimmer device. Do not use this command right after setting an EXG setting, as due to the execution model, the old settings might be returned, if this command is executed before an ack is received.
+	 * Checks if 16 bit test signal configuration is set on the Shimmer device.
+	 * Do not use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
 	 * @return true if 24 bit test signal is set
 	 */
 	@Override
@@ -3689,7 +3700,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//TODO: use set3DOrientation(enable) in ShimmerObject instead -> check that the "enable the sensors if they have not been enabled" comment is correct
 	/**
-	 * This enables the calculation of 3D orientation through the use of the gradient descent algorithm, note that the user will have to ensure that mEnableCalibration has been set to true (see enableCalibration), and that the accel, gyro and mag has been enabled
+	 * This enables the calculation of 3D orientation through the use of the
+	 * gradient descent algorithm, note that the user will have to ensure that
+	 * mEnableCalibration has been set to true (see enableCalibration), and that
+	 * the accel, gyro and mag has been enabled
+	 * 
 	 * @param enable
 	 */
 	public void enable3DOrientation(boolean enable){
@@ -3698,7 +3713,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	/**
-	 * This enables the low power accel option. When not enabled the sampling rate of the accel is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz. Also and additional low power mode is used for the LSM303DLHC. This command will only supports the following Accel range +4g, +8g , +16g 
+	 * This enables the low power accel option. When not enabled the sampling
+	 * rate of the accel is set to the closest value to the actual sampling rate
+	 * that it can achieve. In low power mode it defaults to 10Hz. Also and
+	 * additional low power mode is used for the LSM303DLHC. This command will
+	 * only supports the following Accel range +4g, +8g , +16g
+	 * 
 	 * @param enable
 	 */
 	public void enableLowPowerAccel(boolean enable){
@@ -3746,7 +3766,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //	}
 	
 	/**
-	 * This enables the low power accel option. When not enabled the sampling rate of the accel is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz. Also and additional low power mode is used for the LSM303DLHC. This command will only supports the following Accel range +4g, +8g , +16g 
+	 * This enables the low power accel option. When not enabled the sampling
+	 * rate of the accel is set to the closest value to the actual sampling rate
+	 * that it can achieve. In low power mode it defaults to 10Hz. Also and
+	 * additional low power mode is used for the LSM303DLHC. This command will
+	 * only supports the following Accel range +4g, +8g , +16g
+	 * 
 	 * @param enable
 	 */
 	public void enableLowPowerGyro(boolean enable){
@@ -3755,7 +3780,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * This enables the low power mag option. When not enabled the sampling rate of the mag is set to the closest value to the actual sampling rate that it can achieve. In low power mode it defaults to 10Hz
+	 * This enables the low power mag option. When not enabled the sampling rate
+	 * of the mag is set to the closest value to the actual sampling rate that
+	 * it can achieve. In low power mode it defaults to 10Hz
+	 * 
 	 * @param enable
 	 */
 	public void enableLowPowerMag(boolean enable){
@@ -3764,8 +3792,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 *This can only be used for Shimmer3 devices (EXG) 
-	 *When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
+	 * This can only be used for Shimmer3 devices (EXG) When a enable
+	 * configuration is loaded, the advanced ExG configuration is removed, so it
+	 * needs to be set again
 	 */
 	 public void enableDefaultECGConfiguration() {
 		 if(mHardwareVersion==3){
@@ -3776,8 +3805,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	/**
-	 * This can only be used for Shimmer3 devices (EXG)
-	 * When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
+	 * This can only be used for Shimmer3 devices (EXG) When a enable
+	 * configuration is loaded, the advanced ExG configuration is removed, so it
+	 * needs to be set again
 	 */
 	public void enableDefaultEMGConfiguration(){
 		if(mHardwareVersion==3){
@@ -3788,7 +3818,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	/**
-	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
+	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal
+	 * (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be
+	 * enabled
 	 */
 	public void enableEXGTestSignal(){
 		if(mHardwareVersion==3){
@@ -3830,7 +3862,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	
 	/**
-	 * An inquiry is used to request for the current configuration parameters from the Shimmer device (e.g. Accelerometer settings, Configuration Byte, Sampling Rate, Number of Enabled Sensors and Sensors which have been enabled). 
+	 * An inquiry is used to request for the current configuration parameters
+	 * from the Shimmer device (e.g. Accelerometer settings, Configuration Byte,
+	 * Sampling Rate, Number of Enabled Sensors and Sensors which have been
+	 * enabled).
 	 */
 	public void inquiry() {
 		getListofInstructions().add(new byte[]{INQUIRY_COMMAND});
@@ -4487,7 +4522,45 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return super.infoMemByteArrayGenerate(true);
 	}
 
+	public void clearShimmerVersionInfo() {
+		setShimmerVersionInfo(new ShimmerVerObject());
+	}
+	
+	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
+		super.mExpansionBoardDetails  = eBD;
+		super.mExpansionBoardId = eBD.mExpBoardId;
+		super.mExpansionBoardRev = eBD.mExpBoardRev;
+		super.mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
+		super.mExpansionBoardParsed = eBD.mExpBoardParsed;
+		super.mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
+		super.mExpBoardArray = eBD.mExpBoardArray;
+	}
+	
+	public void setBattStatusDetails(ShimmerBattStatusDetails s) {
+		super.mShimmerBattStatusDetails = s;
+		
+		batteryStatusChanged();
+	}
 
+	public void clearBattStatusDetails() {
+		setBattStatusDetails(new ShimmerBattStatusDetails());
+		
+		batteryStatusChanged();
+	}
+	
+	private void buildAndSendMsg(byte[] packet, int fwID, int timeSync, long pcTimeStamp){
+		ObjectCluster objectCluster = null;
+		try {
+			objectCluster = buildMsg(packet, fwID, timeSync, pcTimeStamp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(mDataProcessing!=null){
+			objectCluster = mDataProcessing.ProcessData(objectCluster);
+		}
+		dataHandler(objectCluster);
+	}
 	
 	private void consolePrintLn(String message) {
 		if(mVerboseMode) {
@@ -4508,35 +4581,5 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	public void setVerboseMode(boolean verboseMode) {
 		mVerboseMode = verboseMode;
-	}
-	
-	public void setBattStatusDetails(ShimmerBattStatusDetails s) {
-		super.mBattVoltage = s.mBattVoltage;
-		super.mEstimatedChargePercentage = s.mEstimatedChargePercentage;
-		super.mEstimatedChargePercentageParsed = s.mEstimatedChargePercentageParsed;
-		super.mChargingState = s.mChargingStatusParsed;
-		batteryStatusChanged();
-	}
-
-	public void clearBattStatusDetails() {
-		super.mBattVoltage = "";
-		super.mEstimatedChargePercentage = 0.0;
-		super.mEstimatedChargePercentageParsed = "";
-		super.mChargingState = "";
-		batteryStatusChanged();
-	}
-	
-	private void buildAndSendMsg(byte[] packet, int fwID, int timeSync, long pcTimeStamp){
-		ObjectCluster objectCluster = null;
-		try {
-			objectCluster = buildMsg(packet, fwID, timeSync, pcTimeStamp);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(mDataProcessing!=null){
-			objectCluster = mDataProcessing.ProcessData(objectCluster);
-		}
-		dataHandler(objectCluster);
 	}
 }

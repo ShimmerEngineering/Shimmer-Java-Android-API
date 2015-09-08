@@ -760,11 +760,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected boolean mIsSensing;
 	private List<String[]> mExtraSignalProperties = null;
 	
-	protected String mChargingState = "";
-	protected int mChargingStatus = 0;
-	protected String mBattVoltage = "";
-	protected Double mEstimatedChargePercentage = 0.0;
-	protected String mEstimatedChargePercentageParsed = "";
+	protected ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails();
+//	protected String mChargingState = "";
+//	protected int mChargingStatus = 0;
+//	protected String mBattVoltage = "";
+//	protected Double mEstimatedChargePercentage = 0.0;
+//	protected String mEstimatedChargePercentageParsed = "";
 
 	protected boolean mIsInitialised = false;
 	protected boolean mIsDocked = false;
@@ -809,6 +810,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public String mUniqueID = ""; // Holds unique location information on a dock or COM port number for bluetooth connection  
 
 	private boolean isOverrideShowRwcErrorLeds = true;
+
 
 	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
 	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
@@ -10850,29 +10852,29 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mChargingState
 	 */
-	public String getChargingState() {
-		return mChargingState;
+	public String getChargingStateParsed() {
+		return mShimmerBattStatusDetails.getChargingStatusParsed();
 	}
 
 	/**
 	 * @return the mBattVoltage
 	 */
 	public String getBattVoltage() {
-		return mBattVoltage;
+		return mShimmerBattStatusDetails.mBattVoltageParsed;
 	}
 
 	/**
 	 * @return the mEstimatedChargePercentageParsed
 	 */
 	public String getEstimatedChargePercentageParsed() {
-		return mEstimatedChargePercentageParsed;
+		return mShimmerBattStatusDetails.mEstimatedChargePercentageParsed;
 	}
 	
 	/**
 	 * @return the mEstimatedChargePercentage
 	 */
 	public Double getEstimatedChargePercentage() {
-		return mEstimatedChargePercentage;
+		return mShimmerBattStatusDetails.mEstimatedChargePercentage;
 	}
 	
 	/**
@@ -10948,7 +10950,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if (mFirmwareVersionCode>=6){
 			mTimeStampPacketByteSize =3;
 			mTimeStampPacketRawMaxValue = 16777216;
-		} else if (mFirmwareVersionCode<6){
+		} 
+		else if (mFirmwareVersionCode<6){
 			mTimeStampPacketByteSize =2;
 			mTimeStampPacketRawMaxValue = 65536;
 		}
