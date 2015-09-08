@@ -81,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -233,6 +234,193 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private String mParentClassName = "ShimmerBluetooth";
 	
 	protected boolean mUseProcessingThread = false;
+	
+    
+	//TODO link response to commands
+	//TODO set correct values for booleans
+	//TODO create variable for byte response length for BT responses
+    public static final Map<Byte, BtCommandDetails> mBtCommandMapOther;
+    static {
+        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+
+        aMap.put(DATA_PACKET, 					new BtCommandDetails(DATA_PACKET, "DATA_PACKET"));
+        aMap.put(ROUTINE_COMMUNICATION, 		new BtCommandDetails(ROUTINE_COMMUNICATION, "ROUTINE_COMMUNICATION"));
+        aMap.put(ACK_COMMAND_PROCESSED, 		new BtCommandDetails(ACK_COMMAND_PROCESSED, "ACK_COMMAND_PROCESSED"));
+
+
+        mBtCommandMapOther = Collections.unmodifiableMap(aMap);
+    }
+    
+	//TODO link response to commands
+	//TODO set correct values for booleans
+	//TODO create variable for byte response length for BT responses
+    public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+    static {
+        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+        
+        aMap.put(INQUIRY_COMMAND, 				new BtCommandDetails(INQUIRY_COMMAND, "INQUIRY_COMMAND", INQUIRY_RESPONSE));
+
+        aMap.put(GET_SAMPLING_RATE_COMMAND, 	new BtCommandDetails(GET_SAMPLING_RATE_COMMAND, "GET_SAMPLING_RATE_COMMAND", SAMPLING_RATE_RESPONSE));
+        aMap.put(GET_ACCEL_SENSITIVITY_COMMAND, new BtCommandDetails(GET_ACCEL_SENSITIVITY_COMMAND, "GET_ACCEL_SENSITIVITY_COMMAND", ACCEL_SENSITIVITY_RESPONSE));
+        aMap.put(GET_CONFIG_BYTE0_COMMAND, 		new BtCommandDetails(GET_CONFIG_BYTE0_COMMAND, "GET_CONFIG_BYTE0_COMMAND", CONFIG_BYTE0_RESPONSE));
+        aMap.put(GET_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(GET_ACCEL_CALIBRATION_COMMAND, "GET_ACCEL_CALIBRATION_COMMAND", ACCEL_CALIBRATION_RESPONSE));
+        aMap.put(GET_GYRO_CALIBRATION_COMMAND, 	new BtCommandDetails(GET_GYRO_CALIBRATION_COMMAND, "GET_GYRO_CALIBRATION_COMMAND", GYRO_CALIBRATION_RESPONSE));
+        aMap.put(GET_MAG_CALIBRATION_COMMAND, 	new BtCommandDetails(GET_MAG_CALIBRATION_COMMAND, "GET_MAG_CALIBRATION_COMMAND", MAG_CALIBRATION_RESPONSE));
+        aMap.put(GET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(GET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND, "GET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND", LSM303DLHC_ACCEL_CALIBRATION_RESPONSE));
+        aMap.put(GET_GSR_RANGE_COMMAND, 		new BtCommandDetails(GET_GSR_RANGE_COMMAND, "GET_GSR_RANGE_COMMAND", GSR_RANGE_RESPONSE));
+        aMap.put(GET_SHIMMER_VERSION_COMMAND, 	new BtCommandDetails(GET_SHIMMER_VERSION_COMMAND, "GET_SHIMMER_VERSION_COMMAND", GET_SHIMMER_VERSION_RESPONSE));
+        aMap.put(GET_SHIMMER_VERSION_COMMAND_NEW, new BtCommandDetails(GET_SHIMMER_VERSION_COMMAND_NEW, "GET_SHIMMER_VERSION_COMMAND_NEW", GET_SHIMMER_VERSION_RESPONSE)); //this is to avoid the $ char which is used by rn42
+        aMap.put(GET_EMG_CALIBRATION_COMMAND, 	new BtCommandDetails(GET_EMG_CALIBRATION_COMMAND, "GET_EMG_CALIBRATION_COMMAND", EMG_CALIBRATION_RESPONSE));
+        aMap.put(GET_ECG_CALIBRATION_COMMAND, 	new BtCommandDetails(GET_ECG_CALIBRATION_COMMAND, "GET_ECG_CALIBRATION_COMMAND", ECG_CALIBRATION_RESPONSE));
+        aMap.put(GET_ALL_CALIBRATION_COMMAND, 	new BtCommandDetails(GET_ALL_CALIBRATION_COMMAND, "GET_ALL_CALIBRATION_COMMAND", ALL_CALIBRATION_RESPONSE));
+        aMap.put(GET_FW_VERSION_COMMAND, 		new BtCommandDetails(GET_FW_VERSION_COMMAND, "GET_FW_VERSION_COMMAND", FW_VERSION_RESPONSE));
+        aMap.put(GET_BLINK_LED, 				new BtCommandDetails(GET_BLINK_LED, "GET_BLINK_LED", BLINK_LED_RESPONSE));
+        aMap.put(GET_BUFFER_SIZE_COMMAND, 		new BtCommandDetails(GET_BUFFER_SIZE_COMMAND, "GET_BUFFER_SIZE_COMMAND", BUFFER_SIZE_RESPONSE));
+        aMap.put(GET_MAG_GAIN_COMMAND, 			new BtCommandDetails(GET_MAG_GAIN_COMMAND, "GET_MAG_GAIN_COMMAND", MAG_GAIN_RESPONSE));
+        aMap.put(GET_MAG_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_MAG_SAMPLING_RATE_COMMAND, "GET_MAG_SAMPLING_RATE_COMMAND", MAG_SAMPLING_RATE_RESPONSE));
+        aMap.put(GET_ACCEL_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_ACCEL_SAMPLING_RATE_COMMAND, "GET_ACCEL_SAMPLING_RATE_COMMAND", ACCEL_SAMPLING_RATE_RESPONSE));
+        aMap.put(GET_LSM303DLHC_ACCEL_LPMODE_COMMAND, new BtCommandDetails(GET_LSM303DLHC_ACCEL_LPMODE_COMMAND, "GET_LSM303DLHC_ACCEL_LPMODE_COMMAND", LSM303DLHC_ACCEL_LPMODE_RESPONSE));
+        aMap.put(GET_LSM303DLHC_ACCEL_HRMODE_COMMAND, new BtCommandDetails(GET_LSM303DLHC_ACCEL_HRMODE_COMMAND, "GET_LSM303DLHC_ACCEL_HRMODE_COMMAND", LSM303DLHC_ACCEL_HRMODE_RESPONSE));
+        aMap.put(GET_MPU9150_GYRO_RANGE_COMMAND, new BtCommandDetails(GET_MPU9150_GYRO_RANGE_COMMAND, "GET_MPU9150_GYRO_RANGE_COMMAND", MPU9150_GYRO_RANGE_RESPONSE));
+        aMap.put(GET_MPU9150_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_MPU9150_SAMPLING_RATE_COMMAND, "GET_MPU9150_SAMPLING_RATE_COMMAND", MPU9150_SAMPLING_RATE_RESPONSE));
+        aMap.put(GET_BMP180_PRES_RESOLUTION_COMMAND, new BtCommandDetails(GET_BMP180_PRES_RESOLUTION_COMMAND, "GET_BMP180_PRES_RESOLUTION_COMMAND", BMP180_PRES_RESOLUTION_RESPONSE));
+        aMap.put(GET_BMP180_PRES_CALIBRATION_COMMAND, new BtCommandDetails(GET_BMP180_PRES_CALIBRATION_COMMAND, "GET_BMP180_PRES_CALIBRATION_COMMAND", BMP180_PRES_CALIBRATION_RESPONSE));
+        aMap.put(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND, new BtCommandDetails(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND, "GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND", BMP180_CALIBRATION_COEFFICIENTS_RESPONSE));
+        aMap.put(GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND, new BtCommandDetails(GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND, "GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND", MPU9150_MAG_SENS_ADJ_VALS_RESPONSE));
+        aMap.put(GET_INTERNAL_EXP_POWER_ENABLE_COMMAND, new BtCommandDetails(GET_INTERNAL_EXP_POWER_ENABLE_COMMAND, "GET_INTERNAL_EXP_POWER_ENABLE_COMMAND", INTERNAL_EXP_POWER_ENABLE_RESPONSE));
+        aMap.put(GET_EXG_REGS_COMMAND,			new BtCommandDetails(GET_EXG_REGS_COMMAND, "GET_EXG_REGS_COMMAND", EXG_REGS_RESPONSE));
+        aMap.put(GET_DAUGHTER_CARD_ID_COMMAND, 	new BtCommandDetails(GET_DAUGHTER_CARD_ID_COMMAND, "GET_DAUGHTER_CARD_ID_COMMAND", DAUGHTER_CARD_ID_RESPONSE));
+        aMap.put(GET_BAUD_RATE_COMMAND, 		new BtCommandDetails(GET_BAUD_RATE_COMMAND, "GET_BAUD_RATE_COMMAND", BAUD_RATE_RESPONSE));
+        aMap.put(GET_DERIVED_CHANNEL_BYTES, 	new BtCommandDetails(GET_DERIVED_CHANNEL_BYTES, "GET_DERIVED_CHANNEL_BYTES", DERIVED_CHANNEL_BYTES_RESPONSE));
+        aMap.put(GET_STATUS_COMMAND, 			new BtCommandDetails(GET_STATUS_COMMAND, "GET_STATUS_COMMAND", STATUS_RESPONSE));
+        aMap.put(GET_TRIAL_CONFIG_COMMAND, 		new BtCommandDetails(GET_TRIAL_CONFIG_COMMAND, "GET_TRIAL_CONFIG_COMMAND", TRIAL_CONFIG_RESPONSE));
+        aMap.put(GET_CENTER_COMMAND, 			new BtCommandDetails(GET_CENTER_COMMAND, "GET_CENTER_COMMAND", CENTER_RESPONSE));
+        aMap.put(GET_SHIMMERNAME_COMMAND, 		new BtCommandDetails(GET_SHIMMERNAME_COMMAND, "GET_SHIMMERNAME_COMMAND", SHIMMERNAME_RESPONSE));
+        aMap.put(GET_EXPID_COMMAND, 			new BtCommandDetails(GET_EXPID_COMMAND, "GET_EXPID_COMMAND", EXPID_RESPONSE));
+        aMap.put(GET_MYID_COMMAND, 				new BtCommandDetails(GET_MYID_COMMAND, "GET_MYID_COMMAND", MYID_RESPONSE));
+        aMap.put(GET_NSHIMMER_COMMAND, 			new BtCommandDetails(GET_NSHIMMER_COMMAND, "GET_NSHIMMER_COMMAND", NSHIMMER_RESPONSE));
+        aMap.put(GET_CONFIGTIME_COMMAND, 		new BtCommandDetails(GET_CONFIGTIME_COMMAND, "GET_CONFIGTIME_COMMAND", CONFIGTIME_RESPONSE));
+        aMap.put(GET_DIR_COMMAND, 				new BtCommandDetails(GET_DIR_COMMAND, "GET_DIR_COMMAND", DIR_RESPONSE));
+        aMap.put(GET_INFOMEM_COMMAND, 			new BtCommandDetails(GET_INFOMEM_COMMAND, "GET_INFOMEM_COMMAND", INFOMEM_RESPONSE));
+        aMap.put(GET_RWC_COMMAND, 				new BtCommandDetails(GET_RWC_COMMAND, "GET_RWC_COMMAND", RWC_RESPONSE));
+        aMap.put(GET_VBATT_COMMAND, 			new BtCommandDetails(GET_VBATT_COMMAND, "GET_VBATT_COMMAND", VBATT_RESPONSE));
+        
+        mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+    }
+    
+    public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+    static {
+        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+
+        aMap.put(STOP_STREAMING_COMMAND, 		new BtCommandDetails(STOP_STREAMING_COMMAND, "STOP_STREAMING_COMMAND")); //doesn't receive ack
+        
+        aMap.put(RESET_TO_DEFAULT_CONFIGURATION_COMMAND, new BtCommandDetails(RESET_TO_DEFAULT_CONFIGURATION_COMMAND, "RESET_TO_DEFAULT_CONFIGURATION_COMMAND"));
+        aMap.put(RESET_CALIBRATION_VALUE_COMMAND, new BtCommandDetails(RESET_CALIBRATION_VALUE_COMMAND, "RESET_CALIBRATION_VALUE_COMMAND"));
+        
+        aMap.put(TEST_CONNECTION_COMMAND, 		new BtCommandDetails(TEST_CONNECTION_COMMAND, "TEST_CONNECTION_COMMAND"));
+        
+        aMap.put(TOGGLE_LED_COMMAND, 			new BtCommandDetails(TOGGLE_LED_COMMAND, "TOGGLE_LED_COMMAND"));
+        aMap.put(START_STREAMING_COMMAND, 		new BtCommandDetails(START_STREAMING_COMMAND, "START_STREAMING_COMMAND"));
+        aMap.put(START_SDBT_COMMAND, 			new BtCommandDetails(START_SDBT_COMMAND, "START_SDBT_COMMAND"));
+        aMap.put(STOP_SDBT_COMMAND, 			new BtCommandDetails(STOP_SDBT_COMMAND, "STOP_SDBT_COMMAND"));
+        aMap.put(START_LOGGING_ONLY_COMMAND, 	new BtCommandDetails(START_LOGGING_ONLY_COMMAND, "START_LOGGING_ONLY_COMMAND"));
+        aMap.put(STOP_LOGGING_ONLY_COMMAND, 	new BtCommandDetails(STOP_LOGGING_ONLY_COMMAND, "STOP_LOGGING_ONLY_COMMAND"));
+        aMap.put(SET_SAMPLING_RATE_COMMAND, 	new BtCommandDetails(SET_SAMPLING_RATE_COMMAND, "SET_SAMPLING_RATE_COMMAND"));
+        aMap.put(SET_SENSORS_COMMAND, 			new BtCommandDetails(SET_SENSORS_COMMAND, "SET_SENSORS_COMMAND"));
+        aMap.put(SET_ACCEL_SENSITIVITY_COMMAND, new BtCommandDetails(SET_ACCEL_SENSITIVITY_COMMAND, "SET_ACCEL_SENSITIVITY_COMMAND"));
+        aMap.put(SET_5V_REGULATOR_COMMAND, 		new BtCommandDetails(SET_5V_REGULATOR_COMMAND, "SET_5V_REGULATOR_COMMAND")); // only Shimmer 2
+        aMap.put(SET_PMUX_COMMAND, 				new BtCommandDetails(SET_PMUX_COMMAND, "SET_PMUX_COMMAND")); // only Shimmer 2
+        aMap.put(SET_CONFIG_BYTE0_COMMAND, 		new BtCommandDetails(SET_CONFIG_BYTE0_COMMAND, "SET_CONFIG_BYTE0_COMMAND"));
+        aMap.put(SET_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(SET_ACCEL_CALIBRATION_COMMAND, "SET_ACCEL_CALIBRATION_COMMAND"));
+        aMap.put(SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND, "SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND"));
+        aMap.put(SET_GYRO_CALIBRATION_COMMAND, 	new BtCommandDetails(SET_GYRO_CALIBRATION_COMMAND, "SET_GYRO_CALIBRATION_COMMAND"));
+        aMap.put(SET_MAG_CALIBRATION_COMMAND, 	new BtCommandDetails(SET_MAG_CALIBRATION_COMMAND, "SET_MAG_CALIBRATION_COMMAND"));
+        aMap.put(SET_GSR_RANGE_COMMAND, 		new BtCommandDetails(SET_GSR_RANGE_COMMAND, "SET_GSR_RANGE_COMMAND"));
+        aMap.put(SET_EMG_CALIBRATION_COMMAND, 	new BtCommandDetails(SET_EMG_CALIBRATION_COMMAND, "SET_EMG_CALIBRATION_COMMAND"));
+        aMap.put(SET_ECG_CALIBRATION_COMMAND, 	new BtCommandDetails(SET_ECG_CALIBRATION_COMMAND, "SET_ECG_CALIBRATION_COMMAND"));
+        aMap.put(SET_BLINK_LED, 				new BtCommandDetails(SET_BLINK_LED, "SET_BLINK_LED"));
+        aMap.put(SET_GYRO_TEMP_VREF_COMMAND, 	new BtCommandDetails(SET_GYRO_TEMP_VREF_COMMAND, "SET_GYRO_TEMP_VREF_COMMAND"));
+        aMap.put(SET_BUFFER_SIZE_COMMAND, 		new BtCommandDetails(SET_BUFFER_SIZE_COMMAND, "SET_BUFFER_SIZE_COMMAND"));
+        aMap.put(SET_MAG_GAIN_COMMAND, 			new BtCommandDetails(SET_MAG_GAIN_COMMAND, "SET_MAG_GAIN_COMMAND"));
+        aMap.put(SET_MAG_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_MAG_SAMPLING_RATE_COMMAND, "SET_MAG_SAMPLING_RATE_COMMAND"));
+        aMap.put(SET_ACCEL_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_ACCEL_SAMPLING_RATE_COMMAND, "SET_ACCEL_SAMPLING_RATE_COMMAND"));
+        aMap.put(SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, new BtCommandDetails(SET_LSM303DLHC_ACCEL_LPMODE_COMMAND, "SET_LSM303DLHC_ACCEL_LPMODE_COMMAND"));
+        aMap.put(SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, new BtCommandDetails(SET_LSM303DLHC_ACCEL_HRMODE_COMMAND, "SET_LSM303DLHC_ACCEL_HRMODE_COMMAND"));
+        aMap.put(SET_MPU9150_GYRO_RANGE_COMMAND, new BtCommandDetails(SET_MPU9150_GYRO_RANGE_COMMAND, "SET_MPU9150_GYRO_RANGE_COMMAND"));
+        aMap.put(SET_MPU9150_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_MPU9150_SAMPLING_RATE_COMMAND, "SET_MPU9150_SAMPLING_RATE_COMMAND"));
+        aMap.put(SET_BMP180_PRES_RESOLUTION_COMMAND, new BtCommandDetails(SET_BMP180_PRES_RESOLUTION_COMMAND, "SET_BMP180_PRES_RESOLUTION_COMMAND"));
+        aMap.put(SET_BMP180_PRES_CALIBRATION_COMMAND, new BtCommandDetails(SET_BMP180_PRES_CALIBRATION_COMMAND, "SET_BMP180_PRES_CALIBRATION_COMMAND"));
+        aMap.put(SET_INTERNAL_EXP_POWER_ENABLE_COMMAND, new BtCommandDetails(SET_INTERNAL_EXP_POWER_ENABLE_COMMAND, "SET_INTERNAL_EXP_POWER_ENABLE_COMMAND"));
+        aMap.put(SET_EXG_REGS_COMMAND, 			new BtCommandDetails(SET_EXG_REGS_COMMAND, "SET_EXG_REGS_COMMAND"));
+        aMap.put(SET_BAUD_RATE_COMMAND, 		new BtCommandDetails(SET_BAUD_RATE_COMMAND, "SET_BAUD_RATE_COMMAND"));
+        aMap.put(SET_DERIVED_CHANNEL_BYTES, 	new BtCommandDetails(SET_DERIVED_CHANNEL_BYTES, "SET_DERIVED_CHANNEL_BYTES"));
+        aMap.put(SET_TRIAL_CONFIG_COMMAND, 		new BtCommandDetails(SET_TRIAL_CONFIG_COMMAND, "SET_TRIAL_CONFIG_COMMAND"));
+        aMap.put(SET_CENTER_COMMAND, 			new BtCommandDetails(SET_CENTER_COMMAND, "SET_CENTER_COMMAND"));
+        aMap.put(SET_SHIMMERNAME_COMMAND, 		new BtCommandDetails(SET_SHIMMERNAME_COMMAND, "SET_SHIMMERNAME_COMMAND"));  //Shimmer Name
+        aMap.put(SET_EXPID_COMMAND, 			new BtCommandDetails(SET_EXPID_COMMAND, "SET_EXPID_COMMAND")); //Experiment Name
+        aMap.put(SET_MYID_COMMAND,				new BtCommandDetails(SET_MYID_COMMAND, "SET_MYID_COMMAND")); //Shimmer ID in trial
+        aMap.put(SET_NSHIMMER_COMMAND, 			new BtCommandDetails(SET_NSHIMMER_COMMAND, "SET_NSHIMMER_COMMAND"));
+        aMap.put(SET_CONFIGTIME_COMMAND, 		new BtCommandDetails(SET_CONFIGTIME_COMMAND, "SET_CONFIGTIME_COMMAND"));
+        aMap.put(SET_INFOMEM_COMMAND, 			new BtCommandDetails(SET_INFOMEM_COMMAND, "SET_INFOMEM_COMMAND"));
+        aMap.put(SET_CRC_COMMAND, 				new BtCommandDetails(SET_CRC_COMMAND, "SET_CRC_COMMAND"));
+        aMap.put(SET_RWC_COMMAND, 				new BtCommandDetails(SET_RWC_COMMAND, "SET_RWC_COMMAND"));
+        
+        
+        mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+    }
+
+    public static final Map<Byte, BtCommandDetails> mBtResponseMap;
+    static {
+        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+
+        aMap.put(INQUIRY_RESPONSE, 				new BtCommandDetails(INQUIRY_RESPONSE, "INQUIRY_RESPONSE", -1));
+        aMap.put(GET_SHIMMER_VERSION_RESPONSE, 	new BtCommandDetails(GET_SHIMMER_VERSION_RESPONSE, "GET_SHIMMER_VERSION_RESPONSE", 1));
+        aMap.put(SAMPLING_RATE_RESPONSE, 		new BtCommandDetails(SAMPLING_RATE_RESPONSE, "SAMPLING_RATE_RESPONSE", -1)); 						//TODO 1 for Shimmer2R, 2 for Shimmer3
+        aMap.put(ACCEL_SENSITIVITY_RESPONSE, 	new BtCommandDetails(ACCEL_SENSITIVITY_RESPONSE, "ACCEL_SENSITIVITY_RESPONSE", 1));
+        aMap.put(CONFIG_BYTE0_RESPONSE, 		new BtCommandDetails(CONFIG_BYTE0_RESPONSE, "CONFIG_BYTE0_RESPONSE", -1)); 							//TODO 1 for Shimmer2R, 4 for Shimmer3
+        aMap.put(ACCEL_CALIBRATION_RESPONSE, 	new BtCommandDetails(ACCEL_CALIBRATION_RESPONSE, "ACCEL_CALIBRATION_RESPONSE", 21));
+        aMap.put(LSM303DLHC_ACCEL_CALIBRATION_RESPONSE, new BtCommandDetails(LSM303DLHC_ACCEL_CALIBRATION_RESPONSE, "LSM303DLHC_ACCEL_CALIBRATION_RESPONSE", 21));
+        aMap.put(GYRO_CALIBRATION_RESPONSE, 	new BtCommandDetails(GYRO_CALIBRATION_RESPONSE, "GYRO_CALIBRATION_RESPONSE", 21));
+        aMap.put(MAG_CALIBRATION_RESPONSE, 		new BtCommandDetails(MAG_CALIBRATION_RESPONSE, "MAG_CALIBRATION_RESPONSE", 21));
+        aMap.put(GSR_RANGE_RESPONSE, 			new BtCommandDetails(GSR_RANGE_RESPONSE, "GSR_RANGE_RESPONSE", 1));
+        aMap.put(EMG_CALIBRATION_RESPONSE, 		new BtCommandDetails(EMG_CALIBRATION_RESPONSE, "EMG_CALIBRATION_RESPONSE", 4));
+        aMap.put(ECG_CALIBRATION_RESPONSE, 		new BtCommandDetails(ECG_CALIBRATION_RESPONSE, "ECG_CALIBRATION_RESPONSE", 8));
+        aMap.put(ALL_CALIBRATION_RESPONSE, 		new BtCommandDetails(ALL_CALIBRATION_RESPONSE, "ALL_CALIBRATION_RESPONSE", -1));
+        aMap.put(FW_VERSION_RESPONSE, 			new BtCommandDetails(FW_VERSION_RESPONSE, "FW_VERSION_RESPONSE", 6));
+        aMap.put(BLINK_LED_RESPONSE, 			new BtCommandDetails(BLINK_LED_RESPONSE, "BLINK_LED_RESPONSE", 1));
+        aMap.put(BUFFER_SIZE_RESPONSE, 			new BtCommandDetails(BUFFER_SIZE_RESPONSE, "BUFFER_SIZE_RESPONSE", 1));
+        aMap.put(MAG_GAIN_RESPONSE, 			new BtCommandDetails(MAG_GAIN_RESPONSE, "MAG_GAIN_RESPONSE", 1));
+        aMap.put(MAG_SAMPLING_RATE_RESPONSE, 	new BtCommandDetails(MAG_SAMPLING_RATE_RESPONSE, "MAG_SAMPLING_RATE_RESPONSE", 1));
+        aMap.put(ACCEL_SAMPLING_RATE_RESPONSE,	new BtCommandDetails(ACCEL_SAMPLING_RATE_RESPONSE, "ACCEL_SAMPLING_RATE_RESPONSE", 1));
+        aMap.put(LSM303DLHC_ACCEL_LPMODE_RESPONSE, new BtCommandDetails(LSM303DLHC_ACCEL_LPMODE_RESPONSE, "LSM303DLHC_ACCEL_LPMODE_RESPONSE", 1));
+        aMap.put(LSM303DLHC_ACCEL_HRMODE_RESPONSE, new BtCommandDetails(LSM303DLHC_ACCEL_HRMODE_RESPONSE, "LSM303DLHC_ACCEL_HRMODE_RESPONSE", 1));
+        aMap.put(MPU9150_GYRO_RANGE_RESPONSE, 	new BtCommandDetails(MPU9150_GYRO_RANGE_RESPONSE, "MPU9150_GYRO_RANGE_RESPONSE", -1)); 				// Unhandled
+        aMap.put(MPU9150_SAMPLING_RATE_RESPONSE, new BtCommandDetails(MPU9150_SAMPLING_RATE_RESPONSE, "MPU9150_SAMPLING_RATE_RESPONSE", -1)); 		// Unhandled
+        aMap.put(BMP180_PRES_RESOLUTION_RESPONSE, new BtCommandDetails(BMP180_PRES_RESOLUTION_RESPONSE, "BMP180_PRES_RESOLUTION_RESPONSE", -1)); 	// Unhandled
+        aMap.put(BMP180_PRES_CALIBRATION_RESPONSE, new BtCommandDetails(BMP180_PRES_CALIBRATION_RESPONSE, "BMP180_PRES_CALIBRATION_RESPONSE", -1)); // Unhandled
+        aMap.put(BMP180_CALIBRATION_COEFFICIENTS_RESPONSE, new BtCommandDetails(BMP180_CALIBRATION_COEFFICIENTS_RESPONSE, "BMP180_CALIBRATION_COEFFICIENTS_RESPONSE", 22));
+        aMap.put(MPU9150_MAG_SENS_ADJ_VALS_RESPONSE, new BtCommandDetails(MPU9150_MAG_SENS_ADJ_VALS_RESPONSE, "MPU9150_MAG_SENS_ADJ_VALS_RESPONSE", -1)); // Unhandled
+        aMap.put(INTERNAL_EXP_POWER_ENABLE_RESPONSE, new BtCommandDetails(INTERNAL_EXP_POWER_ENABLE_RESPONSE, "INTERNAL_EXP_POWER_ENABLE_RESPONSE", -1)); // Unhandled
+        aMap.put(EXG_REGS_RESPONSE, 			new BtCommandDetails(EXG_REGS_RESPONSE, "EXG_REGS_RESPONSE", 11));
+        aMap.put(DAUGHTER_CARD_ID_RESPONSE, 	new BtCommandDetails(DAUGHTER_CARD_ID_RESPONSE, "DAUGHTER_CARD_ID_RESPONSE", 3+1));
+        aMap.put(BAUD_RATE_RESPONSE, 			new BtCommandDetails(BAUD_RATE_RESPONSE, "BAUD_RATE_RESPONSE", 1));
+        aMap.put(DERIVED_CHANNEL_BYTES_RESPONSE, new BtCommandDetails(DERIVED_CHANNEL_BYTES_RESPONSE, "DERIVED_CHANNEL_BYTES_RESPONSE", 3));
+        aMap.put(STATUS_RESPONSE, 				new BtCommandDetails(STATUS_RESPONSE, "STATUS_RESPONSE", 1));
+        aMap.put(TRIAL_CONFIG_RESPONSE, 		new BtCommandDetails(TRIAL_CONFIG_RESPONSE, "TRIAL_CONFIG_RESPONSE", 3));
+        aMap.put(CENTER_RESPONSE, 				new BtCommandDetails(CENTER_RESPONSE, "CENTER_RESPONSE", 1));
+        aMap.put(SHIMMERNAME_RESPONSE, 			new BtCommandDetails(SHIMMERNAME_RESPONSE, "SHIMMERNAME_RESPONSE", 1)); 							// first byte indicates length to subsequently read
+        aMap.put(EXPID_RESPONSE, 				new BtCommandDetails(EXPID_RESPONSE, "EXPID_RESPONSE", 1)); 										// first byte indicates length to subsequently read
+        aMap.put(MYID_RESPONSE, 				new BtCommandDetails(MYID_RESPONSE, "MYID_RESPONSE", -1)); 											// Unhandled
+        aMap.put(NSHIMMER_RESPONSE, 			new BtCommandDetails(NSHIMMER_RESPONSE, "NSHIMMER_RESPONSE", -1)); 									// Unhandled
+        aMap.put(CONFIGTIME_RESPONSE, 			new BtCommandDetails(CONFIGTIME_RESPONSE, "CONFIGTIME_RESPONSE", 1)); 								// first byte indicates length to subsequently read
+        aMap.put(DIR_RESPONSE, 					new BtCommandDetails(DIR_RESPONSE, "DIR_RESPONSE", 1)); 											// first byte indicates length to subsequently read
+        aMap.put(INSTREAM_CMD_RESPONSE, 		new BtCommandDetails(INSTREAM_CMD_RESPONSE, "INSTREAM_CMD_RESPONSE", 1)); 							// first byte indicates what instream command it is
+        aMap.put(INFOMEM_RESPONSE, 				new BtCommandDetails(INFOMEM_RESPONSE, "INFOMEM_RESPONSE", -1)); 									// Unhandled
+        aMap.put(RWC_RESPONSE, 					new BtCommandDetails(RWC_RESPONSE, "RWC_RESPONSE", 8));
+        aMap.put(VBATT_RESPONSE, 				new BtCommandDetails(VBATT_RESPONSE, "VBATT_RESPONSE", 3));
+        
+        mBtResponseMap = Collections.unmodifiableMap(aMap);
+    }
 	
 	//endregion
 	
@@ -906,6 +1094,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else if(tb[0]==EMG_CALIBRATION_RESPONSE){
 								processShimmer2EmgCalReadBytes();
 							}
+							else if(tb[0]==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE) {
+								processLsm303dlhcAccelCalReadBytes();
+							}  
 							else if(tb[0]==CONFIG_BYTE0_RESPONSE) {
 								if(mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
 									byte[] bufferConfigByte0 = readBytes(1);
@@ -1899,39 +2090,42 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	
 	/**
-	 * @param sensor is a string value that defines the sensor. Accepted sensor values are "Accelerometer","Gyroscope","Magnetometer","ECG","EMG","All"
+	 * @param sensor is a string value that defines the sensor. Accepted sensor 
+	 * values are "Accelerometer", "Gyroscope", "Magnetometer", "ECG", "EMG", 
+	 * "All", "Wide-Range Accelerometer"
 	 */
 	public void readCalibrationParameters(String sensor) {
-	
-			if(!mIsInitialised){
-				if(mFirmwareVersionCode==1 && mFirmwareVersionInternal==0  && mHardwareVersion!=HW_ID.SHIMMER_3) {
-					//mFirmwareVersionParsed=boilerPlateString;
-					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
-          	        Bundle bundle = new Bundle();
-          	        bundle.putString(TOAST, "Firmware Version: " +mFirmwareVersionParsed);
-          	        msg.setData(bundle);
-          	        mHandler.sendMessage(msg);*/
-				}	
-			}
-			if(sensor.equals("Accelerometer")) {
-				getListofInstructions().add(new byte[]{GET_ACCEL_CALIBRATION_COMMAND});
-			}
-			else if(sensor.equals("Gyroscope")) {
-				getListofInstructions().add(new byte[]{GET_GYRO_CALIBRATION_COMMAND});
-			}
-			else if(sensor.equals("Magnetometer")) {
-				getListofInstructions().add(new byte[]{GET_MAG_CALIBRATION_COMMAND});
-			}
-			else if(sensor.equals("All")){
-				getListofInstructions().add(new byte[]{GET_ALL_CALIBRATION_COMMAND});
-			} 
-			else if(sensor.equals("ECG")){
-				getListofInstructions().add(new byte[]{GET_ECG_CALIBRATION_COMMAND});
-			} 
-			else if(sensor.equals("EMG")){
-				getListofInstructions().add(new byte[]{GET_EMG_CALIBRATION_COMMAND});
-			}
-		
+		if(!mIsInitialised){
+			if(mFirmwareVersionCode==1 && mFirmwareVersionInternal==0  && mHardwareVersion!=HW_ID.SHIMMER_3) {
+				//mFirmwareVersionParsed=boilerPlateString;
+				/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
+      	        Bundle bundle = new Bundle();
+      	        bundle.putString(TOAST, "Firmware Version: " +mFirmwareVersionParsed);
+      	        msg.setData(bundle);
+      	        mHandler.sendMessage(msg);*/
+			}	
+		}
+		if(sensor.equals("Accelerometer")) {
+			getListofInstructions().add(new byte[]{GET_ACCEL_CALIBRATION_COMMAND});
+		}
+		else if(sensor.equals("Gyroscope")) {
+			getListofInstructions().add(new byte[]{GET_GYRO_CALIBRATION_COMMAND});
+		}
+		else if(sensor.equals("Magnetometer")) {
+			getListofInstructions().add(new byte[]{GET_MAG_CALIBRATION_COMMAND});
+		}
+		else if(sensor.equals("All")){
+			getListofInstructions().add(new byte[]{GET_ALL_CALIBRATION_COMMAND});
+		} 
+		else if(sensor.equals("ECG")){
+			getListofInstructions().add(new byte[]{GET_ECG_CALIBRATION_COMMAND});
+		} 
+		else if(sensor.equals("EMG")){
+			getListofInstructions().add(new byte[]{GET_EMG_CALIBRATION_COMMAND});
+		}
+		else if(sensor.equals("Wide-Range Accelerometer")){
+			getListofInstructions().add(new byte[]{GET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND});
+		}
 	}
 	
 	public void readSamplingRate() {
