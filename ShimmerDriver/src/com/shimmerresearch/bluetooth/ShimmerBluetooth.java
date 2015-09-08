@@ -578,7 +578,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						if((byte)tb[0]==ACK_COMMAND_PROCESSED) {
 							
 							if(mCurrentCommand!=GET_STATUS_COMMAND && mCurrentCommand!=TEST_CONNECTION_COMMAND && mCurrentCommand!=SET_BLINK_LED && mSendProgressReport){
-//								sendProgressReport(new ProgressReportPerCmd(mCurrentCommand,getmListofInstructions().size(),mMyBluetoothAddress));
 								sendProgressReport(new ProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mUniqueID));
 							}
 							
@@ -587,367 +586,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								stopTimerCheckForAckOrResp(); //cancel the ack timer
 								mWaitForAck=false;
 								
-								// check for null and size were put in because 
-								// if Shimmer was abruptly disconnected there is
-								// sometimes indexoutofboundsexceptions
-								if(getListofInstructions().size() > 0){
-									if(getListofInstructions().get(0)!=null){
+								processAckFromSetCommand(mCurrentCommand);
 
-										if(mCurrentCommand==START_STREAMING_COMMAND || mCurrentCommand==START_SDBT_COMMAND) {
-											mIsStreaming=true;
-											if(mCurrentCommand==START_SDBT_COMMAND){
-												mIsSDLogging = true;
-											}
-											byteStack.clear();
-											isNowStreaming();
-										}
-										else if(mCurrentCommand==SET_SAMPLING_RATE_COMMAND) {
-											byte[] instruction=getListofInstructions().get(0);
-											double tempdouble=-1;
-											if(mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
-												tempdouble=(double)1024/instruction[1];
-											} 
-											else {
-												//TODO: MN Change to new method (remove below?) 
-												tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
-											}
-											mShimmerSamplingRate = tempdouble;
-											
-											if(mHardwareVersion==HW_ID.SHIMMER_3){ // has to be here because to ensure the current exgregister settings have been read back
-												//check sampling rate and adjust accordingly;
-												/*if(mShimmerSamplingRate<=128){
-													writeEXGRateSetting(1,0);
-													writeEXGRateSetting(2,0);
-												} 
-												else if(mShimmerSamplingRate<=256){
-													writeEXGRateSetting(1,1);
-													writeEXGRateSetting(2,1);
-												}
-												else if(mShimmerSamplingRate<=512){
-													writeEXGRateSetting(1,2);
-													writeEXGRateSetting(2,2);
-												}*/
-											}
-										}
-										else if(mCurrentCommand==SET_BUFFER_SIZE_COMMAND) {
-											mBufferSize=(int)((byte[])getListofInstructions().get(0))[1];
-										}
-										else if(mCurrentCommand==SET_GYRO_TEMP_VREF_COMMAND) {
-											mConfigByte0=mTempByteValue;
-										}
-										else if(mCurrentCommand==SET_BLINK_LED) {
-											if(((byte[])getListofInstructions().get(0)).length>2){
-												mCurrentLEDStatus=(int)((byte[])getListofInstructions().get(0))[1];
-											}
-										}
-										else if(mCurrentCommand==TEST_CONNECTION_COMMAND) {
-											//DO Nothing
-										}
-										else if(mCurrentCommand==SET_GSR_RANGE_COMMAND) {
-											mGSRRange=(int)((byte [])getListofInstructions().get(0))[1];
-										}
-										else if(mCurrentCommand==START_LOGGING_ONLY_COMMAND) {
-											mIsSDLogging = true;
-											logAndStreamStatusChanged();
-										}
-										else if(mCurrentCommand==STOP_LOGGING_ONLY_COMMAND) {
-											mIsSDLogging = false;
-											logAndStreamStatusChanged();
-										}
-										else if(mCurrentCommand==SET_CONFIG_BYTE0_COMMAND) {
-											mConfigByte0=(int)((byte [])getListofInstructions().get(0))[1];
-										}
-										else if(mCurrentCommand==SET_PMUX_COMMAND) {
-											if(((byte[])getListofInstructions().get(0))[1]==1) {
-												mConfigByte0=(byte) ((byte) (mConfigByte0|64)&(0xFF)); 
-											}
-											else if(((byte[])getListofInstructions().get(0))[1]==0) {
-												mConfigByte0=(byte) ((byte)(mConfigByte0 & 191)&(0xFF));
-											}
-										}
-										else if(mCurrentCommand==SET_BMP180_PRES_RESOLUTION_COMMAND){
-											mPressureResolution=(int)((byte [])getListofInstructions().get(0))[1];
-										}
-										else if(mCurrentCommand==SET_5V_REGULATOR_COMMAND) {
-											if(((byte[])getListofInstructions().get(0))[1]==1) {
-												mConfigByte0=(byte) (mConfigByte0|128); 
-											}
-											else if(((byte[])getListofInstructions().get(0))[1]==0) {
-												mConfigByte0=(byte)(mConfigByte0 & 127);
-											}
-										}
-										else if(mCurrentCommand==SET_INTERNAL_EXP_POWER_ENABLE_COMMAND) {
-											if(((byte[])getListofInstructions().get(0))[1]==1) {
-												mConfigByte0 = (mConfigByte0|16777216); 
-												mInternalExpPower = 1;
-											}
-											else if(((byte[])getListofInstructions().get(0))[1]==0) {
-												mConfigByte0 = mConfigByte0 & 4278190079l;
-												mInternalExpPower = 0;
-											}
-										}
-										
-										
-										else if(mCurrentCommand==SET_ACCEL_SENSITIVITY_COMMAND) {
-											mAccelRange=(int)(((byte[])getListofInstructions().get(0))[1]);
-											if(mDefaultCalibrationParametersAccel){
-												if(mHardwareVersion!=HW_ID.SHIMMER_3){
-													if(getAccelRange()==0){
-														mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
-													} 
-													else if(getAccelRange()==1){
-														mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
-													}
-													else if(getAccelRange()==2){
-														mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
-													} 
-													else if(getAccelRange()==3){
-														mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
-													}
-												} 
-												else if(mHardwareVersion==HW_ID.SHIMMER_3){
-													mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-													mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-													mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
-												}
-											}
-		
-											if(mDefaultCalibrationParametersDigitalAccel){
-												if(mHardwareVersion==HW_ID.SHIMMER_3){
-													if(getAccelRange()==1){
-														mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-														mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-														mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-													} 
-													else if(getAccelRange()==2){
-														mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-														mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-														mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-													} 
-													else if(getAccelRange()==3){
-														mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-														mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-														mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-													} 
-													else if(getAccelRange()==0){
-														mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel2gShimmer3;
-														mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-														mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-													}
-												}
-											}
-										} 
-										
-										else if(mCurrentCommand==SET_ACCEL_CALIBRATION_COMMAND) {
-											retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), ACCEL_CALIBRATION_RESPONSE);
-										}
-										else if(mCurrentCommand==SET_GYRO_CALIBRATION_COMMAND) {
-											retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), GYRO_CALIBRATION_RESPONSE);
-										}
-										else if(mCurrentCommand==SET_MAG_CALIBRATION_COMMAND) {
-											retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), MAG_CALIBRATION_RESPONSE);
-										}
-										else if(mCurrentCommand==SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND) {
-											retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
-										}
-										else if(mCurrentCommand==SET_MPU9150_GYRO_RANGE_COMMAND) {
-											mGyroRange=(int)(((byte[])getListofInstructions().get(0))[1]);
-											if(mDefaultCalibrationParametersGyro){
-												if(mHardwareVersion==HW_ID.SHIMMER_3){
-													mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
-													mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
-													if(mGyroRange==0){
-														mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
-													} 
-													else if(mGyroRange==1){
-														mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
-													} 
-													else if(mGyroRange==2){
-														mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
-													} 
-													else if(mGyroRange==3){
-														mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
-													}
-												}
-											}
-										} 
-										else if(mCurrentCommand==SET_MAG_SAMPLING_RATE_COMMAND){
-											mLSM303MagRate = mTempIntValue;
-										}
-										else if(mCurrentCommand==SET_ACCEL_SAMPLING_RATE_COMMAND){
-											mLSM303DigitalAccelRate = mTempIntValue;
-										}
-										else if(mCurrentCommand==SET_MPU9150_SAMPLING_RATE_COMMAND){
-											mMPU9150GyroAccelRate = mTempIntValue;
-										}
-										else if(mCurrentCommand==SET_EXG_REGS_COMMAND){
-											byte[] bytearray = getListofInstructions().get(0);
-											if(bytearray[1]==EXG_CHIP1){  //0 = CHIP 1
-												byte[] EXG1RegisterArray = new byte[10];
-												System.arraycopy(bytearray, 4, EXG1RegisterArray, 0, 10);
-												setEXG1RegisterArray(EXG1RegisterArray);
-		
-		//										System.arraycopy(bytearray, 4, mEXG1RegisterArray, 0, 10);
-		//										mEXG1RateSetting = mEXG1RegisterArray[0] & 7;
-		//										mEXG1CH1GainSetting = (mEXG1RegisterArray[3] >> 4) & 7;
-		//										mEXG1CH1GainValue = convertEXGGainSettingToValue(mEXG1CH1GainSetting);
-		//										mEXG1CH2GainSetting = (mEXG1RegisterArray[4] >> 4) & 7;
-		//										mEXG1CH2GainValue = convertEXGGainSettingToValue(mEXG1CH2GainSetting);
-		//										mEXGReferenceElectrode = mEXG1RegisterArray[5] & 0x0f;
-											} 
-											else if(bytearray[1]==EXG_CHIP2){ //1 = CHIP 2
-												byte[] EXG2RegisterArray = new byte[10];
-												System.arraycopy(bytearray, 4, EXG2RegisterArray, 0, 10);
-												setEXG2RegisterArray(EXG2RegisterArray);
-												
-		//										System.arraycopy(bytearray, 4, mEXG2RegisterArray, 0, 10);
-		//										mEXG2RateSetting = mEXG2RegisterArray[0] & 7;
-		//										mEXG2CH1GainSetting = (mEXG2RegisterArray[3] >> 4) & 7;
-		//										mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
-		//										mEXG2CH2GainSetting = (mEXG2RegisterArray[4] >> 4) & 7;
-		//										mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
-											}
-										} 
-										else if(mCurrentCommand==SET_SENSORS_COMMAND) {
-											mEnabledSensors=tempEnabledSensors;
-											byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
-										}
-										else if(mCurrentCommand==SET_MAG_GAIN_COMMAND){
-											mMagRange=(int)((byte [])getListofInstructions().get(0))[1];
-											if(mDefaultCalibrationParametersMag){
-												if(mHardwareVersion==HW_ID.SHIMMER_3){
-													mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
-													mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
-													if(mMagRange==1){
-														mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer3;
-													} 
-													else if(mMagRange==2){
-														mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer3;
-													} 
-													else if(mMagRange==3){
-														mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer3;
-													} 
-													else if(mMagRange==4){
-														mSensitivityMatrixMagnetometer = SensitivityMatrixMag4GaShimmer3;
-													} 
-													else if(mMagRange==5){
-														mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer3;
-													} 
-													else if(mMagRange==6){
-														mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer3;
-													} 
-													else if(mMagRange==7){
-														mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer3;
-													}
-												}
-											}
-										}
-										else if(mCurrentCommand==SET_ECG_CALIBRATION_COMMAND){
-											//mGSRRange=mTempIntValue;
-											mDefaultCalibrationParametersECG = false;
-											OffsetECGLALL=(double)((((byte[])getListofInstructions().get(0))[0]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[1]&0xFF);
-											GainECGLALL=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
-											OffsetECGRALL=(double)((((byte[])getListofInstructions().get(0))[4]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[5]&0xFF);
-											GainECGRALL=(double)((((byte[])getListofInstructions().get(0))[6]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[7]&0xFF);
-										}
-										else if(mCurrentCommand==SET_EMG_CALIBRATION_COMMAND){
-											//mGSRRange=mTempIntValue;
-											mDefaultCalibrationParametersEMG = false;
-											OffsetEMG=(double)((((byte[])getListofInstructions().get(0))[0]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[1]&0xFF);
-											GainEMG=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
-										}
-										else if(mCurrentCommand==SET_DERIVED_CHANNEL_BYTES){
-											mDerivedSensors=(long)(((((byte[])getListofInstructions().get(0))[0]&0xFF)<<16) + ((((byte[])getListofInstructions().get(0))[1]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[2]&0xFF));
-										}
-										else if(mCurrentCommand==SET_SHIMMERNAME_COMMAND){
-											byte[] instruction =getListofInstructions().get(0);
-											byte[] nameArray = new byte[instruction[1]];
-											System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
-											String name = new String(nameArray);
-											setShimmerUserAssignedName(name);
-										}
-										else if(mCurrentCommand==SET_EXPID_COMMAND){
-											byte[] instruction =getListofInstructions().get(0);
-											byte[] nameArray = new byte[instruction[1]];
-											System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
-											String name = new String(nameArray);
-											setExperimentName(name);
-										}
-										else if(mCurrentCommand==SET_RWC_COMMAND){
-											byte[] instruction =getListofInstructions().get(0);
-											byte[] byteTime = new byte[8];
-											System.arraycopy(instruction, 1, byteTime, 0, 8);
-											mSetRWC = byteTime;
-										}
-										else if(mCurrentCommand==SET_CONFIGTIME_COMMAND){
-											byte[] instruction =getListofInstructions().get(0);
-											byte[] timeArray = new byte[instruction[1]];
-											System.arraycopy(instruction, 2, timeArray, 0, instruction[1]);
-											String time = new String(timeArray);
-											setConfigTime(Long.parseLong(time));
-										}
-										else if(mCurrentCommand==SET_CENTER_COMMAND){
-											byte[] instruction =getListofInstructions().get(0);
-											byte[] centerArray = new byte[instruction[1]];
-											System.arraycopy(instruction, 2, centerArray, 0, instruction[1]);
-											String center = new String(centerArray);
-											//setConfigTime(Long.parseLong(time));
-											setCenter(center);
-										}
-										else if(mCurrentCommand==SET_TRIAL_CONFIG_COMMAND){
-											byte[] instruction =getListofInstructions().get(0);
-											byte[] dataArray = new byte[3];
-											System.arraycopy(instruction, 1, dataArray, 0, 3);
-											//settrial
-										}
-										else if(mCurrentCommand==SET_BAUD_RATE_COMMAND) {
-											mBluetoothBaudRate=(int)((byte [])getListofInstructions().get(0))[1];
-		//									reconnect();
-											//TODO: handle disconnect/reconnect here?
-										}
-										else if(mCurrentCommand==TOGGLE_LED_COMMAND){
-											//TODO: MN -> do something
-										}
-										else if(mCurrentCommand==SET_LSM303DLHC_ACCEL_LPMODE_COMMAND) {
-											//TODO: MN -> do something
-										} 
-										else if(mCurrentCommand==SET_LSM303DLHC_ACCEL_HRMODE_COMMAND) {
-											//TODO: MN -> do something
-										}
-										else if(mCurrentCommand==SET_MYID_COMMAND){
-											//TODO: MN -> do something
-										}
-										else if(mCurrentCommand==SET_NSHIMMER_COMMAND){
-											//TODO: MN -> do something
-										}
-										else if(mCurrentCommand==RESET_TO_DEFAULT_CONFIGURATION_COMMAND){
-											//TODO: MN -> do something
-										}
-										else if(mCurrentCommand==RESET_CALIBRATION_VALUE_COMMAND){
-											//TODO: MN -> do something
-										}
-										else if(mCurrentCommand==SET_BMP180_PRES_CALIBRATION_COMMAND){
-											//TODO: MN -> do something
-										}
-										else if(mCurrentCommand==SET_INFOMEM_COMMAND){
-											//TODO: MN -> do something
-										}
-										else if(mCurrentCommand==SET_CRC_COMMAND){
-											//TODO: MN -> do something
-										}
-										else {
-											//unhandled set command
-											printLogDataForDebugging("Unhandled set command: " + btCommandToString(mCurrentCommand));
-										}
-										
-										getListofInstructions().remove(0);
-									}
-									
-								}
 								mTransactionCompleted = true;
 								setInstructionStackLock(false);
 							}
-
 							
 							// All get commands
 							else if(mBtGetCommandMap.containsKey(mCurrentCommand)){
@@ -994,403 +637,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						if(mBtResponseMap.containsKey(tb[0])){
 							stopTimerCheckForAckOrResp(); //cancel the ack timer
 							mWaitForResponse=false;
-
-							if(tb[0]==INQUIRY_RESPONSE) {
-								delayForBtResponse(500); // Wait to ensure the packet has been fully received
-								List<Byte> buffer = new  ArrayList<Byte>();
-								if(!(mHardwareVersion==HW_ID.SHIMMER_3)) {
-									for (int i = 0; i < 5; i++) {
-	                                	// get Sampling rate, accel range, config setup byte0, num chans and buffer size
-	                                    buffer.add(readByte());
-	                                }
-									 
-	                                for (int i = 0; i < (int)buffer.get(3); i++) {
-	                                    // read each channel type for the num channels
-	                                	buffer.add(readByte());
-	                                }
-								}
-								else {
-									  for (int i = 0; i < 8; i++) {
-										  // get Sampling rate, accel range, config setup byte0, num chans and buffer size
-										  buffer.add(readByte());
-									  }
-		                              for (int i = 0; i < (int)buffer.get(6); i++) {
-		                            	  // read each channel type for the num channels
-		                            	  buffer.add(readByte());
-		                              }
-								}
-								byte[] bufferInquiry = new byte[buffer.size()];
-								for (int i = 0; i < bufferInquiry.length; i++) {
-									bufferInquiry[i] = (byte) buffer.get(i);
-								}
-									
-								printLogDataForDebugging("Inquiry Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferInquiry));
-								
-								interpretInqResponse(bufferInquiry);
-								inquiryDone();
-							} 
-
-							else if(tb[0]==SAMPLING_RATE_RESPONSE) {
-								if(!mIsStreaming) {
-									if(mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
-										byte[] bufferSR = readBytes(1);
-										if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
-											double val=(double)(bufferSR[0] & (byte) ACK_COMMAND_PROCESSED);
-											mShimmerSamplingRate=1024/val;
-										}
-									} 
-									else if(mHardwareVersion==HW_ID.SHIMMER_3){
-										byte[] bufferSR = readBytes(2); //read the sampling rate
-										mShimmerSamplingRate = 32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8));
-									}
-								}
-
-								printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(mShimmerSamplingRate));
-							} 
-							else if(tb[0]==FW_VERSION_RESPONSE){
-								delayForBtResponse(200); // Wait to ensure the packet has been fully received
-								byte[] bufferInquiry = new byte[6]; 
-								bufferInquiry = readBytes(6);
-								mFirmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
-//								mFWVersion=(double)((bufferInquiry[3]&0xFF)<<8)+(double)(bufferInquiry[2]&0xFF)+((double)((bufferInquiry[4]&0xFF))/10);
-								mFirmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
-								mFirmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
-								mFirmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
-								
-								ShimmerVerObject shimmerVerObject = new ShimmerVerObject(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
-								setShimmerVersionInfo(shimmerVerObject);
-
-								printLogDataForDebugging("FW Version Response Received. FW Code: " + mFirmwareVersionCode);
-								printLogDataForDebugging("FW Version Response Received: " + mFirmwareVersionParsed);
-							} 
-
-							else if(tb[0]==ALL_CALIBRATION_RESPONSE) {
-								if(mHardwareVersion==HW_ID.SHIMMER_3){
-									processAccelCalReadBytes();
-									processGyroCalReadBytes();
-									processMagCalReadBytes();
-									processLsm303dlhcAccelCalReadBytes();
-								} 
-								else { //Shimmer2R etc.
-									processAccelCalReadBytes();
-									processGyroCalReadBytes();
-									processMagCalReadBytes();
-									processShimmer2EmgCalReadBytes();
-									processShimmer2EcgCalReadBytes();
-								}
-							} 
-							else if(tb[0]==ACCEL_CALIBRATION_RESPONSE) {
-								processAccelCalReadBytes();
-							}  
-							else if(tb[0]==GYRO_CALIBRATION_RESPONSE) {
-								processGyroCalReadBytes();
-							} 
-							else if(tb[0]==MAG_CALIBRATION_RESPONSE) {
-								processMagCalReadBytes();
-							} 
-							else if(tb[0]==ECG_CALIBRATION_RESPONSE){
-								processShimmer2EcgCalReadBytes();
-							} 
-							else if(tb[0]==EMG_CALIBRATION_RESPONSE){
-								processShimmer2EmgCalReadBytes();
-							}
-							else if(tb[0]==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE) {
-								processLsm303dlhcAccelCalReadBytes();
-							}  
-							else if(tb[0]==CONFIG_BYTE0_RESPONSE) {
-								if(mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
-									byte[] bufferConfigByte0 = readBytes(1);
-									mConfigByte0 = bufferConfigByte0[0] & 0xFF;
-								} 
-								else {
-									byte[] bufferConfigByte0 = readBytes(4);
-									mConfigByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
-								}
-							} 
-							else if(tb[0]==DERIVED_CHANNEL_BYTES_RESPONSE) {
-								byte[] byteArray = readBytes(3);
-								mDerivedSensors=(long)(((byteArray[0]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[2]&0xFF));
-							}
-							else if(tb[0]==GET_SHIMMER_VERSION_RESPONSE) {
-								delayForBtResponse(100); // Wait to ensure the packet has been fully received
-								byte[] bufferShimmerVersion = new byte[1]; 
-								bufferShimmerVersion = readBytes(1);
-								mHardwareVersion=(int)bufferShimmerVersion[0];
-								
-//								if(mShimmerVersion==HW_ID.SHIMMER_2R){
-//									initializeShimmer2R();
-//								} 
-//								else if(mShimmerVersion==HW_ID.SHIMMER_3) {
-//									initializeShimmer3();
-//								}
-								
-								printLogDataForDebugging("Shimmer Version (HW) Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
-								
-								readFWVersion();
-							} 							
-							else if(tb[0]==ACCEL_SENSITIVITY_RESPONSE) {
-								byte[] bufferAccelSensitivity = readBytes(1);
-								mAccelRange=bufferAccelSensitivity[0];
-								if(mDefaultCalibrationParametersAccel){
-									if(mHardwareVersion!=HW_ID.SHIMMER_3){
-										if(getAccelRange()==0){
-											mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
-										} 
-										else if(getAccelRange()==1){
-											mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
-										} 
-										else if(getAccelRange()==2){
-											mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
-										} 
-										else if(getAccelRange()==3){
-											mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
-										}
-									} 
-									else if(mHardwareVersion==HW_ID.SHIMMER_3){
-										if(getAccelRange()==0){
-											mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-											mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-											mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
-										} 
-										else if(getAccelRange()==1){
-											mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-											mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-											mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-										} 
-										else if(getAccelRange()==2){
-											mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-											mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-											mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-										} 
-										else if(getAccelRange()==3){
-											mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-											mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-											mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-										}
-									}
-								}
-							} 
-							else if(tb[0]==MPU9150_GYRO_RANGE_RESPONSE) {
-								byte[] bufferGyroSensitivity = readBytes(1);
-								mGyroRange=bufferGyroSensitivity[0];
-								if(mDefaultCalibrationParametersGyro){
-									if(mHardwareVersion==HW_ID.SHIMMER_3){
-										mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
-										mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
-										if(mGyroRange==0){
-											mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
-										} 
-										else if(mGyroRange==1){
-											mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
-										} 
-										else if(mGyroRange==2){
-											mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
-										} 
-										else if(mGyroRange==3){
-											mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
-										}
-									}
-								}
-							}
-							else if(tb[0]==GSR_RANGE_RESPONSE) {
-								byte[] bufferGSRRange = readBytes(1); 
-								mGSRRange=bufferGSRRange[0];
-								
-								printLogDataForDebugging("GSR Range Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferGSRRange));
-							} 
-							else if(tb[0]==BLINK_LED_RESPONSE) {
-								byte[] byteled = readBytes(1);
-								mCurrentLEDStatus = byteled[0]&0xFF;
-							} 
-							else if(tb[0]==BUFFER_SIZE_RESPONSE) {
-								byte[] byteled = readBytes(1);
-								mBufferSize = byteled[0] & 0xFF;
-							} 
-							else if(tb[0]==MAG_GAIN_RESPONSE) {
-								byte[] bufferAns = readBytes(1); 
-								mMagRange=bufferAns[0];
-							} 
-							else if(tb[0]==MAG_SAMPLING_RATE_RESPONSE) {
-								byte[] bufferAns = readBytes(1); 
-								mLSM303MagRate=bufferAns[0];
-								
-								printLogDataForDebugging("Mag Sampling Rate Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferAns));
-							} 
-							else if(tb[0]==ACCEL_SAMPLING_RATE_RESPONSE) {
-								byte[] bufferAns = readBytes(1); 
-								mLSM303DigitalAccelRate=bufferAns[0];
-							}
-							else if(tb[0]==BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
-								//get pressure
-								delayForBtResponse(100); // Wait to ensure the packet has been fully received
-								byte[] pressureResoRes = new byte[22]; 
-								pressureResoRes = readBytes(22);
-								mPressureCalRawParams = new byte[23];
-								System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
-								mPressureCalRawParams[0] = tb[0];
-								retrievepressurecalibrationparametersfrompacket(pressureResoRes,tb[0]);
-							} 
-							else if(tb[0]==EXG_REGS_RESPONSE){
-								delayForBtResponse(300); // Wait to ensure the packet has been fully received
-								byte[] bufferAns = readBytes(11);
-								if(mTempChipID==0){
-									byte[] EXG1RegisterArray = new byte[10];
-									System.arraycopy(bufferAns, 1, EXG1RegisterArray, 0, 10);
-									setEXG1RegisterArray(EXG1RegisterArray);
-								} 
-								else if(mTempChipID==1){
-									byte[] EXG2RegisterArray = new byte[10];
-									System.arraycopy(bufferAns, 1, EXG2RegisterArray, 0, 10);
-									setEXG2RegisterArray(EXG2RegisterArray);
-								}
-							} 
-							else if(tb[0]==DAUGHTER_CARD_ID_RESPONSE) {
-								mExpBoardArray = readBytes(numBytesToReadFromExpBoard+1);
-//								getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
-								byte[] mExpBoardArraySplit = Arrays.copyOfRange(mExpBoardArray, 1, 4);
-								setExpansionBoardDetails(new ExpansionBoardDetails(mExpBoardArraySplit));
-							}
-							else if(tb[0]==BAUD_RATE_RESPONSE) {
-								byte[] bufferBaud = readBytes(1);
-								mBluetoothBaudRate=bufferBaud[0] & 0xFF;
-							}
-							else if(tb[0]==TRIAL_CONFIG_RESPONSE) {
-								byte[] data = readBytes(3);
-								fillTrialShimmer3(data);
-							}
-							else if(tb[0]==CENTER_RESPONSE) {
-								byte[] length = readBytes(1);
-								byte[] data = readBytes(length[0]);
-								String center = new String(data);
-								setCenter(center);
-							}
-							else if(tb[0]==SHIMMERNAME_RESPONSE) {
-								byte[] length = readBytes(1);
-								byte[] data = readBytes(length[0]);
-								String name = new String(data);
-								setShimmerUserAssignedName(name);
-							}
-							else if(tb[0]==EXPID_RESPONSE) {
-								byte[] length = readBytes(1);
-								byte[] data = readBytes(length[0]);
-								String name = new String(data);
-								setExperimentName(name);
-							}
-							else if(tb[0]==CONFIGTIME_RESPONSE) {
-								byte[] length = readBytes(1);
-								byte[] data = readBytes(length[0]);
-								String time = new String(data);
-								if(time.isEmpty()){
-									setConfigTime(0);
-								} 
-								else {
-									setConfigTime(Long.parseLong(time));	
-								}
-							}
-							else if(tb[0]==RWC_RESPONSE) {
-								byte[] byteTime = readBytes(8);
-								mGetRWC = byteTime;
-							}
 							
-							else if(tb[0]==DIR_RESPONSE){ // response to GET or Instream response
-								byte[] responseData = readBytes(1);
-								mDirectoryNameLength = responseData[0];
-								byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
-								bufferDirectoryName = readBytes(mDirectoryNameLength);
-								String tempDirectory = new String(bufferDirectoryName);
-								mDirectoryName = tempDirectory;
-								consolePrintLn("Directory Name = "+ mDirectoryName);
-							}
-							else if(tb[0]==VBATT_RESPONSE) { // response to GET or Instream response
-								byte[] responseData = readBytes(3); 
-								setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
-								
-								consolePrintLn("Batt data " + mBattVoltage);
-							}
-							else if(tb[0]==STATUS_RESPONSE){ // response to GET or Instream response
-								byte[] responseData = readBytes(1);
-								parseStatusByte(responseData[0]);
-
-								if(!mIsSensing){
-									if(!isInitialized()){
-										writeRealWorldClock();
-									}
-								}
-								logAndStreamStatusChanged();
-							} 
-							else if(tb[0]==INSTREAM_CMD_RESPONSE) {
-								byte[] responseCommand = readBytes(1);
-								consolePrintLn("Instream received = " + btCommandToString(responseCommand[0]));
-								if(responseCommand[0]==DIR_RESPONSE){
-									byte[] responseData = readBytes(1);
-									mDirectoryNameLength = responseData[0];
-									byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
-									bufferDirectoryName = readBytes(mDirectoryNameLength);
-									String tempDirectory = new String(bufferDirectoryName);
-									mDirectoryName = tempDirectory;
-									consolePrintLn("Directory Name = "+ mDirectoryName);
-								}
-								else if(responseCommand[0]==STATUS_RESPONSE){
-									byte[] responseData = readBytes(1);
-									parseStatusByte(responseData[0]);
-
-									if(!mIsSensing){
-										if(!isInitialized()){
-											writeRealWorldClock();
-										}
-									}
-									logAndStreamStatusChanged();
-								} 
-								else if(responseCommand[0]==VBATT_RESPONSE) {
-									byte[] responseData = readBytes(3); 
-									//mBattVoltage=Integer.toString(((bufferAns[0]&0xFF)<<8)+(bufferLogCommandType[1]&0xFF));
-									setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
-									printLogDataForDebugging("Batt data " + mBattVoltage);
-								}  
-							}
-							
-							
-							else if(tb[0]==LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
-								byte[] bufferAns = readBytes(1);
-								//TODO: MN -> nothing is done with read bytes
-							} 
-							else if(tb[0]==LSM303DLHC_ACCEL_HRMODE_RESPONSE) {
-								byte[] bufferAns = readBytes(1);
-								//TODO: MN -> nothing is done with read bytes
-							} 
-							else if(tb[0]==MYID_RESPONSE) {
-								//TODO: MN -> do something
-							}
-							else if(tb[0]==NSHIMMER_RESPONSE) {
-								//TODO: MN -> do something
-							}
-							else if(tb[0]==MPU9150_SAMPLING_RATE_RESPONSE) {
-								//TODO: MN -> do something
-							}
-							else if(tb[0]==BMP180_PRES_RESOLUTION_RESPONSE) {
-								//TODO: MN -> do something
-							}
-							else if(tb[0]==BMP180_PRES_CALIBRATION_RESPONSE) {
-								//TODO: MN -> do something
-							}
-							else if(tb[0]==MPU9150_MAG_SENS_ADJ_VALS_RESPONSE) {
-								//TODO: MN -> do something
-							}
-							else if(tb[0]==INTERNAL_EXP_POWER_ENABLE_RESPONSE) {
-								//TODO: MN -> do something
-							}
-							else if(tb[0]==INFOMEM_RESPONSE) {
-								//TODO: MN -> do something
-							}
-							else {
-//								consolePrintLn("Unhandled BT response: " + tb[0]);
-							}
+							processResponse(tb[0]);
 				        	
 							printLogDataForDebugging("Response Received:\t\t\t\t" + btCommandToString(tb[0]));
 							
 							mTransactionCompleted=true;
 							setInstructionStackLock(false);
-							
+						
 							
 							// Special case for FW_VERSION_RESPONSE because it
 							// needs to initialise the Shimmer after releasing
@@ -1466,8 +720,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						consolePrintLn("Throwing away = " + Util.bytesToHexStringWithSpacesFormatted(readBytes(1)));
 					}
 				}
-				// end region --------- INSTREAM RESPONSES --------- 
-				
 				
 				if(mIsStreaming) {
 					
@@ -1490,7 +742,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							//Skip the first byte as it is the identifier DATA_PACKET
 							System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
 							if(mUseProcessingThread){
-								
 								mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
 							} 
 							else {
@@ -1634,8 +885,764 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						}
 					} 
 				}
+				// end region --------- INSTREAM RESPONSES --------- 
+
 			}
 		}
+		
+		
+		private void processResponse(byte b) {
+			if(tb[0]==INQUIRY_RESPONSE) {
+				delayForBtResponse(500); // Wait to ensure the packet has been fully received
+				List<Byte> buffer = new  ArrayList<Byte>();
+				if(!(mHardwareVersion==HW_ID.SHIMMER_3)) {
+					for (int i = 0; i < 5; i++) {
+                    	// get Sampling rate, accel range, config setup byte0, num chans and buffer size
+                        buffer.add(readByte());
+                    }
+					 
+                    for (int i = 0; i < (int)buffer.get(3); i++) {
+                        // read each channel type for the num channels
+                    	buffer.add(readByte());
+                    }
+				}
+				else {
+					  for (int i = 0; i < 8; i++) {
+						  // get Sampling rate, accel range, config setup byte0, num chans and buffer size
+						  buffer.add(readByte());
+					  }
+                      for (int i = 0; i < (int)buffer.get(6); i++) {
+                    	  // read each channel type for the num channels
+                    	  buffer.add(readByte());
+                      }
+				}
+				byte[] bufferInquiry = new byte[buffer.size()];
+				for (int i = 0; i < bufferInquiry.length; i++) {
+					bufferInquiry[i] = (byte) buffer.get(i);
+				}
+					
+				printLogDataForDebugging("Inquiry Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferInquiry));
+				
+				interpretInqResponse(bufferInquiry);
+				inquiryDone();
+			} 
+
+			else if(tb[0]==SAMPLING_RATE_RESPONSE) {
+				if(!mIsStreaming) {
+					if(mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
+						byte[] bufferSR = readBytes(1);
+						if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
+							double val=(double)(bufferSR[0] & (byte) ACK_COMMAND_PROCESSED);
+							mShimmerSamplingRate=1024/val;
+						}
+					} 
+					else if(mHardwareVersion==HW_ID.SHIMMER_3){
+						byte[] bufferSR = readBytes(2); //read the sampling rate
+						mShimmerSamplingRate = 32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8));
+					}
+				}
+
+				printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(mShimmerSamplingRate));
+			} 
+			else if(tb[0]==FW_VERSION_RESPONSE){
+				delayForBtResponse(200); // Wait to ensure the packet has been fully received
+				byte[] bufferInquiry = new byte[6]; 
+				bufferInquiry = readBytes(6);
+				mFirmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
+//				mFWVersion=(double)((bufferInquiry[3]&0xFF)<<8)+(double)(bufferInquiry[2]&0xFF)+((double)((bufferInquiry[4]&0xFF))/10);
+				mFirmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
+				mFirmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
+				mFirmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
+				
+				ShimmerVerObject shimmerVerObject = new ShimmerVerObject(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+				setShimmerVersionInfo(shimmerVerObject);
+
+				printLogDataForDebugging("FW Version Response Received. FW Code: " + mFirmwareVersionCode);
+				printLogDataForDebugging("FW Version Response Received: " + mFirmwareVersionParsed);
+			} 
+
+			else if(tb[0]==ALL_CALIBRATION_RESPONSE) {
+				if(mHardwareVersion==HW_ID.SHIMMER_3){
+					processAccelCalReadBytes();
+					processGyroCalReadBytes();
+					processMagCalReadBytes();
+					processLsm303dlhcAccelCalReadBytes();
+				} 
+				else { //Shimmer2R etc.
+					processAccelCalReadBytes();
+					processGyroCalReadBytes();
+					processMagCalReadBytes();
+					processShimmer2EmgCalReadBytes();
+					processShimmer2EcgCalReadBytes();
+				}
+			} 
+			else if(tb[0]==ACCEL_CALIBRATION_RESPONSE) {
+				processAccelCalReadBytes();
+			}  
+			else if(tb[0]==GYRO_CALIBRATION_RESPONSE) {
+				processGyroCalReadBytes();
+			} 
+			else if(tb[0]==MAG_CALIBRATION_RESPONSE) {
+				processMagCalReadBytes();
+			} 
+			else if(tb[0]==ECG_CALIBRATION_RESPONSE){
+				processShimmer2EcgCalReadBytes();
+			} 
+			else if(tb[0]==EMG_CALIBRATION_RESPONSE){
+				processShimmer2EmgCalReadBytes();
+			}
+			else if(tb[0]==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE) {
+				processLsm303dlhcAccelCalReadBytes();
+			}  
+			else if(tb[0]==CONFIG_BYTE0_RESPONSE) {
+				if(mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){    
+					byte[] bufferConfigByte0 = readBytes(1);
+					mConfigByte0 = bufferConfigByte0[0] & 0xFF;
+				} 
+				else {
+					byte[] bufferConfigByte0 = readBytes(4);
+					mConfigByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
+				}
+			} 
+			else if(tb[0]==DERIVED_CHANNEL_BYTES_RESPONSE) {
+				byte[] byteArray = readBytes(3);
+				mDerivedSensors=(long)(((byteArray[0]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[2]&0xFF));
+			}
+			else if(tb[0]==GET_SHIMMER_VERSION_RESPONSE) {
+				delayForBtResponse(100); // Wait to ensure the packet has been fully received
+				byte[] bufferShimmerVersion = new byte[1]; 
+				bufferShimmerVersion = readBytes(1);
+				mHardwareVersion=(int)bufferShimmerVersion[0];
+				
+//				if(mShimmerVersion==HW_ID.SHIMMER_2R){
+//					initializeShimmer2R();
+//				} 
+//				else if(mShimmerVersion==HW_ID.SHIMMER_3) {
+//					initializeShimmer3();
+//				}
+				
+				printLogDataForDebugging("Shimmer Version (HW) Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
+				
+				readFWVersion();
+			} 							
+			else if(tb[0]==ACCEL_SENSITIVITY_RESPONSE) {
+				byte[] bufferAccelSensitivity = readBytes(1);
+				mAccelRange=bufferAccelSensitivity[0];
+				if(mDefaultCalibrationParametersAccel){
+					if(mHardwareVersion!=HW_ID.SHIMMER_3){
+						if(getAccelRange()==0){
+							mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
+						} 
+						else if(getAccelRange()==1){
+							mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
+						} 
+						else if(getAccelRange()==2){
+							mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
+						} 
+						else if(getAccelRange()==3){
+							mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
+						}
+					} 
+					else if(mHardwareVersion==HW_ID.SHIMMER_3){
+						if(getAccelRange()==0){
+							mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
+							mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
+							mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
+						} 
+						else if(getAccelRange()==1){
+							mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
+							mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+							mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+						} 
+						else if(getAccelRange()==2){
+							mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
+							mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+							mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+						} 
+						else if(getAccelRange()==3){
+							mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
+							mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+							mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+						}
+					}
+				}
+			} 
+			else if(tb[0]==MPU9150_GYRO_RANGE_RESPONSE) {
+				byte[] bufferGyroSensitivity = readBytes(1);
+				mGyroRange=bufferGyroSensitivity[0];
+				if(mDefaultCalibrationParametersGyro){
+					if(mHardwareVersion==HW_ID.SHIMMER_3){
+						mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
+						mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
+						if(mGyroRange==0){
+							mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
+						} 
+						else if(mGyroRange==1){
+							mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
+						} 
+						else if(mGyroRange==2){
+							mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
+						} 
+						else if(mGyroRange==3){
+							mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
+						}
+					}
+				}
+			}
+			else if(tb[0]==GSR_RANGE_RESPONSE) {
+				byte[] bufferGSRRange = readBytes(1); 
+				mGSRRange=bufferGSRRange[0];
+				
+				printLogDataForDebugging("GSR Range Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferGSRRange));
+			} 
+			else if(tb[0]==BLINK_LED_RESPONSE) {
+				byte[] byteled = readBytes(1);
+				mCurrentLEDStatus = byteled[0]&0xFF;
+			} 
+			else if(tb[0]==BUFFER_SIZE_RESPONSE) {
+				byte[] byteled = readBytes(1);
+				mBufferSize = byteled[0] & 0xFF;
+			} 
+			else if(tb[0]==MAG_GAIN_RESPONSE) {
+				byte[] bufferAns = readBytes(1); 
+				mMagRange=bufferAns[0];
+			} 
+			else if(tb[0]==MAG_SAMPLING_RATE_RESPONSE) {
+				byte[] bufferAns = readBytes(1); 
+				mLSM303MagRate=bufferAns[0];
+				
+				printLogDataForDebugging("Mag Sampling Rate Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferAns));
+			} 
+			else if(tb[0]==ACCEL_SAMPLING_RATE_RESPONSE) {
+				byte[] bufferAns = readBytes(1); 
+				mLSM303DigitalAccelRate=bufferAns[0];
+			}
+			else if(tb[0]==BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
+				//get pressure
+				delayForBtResponse(100); // Wait to ensure the packet has been fully received
+				byte[] pressureResoRes = new byte[22]; 
+				pressureResoRes = readBytes(22);
+				mPressureCalRawParams = new byte[23];
+				System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
+				mPressureCalRawParams[0] = tb[0];
+				retrievepressurecalibrationparametersfrompacket(pressureResoRes,tb[0]);
+			} 
+			else if(tb[0]==EXG_REGS_RESPONSE){
+				delayForBtResponse(300); // Wait to ensure the packet has been fully received
+				byte[] bufferAns = readBytes(11);
+				if(mTempChipID==0){
+					byte[] EXG1RegisterArray = new byte[10];
+					System.arraycopy(bufferAns, 1, EXG1RegisterArray, 0, 10);
+					setEXG1RegisterArray(EXG1RegisterArray);
+				} 
+				else if(mTempChipID==1){
+					byte[] EXG2RegisterArray = new byte[10];
+					System.arraycopy(bufferAns, 1, EXG2RegisterArray, 0, 10);
+					setEXG2RegisterArray(EXG2RegisterArray);
+				}
+			} 
+			else if(tb[0]==DAUGHTER_CARD_ID_RESPONSE) {
+				mExpBoardArray = readBytes(numBytesToReadFromExpBoard+1);
+//				getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
+				byte[] mExpBoardArraySplit = Arrays.copyOfRange(mExpBoardArray, 1, 4);
+				setExpansionBoardDetails(new ExpansionBoardDetails(mExpBoardArraySplit));
+			}
+			else if(tb[0]==BAUD_RATE_RESPONSE) {
+				byte[] bufferBaud = readBytes(1);
+				mBluetoothBaudRate=bufferBaud[0] & 0xFF;
+			}
+			else if(tb[0]==TRIAL_CONFIG_RESPONSE) {
+				byte[] data = readBytes(3);
+				fillTrialShimmer3(data);
+			}
+			else if(tb[0]==CENTER_RESPONSE) {
+				byte[] length = readBytes(1);
+				byte[] data = readBytes(length[0]);
+				String center = new String(data);
+				setCenter(center);
+			}
+			else if(tb[0]==SHIMMERNAME_RESPONSE) {
+				byte[] length = readBytes(1);
+				byte[] data = readBytes(length[0]);
+				String name = new String(data);
+				setShimmerUserAssignedName(name);
+			}
+			else if(tb[0]==EXPID_RESPONSE) {
+				byte[] length = readBytes(1);
+				byte[] data = readBytes(length[0]);
+				String name = new String(data);
+				setExperimentName(name);
+			}
+			else if(tb[0]==CONFIGTIME_RESPONSE) {
+				byte[] length = readBytes(1);
+				byte[] data = readBytes(length[0]);
+				String time = new String(data);
+				if(time.isEmpty()){
+					setConfigTime(0);
+				} 
+				else {
+					setConfigTime(Long.parseLong(time));	
+				}
+			}
+			else if(tb[0]==RWC_RESPONSE) {
+				byte[] byteTime = readBytes(8);
+				mGetRWC = byteTime;
+			}
+			
+			else if(tb[0]==DIR_RESPONSE){ // response to GET or Instream response
+				byte[] responseData = readBytes(1);
+				mDirectoryNameLength = responseData[0];
+				byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
+				bufferDirectoryName = readBytes(mDirectoryNameLength);
+				String tempDirectory = new String(bufferDirectoryName);
+				mDirectoryName = tempDirectory;
+				consolePrintLn("Directory Name = "+ mDirectoryName);
+			}
+			else if(tb[0]==VBATT_RESPONSE) { // response to GET or Instream response
+				byte[] responseData = readBytes(3); 
+				setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
+				
+				consolePrintLn("Batt data " + mBattVoltage);
+			}
+			else if(tb[0]==STATUS_RESPONSE){ // response to GET or Instream response
+				byte[] responseData = readBytes(1);
+				parseStatusByte(responseData[0]);
+
+				if(!mIsSensing){
+					if(!isInitialized()){
+						writeRealWorldClock();
+					}
+				}
+				logAndStreamStatusChanged();
+			} 
+			else if(tb[0]==INSTREAM_CMD_RESPONSE) {
+				byte[] responseCommand = readBytes(1);
+				consolePrintLn("Instream received = " + btCommandToString(responseCommand[0]));
+				if(responseCommand[0]==DIR_RESPONSE){
+					byte[] responseData = readBytes(1);
+					mDirectoryNameLength = responseData[0];
+					byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
+					bufferDirectoryName = readBytes(mDirectoryNameLength);
+					String tempDirectory = new String(bufferDirectoryName);
+					mDirectoryName = tempDirectory;
+					consolePrintLn("Directory Name = "+ mDirectoryName);
+				}
+				else if(responseCommand[0]==STATUS_RESPONSE){
+					byte[] responseData = readBytes(1);
+					parseStatusByte(responseData[0]);
+
+					if(!mIsSensing){
+						if(!isInitialized()){
+							writeRealWorldClock();
+						}
+					}
+					logAndStreamStatusChanged();
+				} 
+				else if(responseCommand[0]==VBATT_RESPONSE) {
+					byte[] responseData = readBytes(3); 
+					//mBattVoltage=Integer.toString(((bufferAns[0]&0xFF)<<8)+(bufferLogCommandType[1]&0xFF));
+					setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
+					printLogDataForDebugging("Batt data " + mBattVoltage);
+				}  
+			}
+			
+			
+			else if(tb[0]==LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
+				byte[] bufferAns = readBytes(1);
+				//TODO: MN -> nothing is done with read bytes
+			} 
+			else if(tb[0]==LSM303DLHC_ACCEL_HRMODE_RESPONSE) {
+				byte[] bufferAns = readBytes(1);
+				//TODO: MN -> nothing is done with read bytes
+			} 
+			else if(tb[0]==MYID_RESPONSE) {
+				//TODO: MN -> do something
+			}
+			else if(tb[0]==NSHIMMER_RESPONSE) {
+				//TODO: MN -> do something
+			}
+			else if(tb[0]==MPU9150_SAMPLING_RATE_RESPONSE) {
+				//TODO: MN -> do something
+			}
+			else if(tb[0]==BMP180_PRES_RESOLUTION_RESPONSE) {
+				//TODO: MN -> do something
+			}
+			else if(tb[0]==BMP180_PRES_CALIBRATION_RESPONSE) {
+				//TODO: MN -> do something
+			}
+			else if(tb[0]==MPU9150_MAG_SENS_ADJ_VALS_RESPONSE) {
+				//TODO: MN -> do something
+			}
+			else if(tb[0]==INTERNAL_EXP_POWER_ENABLE_RESPONSE) {
+				//TODO: MN -> do something
+			}
+			else if(tb[0]==INFOMEM_RESPONSE) {
+				//TODO: MN -> do something
+			}
+			else {
+//				consolePrintLn("Unhandled BT response: " + tb[0]);
+			}
+		}
+		
+		private void processAckFromSetCommand(byte mCurrentCommand) {
+			
+			// check for null and size were put in because 
+			// if Shimmer was abruptly disconnected there is
+			// sometimes indexoutofboundsexceptions
+			if(getListofInstructions().size() > 0){
+				if(getListofInstructions().get(0)!=null){
+
+					if(mCurrentCommand==START_STREAMING_COMMAND || mCurrentCommand==START_SDBT_COMMAND) {
+						mIsStreaming=true;
+						if(mCurrentCommand==START_SDBT_COMMAND){
+							mIsSDLogging = true;
+						}
+						byteStack.clear();
+						isNowStreaming();
+					}
+					else if(mCurrentCommand==SET_SAMPLING_RATE_COMMAND) {
+						byte[] instruction=getListofInstructions().get(0);
+						double tempdouble=-1;
+						if(mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
+							tempdouble=(double)1024/instruction[1];
+						} 
+						else {
+							//TODO: MN Change to new method (remove below?) 
+							tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
+						}
+						mShimmerSamplingRate = tempdouble;
+						
+						if(mHardwareVersion==HW_ID.SHIMMER_3){ // has to be here because to ensure the current exgregister settings have been read back
+							//check sampling rate and adjust accordingly;
+							/*if(mShimmerSamplingRate<=128){
+								writeEXGRateSetting(1,0);
+								writeEXGRateSetting(2,0);
+							} 
+							else if(mShimmerSamplingRate<=256){
+								writeEXGRateSetting(1,1);
+								writeEXGRateSetting(2,1);
+							}
+							else if(mShimmerSamplingRate<=512){
+								writeEXGRateSetting(1,2);
+								writeEXGRateSetting(2,2);
+							}*/
+						}
+					}
+					else if(mCurrentCommand==SET_BUFFER_SIZE_COMMAND) {
+						mBufferSize=(int)((byte[])getListofInstructions().get(0))[1];
+					}
+					else if(mCurrentCommand==SET_GYRO_TEMP_VREF_COMMAND) {
+						mConfigByte0=mTempByteValue;
+					}
+					else if(mCurrentCommand==SET_BLINK_LED) {
+						if(((byte[])getListofInstructions().get(0)).length>2){
+							mCurrentLEDStatus=(int)((byte[])getListofInstructions().get(0))[1];
+						}
+					}
+					else if(mCurrentCommand==TEST_CONNECTION_COMMAND) {
+						//DO Nothing
+					}
+					else if(mCurrentCommand==SET_GSR_RANGE_COMMAND) {
+						mGSRRange=(int)((byte [])getListofInstructions().get(0))[1];
+					}
+					else if(mCurrentCommand==START_LOGGING_ONLY_COMMAND) {
+						mIsSDLogging = true;
+						logAndStreamStatusChanged();
+					}
+					else if(mCurrentCommand==STOP_LOGGING_ONLY_COMMAND) {
+						mIsSDLogging = false;
+						logAndStreamStatusChanged();
+					}
+					else if(mCurrentCommand==SET_CONFIG_BYTE0_COMMAND) {
+						mConfigByte0=(int)((byte [])getListofInstructions().get(0))[1];
+					}
+					else if(mCurrentCommand==SET_PMUX_COMMAND) {
+						if(((byte[])getListofInstructions().get(0))[1]==1) {
+							mConfigByte0=(byte) ((byte) (mConfigByte0|64)&(0xFF)); 
+						}
+						else if(((byte[])getListofInstructions().get(0))[1]==0) {
+							mConfigByte0=(byte) ((byte)(mConfigByte0 & 191)&(0xFF));
+						}
+					}
+					else if(mCurrentCommand==SET_BMP180_PRES_RESOLUTION_COMMAND){
+						mPressureResolution=(int)((byte [])getListofInstructions().get(0))[1];
+					}
+					else if(mCurrentCommand==SET_5V_REGULATOR_COMMAND) {
+						if(((byte[])getListofInstructions().get(0))[1]==1) {
+							mConfigByte0=(byte) (mConfigByte0|128); 
+						}
+						else if(((byte[])getListofInstructions().get(0))[1]==0) {
+							mConfigByte0=(byte)(mConfigByte0 & 127);
+						}
+					}
+					else if(mCurrentCommand==SET_INTERNAL_EXP_POWER_ENABLE_COMMAND) {
+						if(((byte[])getListofInstructions().get(0))[1]==1) {
+							mConfigByte0 = (mConfigByte0|16777216); 
+							mInternalExpPower = 1;
+						}
+						else if(((byte[])getListofInstructions().get(0))[1]==0) {
+							mConfigByte0 = mConfigByte0 & 4278190079l;
+							mInternalExpPower = 0;
+						}
+					}
+					
+					
+					else if(mCurrentCommand==SET_ACCEL_SENSITIVITY_COMMAND) {
+						mAccelRange=(int)(((byte[])getListofInstructions().get(0))[1]);
+						if(mDefaultCalibrationParametersAccel){
+							if(mHardwareVersion!=HW_ID.SHIMMER_3){
+								if(getAccelRange()==0){
+									mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
+								} 
+								else if(getAccelRange()==1){
+									mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
+								}
+								else if(getAccelRange()==2){
+									mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
+								} 
+								else if(getAccelRange()==3){
+									mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
+								}
+							} 
+							else if(mHardwareVersion==HW_ID.SHIMMER_3){
+								mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
+								mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
+								mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
+							}
+						}
+
+						if(mDefaultCalibrationParametersDigitalAccel){
+							if(mHardwareVersion==HW_ID.SHIMMER_3){
+								if(getAccelRange()==1){
+									mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
+									mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+									mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+								} 
+								else if(getAccelRange()==2){
+									mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
+									mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+									mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+								} 
+								else if(getAccelRange()==3){
+									mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
+									mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+									mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+								} 
+								else if(getAccelRange()==0){
+									mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel2gShimmer3;
+									mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+									mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+								}
+							}
+						}
+					} 
+					
+					else if(mCurrentCommand==SET_ACCEL_CALIBRATION_COMMAND) {
+						retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), ACCEL_CALIBRATION_RESPONSE);
+					}
+					else if(mCurrentCommand==SET_GYRO_CALIBRATION_COMMAND) {
+						retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), GYRO_CALIBRATION_RESPONSE);
+					}
+					else if(mCurrentCommand==SET_MAG_CALIBRATION_COMMAND) {
+						retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), MAG_CALIBRATION_RESPONSE);
+					}
+					else if(mCurrentCommand==SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND) {
+						retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+					}
+					else if(mCurrentCommand==SET_MPU9150_GYRO_RANGE_COMMAND) {
+						mGyroRange=(int)(((byte[])getListofInstructions().get(0))[1]);
+						if(mDefaultCalibrationParametersGyro){
+							if(mHardwareVersion==HW_ID.SHIMMER_3){
+								mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
+								mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
+								if(mGyroRange==0){
+									mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
+								} 
+								else if(mGyroRange==1){
+									mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
+								} 
+								else if(mGyroRange==2){
+									mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
+								} 
+								else if(mGyroRange==3){
+									mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
+								}
+							}
+						}
+					} 
+					else if(mCurrentCommand==SET_MAG_SAMPLING_RATE_COMMAND){
+						mLSM303MagRate = mTempIntValue;
+					}
+					else if(mCurrentCommand==SET_ACCEL_SAMPLING_RATE_COMMAND){
+						mLSM303DigitalAccelRate = mTempIntValue;
+					}
+					else if(mCurrentCommand==SET_MPU9150_SAMPLING_RATE_COMMAND){
+						mMPU9150GyroAccelRate = mTempIntValue;
+					}
+					else if(mCurrentCommand==SET_EXG_REGS_COMMAND){
+						byte[] bytearray = getListofInstructions().get(0);
+						if(bytearray[1]==EXG_CHIP1){  //0 = CHIP 1
+							byte[] EXG1RegisterArray = new byte[10];
+							System.arraycopy(bytearray, 4, EXG1RegisterArray, 0, 10);
+							setEXG1RegisterArray(EXG1RegisterArray);
+
+//										System.arraycopy(bytearray, 4, mEXG1RegisterArray, 0, 10);
+//										mEXG1RateSetting = mEXG1RegisterArray[0] & 7;
+//										mEXG1CH1GainSetting = (mEXG1RegisterArray[3] >> 4) & 7;
+//										mEXG1CH1GainValue = convertEXGGainSettingToValue(mEXG1CH1GainSetting);
+//										mEXG1CH2GainSetting = (mEXG1RegisterArray[4] >> 4) & 7;
+//										mEXG1CH2GainValue = convertEXGGainSettingToValue(mEXG1CH2GainSetting);
+//										mEXGReferenceElectrode = mEXG1RegisterArray[5] & 0x0f;
+						} 
+						else if(bytearray[1]==EXG_CHIP2){ //1 = CHIP 2
+							byte[] EXG2RegisterArray = new byte[10];
+							System.arraycopy(bytearray, 4, EXG2RegisterArray, 0, 10);
+							setEXG2RegisterArray(EXG2RegisterArray);
+							
+//										System.arraycopy(bytearray, 4, mEXG2RegisterArray, 0, 10);
+//										mEXG2RateSetting = mEXG2RegisterArray[0] & 7;
+//										mEXG2CH1GainSetting = (mEXG2RegisterArray[3] >> 4) & 7;
+//										mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
+//										mEXG2CH2GainSetting = (mEXG2RegisterArray[4] >> 4) & 7;
+//										mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
+						}
+					} 
+					else if(mCurrentCommand==SET_SENSORS_COMMAND) {
+						mEnabledSensors=tempEnabledSensors;
+						byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
+					}
+					else if(mCurrentCommand==SET_MAG_GAIN_COMMAND){
+						mMagRange=(int)((byte [])getListofInstructions().get(0))[1];
+						if(mDefaultCalibrationParametersMag){
+							if(mHardwareVersion==HW_ID.SHIMMER_3){
+								mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
+								mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
+								if(mMagRange==1){
+									mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer3;
+								} 
+								else if(mMagRange==2){
+									mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer3;
+								} 
+								else if(mMagRange==3){
+									mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer3;
+								} 
+								else if(mMagRange==4){
+									mSensitivityMatrixMagnetometer = SensitivityMatrixMag4GaShimmer3;
+								} 
+								else if(mMagRange==5){
+									mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer3;
+								} 
+								else if(mMagRange==6){
+									mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer3;
+								} 
+								else if(mMagRange==7){
+									mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer3;
+								}
+							}
+						}
+					}
+					else if(mCurrentCommand==SET_ECG_CALIBRATION_COMMAND){
+						//mGSRRange=mTempIntValue;
+						mDefaultCalibrationParametersECG = false;
+						OffsetECGLALL=(double)((((byte[])getListofInstructions().get(0))[0]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[1]&0xFF);
+						GainECGLALL=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
+						OffsetECGRALL=(double)((((byte[])getListofInstructions().get(0))[4]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[5]&0xFF);
+						GainECGRALL=(double)((((byte[])getListofInstructions().get(0))[6]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[7]&0xFF);
+					}
+					else if(mCurrentCommand==SET_EMG_CALIBRATION_COMMAND){
+						//mGSRRange=mTempIntValue;
+						mDefaultCalibrationParametersEMG = false;
+						OffsetEMG=(double)((((byte[])getListofInstructions().get(0))[0]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[1]&0xFF);
+						GainEMG=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
+					}
+					else if(mCurrentCommand==SET_DERIVED_CHANNEL_BYTES){
+						mDerivedSensors=(long)(((((byte[])getListofInstructions().get(0))[0]&0xFF)<<16) + ((((byte[])getListofInstructions().get(0))[1]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[2]&0xFF));
+					}
+					else if(mCurrentCommand==SET_SHIMMERNAME_COMMAND){
+						byte[] instruction =getListofInstructions().get(0);
+						byte[] nameArray = new byte[instruction[1]];
+						System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
+						String name = new String(nameArray);
+						setShimmerUserAssignedName(name);
+					}
+					else if(mCurrentCommand==SET_EXPID_COMMAND){
+						byte[] instruction =getListofInstructions().get(0);
+						byte[] nameArray = new byte[instruction[1]];
+						System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
+						String name = new String(nameArray);
+						setExperimentName(name);
+					}
+					else if(mCurrentCommand==SET_RWC_COMMAND){
+						byte[] instruction =getListofInstructions().get(0);
+						byte[] byteTime = new byte[8];
+						System.arraycopy(instruction, 1, byteTime, 0, 8);
+						mSetRWC = byteTime;
+					}
+					else if(mCurrentCommand==SET_CONFIGTIME_COMMAND){
+						byte[] instruction =getListofInstructions().get(0);
+						byte[] timeArray = new byte[instruction[1]];
+						System.arraycopy(instruction, 2, timeArray, 0, instruction[1]);
+						String time = new String(timeArray);
+						setConfigTime(Long.parseLong(time));
+					}
+					else if(mCurrentCommand==SET_CENTER_COMMAND){
+						byte[] instruction =getListofInstructions().get(0);
+						byte[] centerArray = new byte[instruction[1]];
+						System.arraycopy(instruction, 2, centerArray, 0, instruction[1]);
+						String center = new String(centerArray);
+						//setConfigTime(Long.parseLong(time));
+						setCenter(center);
+					}
+					else if(mCurrentCommand==SET_TRIAL_CONFIG_COMMAND){
+						byte[] instruction =getListofInstructions().get(0);
+						byte[] dataArray = new byte[3];
+						System.arraycopy(instruction, 1, dataArray, 0, 3);
+						//settrial
+					}
+					else if(mCurrentCommand==SET_BAUD_RATE_COMMAND) {
+						mBluetoothBaudRate=(int)((byte [])getListofInstructions().get(0))[1];
+//									reconnect();
+						//TODO: handle disconnect/reconnect here?
+					}
+					else if(mCurrentCommand==TOGGLE_LED_COMMAND){
+						//TODO: MN -> do something
+					}
+					else if(mCurrentCommand==SET_LSM303DLHC_ACCEL_LPMODE_COMMAND) {
+						//TODO: MN -> do something
+					} 
+					else if(mCurrentCommand==SET_LSM303DLHC_ACCEL_HRMODE_COMMAND) {
+						//TODO: MN -> do something
+					}
+					else if(mCurrentCommand==SET_MYID_COMMAND){
+						//TODO: MN -> do something
+					}
+					else if(mCurrentCommand==SET_NSHIMMER_COMMAND){
+						//TODO: MN -> do something
+					}
+					else if(mCurrentCommand==RESET_TO_DEFAULT_CONFIGURATION_COMMAND){
+						//TODO: MN -> do something
+					}
+					else if(mCurrentCommand==RESET_CALIBRATION_VALUE_COMMAND){
+						//TODO: MN -> do something
+					}
+					else if(mCurrentCommand==SET_BMP180_PRES_CALIBRATION_COMMAND){
+						//TODO: MN -> do something
+					}
+					else if(mCurrentCommand==SET_INFOMEM_COMMAND){
+						//TODO: MN -> do something
+					}
+					else if(mCurrentCommand==SET_CRC_COMMAND){
+						//TODO: MN -> do something
+					}
+					else {
+						//unhandled set command
+						printLogDataForDebugging("Unhandled set command: " + btCommandToString(mCurrentCommand));
+					}
+					
+					getListofInstructions().remove(0);
+				}
+				
+			}		}
 	}
 	
 	/**
