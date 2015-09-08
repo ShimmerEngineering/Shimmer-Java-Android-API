@@ -420,9 +420,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte GET_DIR_COMMAND 						= (byte) 0x89;
 	public static final byte INSTREAM_CMD_RESPONSE 					= (byte) 0x8A;
 	
-	public static final byte SET_INFOMEM_COMMAND   					= (byte) 0x88;
-	public static final byte INFOMEM_RESPONSE      					= (byte) 0x89;
-	public static final byte GET_INFOMEM_COMMAND   					= (byte) 0x8A;
+	public static final byte SET_INFOMEM_COMMAND   					= (byte) 0x8C;
+	public static final byte INFOMEM_RESPONSE      					= (byte) 0x8D;
+	public static final byte GET_INFOMEM_COMMAND   					= (byte) 0x8E;
 	
 	public static final byte SET_CRC_COMMAND						= (byte) 0x8B; 
 	public static final byte SET_RWC_COMMAND                        = (byte) 0x8F;
@@ -430,7 +430,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte GET_RWC_COMMAND                        = (byte) 0x91;
 	
 	public static final byte ROUTINE_COMMUNICATION					= (byte) 0xE0;
-	public static final byte TEST_CONNECTION_COMMAND            	= (byte) 0xFE;
+	public static final byte TEST_CONNECTION_COMMAND            	= (byte) 0x96;
 	public static final byte ACK_COMMAND_PROCESSED            		= (byte) 0xFF;
 	
 	public static final byte START_LOGGING_ONLY_COMMAND				= (byte) 0x92;
