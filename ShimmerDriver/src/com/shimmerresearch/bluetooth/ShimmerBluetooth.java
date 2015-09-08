@@ -2141,10 +2141,24 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		public void run() {
 			{
 				//Timeout triggered 
+				consolePrintLn("Command " + btCommandToString(mCurrentCommand) +" timeout");
+//				if(mWaitForAck){
+//					//TODO console print if applicable
+//				}
+//				else if(mWaitForResponse) {
+				if(mWaitForResponse) {
+					if(mWaitForResponse){
+						printLogDataForDebugging("Response not received");
+						sendStatusMSGtoUI("Response not received, please reset Shimmer Device." + mMyBluetoothAddress); //Android?
+					}
+				}
 				
+				if(mIsStreaming && getPacketReceptionRate()<100){
+					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRate()));
+				} 
+				
+
 				if(mCurrentCommand==GET_FW_VERSION_COMMAND){
-					printLogDataForDebugging("FW Response Timeout");
-					//					mFWVersion=0.1;
 					mFirmwareVersionMajor=0;
 					mFirmwareVersionMinor=1;
 					mFirmwareVersionInternal=0;
@@ -2159,129 +2173,186 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						//mHandler.sendMessage(msg);
 					}
 					
-					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-					stopTimerCheckForAckOrResp();  //Terminate the timer thread
 					mFirstTime=false;
-	//				getListofInstructions().remove(0); //removed by MN - already removed in the GET command initialisation section
-					setInstructionStackLock(false);
 					
 					initializeBoilerPlate();
 				}
 				else if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND && !mIsInitialised){
-					printLogDataForDebugging("Get Sampling Rate Timeout");
-					
-					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-					stopTimerCheckForAckOrResp();  //Terminate the timer thread
-					mFirstTime=false;
-	//				getListofInstructions().remove(0); //removed by MN - already removed in the GET command initialisation section
-					setInstructionStackLock(false);
 					mFirstTime=false;
 				} 
 				else if(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){ //in case the new command doesn't work, try the old command
-					printLogDataForDebugging("Shimmer Version Response Timeout. Trying the old version command");
-					
-					mWaitForAck=false;
-					mTransactionCompleted=true; 
-					stopTimerCheckForAckOrResp(); //Terminate the timer thread
 					mFirstTime=false;
-	//				getListofInstructions().remove(0); //removed by MN - already removed in the GET command initialisation section
-					setInstructionStackLock(false);
 					readShimmerVersionDepracated();
-					
 				}
 				else if(mCurrentCommand==GET_VBATT_COMMAND){
-					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
-					consolePrintLn("Command " + btCommandToString(mCurrentCommand) +" failed");
-					
-					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
-					setInstructionStackLock(false);
-					
-					if(mIsStreaming && getPacketReceptionRate()<100){
-						getListofInstructions().clear();
-						printLogDataForDebugging("Response not received for Get_Status_Command. Loss bytes detected.");
-					} 
-					else if(!mIsStreaming) {
-						//CODE TO BE USED
-						printLogDataForDebugging("Command " + btCommandToString(mCurrentCommand) +" failed; Killing Connection. Packet RR:  " + Double.toString(getPacketReceptionRate()));
-						if(mWaitForResponse){
-							printLogDataForDebugging("Response not received");
-							sendStatusMSGtoUI("Connection lost." + mMyBluetoothAddress);
-						}
-						stop(); //If command fail exit device
-					}
-					
 				}
 				else if(mCurrentCommand==GET_STATUS_COMMAND){
-					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
-					consolePrintLn("Command " + btCommandToString(mCurrentCommand) +" failed");
-					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
-					setInstructionStackLock(false);
-					
-					if(mIsStreaming && getPacketReceptionRate()<100){
-						getListofInstructions().clear();
-						printLogDataForDebugging("Response not received for Get_Status_Command. Loss bytes detected.");
-					} 
-					else if(!mIsStreaming) {
-						//CODE TO BE USED
-						printLogDataForDebugging("Command " + btCommandToString(mCurrentCommand) +" failed; Killing Connection. Packet RR:  " + Double.toString(getPacketReceptionRate()));
-						if(mWaitForResponse){
-							printLogDataForDebugging("Response not received");
-							sendStatusMSGtoUI("Connection lost." + mMyBluetoothAddress);
-						}
-						stop(); //If command fail exit device
-					}
 				}
 				else if(mCurrentCommand==GET_DIR_COMMAND){
-					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
-	
-					consolePrintLn("Command " + btCommandToString(mCurrentCommand) +" failed");
-					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-					setInstructionStackLock(false);
-					if(mIsStreaming && getPacketReceptionRate()<100){
-						printLogDataForDebugging("Response not received for Get_Dir_Command. Loss bytes detected.");
-						getListofInstructions().clear();
-					} 
-					else if(!mIsStreaming){
-						//CODE TO BE USED
-						printLogDataForDebugging("Command " + btCommandToString(mCurrentCommand) +" failed; Killing Connection  ");
-						if(mWaitForResponse){
-							printLogDataForDebugging("Response not received");
-							sendStatusMSGtoUI("Connection lost." + mMyBluetoothAddress);
-						}
-						stop(); //If command fail exit device
-					}
 				}
-				else {
-					
-					if(mIsStreaming){
-						printLogDataForDebugging("Command " + btCommandToString(mCurrentCommand) +" failed;");
-						mWaitForAck=false;
-						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-						setInstructionStackLock(false);
-					}
-					else {
-						printLogDataForDebugging("Command " + btCommandToString(mCurrentCommand) +" failed; Killing Connection  ");
-						if(mWaitForResponse){
-							printLogDataForDebugging("Response not received");
-							sendStatusMSGtoUI("Response not received, please reset Shimmer Device." + mMyBluetoothAddress);
-						}
-						mWaitForAck=false;
-						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-						stop(); //If command fail exit device 
-					}
+
+				stopTimerCheckForAckOrResp(); //Terminate the timer thread
+				mWaitForAck=false;
+				mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+				setInstructionStackLock(false);
+				
+				if(mIsStreaming){
+					getListofInstructions().clear();
 				}
+				else{
+					// If the command fails to get a response, the API should
+					// assume that the connection has been lost and close the
+					// serial port cleanly.
+					killConnection(); //If command fail exit device
+				}
+
+				
 			}
 		}
 	}
 	
+	
+//	class responseTask extends TimerTask {
+//		public void run() {
+//			{
+//				if (mCurrentCommand==GET_FW_VERSION_COMMAND){
+//					printLogDataForDebugging("FW Response Timeout");
+//					//					mFWVersion=0.1;
+//					mFirmwareVersionMajor=0;
+//					mFirmwareVersionMinor=1;
+//					mFirmwareVersionInternal=0;
+//					mFirmwareVersionCode=0;
+//					mFirmwareVersionParsed="BoilerPlate 0.1.0";
+//					mHardwareVersion = HW_ID.SHIMMER_2R; // on Shimmer2r has
+//					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
+//          	        Bundle bundle = new Bundle();
+//          	        bundle.putString(TOAST, "Firmware Version: " +mFirmwareVersionParsed);
+//          	        msg.setData(bundle);*/
+//					if (!mDummy){
+//						//mHandler.sendMessage(msg);
+//					}
+//					mWaitForAck=false;
+//					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+//					mTimer.cancel(); //Terminate the timer thread
+//					mTimer.purge();
+//					mFirstTime=false;
+//					getmListofInstructions().remove(0);
+//					setInstructionStackLock(false);
+//					initializeBoilerPlate();
+//				} else if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND && mIsInitialised==false){
+//					printLogDataForDebugging("Get Sampling Rate Timeout");
+//					mWaitForAck=false;
+//					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+//					mTimer.cancel(); //Terminate the timer thread
+//					mTimer.purge();
+//					mFirstTime=false;
+//					getmListofInstructions().remove(0);
+//					setInstructionStackLock(false);
+//					mFirstTime=false;
+//				} else if(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){ //in case the new command doesn't work, try the old command
+//					printLogDataForDebugging("Shimmer Version Response Timeout. Trying the old version command");
+//					mWaitForAck=false;
+//					mTransactionCompleted=true; 
+//					mTimer.cancel(); //Terminate the timer thread
+//					mTimer.purge();
+//					mFirstTime=false;
+//					getmListofInstructions().remove(0);
+//					setInstructionStackLock(false);
+//					readShimmerVersionDepracated();
+//				}
+//				else if(mCurrentCommand==GET_VBATT_COMMAND){
+//					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
+//					consolePrintLn("Command " + Integer.toString(mCurrentCommand) +" failed");
+//					mTimer.cancel(); //Terminate the timer thread
+//					mTimer.purge();
+//					mWaitForAck=false;
+//					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
+//					setInstructionStackLock(false);
+//					
+//					if (mIsStreaming && getPacketReceptionRate()<100){
+//						getmListofInstructions().clear();
+//						printLogDataForDebugging("Response not received for Get_Status_Command. Loss bytes detected.");
+//					} else if(!mIsStreaming) {
+//						//CODE TO BE USED
+//						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection. Packet RR:  " + Double.toString(getPacketReceptionRate()));
+//						if (mWaitForResponse){
+//							printLogDataForDebugging("Response not received");
+//							sendStatusMSGtoUI("Connection lost." + mMyBluetoothAddress);
+//						}
+//						stop(); //If command fail exit device
+//					}
+//				}
+//				else if(mCurrentCommand==GET_STATUS_COMMAND){
+//					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
+//					consolePrintLn("Command " + Integer.toString(mCurrentCommand) +" failed");
+//					mTimer.cancel(); //Terminate the timer thread
+//					mTimer.purge();
+//					mWaitForAck=false;
+//					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment
+//					setInstructionStackLock(false);
+//					
+//					if (mIsStreaming && getPacketReceptionRate()<100){
+//						getmListofInstructions().clear();
+//						printLogDataForDebugging("Response not received for Get_Status_Command. Loss bytes detected.");
+//					} else if(!mIsStreaming) {
+//						//CODE TO BE USED
+//						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection. Packet RR:  " + Double.toString(getPacketReceptionRate()));
+//						if (mWaitForResponse){
+//							printLogDataForDebugging("Response not received");
+//							sendStatusMSGtoUI("Connection lost." + mMyBluetoothAddress);
+//						}
+//						stop(); //If command fail exit device
+//					}
+//				}
+//				else if(mCurrentCommand==GET_DIR_COMMAND){
+//					// If the command fails to get a response, the API should assume that the connection has been lost and close the serial port cleanly.
+//
+//					consolePrintLn("Command " + Integer.toString(mCurrentCommand) +" failed");
+//					mTimer.cancel(); //Terminate the timer thread
+//					mTimer.purge();
+//					mWaitForAck=false;
+//					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+//					setInstructionStackLock(false);
+//					if (mIsStreaming && getPacketReceptionRate()<100){
+//						printLogDataForDebugging("Response not received for Get_Dir_Command. Loss bytes detected.");
+//						getmListofInstructions().clear();
+//					} else  if(!mIsStreaming){
+//						//CODE TO BE USED
+//						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection  ");
+//						if (mWaitForResponse){
+//							printLogDataForDebugging("Response not received");
+//							sendStatusMSGtoUI("Connection lost." + mMyBluetoothAddress);
+//						}
+//						stop(); //If command fail exit device
+//					}
+//				}
+//				else {
+//					
+//					if(!mIsStreaming){
+//						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed; Killing Connection  ");
+//						if (mWaitForResponse){
+//							printLogDataForDebugging("Response not received");
+//							sendStatusMSGtoUI("Response not received, please reset Shimmer Device." + mMyBluetoothAddress);
+//						}
+//						mWaitForAck=false;
+//						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+//						stop(); //If command fail exit device 
+//					} else {
+//						printLogDataForDebugging("Command " + Integer.toString(mCurrentCommand) +" failed;");
+//						mWaitForAck=false;
+//						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+//						setInstructionStackLock(false);
+//					}
+//				}
+//			}
+//		}
+//	}
+	
+	private void killConnection(){
+		printLogDataForDebugging("Killing Connection");
+		stop(); //If command fail exit device 
+	}
+
 	public void startTimerReadStatus(){
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
 			if(mTimerReadStatus==null){ 
