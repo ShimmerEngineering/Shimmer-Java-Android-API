@@ -101,6 +101,7 @@ import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerObject;
 import com.shimmerresearch.driver.Util;
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
 	
@@ -1085,12 +1086,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==EXG_REGS_RESPONSE){
 			delayForBtResponse(300); // Wait to ensure the packet has been fully received
 			byte[] bufferAns = readBytes(11);
-			if(mTempChipID==0){
+			if(mTempChipID==EXG_CHIP_INDEX.CHIP1.ordinal()){
 				byte[] EXG1RegisterArray = new byte[10];
 				System.arraycopy(bufferAns, 1, EXG1RegisterArray, 0, 10);
 				setEXG1RegisterArray(EXG1RegisterArray);
 			} 
-			else if(mTempChipID==1){
+			else if(mTempChipID==EXG_CHIP_INDEX.CHIP2.ordinal()){
 				byte[] EXG2RegisterArray = new byte[10];
 				System.arraycopy(bufferAns, 1, EXG2RegisterArray, 0, 10);
 				setEXG2RegisterArray(EXG2RegisterArray);
@@ -1214,6 +1215,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	// TODO: Consider removing this, replace by SET then GET and let the
+	// RESPONSE update the variables in ShimmerObject - removes duplication of
+	// code and ensure ShimmerObject it up-to-date with exactly what is on
+	// Shimmer in case FW overwrites any settings
 	/**
 	 * @param currentCommand
 	 */
@@ -1414,12 +1419,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 				else if(currentCommand==SET_EXG_REGS_COMMAND){
 					byte[] bytearray = getListofInstructions().get(0);
-					if(bytearray[1]==EXG_CHIP1){  //0 = CHIP 1
+					if(bytearray[1]==EXG_CHIP_INDEX.CHIP1.ordinal()){  //0 = CHIP 1
 						byte[] EXG1RegisterArray = new byte[10];
 						System.arraycopy(bytearray, 4, EXG1RegisterArray, 0, 10);
 						setEXG1RegisterArray(EXG1RegisterArray);
 					} 
-					else if(bytearray[1]==EXG_CHIP2){ //1 = CHIP 2
+					else if(bytearray[1]==EXG_CHIP_INDEX.CHIP2.ordinal()){ //1 = CHIP 2
 						byte[] EXG2RegisterArray = new byte[10];
 						System.arraycopy(bytearray, 4, EXG2RegisterArray, 0, 10);
 						setEXG2RegisterArray(EXG2RegisterArray);
@@ -1785,8 +1790,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readLEDCommand();
 		readCalibrationParameters("All");
 		readpressurecalibrationcoefficients();
-		readEXGConfigurations(1);
-		readEXGConfigurations(2);
+		readEXGConfigurations();
 		//enableLowPowerMag(mLowPowerMag);
 		
 		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.LOGANDSTREAM, 0, 5, 2)){
@@ -1806,8 +1810,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(mSetupDevice){
 			//writeAccelRange(mDigitalAccelRange);
 			if(mSetupEXG){
-				writeEXGConfiguration(mEXG1RegisterArray,1);
-				writeEXGConfiguration(mEXG2RegisterArray,2);
+				writeEXGConfiguration();
 				mSetupEXG = false;
 			}
 			writeGSRRange(mGSRRange);
@@ -2429,6 +2432,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	/** Only applicable for Log and Stream
+	 * @param channel The derived channels (3 bytes), first array element = MSB (channel[0]), and channel[2]) = LSB
+	 */
+	public void writeDerivedChannels(long channels) {
+		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+			byte[] channel = new byte[3];
+			channel[0] = (byte) ((channels >> 16) & 0xFF);
+			channel[1] = (byte) ((channels >> 8) & 0xFF);
+			channel[2] = (byte) ((channels >> 0) & 0xFF);
+			getListofInstructions().add(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2]});
+		}
+	}
+	
 	public void readTrial(){
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
 			getListofInstructions().add(new byte[]{GET_TRIAL_CONFIG_COMMAND});
@@ -2667,69 +2683,76 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	
 	/**
-	 * This reads the configuration of a chip from the EXG board
-	 * @param chipID Chip id can either be 1 or 2
+	 * This reads the configuration of both chips from the EXG board
 	 */
-	public void readEXGConfigurations(int chipID){
+	public void readEXGConfigurations(){
 		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
-			if(chipID==1 || chipID==2){
-				getListofInstructions().add(new byte[]{GET_EXG_REGS_COMMAND,(byte)(chipID-1),0,10});
-			}
+			readEXGConfigurations(EXG_CHIP_INDEX.CHIP1);
+			readEXGConfigurations(EXG_CHIP_INDEX.CHIP2);
 		}
 	}
 	
-	//TODO: MN -> switch to new ExG config method in ShimmerObject
+	/**This reads the configuration of a chip from the EXG board
+	 * @param chipID enum for the Chip number
+	 * @see EXG_CHIP_INDEX
+	 */
+	public void readEXGConfigurations(EXG_CHIP_INDEX chipID){
+		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+			getListofInstructions().add(new byte[]{GET_EXG_REGS_COMMAND,(byte)(chipID.ordinal()),0,10});
+		}
+	}
+	
+
 	/**
-	 * Only supported on Shimmer3, note that unlike previous write commands where the values are only set within the instrument driver after the ACK is received, this is set immediately. Fail safe should the settings not be actually set successfully is a timeout will occur, and the ID will disconnect from the device
-	 * This function set the treshold of the ExG Lead-Off Comparator. There are 8 possible values:
-	 * 1. Pos:95% - Neg:5%, 2. Pos:92.5% - Neg:7.5%, 3. Pos:90% - Neg:10%, 4. Pos:87.5% - Neg:12.5%, 5. Pos:85% - Neg:15%,
-	 * 6. Pos:80% - Neg:20%, 7. Pos:75% - Neg:25%, 8. Pos:70% - Neg:30%
-	 * @param treshold where 0 = 95-5, 1 = 92.5-7.5, 2 = 90-10, 3 = 87.5-12.5, 4 = 85-15, 5 = 80-20, 6 = 75-25, 7 = 70-30
+	 * Only supported on Shimmer3, note that unlike previous write commands
+	 * where the values are only set within the instrument driver after the ACK
+	 * is received, this is set immediately. Fail safe should the settings not
+	 * be actually set successfully is a timeout will occur, and the ID will
+	 * disconnect from the device
+	 * 
+	 * This function set the treshold of the ExG Lead-Off Comparator. There are
+	 * 8 possible values: 1. Pos:95% - Neg:5%, 2. Pos:92.5% - Neg:7.5%, 3.
+	 * Pos:90% - Neg:10%, 4. Pos:87.5% - Neg:12.5%, 5. Pos:85% - Neg:15%, 6.
+	 * Pos:80% - Neg:20%, 7. Pos:75% - Neg:25%, 8. Pos:70% - Neg:30%
+	 * 
+	 * @param treshold
+	 *            where 0 = 95-5, 1 = 92.5-7.5, 2 = 90-10, 3 = 87.5-12.5, 4 =
+	 *            85-15, 5 = 80-20, 6 = 75-25, 7 = 70-30
 	 */
 	public void writeEXGLeadOffComparatorTreshold(int treshold){
 		if(mFirmwareVersionCode>2){
-			if(treshold >=0 && treshold<8){ 
-				byte[] reg1 = mEXG1RegisterArray;
-				byte[] reg2 = mEXG2RegisterArray;
-				byte currentLeadOffTresholdChip1 = reg1[2];
-				byte currentLeadOffTresholdChip2 = reg2[2];
-				currentLeadOffTresholdChip1 = (byte) (currentLeadOffTresholdChip1 & 31);
-				currentLeadOffTresholdChip2 = (byte) (currentLeadOffTresholdChip2 & 31);
-				currentLeadOffTresholdChip1 = (byte) (currentLeadOffTresholdChip1 | (treshold<<5));
-				currentLeadOffTresholdChip2 = (byte) (currentLeadOffTresholdChip2 | (treshold<<5));
-				getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 0,0,10,reg1[0],reg1[1],currentLeadOffTresholdChip1,reg1[3],reg1[4],reg1[5],reg1[6],reg1[7],reg1[8],reg1[9]});
-				getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 1,0,10,reg2[0],reg2[1],currentLeadOffTresholdChip2,reg2[3],reg2[4],reg2[5],reg2[6],reg2[7],reg2[8],reg2[9]});
+			if(treshold>=0 && treshold<=7){ 
+				setEXGLeadOffComparatorTreshold(treshold);
+				writeEXGConfiguration();
 			}
 		}
 	}
 	
 	
-	//TODO: MN -> switch to new ExG config method in ShimmerObject
 	/**
-	 * Only supported on Shimmer3, note that unlike previous write commands where the values are only set within the instrument driver after the ACK is received, this is set immediately. Fail safe should the settings not be actually set successfully is a timeout will occur, and the ID will disconnect from the device
-	 * This function set the ExG Lead-Off Current. There are 4 possible values: 6nA (default), 22nA, 6uA and 22uA.
-	 * @param LeadOffCurrent where 0 = 6nA, 1 = 22nA, 2 = 6uA and 3 = 22uA
+	 * Only supported on Shimmer3, note that unlike previous write commands
+	 * where the values are only set within the instrument driver after the ACK
+	 * is received, this is set immediately. Fail safe should the settings not
+	 * be actually set successfully is a timeout will occur, and the ID will
+	 * disconnect from the device
+	 * 
+	 * This function set the ExG Lead-Off Current. There are 4 possible values:
+	 * 6nA (default), 22nA, 6uA and 22uA.
+	 * 
+	 * @param LeadOffCurrent
+	 *            where 0 = 6nA, 1 = 22nA, 2 = 6uA and 3 = 22uA
 	 */
 	public void writeEXGLeadOffDetectionCurrent(int leadOffCurrent){
 		if(mFirmwareVersionCode>2){
-			if(leadOffCurrent >=0 && leadOffCurrent<4){
-				byte[] reg1 = mEXG1RegisterArray;
-				byte[] reg2 = mEXG2RegisterArray;
-				byte currentLeadOffDetectionCurrentChip1 = reg1[2];
-				byte currentLeadOffDetectionCurrentChip2 = reg2[2];
-				currentLeadOffDetectionCurrentChip1 = (byte) (currentLeadOffDetectionCurrentChip1 & 243);
-				currentLeadOffDetectionCurrentChip2 = (byte) (currentLeadOffDetectionCurrentChip2 & 243);
-				currentLeadOffDetectionCurrentChip1 = (byte) (currentLeadOffDetectionCurrentChip1 | (leadOffCurrent<<2));
-				currentLeadOffDetectionCurrentChip2 = (byte) (currentLeadOffDetectionCurrentChip2 | (leadOffCurrent<<2));
-				getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 0,0,10,reg1[0],reg1[1],currentLeadOffDetectionCurrentChip1,reg1[3],reg1[4],reg1[5],reg1[6],reg1[7],reg1[8],reg1[9]});
-				getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 1,0,10,reg2[0],reg2[1],currentLeadOffDetectionCurrentChip2,reg2[3],reg2[4],reg2[5],reg2[6],reg2[7],reg2[8],reg2[9]});
+			if(leadOffCurrent>=0 && leadOffCurrent<=3){
+				setEXGLeadOffDetectionCurrent(leadOffCurrent);
+				writeEXGConfiguration();
 			}
 		}
 	}
 	
-	
-	//TODO: MN -> switch to new ExG config method in ShimmerObject
 	/**
 	 * Only supported on Shimmer3
 	 * This function set the ExG Lead-Off detection mode. There are 3 possible modes: DC Current, AC Current (not supported yet), and Off.
@@ -2738,173 +2761,138 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeEXGLeadOffDetectionMode(int detectionMode){
 		
 		if(mFirmwareVersionCode>2){
-			if(detectionMode==0){
-				mLeadOffDetectionMode = detectionMode;
-				byte[] reg1 = mEXG1RegisterArray;
-				byte[] reg2 = mEXG2RegisterArray;
-				byte currentComparatorChip1 = reg1[1];
-				byte currentComparatorChip2 = reg2[1];
-				currentComparatorChip1 = (byte) (currentComparatorChip1 & 191);
-				currentComparatorChip2 = (byte) (currentComparatorChip2 & 191);
-				byte currentRDLSense = reg1[5];
-				currentRDLSense = (byte) (currentRDLSense & 239);
-				byte current2P1N1P = reg1[6];
-				current2P1N1P = (byte) (current2P1N1P & 240);
-				byte current2P = reg2[6];
-				current2P = (byte) (current2P & 240);
-				getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 0,0,10,reg1[0],currentComparatorChip1,reg1[2],reg1[3],reg1[4],currentRDLSense,current2P1N1P,reg1[7],reg1[8],reg1[9]});
-				if(isEXGUsingDefaultEMGConfiguration()){
-					byte currentEMGConfiguration = reg2[4];
-					currentEMGConfiguration = (byte) (currentEMGConfiguration & 127);
-					currentEMGConfiguration = (byte) (currentEMGConfiguration | 128);
-					getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 1,0,10,reg2[0],currentComparatorChip2,reg2[2],reg2[3],currentEMGConfiguration,reg2[5],current2P,reg2[7],reg2[8],reg2[9]});
-				}
-				else
-					getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 1,0,10,reg2[0],currentComparatorChip2,reg2[2],reg2[3],reg2[4],reg2[5],current2P,reg2[7],reg2[8],reg2[9]});
-			}
-			else if(detectionMode==1){
-				mLeadOffDetectionMode = detectionMode;
-				
-				byte[] reg1 = mEXG1RegisterArray;
-				byte[] reg2 = mEXG2RegisterArray;
-				byte currentDetectionModeChip1 = reg1[2];
-				byte currentDetectionModeChip2 = reg2[2];
-				currentDetectionModeChip1 = (byte) (currentDetectionModeChip1 & 254);	// set detection mode chip1 
-				currentDetectionModeChip2 = (byte) (currentDetectionModeChip2 & 254);  // set detection mode chip2
-				byte currentComparatorChip1 = reg1[1];
-				byte currentComparatorChip2 = reg2[1];
-				currentComparatorChip1 = (byte) (currentComparatorChip1 & 191);	
-				currentComparatorChip2 = (byte) (currentComparatorChip2 & 191);
-				currentComparatorChip1 = (byte) (currentComparatorChip1 | 64); // set comparator chip1 
-				currentComparatorChip2 = (byte) (currentComparatorChip2 | 64); // set comparator chip2 
-				byte currentRDLSense = reg1[5];
-				currentRDLSense = (byte) (currentRDLSense & 239); 
-				currentRDLSense = (byte) (currentRDLSense | 16); // set RLD sense
-				byte current2P1N1P = reg1[6];
-				current2P1N1P = (byte) (current2P1N1P & 240);
-				current2P1N1P = (byte) (current2P1N1P | 7); // set 2P, 1N, 1P
-				byte current2P = reg2[6];
-				current2P = (byte) (current2P & 240);
-				current2P = (byte) (current2P | 4); // set 2P
-				
-				getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 0,0,10,reg1[0], currentComparatorChip1, currentDetectionModeChip1,reg1[3],reg1[4], currentRDLSense, current2P1N1P,reg1[7],reg1[8],reg1[9]});
-				if(isEXGUsingDefaultEMGConfiguration()){ //if the EMG configuration is used, then enable the chanel 2 since it is needed for the Lead-off detection
-					byte currentEMGConfiguration = reg2[4];
-					currentEMGConfiguration = (byte) (currentEMGConfiguration & 127);
-					getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 1,0,10,reg2[0], currentComparatorChip2, currentDetectionModeChip2,reg2[3],currentEMGConfiguration,reg2[5],current2P,reg2[7],reg2[8],reg2[9]});
-				}
-				else
-					getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 1,0,10,reg2[0], currentComparatorChip2, currentDetectionModeChip2,reg2[3],reg2[4],reg2[5],current2P,reg2[7],reg2[8],reg2[9]});
-			}
-			else if(detectionMode==2){
-				mLeadOffDetectionMode = detectionMode;
-				//NOT SUPPORTED YET
+			if(detectionMode>=0 && detectionMode<=2){
+				setEXGLeadOffCurrentMode(detectionMode);
+				writeEXGConfiguration();
 			}
 		}
 	}
 	
-	//TODO: MN -> switch to new ExG config method in ShimmerObject
 	/**
-	 * Only supported on Shimmer3, note that unlike previous write commands where the values are only set within the instrument driver after the ACK is received, this is set immediately. Fail safe should the settings not be actually set successfully is a timeout will occur, and the ID will disconnect from the device
-	 * This function set the ExG reference electrode. There are 2 possible values when using ECG configuration: Inverse Wilson CT (default) and Fixed Potential
-	 * and 2 possible values when using EMG configuration: Fixed Potential (default) and Inverse of Ch 1
-	 * @param referenceElectrode reference electrode code where 0 = Fixed Potential and 13 = Inverse Wilson CT (default) for an ECG configuration, and
-	 * 													where 0 = Fixed Potential (default) and 3 = Inverse Ch1 for an EMG configuration
+	 * Only supported on Shimmer3, note that unlike previous write commands
+	 * where the values are only set within the instrument driver after the ACK
+	 * is received, this is set immediately. Fail safe should the settings not
+	 * be actually set successfully is a timeout will occur, and the ID will
+	 * disconnect from the device
+	 * 
+	 * This function set the ExG reference electrode. There are 2 possible
+	 * values when using ECG configuration: Inverse Wilson CT (default) and
+	 * Fixed Potential and 2 possible values when using EMG configuration: Fixed
+	 * Potential (default) and Inverse of Ch 1
+	 * 
+	 * @param referenceElectrode
+	 *            reference electrode code where 0 = Fixed Potential and 13 =
+	 *            Inverse Wilson CT (default) for an ECG configuration, and
+	 *            where 0 = Fixed Potential (default) and 3 = Inverse Ch1 for an
+	 *            EMG configuration
 	 */
 	public void writeEXGReferenceElectrode(int referenceElectrode){
 		if(mFirmwareVersionCode>2){
-			byte currentByteValue = mEXG1RegisterArray[5];
-			byte[] reg = mEXG1RegisterArray;
-			currentByteValue = (byte) (currentByteValue & 240);
-			currentByteValue = (byte) (currentByteValue | referenceElectrode);
-			getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) 0,0,10,reg[0],reg[1],reg[2],reg[3],reg[4],currentByteValue,reg[6],reg[7],reg[8],reg[9]});
+			if(referenceElectrode>=0 && referenceElectrode<=15){
+				setEXGReferenceElectrode(referenceElectrode);
+				writeEXGConfiguration(getEXG1RegisterArray(),EXG_CHIP_INDEX.CHIP1); //Specific to Chip1
+			}
 		}
 	}
 
-	//TODO: MN -> switch to new ExG config method in ShimmerObject
 	/**
-	 * Only supported on Shimmer3, note that unlike previous write commands where the values are only set within the instrument driver after the ACK is received, this is set immediately. Fail safe should the settings not be actually set successfully is a timeout will occur, and the ID will disconnect from the device
-	 * @param chipID Either a 1 or 2 value
-	 * @param rateSettingsam , where 0=125SPS ; 1=250SPS; 2=500SPS; 3=1000SPS; 4=2000SPS  
+	 * @param rateSetting
+	 *            , where 0=125SPS ; 1=250SPS; 2=500SPS; 3=1000SPS; 4=2000SPS
 	 */
-	public void writeEXGRateSetting(int chipID, int rateSetting){
+	public void writeEXGRateSetting(int rateSetting){
 		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
-			if(chipID==1 || chipID==2){
-				if(chipID==1){
-					byte currentByteValue = mEXG1RegisterArray[0];
-					byte[] reg = mEXG1RegisterArray;
-					currentByteValue = (byte) (currentByteValue & 248);
-					currentByteValue = (byte) (currentByteValue | rateSetting);
-					getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) (chipID-1),0,10,currentByteValue,reg[1],reg[2],reg[3],reg[4],reg[5],reg[6],reg[7],reg[8],reg[9]});
+			if(rateSetting>=0 && rateSetting<=4){
+				setEXGRateSetting(rateSetting);
+				writeEXGConfiguration();
+			}		
+		}
+	}
+	
+	/**
+	 * Only supported on Shimmer3, note that unlike previous write commands
+	 * where the values are only set within the instrument driver after the ACK
+	 * is received, this is set immediately. Fail safe should the settings not
+	 * be actually set successfully is a timeout will occur, and the ID will
+	 * disconnect from the device
+	 * 
+	 * @param chipID enum for the Chip number
+	 * @see EXG_CHIP_INDEX
+	 * @param rateSetting
+	 *            , where 0=125SPS ; 1=250SPS; 2=500SPS; 3=1000SPS; 4=2000SPS
+	 */
+	public void writeEXGRateSetting(EXG_CHIP_INDEX chipID, int rateSetting){
+		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+			if(rateSetting>=0 && rateSetting<=4){
+				setEXGRateSetting(chipID, rateSetting);
+				if(chipID==EXG_CHIP_INDEX.CHIP1){
+					writeEXGConfiguration(getEXG1RegisterArray(), chipID);
 				} 
-				else if(chipID==2){
-					byte currentByteValue = mEXG2RegisterArray[0];
-					byte[] reg = mEXG2RegisterArray;
-					currentByteValue = (byte) (currentByteValue & 248);
-					currentByteValue = (byte) (currentByteValue | rateSetting);
-					getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) (chipID-1),0,10,currentByteValue,reg[1],reg[2],reg[3],reg[4],reg[5],reg[6],reg[7],reg[8],reg[9]});
+				else if(chipID==EXG_CHIP_INDEX.CHIP2){
+					writeEXGConfiguration(getEXG2RegisterArray(), chipID);
 				}
 			}
 		}
 	}
 	
-	
-	//TODO: MN -> switch to new ExG config method in ShimmerObject
 	/**
-	 * This is only supported on SHimmer3,, note that unlike previous write commands where the values are only set within the instrument driver after the ACK is received, this is set immediately. Fail safe should the settings not be actually set successfully is a timeout will occur, and the ID will disconnect from the device 
-	 * @param chipID Either a 1 or 2 value
-	 * @param gainSetting , where 0 = 6x Gain, 1 = 1x , 2 = 2x , 3 = 3x, 4 = 4x, 5 = 8x, 6 = 12x
-	 * @param channel Either a 1 or 2 value
+	 * @param gainSetting
+	 *            , where 0 = 6x Gain, 1 = 1x , 2 = 2x , 3 = 3x, 4 = 4x, 5 = 8x,
+	 *            6 = 12x
 	 */
-	public void writeEXGGainSetting(int chipID,  int channel, int gainSetting){
+	public void writeEXGGainSetting(int gainSetting){
 		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
-			if((chipID==1 || chipID==2) && (channel==1 || channel==2)){
-				if(chipID==1){
-					if(channel==1){
-						byte currentByteValue = mEXG1RegisterArray[3];
-						byte[] reg = mEXG1RegisterArray;
-						currentByteValue = (byte) (currentByteValue & 143);
-						currentByteValue = (byte) (currentByteValue | (gainSetting<<4));
-						getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) (chipID-1),0,10,reg[0],reg[1],reg[2],currentByteValue,reg[4],reg[5],reg[6],reg[7],reg[8],reg[9]});
-					} 
-					else {
-						byte currentByteValue = mEXG1RegisterArray[4];
-						byte[] reg = mEXG1RegisterArray;
-						currentByteValue = (byte) (currentByteValue & 143);
-						currentByteValue = (byte) (currentByteValue | (gainSetting<<4));
-						getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) (chipID-1),0,10,reg[0],reg[1],reg[2],reg[3],currentByteValue,reg[5],reg[6],reg[7],reg[8],reg[9]});
-					}
-				} 
-				else if(chipID==2){
-					if(channel==1){
-						byte currentByteValue = mEXG2RegisterArray[3];
-						byte[] reg = mEXG2RegisterArray;
-						currentByteValue = (byte) (currentByteValue & 143);
-						currentByteValue = (byte) (currentByteValue | (gainSetting<<4));
-						getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) (chipID-1),0,10,reg[0],reg[1],reg[2],currentByteValue,reg[4],reg[5],reg[6],reg[7],reg[8],reg[9]});
-					} 
-					else {
-						byte currentByteValue = mEXG2RegisterArray[4];
-						byte[] reg = mEXG2RegisterArray;
-						currentByteValue = (byte) (currentByteValue & 143);
-						currentByteValue = (byte) (currentByteValue | (gainSetting<<4));
-						getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte) (chipID-1),0,10,reg[0],reg[1],reg[2],reg[3],currentByteValue,reg[5],reg[6],reg[7],reg[8],reg[9]});
-					}
+			if(gainSetting>=0 && gainSetting<=6){
+				setExGGainSetting(gainSetting);
+				writeEXGConfiguration();
+			}		
+		}
+	}
+	
+	/**
+	 * This is only supported on SHimmer3,, note that unlike previous write
+	 * commands where the values are only set within the instrument driver after
+	 * the ACK is received, this is set immediately. Fail safe should the
+	 * settings not be actually set successfully is a timeout will occur, and
+	 * the ID will disconnect from the device
+	 * 
+	 * @param chipID enum for the Chip number
+	 * @see EXG_CHIP_INDEX
+	 * @param gainSetting
+	 *            , where 0 = 6x Gain, 1 = 1x , 2 = 2x , 3 = 3x, 4 = 4x, 5 = 8x,
+	 *            6 = 12x
+	 * @param channel
+	 *            Either a 1 or 2 value
+	 */
+	public void writeEXGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int gainSetting){
+		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+			if(gainSetting>=0 && gainSetting<=6){
+				setExGGainSetting(chipID, channel, gainSetting);
+				if(chipID==EXG_CHIP_INDEX.CHIP1){
+					writeEXGConfiguration(getEXG1RegisterArray(), chipID);
+				}
+				else if(chipID==EXG_CHIP_INDEX.CHIP2){
+					writeEXGConfiguration(getEXG2RegisterArray(), chipID);
 				}
 			}
+		}
+	}
+	
+	public void writeEXGConfiguration(){
+		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+			writeEXGConfiguration(getEXG1RegisterArray(),EXG_CHIP_INDEX.CHIP1);
+			writeEXGConfiguration(getEXG2RegisterArray(),EXG_CHIP_INDEX.CHIP2);
 		}
 	}
 	
 	/**
 	 * Only supported on Shimmer3, note that unlike previous write commands where the values are only set within the instrument driver after the ACK is received, this is set immediately. Fail safe should the settings not be actually set successfully is a timeout will occur, and the ID will disconnect from the device
 	 * @param reg A 10 byte value
-	 * @param chipID value can either be 1 or 2.
+	 * @param chipID enum for the Chip number
+	 * @see EXG_CHIP_INDEX
 	 */
-	public void writeEXGConfiguration(byte[] reg,int chipID){
+	public void writeEXGConfiguration(byte[] reg, EXG_CHIP_INDEX chipID){
 		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
-			if(chipID==1 || chipID==2){
-				getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte)(chipID-1),0,10,reg[0],reg[1],reg[2],reg[3],reg[4],reg[5],reg[6],reg[7],reg[8],reg[9]});
-			}
+			getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte)(chipID.ordinal()),0,10,reg[0],reg[1],reg[2],reg[3],reg[4],reg[5],reg[6],reg[7],reg[8],reg[9]});
 		}
 	}
 	
@@ -3505,8 +3493,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 public void enableDefaultECGConfiguration() {
 		 if(mHardwareVersion==3){
 			setDefaultECGConfiguration();
-			writeEXGConfiguration(mEXG1RegisterArray,1);
-			writeEXGConfiguration(mEXG2RegisterArray,2);
+			writeEXGConfiguration();
+//			writeEXGConfiguration(mEXG1RegisterArray,1);
+//			writeEXGConfiguration(mEXG2RegisterArray,2);
 		 }
 	}
 
@@ -3518,8 +3507,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void enableDefaultEMGConfiguration(){
 		if(mHardwareVersion==3){
 			setDefaultEMGConfiguration();
-			writeEXGConfiguration(mEXG1RegisterArray,1);
-			writeEXGConfiguration(mEXG2RegisterArray,2);
+			writeEXGConfiguration();
+//			writeEXGConfiguration(mEXG1RegisterArray,1);
+//			writeEXGConfiguration(mEXG2RegisterArray,2);
 		}
 	}
 
@@ -3531,8 +3521,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void enableEXGTestSignal(){
 		if(mHardwareVersion==3){
 			setEXGTestSignal();
-			writeEXGConfiguration(mEXG1RegisterArray,1);
-			writeEXGConfiguration(mEXG2RegisterArray,2);
+			writeEXGConfiguration();
+//			writeEXGConfiguration(mEXG1RegisterArray,1);
+//			writeEXGConfiguration(mEXG2RegisterArray,2);
 		}
 	}
 	
