@@ -193,7 +193,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	
 	
 	@Override
-	public boolean bytesToBeRead() {
+	public boolean bytesAvailableToBeRead() {
 		// TODO Auto-generated method stub
 		
 			try {

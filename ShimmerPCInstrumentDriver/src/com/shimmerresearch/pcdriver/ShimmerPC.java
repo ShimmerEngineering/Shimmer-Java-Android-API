@@ -268,8 +268,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	
 	@Override
-	public boolean bytesToBeRead() {
-		// TODO Auto-generated method stub
+	public boolean bytesAvailableToBeRead() {
 		try {
 			if(mSerialPort != null){
 				if (mSerialPort.getInputBufferBytesCount()!=0){
@@ -278,7 +277,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			}
 
 		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
 			connectionLost();
 			e.printStackTrace();
 		}
@@ -295,7 +293,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			}
 			
 		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
 			connectionLost();
 			e.printStackTrace();
 			return 0;

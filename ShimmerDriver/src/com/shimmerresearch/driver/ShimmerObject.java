@@ -8820,6 +8820,167 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public int getHardwareVersion() {
 		return mHardwareVersion;
 	}
+	
+	
+	
+	
+	//TODO: MN -> move gets to ShimmerObject (could be duplicated there already)
+
+	public int getLowPowerAccelEnabled(){
+		if(mLowPowerAccelWR)
+			return 1;
+		else
+			return 0;
+	}
+
+	public int getLowPowerGyroEnabled() {
+		if(mLowPowerGyro)
+			return 1;
+		else
+			return 0;
+	}
+
+	public int getLowPowerMagEnabled() {
+		if(mLowPowerMag)
+			return 1;
+		else
+			return 0;
+	}
+	
+	
+	public boolean getInitialized(){
+		return mIsInitialised;
+	}
+
+	
+	/**
+	 * Get the 5V Reg. Only supported on Shimmer2/2R.
+	 * @return 0 in case the 5V Reg is disableb, 1 in case the 5V Reg is enabled, and -1 in case the device doesn't support this feature
+	 */
+	public int get5VReg(){
+		if(mHardwareVersion!=HW_ID.SHIMMER_3){
+			if((mConfigByte0 & (byte)128)!=0) {
+				//then set ConfigByte0 at bit position 7
+				return 1;
+			} 
+			else {
+				return 0;
+			}
+		}
+		else{
+			return -1;
+		}
+	}
+	
+	public int getCurrentLEDStatus() {
+		return mCurrentLEDStatus;
+	}
+
+	public int getBaudRate(){
+		return mBluetoothBaudRate;
+	}
+	
+	public int getReferenceElectrode(){
+		return mEXGReferenceElectrode;
+	}
+	
+	public int getLeadOffDetectionMode(){
+		return mLeadOffDetectionMode;
+	}
+	
+	public int getLeadOffDetectionCurrent(){
+		return mEXGLeadOffDetectionCurrent;
+	}
+	
+	public int getLeadOffComparatorTreshold(){
+		return mEXGLeadOffComparatorTreshold;
+	}
+	
+	public byte[] getExG1Register(){
+       return mEXG1RegisterArray;
+    }
+
+	public byte[] getExG2Register(){
+       return mEXG2RegisterArray;
+    }
+	
+	public int getExGComparatorsChip1(){
+		return mEXG1Comparators;
+	}
+	
+	public int getExGComparatorsChip2(){
+		return mEXG2Comparators;
+	}
+	
+	public int getShimmerVersion(){
+		return mHardwareVersion;
+	}
+
+    /** Returns true if device is streaming (Bluetooth)
+     * @return
+     */
+    public boolean isStreaming(){
+    	return mIsStreaming;
+    }
+    
+    //region --------- IS+something FUNCTIONS --------- 
+    
+    public boolean isLowPowerMagEnabled(){
+		return mLowPowerMag;
+	}
+    
+    public boolean isGyroOnTheFlyCalEnabled(){
+		return mEnableOntheFlyGyroOVCal;
+	}
+
+	public boolean is3DOrientatioEnabled(){
+		return mOrientationEnabled;
+	}
+    
+	/**Only used for LogAndStream
+	 * @return
+	 */
+	public boolean isSensing(){
+		return mIsSensing;
+	}
+	
+	public boolean isLowPowerAccelEnabled() {
+		return mLowPowerAccelWR;
+	}
+
+	public boolean isLowPowerGyroEnabled() {
+		return mLowPowerGyro;
+	}
+	
+	public boolean isUsingDefaultLNAccelParam(){
+		return mDefaultCalibrationParametersAccel;
+	}
+	
+	public boolean isUsingDefaultAccelParam(){
+		return mDefaultCalibrationParametersAccel;
+	}
+	
+	public boolean isUsingDefaultWRAccelParam(){
+		return mDefaultCalibrationParametersDigitalAccel; 
+	}
+
+	public boolean isUsingDefaultGyroParam(){
+		return mDefaultCalibrationParametersGyro;
+	}
+	
+	public boolean isUsingDefaultMagParam(){
+		return mDefaultCalibrationParametersMag;
+	}
+	
+	public boolean isUsingDefaultECGParam(){
+		return mDefaultCalibrationParametersECG;
+	}
+	
+	public boolean isUsingDefaultEMGParam(){
+		return mDefaultCalibrationParametersEMG;
+	}
+	
+    
 
 	/**
 	 * @return the mSensorMap
