@@ -19,12 +19,12 @@ public class ExGConfigOptionDetails implements Serializable {
 		CHECKBOX
 	}
 	
-	public static enum CHIP_INDEX{
+	public static enum EXG_CHIP_INDEX{
 		CHIP1,
 		CHIP2
 	}
 
-	public CHIP_INDEX chipIndex = CHIP_INDEX.CHIP1;
+	public EXG_CHIP_INDEX chipIndex = EXG_CHIP_INDEX.CHIP1;
 	public int byteIndex = 0;
 	public String GuiLabel;
 	public String[] GuiValues;
@@ -39,7 +39,7 @@ public class ExGConfigOptionDetails implements Serializable {
 	
 //	public boolean valueBool = false;
 	
-	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, int bitShift){
+	public ExGConfigOptionDetails(EXG_CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, int bitShift){
 		super();
 		this.chipIndex = chipIndex;
 		this.byteIndex = byteIndex;
@@ -49,7 +49,7 @@ public class ExGConfigOptionDetails implements Serializable {
 		this.settingType = SettingType.CHECKBOX;
 	}
 	
-	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, String[] GuiValues, Integer[] ConfigValues, int bitShift, int mask){
+	public ExGConfigOptionDetails(EXG_CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, String[] GuiValues, Integer[] ConfigValues, int bitShift, int mask){
 		super();
 		this.chipIndex = chipIndex;
 		this.byteIndex = byteIndex;
@@ -61,7 +61,7 @@ public class ExGConfigOptionDetails implements Serializable {
 		this.settingType = SettingType.COMBOBOX;
 	}
 
-	public ExGConfigOptionDetails(CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, ExGConfigOption[] exGConfigOptions, int bitShift, int mask) {
+	public ExGConfigOptionDetails(EXG_CHIP_INDEX chipIndex, int byteIndex, String GuiLabel, ExGConfigOption[] exGConfigOptions, int bitShift, int mask) {
 		super();
 		this.chipIndex = chipIndex;
 		this.byteIndex = byteIndex;
