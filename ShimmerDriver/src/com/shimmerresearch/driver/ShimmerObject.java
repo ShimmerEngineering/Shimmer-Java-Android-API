@@ -806,8 +806,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	
 	protected int mTimeStampPacketByteSize = 2;
-	protected byte[] mSetRWC;
-	protected byte[] mGetRWC;
+//	protected byte[] mSetRWC;
+//	protected byte[] mGetRWC;
+	public long mShimmerRealWorldClockConFigTime = 0;
+	public long mShimmerLastReadRealTimeClockValue = 0;
+	public String mShimmerLastReadRtcValueParsed = "";
+	
 	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
 	
 	public String mUniqueID = ""; // Holds unique location information on a dock or COM port number for bluetooth connection  
@@ -11153,6 +11157,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		
 //		super.sensorAndConfigMapsCreate();
+	}
+
+	public void setLastReadRealTimeClockValue(long time) {
+		mShimmerLastReadRealTimeClockValue = time;
+		mShimmerLastReadRtcValueParsed = Util.fromMilToDateExcelCompatible(Long.toString(time), false);
 	}
 
 }

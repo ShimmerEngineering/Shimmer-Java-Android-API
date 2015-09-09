@@ -94,6 +94,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.driver.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ExpansionBoardDetails;
+import com.shimmerresearch.driver.InfoMemLayout;
 import com.shimmerresearch.driver.ShimmerBattStatusDetails;
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -175,6 +176,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected double mLowBattLimit=3.4;
 	protected int numBytesToReadFromExpBoard=0;
+	
+	private boolean mUseInfoMemConfigMethod = false;
 	
 	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
 	List<Long> mListofPCTimeStamps = new ArrayList<Long>();
@@ -499,6 +502,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						if(!mIsStreaming){
 							clearSerialBuffer();
 						}
+						
+						//Special cases
+						if(mCurrentCommand==SET_RWC_COMMAND){
+							// for Real-world time -> grab PC time just before
+							// writing to Shimmer
+							byte[] rwcTimeArray = Util.convertSystemTimeToShimmerRwcDataBytes(System.currentTimeMillis());
+							System.arraycopy(rwcTimeArray, 0, insBytes, 1, 8);
+						}
+						else if(mCurrentCommand==SET_INFOMEM_COMMAND){
+							//TODO store current address/InfoMem segment
+//							insBytes
+						}
+
 						 
 						writeBytes(insBytes);
 						printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + Util.bytesToHexStringWithSpacesFormatted(insBytes));
@@ -584,12 +600,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								// Process if currentCommand is a GET command
 								else if(mBtGetCommandMap.containsKey(mCurrentCommand)){
 									//Special cases
+									byte[] bytearray = getListofInstructions().get(0);
 									if(mCurrentCommand==GET_EXG_REGS_COMMAND){
 										// Need to store ExG chip number before receiving response
-										byte[] bytearray = getListofInstructions().get(0);
 										mTempChipID = bytearray[1];
 									}
-									
+									else if(mCurrentCommand==GET_INFOMEM_COMMAND){
+										//TODO store current address/InfoMem segment
+//										bytearray
+									}
+
 									mWaitForResponse=true;
 									getListofInstructions().remove(0);
 								}
@@ -1141,8 +1161,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		else if(responseCommand==RWC_RESPONSE) {
-			byte[] byteTime = readBytes(8);
-			mGetRWC = byteTime;
+			byte[] rxBuf = readBytes(8);
+			
+			// Parse response string
+			rxBuf = Arrays.copyOf(rxBuf, 8);
+			ArrayUtils.reverse(rxBuf);
+			long responseTime = (long)(((double)(ByteBuffer.wrap(rxBuf).getLong())/32.768)); // / 1000
+			
+			setLastReadRealTimeClockValue(responseTime);
 		}
 
 		else if(responseCommand==INSTREAM_CMD_RESPONSE) {
@@ -1214,6 +1240,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		else if(responseCommand==INFOMEM_RESPONSE) { //<- MN
 			//TODO: MN -> do something
+			
+			// Get message data length + getComponent + getProperty
+			printLogDataForDebugging("INFOMEM_RESPONSE Received");
+			byte[] rxBuf = readBytes(3);
+			printLogDataForDebugging("INFOMEM_RESPONSE Received: " + Util.bytesToHexStringWithSpacesFormatted(rxBuf));
+			rxBuf = readBytes((((int)rxBuf[0])&0xFF));
+			printLogDataForDebugging("INFOMEM_RESPONSE Received: " + Util.bytesToHexStringWithSpacesFormatted(rxBuf));
+			
+//			setShimmerInfoMemBytes(infoMemBytes);
 		}
 		else {
 //			consolePrintLn("Unhandled BT response: " + responseCommand);  //TODO:MN  RS: uncomment this?
@@ -1501,10 +1536,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					setExperimentName(name);
 				}
 				else if(currentCommand==SET_RWC_COMMAND){
-					byte[] instruction =getListofInstructions().get(0);
-					byte[] byteTime = new byte[8];
-					System.arraycopy(instruction, 1, byteTime, 0, 8);
-					mSetRWC = byteTime;
+					byte[] instruction = getListofInstructions().get(0);
+					byte[] rwcTimeArray = new byte[8];
+					System.arraycopy(instruction, 1, rwcTimeArray, 0, 8);
+					long milisecondTicks = Util.convertShimmerRwcDataBytesToSystemTime(rwcTimeArray);
+					mShimmerRealWorldClockConFigTime = milisecondTicks;
 				}
 				else if(currentCommand==SET_CONFIGTIME_COMMAND){
 					byte[] instruction =getListofInstructions().get(0);
@@ -1526,6 +1562,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] dataArray = new byte[3];
 					System.arraycopy(instruction, 1, dataArray, 0, 3);
 					//settrial
+					//TODO: MN -> Noting is done
 				}
 				else if(currentCommand==SET_BAUD_RATE_COMMAND) {
 					mBluetoothBaudRate=(int)((byte [])getListofInstructions().get(0))[1];
@@ -1782,32 +1819,39 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			operationPrepare();
 			setState(BT_STATE.INITIALISING);
 		}
-			
-		readSamplingRate();
-		readMagRange();
-		readAccelRange();
-		readGyroRange();
-		readAccelSamplingRate();
-		readExpansionBoardID();
-		readLEDCommand();
-		readCalibrationParameters("All");
-		readpressurecalibrationcoefficients();
-		readEXGConfigurations();
-		//enableLowPowerMag(mLowPowerMag);
 		
+		if(this.mUseInfoMemConfigMethod && mFirmwareVersionCode>=6){
+			readConfigurationFromInfoMem();
+		}
+		else {
+			readSamplingRate();
+			readMagRange();
+			readAccelRange();
+			readGyroRange();
+			readAccelSamplingRate();
+			readExpansionBoardID();
+			readLEDCommand();
+			readCalibrationParameters("All");
+			readpressurecalibrationcoefficients();
+			readEXGConfigurations();
+			//enableLowPowerMag(mLowPowerMag);
+			
+			if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.LOGANDSTREAM, 0, 5, 2)){
+				readTrial();
+				readConfigTime();
+				readShimmerName();
+				readExperimentName();
+			}
+
+		}
+
 		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.LOGANDSTREAM, 0, 5, 2)){
 			readStatusLogAndStream();
-			readTrial();
-			readConfigTime();
-			readShimmerName();
-			readExperimentName();
 		}
+		
 		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.LOGANDSTREAM, 0, 5, 9)){
 			readBattery();
 		}
-//		else if(isThisVerCompatibleWith(FW_ID.SHIMMER3.BTSTREAM, 0, 7, 2)){
-//			readInfoMem();
-//		}
 		
 		if(mSetupDevice){
 			//writeAccelRange(mDigitalAccelRange);
@@ -2623,12 +2667,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void writeRealWorldClock(){
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
-			long systemTime = System.currentTimeMillis();
-			byte[] bytearray=ByteBuffer.allocate(8).putLong(systemTime).array();
-			ArrayUtils.reverse(bytearray);
+			//Just fill empty bytes here for RWC, set them just before writing to Shimmer
 		    byte[] bytearraycommand= new byte[9];
 			bytearraycommand[0]=SET_RWC_COMMAND;
-			System.arraycopy(bytearray, 0, bytearraycommand, 1, 8);
 			getListofInstructions().add(bytearraycommand);
 		}
 	}
@@ -3118,42 +3159,142 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
     
 	//TODO: MN
-	public void readInfoMem(int address, byte[] infoMemBytes) {
+	public void readConfigurationFromInfoMem(){
+		if(this.mFirmwareVersionCode>=6){
+			int size = InfoMemLayout.calculateInfoMemByteLength(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+			readInfoMem(MSP430_5XX_INFOMEM_D_ADDRESS, size);
+		}
 	}
 	
 	//TODO: MN
-	public void writeInfoMem(byte[] infoMemBytes){
-		
+	public void readInfoMem(int address, int size){
+		if(this.mFirmwareVersionCode>=6){
+			if (size > (MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
+//				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE);
+//				throw(de);
+			} else {
+				int maxBytesRXed = 128;
+				int numBytesRemaining = size;
+				int currentPacketNumBytes;
+				int currentBytePointer = 0;
+				int currentStartAddr = address;
+
+				while (numBytesRemaining > 0) {
+					if (numBytesRemaining > maxBytesRXed) {
+						currentPacketNumBytes = maxBytesRXed;
+					} else {
+						currentPacketNumBytes = numBytesRemaining;
+					}
+
+					byte[] rxBuf = new byte[] {};
+					readMemCommand(GET_INFOMEM_COMMAND, currentStartAddr, currentPacketNumBytes);
+
+					currentBytePointer += currentPacketNumBytes;
+					numBytesRemaining -= currentPacketNumBytes;
+					currentStartAddr += currentPacketNumBytes;
+				}
+//				utilDock.consolePrintLn(mDockID + " - InfoMem Configuration Read = SUCCESS");
+			}
+		}
+	}
+	
+	//TODO: MN
+	public void readMemCommand(int command, int address, int size) {
+		if(this.mFirmwareVersionCode>=6){
+	    	byte[] memLengthToRead = new byte[]{(byte) size};
+	    	byte[] memAddressToRead = ByteBuffer.allocate(2).putShort((short)(address&0xFFFF)).array();
+			ArrayUtils.reverse(memAddressToRead);
+
+	    	byte[] instructionBuffer = new byte[1 + memLengthToRead.length + memAddressToRead.length];
+	    	instructionBuffer[0] = (byte)command;
+	    	System.arraycopy(memLengthToRead, 0, instructionBuffer, 1, memLengthToRead.length);
+	    	System.arraycopy(memAddressToRead, 0, instructionBuffer, 1 + memLengthToRead.length, memAddressToRead.length);
+
+			getListofInstructions().add(instructionBuffer);
+		}
+	}
+	
+	//TODO: MN
+	public void writeConfigurationToInfoMem(){
+		if(this.mFirmwareVersionCode>=6){
+			writeInfoMem(MSP430_5XX_INFOMEM_D_ADDRESS, generateShimmerInfoMemBytes());
+		}
+	}
+	
+	//TODO: MN
+	public void writeInfoMem(int startAddress, byte[] buf){
+		if(this.mFirmwareVersionCode>=6){
+			int address = startAddress;
+			if (buf.length > (MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
+//				err = ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE;
+//				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_SET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE);
+//				throw(de);
+			} 
+			else {
+				int currentStartAddr = startAddress;
+				int currentPacketNumBytes;
+				int numBytesRemaining = buf.length;
+				int currentBytePointer = 0;
+				int maxPacketSize = 128;
+
+				while (numBytesRemaining > 0) {
+					if (numBytesRemaining > maxPacketSize) {
+						currentPacketNumBytes = maxPacketSize;
+					} else {
+						currentPacketNumBytes = numBytesRemaining;
+					}
+
+					byte[] infoSegBuf = Arrays.copyOfRange(buf, currentBytePointer, currentBytePointer + currentPacketNumBytes);
+
+					writeMemCommand(SET_INFOMEM_COMMAND, currentStartAddr, infoSegBuf);
+
+					currentStartAddr += currentPacketNumBytes;
+					numBytesRemaining -= currentPacketNumBytes;
+					currentBytePointer += currentPacketNumBytes;
+				}
+			}
+		}
 	}
     
 	//TODO: MN
-	public void writeInfoMem(int address, byte[] infoMemBytes) {
-		if(((Util.compareVersions(
-				this.mFirmwareIdentifier, 
-				this.mFirmwareVersionMajor,
-				this.mFirmwareVersionMinor, 
-				this.mFirmwareVersionInternal, 
-				FW_ID.SHIMMER3.BTSTREAM, 
-				0,7,2))
-				||(Util.compareVersions(
-						this.mFirmwareIdentifier, 
-						this.mFirmwareVersionMajor,
-						this.mFirmwareVersionMinor, 
-						this.mFirmwareVersionInternal, 
-						FW_ID.SHIMMER3.LOGANDSTREAM, 
-						0,5,4)))
-						||(this.mFirmwareVersionCode>=6)){
+	/**Could be used by InfoMem or Expansion board memory
+	 * @param command
+	 * @param address
+	 * @param infoMemBytes
+	 */
+	public void writeMemCommand(int command, int address, byte[] infoMemBytes) {
+//		if(((Util.compareVersions(
+//				this.mFirmwareIdentifier, 
+//				this.mFirmwareVersionMajor,
+//				this.mFirmwareVersionMinor, 
+//				this.mFirmwareVersionInternal, 
+//				FW_ID.SHIMMER3.BTSTREAM, 
+//				0,7,2))
+//				||(Util.compareVersions(
+//						this.mFirmwareIdentifier, 
+//						this.mFirmwareVersionMajor,
+//						this.mFirmwareVersionMinor, 
+//						this.mFirmwareVersionInternal, 
+//						FW_ID.SHIMMER3.LOGANDSTREAM, 
+//						0,5,4)))
+//						||(this.mFirmwareVersionCode>=6)){
 			
+		if(this.mFirmwareVersionCode>=6){
 			
-			byte[] trial_config_byte = combineTrialConfig();
-			byte dataLength = (byte)(infoMemBytes.length&0xFF);
-			byte[] tosend = new byte[4+dataLength];
-			tosend[0] = SET_INFOMEM_COMMAND;
-			tosend[1] = dataLength;
-			tosend[2] = (byte)((address>>8)&0xFF);
-			tosend[3] = (byte)(address&0xFF);
-			tosend[4] = (byte)getSyncBroadcastInterval();
-			getListofInstructions().add(tosend);
+			byte[] memLengthToWrite = new byte[]{(byte) infoMemBytes.length};
+			byte[] memAddressToWrite = ByteBuffer.allocate(2).putShort((short)(address&0xFFFF)).array();
+			ArrayUtils.reverse(memAddressToWrite);
+
+			// TODO check I'm not missing the last two bytes here because the mem
+			// address length is not being included in the length field
+			byte[] instructionBuffer = new byte[1 + memLengthToWrite.length + memAddressToWrite.length + infoMemBytes.length];
+	    	instructionBuffer[0] = (byte)command;
+			System.arraycopy(memLengthToWrite, 0, instructionBuffer, 1, memLengthToWrite.length);
+			System.arraycopy(memAddressToWrite, 0, instructionBuffer, 1 + memLengthToWrite.length, memAddressToWrite.length);
+			System.arraycopy(infoMemBytes, 0, instructionBuffer, 1 + memLengthToWrite.length + memAddressToWrite.length, instructionBuffer.length);
+			
+			getListofInstructions().add(instructionBuffer);
+
 		}
 	}
 
@@ -4254,6 +4395,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		batteryStatusChanged();
 	}
+	
+	public void setUseInfoMemConfigMethod(boolean useInfoMemConfigMethod) {
+		this.mUseInfoMemConfigMethod = useInfoMemConfigMethod;
+	}
+	
+	public boolean isUseInfoMemConfigMethod() {
+		return this.mUseInfoMemConfigMethod;
+	}
+
 	
 	/**
 	 * @param hardwareVersion

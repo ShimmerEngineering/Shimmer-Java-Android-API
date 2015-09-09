@@ -3,10 +3,13 @@ package com.shimmerresearch.driver;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 /** Utility class with commonly useful methods
  * 
@@ -394,4 +397,17 @@ public class Util implements Serializable {
 		//	e.printStackTrace();
 	}
 }
+
+	public static byte[] convertSystemTimeToShimmerRwcDataBytes(long milliseconds) {
+		long milisecondTicks = (long)(((double)milliseconds) * 32.768); // Convert miliseconds to clock ticks
+		byte[] rwcTimeArray = ByteBuffer.allocate(8).putLong(milisecondTicks).array();
+		ArrayUtils.reverse(rwcTimeArray); // Big-endian by default
+		return rwcTimeArray;
+	}
+
+	public static long convertShimmerRwcDataBytesToSystemTime(byte[] rwcTimeArray) {
+		ArrayUtils.reverse(rwcTimeArray); // Big-endian by default
+		long milisecondTicks = (long)(((double)(ByteBuffer.wrap(rwcTimeArray).getLong())/32.768));  // Convert clock ticks to milliseconds
+		return milisecondTicks;
+	}
 }

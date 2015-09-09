@@ -494,7 +494,7 @@ public class InfoMemLayout {
 
 	}
 	
-	public int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+	public static int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
 //		if(Util.compareVersions(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionRelease,
 //				FW_ID.SHIMMER3.SDLOG, 0, 10, 1)) {
