@@ -1177,40 +1177,45 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		else if(responseCommand==LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
-			byte[] bufferAns = readBytes(1);
-			//TODO: MN -> nothing is done with read bytes
+			//TODO: RS -> Started here with making changes
+			byte[] responseData = readBytes(1);
+			mLowPowerAccelWR = (responseData[0]>=1? true:false);
 		} 
 		else if(responseCommand==LSM303DLHC_ACCEL_HRMODE_RESPONSE) {
-			byte[] bufferAns = readBytes(1);
-			//TODO: MN -> nothing is done with read bytes
+			byte[] responseData = readBytes(1);
+			mHighResAccelWR = (responseData[0]>=1? true:false);
 		} 
 		else if(responseCommand==MYID_RESPONSE) {
-			//TODO: MN -> do something
+			//TODO RS
 		}
 		else if(responseCommand==NSHIMMER_RESPONSE) {
-			//TODO: MN -> do something
+			//TODO RS
 		}
 		else if(responseCommand==MPU9150_SAMPLING_RATE_RESPONSE) {
-			//TODO: MN -> do something
+			byte[] responseData = readBytes(1);
+			setMPU9150MPLSamplingRate(responseData[0]);
 		}
 		else if(responseCommand==BMP180_PRES_RESOLUTION_RESPONSE) {
-			//TODO: MN -> do something
+			byte[] responseData = readBytes(1);
+			mPressureResolution = responseData[0];
 		}
-		else if(responseCommand==BMP180_PRES_CALIBRATION_RESPONSE) { //<- MN
-			//TODO: MN -> do something
+		else if(responseCommand==BMP180_PRES_CALIBRATION_RESPONSE) { 
+			//TODO: RS -> do something
 		}
-		else if(responseCommand==MPU9150_MAG_SENS_ADJ_VALS_RESPONSE) {
+		else if(responseCommand==MPU9150_MAG_SENS_ADJ_VALS_RESPONSE) { //<- MN
 			//TODO: MN -> do something
+			
+			//RS: In ShimmerObject there is no mMPUMag... nothing for mag sensitivity.
 		}
 		else if(responseCommand==INTERNAL_EXP_POWER_ENABLE_RESPONSE) {
-			//TODO: MN -> do something
-//			setInternalExpPower();
+			byte[] responseData = readBytes(1);
+			setInternalExpPower(responseData[0]);
 		}
 		else if(responseCommand==INFOMEM_RESPONSE) { //<- MN
 			//TODO: MN -> do something
 		}
 		else {
-//			consolePrintLn("Unhandled BT response: " + responseCommand);
+//			consolePrintLn("Unhandled BT response: " + responseCommand);  //TODO:MN  RS: uncomment this?
 		}
 	}
 	
@@ -1541,9 +1546,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					//TODO: MN -> do something
 				}
 				else if(currentCommand==RESET_CALIBRATION_VALUE_COMMAND){
-					//TODO: MN -> do something
-				}
-				else if(currentCommand==SET_BMP180_PRES_CALIBRATION_COMMAND){
 					//TODO: MN -> do something
 				}
 				else if(currentCommand==SET_INFOMEM_COMMAND){
