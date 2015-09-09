@@ -3115,37 +3115,45 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //		}
 	}
     
-//	public void readInfoMem(int address, byte[] infoMemBytes) {
-//	}
-//    
-//	public void writeInfoMem(int address, byte[] infoMemBytes) {
-//		if((Util.compareVersions(
-//				this.mFirmwareIdentifier, 
-//				this.mFirmwareVersionMajor,
-//				this.mFirmwareVersionMinor, 
-//				this.mFirmwareVersionInternal, 
-//				FW_ID.SHIMMER3.BTSTREAM, 
-//				0,7,2))
-//				||(Util.compareVersions(
-//						this.mFirmwareIdentifier, 
-//						this.mFirmwareVersionMajor,
-//						this.mFirmwareVersionMinor, 
-//						this.mFirmwareVersionInternal, 
-//						FW_ID.SHIMMER3.LOGANDSTREAM, 
-//						0,5,4))){
-//			
-//			
-//			byte[] trial_config_byte = combineTrialConfig();
-//			byte dataLength = (byte)(infoMemBytes.length&0xFF);
-//			byte[] tosend = new byte[4+dataLength];
-//			tosend[0] = SET_INFOMEM_COMMAND;
-//			tosend[1] = dataLength;
-//			tosend[2] = (byte)((address>>8)&0xFF);
-//			tosend[3] = (byte)(address&0xFF);
-//			tosend[4] = (byte)getSyncBroadcastInterval();
-//			getmListofInstructions().add(tosend);
-//		}
-//	}
+	//TODO: MN
+	public void readInfoMem(int address, byte[] infoMemBytes) {
+	}
+	
+	//TODO: MN
+	public void writeInfoMem(byte[] infoMemBytes){
+		
+	}
+    
+	//TODO: MN
+	public void writeInfoMem(int address, byte[] infoMemBytes) {
+		if(((Util.compareVersions(
+				this.mFirmwareIdentifier, 
+				this.mFirmwareVersionMajor,
+				this.mFirmwareVersionMinor, 
+				this.mFirmwareVersionInternal, 
+				FW_ID.SHIMMER3.BTSTREAM, 
+				0,7,2))
+				||(Util.compareVersions(
+						this.mFirmwareIdentifier, 
+						this.mFirmwareVersionMajor,
+						this.mFirmwareVersionMinor, 
+						this.mFirmwareVersionInternal, 
+						FW_ID.SHIMMER3.LOGANDSTREAM, 
+						0,5,4)))
+						||(this.mFirmwareVersionCode>=6)){
+			
+			
+			byte[] trial_config_byte = combineTrialConfig();
+			byte dataLength = (byte)(infoMemBytes.length&0xFF);
+			byte[] tosend = new byte[4+dataLength];
+			tosend[0] = SET_INFOMEM_COMMAND;
+			tosend[1] = dataLength;
+			tosend[2] = (byte)((address>>8)&0xFF);
+			tosend[3] = (byte)(address&0xFF);
+			tosend[4] = (byte)getSyncBroadcastInterval();
+			getListofInstructions().add(tosend);
+		}
+	}
 
 	//endregion --------- READ/WRITE FUNCTIONS --------- 
 	
