@@ -103,6 +103,7 @@ public class Configuration {
 		public static final String MAG_DEFAULT_CAL_UNIT = LOCAL_FLUX+"*";
 		
 		public static final String LOCAL = "local"; //used for axis-angle and madgewick quaternions
+		public static final String MICROSIEMENS = "uS";
 	}	
 	
 	public static class CHANNEL_TYPE{
@@ -1885,7 +1886,8 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.GSR,
 							Configuration.Shimmer3.ObjectClusterSensorName.GSR,
 							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
-							CHANNEL_UNITS.KOHMS,
+//							CHANNEL_UNITS.KOHMS,
+							CHANNEL_UNITS.MICROSIEMENS,
 							Arrays.asList(ChannelType.RAW, ChannelType.CAL)));
 
 			//GyroMPU

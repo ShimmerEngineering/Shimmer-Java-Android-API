@@ -215,6 +215,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected int mTempIntValue;												// A temporary variable used to store Integer value, used mainly to store a value while waiting for an acknowledge packet (e.g. when writeGRange() is called, the range is stored temporarily and used to update GSRRange when the acknowledge packet is received.
 	protected long tempEnabledSensors;											// This stores the enabled sensors
 	private int mTempChipID;
+	private int mCurrentInfoMemAddress = 0;
+	private int mCurrentInfoMemLengthToRead = 0;
+	
+	private byte[] mInfoMemBuffer;
+
 	protected boolean mSync=true;												// Variable to keep track of sync
 	protected boolean mSetupEXG = false;
 	private byte[] cmdcalibrationParameters = new byte [22];  
@@ -479,6 +484,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		byte[] tb ={0};
 //		byte[] newPacket=new byte[mPacketSize+1];
 		public boolean stop = false;
+		
 		public synchronized void run() {
 			while (!stop) {
 				//region --------- Process Instruction on stack --------- 
@@ -510,10 +516,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							byte[] rwcTimeArray = Util.convertSystemTimeToShimmerRwcDataBytes(System.currentTimeMillis());
 							System.arraycopy(rwcTimeArray, 0, insBytes, 1, 8);
 						}
-						else if(mCurrentCommand==SET_INFOMEM_COMMAND){
-							//TODO store current address/InfoMem segment
-//							insBytes
-						}
+//						else if(mCurrentCommand==SET_INFOMEM_COMMAND){
+//							// store current address/InfoMem segment
+//							mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+//							mCurrentInfoMemLengthToRead = insBytes[1]&0xFF;
+//						}
 
 						 
 						writeBytes(insBytes);
@@ -599,15 +606,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								
 								// Process if currentCommand is a GET command
 								else if(mBtGetCommandMap.containsKey(mCurrentCommand)){
+									
 									//Special cases
-									byte[] bytearray = getListofInstructions().get(0);
+									byte[] insBytes = getListofInstructions().get(0);
 									if(mCurrentCommand==GET_EXG_REGS_COMMAND){
 										// Need to store ExG chip number before receiving response
-										mTempChipID = bytearray[1];
+										mTempChipID = insBytes[1];
 									}
 									else if(mCurrentCommand==GET_INFOMEM_COMMAND){
-										//TODO store current address/InfoMem segment
-//										bytearray
+										// store current address/InfoMem segment
+										mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+										mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
 									}
 
 									mWaitForResponse=true;
@@ -624,8 +633,26 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					else if(mWaitForResponse) {
 						//Discard first read
 						if(mFirstTime){
-							printLogDataForDebugging("First Time read");
-							clearSerialBuffer();
+//							printLogDataForDebugging("First Time read");
+//							clearSerialBuffer();
+							
+							while (availableBytes()!=0){
+								int available = availableBytes();
+								if (bytesAvailableToBeRead()){
+									tb=readBytes(1);
+									String msg = "First Time : " + Arrays.toString(tb);
+									printLogDataForDebugging(msg);
+								}
+							}
+							
+							//TODO: Check with JC on the below!!! Or just clear seriable buffer and remove need for mFirstTime
+							//Below added from original implementation -> doesn't wait for timeout on first command
+							//TODO: if keeping the below, remove "mFirstTime = false" from the TimerCheckForAckOrResp
+							stopTimerCheckForAckOrResp(); //cancel the ack timer
+							mWaitForResponse=false;
+							mTransactionCompleted=true;
+							setInstructionStackLock(false);
+							mFirstTime = false;
 						} 
 						
 						else if(bytesAvailableToBeRead()){
@@ -1238,20 +1265,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			byte[] responseData = readBytes(1);
 			setInternalExpPower(responseData[0]);
 		}
-		else if(responseCommand==INFOMEM_RESPONSE) { //<- MN
-			//TODO: MN -> do something
-			
-			// Get message data length + getComponent + getProperty
-			printLogDataForDebugging("INFOMEM_RESPONSE Received");
-			byte[] rxBuf = readBytes(3);
-			printLogDataForDebugging("INFOMEM_RESPONSE Received: " + Util.bytesToHexStringWithSpacesFormatted(rxBuf));
-			rxBuf = readBytes((((int)rxBuf[0])&0xFF));
+		else if(responseCommand==INFOMEM_RESPONSE) {
+			// Get data length to read
+			byte[] rxBuf = readBytes(1);
+			int lengthToRead = (int)(rxBuf[0]&0xFF);
+			rxBuf = readBytes(lengthToRead);
 			printLogDataForDebugging("INFOMEM_RESPONSE Received: " + Util.bytesToHexStringWithSpacesFormatted(rxBuf));
 			
-//			setShimmerInfoMemBytes(infoMemBytes);
+			//Copy to local buffer
+			System.arraycopy(rxBuf, 0, mInfoMemBuffer, mCurrentInfoMemAddress, lengthToRead);
+			//Update configuration when all bytes received.
+			if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
+				setShimmerInfoMemBytes(mInfoMemBuffer);
+			}
 		}
 		else {
-//			consolePrintLn("Unhandled BT response: " + responseCommand);  //TODO:MN  RS: uncomment this?
+			consolePrintLn("Unhandled BT response: " + responseCommand);  //TODO:MN  RS: uncomment this?
 		}
 	}
 	
@@ -1591,7 +1620,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					//TODO: MN -> do something
 				}
 				else if(currentCommand==SET_INFOMEM_COMMAND){
-					//TODO: MN -> do something
+//					if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
+//						setShimmerInfoMemBytes(mInfoMemBuffer);
+//					}
 				}
 				else if(currentCommand==SET_CRC_COMMAND){
 					//TODO: MN -> do something
@@ -3162,14 +3193,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void readConfigurationFromInfoMem(){
 		if(this.mFirmwareVersionCode>=6){
 			int size = InfoMemLayout.calculateInfoMemByteLength(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
-			readInfoMem(MSP430_5XX_INFOMEM_D_ADDRESS, size);
+			readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size);
 		}
 	}
 	
 	//TODO: MN
 	public void readInfoMem(int address, int size){
 		if(this.mFirmwareVersionCode>=6){
-			if (size > (MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
+			mInfoMemBuffer = new byte[mInfoMemLayout.calculateInfoMemByteLength()];
+
+			if (size > (mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
 //				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE);
 //				throw(de);
 			} else {
@@ -3217,7 +3250,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//TODO: MN
 	public void writeConfigurationToInfoMem(){
 		if(this.mFirmwareVersionCode>=6){
-			writeInfoMem(MSP430_5XX_INFOMEM_D_ADDRESS, generateShimmerInfoMemBytes());
+			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, generateShimmerInfoMemBytes());
+		}
+	}
+	
+	//TODO: MN
+	public void writeConfigurationToInfoMem(byte[] buf){
+		if(this.mFirmwareVersionCode>=6){
+			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, buf);
 		}
 	}
 	
@@ -3225,7 +3265,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeInfoMem(int startAddress, byte[] buf){
 		if(this.mFirmwareVersionCode>=6){
 			int address = startAddress;
-			if (buf.length > (MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
+			if (buf.length > (mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
 //				err = ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE;
 //				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_SET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE);
 //				throw(de);
@@ -3254,6 +3294,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 			}
 		}
+		
+		readInfoMem(startAddress, buf.length);
 	}
     
 	//TODO: MN
@@ -3291,7 +3333,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	    	instructionBuffer[0] = (byte)command;
 			System.arraycopy(memLengthToWrite, 0, instructionBuffer, 1, memLengthToWrite.length);
 			System.arraycopy(memAddressToWrite, 0, instructionBuffer, 1 + memLengthToWrite.length, memAddressToWrite.length);
-			System.arraycopy(infoMemBytes, 0, instructionBuffer, 1 + memLengthToWrite.length + memAddressToWrite.length, instructionBuffer.length);
+			System.arraycopy(infoMemBytes, 0, instructionBuffer, 1 + memLengthToWrite.length + memAddressToWrite.length, infoMemBytes.length);
 			
 			getListofInstructions().add(instructionBuffer);
 

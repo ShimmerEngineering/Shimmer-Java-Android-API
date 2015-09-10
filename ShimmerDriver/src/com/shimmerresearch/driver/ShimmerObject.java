@@ -439,17 +439,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte TEST_CONNECTION_COMMAND            	= (byte) 0x96;
 	public static final byte STOP_SDBT_COMMAND 						= (byte) 0x97;
 
-
 	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
-	public final static int MSP430_5XX_INFOMEM_D_ADDRESS = 0x001800; 
-	public final static int MSP430_5XX_INFOMEM_C_ADDRESS = 0x001880; 
-	public final static int MSP430_5XX_INFOMEM_B_ADDRESS = 0x001900;
-	public final static int MSP430_5XX_INFOMEM_A_ADDRESS = 0x001980; 
-	public final static int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
-//	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
-	
 	//TODO switch to just using ShimmerVerObject rather then individual variables 
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	protected int mHardwareVersion=HW_ID.UNKNOWN;
@@ -460,6 +452,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public int mFirmwareVersionMinor = 0;
 	public int mFirmwareVersionInternal = 0;
 	public String mFirmwareVersionParsed = "";
+	
+	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
 	
 	//TODO switch to just using ExpansionBoardDetails rather then individual variables 
 	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
@@ -1778,9 +1772,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
 				uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+//					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+//					calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
+//					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
+					calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
 					calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-					objectCluster.mPropertyCluster.put("GSR",new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
 				}
 			}
 
@@ -4455,6 +4452,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return gsrCalibratedData;  
 	}
 
+	protected double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
+		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
+		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
+		//the following is the new linear method see user GSR user guide for further details
+		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
+		return gsrCalibratedData;  
+	}
+
 	public double getSamplingRate(){
 		return mShimmerSamplingRate;
 	}
@@ -6628,56 +6634,56 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			// InfoMem valid
 			
 			mInfoMemBytes = infoMemContents;
-			InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
-			
+			createInfoMemLayoutObjectIfNeeded();
+
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			mShimmerSamplingRate = (32768/(double)((int)(infoMemContents[infoMemMap.idxShimmerSamplingRate] & infoMemMap.maskShimmerSamplingRate) + ((int)(infoMemContents[infoMemMap.idxShimmerSamplingRate+1] & infoMemMap.maskShimmerSamplingRate) << 8)));
+			mShimmerSamplingRate = (32768/(double)((int)(infoMemContents[mInfoMemLayout.idxShimmerSamplingRate] & mInfoMemLayout.maskShimmerSamplingRate) + ((int)(infoMemContents[mInfoMemLayout.idxShimmerSamplingRate+1] & mInfoMemLayout.maskShimmerSamplingRate) << 8)));
 	
-			mBufferSize = (int)(infoMemContents[infoMemMap.idxBufferSize] & infoMemMap.maskBufferSize);
+			mBufferSize = (int)(infoMemContents[mInfoMemLayout.idxBufferSize] & mInfoMemLayout.maskBufferSize);
 			
 			// Sensors
-			mEnabledSensors = ((long)infoMemContents[infoMemMap.idxSensors0] & infoMemMap.maskSensors) << infoMemMap.byteShiftSensors0;
-			mEnabledSensors += ((long)infoMemContents[infoMemMap.idxSensors1] & infoMemMap.maskSensors) << infoMemMap.byteShiftSensors1;
-			mEnabledSensors += ((long)infoMemContents[infoMemMap.idxSensors2] & infoMemMap.maskSensors) << infoMemMap.byteShiftSensors2;
+			mEnabledSensors = ((long)infoMemContents[mInfoMemLayout.idxSensors0] & mInfoMemLayout.maskSensors) << mInfoMemLayout.byteShiftSensors0;
+			mEnabledSensors += ((long)infoMemContents[mInfoMemLayout.idxSensors1] & mInfoMemLayout.maskSensors) << mInfoMemLayout.byteShiftSensors1;
+			mEnabledSensors += ((long)infoMemContents[mInfoMemLayout.idxSensors2] & mInfoMemLayout.maskSensors) << mInfoMemLayout.byteShiftSensors2;
 
 			// Configuration
-			mLSM303DigitalAccelRate = (infoMemContents[infoMemMap.idxConfigSetupByte0] >> infoMemMap.bitShiftLSM303DLHCAccelSamplingRate) & infoMemMap.maskLSM303DLHCAccelSamplingRate; 
-			mAccelRange = (infoMemContents[infoMemMap.idxConfigSetupByte0] >> infoMemMap.bitShiftLSM303DLHCAccelRange) & infoMemMap.maskLSM303DLHCAccelRange;
-			if(((infoMemContents[infoMemMap.idxConfigSetupByte0] >> infoMemMap.bitShiftLSM303DLHCAccelLPM) & infoMemMap.maskLSM303DLHCAccelLPM) == infoMemMap.maskLSM303DLHCAccelLPM) {
+			mLSM303DigitalAccelRate = (infoMemContents[mInfoMemLayout.idxConfigSetupByte0] >> mInfoMemLayout.bitShiftLSM303DLHCAccelSamplingRate) & mInfoMemLayout.maskLSM303DLHCAccelSamplingRate; 
+			mAccelRange = (infoMemContents[mInfoMemLayout.idxConfigSetupByte0] >> mInfoMemLayout.bitShiftLSM303DLHCAccelRange) & mInfoMemLayout.maskLSM303DLHCAccelRange;
+			if(((infoMemContents[mInfoMemLayout.idxConfigSetupByte0] >> mInfoMemLayout.bitShiftLSM303DLHCAccelLPM) & mInfoMemLayout.maskLSM303DLHCAccelLPM) == mInfoMemLayout.maskLSM303DLHCAccelLPM) {
 				mLowPowerAccelWR = true;
 			}
 			else {
 				mLowPowerAccelWR = false;
 			}
-			if(((infoMemContents[infoMemMap.idxConfigSetupByte0] >> infoMemMap.bitShiftLSM303DLHCAccelHRM) & infoMemMap.maskLSM303DLHCAccelHRM) == infoMemMap.maskLSM303DLHCAccelHRM) {
+			if(((infoMemContents[mInfoMemLayout.idxConfigSetupByte0] >> mInfoMemLayout.bitShiftLSM303DLHCAccelHRM) & mInfoMemLayout.maskLSM303DLHCAccelHRM) == mInfoMemLayout.maskLSM303DLHCAccelHRM) {
 				mHighResAccelWR = true;
 			}
 			else {
 				mHighResAccelWR = false;
 			}
-			mMPU9150GyroAccelRate = (infoMemContents[infoMemMap.idxConfigSetupByte1] >> infoMemMap.bitShiftMPU9150AccelGyroSamplingRate) & infoMemMap.maskMPU9150AccelGyroSamplingRate;
+			mMPU9150GyroAccelRate = (infoMemContents[mInfoMemLayout.idxConfigSetupByte1] >> mInfoMemLayout.bitShiftMPU9150AccelGyroSamplingRate) & mInfoMemLayout.maskMPU9150AccelGyroSamplingRate;
 			checkLowPowerGyro(); // check rate to determine if Sensor is in LPM mode
 			
-			mMagRange = (infoMemContents[infoMemMap.idxConfigSetupByte2] >> infoMemMap.bitShiftLSM303DLHCMagRange) & infoMemMap.maskLSM303DLHCMagRange;
-			mLSM303MagRate = (infoMemContents[infoMemMap.idxConfigSetupByte2] >> infoMemMap.bitShiftLSM303DLHCMagSamplingRate) & infoMemMap.maskLSM303DLHCMagSamplingRate;
+			mMagRange = (infoMemContents[mInfoMemLayout.idxConfigSetupByte2] >> mInfoMemLayout.bitShiftLSM303DLHCMagRange) & mInfoMemLayout.maskLSM303DLHCMagRange;
+			mLSM303MagRate = (infoMemContents[mInfoMemLayout.idxConfigSetupByte2] >> mInfoMemLayout.bitShiftLSM303DLHCMagSamplingRate) & mInfoMemLayout.maskLSM303DLHCMagSamplingRate;
 			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
 
-			mGyroRange = (infoMemContents[infoMemMap.idxConfigSetupByte2] >> infoMemMap.bitShiftMPU9150GyroRange) & infoMemMap.maskMPU9150GyroRange;
+			mGyroRange = (infoMemContents[mInfoMemLayout.idxConfigSetupByte2] >> mInfoMemLayout.bitShiftMPU9150GyroRange) & mInfoMemLayout.maskMPU9150GyroRange;
 			
-			mMPU9150AccelRange = (infoMemContents[infoMemMap.idxConfigSetupByte3] >> infoMemMap.bitShiftMPU9150AccelRange) & infoMemMap.maskMPU9150AccelRange;
-			mPressureResolution = (infoMemContents[infoMemMap.idxConfigSetupByte3] >> infoMemMap.bitShiftBMP180PressureResolution) & infoMemMap.maskBMP180PressureResolution;
-			mGSRRange = (infoMemContents[infoMemMap.idxConfigSetupByte3] >> infoMemMap.bitShiftGSRRange) & infoMemMap.maskGSRRange;
-			mInternalExpPower = (infoMemContents[infoMemMap.idxConfigSetupByte3] >> infoMemMap.bitShiftEXPPowerEnable) & infoMemMap.maskEXPPowerEnable;
+			mMPU9150AccelRange = (infoMemContents[mInfoMemLayout.idxConfigSetupByte3] >> mInfoMemLayout.bitShiftMPU9150AccelRange) & mInfoMemLayout.maskMPU9150AccelRange;
+			mPressureResolution = (infoMemContents[mInfoMemLayout.idxConfigSetupByte3] >> mInfoMemLayout.bitShiftBMP180PressureResolution) & mInfoMemLayout.maskBMP180PressureResolution;
+			mGSRRange = (infoMemContents[mInfoMemLayout.idxConfigSetupByte3] >> mInfoMemLayout.bitShiftGSRRange) & mInfoMemLayout.maskGSRRange;
+			mInternalExpPower = (infoMemContents[mInfoMemLayout.idxConfigSetupByte3] >> mInfoMemLayout.bitShiftEXPPowerEnable) & mInfoMemLayout.maskEXPPowerEnable;
 			
 			//EXG Configuration
-			System.arraycopy(infoMemContents, infoMemMap.idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
+			System.arraycopy(infoMemContents, mInfoMemLayout.idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
 			exgBytesGetConfigFrom(1,mEXG1RegisterArray);
 	
-			System.arraycopy(infoMemContents, infoMemMap.idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
+			System.arraycopy(infoMemContents, mInfoMemLayout.idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
 			exgBytesGetConfigFrom(2,mEXG2RegisterArray);
 			
-			mBluetoothBaudRate = infoMemContents[infoMemMap.idxBtCommBaudRate] & infoMemMap.maskBaudRate;
+			mBluetoothBaudRate = infoMemContents[mInfoMemLayout.idxBtCommBaudRate] & mInfoMemLayout.maskBaudRate;
 			//TODO: hack below -> fix
 //			if(!(mBluetoothBaudRate>=0 && mBluetoothBaudRate<=10)){
 //				mBluetoothBaudRate = 0; 
@@ -6685,8 +6691,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 			// Analog Accel Calibration Parameters
-			byte[] bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
-			System.arraycopy(infoMemContents, infoMemMap.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , infoMemMap.lengthGeneralCalibrationBytes);
+			byte[] bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+			System.arraycopy(infoMemContents, mInfoMemLayout.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
 			int[] formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
 			double[] AM=new double[9];
 			for (int i=0;i<9;i++)
@@ -6701,8 +6707,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mOffsetVectorAnalogAccel = offsetVectorAA;
 			
 			// MPU9150 Gyroscope Calibration Parameters
-			bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
-			System.arraycopy(infoMemContents, infoMemMap.idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 , infoMemMap.lengthGeneralCalibrationBytes);
+			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+			System.arraycopy(infoMemContents, mInfoMemLayout.idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
 			formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
 			AM=new double[9];
 			for (int i=0;i<9;i++)
@@ -6720,8 +6726,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mOffsetVectorGyroscope = offsetVectorG;
 	
 			// LSM303DLHC Magnetometer Calibration Parameters
-			bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
-			System.arraycopy(infoMemContents, infoMemMap.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , infoMemMap.lengthGeneralCalibrationBytes);
+			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
 			formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
 			AM=new double[9];
 			for (int i=0;i<9;i++)
@@ -6736,34 +6742,34 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mOffsetVectorMagnetometer = offsetVectorM;
 			
 			// LSM303DLHC Digital Accel Calibration Parameters
-			bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
-			System.arraycopy(infoMemContents, infoMemMap.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , infoMemMap.lengthGeneralCalibrationBytes);
+			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
 			parseCalParamLSM303DLHCAccel(bufferCalibrationParameters);
 
 			//TODO: decide what to do
 			// BMP180 Pressure Calibration Parameters
 
 //			mDerivedSensors = (long)0;
-//			if((infoMemMap.idxDerivedSensors0>=0)&&(infoMemMap.idxDerivedSensors1>=0)) { // Check if compatible
-//				if((infoMemContents[infoMemMap.idxDerivedSensors0] != (byte)infoMemMap.maskDerivedChannelsByte)
-//						&&(infoMemContents[infoMemMap.idxDerivedSensors1] != (byte)infoMemMap.maskDerivedChannelsByte)){
-//					mDerivedSensors = ((long)infoMemContents[infoMemMap.idxDerivedSensors0] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors0;
-//					mDerivedSensors |= ((long)infoMemContents[infoMemMap.idxDerivedSensors1] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors1;
-//					if(infoMemMap.idxDerivedSensors2>=0) { // Check if compatible
-//						mDerivedSensors |= ((long)infoMemContents[infoMemMap.idxDerivedSensors2] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors2;
+//			if((mInfoMemLayout.idxDerivedSensors0>=0)&&(mInfoMemLayout.idxDerivedSensors1>=0)) { // Check if compatible
+//				if((infoMemContents[mInfoMemLayout.idxDerivedSensors0] != (byte)mInfoMemLayout.maskDerivedChannelsByte)
+//						&&(infoMemContents[mInfoMemLayout.idxDerivedSensors1] != (byte)mInfoMemLayout.maskDerivedChannelsByte)){
+//					mDerivedSensors = ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors0] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors0;
+//					mDerivedSensors |= ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors1] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors1;
+//					if(mInfoMemLayout.idxDerivedSensors2>=0) { // Check if compatible
+//						mDerivedSensors |= ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors2] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors2;
 //					}
 //				}
 //			}
 			
 			mDerivedSensors = (long)0;
-			if((infoMemMap.idxDerivedSensors0>=0)&&(infoMemContents[infoMemMap.idxDerivedSensors0] != (byte)infoMemMap.maskDerivedChannelsByte)
-					&&(infoMemMap.idxDerivedSensors1>=0)&&(infoMemContents[infoMemMap.idxDerivedSensors1] != (byte)infoMemMap.maskDerivedChannelsByte)) { // Check if compatible
+			if((mInfoMemLayout.idxDerivedSensors0>=0)&&(infoMemContents[mInfoMemLayout.idxDerivedSensors0] != (byte)mInfoMemLayout.maskDerivedChannelsByte)
+					&&(mInfoMemLayout.idxDerivedSensors1>=0)&&(infoMemContents[mInfoMemLayout.idxDerivedSensors1] != (byte)mInfoMemLayout.maskDerivedChannelsByte)) { // Check if compatible
 				
-				mDerivedSensors = ((long)infoMemContents[infoMemMap.idxDerivedSensors0] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors0;
-				mDerivedSensors |= ((long)infoMemContents[infoMemMap.idxDerivedSensors1] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors1;
+				mDerivedSensors = ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors0] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors0;
+				mDerivedSensors |= ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors1] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors1;
 				
-				if((infoMemMap.idxDerivedSensors2>=0)&&(infoMemContents[infoMemMap.idxDerivedSensors2] != (byte)infoMemMap.maskDerivedChannelsByte)){ // Check if compatible
-					mDerivedSensors |= ((long)infoMemContents[infoMemMap.idxDerivedSensors2] & infoMemMap.maskDerivedChannelsByte) << infoMemMap.byteShiftDerivedSensors2;
+				if((mInfoMemLayout.idxDerivedSensors2>=0)&&(infoMemContents[mInfoMemLayout.idxDerivedSensors2] != (byte)mInfoMemLayout.maskDerivedChannelsByte)){ // Check if compatible
+					mDerivedSensors |= ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors2] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors2;
 				}
 			}
 
@@ -6774,25 +6780,25 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				
 				// InfoMem C - Start - used by SdLog and LogAndStream
 				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
-					mMPU9150DMP = (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150DMP) & infoMemMap.maskMPU9150DMP;
-					mMPU9150LPF = (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150LPF) & infoMemMap.maskMPU9150LPF;
-					mMPU9150MotCalCfg =  (infoMemContents[infoMemMap.idxConfigSetupByte4] >> infoMemMap.bitShiftMPU9150MotCalCfg) & infoMemMap.maskMPU9150MotCalCfg;
+					mMPU9150DMP = (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150DMP) & mInfoMemLayout.maskMPU9150DMP;
+					mMPU9150LPF = (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150LPF) & mInfoMemLayout.maskMPU9150LPF;
+					mMPU9150MotCalCfg =  (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150MotCalCfg) & mInfoMemLayout.maskMPU9150MotCalCfg;
 					
-					mMPU9150MPLSamplingRate = (infoMemContents[infoMemMap.idxConfigSetupByte5] >> infoMemMap.bitShiftMPU9150MPLSamplingRate) & infoMemMap.maskMPU9150MPLSamplingRate;
-					mMPU9150MagSamplingRate = (infoMemContents[infoMemMap.idxConfigSetupByte5] >> infoMemMap.bitShiftMPU9150MagSamplingRate) & infoMemMap.maskMPU9150MagSamplingRate;
+					mMPU9150MPLSamplingRate = (infoMemContents[mInfoMemLayout.idxConfigSetupByte5] >> mInfoMemLayout.bitShiftMPU9150MPLSamplingRate) & mInfoMemLayout.maskMPU9150MPLSamplingRate;
+					mMPU9150MagSamplingRate = (infoMemContents[mInfoMemLayout.idxConfigSetupByte5] >> mInfoMemLayout.bitShiftMPU9150MagSamplingRate) & mInfoMemLayout.maskMPU9150MagSamplingRate;
 					
-					mEnabledSensors += ((long)infoMemContents[infoMemMap.idxSensors3] & 0xFF) << infoMemMap.bitShiftSensors3;
-					mEnabledSensors += ((long)infoMemContents[infoMemMap.idxSensors4] & 0xFF) << infoMemMap.bitShiftSensors4;
+					mEnabledSensors += ((long)infoMemContents[mInfoMemLayout.idxSensors3] & 0xFF) << mInfoMemLayout.bitShiftSensors3;
+					mEnabledSensors += ((long)infoMemContents[mInfoMemLayout.idxSensors4] & 0xFF) << mInfoMemLayout.bitShiftSensors4;
 					
-					mMPLSensorFusion = (infoMemContents[infoMemMap.idxConfigSetupByte6] >> infoMemMap.bitShiftMPLSensorFusion) & infoMemMap.maskMPLSensorFusion;
-					mMPLGyroCalTC = (infoMemContents[infoMemMap.idxConfigSetupByte6] >> infoMemMap.bitShiftMPLGyroCalTC) & infoMemMap.maskMPLGyroCalTC;
-					mMPLVectCompCal = (infoMemContents[infoMemMap.idxConfigSetupByte6] >> infoMemMap.bitShiftMPLVectCompCal) & infoMemMap.maskMPLVectCompCal;
-					mMPLMagDistCal = (infoMemContents[infoMemMap.idxConfigSetupByte6] >> infoMemMap.bitShiftMPLMagDistCal) & infoMemMap.maskMPLMagDistCal;
-					mMPLEnable = (infoMemContents[infoMemMap.idxConfigSetupByte6] >> infoMemMap.bitShiftMPLEnable) & infoMemMap.maskMPLEnable;
+					mMPLSensorFusion = (infoMemContents[mInfoMemLayout.idxConfigSetupByte6] >> mInfoMemLayout.bitShiftMPLSensorFusion) & mInfoMemLayout.maskMPLSensorFusion;
+					mMPLGyroCalTC = (infoMemContents[mInfoMemLayout.idxConfigSetupByte6] >> mInfoMemLayout.bitShiftMPLGyroCalTC) & mInfoMemLayout.maskMPLGyroCalTC;
+					mMPLVectCompCal = (infoMemContents[mInfoMemLayout.idxConfigSetupByte6] >> mInfoMemLayout.bitShiftMPLVectCompCal) & mInfoMemLayout.maskMPLVectCompCal;
+					mMPLMagDistCal = (infoMemContents[mInfoMemLayout.idxConfigSetupByte6] >> mInfoMemLayout.bitShiftMPLMagDistCal) & mInfoMemLayout.maskMPLMagDistCal;
+					mMPLEnable = (infoMemContents[mInfoMemLayout.idxConfigSetupByte6] >> mInfoMemLayout.bitShiftMPLEnable) & mInfoMemLayout.maskMPLEnable;
 					
 					//MPL Accel Calibration Parameters
-					bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
-					System.arraycopy(infoMemContents, infoMemMap.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , infoMemMap.lengthGeneralCalibrationBytes);
+					bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+					System.arraycopy(infoMemContents, mInfoMemLayout.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
 					formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
 					AM=new double[9];
 					for (int i=0;i<9;i++)
@@ -6807,8 +6813,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					OffsetVectorMPLAccel = offsetVectorMPLA;
 			
 					//MPL Mag Calibration Configuration
-					bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
-					System.arraycopy(infoMemContents, infoMemMap.idxMPLMagCalibration, bufferCalibrationParameters, 0 , infoMemMap.lengthGeneralCalibrationBytes);
+					bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+					System.arraycopy(infoMemContents, mInfoMemLayout.idxMPLMagCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
 					formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
 					AM=new double[9];
 					for (int i=0;i<9;i++)
@@ -6823,8 +6829,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					OffsetVectorMPLMag = offsetVectorMPLMag;
 			
 					//MPL Gyro Calibration Configuration
-					bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
-					System.arraycopy(infoMemContents, infoMemMap.idxMPLGyroCalibration, bufferCalibrationParameters, 0 , infoMemMap.lengthGeneralCalibrationBytes);
+					bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+					System.arraycopy(infoMemContents, mInfoMemLayout.idxMPLGyroCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
 					formattedPacket = formatdatapacketreverse(bufferCalibrationParameters,dataType);
 					AM=new double[9];
 					for (int i=0;i<9;i++)
@@ -6840,8 +6846,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 				
 				// Shimmer Name
-				byte[] shimmerNameBuffer = new byte[infoMemMap.lengthShimmerName];
-				System.arraycopy(infoMemContents, infoMemMap.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemMap.lengthShimmerName);
+				byte[] shimmerNameBuffer = new byte[mInfoMemLayout.lengthShimmerName];
+				System.arraycopy(infoMemContents, mInfoMemLayout.idxSDShimmerName, shimmerNameBuffer, 0 , mInfoMemLayout.lengthShimmerName);
 				for(byte b : shimmerNameBuffer) {
 					if(!Util.isAsciiPrintable((char)b)) {
 						break;
@@ -6850,8 +6856,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 				
 				// Experiment Name
-				byte[] experimentNameBuffer = new byte[infoMemMap.lengthExperimentName];
-				System.arraycopy(infoMemContents, infoMemMap.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemMap.lengthExperimentName);
+				byte[] experimentNameBuffer = new byte[mInfoMemLayout.lengthExperimentName];
+				System.arraycopy(infoMemContents, mInfoMemLayout.idxSDEXPIDName, experimentNameBuffer, 0 , mInfoMemLayout.lengthExperimentName);
 				String experimentName = "";
 				for(byte b : experimentNameBuffer) {
 					if(!Util.isAsciiPrintable((char)b)) {
@@ -6862,10 +6868,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mTrialName = new String(experimentName);
 	
 				//Configuration Time
-				int bitShift = (infoMemMap.lengthConfigTimeBytes-1) * 8;
+				int bitShift = (mInfoMemLayout.lengthConfigTimeBytes-1) * 8;
 				mConfigTime = 0;
-				for(int x=0; x<infoMemMap.lengthConfigTimeBytes; x++ ) {
-					mConfigTime += (((long)(infoMemContents[infoMemMap.idxSDConfigTime0+x] & 0xFF)) << bitShift);
+				for(int x=0; x<mInfoMemLayout.lengthConfigTimeBytes; x++ ) {
+					mConfigTime += (((long)(infoMemContents[mInfoMemLayout.idxSDConfigTime0+x] & 0xFF)) << bitShift);
 					bitShift -= 8;
 				}
 //				//TODO can be replaced by more efficient implementation
@@ -6879,40 +6885,40 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				}
 
 				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
-					mTrialId = infoMemContents[infoMemMap.idxSDMyTrialID] & 0xFF;
-					mTrialNumberOfShimmers = infoMemContents[infoMemMap.idxSDNumOfShimmers] & 0xFF;
+					mTrialId = infoMemContents[mInfoMemLayout.idxSDMyTrialID] & 0xFF;
+					mTrialNumberOfShimmers = infoMemContents[mInfoMemLayout.idxSDNumOfShimmers] & 0xFF;
 				}
 				
 				if((mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG)||(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)) {
-					mButtonStart = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftButtonStart) & infoMemMap.maskButtonStart;
-					mShowRtcErrorLeds = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftShowRwcErrorLeds) & infoMemMap.maskShowRwcErrorLeds;
+					mButtonStart = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftButtonStart) & mInfoMemLayout.maskButtonStart;
+					mShowRtcErrorLeds = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftShowRwcErrorLeds) & mInfoMemLayout.maskShowRwcErrorLeds;
 				}
 				
 				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
-					mSyncWhenLogging = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftTimeSyncWhenLogging) & infoMemMap.maskTimeSyncWhenLogging;
-					mMasterShimmer = (infoMemContents[infoMemMap.idxSDExperimentConfig0] >> infoMemMap.bitShiftMasterShimmer) & infoMemMap.maskTimeMasterShimmer;
-					mSingleTouch = (infoMemContents[infoMemMap.idxSDExperimentConfig1] >> infoMemMap.bitShiftSingleTouch) & infoMemMap.maskTimeSingleTouch;
-					mTCXO = (infoMemContents[infoMemMap.idxSDExperimentConfig1] >> infoMemMap.bitShiftTCX0) & infoMemMap.maskTimeTCX0;
+					mSyncWhenLogging = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftTimeSyncWhenLogging) & mInfoMemLayout.maskTimeSyncWhenLogging;
+					mMasterShimmer = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftMasterShimmer) & mInfoMemLayout.maskTimeMasterShimmer;
+					mSingleTouch = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig1] >> mInfoMemLayout.bitShiftSingleTouch) & mInfoMemLayout.maskTimeSingleTouch;
+					mTCXO = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig1] >> mInfoMemLayout.bitShiftTCX0) & mInfoMemLayout.maskTimeTCX0;
 					
-					mSyncBroadcastInterval = (int)(infoMemContents[infoMemMap.idxSDBTInterval] & 0xFF);
+					mSyncBroadcastInterval = (int)(infoMemContents[mInfoMemLayout.idxSDBTInterval] & 0xFF);
 					
 					// Maximum and Estimated Length in minutes
-					mTrialDurationEstimated =  ((int)(infoMemContents[infoMemMap.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemContents[infoMemMap.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
-					mTrialDurationMaximum =  ((int)(infoMemContents[infoMemMap.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemContents[infoMemMap.idxMaxExpLengthMsb] & 0xFF)) << 8));
+					mTrialDurationEstimated =  ((int)(infoMemContents[mInfoMemLayout.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemContents[mInfoMemLayout.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
+					mTrialDurationMaximum =  ((int)(infoMemContents[mInfoMemLayout.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemContents[mInfoMemLayout.idxMaxExpLengthMsb] & 0xFF)) << 8));
 				}
 					
-				byte[] macIdBytes = new byte[infoMemMap.lengthMacIdBytes];
-				System.arraycopy(infoMemContents, infoMemMap.idxMacAddress, macIdBytes, 0 , infoMemMap.lengthMacIdBytes);
+				byte[] macIdBytes = new byte[mInfoMemLayout.lengthMacIdBytes];
+				System.arraycopy(infoMemContents, mInfoMemLayout.idxMacAddress, macIdBytes, 0 , mInfoMemLayout.lengthMacIdBytes);
 				mMacIdFromInfoMem = Util.bytesToHexString(macIdBytes);
 				
 
-				if(((infoMemContents[infoMemMap.idxSDConfigDelayFlag]>>infoMemMap.bitShiftSDCfgFileWriteFlag)&infoMemMap.maskSDCfgFileWriteFlag) == infoMemMap.maskSDCfgFileWriteFlag) {
+				if(((infoMemContents[mInfoMemLayout.idxSDConfigDelayFlag]>>mInfoMemLayout.bitShiftSDCfgFileWriteFlag)&mInfoMemLayout.maskSDCfgFileWriteFlag) == mInfoMemLayout.maskSDCfgFileWriteFlag) {
 					mConfigFileCreationFlag = true;
 				}
 				else {
 					mConfigFileCreationFlag = false;
 				}
-				if(((infoMemContents[infoMemMap.idxSDConfigDelayFlag]>>infoMemMap.bitShiftSDCalibFileWriteFlag)&infoMemMap.maskSDCalibFileWriteFlag) == infoMemMap.maskSDCalibFileWriteFlag) {
+				if(((infoMemContents[mInfoMemLayout.idxSDConfigDelayFlag]>>mInfoMemLayout.bitShiftSDCalibFileWriteFlag)&mInfoMemLayout.maskSDCalibFileWriteFlag) == mInfoMemLayout.maskSDCalibFileWriteFlag) {
 					mCalibFileCreationFlag = true;
 				}
 				else {
@@ -6924,9 +6930,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					syncNodesList.clear();
-					for (int i = 0; i < infoMemMap.maxNumOfExperimentNodes; i++) {
-						System.arraycopy(infoMemContents, infoMemMap.idxNode0 + (i*infoMemMap.lengthMacIdBytes), macIdBytes, 0 , infoMemMap.lengthMacIdBytes);
-						if((Arrays.equals(macIdBytes, infoMemMap.invalidMacId))||(Arrays.equals(macIdBytes, infoMemMap.invalidMacId))) {
+					for (int i = 0; i < mInfoMemLayout.maxNumOfExperimentNodes; i++) {
+						System.arraycopy(infoMemContents, mInfoMemLayout.idxNode0 + (i*mInfoMemLayout.lengthMacIdBytes), macIdBytes, 0 , mInfoMemLayout.lengthMacIdBytes);
+						if((Arrays.equals(macIdBytes, mInfoMemLayout.invalidMacId))||(Arrays.equals(macIdBytes, mInfoMemLayout.invalidMacId))) {
 //						if(Arrays.equals(macIdBytes, new byte[]{-1,-1,-1,-1,-1,-1})) {
 							break;
 						}
@@ -6970,11 +6976,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 
-		InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+		InfoMemLayout mInfoMemLayout = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
 		
 		byte[] infoMemBackup = mInfoMemBytes.clone();
 		
-		mInfoMemBytes = new byte[infoMemMap.mInfoMemSize];
+		mInfoMemBytes = new byte[mInfoMemLayout.mInfoMemSize];
 //		mShimmerInfoMemBytes = createEmptyInfoMemByteArray(getExpectedInfoMemByteLength());
 		
 		// InfoMem defaults to 0xFF on firmware flash
@@ -6992,53 +6998,53 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 		// Sampling Rate
 		int samplingRate = (int)(32768 / mShimmerSamplingRate);
-		mInfoMemBytes[infoMemMap.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemMap.maskShimmerSamplingRate); 
-		mInfoMemBytes[infoMemMap.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemMap.maskShimmerSamplingRate); 
+		mInfoMemBytes[mInfoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & mInfoMemLayout.maskShimmerSamplingRate); 
+		mInfoMemBytes[mInfoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & mInfoMemLayout.maskShimmerSamplingRate); 
 
 		//FW not using this feature and BtStream will reject infomem if this isn't set to '1'
-		mInfoMemBytes[infoMemMap.idxBufferSize] = (byte) 1;//(byte) (mBufferSize & infoMemMap.maskBufferSize); 
+		mInfoMemBytes[mInfoMemLayout.idxBufferSize] = (byte) 1;//(byte) (mBufferSize & mInfoMemLayout.maskBufferSize); 
 		
 		// Sensors
 		refreshEnabledSensorsFromSensorMap();
-		mInfoMemBytes[infoMemMap.idxSensors0] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors0) & infoMemMap.maskSensors);
-		mInfoMemBytes[infoMemMap.idxSensors1] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors1) & infoMemMap.maskSensors);
-		mInfoMemBytes[infoMemMap.idxSensors2] = (byte) ((mEnabledSensors >> infoMemMap.byteShiftSensors2) & infoMemMap.maskSensors);
+		mInfoMemBytes[mInfoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> mInfoMemLayout.byteShiftSensors0) & mInfoMemLayout.maskSensors);
+		mInfoMemBytes[mInfoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> mInfoMemLayout.byteShiftSensors1) & mInfoMemLayout.maskSensors);
+		mInfoMemBytes[mInfoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> mInfoMemLayout.byteShiftSensors2) & mInfoMemLayout.maskSensors);
 //		setDefaultConfigForDisabledSensors();
 		
 		// Configuration
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & infoMemMap.maskLSM303DLHCAccelSamplingRate) << infoMemMap.bitShiftLSM303DLHCAccelSamplingRate);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (byte) ((mAccelRange & infoMemMap.maskLSM303DLHCAccelRange) << infoMemMap.bitShiftLSM303DLHCAccelRange);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & mInfoMemLayout.maskLSM303DLHCAccelSamplingRate) << mInfoMemLayout.bitShiftLSM303DLHCAccelSamplingRate);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte0] |= (byte) ((mAccelRange & mInfoMemLayout.maskLSM303DLHCAccelRange) << mInfoMemLayout.bitShiftLSM303DLHCAccelRange);
 		if(mLowPowerAccelWR) {
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (infoMemMap.maskLSM303DLHCAccelLPM << infoMemMap.bitShiftLSM303DLHCAccelLPM);
+			mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte0] |= (mInfoMemLayout.maskLSM303DLHCAccelLPM << mInfoMemLayout.bitShiftLSM303DLHCAccelLPM);
 		}
 		if(mHighResAccelWR) {
-			mInfoMemBytes[infoMemMap.idxConfigSetupByte0] |= (infoMemMap.maskLSM303DLHCAccelHRM << infoMemMap.bitShiftLSM303DLHCAccelHRM);
+			mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte0] |= (mInfoMemLayout.maskLSM303DLHCAccelHRM << mInfoMemLayout.bitShiftLSM303DLHCAccelHRM);
 		}
 
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte1] = (byte) ((mMPU9150GyroAccelRate & infoMemMap.maskMPU9150AccelGyroSamplingRate) << infoMemMap.bitShiftMPU9150AccelGyroSamplingRate);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte1] = (byte) ((mMPU9150GyroAccelRate & mInfoMemLayout.maskMPU9150AccelGyroSamplingRate) << mInfoMemLayout.bitShiftMPU9150AccelGyroSamplingRate);
 
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] = (byte) ((mMagRange & infoMemMap.maskLSM303DLHCMagRange) << infoMemMap.bitShiftLSM303DLHCMagRange);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] |= (byte) ((mLSM303MagRate & infoMemMap.maskLSM303DLHCMagSamplingRate) << infoMemMap.bitShiftLSM303DLHCMagSamplingRate);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte2] |= (byte) ((mGyroRange & infoMemMap.maskMPU9150GyroRange) << infoMemMap.bitShiftMPU9150GyroRange);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte2] = (byte) ((mMagRange & mInfoMemLayout.maskLSM303DLHCMagRange) << mInfoMemLayout.bitShiftLSM303DLHCMagRange);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte2] |= (byte) ((mLSM303MagRate & mInfoMemLayout.maskLSM303DLHCMagSamplingRate) << mInfoMemLayout.bitShiftLSM303DLHCMagSamplingRate);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte2] |= (byte) ((mGyroRange & mInfoMemLayout.maskMPU9150GyroRange) << mInfoMemLayout.bitShiftMPU9150GyroRange);
 		
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & infoMemMap.maskMPU9150AccelRange) << infoMemMap.bitShiftMPU9150AccelRange);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mPressureResolution & infoMemMap.maskBMP180PressureResolution) << infoMemMap.bitShiftBMP180PressureResolution);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mGSRRange & infoMemMap.maskGSRRange) << infoMemMap.bitShiftGSRRange);
-		mInfoMemBytes[infoMemMap.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemMap.maskEXPPowerEnable) << infoMemMap.bitShiftEXPPowerEnable);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & mInfoMemLayout.maskMPU9150AccelRange) << mInfoMemLayout.bitShiftMPU9150AccelRange);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte3] |= (byte) ((mPressureResolution & mInfoMemLayout.maskBMP180PressureResolution) << mInfoMemLayout.bitShiftBMP180PressureResolution);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte3] |= (byte) ((mGSRRange & mInfoMemLayout.maskGSRRange) << mInfoMemLayout.bitShiftGSRRange);
+		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & mInfoMemLayout.maskEXPPowerEnable) << mInfoMemLayout.bitShiftEXPPowerEnable);
 		
 		//EXG Configuration
 		//update mEXG1Register and mEXG2Register 
 		exgBytesGetFromConfig();
 		
-		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, infoMemMap.idxEXGADS1292RChip1Config1, 10);
-		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, infoMemMap.idxEXGADS1292RChip2Config1, 10);
+		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, mInfoMemLayout.idxEXGADS1292RChip1Config1, 10);
+		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, mInfoMemLayout.idxEXGADS1292RChip2Config1, 10);
 //		exgBytesGetConfigFrom(1, mEXG1Register);
 //		exgBytesGetConfigFrom(2, mEXG2Register);
 		
-		mInfoMemBytes[infoMemMap.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & infoMemMap.maskBaudRate);
+		mInfoMemBytes[mInfoMemLayout.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & mInfoMemLayout.maskBaudRate);
 
 		// Analog Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
+		byte[] bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
 			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
@@ -7055,10 +7061,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
 			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
 		}
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxAnalogAccelCalibration, infoMemMap.lengthGeneralCalibrationBytes);
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, mInfoMemLayout.idxAnalogAccelCalibration, mInfoMemLayout.lengthGeneralCalibrationBytes);
 
 		// MPU9150 Gyroscope Calibration Parameters
-		bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
+		bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
 			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
@@ -7075,10 +7081,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
 			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
 		}
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxMPU9150GyroCalibration, infoMemMap.lengthGeneralCalibrationBytes);
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, mInfoMemLayout.idxMPU9150GyroCalibration, mInfoMemLayout.lengthGeneralCalibrationBytes);
 
 		// LSM303DLHC Magnetometer Calibration Parameters
-		bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
+		bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
 			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 0) & 0xFF);
@@ -7095,28 +7101,28 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][1]*100)) & 0xFF);
 			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][2]*100)) & 0xFF);
 		}
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxLSM303DLHCMagCalibration, infoMemMap.lengthGeneralCalibrationBytes);
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, mInfoMemLayout.idxLSM303DLHCMagCalibration, mInfoMemLayout.lengthGeneralCalibrationBytes);
 
 		// LSM303DLHC Digital Accel Calibration Parameters
-//		bufferCalibrationParameters = new byte[infoMemMap.lengthGeneralCalibrationBytes];
+//		bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 		bufferCalibrationParameters = generateCalParamLSM303DLHCAccel();
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemMap.idxLSM303DLHCAccelCalibration, infoMemMap.lengthGeneralCalibrationBytes);
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, mInfoMemLayout.idxLSM303DLHCAccelCalibration, mInfoMemLayout.lengthGeneralCalibrationBytes);
 		
 		//TODO: decide what to do
 		// BMP180 Pressure Calibration Parameters
 		
 		// Derived Sensors
 		mDerivedSensors = (long)0;
-		if((infoMemMap.idxDerivedSensors0>=0)&&(infoMemMap.idxDerivedSensors1>=0)) { // Check if compatible
+		if((mInfoMemLayout.idxDerivedSensors0>=0)&&(mInfoMemLayout.idxDerivedSensors1>=0)) { // Check if compatible
 			for(Integer key:mSensorMap.keySet()) {
 				if(mSensorMap.get(key).mIsEnabled) {
 					mDerivedSensors |= mSensorMap.get(key).mDerivedSensorBitmapID;
 				}
 			}
-			mInfoMemBytes[infoMemMap.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemMap.byteShiftDerivedSensors0) & infoMemMap.maskDerivedChannelsByte);
-			mInfoMemBytes[infoMemMap.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemMap.byteShiftDerivedSensors1) & infoMemMap.maskDerivedChannelsByte);
-			if(infoMemMap.idxDerivedSensors2>=0) { // Check if compatible
-				mInfoMemBytes[infoMemMap.idxDerivedSensors2] = (byte) ((mDerivedSensors >> infoMemMap.byteShiftDerivedSensors2) & infoMemMap.maskDerivedChannelsByte);
+			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors0) & mInfoMemLayout.maskDerivedChannelsByte);
+			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors1) & mInfoMemLayout.maskDerivedChannelsByte);
+			if(mInfoMemLayout.idxDerivedSensors2>=0) { // Check if compatible
+				mInfoMemBytes[mInfoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors2) & mInfoMemLayout.maskDerivedChannelsByte);
 			}
 
 		}
@@ -7130,21 +7136,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 			// InfoMem C - Start - used by SdLog and LogAndStream
 			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & infoMemMap.maskMPU9150DMP) << infoMemMap.bitShiftMPU9150DMP);
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & infoMemMap.maskMPU9150LPF) << infoMemMap.bitShiftMPU9150LPF);
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & infoMemMap.maskMPU9150MotCalCfg) << infoMemMap.bitShiftMPU9150MotCalCfg);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & mInfoMemLayout.maskMPU9150DMP) << mInfoMemLayout.bitShiftMPU9150DMP);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & mInfoMemLayout.maskMPU9150LPF) << mInfoMemLayout.bitShiftMPU9150LPF);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & mInfoMemLayout.maskMPU9150MotCalCfg) << mInfoMemLayout.bitShiftMPU9150MotCalCfg);
 
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte5] = (byte) ((mMPU9150MPLSamplingRate & infoMemMap.maskMPU9150MPLSamplingRate) << infoMemMap.bitShiftMPU9150MPLSamplingRate);
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & infoMemMap.maskMPU9150MPLSamplingRate) << infoMemMap.bitShiftMPU9150MagSamplingRate);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte5] = (byte) ((mMPU9150MPLSamplingRate & mInfoMemLayout.maskMPU9150MPLSamplingRate) << mInfoMemLayout.bitShiftMPU9150MPLSamplingRate);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & mInfoMemLayout.maskMPU9150MPLSamplingRate) << mInfoMemLayout.bitShiftMPU9150MagSamplingRate);
 
-				mInfoMemBytes[infoMemMap.idxSensors3] = (byte) ((mEnabledSensors >> infoMemMap.bitShiftSensors3) & 0xFF);
-				mInfoMemBytes[infoMemMap.idxSensors4] = (byte) ((mEnabledSensors >> infoMemMap.bitShiftSensors4) & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxSensors3] = (byte) ((mEnabledSensors >> mInfoMemLayout.bitShiftSensors3) & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxSensors4] = (byte) ((mEnabledSensors >> mInfoMemLayout.bitShiftSensors4) & 0xFF);
 
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] = (byte) ((mMPLSensorFusion & infoMemMap.maskMPLSensorFusion) << infoMemMap.bitShiftMPLSensorFusion);
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & infoMemMap.maskMPLGyroCalTC) << infoMemMap.bitShiftMPLGyroCalTC);
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & infoMemMap.maskMPLVectCompCal) << infoMemMap.bitShiftMPLVectCompCal);
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & infoMemMap.maskMPLMagDistCal) << infoMemMap.bitShiftMPLMagDistCal);
-				mInfoMemBytes[infoMemMap.idxConfigSetupByte6] |= (byte) ((mMPLEnable & infoMemMap.maskMPLEnable) << infoMemMap.bitShiftMPLEnable);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte6] = (byte) ((mMPLSensorFusion & mInfoMemLayout.maskMPLSensorFusion) << mInfoMemLayout.bitShiftMPLSensorFusion);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & mInfoMemLayout.maskMPLGyroCalTC) << mInfoMemLayout.bitShiftMPLGyroCalTC);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & mInfoMemLayout.maskMPLVectCompCal) << mInfoMemLayout.bitShiftMPLVectCompCal);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & mInfoMemLayout.maskMPLMagDistCal) << mInfoMemLayout.bitShiftMPLMagDistCal);
+				mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte6] |= (byte) ((mMPLEnable & mInfoMemLayout.maskMPLEnable) << mInfoMemLayout.bitShiftMPLEnable);
 				
 				//TODO: decide what to do
 				//MPL Accel Calibration Parameters
@@ -7153,91 +7159,91 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 
 			// Shimmer Name
-			for (int i = 0; i < infoMemMap.lengthShimmerName; i++) {
+			for (int i = 0; i < mInfoMemLayout.lengthShimmerName; i++) {
 				if (i < mShimmerUserAssignedName.length()) {
-					mInfoMemBytes[infoMemMap.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
+					mInfoMemBytes[mInfoMemLayout.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
 				}
 				else {
-					mInfoMemBytes[infoMemMap.idxSDShimmerName + i] = (byte) 0xFF;
+					mInfoMemBytes[mInfoMemLayout.idxSDShimmerName + i] = (byte) 0xFF;
 				}
 			}
 			
 			// Experiment Name
-			for (int i = 0; i < infoMemMap.lengthExperimentName; i++) {
+			for (int i = 0; i < mInfoMemLayout.lengthExperimentName; i++) {
 				if (i < mTrialName.length()) {
-					mInfoMemBytes[infoMemMap.idxSDEXPIDName + i] = (byte) mTrialName.charAt(i);
+					mInfoMemBytes[mInfoMemLayout.idxSDEXPIDName + i] = (byte) mTrialName.charAt(i);
 				}
 				else {
-					mInfoMemBytes[infoMemMap.idxSDEXPIDName + i] = (byte) 0xFF;
+					mInfoMemBytes[mInfoMemLayout.idxSDEXPIDName + i] = (byte) 0xFF;
 				}
 			}
 
 			//Configuration Time
-			mInfoMemBytes[infoMemMap.idxSDConfigTime0] = (byte) ((mConfigTime >> infoMemMap.bitShiftSDConfigTime0) & 0xFF);
-			mInfoMemBytes[infoMemMap.idxSDConfigTime1] = (byte) ((mConfigTime >> infoMemMap.bitShiftSDConfigTime1) & 0xFF);
-			mInfoMemBytes[infoMemMap.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemMap.bitShiftSDConfigTime2) & 0xFF);
-			mInfoMemBytes[infoMemMap.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemMap.bitShiftSDConfigTime3) & 0xFF);
+			mInfoMemBytes[mInfoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime0) & 0xFF);
+			mInfoMemBytes[mInfoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime1) & 0xFF);
+			mInfoMemBytes[mInfoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime2) & 0xFF);
+			mInfoMemBytes[mInfoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 			
 			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
-				mInfoMemBytes[infoMemMap.idxSDMyTrialID] = (byte) (mTrialId & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxSDMyTrialID] = (byte) (mTrialId & 0xFF);
 	
-				mInfoMemBytes[infoMemMap.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
 			}
 			
 			if((mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG)||(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)) {
-				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] = (byte) ((mButtonStart & infoMemMap.maskButtonStart) << infoMemMap.bitShiftButtonStart);
+				mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] = (byte) ((mButtonStart & mInfoMemLayout.maskButtonStart) << mInfoMemLayout.bitShiftButtonStart);
 				if(this.isOverrideShowRwcErrorLeds){
-					mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((infoMemMap.maskShowRwcErrorLeds) << infoMemMap.bitShiftShowRwcErrorLeds);
+					mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mInfoMemLayout.maskShowRwcErrorLeds) << mInfoMemLayout.bitShiftShowRwcErrorLeds);
 				}
 				else {
-					mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mShowRtcErrorLeds & infoMemMap.maskShowRwcErrorLeds) << infoMemMap.bitShiftShowRwcErrorLeds);
+					mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mShowRtcErrorLeds & mInfoMemLayout.maskShowRwcErrorLeds) << mInfoMemLayout.bitShiftShowRwcErrorLeds);
 				}
 			}
 			
 			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
-				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & infoMemMap.maskTimeSyncWhenLogging) << infoMemMap.bitShiftTimeSyncWhenLogging);
-				mInfoMemBytes[infoMemMap.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & infoMemMap.maskTimeMasterShimmer) << infoMemMap.bitShiftMasterShimmer);
+				mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & mInfoMemLayout.maskTimeSyncWhenLogging) << mInfoMemLayout.bitShiftTimeSyncWhenLogging);
+				mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & mInfoMemLayout.maskTimeMasterShimmer) << mInfoMemLayout.bitShiftMasterShimmer);
 				
-				mInfoMemBytes[infoMemMap.idxSDExperimentConfig1] = (byte) ((mSingleTouch & infoMemMap.maskTimeSingleTouch) << infoMemMap.bitShiftSingleTouch);
-				mInfoMemBytes[infoMemMap.idxSDExperimentConfig1] |= (byte) ((mTCXO & infoMemMap.maskTimeTCX0) << infoMemMap.bitShiftTCX0);
+				mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig1] = (byte) ((mSingleTouch & mInfoMemLayout.maskTimeSingleTouch) << mInfoMemLayout.bitShiftSingleTouch);
+				mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig1] |= (byte) ((mTCXO & mInfoMemLayout.maskTimeTCX0) << mInfoMemLayout.bitShiftTCX0);
 			
-				mInfoMemBytes[infoMemMap.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
 			
 				// Maximum and Estimated Length in minutes
-				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthLsb] = (byte) ((mTrialDurationEstimated >> 0) & 0xFF);
-				mInfoMemBytes[infoMemMap.idxEstimatedExpLengthMsb] = (byte) ((mTrialDurationEstimated >> 8) & 0xFF);
-				mInfoMemBytes[infoMemMap.idxMaxExpLengthLsb] = (byte) ((mTrialDurationMaximum >> 0) & 0xFF);
-				mInfoMemBytes[infoMemMap.idxMaxExpLengthMsb] = (byte) ((mTrialDurationMaximum >> 8) & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxEstimatedExpLengthLsb] = (byte) ((mTrialDurationEstimated >> 0) & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxEstimatedExpLengthMsb] = (byte) ((mTrialDurationEstimated >> 8) & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxMaxExpLengthLsb] = (byte) ((mTrialDurationMaximum >> 0) & 0xFF);
+				mInfoMemBytes[mInfoMemLayout.idxMaxExpLengthMsb] = (byte) ((mTrialDurationMaximum >> 8) & 0xFF);
 			}
 			
 			if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))) {
 				if(generateForWritingToShimmer) {
 					// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
 					// (already set to 0xFF at start of method but just incase)
-					System.arraycopy(infoMemMap.invalidMacId, 0, mInfoMemBytes, infoMemMap.idxMacAddress, infoMemMap.lengthMacIdBytes);
+					System.arraycopy(mInfoMemLayout.invalidMacId, 0, mInfoMemBytes, mInfoMemLayout.idxMacAddress, mInfoMemLayout.lengthMacIdBytes);
 	
 					//TODO base below off mCalibFileCreationFlag and mCfgFileCreationFlag global variables? 
 					
 					 // Tells the Shimmer to create a new config file on undock/power cycle
-					mInfoMemBytes[infoMemMap.idxSDConfigDelayFlag] = (byte) (infoMemMap.maskSDCfgFileWriteFlag << infoMemMap.bitShiftSDCfgFileWriteFlag);
+					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = (byte) (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag);
 	
 					//TODO decide what to do about calibration info
-					//mInfoMemBytes[infoMemMap.idxSDConfigDelayFlag] = (byte) (infoMemMap.maskSDCalibFileWriteFlag << infoMemMap.bitShiftSDCalibFileWriteFlag);
+					//mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = (byte) (mInfoMemLayout.maskSDCalibFileWriteFlag << mInfoMemLayout.bitShiftSDCalibFileWriteFlag);
 				}
 			}
 			// InfoMem C - End
 				
 			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
 				// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
-				for (int i = 0; i < infoMemMap.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
+				for (int i = 0; i < mInfoMemLayout.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 					byte[] macIdArray;
 					if((syncNodesList.size()>0) && (i<syncNodesList.size()) && (mSyncWhenLogging>0)) {
 						macIdArray = Util.hexStringToByteArray(syncNodesList.get(i));
 					}
 					else {
-						macIdArray = infoMemMap.invalidMacId;
+						macIdArray = mInfoMemLayout.invalidMacId;
 					}
-					System.arraycopy(macIdArray, 0, mInfoMemBytes, infoMemMap.idxNode0 + (i*infoMemMap.lengthMacIdBytes), infoMemMap.lengthMacIdBytes);
+					System.arraycopy(macIdArray, 0, mInfoMemBytes, mInfoMemLayout.idxNode0 + (i*mInfoMemLayout.lengthMacIdBytes), mInfoMemLayout.lengthMacIdBytes);
 				}
 				// InfoMem B End
 			}
@@ -7360,35 +7366,35 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			} 
 			else if (mHardwareVersion == HW_ID.SHIMMER_3) {
-				InfoMemLayout infoMemMap = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+				createInfoMemLayoutObjectIfNeeded();
 
 				Map<Integer,SensorDetails> sensorMapRef = Configuration.Shimmer3.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
 					
 					int derivedChannelBitmapID = 0;
 					if(key==Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelResAmp;
+						derivedChannelBitmapID = mInfoMemLayout.maskDerivedChannelResAmp;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.SKIN_TEMPERATURE_PROBE){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelSkinTemp;
+						derivedChannelBitmapID = mInfoMemLayout.maskDerivedChannelSkinTemp;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A12){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+						derivedChannelBitmapID = mInfoMemLayout.maskDerivedChannelPpg_ADC12ADC13;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A13){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+						derivedChannelBitmapID = mInfoMemLayout.maskDerivedChannelPpg_ADC12ADC13;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG1_A12){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+						derivedChannelBitmapID = mInfoMemLayout.maskDerivedChannelPpg1_ADC12ADC13;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG1_A13){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+						derivedChannelBitmapID = mInfoMemLayout.maskDerivedChannelPpg1_ADC12ADC13;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG2_A1){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
+						derivedChannelBitmapID = mInfoMemLayout.maskDerivedChannelPpg2_ADC1ADC14;
 					}
 					else if(key==Configuration.Shimmer3.SensorMapKey.PPG2_A14){
-						derivedChannelBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
+						derivedChannelBitmapID = mInfoMemLayout.maskDerivedChannelPpg2_ADC1ADC14;
 					}
 						
 					mSensorMap.put(key, new SensorEnabledDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
@@ -8589,8 +8595,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
 	 */
 	public int getExpectedInfoMemByteLength() {
-		InfoMemLayout iML = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
-		return iML.mInfoMemSize;
+		createInfoMemLayoutObjectIfNeeded();
+		return mInfoMemLayout.mInfoMemSize;
+	}
+	
+	public void createInfoMemLayoutObjectIfNeeded(){
+		boolean create = false;
+		if(mInfoMemLayout==null){
+			create = true;
+		}
+		else if(mInfoMemLayout.isDifferent(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal)){
+			create = true;
+		}
+		
+		if(create){
+			mInfoMemLayout = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+		}
 	}
 	
 	 /**
@@ -9724,12 +9744,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	/**
-	 * @param mShimmerInfoMemBytes the mShimmerInfoMemBytes to set
+	 * @param shimmerInfoMemBytes the shimmerInfoMemBytes to set
 	 */
-	protected void setShimmerInfoMemBytes(byte[] mShimmerInfoMemBytes) {
-		this.infoMemByteArrayParse(mShimmerInfoMemBytes);
+	protected void setShimmerInfoMemBytes(byte[] shimmerInfoMemBytes) {
+		this.infoMemByteArrayParse(shimmerInfoMemBytes);
 	}
-
+	
 	/**
 	 * @return the mShimmerInfoMemBytes
 	 */
@@ -11145,6 +11165,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mFirmwareVersionInternal = hwfw.mFirmwareVersionInternal;
 		mFirmwareVersionParsed = hwfw.mFirmwareVersionParsed;
 		mFirmwareVersionCode = hwfw.mFirmwareVersionCode;
+		
+		createInfoMemLayoutObjectIfNeeded();
 		
 		//Once the version is known update settings accordingly 
 		if (mFirmwareVersionCode>=6){

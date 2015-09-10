@@ -1,5 +1,7 @@
 package com.shimmerresearch.driver;
 
+import java.io.Serializable;
+
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 
 /**
@@ -13,8 +15,13 @@ import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
  * @author Mark Nolan
  *
  */
-public class InfoMemLayout {
+public class InfoMemLayout implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5729543049033754281L;
+	
 	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
 	public byte[] invalidMacId2 = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
 	public int maxNumOfExperimentNodes = 21;
@@ -24,6 +31,14 @@ public class InfoMemLayout {
 	int mFirmwareVersionMinor = -1;
 	int mFirmwareVersionInternal = -1;
 	int mInfoMemSize = 512;
+	
+	public int MSP430_5XX_INFOMEM_D_ADDRESS = 0x001800; 
+	public int MSP430_5XX_INFOMEM_C_ADDRESS = 0x001880; 
+	public int MSP430_5XX_INFOMEM_B_ADDRESS = 0x001900;
+	public int MSP430_5XX_INFOMEM_A_ADDRESS = 0x001980; 
+	public int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
+//	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
+
 	
 //	//SENSORS0
 //	public int SENSOR_A_ACCEL =                     0x80;
@@ -433,7 +448,10 @@ public class InfoMemLayout {
 //	public int GYRO_AND_MAG =                 0x02;
 //	public int GYRO_AND_SOME_MAG =            0x03;
 	
-	
+	public InfoMemLayout() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Hold the Shimmer3's microcontroller information memory layout. This
 	 * region of the the microcontrollers RAM can be used to configure all
@@ -491,26 +509,38 @@ public class InfoMemLayout {
 				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,12))) {
 			maskShowRwcErrorLeds =	 		0x01;
 		}
+		
+		//TODO update with relative SDLog version number
+		if((Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,11,5))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,16))
+				||(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.BTSTREAM,0,7,3))) {
+			MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
+			MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
+			MSP430_5XX_INFOMEM_B_ADDRESS = 256;
+			MSP430_5XX_INFOMEM_A_ADDRESS = 384; 
+			MSP430_5XX_INFOMEM_LAST_ADDRESS = 511;
+		}
 
 	}
 	
-	public static int calculateInfoMemByteLength(int mFirmwareIdentifier, int mFirmwareVersionMajor, int mFirmwareVersionMinor, int mFirmwareVersionRelease) {
+	public static int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
+		
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
-//		if(Util.compareVersions(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionRelease,
+//		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,
 //				FW_ID.SHIMMER3.SDLOG, 0, 10, 1)) {
 //			return 512;
 //		}
 		
-//		if(mFirmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
+//		if(firmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
 //			return 384;
 //		}
-//		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
+//		else if(firmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
 //			return 128;
 //		}
-//		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM) {
+//		else if(firmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM) {
 //			return 384;
 //		}
-//		else if(mFirmwareIdentifier == FW_ID.SHIMMER3.GQ_GSR) {
+//		else if(firmwareIdentifier == FW_ID.SHIMMER3.GQ_GSR) {
 //			return 128;
 //		}
 //		else {
@@ -518,6 +548,20 @@ public class InfoMemLayout {
 //		}
 		
 		return 384;
+	}
+	
+	public int calculateInfoMemByteLength(){
+		return calculateInfoMemByteLength(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+	}
+
+	public boolean isDifferent(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+		if((mFirmwareIdentifier!=firmwareIdentifier)
+				||(mFirmwareVersionMajor!=firmwareVersionMajor)
+				||(mFirmwareVersionMinor!=firmwareVersionMinor)
+				||(mFirmwareVersionInternal!=firmwareVersionInternal)){
+			return true;
+		}
+		return false;
 	}
 
 }
