@@ -476,9 +476,9 @@ public class Shimmer extends ShimmerBluetooth{
 			mTimerCheckAlive = null;
 		}
 		
-		if (mTimerWaitForAckOrResp!=null){
-			mTimerWaitForAckOrResp.cancel();
-			mTimerWaitForAckOrResp.purge();
+		if (mTimerCheckForAckOrResp!=null){
+			mTimerCheckForAckOrResp.cancel();
+			mTimerCheckForAckOrResp.purge();
 		}
 		setState(BT_STATE.NONE);
 		mIsStreaming = false;
