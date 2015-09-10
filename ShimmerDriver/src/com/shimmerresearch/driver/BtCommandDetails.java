@@ -1,13 +1,13 @@
 package com.shimmerresearch.driver;
 
 public class BtCommandDetails{
-	public byte command = (byte) 0x00;
-	public String description = " ";
+	public byte mCommand = (byte) 0x00;
+	public String mDescription = " ";
 //	public boolean waitForAck = false;
 //	public boolean waitForResponse = false;
 
 	public byte expectedResponse = 0x00;
-	public int expectedResponseByteLength = 1;
+	public int mExpectedResponseByteLength = 1;
 
 //	public BtCommandDetails(byte command, String description, boolean waitForAck, boolean waitForResponse){
 //		this.command = command;
@@ -22,21 +22,20 @@ public class BtCommandDetails{
 	 * @param expectedResponse
 	 */
 	public BtCommandDetails(byte command, String description, byte expectedResponse){
-		this.command = command;
-		this.description = description;
+		this.mCommand = command;
+		this.mDescription = description;
 		this.expectedResponse = expectedResponse;
 	}
-
 	
 	/**Used by responses
-	 * @param command
+	 * @param command 
 	 * @param description
-	 * @param expectedResponse
+	 * @param expectedResponseByteLength
 	 */
 	public BtCommandDetails(byte command, String description, int expectedResponseByteLength){
-		this.command = command;
-		this.description = description;
-		this.expectedResponseByteLength = expectedResponseByteLength;
+		this.mCommand = command;
+		this.mDescription = description;
+		this.mExpectedResponseByteLength = expectedResponseByteLength;
 	}
 
 
@@ -45,8 +44,8 @@ public class BtCommandDetails{
 	 * @param description
 	 */
 	public BtCommandDetails(byte command, String description) {
-		this.command = command;
-		this.description = description;
+		this.mCommand = command;
+		this.mDescription = description;
 	}
 
 }
