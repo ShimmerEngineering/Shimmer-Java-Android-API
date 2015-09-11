@@ -1,7 +1,9 @@
 package com.shimmerresearch.sensor;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import com.shimmerresearch.driver.ChannelDetails;
 import com.shimmerresearch.driver.SensorConfigOptionDetails;
 
 public abstract class AbstractSensor {
@@ -17,10 +19,24 @@ public abstract class AbstractSensor {
 	public abstract Object getSettings(String componentName);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet);
 	public abstract Object processData(byte[] rawData,int FWType, int sensorFWID);
+	public abstract void generateChannelDetailsMap(int firmwateType,int hardwareID);
+	
+	public final static class SHIMMER3_BT_STREAM_CHANNEL_ID {
+		public final static int GSR = 1;
+		public final static int ECG = 1;
+	}
+	
+	public final static class GQ_CHANNEL_ID {
+		public final static int GSR = 1;
+	}
+	
+	public Map<Integer,ChannelDetails> mMapofChannelIdentifiertoChannelDetails = new HashMap<Integer,ChannelDetails>();
 	
 	public AbstractSensor(int hardwareID, int firmwareType){
 		mFirmwareType = firmwareType;
 		mHardwareID = hardwareID;
+		generateChannelDetailsMap(mFirmwareType,mHardwareID);
+		
 	}
 	
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray

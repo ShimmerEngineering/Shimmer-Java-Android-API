@@ -933,7 +933,7 @@ public class Shimmer extends ShimmerBluetooth{
 
 
 	@Override
-	protected boolean bytesToBeRead() {
+	protected boolean bytesAvailableToBeRead() {
 		// TODO Auto-generated method stub
 		try {
 			if (mInStream.available()!=0){

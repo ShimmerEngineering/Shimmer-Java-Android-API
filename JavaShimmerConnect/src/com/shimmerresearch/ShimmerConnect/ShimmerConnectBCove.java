@@ -83,6 +83,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcdriver.CallbackObject;
 import com.shimmerresearch.pcdriver.ShimmerPC;
 import com.shimmerresearch.pcdriver.ShimmerPCBTBCove;
@@ -1572,8 +1573,8 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 	}
 	
 	private void exgConfiguration() {
-		byte[] exg1RegisterContents = mShimmer.getEXG1RegisterContents();
-		byte[] exg2RegisterContents = mShimmer.getEXG2RegisterContents();
+		byte[] exg1RegisterContents = mShimmer.getEXG1RegisterArray();
+		byte[] exg2RegisterContents = mShimmer.getEXG2RegisterArray();
 		if (firstExgConfiguration) {
 			int[] gain = {1, 2, 3, 4, 6, 8, 12};
 			for (int i=0; i<gain.length; i++) {
@@ -1972,8 +1973,8 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 		for (int i=0; i<textFieldChip2.length; i++) {
 			chip2[i] = (byte) Integer.parseInt(textFieldChip2[i].getText());
 		}
-		mShimmer.writeEXGConfiguration(chip1, 1);
-		mShimmer.writeEXGConfiguration(chip2, 2);
+		mShimmer.writeEXGConfiguration(chip1, EXG_CHIP_INDEX.CHIP1);
+		mShimmer.writeEXGConfiguration(chip2, EXG_CHIP_INDEX.CHIP2);
 
 		if (chckbxHPF0_05.isSelected()) {
 			cornerFrequencyHPF=0.05;

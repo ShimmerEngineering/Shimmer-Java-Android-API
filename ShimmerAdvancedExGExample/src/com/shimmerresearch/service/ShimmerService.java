@@ -49,9 +49,11 @@ import java.util.List;
 
 
 
+
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.*;
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.tools.Logging;
 
 import android.app.Service;
@@ -505,10 +507,10 @@ public class ShimmerService extends Service {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBTState()==BT_STATE.INITIALISED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				//currently not supported
-				stemp.writeEXGGainSetting(1, 1, gain);
-				stemp.writeEXGGainSetting(1, 2, gain);
-				stemp.writeEXGGainSetting(2, 1, gain);
-				stemp.writeEXGGainSetting(2, 2, gain);
+				stemp.writeEXGGainSetting(EXG_CHIP_INDEX.CHIP1, 1, gain);
+				stemp.writeEXGGainSetting(EXG_CHIP_INDEX.CHIP1, 2, gain);
+				stemp.writeEXGGainSetting(EXG_CHIP_INDEX.CHIP2, 1, gain);
+				stemp.writeEXGGainSetting(EXG_CHIP_INDEX.CHIP2, 2, gain);
 			}
 		}
 	}

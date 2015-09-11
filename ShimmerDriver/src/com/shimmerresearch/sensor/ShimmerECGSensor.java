@@ -36,6 +36,16 @@ public class ShimmerECGSensor extends AbstractSensor{
 		return null;
 	}
 
+	@Override
+	public void generateChannelDetailsMap(int firmwateType, int hardwareID) {
+		// TODO Auto-generated method stub
+		if (mFirmwareType == FW_ID.SHIMMER_GQ.GQ_802154){
+			
+			
+			
+		} 
+	}
+
 	
 	
 }
