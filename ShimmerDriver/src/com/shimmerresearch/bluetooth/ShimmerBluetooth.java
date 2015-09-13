@@ -1199,10 +1199,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 
 		else if(responseCommand==INSTREAM_CMD_RESPONSE) {
+			// responses to in-stream response
+			
 			byte inStreamResponseCommand = readBytes(1)[0];
 			consolePrintLn("In-stream received = " + btCommandToString(inStreamResponseCommand));
 
-			if(inStreamResponseCommand==DIR_RESPONSE){ // response to GET or in-stream response
+			if(inStreamResponseCommand==DIR_RESPONSE){ 
 				byte[] responseData = readBytes(1);
 				mDirectoryNameLength = responseData[0];
 				byte[] bufferDirectoryName = new byte[mDirectoryNameLength];
@@ -1211,7 +1213,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mDirectoryName = tempDirectory;
 				consolePrintLn("Directory Name = "+ mDirectoryName);
 			}
-			else if(inStreamResponseCommand==STATUS_RESPONSE){ // response to GET or in-stream response
+			else if(inStreamResponseCommand==STATUS_RESPONSE){
 				byte[] responseData = readBytes(1);
 				parseStatusByte(responseData[0]);
 
@@ -1222,7 +1224,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 				logAndStreamStatusChanged();
 			} 
-			else if(inStreamResponseCommand==VBATT_RESPONSE) { // response to GET or in-stream response
+			else if(inStreamResponseCommand==VBATT_RESPONSE) {
 				byte[] responseData = readBytes(3); 
 				setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
 				
@@ -1241,9 +1243,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} 
 		else if(responseCommand==MYID_RESPONSE) {
 			//TODO RS
+			byte[] responseData = readBytes(1);
+//			mTrialId ??
 		}
 		else if(responseCommand==NSHIMMER_RESPONSE) {
 			//TODO RS
+//			mTrialNumberOfShimmers ??
 		}
 		else if(responseCommand==MPU9150_SAMPLING_RATE_RESPONSE) {
 			byte[] responseData = readBytes(1);
@@ -1251,7 +1256,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		else if(responseCommand==BMP180_PRES_RESOLUTION_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			mPressureResolution = responseData[0];
+			mPressureResolution = (int)(responseData[0]&0xFF);
 		}
 		else if(responseCommand==BMP180_PRES_CALIBRATION_RESPONSE) { 
 			//TODO: RS -> do something
@@ -1263,7 +1268,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		else if(responseCommand==INTERNAL_EXP_POWER_ENABLE_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			setInternalExpPower(responseData[0]);
+			setInternalExpPower((int)(responseData[0]&0xFF));
 		}
 		else if(responseCommand==INFOMEM_RESPONSE) {
 			// Get data length to read

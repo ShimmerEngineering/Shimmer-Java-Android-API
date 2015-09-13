@@ -850,11 +850,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		
 		if (fwIdentifier == FW_TYPE_BT){
 			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
-			calibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp
-			uncalibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp	
-			uncalibratedDataUnits = new String[mNChannels + 1];
-			calibratedDataUnits = new String[mNChannels + 1];
-			sensorNames = new String[mNChannels + 1];
+//			calibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp
+//			uncalibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp	
+//			uncalibratedDataUnits = new String[mNChannels + 1];
+//			calibratedDataUnits = new String[mNChannels + 1];
+//			sensorNames = new String[mNChannels + 1];
+			
+			//plus 4 because of the timestamp, batt percent, PRR Current, PRR Trial
+			calibratedData=new double[mNChannels + 4];
+			uncalibratedData=new double[mNChannels + 4];
+			uncalibratedDataUnits = new String[mNChannels + 4];
+			calibratedDataUnits = new String[mNChannels + 4];
+			sensorNames = new String[mNChannels + 4];
+
 		} else {
 			if (mRTCOffset == 0){
 				calibratedData=new double[mNChannels]; //sd log time stamp already included in mnChannels
@@ -971,8 +979,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.ACCEL_LN) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_LN) > 0)
-					){
+					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_LN) > 0)){
 				int iAccelX=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_LN_X); //find index
 				int iAccelY=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y); //find index
 				int iAccelZ=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z); //find index
@@ -1906,6 +1913,32 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				calibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedData[iMotOrient] = (double)newPacketInt[iMotOrient];
 				uncalibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
+			}
+			
+			//TODO: Marks test code
+			if(fwIdentifier == FW_TYPE_BT){
+
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
+				calibratedData[calibratedData.length-3] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
+				calibratedDataUnits[calibratedData.length-3] = CHANNEL_UNITS.PERCENT;
+//				uncalibratedData[calibratedData.length-3] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
+//				uncalibratedDataUnits[calibratedData.length-3] = CHANNEL_UNITS.PERCENT;
+
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent));
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent));
+				calibratedData[calibratedData.length-2] = (double)mPacketReceptionRateCurrent;
+				calibratedDataUnits[calibratedData.length-2] = CHANNEL_UNITS.PERCENT;
+//				uncalibratedData[calibratedData.length-2] = (double)mPacketReceptionRateCurrent;
+//				uncalibratedDataUnits[calibratedData.length-2] = CHANNEL_UNITS.PERCENT;
+
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRate));
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRate));
+				calibratedData[calibratedData.length-1] = (double)mPacketReceptionRate;
+				calibratedDataUnits[calibratedData.length-1] = CHANNEL_UNITS.PERCENT;
+//				uncalibratedData[calibratedData.length-1] = (double)mPacketReceptionRate;
+//				uncalibratedDataUnits[calibratedData.length-1] = CHANNEL_UNITS.PERCENT;
+
 			}
 			
 			objectCluster.mCalData = calibratedData;
@@ -7718,11 +7751,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							}
 						}
 					}
-					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
-//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
-//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK
-							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
-						mSensorMap.get(sensorMapKey).mIsEnabled = false;
+//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
+////							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
+////							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK
+//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
+//						mSensorMap.get(sensorMapKey).mIsEnabled = false;
+//						skipKey = true;
+//					}
+					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER){
+						mSensorMap.get(sensorMapKey).mIsEnabled = true;
 						skipKey = true;
 					}
 
