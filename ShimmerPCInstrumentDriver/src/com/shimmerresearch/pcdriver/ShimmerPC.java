@@ -625,6 +625,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setState(BT_STATE.SDLOGGING);
 			}
 			else{
+				if(!mIsStreaming && !mIsSDLogging && mIsConnected){
+					setState(BT_STATE.INITIALISED);	
+				}
 //				if(getBTState() == BT_STATE.INITIALISED){
 //					
 //				}

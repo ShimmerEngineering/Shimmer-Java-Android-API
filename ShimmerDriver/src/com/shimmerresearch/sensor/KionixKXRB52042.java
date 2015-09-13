@@ -46,6 +46,12 @@ public class KionixKXRB52042 extends AbstractSensor{
 		return null;
 	}
 
+	@Override
+	public void generateChannelDetailsMap(int firmwateType, int hardwareID) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 
 

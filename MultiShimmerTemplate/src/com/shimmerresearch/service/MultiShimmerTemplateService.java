@@ -40,6 +40,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.tools.Logging;
 
 public class MultiShimmerTemplateService extends Service {
@@ -1223,28 +1224,28 @@ public class MultiShimmerTemplateService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBTState()==BT_STATE.INITIALISED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
-				stemp.writeEXGGainSetting(1, 1, gain);
+				stemp.writeEXGGainSetting(EXG_CHIP_INDEX.CHIP1, 1, gain);
 				try {
 					Thread.sleep(400);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				stemp.writeEXGGainSetting(1, 2, gain);
+				stemp.writeEXGGainSetting(EXG_CHIP_INDEX.CHIP1, 2, gain);
 				try {
 					Thread.sleep(400);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				stemp.writeEXGGainSetting(2, 1, gain);
+				stemp.writeEXGGainSetting(EXG_CHIP_INDEX.CHIP2, 1, gain);
 				try {
 					Thread.sleep(400);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				stemp.writeEXGGainSetting(2, 2, gain);	
+				stemp.writeEXGGainSetting(EXG_CHIP_INDEX.CHIP2, 2, gain);	
 				try {
 					Thread.sleep(400);
 				} catch (InterruptedException e) {

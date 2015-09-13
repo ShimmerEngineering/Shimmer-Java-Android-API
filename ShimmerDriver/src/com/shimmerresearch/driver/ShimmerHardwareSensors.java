@@ -10,4 +10,6 @@ public interface ShimmerHardwareSensors {
 	
 	void manageSensor();
 	
+	void generateRawDataFormat(int[] packetChannelLayout, int fwID);
+	
 }

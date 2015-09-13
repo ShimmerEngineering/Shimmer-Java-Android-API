@@ -528,8 +528,8 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 	 		
 	 		Shimmer sm = mService.getShimmer(mBluetoothAddress);
 	 		
-	 		exgChip1Array = sm.getExG1Register();
-	 		exgChip2Array = sm.getExG2Register();
+	 		exgChip1Array = sm.getEXG1RegisterArray();
+	 		exgChip2Array = sm.getEXG2RegisterArray();
 	 		
 	 		chip1Item1.setText(""+exgChip1Array[0]);
 	 		chip1Item2.setText(""+exgChip1Array[1]);
