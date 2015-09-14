@@ -531,6 +531,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mSyncBroadcastInterval = 0;
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
+	protected boolean mIsCrcEnabled = false;
 	protected String mCenter = "";
 	
 	protected long mInitialTimeStamp;
@@ -4554,7 +4555,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			interpretdatapacketformat(mNChannels,signalIdArray);
 			mInquiryResponseBytes = new byte[5+mNChannels];
 			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-		} else if (mHardwareVersion==HW_ID.SHIMMER_3) {
+		} 
+		else if (mHardwareVersion==HW_ID.SHIMMER_3) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
 			mShimmerSamplingRate = (32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8)));
 			mNChannels = bufferInquiry[6];
@@ -4584,7 +4586,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
 			updateEnabledSensorsFromChannels(signalIdArray);
 			interpretdatapacketformat(mNChannels,signalIdArray);
-		} else if (mHardwareVersion==HW_ID.SHIMMER_SR30) {
+		} 
+		else if (mHardwareVersion==HW_ID.SHIMMER_SR30) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
 			mShimmerSamplingRate = (double)1024/bufferInquiry[0];
 			mAccelRange = bufferInquiry[1];
@@ -11214,8 +11217,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mTimeStampPacketByteSize =2;
 			mTimeStampPacketRawMaxValue = 65536;
 		}
-		
-//		super.sensorAndConfigMapsCreate();
 	}
 
 	public void setLastReadRealTimeClockValue(long time) {

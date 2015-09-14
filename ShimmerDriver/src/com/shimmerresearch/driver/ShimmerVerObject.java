@@ -70,7 +70,8 @@ public class ShimmerVerObject implements Serializable {
 	 * @param firmwareVersionInternal
 	 * @param shimmerExpansionBoardId
 	 */
-	public ShimmerVerObject(int hardwareVersion, 
+	public ShimmerVerObject(
+			int hardwareVersion, 
 			int firmwareIdentifier,
 			int firmwareVersionMajor, 
 			int firmwareVersionMinor, 
