@@ -500,7 +500,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					
 					if(!getListofInstructions().isEmpty()){
-						if(getListofInstructions().get(0)==null) {
+						if(getListofInstructions().get(0)!=null) {
 							byte[] insBytes = (byte[]) getListofInstructions().get(0);
 							mCurrentCommand=insBytes[0];
 							setInstructionStackLock(true);
