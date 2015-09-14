@@ -522,10 +522,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //							mCurrentInfoMemLengthToRead = insBytes[1]&0xFF;
 //						}
 
-						 
 						writeBytes(insBytes);
 						printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + Util.bytesToHexStringWithSpacesFormatted(insBytes));
 						
+						//TODO: are the two stops needed here? better to wait for ack from Shimmer
 						if(mCurrentCommand==STOP_STREAMING_COMMAND || mCurrentCommand==STOP_SDBT_COMMAND){
 							mIsStreaming=false;
 							if (mCurrentCommand==STOP_SDBT_COMMAND){
@@ -581,24 +581,24 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								getListofInstructions().removeAll(Collections.singleton(null));
 								setInstructionStackLock(false);
 							}
-							//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
-							if(mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
-								stopTimerCheckForAckOrResp();
-								mIsStreaming=false;
-								mIsSDLogging=false;
-								mTransactionCompleted=true;
-								mWaitForAck=false;
-								
-								delayForBtResponse(200); // Wait to ensure the packet has been fully received
-								byteStack.clear();
-	
-								clearSerialBuffer();
-								
-								hasStopStreaming();					
-								getListofInstructions().remove(0);
-								getListofInstructions().removeAll(Collections.singleton(null));
-								setInstructionStackLock(false);
-							}
+//							//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
+//							if(mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
+//								stopTimerCheckForAckOrResp();
+//								mIsStreaming=false;
+//								mIsSDLogging=false;
+//								mTransactionCompleted=true;
+//								mWaitForAck=false;
+//								
+//								delayForBtResponse(200); // Wait to ensure the packet has been fully received
+//								byteStack.clear();
+//	
+//								clearSerialBuffer();
+//								
+//								hasStopStreaming();					
+//								getListofInstructions().remove(0);
+//								getListofInstructions().removeAll(Collections.singleton(null));
+//								setInstructionStackLock(false);
+//							}
 	
 							if((byte)tb[0]==ACK_COMMAND_PROCESSED) {
 
@@ -1319,9 +1319,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param currentCommand
 	 */
 	private void processAckFromSetCommand(byte currentCommand) {
-		// check for null and size were put in because 
-		// if Shimmer was abruptly disconnected there is
-		// sometimes indexoutofboundsexceptions
+		// check for null and size were put in because if Shimmer was abruptly
+		// disconnected there is sometimes indexoutofboundsexceptions
 		if(getListofInstructions().size() > 0){
 			if(getListofInstructions().get(0)!=null){
 
@@ -1329,10 +1328,26 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mIsStreaming=true;
 					if(currentCommand==START_SDBT_COMMAND){
 						mIsSDLogging = true;
+						logAndStreamStatusChanged();
 					}
 					byteStack.clear();
 					isNowStreaming();
 				}
+				else if((currentCommand==STOP_STREAMING_COMMAND)||(currentCommand==STOP_SDBT_COMMAND)){
+					mIsStreaming=false;
+					if(currentCommand==STOP_SDBT_COMMAND) {
+						mIsSDLogging=false;
+						logAndStreamStatusChanged();
+					}
+					
+					byteStack.clear();
+
+					clearSerialBuffer();
+					
+					hasStopStreaming();					
+					getListofInstructions().removeAll(Collections.singleton(null));
+				}
+
 				else if(currentCommand==SET_SAMPLING_RATE_COMMAND) {
 					byte[] instruction=getListofInstructions().get(0);
 					double tempdouble=-1;
@@ -2054,18 +2069,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		getListofInstructions().add(new byte[]{STOP_STREAMING_COMMAND});
 		
 		// For LogAndStream
-		startTimerReadStatus();
+		stopTimerReadStatus();
 	}
 	
 	
 	/**Only applicable for logandstream
 	 * 
 	 */
-	public void stopSDBT() {
-		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+	public void stopStreamingAndLogging() {
+		// if shimmer is using LogAndStream FW, stop reading its status periodically
+		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ 
 			getListofInstructions().add(new byte[]{STOP_SDBT_COMMAND});
 			// For LogAndStream
-			startTimerReadStatus();
+			stopTimerReadStatus();
 		}
 	}
 	
@@ -2165,7 +2181,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public void startTimerReadStatus(){
-		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+		// if shimmer is using LogAndStream FW, stop reading its status periodically
+		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ 
 			if(mTimerReadStatus==null){ 
 				mTimerReadStatus = new Timer();
 			}
