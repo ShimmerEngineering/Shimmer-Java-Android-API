@@ -500,53 +500,55 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					
 					if(!getListofInstructions().isEmpty()){
-						byte[] insBytes = (byte[]) getListofInstructions().get(0);
-						mCurrentCommand=insBytes[0];
-						setInstructionStackLock(true);
-						mWaitForAck=true;
-						
-						if(!mIsStreaming){
-							clearSerialBuffer();
-						}
-						
-						//Special cases
-						if(mCurrentCommand==SET_RWC_COMMAND){
-							// for Real-world time -> grab PC time just before
-							// writing to Shimmer
-							byte[] rwcTimeArray = Util.convertSystemTimeToShimmerRwcDataBytes(System.currentTimeMillis());
-							System.arraycopy(rwcTimeArray, 0, insBytes, 1, 8);
-						}
-
-						writeBytes(insBytes);
-						printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + Util.bytesToHexStringWithSpacesFormatted(insBytes));
-						
-						//TODO: are the two stops needed here? better to wait for ack from Shimmer
-						if(mCurrentCommand==STOP_STREAMING_COMMAND || mCurrentCommand==STOP_SDBT_COMMAND){
-							mIsStreaming=false;
-							if (mCurrentCommand==STOP_SDBT_COMMAND){
-								mIsSDLogging = false;
+						if(getListofInstructions().get(0)==null) {
+							byte[] insBytes = (byte[]) getListofInstructions().get(0);
+							mCurrentCommand=insBytes[0];
+							setInstructionStackLock(true);
+							mWaitForAck=true;
+							
+							if(!mIsStreaming){
+								clearSerialBuffer();
 							}
-							getListofInstructions().removeAll(Collections.singleton(null));
-						} 
-						else {
-							// Overwritten for commands that aren't supported
-							// for older versions of Shimmer
-							if((mCurrentCommand==GET_FW_VERSION_COMMAND)
-									||(mCurrentCommand==GET_SAMPLING_RATE_COMMAND)
-									||(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW)){
-								startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
+							
+							//Special cases
+							if(mCurrentCommand==SET_RWC_COMMAND){
+								// for Real-world time -> grab PC time just before
+								// writing to Shimmer
+								byte[] rwcTimeArray = Util.convertSystemTimeToShimmerRwcDataBytes(System.currentTimeMillis());
+								System.arraycopy(rwcTimeArray, 0, insBytes, 1, 8);
 							}
+	
+							writeBytes(insBytes);
+							printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + Util.bytesToHexStringWithSpacesFormatted(insBytes));
+							
+							//TODO: are the two stops needed here? better to wait for ack from Shimmer
+							if(mCurrentCommand==STOP_STREAMING_COMMAND || mCurrentCommand==STOP_SDBT_COMMAND){
+								mIsStreaming=false;
+								if (mCurrentCommand==STOP_SDBT_COMMAND){
+									mIsSDLogging = false;
+								}
+								getListofInstructions().removeAll(Collections.singleton(null));
+							} 
 							else {
-								if(mIsStreaming){
+								// Overwritten for commands that aren't supported
+								// for older versions of Shimmer
+								if((mCurrentCommand==GET_FW_VERSION_COMMAND)
+										||(mCurrentCommand==GET_SAMPLING_RATE_COMMAND)
+										||(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW)){
 									startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
 								}
 								else {
-									startTimerCheckForAckOrResp(ACK_TIMER_DURATION+10);
+									if(mIsStreaming){
+										startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
+									}
+									else {
+										startTimerCheckForAckOrResp(ACK_TIMER_DURATION+10);
+									}
 								}
 							}
+							
+							mTransactionCompleted=false;
 						}
-						
-						mTransactionCompleted=false;
 					}
 				}
 				//endregion --------- Process Instruction on stack --------- 
