@@ -500,7 +500,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					
 					if(!getListofInstructions().isEmpty()){
-						if(getListofInstructions().get(0)==null) {
+						if(getListofInstructions().get(0)!=null) {
 							byte[] insBytes = (byte[]) getListofInstructions().get(0);
 							mCurrentCommand=insBytes[0];
 							setInstructionStackLock(true);
@@ -548,6 +548,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							}
 							
 							mTransactionCompleted=false;
+						}
+					} else {
+						if (!mIsStreaming && !bytesAvailableToBeRead()){
+							try {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				}
