@@ -3352,6 +3352,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		
+		inquiry();
 		readInfoMem(startAddress, buf.length);
 	}
     
