@@ -1530,11 +1530,14 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER).mListOfChannels = Arrays.asList(
 					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 //					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
-//					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+					//temp only! JC: delete after db sync works
+					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
 //					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC
+					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL
+					
 					); 
 			
 			
@@ -1782,24 +1785,26 @@ public class Configuration {
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 							Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
-							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
 							CHANNEL_UNITS.PERCENT,
-							Arrays.asList(ChannelType.RAW, ChannelType.CAL)));
+							Arrays.asList(ChannelType.CAL)));
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
 							CHANNEL_UNITS.PERCENT,
-							Arrays.asList(ChannelType.RAW, ChannelType.CAL)));
+							Arrays.asList(ChannelType.CAL)));
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
 							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
 							CHANNEL_UNITS.PERCENT,
-							Arrays.asList(ChannelType.RAW, ChannelType.CAL)));
-			
+							Arrays.asList(ChannelType.CAL)));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+							CHANNEL_UNITS.PERCENT,
+							Arrays.asList(ChannelType.CAL)));
 			
 			// All Information required for parsing each of the channels
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
@@ -1810,13 +1815,19 @@ public class Configuration {
 							CHANNEL_UNITS.MILLISECONDS,
 							Arrays.asList(ChannelType.RAW, ChannelType.CAL)));
 //			//TODO: set type, byte number, endian and units
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
-//							Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
-//							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
-//							CHANNEL_UNITS.MILLISECONDS,
-//							Arrays.asList(ChannelType.RAW, ChannelType.CAL)));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+							Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+							CHANNEL_UNITS.MILLISECONDS,
+							Arrays.asList(ChannelType.CAL)));
+			
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+							CHANNEL_UNITS.MILLISECONDS,
+							Arrays.asList(ChannelType.CAL)));
 //			//TODO: set type, byte number, endian and units
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
 //					new ChannelDetails(

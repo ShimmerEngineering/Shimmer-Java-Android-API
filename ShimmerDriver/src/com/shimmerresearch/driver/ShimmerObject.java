@@ -857,12 +857,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //			calibratedDataUnits = new String[mNChannels + 1];
 //			sensorNames = new String[mNChannels + 1];
 			
-			//plus 4 because of the timestamp, batt percent, PRR Current, PRR Trial
-			calibratedData=new double[mNChannels + 4];
-			uncalibratedData=new double[mNChannels + 4];
-			uncalibratedDataUnits = new String[mNChannels + 4];
-			calibratedDataUnits = new String[mNChannels + 4];
-			sensorNames = new String[mNChannels + 4];
+			//plus 4 because of the timestamp, batt percent, PRR Current, PRR Trial, system timestamp
+			calibratedData=new double[mNChannels + 5];
+			uncalibratedData=new double[mNChannels + 5];
+			uncalibratedDataUnits = new String[mNChannels + 5];
+			calibratedDataUnits = new String[mNChannels + 5];
+			sensorNames = new String[mNChannels + 5];
+			
+
+			
 
 		} else {
 			if (mRTCOffset == 0){
@@ -1918,11 +1921,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			//TODO: Marks test code
 			if(fwIdentifier == FW_TYPE_BT){
-
+				
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.CAL,CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
 //				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
 				calibratedData[calibratedData.length-3] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
-				calibratedDataUnits[calibratedData.length-3] = CHANNEL_UNITS.PERCENT;
+				calibratedDataUnits[calibratedDataUnits.length-3] = CHANNEL_UNITS.PERCENT;
+				uncalibratedData[calibratedData.length-3] = Double.NaN;
+				uncalibratedDataUnits[calibratedData.length-3] = "";
+				sensorNames[calibratedData.length-3] = Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
+
 //				uncalibratedData[calibratedData.length-3] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
 //				uncalibratedDataUnits[calibratedData.length-3] = CHANNEL_UNITS.PERCENT;
 
@@ -1930,6 +1937,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent));
 				calibratedData[calibratedData.length-2] = (double)mPacketReceptionRateCurrent;
 				calibratedDataUnits[calibratedData.length-2] = CHANNEL_UNITS.PERCENT;
+				uncalibratedData[calibratedData.length-2] = Double.NaN;
+				uncalibratedDataUnits[calibratedData.length-2] = "";
+				sensorNames[calibratedData.length-2] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;
 //				uncalibratedData[calibratedData.length-2] = (double)mPacketReceptionRateCurrent;
 //				uncalibratedDataUnits[calibratedData.length-2] = CHANNEL_UNITS.PERCENT;
 
@@ -1937,8 +1947,17 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,new FormatCluster(CHANNEL_TYPE.RAW,CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRate));
 				calibratedData[calibratedData.length-1] = (double)mPacketReceptionRate;
 				calibratedDataUnits[calibratedData.length-1] = CHANNEL_UNITS.PERCENT;
+				uncalibratedData[calibratedData.length-1] = Double.NaN;
+				uncalibratedDataUnits[calibratedData.length-1] = "";
+				sensorNames[calibratedData.length-1] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
 //				uncalibratedData[calibratedData.length-1] = (double)mPacketReceptionRate;
 //				uncalibratedDataUnits[calibratedData.length-1] = CHANNEL_UNITS.PERCENT;
+				
+				calibratedData[calibratedData.length-4] = (double)systemTime;
+				calibratedDataUnits[calibratedDataUnits.length-4] = CHANNEL_UNITS.MILLISECONDS;
+				uncalibratedData[uncalibratedData.length-4] = Double.NaN;
+				uncalibratedDataUnits[uncalibratedDataUnits.length-4] = "";
+				sensorNames[sensorNames.length-4] = Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP;
 
 			}
 			

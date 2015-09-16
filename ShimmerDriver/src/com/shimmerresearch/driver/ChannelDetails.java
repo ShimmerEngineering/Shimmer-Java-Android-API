@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.shimmerresearch.driver.ChannelDetails.ChannelType;
 import com.shimmerresearch.driver.Configuration.CHANNEL_TYPE;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 
@@ -70,6 +71,12 @@ public class ChannelDetails implements Serializable {
 	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
 	public String mCalibratedUnits = CHANNEL_UNITS.NO_UNITS;
 	public List<ChannelType> mListOfChannelTypes = new ArrayList<ChannelType>();
+	
+	public enum CHANNEL_SOURCE{
+		SHIMMER,
+		API
+	}
+	public CHANNEL_SOURCE channelSource = CHANNEL_SOURCE.SHIMMER;
 
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
@@ -97,6 +104,14 @@ public class ChannelDetails implements Serializable {
 	 */
 	public ChannelDetails() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public ChannelDetails(String guiName, String objectClusterName, String units, List<ChannelType> listOfChannelTypes) {
+		mGuiName = guiName;
+		mObjectClusterName = objectClusterName;
+		mCalibratedUnits = units;
+		mListOfChannelTypes = listOfChannelTypes;
+		channelSource = CHANNEL_SOURCE.API;
 	}
 
 }
