@@ -1,15 +1,30 @@
 package com.shimmerresearch.driver;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.sensor.AbstractSensor;
+
 public interface ShimmerHardwareSensors {
 
-	void updateSensors();
 	
-	void processRawDataUsingSensors();
+	void deleteSensor(int uniqueID);
 	
-	void deleteSensor();
+	void addSensor(int uniqueID, AbstractSensor abstractSensor);
 	
-	void manageSensor();
+	AbstractSensor getSensor(int uniqueID);
 	
-	void generateRawDataFormat(int[] packetChannelLayout, int fwID);
+	/** Uses the shimmer version object to generate and initialize the sensors
+	 * @param svo
+	 */
+	HashMap<Integer,AbstractSensor> generateSensors(ShimmerVerObject svo);
+		 
+	
+	
+	/** Uses the sensor map to compile all the list of channels 
+	 * @param svo
+	 */
+	HashMap<COMMUNICATION_TYPE,HashMap<Integer,ChannelDetails>> generateAllSensorChannels(HashMap<Integer,AbstractSensor> sensorMap);
 	
 }

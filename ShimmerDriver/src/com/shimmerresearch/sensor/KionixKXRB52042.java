@@ -3,7 +3,10 @@ package com.shimmerresearch.sensor;
 
 import java.util.HashMap;
 
+import com.shimmerresearch.driver.ChannelDetails;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.SensorConfigOptionDetails;
+import com.shimmerresearch.driver.ShimmerVerObject;
 
 public class KionixKXRB52042 extends AbstractSensor{
 
@@ -50,6 +53,27 @@ public class KionixKXRB52042 extends AbstractSensor{
 	public void generateChannelDetailsMap(int firmwateType, int hardwareID) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ActionSetting setSettings(String componentName, Object valueToSet,
+			COMMUNICATION_TYPE comType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashMap<COMMUNICATION_TYPE, HashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
+			ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
+			ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

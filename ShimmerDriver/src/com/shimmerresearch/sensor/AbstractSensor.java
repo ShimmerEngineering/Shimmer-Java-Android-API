@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.shimmerresearch.driver.ChannelDetails;
+import com.shimmerresearch.driver.SensorDetails;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.SensorConfigOptionDetails;
+import com.shimmerresearch.driver.ShimmerVerObject;
 
 public abstract class AbstractSensor {
 	protected String mSensorName;
@@ -15,11 +18,28 @@ public abstract class AbstractSensor {
 	protected int mHardwareID;
 	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor 
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
+	
+	/** Each communication type might have a different Integer key representing the channel, e.g. BT Stream inquiry response (holds the channel sequence of the packet)
+	 * 
+	 */
+	public HashMap<COMMUNICATION_TYPE,HashMap<Integer,ChannelDetails>> mMapOfChannel = new HashMap<COMMUNICATION_TYPE,HashMap<Integer,ChannelDetails>>(); 
 	public abstract String getSensorName();
 	public abstract Object getSettings(String componentName);
-	public abstract ActionSetting setSettings(String componentName, Object valueToSet);
+	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE comType);
 	public abstract Object processData(byte[] rawData,int FWType, int sensorFWID);
-	public abstract void generateChannelDetailsMap(int firmwateType,int hardwareID);
+	
+	
+	/**
+	 * @param svo
+	 * @return
+	 */
+	public abstract HashMap<COMMUNICATION_TYPE,HashMap<Integer,ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo);
+	/**
+	 * @param svo
+	 * @return
+	 */
+	public abstract HashMap<String,SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo);
+	
 	
 	public final static class SHIMMER3_BT_STREAM_CHANNEL_ID {
 		public final static int GSR = 1;
@@ -30,13 +50,9 @@ public abstract class AbstractSensor {
 		public final static int GSR = 1;
 	}
 	
-	public Map<Integer,ChannelDetails> mMapofChannelIdentifiertoChannelDetails = new HashMap<Integer,ChannelDetails>();
-	
-	public AbstractSensor(int hardwareID, int firmwareType){
-		mFirmwareType = firmwareType;
-		mHardwareID = hardwareID;
-		generateChannelDetailsMap(mFirmwareType,mHardwareID);
-		
+	public AbstractSensor(ShimmerVerObject svo){
+		mConfigOptionsMap = generateConfigOptionsMap(svo);
+		mMapOfChannel = generateChannelDetailsMap(svo);
 	}
 	
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
@@ -67,5 +83,8 @@ public abstract class AbstractSensor {
 		// TODO Auto-generated method stub
 		return mConfigOptionsMap;
 	}
+	
+	
+
 
 }
