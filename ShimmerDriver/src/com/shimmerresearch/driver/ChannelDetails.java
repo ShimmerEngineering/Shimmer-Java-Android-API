@@ -71,6 +71,12 @@ public class ChannelDetails implements Serializable {
 	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
 	public String mCalibratedUnits = CHANNEL_UNITS.NO_UNITS;
 	public List<CHANNEL_TYPE> mListOfChannelTypes = new ArrayList<CHANNEL_TYPE>();
+	
+	public enum CHANNEL_SOURCE{
+		SHIMMER,
+		API
+	}
+	public CHANNEL_SOURCE channelSource = CHANNEL_SOURCE.SHIMMER;
 
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
@@ -118,6 +124,14 @@ public class ChannelDetails implements Serializable {
 	 */
 	public ChannelDetails() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public ChannelDetails(String guiName, String objectClusterName, String units, List<CHANNEL_TYPE> listOfChannelTypes) {
+		mGuiName = guiName;
+		mObjectClusterName = objectClusterName;
+		mCalibratedUnits = units;
+		mListOfChannelTypes = listOfChannelTypes;
+		channelSource = CHANNEL_SOURCE.API;
 	}
 
 }
