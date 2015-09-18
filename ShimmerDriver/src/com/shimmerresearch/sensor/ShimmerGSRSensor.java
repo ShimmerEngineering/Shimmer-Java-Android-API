@@ -1,5 +1,6 @@
 package com.shimmerresearch.sensor;
 
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ShimmerVerDetails;
 
 public class ShimmerGSRSensor extends AbstractSensor{
@@ -21,11 +22,6 @@ public class ShimmerGSRSensor extends AbstractSensor{
 		return null;
 	}
 
-	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object processData(byte[] rawData, int FWType, int sensorFWID) {
@@ -39,6 +35,13 @@ public class ShimmerGSRSensor extends AbstractSensor{
 		if (firmwareType==ShimmerVerDetails.FW_ID.SHIMMER_GQ.GQ_802154){
 			
 		}
+	}
+
+	@Override
+	public ActionSetting setSettings(String componentName, Object valueToSet,
+			COMMUNICATION_TYPE comType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

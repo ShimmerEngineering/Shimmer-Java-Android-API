@@ -107,6 +107,11 @@ public class Configuration {
 		public static final String PERCENT = "%";
 	}	
 	
+	public enum COMMUNICATION_TYPE{
+		BLUETOOTH,
+		SD
+	}
+	
 //	public static class CHANNEL_TYPE{
 //		public static final String CAL = "CAL";
 //		public static final String UNCAL = "UNCAL";
