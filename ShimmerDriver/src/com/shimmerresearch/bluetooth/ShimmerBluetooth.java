@@ -736,6 +736,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				
 				//region --------- Process while streaming --------- 
 				else if(mIsStreaming){ // no need for if statement, just for readability
+					// TODO: currently reads byte-by-byte. E.g. a
+					// Shimmer with fs=1000Hz with 20 bytes payload will
+					// enter this loop 20,000 a second -> change to read all
+					// from serial and then process
 					tb = readBytes(1);
 					if(tb!=null){
 						mByteArrayOutputStream.write(tb[0]);
@@ -815,6 +819,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							}
 							
 						} 
+						//TODO: ACK in bufferTemp[0] not handled
+						//else if
 						else {
 							discardFirstBufferByte(); //throw the first byte away
 						}

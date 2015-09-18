@@ -53,6 +53,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.google.common.collect.Multimap;
+import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 
@@ -287,35 +288,35 @@ public class LoggingPC {
 				
 				if (mSensorNames[r] == "EXG1 CH1" && mSensorFormats[r]=="CAL") {
 					writer.write(Double.toString(exg1_24bit[0]));
-				} else if (mSensorNames[r] == "EXG1 CH1" && mSensorFormats[r]=="RAW") {
+				} else if (mSensorNames[r] == "EXG1 CH1" && mSensorFormats[r]==CHANNEL_TYPE.UNCAL.toString()) {
 					writer.write(Double.toString(exg1_24bit[1]));
 				} else if (mSensorNames[r] == "EXG1 CH2" && mSensorFormats[r]=="CAL") {
 					writer.write(Double.toString(exg1_24bit[2]));
-				} else if (mSensorNames[r] == "EXG1 CH2" && mSensorFormats[r]=="RAW") {
+				} else if (mSensorNames[r] == "EXG1 CH2" && mSensorFormats[r]==CHANNEL_TYPE.UNCAL.toString()) {
 					writer.write(Double.toString(exg1_24bit[3]));
 				} else if (mSensorNames[r] == "EXG2 CH1" && mSensorFormats[r]=="CAL") {
 					writer.write(Double.toString(exg2_24bit[0]));
-				} else if (mSensorNames[r] == "EXG2 CH1" && mSensorFormats[r]=="RAW") {
+				} else if (mSensorNames[r] == "EXG2 CH1" && mSensorFormats[r]==CHANNEL_TYPE.UNCAL.toString()) {
 					writer.write(Double.toString(exg2_24bit[1]));
 				} else if (mSensorNames[r] == "EXG2 CH2" && mSensorFormats[r]=="CAL") {
 					writer.write(Double.toString(exg2_24bit[2]));
-				} else if (mSensorNames[r] == "EXG2 CH2" && mSensorFormats[r]=="RAW") {
+				} else if (mSensorNames[r] == "EXG2 CH2" && mSensorFormats[r]==CHANNEL_TYPE.UNCAL.toString()) {
 					writer.write(Double.toString(exg2_24bit[3]));
 				} else if (mSensorNames[r] == "EXG1 CH1 16Bit" && mSensorFormats[r]=="CAL") {
 					writer.write(Double.toString(exg1_16bit[0]));
-				} else if (mSensorNames[r] == "EXG1 CH1 16Bit" && mSensorFormats[r]=="RAW") {
+				} else if (mSensorNames[r] == "EXG1 CH1 16Bit" && mSensorFormats[r]==CHANNEL_TYPE.UNCAL.toString()) {
 					writer.write(Double.toString(exg1_16bit[1]));
 				} else if (mSensorNames[r] == "EXG1 CH2 16Bit" && mSensorFormats[r]=="CAL") {
 					writer.write(Double.toString(exg1_16bit[2]));
-				} else if (mSensorNames[r] == "EXG1 CH2 16Bit" && mSensorFormats[r]=="RAW") {
+				} else if (mSensorNames[r] == "EXG1 CH2 16Bit" && mSensorFormats[r]==CHANNEL_TYPE.UNCAL.toString()) {
 					writer.write(Double.toString(exg1_16bit[3]));
 				} else if (mSensorNames[r] == "EXG2 CH1 16Bit" && mSensorFormats[r]=="CAL") {
 					writer.write(Double.toString(exg2_16bit[0]));
-				} else if (mSensorNames[r] == "EXG2 CH1 16Bit" && mSensorFormats[r]=="RAW") {
+				} else if (mSensorNames[r] == "EXG2 CH1 16Bit" && mSensorFormats[r]==CHANNEL_TYPE.UNCAL.toString()) {
 					writer.write(Double.toString(exg2_16bit[1]));
 				} else if (mSensorNames[r] == "EXG2 CH2 16Bit" && mSensorFormats[r]=="CAL") {
 					writer.write(Double.toString(exg2_16bit[2]));
-				} else if (mSensorNames[r] == "EXG2 CH2 16Bit" && mSensorFormats[r]=="RAW") {
+				} else if (mSensorNames[r] == "EXG2 CH2 16Bit" && mSensorFormats[r]==CHANNEL_TYPE.UNCAL.toString()) {
 					writer.write(Double.toString(exg2_16bit[3]));
 				} else {
 					writer.write(Double.toString(formatCluster.mData));

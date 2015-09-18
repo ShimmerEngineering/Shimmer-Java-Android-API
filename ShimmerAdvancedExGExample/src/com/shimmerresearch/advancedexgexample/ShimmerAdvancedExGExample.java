@@ -53,6 +53,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.service.ShimmerService;
 
 import android.app.Activity;
@@ -427,8 +428,8 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 
 	            	if ((msg.obj instanceof ObjectCluster)){
 	            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj;   
-	            	    FormatCluster fc1 = objectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get("EXG1 STATUS"), "RAW");
-	            	    FormatCluster fc2 = objectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get("EXG2 STATUS"), "RAW");
+	            	    FormatCluster fc1 = objectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get("EXG1 STATUS"), CHANNEL_TYPE.UNCAL.toString());
+	            	    FormatCluster fc2 = objectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get("EXG2 STATUS"), CHANNEL_TYPE.UNCAL.toString());
 	            	    
 	            	    if(fc1!=null && fc2!=null){
 	            	    	int statusChip1 = (int) fc1.mData;

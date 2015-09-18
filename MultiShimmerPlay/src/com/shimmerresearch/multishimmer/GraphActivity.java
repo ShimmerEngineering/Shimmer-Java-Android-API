@@ -22,7 +22,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-
+import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.multishimmerplay.R;
@@ -256,9 +256,9 @@ public class GraphActivity extends Activity{
 									dataArray[0] = (int)((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")).mData; 
 									units = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")).mUnits; 
 								} else {
-									dataArray[0] = (int)((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"RAW")).mData; 
+									dataArray[0] = (int)((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mData; 
 								}
-								units = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"RAW")).mUnits; //TODO: Update data structure to include Max and Min values. This is to allow easy graph adjustments for the length and width
+								units = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mUnits; //TODO: Update data structure to include Max and Min values. This is to allow easy graph adjustments for the length and width
 							}
 						}
 						if (sensorName.length>1) {
@@ -269,8 +269,8 @@ public class GraphActivity extends Activity{
 								//Obtain data for text view
 
 								//Obtain data for graph
-								dataArray[1] =(int) ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"RAW")).mData; 
-								units = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"RAW")).mUnits; //TODO: Update data structure to include Max and Min values. This is to allow easy graph adjustments for the length and width
+								dataArray[1] =(int) ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mData; 
+								units = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mUnits; //TODO: Update data structure to include Max and Min values. This is to allow easy graph adjustments for the length and width
 
 							}
 						}
@@ -283,8 +283,8 @@ public class GraphActivity extends Activity{
 
 
 								//Obtain data for graph
-								dataArray[2] =(int) ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"RAW")).mData; 
-								units = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"RAW")).mUnits; //TODO: Update data structure to include Max and Min values. This is to allow easy graph adjustments for the length and width
+								dataArray[2] =(int) ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mData; 
+								units = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mUnits; //TODO: Update data structure to include Max and Min values. This is to allow easy graph adjustments for the length and width
 							}
 
 						}

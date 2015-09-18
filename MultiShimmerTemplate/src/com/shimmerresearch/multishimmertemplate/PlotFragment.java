@@ -57,7 +57,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.service.MultiShimmerTemplateService;
-
+import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 
 
 public class PlotFragment extends Fragment {
@@ -149,7 +149,7 @@ public class PlotFragment extends Fragment {
 		}
 
 		for (String[] row: mSensorsforPlotFormat){
-			Arrays.fill(row,"RAW");
+			Arrays.fill(row,CHANNEL_TYPE.UNCAL.toString());
 		}
 			
 		
@@ -695,7 +695,7 @@ public class PlotFragment extends Fragment {
 	 	   if (calibrated){
 	 		   mSensorsforPlotFormat[groupPosition][childPosition]="CAL";
 	 	   } else {
-	 		   mSensorsforPlotFormat[groupPosition][childPosition]="RAW";
+	 		   mSensorsforPlotFormat[groupPosition][childPosition]=CHANNEL_TYPE.UNCAL.toString();
 	 	   }
 	 	   
 	    }

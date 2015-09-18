@@ -79,6 +79,7 @@ import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
+import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -2329,7 +2330,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 						if (calibrated[count]) {
 							dataArray[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"CAL")).mData;
 						} else {
-							dataArray[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"RAW")).mData;
+							dataArray[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],CHANNEL_TYPE.UNCAL.toString())).mData;
 						}
 					}
 				}

@@ -40,16 +40,17 @@ public class ChannelDetails implements Serializable {
 		public static final String MSB = "MSB";
 	}
 	
-	public enum ChannelType{
-		RAW("RAW"),
-		CAL("CAL");
+	public enum CHANNEL_TYPE{
+//		RAW("RAW"),
+		CAL("CAL"),
+		UNCAL("UNCAL");
 		
 	    private final String text;
 
 	    /**
 	     * @param text
 	     */
-	    private ChannelType(final String text) {
+	    private CHANNEL_TYPE(final String text) {
 	        this.text = text;
 	    }
 
@@ -64,11 +65,12 @@ public class ChannelDetails implements Serializable {
 	
 	public String mGuiName = "";
 	public String mObjectClusterName = "";
+	public int mChannelId = -1;
 	public String mChannelDataType = ChannelDataType.UNKOWN;
 	public int mNumBytes = 0;
 	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
 	public String mCalibratedUnits = CHANNEL_UNITS.NO_UNITS;
-	public List<ChannelType> mListOfChannelTypes = new ArrayList<ChannelType>();
+	public List<CHANNEL_TYPE> mListOfChannelTypes = new ArrayList<CHANNEL_TYPE>();
 
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
@@ -79,8 +81,7 @@ public class ChannelDetails implements Serializable {
 	 * @param numBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
-	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units, List<ChannelType> listOfChannelTypes){
-//	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units){
+	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes){
 		mGuiName = guiName;
 		mObjectClusterName = objectClusterName;
 		mChannelDataType = channelDataType;
@@ -89,7 +90,28 @@ public class ChannelDetails implements Serializable {
 		mCalibratedUnits = units;
 		mListOfChannelTypes = listOfChannelTypes;
 	}
+	
+	/**
+	 * Holds Channel details for parsing. Experimental feature not used
+	 * currently in standard Shimmer operations.
+	 * 
+	 * @param guiName the String name to assign to the channel 
+	 * @param channelDataType the ChannelDataType of the channel
+	 * @param numBytes the number of bytes the channel takes up in a data packet
+	 * @param channelDataEndian the endianness of the byte order in a data packet
+	 */
+	public ChannelDetails(String guiName, String objectClusterName, int channelId, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes){
+		mGuiName = guiName;
+		mObjectClusterName = objectClusterName;
+		mChannelId = channelId;
+		mChannelDataType = channelDataType;
+		mNumBytes = numBytes;
+		mChannelDataEndian = channelDataEndian;
+		mCalibratedUnits = units;
+		mListOfChannelTypes = listOfChannelTypes;
+	}
 
+	
 	/**
 	 * Empty constructor not used in standard Shimmer operations (GQ related). 
 	 *  
