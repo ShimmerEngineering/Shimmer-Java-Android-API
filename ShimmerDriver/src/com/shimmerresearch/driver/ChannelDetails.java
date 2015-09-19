@@ -76,7 +76,7 @@ public class ChannelDetails implements Serializable {
 		SHIMMER,
 		API
 	}
-	public CHANNEL_SOURCE channelSource = CHANNEL_SOURCE.SHIMMER;
+	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
 
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
@@ -131,7 +131,7 @@ public class ChannelDetails implements Serializable {
 		mObjectClusterName = objectClusterName;
 		mCalibratedUnits = units;
 		mListOfChannelTypes = listOfChannelTypes;
-		channelSource = CHANNEL_SOURCE.API;
+		mChannelSource = CHANNEL_SOURCE.API;
 	}
 
 }

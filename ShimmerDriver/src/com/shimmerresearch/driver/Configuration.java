@@ -1803,14 +1803,9 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
 							CHANNEL_UNITS.PERCENT,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-							CHANNEL_UNITS.PERCENT,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
 			
 			// All Information required for parsing each of the channels
+			//TODO incorportate 3 byte timestamp change for newer firmware
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
@@ -1831,14 +1826,6 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
 							CHANNEL_UNITS.MILLISECONDS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			//TODO: set type, byte number, endian and units
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//							ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
-//							CHANNEL_UNITS.MILLISECONDS,
-//							Arrays.asList(CHANNEL_TYPE.RAW, CHANNEL_TYPE.CAL)));
 //			//TODO: set type, byte number, endian and units
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 //					new ChannelDetails(
