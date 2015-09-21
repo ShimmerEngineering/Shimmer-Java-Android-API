@@ -134,11 +134,12 @@ public class ShimmerVerObject implements Serializable {
 		//TODO update with BtStream FW info when released for code = 6
 		// Handle FW version code.
 		mFirmwareVersionCode = -1;
-		if((Util.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,11))){
-			mFirmwareVersionCode = 7;
-		}
-		if((Util.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,8,0))
-				||(Util.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,4))){
+//		if((Util.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,11))){
+//			mFirmwareVersionCode = 7;
+//		}
+		if((Util.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,7,3))
+				||(Util.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,4))
+				||(Util.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,11,5))){
 			mFirmwareVersionCode = 6;
 		}
 		else if((Util.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0))
