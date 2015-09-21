@@ -72,11 +72,14 @@ public class ChannelDetails implements Serializable {
 	public String mCalibratedUnits = CHANNEL_UNITS.NO_UNITS;
 	public List<CHANNEL_TYPE> mListOfChannelTypes = new ArrayList<CHANNEL_TYPE>();
 	
-	public enum CHANNEL_SOURCE{
-		SHIMMER,
-		API
-	}
-	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
+//	public enum CHANNEL_SOURCE{
+//		SHIMMER,
+//		API
+//	}
+//	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
+	
+	public boolean mShowWhileStreaming = true;
+	public boolean mStoreToDatabase = true;
 
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
@@ -95,6 +98,19 @@ public class ChannelDetails implements Serializable {
 		mChannelDataEndian = channelDataEndian;
 		mCalibratedUnits = units;
 		mListOfChannelTypes = listOfChannelTypes;
+	}
+	
+	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes, boolean showWhileStreaming, boolean storeToDatabase){
+		mGuiName = guiName;
+		mObjectClusterName = objectClusterName;
+		mChannelDataType = channelDataType;
+		mNumBytes = numBytes;
+		mChannelDataEndian = channelDataEndian;
+		mCalibratedUnits = units;
+		mListOfChannelTypes = listOfChannelTypes;
+		
+		mShowWhileStreaming = showWhileStreaming;
+		mStoreToDatabase = storeToDatabase;
 	}
 	
 	/**
@@ -126,12 +142,16 @@ public class ChannelDetails implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ChannelDetails(String guiName, String objectClusterName, String units, List<CHANNEL_TYPE> listOfChannelTypes) {
+	public ChannelDetails(String guiName, String objectClusterName, String units, List<CHANNEL_TYPE> listOfChannelTypes, boolean showWhileStreaming, boolean storeToDatabase) {
+//	public ChannelDetails(String guiName, String objectClusterName, String units, List<CHANNEL_TYPE> listOfChannelTypes) {
 		mGuiName = guiName;
 		mObjectClusterName = objectClusterName;
 		mCalibratedUnits = units;
 		mListOfChannelTypes = listOfChannelTypes;
-		mChannelSource = CHANNEL_SOURCE.API;
+		
+//		mChannelSource = CHANNEL_SOURCE.API;
+		mShowWhileStreaming = showWhileStreaming;
+		mStoreToDatabase = storeToDatabase;
 	}
 
 }

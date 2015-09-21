@@ -552,7 +552,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected String mShimmerUserAssignedName=""; // This stores the user assigned name
 
-	protected boolean mConfigFileCreationFlag = false;
+	protected boolean mConfigFileCreationFlag = true;
 	protected boolean mCalibFileCreationFlag = false;
 	
 	protected List<String> syncNodesList = new ArrayList<String>();
@@ -7269,13 +7269,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					// (already set to 0xFF at start of method but just incase)
 					System.arraycopy(mInfoMemLayout.invalidMacId, 0, mInfoMemBytes, mInfoMemLayout.idxMacAddress, mInfoMemLayout.lengthMacIdBytes);
 	
-					//TODO base below off mCalibFileCreationFlag and mCfgFileCreationFlag global variables? 
-					
 					 // Tells the Shimmer to create a new config file on undock/power cycle
-					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = (byte) (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag);
-	
-					//TODO decide what to do about calibration info
-					//mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = (byte) (mInfoMemLayout.maskSDCalibFileWriteFlag << mInfoMemLayout.bitShiftSDCalibFileWriteFlag);
+					byte configFileWriteBit = (byte) (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag);
+					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = (mConfigFileCreationFlag? configFileWriteBit:(byte) 0x00);
+//					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = (byte) (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag);
+
+					 // Tells the Shimmer to create a new calibration files on undock/power cycle
+					byte calibFileWriteBit = (byte) (mInfoMemLayout.maskSDCalibFileWriteFlag << mInfoMemLayout.bitShiftSDCalibFileWriteFlag);
+					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = (mCalibFileCreationFlag? calibFileWriteBit:(byte) 0x00);
+//					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = (byte) (mInfoMemLayout.maskSDCalibFileWriteFlag << mInfoMemLayout.bitShiftSDCalibFileWriteFlag);
 				}
 			}
 			// InfoMem C - End
