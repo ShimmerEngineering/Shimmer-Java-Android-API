@@ -549,6 +549,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		consolePrintLn(currentOperation + " START");
 		
 		progressReportPerDevice = new ProgressReportPerDevice(this, currentOperation, 1);
+		progressReportPerDevice.mOperationState = ProgressReportPerDevice.OperationState.INPROGRESS;
 		
 		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
 		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
@@ -560,6 +561,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		consolePrintLn(currentOperation + " START");
 
 		progressReportPerDevice = new ProgressReportPerDevice(this, currentOperation, totalNumOfCmds);
+		progressReportPerDevice.mOperationState = ProgressReportPerDevice.OperationState.INPROGRESS;
 		
 		CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
 		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
@@ -573,14 +575,17 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		if(progressReportPerDevice.mCurrentOperationBtState == btState){
 
 			progressReportPerDevice.finishOperation();
+			progressReportPerDevice.mOperationState = ProgressReportPerDevice.OperationState.SUCCESS;
+
 			super.operationFinished();
 			
 			CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
 			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 			
-			progressReportPerDevice = new ProgressReportPerDevice(this, BT_STATE.NONE, 1);
-			callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
-			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+			//Removed to try and stop progress going to 0% after finishing
+//			progressReportPerDevice = new ProgressReportPerDevice(this, BT_STATE.NONE, 1);
+//			callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
+//			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 		}
 
 	}
