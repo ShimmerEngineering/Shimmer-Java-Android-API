@@ -74,6 +74,7 @@ public class ChannelDetails implements Serializable {
 	
 	public enum CHANNEL_SOURCE{
 		SHIMMER,
+		LIVEDATA,
 		API
 	}
 	public CHANNEL_SOURCE channelSource = CHANNEL_SOURCE.SHIMMER;
