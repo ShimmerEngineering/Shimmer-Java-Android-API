@@ -74,6 +74,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	
 	String[] mSensorFormats;
 	String[] mSensorUnits;
+	String[] mSensorIsUsingDefaultCal;
 	
 	
 	public byte[] mSystemTimeStamp = new byte[8];
@@ -146,7 +147,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	private List<String[]> getListofEnabledSensorSignalsandFormats(){
 		List<String[]> listofSignals = new ArrayList<String[]>();
 		for (int i=0;i<mSensorNames.length;i++){
-			String[] channel = new String[]{mMyName,mSensorNames[i],mSensorFormats[i],mSensorUnits[i]};
+			String[] channel = new String[]{mMyName,mSensorNames[i],mSensorFormats[i],mSensorUnits[i],mSensorIsUsingDefaultCal[i]};
 			listofSignals.add(channel);
 		}
 		
@@ -162,6 +163,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mSensorNames=new String[size];
 		mSensorFormats=new String[size];
 		mSensorUnits=new String[size];
+		mSensorIsUsingDefaultCal=new String[size];
 		int i=0;
 		int p=0;
 		for(String key : m.keys()) {
@@ -171,6 +173,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 				for(FormatCluster formatCluster : m.get(key)) {
 					mSensorFormats[p]=formatCluster.mFormat;
 					mSensorUnits[p]=formatCluster.mUnits;
+					mSensorIsUsingDefaultCal[p]=(formatCluster.mIsUsingDefaultCalibration? "*":"");
 					//Log.d("Shimmer",key + " " + mSensorFormats[p] + " " + mSensorUnits[p]);
 					p++;
 				}

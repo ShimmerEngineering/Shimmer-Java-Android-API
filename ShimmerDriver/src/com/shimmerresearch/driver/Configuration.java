@@ -96,11 +96,11 @@ public class Configuration {
 		public static final String CLOCK_UNIT = "Ticks";
 
 		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
-		public static final String ACCEL_DEFAULT_CAL_UNIT = METER_PER_SECOND_SQUARE+"*";
+//		public static final String ACCEL_DEFAULT_CAL_UNIT = METER_PER_SECOND_SQUARE+"*";
 		public static final String GYRO_CAL_UNIT = DEGREES_PER_SECOND;
-		public static final String GYRO_DEFAULT_CAL_UNIT = DEGREES_PER_SECOND+"*";
+//		public static final String GYRO_DEFAULT_CAL_UNIT = DEGREES_PER_SECOND+"*";
 		public static final String MAG_CAL_UNIT = LOCAL_FLUX;
-		public static final String MAG_DEFAULT_CAL_UNIT = LOCAL_FLUX+"*";
+//		public static final String MAG_DEFAULT_CAL_UNIT = LOCAL_FLUX+"*";
 		
 		public static final String LOCAL = "local"; //used for axis-angle and madgewick quaternions
 		public static final String MICROSIEMENS = "uS";
