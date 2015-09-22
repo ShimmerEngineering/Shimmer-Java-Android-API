@@ -49,7 +49,7 @@ public class ProgressReportPerDevice implements Serializable {
     };
 	public OperationState mOperationState = OperationState.PENDING;
 
-	public BT_STATE mCurrentOperationBtState = BT_STATE.NONE;
+	public BT_STATE mCurrentOperationBtState = BT_STATE.DISCONNECTED;
     
 	public ShimmerBluetoothDetailsMini mShimmerBluetoothDetailsMini = new ShimmerBluetoothDetailsMini();
 	

@@ -809,7 +809,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
 	
-	public String mUniqueID = ""; // Holds unique location information on a dock or COM port number for bluetooth connection  
+	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
+	public String mUniqueID = "";
 
 	private boolean isOverrideShowRwcErrorLeds = true;
 

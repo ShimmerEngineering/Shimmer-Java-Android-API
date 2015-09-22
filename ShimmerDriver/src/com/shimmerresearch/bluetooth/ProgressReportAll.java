@@ -26,7 +26,7 @@ public class ProgressReportAll implements Serializable {
 	public List<ShimmerObject> mListOfShimmers;
 	public LinkedHashMap<String, ProgressReportPerDevice> mMapOfOperationProgressInfo = new LinkedHashMap<String, ProgressReportPerDevice>();
 	
-	public BT_STATE currentOperationBtState = BT_STATE.NONE;
+	public BT_STATE currentOperationBtState = BT_STATE.DISCONNECTED;
 	
 	public static enum OperationState {
 		PENDING,

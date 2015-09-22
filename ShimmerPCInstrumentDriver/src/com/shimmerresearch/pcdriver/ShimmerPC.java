@@ -147,7 +147,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param exg2 Setes the register of EXG chip 2
 	 */
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
-		mState = BT_STATE.NONE;
+//		mState = BT_STATE.NONE;
+		mState = BT_STATE.DISCONNECTED;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
@@ -176,7 +177,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param magGain Set mag gain
 	 */
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
-		mState = BT_STATE.NONE;
+//		mState = BT_STATE.NONE;
+		mState = BT_STATE.DISCONNECTED;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mMagRange = magGain;
@@ -213,7 +215,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		
 		Thread thread = new Thread(){
 			public void run(){
-				setState(BT_STATE.CONNECTING);
+				setState(BT_STATE.INITIALISING);
+//				setState(BT_STATE.CONNECTING);
 				mIamAlive = false;
 				if (mSerialPort==null){
 					mUniqueID = address;
@@ -229,8 +232,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							mIOThread = null;
 							mPThread = null;
 						}
-						if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
-							setState(BT_STATE.CONNECTED);
+						if (mSerialPort.isOpened() && mState!=BT_STATE.DISCONNECTED){
+//						if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
+//							setState(BT_STATE.CONNECTED);
+							mIsConnected = true;
+
 							mIOThread = new IOThread();
 							mIOThread.start();
 							if(mUseProcessingThread){
@@ -455,7 +461,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			mIsStreaming = false;
 			mIsInitialised = false;
 
-			setState(BT_STATE.NONE);
+//			setState(BT_STATE.NONE);
+			setState(BT_STATE.DISCONNECTED);
 			if (mSerialPort != null){
 				
 				if(mSerialPort.isOpened ()) {
@@ -469,7 +476,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			 mSerialPort = null;
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
-			setState(BT_STATE.NONE);
+//			setState(BT_STATE.NONE);
+			setState(BT_STATE.DISCONNECTED);
 			
 		}			
 	}
@@ -497,11 +505,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //		}
 		mState = state;
 		
-		if(mState==BT_STATE.CONNECTED){
-			mIsConnected = true;
-			mIsStreaming = false;
-		}
-		else if(mState==BT_STATE.INITIALISED){
+//		if(mState==BT_STATE.CONNECTED){
+//			mIsConnected = true;
+//			mIsStreaming = false;
+//		}
+		if(mState==BT_STATE.INITIALISED){
 			mIsInitialised = true;
 			mIsStreaming = false;
 		}
@@ -510,7 +518,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		}		
 		else if((mState==BT_STATE.DISCONNECTED)
 				||(mState==BT_STATE.CONNECTION_LOST)
-				||(mState==BT_STATE.NONE)
+//				||(mState==BT_STATE.NONE)
 				||(mState==BT_STATE.CONNECTION_FAILED)){
 			mIsConnected = false;
 			mIsStreaming = false;
@@ -613,7 +621,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setState(BT_STATE.STREAMING);
 			}
 			else if(mIsConnected){
-				setState(BT_STATE.CONNECTED);
+//				setState(BT_STATE.CONNECTED);
 			}
 			else{
 				setState(BT_STATE.DISCONNECTED);
@@ -656,17 +664,17 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	protected void sendProgressReport(ProgressReportPerCmd pRPC) {
 		if(progressReportPerDevice!=null){
-			if(progressReportPerDevice.mCurrentOperationBtState!=BT_STATE.NONE){
+//			if(progressReportPerDevice.mCurrentOperationBtState!=BT_STATE.NONE){
 				progressReportPerDevice.updateProgress(pRPC);
 				
 				CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
 				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 				
-//				System.out.println("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
+				System.out.println("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
 				if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
 					finishOperation(progressReportPerDevice.mCurrentOperationBtState);
 				}
-			}
+//			}
 		}
 	}
 

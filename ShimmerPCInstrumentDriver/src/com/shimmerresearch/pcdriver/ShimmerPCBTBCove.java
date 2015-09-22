@@ -117,7 +117,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPCBTBCove(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
-		mState = BT_STATE.NONE;
+		mState = BT_STATE.DISCONNECTED;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
@@ -145,7 +145,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPCBTBCove(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
-		mState = BT_STATE.NONE;
+		mState = BT_STATE.DISCONNECTED;
 		mShimmerSamplingRate = samplingRate;
 		mAccelRange = accelRange;
 		mMagRange = magGain;
@@ -168,7 +168,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		getListofInstructions().clear();
 		mFirstTime=true;
 		try {
-			setState(BT_STATE.CONNECTING);
+			setState(BT_STATE.INITIALISING);
+//			setState(BT_STATE.CONNECTING);
 			conn = (StreamConnection)Connector.open(address);
 			mIN = new DataInputStream(conn.openInputStream());
 			mOUT = conn.openOutputStream();
@@ -181,7 +182,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mPThread = new ProcessingThread();
 			mPThread.start();
 			initialize();
-			setState(BT_STATE.CONNECTED);
+//			setState(BT_STATE.CONNECTED);
+			setState(BT_STATE.INITIALISED);
 		}
 		catch ( IOException e ) { 
 			System.err.print(e.toString()); 
@@ -256,7 +258,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	@Override
 	protected void stop() {
 		// TODO Auto-generated method stub
-		setState(BT_STATE.NONE);
+		setState(BT_STATE.DISCONNECTED);
 	}
 	
 	@Override
@@ -332,10 +334,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mOUT.close();
 			conn.close();
 			conn = null;
-			setState(BT_STATE.NONE);
+			setState(BT_STATE.DISCONNECTED);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			setState(BT_STATE.NONE);
+			setState(BT_STATE.DISCONNECTED);
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}
@@ -363,10 +365,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mIsInitialised = false;
 			conn.close();
 			conn = null;
-			setState(BT_STATE.NONE);
+			setState(BT_STATE.DISCONNECTED);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			setState(BT_STATE.NONE);
+			setState(BT_STATE.DISCONNECTED);
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}	

@@ -44,7 +44,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 
 public class CallbackObject {
 	public int mIndicator;
-	public BT_STATE mState = BT_STATE.NONE;
+	public BT_STATE mState = BT_STATE.DISCONNECTED;
 	public String mBluetoothAddress;
 	public String mComPort;
 	public double mPacketReceptionRate;
