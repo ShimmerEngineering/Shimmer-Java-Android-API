@@ -66,20 +66,21 @@ public class ChannelDetails implements Serializable {
 	public String mGuiName = "";
 	public String mObjectClusterName = "";
 	public int mChannelId = -1;
-	public String mChannelDataType = ChannelDataType.UNKOWN;
-	public int mNumBytes = 0;
-	public String mChannelDataEndian = ChannelDataEndian.UNKOWN;
-	public String mCalibratedUnits = CHANNEL_UNITS.NO_UNITS;
+	public String mDefaultChannelDataType = ChannelDataType.UNKOWN;
+	public int mDefaultNumBytes = 0;
+	public String mDefaultChannelDataEndian = ChannelDataEndian.UNKOWN;
+	public String mDefaultCalibratedUnits = CHANNEL_UNITS.NO_UNITS;
 	public List<CHANNEL_TYPE> mListOfChannelTypes = new ArrayList<CHANNEL_TYPE>();
-	
-//	public enum CHANNEL_SOURCE{
-//		SHIMMER,
-//		API
-//	}
-//	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
 	
 	public boolean mShowWhileStreaming = true;
 	public boolean mStoreToDatabase = true;
+	
+//	public enum CHANNEL_SOURCE{
+//	SHIMMER,
+//	API
+//}
+//public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
+
 
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
@@ -90,23 +91,23 @@ public class ChannelDetails implements Serializable {
 	 * @param numBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
-	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes){
-		mGuiName = guiName;
+	public ChannelDetails(String objectClusterName, String guiName, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes){
 		mObjectClusterName = objectClusterName;
-		mChannelDataType = channelDataType;
-		mNumBytes = numBytes;
-		mChannelDataEndian = channelDataEndian;
-		mCalibratedUnits = units;
+		mGuiName = guiName;
+		mDefaultChannelDataType = channelDataType;
+		mDefaultNumBytes = numBytes;
+		mDefaultChannelDataEndian = channelDataEndian;
+		mDefaultCalibratedUnits = units;
 		mListOfChannelTypes = listOfChannelTypes;
 	}
 	
-	public ChannelDetails(String guiName, String objectClusterName, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes, boolean showWhileStreaming, boolean storeToDatabase){
-		mGuiName = guiName;
+	public ChannelDetails(String objectClusterName, String guiName, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes, boolean showWhileStreaming, boolean storeToDatabase){
 		mObjectClusterName = objectClusterName;
-		mChannelDataType = channelDataType;
-		mNumBytes = numBytes;
-		mChannelDataEndian = channelDataEndian;
-		mCalibratedUnits = units;
+		mGuiName = guiName;
+		mDefaultChannelDataType = channelDataType;
+		mDefaultNumBytes = numBytes;
+		mDefaultChannelDataEndian = channelDataEndian;
+		mDefaultCalibratedUnits = units;
 		mListOfChannelTypes = listOfChannelTypes;
 		
 		mShowWhileStreaming = showWhileStreaming;
@@ -122,17 +123,27 @@ public class ChannelDetails implements Serializable {
 	 * @param numBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
-	public ChannelDetails(String guiName, String objectClusterName, int channelId, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes){
-		mGuiName = guiName;
+	public ChannelDetails(String objectClusterName, String guiName, int channelId, String channelDataType, int numBytes, String channelDataEndian, String units, List<CHANNEL_TYPE> listOfChannelTypes){
 		mObjectClusterName = objectClusterName;
+		mGuiName = guiName;
 		mChannelId = channelId;
-		mChannelDataType = channelDataType;
-		mNumBytes = numBytes;
-		mChannelDataEndian = channelDataEndian;
-		mCalibratedUnits = units;
+		mDefaultChannelDataType = channelDataType;
+		mDefaultNumBytes = numBytes;
+		mDefaultChannelDataEndian = channelDataEndian;
+		mDefaultCalibratedUnits = units;
 		mListOfChannelTypes = listOfChannelTypes;
 	}
 
+	
+	public ChannelDetails(String objectClusterName, String guiName, String units, List<CHANNEL_TYPE> listOfChannelTypes, boolean showWhileStreaming, boolean storeToDatabase) {
+		mObjectClusterName = objectClusterName;
+		mGuiName = guiName;
+		mDefaultCalibratedUnits = units;
+		mListOfChannelTypes = listOfChannelTypes;
+		
+		mShowWhileStreaming = showWhileStreaming;
+		mStoreToDatabase = storeToDatabase;
+	}
 	
 	/**
 	 * Empty constructor not used in standard Shimmer operations (GQ related). 
@@ -140,18 +151,6 @@ public class ChannelDetails implements Serializable {
 	 */
 	public ChannelDetails() {
 		// TODO Auto-generated constructor stub
-	}
-
-	public ChannelDetails(String guiName, String objectClusterName, String units, List<CHANNEL_TYPE> listOfChannelTypes, boolean showWhileStreaming, boolean storeToDatabase) {
-//	public ChannelDetails(String guiName, String objectClusterName, String units, List<CHANNEL_TYPE> listOfChannelTypes) {
-		mGuiName = guiName;
-		mObjectClusterName = objectClusterName;
-		mCalibratedUnits = units;
-		mListOfChannelTypes = listOfChannelTypes;
-		
-//		mChannelSource = CHANNEL_SOURCE.API;
-		mShowWhileStreaming = showWhileStreaming;
-		mStoreToDatabase = storeToDatabase;
 	}
 
 }

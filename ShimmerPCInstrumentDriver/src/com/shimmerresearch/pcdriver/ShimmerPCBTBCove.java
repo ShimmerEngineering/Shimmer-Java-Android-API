@@ -168,7 +168,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		getListofInstructions().clear();
 		mFirstTime=true;
 		try {
-			setState(BT_STATE.INITIALISING);
+			setState(BT_STATE.CONNECTING);
 //			setState(BT_STATE.CONNECTING);
 			conn = (StreamConnection)Connector.open(address);
 			mIN = new DataInputStream(conn.openInputStream());
@@ -183,7 +183,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mPThread.start();
 			initialize();
 //			setState(BT_STATE.CONNECTED);
-			setState(BT_STATE.INITIALISED);
+			setState(BT_STATE.CONNECTED);
 		}
 		catch ( IOException e ) { 
 			System.err.print(e.toString()); 

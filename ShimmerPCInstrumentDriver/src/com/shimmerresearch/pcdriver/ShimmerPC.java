@@ -215,7 +215,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		
 		Thread thread = new Thread(){
 			public void run(){
-				setState(BT_STATE.INITIALISING);
+				setState(BT_STATE.CONNECTING);
 //				setState(BT_STATE.CONNECTING);
 				mIamAlive = false;
 				if (mSerialPort==null){
@@ -375,16 +375,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		// Do something here
         mIsInitialised = true;
         sensorAndConfigMapsCreate();
-        sensorMapUpdateWithEnabledSensors();
+        sensorMapUpdateFromEnabledSensorsVar();
 
         if (mSendProgressReport){
-        	finishOperation(BT_STATE.INITIALISING);
+        	finishOperation(BT_STATE.CONNECTING);
         }
         
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
-		setState(BT_STATE.INITIALISED);
+		setState(BT_STATE.CONNECTED);
 	}
 
 
@@ -509,7 +509,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //			mIsConnected = true;
 //			mIsStreaming = false;
 //		}
-		if(mState==BT_STATE.INITIALISED){
+		if(mState==BT_STATE.CONNECTED){
 			mIsInitialised = true;
 			mIsStreaming = false;
 		}
@@ -605,7 +605,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
-		setState(BT_STATE.INITIALISED);
+		setState(BT_STATE.CONNECTED);
 	}
 
 	@Override
@@ -639,7 +639,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			}
 			else{
 				if(!mIsStreaming && !mIsSDLogging && mIsConnected){
-					setState(BT_STATE.INITIALISED);	
+					setState(BT_STATE.CONNECTED);	
 				}
 //				if(getBTState() == BT_STATE.INITIALISED){
 //					

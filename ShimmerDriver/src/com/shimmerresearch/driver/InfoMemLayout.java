@@ -324,9 +324,15 @@ public class InfoMemLayout implements Serializable {
 	
 	public int bitShiftSDCfgFileWriteFlag =		0; 
 	public int maskSDCfgFileWriteFlag =			0x01; 
-	public int bitShiftSDCalibFileWriteFlag =		1; 
-	public int maskSDCalibFileWriteFlag =			0x01; 
+	public int bitShiftSDCalibFileWriteFlag =	1; 
+	public int maskSDCalibFileWriteFlag =		0x01; 
 
+	public int maskExg1_24bitFlag =			0x10<<(0*8); 
+	public int maskExg2_24bitFlag =			0x08<<(0*8); 
+	public int maskExg1_16bitFlag =			0x10<<(2*8); 
+	public int maskExg2_16bitFlag =			0x08<<(2*8); 
+
+	
 	
 	//	//ADC initialisation mask
 //	public int MASK_A_ACCEL =        0x0001;

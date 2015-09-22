@@ -2178,7 +2178,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				btnDisconnect.setEnabled(true);
 				
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
-					|| callbackObject.mState == BT_STATE.NONE
+//					|| callbackObject.mState == BT_STATE.NONE
 					|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
 				
 				textFieldState.setText("Shimmer Disconnected");

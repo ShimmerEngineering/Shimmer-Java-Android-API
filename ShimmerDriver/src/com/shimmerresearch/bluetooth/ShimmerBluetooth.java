@@ -118,19 +118,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public enum BT_STATE{
 		//Removed the below
 //		NONE("None"),       // The class is doing nothing
-//		CONNECTING("Connecting"), // The class is now initiating an outgoing connection
-//		CONNECTED("Connected"),  // The class is now connected to a remote device
 //		CONFIGURED("Configured"), // 
 		
+		DISCONNECTED("Disconnected"),
+		CONNECTING("Connecting"), // The class is now initiating an outgoing connection
+		CONNECTED("Ready"),  // The class is now connected to a remote device
 		STREAMING("Streaming"),  // The class is now connected to a remote device
 		STREAMING_AND_SDLOGGING("Streaming and SD Logging"),
 		SDLOGGING("SD Logging"),
-		INITIALISING("Connecting"), //
-		// TODO: once happy no bugs from taking out the above states the
-		// refactor the below enum to be CONNECTED
-		INITIALISED("Ready"), // 
 		CONFIGURING("Configuring"), // The class is now initiating an outgoing connection 
-		DISCONNECTED("Disconnected"),
 		CONNECTION_LOST("Lost connection"),
 		CONNECTION_FAILED("Connection Failed");
 		
@@ -1156,7 +1152,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mPressureCalRawParams = new byte[23];
 			System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
 			mPressureCalRawParams[0] = responseCommand;
-			retrievepressurecalibrationparametersfrompacket(pressureResoRes,responseCommand);
+			retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseCommand);
 		} 
 		else if(responseCommand==EXG_REGS_RESPONSE){
 			delayForBtResponse(300); // Wait to ensure the packet has been fully received
@@ -1894,7 +1890,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if(mSendProgressReport){
 			operationPrepare();
-			setState(BT_STATE.INITIALISING);
+			setState(BT_STATE.CONNECTING);
 		}
 		
 		if(this.mUseInfoMemConfigMethod && mFirmwareVersionCode>=6){
@@ -1953,7 +1949,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// Just unlock instruction stack and leave logAndStream timer as
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
-			startOperation(BT_STATE.INITIALISING, getListofInstructions().size());
+			startOperation(BT_STATE.CONNECTING, getListofInstructions().size());
 			
 			setInstructionStackLock(false);
 		}
