@@ -894,7 +894,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		
 		if (mHardwareVersion==HW_ID.SHIMMER_SR30 || mHardwareVersion==HW_ID.SHIMMER_3){
 			
-			int iTimeStamp=getSignalIndex("TimeStamp"); //find index
+			int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
 			if(mFirstTime && fwIdentifier == FW_TYPE_SD){
 				//this is to make sure the Raw starts from zero
 				mFirstRawTS = (double)newPacketInt[iTimeStamp];
@@ -1967,16 +1967,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		} else if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
 			 //start of Shimmer2
 
-			int iTimeStamp=getSignalIndex("TimeStamp"); //find index
+			int iTimeStamp=getSignalIndex(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP); //find index
 			double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
 
 			//TIMESTAMP
 			if (fwIdentifier == FW_TYPE_BT){
-				objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]));
+				objectCluster.mPropertyCluster.put(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]));
 				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS));
+					objectCluster.mPropertyCluster.put(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS));
 					calibratedData[iTimeStamp] = calibratedTS;
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
 				}
@@ -2293,7 +2293,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		Vector3d magnetometer = new Vector3d();
 		Vector3d gyroscope = new Vector3d();
 
-		int iTimeStamp=getSignalIndex("TimeStamp"); //find index
+		int iTimeStamp=getSignalIndex(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP); //find index
 		tempData[0]=(double)newPacketInt[1];
 		objectCluster.mPropertyCluster.put("Timestamp",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]));
 		if (mEnableCalibration){
@@ -3294,7 +3294,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
 		
-		signalNameArray[0]="TimeStamp";
+		if (mHardwareVersion==HW_ID.SHIMMER_SR30 || mHardwareVersion==HW_ID.SHIMMER_3){
+			signalNameArray[0]=Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP;
+		}
+		else{
+			signalNameArray[0]=Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP;
+		}
 		
 		int packetSize=mTimeStampPacketByteSize; // Time stamp
 		if (mTimeStampPacketByteSize==2){
