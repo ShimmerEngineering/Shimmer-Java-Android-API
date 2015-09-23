@@ -7154,9 +7154,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		// Set name if nothing was read from InfoMem
 		if(!shimmerName.isEmpty()) {
 			mShimmerUserAssignedName = new String(shimmerName);
+			
 		}
 		else {
 			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
+			
 //			if(!mMacIdFromUartParsed.isEmpty()) {
 //				mShimmerUserAssignedName += "_" + getMacIdFromUartParsed();
 //			}
@@ -9172,8 +9174,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	
-	
-	
 	//TODO: MN -> move gets to ShimmerObject (could be duplicated there already)
 
 	public int getLowPowerAccelEnabled(){
@@ -9700,8 +9700,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public String getMacIdFromUartParsed() {
 		if(this.mMacIdFromUart.length()>=12) {
 			return this.mMacIdFromUart.substring(8, 12);
-		}
-		return "0000";
+		}		return "0000";
 	}
 
 	/**
@@ -9711,8 +9710,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		if(this.mMyBluetoothAddress.length()>=12) {
 			return this.mMyBluetoothAddress.substring(8, 12);
 		}
-		return "0000";
-	}
+		return "0000";	}
 
 	/**
 	 * @return the mSamplingDividerVBatt
