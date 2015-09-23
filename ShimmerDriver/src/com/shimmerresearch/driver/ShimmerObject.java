@@ -784,6 +784,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
 			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG,
 			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW);
+
+	public static final double ACCELERATION_DUE_TO_GRAVITY = 9.81;
 	
 	//Testing for GQ
 	protected int mGqPacketNumHeaderBytes = 0;
@@ -841,46 +843,64 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 		objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime));
 		
-		double [] calibratedData;
-		double [] uncalibratedData;
-		String [] uncalibratedDataUnits;
-		String [] calibratedDataUnits;
-		String [] sensorNames;
-		
 		if(fwIdentifier != FW_TYPE_BT && fwIdentifier != FW_TYPE_SD){
 			throw new Exception("The Firmware is not compatible");
 		}
 		
+		int numCalibratedData = mNChannels;
+		int numUncalibratedData = mNChannels;
+		int numUncalibratedDataUnits = mNChannels;
+		int numCalibratedDataUnits = mNChannels;
+		int numSensorNames = mNChannels;
+		
 		if (fwIdentifier == FW_TYPE_BT){
 			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
-//			calibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp
-//			uncalibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp	
-//			uncalibratedDataUnits = new String[mNChannels + 1];
-//			calibratedDataUnits = new String[mNChannels + 1];
-//			sensorNames = new String[mNChannels + 1];
+//			//plus 1 because of: timestamp
+//			numCalibratedData = mNChannels + 1;
+//			numUncalibratedData = mNChannels + 1;
+//			numUncalibratedDataUnits = mNChannels + 1;
+//			numCalibratedDataUnits = mNChannels + 1;
+//			numSensorNames = mNChannels + 1;
 			
-			//plus 4 because of the timestamp, batt percent, PRR Current, PRR Trial, system timestamp
-			calibratedData=new double[mNChannels + 5];
-			uncalibratedData=new double[mNChannels + 5];
-			uncalibratedDataUnits = new String[mNChannels + 5];
-			calibratedDataUnits = new String[mNChannels + 5];
-			sensorNames = new String[mNChannels + 5];
+			//plus 4 because of: timestamp, batt percent, PRR Current, PRR Trial, system timestamp
+			numCalibratedData = mNChannels + 5;
+			numUncalibratedData = mNChannels + 5;
+			numUncalibratedDataUnits = mNChannels + 5;
+			numCalibratedDataUnits = mNChannels + 5;
+			numSensorNames = mNChannels + 5;
 		} 
 		else {
 			if (mRTCOffset == 0){
-				calibratedData=new double[mNChannels]; //sd log time stamp already included in mnChannels
-				uncalibratedData=new double[mNChannels];
-				uncalibratedDataUnits = new String[mNChannels];
-				calibratedDataUnits = new String[mNChannels];
-				sensorNames = new String[mNChannels];
-			} else {
-				calibratedData=new double[mNChannels+1]; //for RTC
-				uncalibratedData=new double[mNChannels+1];
-				uncalibratedDataUnits = new String[mNChannels+1];
-				calibratedDataUnits = new String[mNChannels+1];
-				sensorNames = new String[mNChannels+1];
+				//sd log time stamp already included in mnChannels
+				numCalibratedData = mNChannels;
+				numUncalibratedData = mNChannels;
+				numUncalibratedDataUnits = mNChannels;
+				numCalibratedDataUnits = mNChannels;
+				numSensorNames = mNChannels;
+			} 
+			else {
+				//for RTC
+				numCalibratedData = mNChannels + 1;
+				numUncalibratedData = mNChannels + 1;
+				numUncalibratedDataUnits = mNChannels + 1;
+				numCalibratedDataUnits = mNChannels + 1;
+				numSensorNames = mNChannels + 1;
 			}
 		}
+		
+//		if(isEXGUsingDefaultECGConfiguration()){
+//			numCalibratedData += 1;
+//			numUncalibratedData += 1;
+//			numUncalibratedDataUnits += 1;
+//			numCalibratedDataUnits += 1;
+//			numSensorNames += 1;
+//		}
+		
+		double [] calibratedData = new double[numCalibratedData];
+		double [] uncalibratedData = new double[numUncalibratedData];
+		String [] uncalibratedDataUnits = new String[numUncalibratedDataUnits];
+		String [] calibratedDataUnits = new String[numCalibratedDataUnits];
+		String [] sensorNames = new String[numSensorNames];
 		
 		System.arraycopy(mSignalNameArray, 0, sensorNames, 0, sensorNames.length);
 		
@@ -1648,12 +1668,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					calibratedDataUnits[iexg2sta]=CHANNEL_UNITS.NO_UNITS;
 					calibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.MILLIVOLTS;
 					calibratedDataUnits[iexg2ch2]=CHANNEL_UNITS.MILLIVOLTS;
-					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
-						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
+					if (isEXGUsingDefaultECGConfiguration()){
+//						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
 						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
+//						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
+//						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2));
+					}
+					else if (isEXGUsingDefaultRespirationConfiguration()){
+						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT;
+						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT;
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2));
 					}
 					else if (isEXGUsingDefaultEMGConfiguration()){
@@ -1866,12 +1894,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
 				uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-//					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
-//					calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-//					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
-					calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
+					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
 					calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
+//					calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
+//					calibratedDataUnits[iGSR]=CHANNEL_UNITS.MICROSIEMENS;
+//					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
 				}
 			}
 
@@ -1897,12 +1925,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				int iAccelX = getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X);
 				int iAccelY = getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y);
 				int iAccelZ = getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z);
+//				calibratedData[iAccelX] = ((double)newPacketInt[iAccelX]/Math.pow(2, 16))*ACCELERATION_DUE_TO_GRAVITY;
+//				calibratedData[iAccelY] = ((double)newPacketInt[iAccelY]/Math.pow(2, 16))*ACCELERATION_DUE_TO_GRAVITY;
+//				calibratedData[iAccelZ] = ((double)newPacketInt[iAccelZ]/Math.pow(2, 16))*ACCELERATION_DUE_TO_GRAVITY;
+//				calibratedDataUnits[iAccelX] = CHANNEL_UNITS.ACCEL_CAL_UNIT;
+//				calibratedDataUnits[iAccelY] = CHANNEL_UNITS.ACCEL_CAL_UNIT;
+//				calibratedDataUnits[iAccelZ] = CHANNEL_UNITS.ACCEL_CAL_UNIT;
 				calibratedData[iAccelX] = (double)newPacketInt[iAccelX]/Math.pow(2, 16);
 				calibratedData[iAccelY] = (double)newPacketInt[iAccelY]/Math.pow(2, 16);
 				calibratedData[iAccelZ] = (double)newPacketInt[iAccelZ]/Math.pow(2, 16);
-				calibratedDataUnits[iAccelX] = CHANNEL_UNITS.ACCEL_CAL_UNIT;
-				calibratedDataUnits[iAccelY] = CHANNEL_UNITS.ACCEL_CAL_UNIT;
-				calibratedDataUnits[iAccelZ] = CHANNEL_UNITS.ACCEL_CAL_UNIT;
+				calibratedDataUnits[iAccelX] = CHANNEL_UNITS.GRAVITY;
+				calibratedDataUnits[iAccelY] = CHANNEL_UNITS.GRAVITY;
+				calibratedDataUnits[iAccelZ] = CHANNEL_UNITS.GRAVITY;
 				uncalibratedData[iAccelX] = (double)newPacketInt[iAccelX];
 				uncalibratedData[iAccelY] = (double)newPacketInt[iAccelX];
 				uncalibratedData[iAccelZ] = (double)newPacketInt[iAccelX];
@@ -2001,6 +2035,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedData[iMotOrient] = (double)newPacketInt[iMotOrient];
 				uncalibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
 			}
+			
+//			if(isEXGUsingDefaultECGConfiguration()){
+//				ECG_LL_LA_16BIT
+//				numCalibratedData += 1;
+//				numUncalibratedData += 1;
+//				numUncalibratedDataUnits += 1;
+//				numCalibratedDataUnits += 1;
+//				numSensorNames += 1;
+//			}
 			
 			if(fwIdentifier == FW_TYPE_BT){
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
@@ -5359,6 +5402,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			if ((mEnabledSensors & SENSOR_GSR)>0){
 				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GSR,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS};
 				listofSignals.add(channel);
+//				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.GSR,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS};
+//				listofSignals.add(channel);
 				//channel = new String[]{mMyName,"Magnetometer X",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
 				//listofSignals.add(channel);
 			}
@@ -7605,7 +7650,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					
 				}
 				
-				mChannelMap = Configuration.Shimmer3.mChannelMap;
+				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
 				mAlgorithmChannelsMap = Configuration.Shimmer3.mAlgorithmChannelsMap;
 				mAlgorithmGroupingMap = Configuration.Shimmer3.mAlgorithmGroupingMap;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMap;
