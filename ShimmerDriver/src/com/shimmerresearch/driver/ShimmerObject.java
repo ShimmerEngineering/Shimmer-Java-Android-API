@@ -1315,7 +1315,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1;
 					
 					//to Support derived sensor renaming
-					if (fwIdentifier == FW_TYPE_SD){
+					if (isDerivedSensorsSupported()){
 						//change name based on derived sensor value
 						if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG2_1_14)>0){
 							sensorName = Shimmer3.ObjectClusterSensorName.PPG2_A1;
@@ -1350,7 +1350,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				tempData[0] = (double)newPacketInt[iA12];
 				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12;
 				//to Support derived sensor renaming
-				if (fwIdentifier == FW_TYPE_SD){
+				if (isDerivedSensorsSupported()){
 					//change name based on derived sensor value
 					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG_A12;
@@ -1377,7 +1377,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				tempData[0] = (double)newPacketInt[iA13];
 				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
 				//to Support derived sensor renaming
-				if (fwIdentifier == FW_TYPE_SD){
+				if (isDerivedSensorsSupported()){
 					//change name based on derived sensor value
 					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG_A13;
@@ -1403,7 +1403,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				tempData[0] = (double)newPacketInt[iA14];
 				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14;
 				//to Support derived sensor renaming
-				if (fwIdentifier == FW_TYPE_SD){
+				if (isDerivedSensorsSupported()){
 					//change name based on derived sensor value
 					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG2_1_14)>0){
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG2_A14;
@@ -2418,6 +2418,21 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 		
 		return objectCluster;
+	}
+	
+	private boolean isDerivedSensorsSupported(){
+		
+		if((isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.BTSTREAM, 0, 7, 0))
+		||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.SDLOG, 0, 8, 69))
+		||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.LOGANDSTREAM, 0, 3, 17))){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isThisVerCompatibleWith(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
+		return UtilShimmer.compareVersions(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal,
+				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 	
 	@Deprecated
