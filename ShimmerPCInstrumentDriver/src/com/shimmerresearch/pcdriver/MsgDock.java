@@ -114,6 +114,8 @@ public class MsgDock {
 	public final static int MSG_ID_PLOT_CLOSED = 151;
 	public final static int MSG_ID_PLOT_OUT_OF_BOUNDS = 152;
 	
+	public final static int MSG_ID_BT_TO_DB_FINISHED = 170;
+	
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
