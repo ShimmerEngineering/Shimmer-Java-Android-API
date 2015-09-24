@@ -7467,14 +7467,12 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = 0;
 					// Tells the Shimmer to create a new config file on undock/power cycle
-					byte configFileWriteBit = (byte) (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag);
-					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= (mConfigFileCreationFlag? configFileWriteBit:(byte) 0x00);
-//					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= (byte) (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag);
+					byte configFileWriteBit = (byte) (mConfigFileCreationFlag? (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag):0x00);
+					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
 
 					 // Tells the Shimmer to create a new calibration files on undock/power cycle
-					byte calibFileWriteBit = (byte) (mInfoMemLayout.maskSDCalibFileWriteFlag << mInfoMemLayout.bitShiftSDCalibFileWriteFlag);
-					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= (mCalibFileCreationFlag? calibFileWriteBit:(byte) 0x00);
-//					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= (byte) (mInfoMemLayout.maskSDCalibFileWriteFlag << mInfoMemLayout.bitShiftSDCalibFileWriteFlag);
+					byte calibFileWriteBit = (byte) (mCalibFileCreationFlag? (mInfoMemLayout.maskSDCalibFileWriteFlag << mInfoMemLayout.bitShiftSDCalibFileWriteFlag):0x00);
+					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= calibFileWriteBit;
 				}
 			}
 			// InfoMem C - End
@@ -7521,6 +7519,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public byte[] refreshShimmerInfoMemBytes() {
 //		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
 		return infoMemByteArrayGenerate(false);
+	}
+	
+	public void setCalibFileCreationFlag(boolean state) {
+		mCalibFileCreationFlag = state;
+	}
+	
+	public void setConfigFileCreationFlag(boolean state) {
+		mConfigFileCreationFlag = state;
 	}
 	
 	public void refreshEnabledSensorsFromSensorMap(){

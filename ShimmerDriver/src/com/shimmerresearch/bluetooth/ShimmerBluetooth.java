@@ -4471,6 +4471,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *         Shimmer.
 	 */
 	public byte[] generateShimmerInfoMemBytes() {
+		super.setConfigFileCreationFlag(true);
+		super.setCalibFileCreationFlag(true);
 		return super.infoMemByteArrayGenerate(true);
 	}
 
