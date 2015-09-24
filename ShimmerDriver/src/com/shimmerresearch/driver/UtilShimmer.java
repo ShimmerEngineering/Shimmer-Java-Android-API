@@ -16,12 +16,12 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author Mark Nolan
  *
  */
-public class Util implements Serializable {
+public class UtilShimmer implements Serializable {
 	
 	public String mParentClassName = "UpdateCheck";
 	public Boolean mVerboseMode = true;
 	
-	public Util(String parentClassName, Boolean verboseMode){
+	public UtilShimmer(String parentClassName, Boolean verboseMode){
 		this.mParentClassName = parentClassName;
 		this.mVerboseMode = verboseMode;
 	}
@@ -409,5 +409,21 @@ public class Util implements Serializable {
 		ArrayUtils.reverse(rwcTimeArray); // Big-endian by default
 		long milisecondTicks = (long)(((double)(ByteBuffer.wrap(rwcTimeArray).getLong())/32.768));  // Convert clock ticks to milliseconds
 		return milisecondTicks;
+	}
+
+	/**Joins all string in array, each separated by a space 
+	 * @param a an array of Strings to join
+	 * @return
+	 */
+	public static String joinStrings(String[] a){
+		String js="";
+		for (int i=0;i<a.length;i++){
+			if (i==0){
+				js = a[i];
+			} else{
+				js = js + " " + a[i];
+			}
+		}
+		return js;
 	}
 }

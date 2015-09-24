@@ -852,55 +852,38 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		int numUncalibratedDataUnits = mNChannels;
 		int numCalibratedDataUnits = mNChannels;
 		int numSensorNames = mNChannels;
+		int numAdditionalChannels = 0;
 		
 		if (fwIdentifier == FW_TYPE_BT){
 			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
-//			//plus 1 because of: timestamp
-//			numCalibratedData = mNChannels + 1;
-//			numUncalibratedData = mNChannels + 1;
-//			numUncalibratedDataUnits = mNChannels + 1;
-//			numCalibratedDataUnits = mNChannels + 1;
-//			numSensorNames = mNChannels + 1;
+			//plus 1 because of: timestamp
+			numAdditionalChannels += 1;
 			
-			//plus 4 because of: timestamp, batt percent, PRR Current, PRR Trial, system timestamp
-			numCalibratedData = mNChannels + 5;
-			numUncalibratedData = mNChannels + 5;
-			numUncalibratedDataUnits = mNChannels + 5;
-			numCalibratedDataUnits = mNChannels + 5;
-			numSensorNames = mNChannels + 5;
+			//plus 4 because of: batt percent, PRR Current, PRR Trial, system timestamp
+			numAdditionalChannels += 4;
 		} 
 		else {
 			if (mRTCOffset == 0){
 				//sd log time stamp already included in mnChannels
-				numCalibratedData = mNChannels;
-				numUncalibratedData = mNChannels;
-				numUncalibratedDataUnits = mNChannels;
-				numCalibratedDataUnits = mNChannels;
-				numSensorNames = mNChannels;
 			} 
 			else {
 				//for RTC
-				numCalibratedData = mNChannels + 1;
-				numUncalibratedData = mNChannels + 1;
-				numUncalibratedDataUnits = mNChannels + 1;
-				numCalibratedDataUnits = mNChannels + 1;
-				numSensorNames = mNChannels + 1;
+				numAdditionalChannels += 1;
 			}
 		}
 		
-//		if(isEXGUsingDefaultECGConfiguration()){
-//			numCalibratedData += 1;
-//			numUncalibratedData += 1;
-//			numUncalibratedDataUnits += 1;
-//			numCalibratedDataUnits += 1;
-//			numSensorNames += 1;
-//		}
+		if (fwIdentifier == FW_TYPE_BT){ // Here so as not to mess with ShimmerSDLog
+			//for ECG LL-LA Channel added&calculated in API
+			if(isEXGUsingDefaultECGConfiguration()){
+				numAdditionalChannels += 1;
+			}
+		}
 		
-		double [] calibratedData = new double[numCalibratedData];
-		double [] uncalibratedData = new double[numUncalibratedData];
-		String [] uncalibratedDataUnits = new String[numUncalibratedDataUnits];
-		String [] calibratedDataUnits = new String[numCalibratedDataUnits];
-		String [] sensorNames = new String[numSensorNames];
+		double [] calibratedData = new double[numCalibratedData+numAdditionalChannels];
+		double [] uncalibratedData = new double[numUncalibratedData+numAdditionalChannels];
+		String [] uncalibratedDataUnits = new String[numUncalibratedDataUnits+numAdditionalChannels];
+		String [] calibratedDataUnits = new String[numCalibratedDataUnits+numAdditionalChannels];
+		String [] sensorNames = new String[numSensorNames+numAdditionalChannels];
 		
 		System.arraycopy(mSignalNameArray, 0, sensorNames, 0, sensorNames.length);
 		
@@ -1583,7 +1566,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}
 			}
-
+			
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)
 					){
@@ -2036,52 +2019,83 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				uncalibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
 			}
 			
-//			if(isEXGUsingDefaultECGConfiguration()){
-//				ECG_LL_LA_16BIT
-//				numCalibratedData += 1;
-//				numUncalibratedData += 1;
-//				numUncalibratedDataUnits += 1;
-//				numCalibratedDataUnits += 1;
-//				numSensorNames += 1;
-//			}
+			//Additional Channels Offset
+			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels+1; //+1 because timestamp channel appears at the start
+			
+			if (fwIdentifier == FW_TYPE_BT){ // Here so as not to mess with ShimmerSDLog
+				if(isEXGUsingDefaultECGConfiguration()){
+					if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
+							|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)){
+						
+						int iexg1ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT);
+						int iexg1ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT);
+	
+						sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT;
+	
+						uncalibratedData[additionalChannelsOffset]= uncalibratedData[iexg1ch1] - uncalibratedData[iexg1ch2];
+						uncalibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.NO_UNITS;
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[additionalChannelsOffset]));
+						
+						if(mEnableCalibration){
+							calibratedData[additionalChannelsOffset]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
+							calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]));
+						}
+						additionalChannelsOffset += 1;
+					}
+					else if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
+							|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_24BIT) > 0)){
+						
+						int iexg1ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT);
+						int iexg1ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT);
+	
+						sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT;
+	
+						uncalibratedData[additionalChannelsOffset]= uncalibratedData[iexg1ch1] - uncalibratedData[iexg1ch2];
+						uncalibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.NO_UNITS;
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[additionalChannelsOffset]));
+						
+						if(mEnableCalibration){
+							calibratedData[additionalChannelsOffset]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
+							calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]));
+						}
+						additionalChannelsOffset += 1;
+					}
+				}
+			}
 			
 			if(fwIdentifier == FW_TYPE_BT){
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
-				calibratedData[calibratedData.length-3] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
-				calibratedDataUnits[calibratedDataUnits.length-3] = CHANNEL_UNITS.PERCENT;
-				uncalibratedData[calibratedData.length-3] = Double.NaN;
-				uncalibratedDataUnits[calibratedData.length-3] = "";
-				sensorNames[calibratedData.length-3] = Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
-
-//				uncalibratedData[calibratedData.length-3] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
-//				uncalibratedDataUnits[calibratedData.length-3] = CHANNEL_UNITS.PERCENT;
+				calibratedData[additionalChannelsOffset] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
+				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+				uncalibratedData[additionalChannelsOffset] = Double.NaN;
+				uncalibratedDataUnits[additionalChannelsOffset] = "";
+				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
+				additionalChannelsOffset+=1;
 
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent));
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent));
-				calibratedData[calibratedData.length-2] = (double)mPacketReceptionRateCurrent;
-				calibratedDataUnits[calibratedData.length-2] = CHANNEL_UNITS.PERCENT;
-				uncalibratedData[calibratedData.length-2] = Double.NaN;
-				uncalibratedDataUnits[calibratedData.length-2] = "";
-				sensorNames[calibratedData.length-2] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;
-//				uncalibratedData[calibratedData.length-2] = (double)mPacketReceptionRateCurrent;
-//				uncalibratedDataUnits[calibratedData.length-2] = CHANNEL_UNITS.PERCENT;
+				calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRateCurrent;
+				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+				uncalibratedData[additionalChannelsOffset] = Double.NaN;
+				uncalibratedDataUnits[additionalChannelsOffset] = "";
+				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;
+				additionalChannelsOffset+=1;
 
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRate));
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRate));
-				calibratedData[calibratedData.length-1] = (double)mPacketReceptionRate;
-				calibratedDataUnits[calibratedData.length-1] = CHANNEL_UNITS.PERCENT;
-				uncalibratedData[calibratedData.length-1] = Double.NaN;
-				uncalibratedDataUnits[calibratedData.length-1] = "";
-				sensorNames[calibratedData.length-1] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
-//				uncalibratedData[calibratedData.length-1] = (double)mPacketReceptionRate;
-//				uncalibratedDataUnits[calibratedData.length-1] = CHANNEL_UNITS.PERCENT;
+				calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRate;
+				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+				uncalibratedData[additionalChannelsOffset] = Double.NaN;
+				uncalibratedDataUnits[additionalChannelsOffset] = "";
+				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
+				additionalChannelsOffset+=1;
 				
-				calibratedData[calibratedData.length-4] = (double)systemTime;
-				calibratedDataUnits[calibratedDataUnits.length-4] = CHANNEL_UNITS.MILLISECONDS;
-				uncalibratedData[uncalibratedData.length-4] = Double.NaN;
-				uncalibratedDataUnits[uncalibratedDataUnits.length-4] = "";
-				sensorNames[sensorNames.length-4] = Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP;
+				calibratedData[additionalChannelsOffset] = (double)systemTime;
+				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.MILLISECONDS;
+				uncalibratedData[additionalChannelsOffset] = Double.NaN;
+				uncalibratedDataUnits[additionalChannelsOffset] = "";
+				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP;
+				additionalChannelsOffset+=1;
 			}
 			
 			objectCluster.mCalData = calibratedData;
@@ -2397,13 +2411,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					checkBattery();
 				}
 			}
-		
 			
 		}
 		else{
 			throw new Exception("The Hardware version is not compatible");
 		}
-		
 		
 		return objectCluster;
 	}
@@ -3340,11 +3352,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		return formattedData;
 	}
-	/*
+	
+	/**
 	 * Data Methods
-	 * */  
-
-
+	 */  
 	protected int[] formatDataPacketReverse(byte[] data,String[] dataType){
 		int iData=0;
 		int[] formattedData=new int[dataType.length];
@@ -3895,8 +3906,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				signalDataTypeArray[i+1] = "u12";
 				packetSize=packetSize+2;
 			}
-
 		}
+		
+//		int offset = nC + 2;
+//		signalNameArray[offset]=Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
+//		signalNameArray[offset+1]=Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;
+//		signalNameArray[offset+2]=Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
+//		signalNameArray[offset+3]=Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT;
+		
 		mSignalNameArray=signalNameArray;
 		mSignalDataTypeArray=signalDataTypeArray;
 		mPacketSize=packetSize;
@@ -4277,8 +4294,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mOffsetVectorAnalogAccel = OffsetVector;
 				mSensitivityMatrixAnalogAccel = SensitivityMatrix;
 			} else if(packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
-				mDefaultCalibrationParametersAccel = true;
 				if (mHardwareVersion!=3){
+					mDefaultCalibrationParametersAccel = true;
 					mAlignmentMatrixAnalogAccel = AlignmentMatrixAccelShimmer2;
 					mOffsetVectorAnalogAccel = OffsetVectorAccelShimmer2;
 					if (getAccelRange()==0){
@@ -4291,24 +4308,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
 					}
 				} else {
-					if (getAccelRange()==0){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
-					} else if (getAccelRange()==1){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					} else if (getAccelRange()==2){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					} else if (getAccelRange()==3){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					}
-
+					setDefaultCalibrationShimmer3LowNoiseAccel();
 				}
 			}
 
@@ -4318,24 +4318,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mOffsetVectorWRAccel = OffsetVector;
 				mSensitivityMatrixWRAccel = SensitivityMatrix;
 			} else if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE  && SensitivityMatrix[0][0]==-1){
-				mDefaultCalibrationParametersDigitalAccel = true;
-				if (getAccelRange()==0){
-					mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel2gShimmer3;
-					mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-					mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-				} else if (getAccelRange()==1){
-					mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-					mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-					mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-				} else if (getAccelRange()==2){
-					mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-					mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-					mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-				} else if (getAccelRange()==3){
-					mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-					mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-					mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-				}
+				setDefaultCalibrationShimmer3WideRangeAccel();
 			}
 			if (packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
 				mDefaultCalibrationParametersGyro = false;
@@ -4347,26 +4330,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
 
 			} else if(packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
-				mDefaultCalibrationParametersGyro = true;
 				if (mHardwareVersion!=3){
+					mDefaultCalibrationParametersGyro = true;
 					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
 					mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
 					mSensitivityMatrixGyroscope = SensitivityMatrixGyroShimmer2;	
 				} else {
-					if (mGyroRange==0){
-						mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
-
-					} else if (mGyroRange==1){
-						mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
-
-					} else if (mGyroRange==2){
-						mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
-
-					} else if (mGyroRange==3){
-						mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
-					}
-					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
-					mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
+					setDefaultCalibrationShimmer3Gyro();
 				}
 			} 
 			if (packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
@@ -4398,25 +4368,96 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer2;
 					}
 				} else {
-					mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
-					mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
-					if (mMagRange==1){
-						mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer3;
-					} else if (mMagRange==2){
-						mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer3;
-					} else if (mMagRange==3){
-						mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer3;
-					} else if (mMagRange==4){
-						mSensitivityMatrixMagnetometer = SensitivityMatrixMag4GaShimmer3;
-					} else if (mMagRange==5){
-						mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer3;
-					} else if (mMagRange==6){
-						mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer3;
-					} else if (mMagRange==7){
-						mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer3;
-					}
+					setDefaultCalibrationShimmer3Mag();
 				}
 			}
+		}
+	}
+
+	protected void setDefaultCalibrationShimmer3StandardImus(){
+		setDefaultCalibrationShimmer3LowNoiseAccel();
+		setDefaultCalibrationShimmer3WideRangeAccel();
+		setDefaultCalibrationShimmer3Gyro();
+		setDefaultCalibrationShimmer3Mag();
+	}
+
+	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
+		mDefaultCalibrationParametersAccel = true;
+		if (getAccelRange()==0){
+			mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
+			mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
+			mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
+		} else if (getAccelRange()==1){
+			mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
+			mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+			mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+		} else if (getAccelRange()==2){
+			mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
+			mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+			mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+		} else if (getAccelRange()==3){
+			mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
+			mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+			mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+		}
+	}
+	
+	private void setDefaultCalibrationShimmer3WideRangeAccel() {
+		mDefaultCalibrationParametersDigitalAccel = true;
+		if (getAccelRange()==0){
+			mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel2gShimmer3;
+			mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+			mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+		} else if (getAccelRange()==1){
+			mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
+			mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+			mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+		} else if (getAccelRange()==2){
+			mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
+			mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+			mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+		} else if (getAccelRange()==3){
+			mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
+			mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+			mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+		}
+	}
+
+	private void setDefaultCalibrationShimmer3Gyro() {
+		mDefaultCalibrationParametersGyro = true;
+		if (mGyroRange==0){
+			mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
+
+		} else if (mGyroRange==1){
+			mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
+
+		} else if (mGyroRange==2){
+			mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
+
+		} else if (mGyroRange==3){
+			mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
+		}
+		mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
+		mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
+	}
+	
+	private void setDefaultCalibrationShimmer3Mag() {
+		mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
+		mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
+		if (mMagRange==1){
+			mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer3;
+		} else if (mMagRange==2){
+			mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer3;
+		} else if (mMagRange==3){
+			mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer3;
+		} else if (mMagRange==4){
+			mSensitivityMatrixMagnetometer = SensitivityMatrixMag4GaShimmer3;
+		} else if (mMagRange==5){
+			mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer3;
+		} else if (mMagRange==6){
+			mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer3;
+		} else if (mMagRange==7){
+			mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer3;
 		}
 	}
 
@@ -7049,7 +7090,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				byte[] shimmerNameBuffer = new byte[mInfoMemLayout.lengthShimmerName];
 				System.arraycopy(infoMemContents, mInfoMemLayout.idxSDShimmerName, shimmerNameBuffer, 0 , mInfoMemLayout.lengthShimmerName);
 				for(byte b : shimmerNameBuffer) {
-					if(!Util.isAsciiPrintable((char)b)) {
+					if(!UtilShimmer.isAsciiPrintable((char)b)) {
 						break;
 					}
 					shimmerName += (char)b;
@@ -7060,7 +7101,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				System.arraycopy(infoMemContents, mInfoMemLayout.idxSDEXPIDName, experimentNameBuffer, 0 , mInfoMemLayout.lengthExperimentName);
 				String experimentName = "";
 				for(byte b : experimentNameBuffer) {
-					if(!Util.isAsciiPrintable((char)b)) {
+					if(!UtilShimmer.isAsciiPrintable((char)b)) {
 						break;
 					}
 					experimentName += (char)b;
@@ -7109,7 +7150,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					
 				byte[] macIdBytes = new byte[mInfoMemLayout.lengthMacIdBytes];
 				System.arraycopy(infoMemContents, mInfoMemLayout.idxMacAddress, macIdBytes, 0 , mInfoMemLayout.lengthMacIdBytes);
-				mMacIdFromInfoMem = Util.bytesToHexString(macIdBytes);
+				mMacIdFromInfoMem = UtilShimmer.bytesToHexString(macIdBytes);
 				
 
 				if(((infoMemContents[mInfoMemLayout.idxSDConfigDelayFlag]>>mInfoMemLayout.bitShiftSDCfgFileWriteFlag)&mInfoMemLayout.maskSDCfgFileWriteFlag) == mInfoMemLayout.maskSDCfgFileWriteFlag) {
@@ -7137,7 +7178,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							break;
 						}
 						else {
-							syncNodesList.add(Util.bytesToHexString(macIdBytes));
+							syncNodesList.add(UtilShimmer.bytesToHexString(macIdBytes));
 						}
 					}
 					// InfoMem B End
@@ -7441,7 +7482,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				for (int i = 0; i < mInfoMemLayout.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 					byte[] macIdArray;
 					if((syncNodesList.size()>0) && (i<syncNodesList.size()) && (mSyncWhenLogging>0)) {
-						macIdArray = Util.hexStringToByteArray(syncNodesList.get(i));
+						macIdArray = UtilShimmer.hexStringToByteArray(syncNodesList.get(i));
 					}
 					else {
 						macIdArray = mInfoMemLayout.invalidMacId;
@@ -7626,7 +7667,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
 		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
 		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT)))){
+		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
+		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
 								    i.remove();
 							}
 		    				else if((getExGResolution()==0)
@@ -7639,7 +7681,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT)))){
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
 							    i.remove();
 							}
 						   
@@ -8535,7 +8578,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			if(checkFirmwareVersionMajor){
 				// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored
-				if((compatible)&&(!Util.compareVersions(mFirmwareIdentifier, 
+				if((compatible)&&(!UtilShimmer.compareVersions(mFirmwareIdentifier, 
 						mFirmwareVersionMajor, 
 						mFirmwareVersionMinor, 
 						mFirmwareVersionInternal, 
@@ -8947,7 +8990,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mConfigTime in a parsed String format (yyyy-MM-dd hh:MM:ss)
 	 */
 	public String getConfigTimeParsed() {
-		return Util.convertSecondsToDateString(mConfigTime);
+		return UtilShimmer.convertSecondsToDateString(mConfigTime);
 	}
 	
 	/**
@@ -11534,7 +11577,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	public void setLastReadRealTimeClockValue(long time) {
 		mShimmerLastReadRealTimeClockValue = time;
-		mShimmerLastReadRtcValueParsed = Util.fromMilToDateExcelCompatible(Long.toString(time), false);
+		mShimmerLastReadRtcValueParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(time), false);
 	}
 
 }

@@ -187,9 +187,9 @@ public class FwImageVersionDetails {
 				BasicFileAttributes attr = Files.readAttributes(filePath, BasicFileAttributes.class);
 	
 				mFileCreationTime = attr.creationTime();
-				mFileCreationTimeParsed = Util.fromMilToDateExcelCompatible(Long.toString(mFileCreationTime.toMillis()), false);
+				mFileCreationTimeParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(mFileCreationTime.toMillis()), false);
 				mFileModifiedTime = attr.lastModifiedTime();
-				mFileModifiedTimeParsed = Util.fromMilToDateExcelCompatible(Long.toString(mFileModifiedTime.toMillis()), false);
+				mFileModifiedTimeParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(mFileModifiedTime.toMillis()), false);
 				mFileLength = attr.size();
 				mFileLengthParsed = String.valueOf(Math.round(attr.size()/1000.0)) + "kB";
 

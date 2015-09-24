@@ -101,7 +101,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerObject;
-import com.shimmerresearch.driver.Util;
+import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
@@ -506,12 +506,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							if(mCurrentCommand==SET_RWC_COMMAND){
 								// for Real-world time -> grab PC time just before
 								// writing to Shimmer
-								byte[] rwcTimeArray = Util.convertSystemTimeToShimmerRwcDataBytes(System.currentTimeMillis());
+								byte[] rwcTimeArray = UtilShimmer.convertSystemTimeToShimmerRwcDataBytes(System.currentTimeMillis());
 								System.arraycopy(rwcTimeArray, 0, insBytes, 1, 8);
 							}
 	
 							writeBytes(insBytes);
-							printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + Util.bytesToHexStringWithSpacesFormatted(insBytes));
+							printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(insBytes));
 							
 							//TODO: are the two stops needed here? better to wait for ack from Shimmer
 							if(mCurrentCommand==STOP_STREAMING_COMMAND || mCurrentCommand==STOP_SDBT_COMMAND){
@@ -859,7 +859,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void clearSerialBuffer() {
 		if(bytesAvailableToBeRead()){
 			byte[] buffer = readBytes(availableBytes());
-			printLogDataForDebugging("Discarding:\t\t" + Util.bytesToHexStringWithSpacesFormatted(buffer));
+			printLogDataForDebugging("Discarding:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(buffer));
 		}
 	}
 	
@@ -913,7 +913,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mByteArrayOutputStream.reset();
 		mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
 		mListofPCTimeStamps.remove(0);
-		consolePrintLn("Throw Byte" + Util.byteToHexStringFormatted(bTemp[0]));
+		consolePrintLn("Throw Byte" + UtilShimmer.byteToHexStringFormatted(bTemp[0]));
 	}
 	
 	/**
@@ -949,7 +949,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				bufferInquiry[i] = (byte) buffer.get(i);
 			}
 				
-			printLogDataForDebugging("Inquiry Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferInquiry));
+			printLogDataForDebugging("Inquiry Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferInquiry));
 			
 			interpretInqResponse(bufferInquiry);
 			inquiryDone();
@@ -1048,7 +1048,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //				initializeShimmer3();
 //			}
 			
-			printLogDataForDebugging("Shimmer Version (HW) Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
+			printLogDataForDebugging("Shimmer Version (HW) Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
 			
 			readFWVersion();
 		} 							
@@ -1120,7 +1120,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			byte[] bufferGSRRange = readBytes(1); 
 			mGSRRange=bufferGSRRange[0];
 			
-			printLogDataForDebugging("GSR Range Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferGSRRange));
+			printLogDataForDebugging("GSR Range Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferGSRRange));
 		} 
 		else if(responseCommand==BLINK_LED_RESPONSE) {
 			byte[] byteled = readBytes(1);
@@ -1138,7 +1138,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			byte[] bufferAns = readBytes(1); 
 			mLSM303MagRate=bufferAns[0];
 			
-			printLogDataForDebugging("Mag Sampling Rate Response Received: " + Util.bytesToHexStringWithSpacesFormatted(bufferAns));
+			printLogDataForDebugging("Mag Sampling Rate Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferAns));
 		} 
 		else if(responseCommand==ACCEL_SAMPLING_RATE_RESPONSE) {
 			byte[] bufferAns = readBytes(1); 
@@ -1296,13 +1296,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			byte[] rxBuf = readBytes(1);
 			int lengthToRead = (int)(rxBuf[0]&0xFF);
 			rxBuf = readBytes(lengthToRead);
-			printLogDataForDebugging("INFOMEM_RESPONSE Received: " + Util.bytesToHexStringWithSpacesFormatted(rxBuf));
+			printLogDataForDebugging("INFOMEM_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
 			
 			//Copy to local buffer
 			System.arraycopy(rxBuf, 0, mInfoMemBuffer, mCurrentInfoMemAddress, lengthToRead);
 			//Update configuration when all bytes received.
 			if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 				setShimmerInfoMemBytes(mInfoMemBuffer);
+				inquiry();
 			}
 		}
 		else {
@@ -1611,7 +1612,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] instruction = getListofInstructions().get(0);
 					byte[] rwcTimeArray = new byte[8];
 					System.arraycopy(instruction, 1, rwcTimeArray, 0, 8);
-					long milisecondTicks = Util.convertShimmerRwcDataBytesToSystemTime(rwcTimeArray);
+					long milisecondTicks = UtilShimmer.convertShimmerRwcDataBytesToSystemTime(rwcTimeArray);
 					mShimmerRealWorldClockConFigTime = milisecondTicks;
 				}
 				else if(currentCommand==SET_CONFIGTIME_COMMAND){
@@ -1776,7 +1777,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mIsSDLogging = ((statusByte & 0x08) > 0)? true:false;
 		mIsStreaming = ((statusByte & 0x10) > 0)? true:false; 
 
-		consolePrintLn("Status Response = " + Util.byteToHexStringFormatted(statusByte)
+		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
 				+ "\t" + "IsDocked = " + mIsDocked
 				+ "\t" + "IsSensing = " + mIsSensing
 				+ "\t" + "IsSDLogging = "+ mIsSDLogging
@@ -1811,9 +1812,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		if(mapToSearch!=null)
-			return Util.byteToHexStringFormatted(command) + " " + mapToSearch.get(command).mDescription;
+			return UtilShimmer.byteToHexStringFormatted(command) + " " + mapToSearch.get(command).mDescription;
 		else {
-			return Util.byteToHexStringFormatted(command) + "UNKNOWN";
+			return UtilShimmer.byteToHexStringFormatted(command) + "UNKNOWN";
 		}
 	}
 	
@@ -3354,7 +3355,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		
-		inquiry();
 		readInfoMem(startAddress, buf.length);
 	}
     
@@ -4522,7 +4522,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @return
 	 */
 	public boolean isThisVerCompatibleWith(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
-		return Util.compareVersions(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal,
+		return UtilShimmer.compareVersions(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal,
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 

@@ -63,10 +63,8 @@ import java.util.Calendar;
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.driver.Util;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;

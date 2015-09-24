@@ -1677,6 +1677,7 @@ public class Configuration {
 //					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC
 					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
+					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL
 					); 
@@ -1965,6 +1966,12 @@ public class Configuration {
 							"Packet Reception Rate (overall)",
 							CHANNEL_UNITS.PERCENT,
 							Arrays.asList(CHANNEL_TYPE.CAL), true, false));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+							CHANNEL_UNITS.NO_UNITS,
+							Arrays.asList(CHANNEL_TYPE.CAL), false, false));			
 			
 			// All Information required for parsing each of the channels
 			//TODO incorportate 3 byte timestamp change for newer firmware
@@ -2477,6 +2484,22 @@ public class Configuration {
 							ChannelDataType.INT24, 3, ChannelDataEndian.MSB,
 							CHANNEL_UNITS.MILLIVOLTS,
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));	
+			
+			//ECG derived
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
+							CHANNEL_UNITS.MILLIVOLTS,
+							Arrays.asList(CHANNEL_TYPE.CAL)));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
+							Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
+							CHANNEL_UNITS.MILLIVOLTS,
+							Arrays.asList(CHANNEL_TYPE.CAL)));
 			
 			//ExG - Test signal
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
