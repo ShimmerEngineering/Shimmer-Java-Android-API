@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="libs/ShimmerBiophysicalProcessingLibrary_Rev_0_10.jar"/>
-	<classpathentry excluding="com/shimmerresearch/bluetooth/ShimmerBluetoothOld.java" kind="src" path="src"/>
+	<classpathentry excluding="com/shimmerresearch/bluetooth/ShimmerBluetoothOld.java|com/shimmerresearch/sensor/KionixKXRB52042.java|com/shimmerresearch/sensor/ShimmerECGSensor.java|com/shimmerresearch/sensor/ShimmerGSRSensor.java|com/shimmerresearch/sensor/STMICROLSM303DLHC.java" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-math-2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/guava-12.0.jar"/>
