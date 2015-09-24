@@ -502,7 +502,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected boolean mDefaultCalibrationParametersDigitalAccel = true; //Also known as the wide range accelerometer
 	protected int mPressureResolution = 0;
 	/** 0 = 16 bit, 1 = 24 bit */
-	protected int mExGResolution = 0;
+	protected int mExGResolution = 1;
 	private boolean mIsExg1_24bitEnabled = false;
 	private boolean mIsExg2_24bitEnabled = false;
 	private boolean mIsExg1_16bitEnabled = false;
@@ -6807,7 +6807,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 			mInternalExpPower=0;
 
-			mExGResolution = 0;
+			mExGResolution = 1;
 			mShimmer2MagRate=0;
 			
 			mMasterShimmer = 0;
