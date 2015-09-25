@@ -4287,14 +4287,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 
 	}
 
-	protected void retrieveKinematicCalibrationParametersFromPacket(byte[] bufferCalibrationParameters, int packetType)
-	{
+	public void retrieveKinematicCalibrationParametersFromPacket(byte[] bufferCalibrationParameters, int packetType) {
+		
 		if (packetType==ACCEL_CALIBRATION_RESPONSE || packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE || packetType==GYRO_CALIBRATION_RESPONSE || packetType==MAG_CALIBRATION_RESPONSE ){
 			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"}; 
 			int[] formattedPacket=formatDataPacketReverse(bufferCalibrationParameters,dataType); // using the datatype the calibration parameters are converted
 			double[] AM=new double[9];
-			for (int i=0;i<9;i++)
-			{
+			for (int i=0;i<9;i++){
 				AM[i]=((double)formattedPacket[6+i])/100;
 			}
 
@@ -4308,7 +4307,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mAlignmentMatrixAnalogAccel = AlignmentMatrix;
 				mOffsetVectorAnalogAccel = OffsetVector;
 				mSensitivityMatrixAnalogAccel = SensitivityMatrix;
-			} else if(packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
+			} 
+			else if(packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
 				if (mHardwareVersion!=3){
 					mDefaultCalibrationParametersAccel = true;
 					mAlignmentMatrixAnalogAccel = AlignmentMatrixAccelShimmer2;
@@ -4322,7 +4322,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					} else if (getAccelRange()==3){
 						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
 					}
-				} else {
+				} 
+				else {
 					setDefaultCalibrationShimmer3LowNoiseAccel();
 				}
 			}
@@ -4332,9 +4333,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mAlignmentMatrixWRAccel = AlignmentMatrix;
 				mOffsetVectorWRAccel = OffsetVector;
 				mSensitivityMatrixWRAccel = SensitivityMatrix;
-			} else if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE  && SensitivityMatrix[0][0]==-1){
+			}
+			else if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE  && SensitivityMatrix[0][0]==-1){
 				setDefaultCalibrationShimmer3WideRangeAccel();
 			}
+			
 			if (packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
 				mDefaultCalibrationParametersGyro = false;
 				mAlignmentMatrixGyroscope = AlignmentMatrix;
@@ -4343,24 +4346,26 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
 				mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
 				mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
-
-			} else if(packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
-				if (mHardwareVersion!=3){
+			} 
+			else if(packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
+				if(mHardwareVersion!=3){
 					mDefaultCalibrationParametersGyro = true;
 					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
 					mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
 					mSensitivityMatrixGyroscope = SensitivityMatrixGyroShimmer2;	
-				} else {
+				} 
+				else {
 					setDefaultCalibrationShimmer3Gyro();
 				}
 			} 
+			
 			if (packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
 				mDefaultCalibrationParametersMag = false;
 				mAlignmentMatrixMagnetometer = AlignmentMatrix;
 				mOffsetVectorMagnetometer = OffsetVector;
 				mSensitivityMatrixMagnetometer = SensitivityMatrix;
-
-			} else if(packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
+			}
+			else if(packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
 				mDefaultCalibrationParametersMag = true;
 				if (mHardwareVersion!=3){
 					mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer2;
@@ -5794,7 +5799,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isEXGUsingDefaultECGConfiguration(){
-		checkExgResolutionFromEnabledSensorsVar();
 		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
 			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
 				return true;
@@ -5804,7 +5808,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isEXGUsingDefaultEMGConfiguration(){
-		checkExgResolutionFromEnabledSensorsVar();
 		if((mIsExg1_16bitEnabled&&!mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&!mIsExg2_24bitEnabled)){
 			if(((mEXG1RegisterArray[3] & 0x0F)==9)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==1)&&((mEXG2RegisterArray[4] & 0x0F)==1)){
 				return true;
@@ -5814,7 +5817,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isEXGUsingDefaultTestSignalConfiguration(){
-		checkExgResolutionFromEnabledSensorsVar();
 		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
 			if(((mEXG1RegisterArray[3] & 0x0F)==5)&&((mEXG1RegisterArray[4] & 0x0F)==5)&& ((mEXG2RegisterArray[3] & 0x0F)==5)&&((mEXG2RegisterArray[4] & 0x0F)==5)){
 				return true;
@@ -5824,7 +5826,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isEXGUsingDefaultRespirationConfiguration(){
-		checkExgResolutionFromEnabledSensorsVar();
 		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
 			if((mEXG2RegisterArray[8] & 0xC0)==0xC0){
 	//		if(isEXGUsingDefaultECGConfiguration()&&((mEXG2RegisterArray[8] & 0xC0)==0xC0)){
@@ -5835,7 +5836,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isEXGUsingCustomSignalConfiguration(){
-		checkExgResolutionFromEnabledSensorsVar();
 		if(mIsExg1_16bitEnabled||mIsExg2_16bitEnabled||mIsExg1_24bitEnabled||mIsExg2_24bitEnabled){
 			return true;
 		}
@@ -6322,8 +6322,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mEXG1LeadOffSenseSelection = mEXG1RegisterArray[6] & 0x0f; //2P1N1P
 			
 			mExGConfigBytesDetails.updateFromRegisterArray(EXG_CHIP_INDEX.CHIP1, mEXG1RegisterArray);
-
-		} else if (chipIndex==2){
+		} 
+		
+		else if (chipIndex==2){
 			System.arraycopy(byteArray, index, mEXG2RegisterArray, 0, 10);
 			mEXG2RateSetting = mEXG2RegisterArray[0] & 7;
 			mEXG2CH1GainSetting = (mEXG2RegisterArray[3] >> 4) & 7;
@@ -6342,11 +6343,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mExGConfigBytesDetails.updateFromRegisterArray(EXG_CHIP_INDEX.CHIP2, mEXG2RegisterArray);
 		}
 		
-
-		checkExgMode();
-
 	}
 
+	public void exgBytesGetConfigFrom(byte[] mEXG1RegisterArray, byte[] mEXG2RegisterArray){
+		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		internalCheckExgModeAndUpdateSensorMap();
+	}
+	
 //	//TODO:2015-06-16 remove the need for this by using map
 //	/**
 //	 * Generates the ExG configuration byte arrays based on the individual ExG
@@ -6357,8 +6361,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public void exgBytesGetFromConfig() {
 		mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
 		mEXG2RegisterArray = mExGConfigBytesDetails.getEXG2RegisterArray();
-		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
 	
 	
@@ -6554,6 +6557,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 
 			clearExgConfig();
+			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.ECG);
+			
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CONVERSION_MODES.CONTINUOUS);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.VREF_2_42V);
@@ -6571,10 +6576,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
 
 			setExGRateFromFreq(mShimmerSamplingRate);
-			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-			
-			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.ECG);
+			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 		 }
 	}
 
@@ -6589,6 +6591,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
 			clearExgConfig();
+			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.EMG);
+			
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CONVERSION_MODES.CONTINUOUS);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.VREF_2_42V);
@@ -6607,10 +6611,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
 			
 			setExGRateFromFreq(mShimmerSamplingRate);
-			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-			
-			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.EMG);
+			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 		}
 		
 	}
@@ -6626,6 +6627,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
 			clearExgConfig();
+			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.EXG_TEST);
+			
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CONVERSION_MODES.CONTINUOUS);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.VREF_2_42V);
@@ -6637,10 +6640,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.TEST_SIGNAL);
 			
 			setExGRateFromFreq(mShimmerSamplingRate);
-			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-			
-			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.EXG_TEST);
+			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 		}
 	}
 	 
@@ -6657,6 +6657,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 234,(byte) 1};
 			
 			clearExgConfig();
+			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION);
+
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CONVERSION_MODES.CONTINUOUS);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.VREF_2_42V);
@@ -6674,10 +6676,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_32KHZ.PHASE_112_5);
 			
 			setExGRateFromFreq(mShimmerSamplingRate);
-			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-			
-			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION);
+			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 		 }
 	}	 
 
@@ -6712,6 +6711,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
 			clearExgConfig();
+			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM);
+			
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CONVERSION_MODES.CONTINUOUS);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.VREF_2_42V);
@@ -6723,24 +6724,23 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT);
 			
 			setExGRateFromFreq(mShimmerSamplingRate);
-			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-			
-			setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM);
+			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 		}
 	}
 	 
 	protected void clearExgConfig(){
+		setExgChannelBitsPerMode(-1);
 		mExGConfigBytesDetails.startNewExGConig();
 
 		mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
-		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 		mEXG2RegisterArray = mExGConfigBytesDetails.getEXG2RegisterArray();
-		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-		
-		setExgChannelBitsPerMode(-1);
+		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
 	 
+	/** Note: Doesn't update the Sensor Map
+	 * @param chipIndex
+	 * @param option
+	 */
 	protected void setExgPropertySingleChip(EXG_CHIP_INDEX chipIndex, ExGConfigOption option){
 		mExGConfigBytesDetails.setExgPropertySingleChip(chipIndex,option);
 		if(chipIndex==EXG_CHIP_INDEX.CHIP1){
@@ -6762,11 +6762,15 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
 		mEXG2RegisterArray = mExGConfigBytesDetails.getEXG2RegisterArray();
 		
-		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
 	
-	public void setExgPropertyValue(EXG_CHIP_INDEX chipIndex, String propertyName, int value){
+	/** Note: Doesn't update the Sensor Map
+	 * @param chipIndex
+	 * @param propertyName
+	 * @param value
+	 */
+	public void setExgPropertySingleChipValue(EXG_CHIP_INDEX chipIndex, String propertyName, int value){
 		mExGConfigBytesDetails.setExgPropertyValue(chipIndex,propertyName,value);
 		if(chipIndex==EXG_CHIP_INDEX.CHIP1){
 			mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
@@ -6890,6 +6894,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mEnabledSensors += ((long)infoMemContents[mInfoMemLayout.idxSensors1] & mInfoMemLayout.maskSensors) << mInfoMemLayout.byteShiftSensors1;
 			mEnabledSensors += ((long)infoMemContents[mInfoMemLayout.idxSensors2] & mInfoMemLayout.maskSensors) << mInfoMemLayout.byteShiftSensors2;
 
+			checkExgResolutionFromEnabledSensorsVar();
+
 			// Configuration
 			mLSM303DigitalAccelRate = (infoMemContents[mInfoMemLayout.idxConfigSetupByte0] >> mInfoMemLayout.bitShiftLSM303DLHCAccelSamplingRate) & mInfoMemLayout.maskLSM303DLHCAccelSamplingRate; 
 			mAccelRange = (infoMemContents[mInfoMemLayout.idxConfigSetupByte0] >> mInfoMemLayout.bitShiftLSM303DLHCAccelRange) & mInfoMemLayout.maskLSM303DLHCAccelRange;
@@ -6921,10 +6927,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			//EXG Configuration
 			System.arraycopy(infoMemContents, mInfoMemLayout.idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
-			exgBytesGetConfigFrom(1,mEXG1RegisterArray);
-	
 			System.arraycopy(infoMemContents, mInfoMemLayout.idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
-			exgBytesGetConfigFrom(2,mEXG2RegisterArray);
+			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 			
 			mBluetoothBaudRate = infoMemContents[mInfoMemLayout.idxBtCommBaudRate] & mInfoMemLayout.maskBaudRate;
 			//TODO: hack below -> fix
@@ -6932,62 +6936,80 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //				mBluetoothBaudRate = 0; 
 //			}
 			
-			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
-			// Analog Accel Calibration Parameters
 			byte[] bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+			// Analog Accel Calibration Parameters
 			System.arraycopy(infoMemContents, mInfoMemLayout.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-			int[] formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-			double[] AM=new double[9];
-			for (int i=0;i<9;i++)
-			{
-				AM[i]=((double)formattedPacket[6+i])/100;
-			}
-			double[][] alignmentMatrixAA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-			double[][] sensitivityMatrixAA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-			double[][] offsetVectorAA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-			mAlignmentMatrixAnalogAccel = alignmentMatrixAA; 			
-			mSensitivityMatrixAnalogAccel = sensitivityMatrixAA; 	
-			mOffsetVectorAnalogAccel = offsetVectorAA;
+			retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
 			
 			// MPU9150 Gyroscope Calibration Parameters
 			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 			System.arraycopy(infoMemContents, mInfoMemLayout.idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-			formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-			AM=new double[9];
-			for (int i=0;i<9;i++)
-			{
-				AM[i]=((double)formattedPacket[6+i])/100;
-			}
-			double[][] alignmentMatrixG = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-			double[][] sensitivityMatrixG = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-			double[][] offsetVectorG = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-			mAlignmentMatrixGyroscope = alignmentMatrixG; 			
-			mSensitivityMatrixGyroscope = sensitivityMatrixG; 	
-			mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
-			mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
-			mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
-			mOffsetVectorGyroscope = offsetVectorG;
-	
+			retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
+			
 			// LSM303DLHC Magnetometer Calibration Parameters
 			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-			formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-			AM=new double[9];
-			for (int i=0;i<9;i++)
-			{
-				AM[i]=((double)formattedPacket[6+i])/100;
-			}
-			double[][] alignmentMatrixM = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-			double[][] sensitivityMatrixM = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-			double[][] offsetVectorM = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-			mAlignmentMatrixMagnetometer = alignmentMatrixM; 			
-			mSensitivityMatrixMagnetometer = sensitivityMatrixM; 	
-			mOffsetVectorMagnetometer = offsetVectorM;
-			
+			retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
+
 			// LSM303DLHC Digital Accel Calibration Parameters
 			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-			parseCalParamLSM303DLHCAccel(bufferCalibrationParameters);
+			retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+
+			
+			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
+//			// Analog Accel Calibration Parameters
+//			byte[] bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+//			System.arraycopy(infoMemContents, mInfoMemLayout.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
+//			int[] formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
+//			double[] AM=new double[9];
+//			for (int i=0;i<9;i++){
+//				AM[i]=((double)formattedPacket[6+i])/100;
+//			}
+//			double[][] alignmentMatrixAA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+//			double[][] sensitivityMatrixAA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+//			double[][] offsetVectorAA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+//			mAlignmentMatrixAnalogAccel = alignmentMatrixAA; 			
+//			mSensitivityMatrixAnalogAccel = sensitivityMatrixAA; 	
+//			mOffsetVectorAnalogAccel = offsetVectorAA;
+//			
+//			// MPU9150 Gyroscope Calibration Parameters
+//			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+//			System.arraycopy(infoMemContents, mInfoMemLayout.idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
+//			formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
+//			AM=new double[9];
+//			for (int i=0;i<9;i++){
+//				AM[i]=((double)formattedPacket[6+i])/100;
+//			}
+//			double[][] alignmentMatrixG = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+//			double[][] sensitivityMatrixG = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+//			double[][] offsetVectorG = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+//			mAlignmentMatrixGyroscope = alignmentMatrixG; 			
+//			mSensitivityMatrixGyroscope = sensitivityMatrixG; 	
+//			mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
+//			mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
+//			mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
+//			mOffsetVectorGyroscope = offsetVectorG;
+//	
+//			// LSM303DLHC Magnetometer Calibration Parameters
+//			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+//			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
+//			formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
+//			AM=new double[9];
+//			for (int i=0;i<9;i++){
+//				AM[i]=((double)formattedPacket[6+i])/100;
+//			}
+//			double[][] alignmentMatrixM = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+//			double[][] sensitivityMatrixM = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+//			double[][] offsetVectorM = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+//			mAlignmentMatrixMagnetometer = alignmentMatrixM; 			
+//			mSensitivityMatrixMagnetometer = sensitivityMatrixM; 	
+//			mOffsetVectorMagnetometer = offsetVectorM;
+//			
+//			// LSM303DLHC Digital Accel Calibration Parameters
+//			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
+//			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
+//			parseCalParamLSM303DLHCAccel(bufferCalibrationParameters);
 
 			//TODO: decide what to do
 			// BMP180 Pressure Calibration Parameters
@@ -7042,8 +7064,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					//MPL Accel Calibration Parameters
 					bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 					System.arraycopy(infoMemContents, mInfoMemLayout.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-					formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-					AM=new double[9];
+					int[] formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
+					double[] AM=new double[9];
 					for (int i=0;i<9;i++)
 					{
 						AM[i]=((double)formattedPacket[6+i])/100;
@@ -7278,13 +7300,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & mInfoMemLayout.maskEXPPowerEnable) << mInfoMemLayout.bitShiftEXPPowerEnable);
 		
 		//EXG Configuration
-		//update mEXG1Register and mEXG2Register 
-		exgBytesGetFromConfig();
-		
+		exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
 		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, mInfoMemLayout.idxEXGADS1292RChip1Config1, 10);
 		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, mInfoMemLayout.idxEXGADS1292RChip2Config1, 10);
-//		exgBytesGetConfigFrom(1, mEXG1Register);
-//		exgBytesGetConfigFrom(2, mEXG2Register);
 		
 		mInfoMemBytes[mInfoMemLayout.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & mInfoMemLayout.maskBaudRate);
 
@@ -7292,13 +7310,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		byte[] bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
 		}
 		// sensitivityMatrix -> buffer offset = 6
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 0) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 0) & 0xFF);
 		}
 		// alignmentMatrix -> buffer offset = 12
 		for (int i=0; i<3; i++) {
@@ -7312,19 +7330,19 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
 		}
 		// sensitivityMatrix -> buffer offset = 6
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]) >> 0) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]) >> 0) & 0xFF);
 		}
 		// alignmentMatrix -> buffer offset = 12
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
 		}
 		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, mInfoMemLayout.idxMPU9150GyroCalibration, mInfoMemLayout.lengthGeneralCalibrationBytes);
 
@@ -7332,13 +7350,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 0) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 0) & 0xFF);
 		}
 		// sensitivityMatrix -> buffer offset = 6
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 0) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 0) & 0xFF);
 		}
 		// alignmentMatrix -> buffer offset = 12
 		for (int i=0; i<3; i++) {
@@ -7546,28 +7564,28 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	/**
-	 * Parses the LSM303DLHC Accel calibration variables from a byte array stored
-	 * in the Shimmer's infomem or in the SD header of logged data files.
-	 * 
-	 * @param bufferCalibrationParameters
-	 *            the byte array containing the LSM303DLHC Accel calibration
-	 */
-	public void parseCalParamLSM303DLHCAccel(byte[] bufferCalibrationParameters){
-		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
-		int[] formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-		double[] AM=new double[9];
-		for (int i=0;i<9;i++)
-		{
-			AM[i]=((double)formattedPacket[6+i])/100;
-		}
-		double[][] alignmentMatrixDA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-		double[][] sensitivityMatrixDA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-		double[][] offsetVectorDA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-		mAlignmentMatrixWRAccel = alignmentMatrixDA; 			
-		mSensitivityMatrixWRAccel = sensitivityMatrixDA; 	
-		mOffsetVectorWRAccel = offsetVectorDA;
-	}
+//	/**
+//	 * Parses the LSM303DLHC Accel calibration variables from a byte array stored
+//	 * in the Shimmer's infomem or in the SD header of logged data files.
+//	 * 
+//	 * @param bufferCalibrationParameters
+//	 *            the byte array containing the LSM303DLHC Accel calibration
+//	 */
+//	public void parseCalParamLSM303DLHCAccel(byte[] bufferCalibrationParameters){
+//		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
+//		int[] formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
+//		double[] AM=new double[9];
+//		for (int i=0;i<9;i++)
+//		{
+//			AM[i]=((double)formattedPacket[6+i])/100;
+//		}
+//		double[][] alignmentMatrixDA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+//		double[][] sensitivityMatrixDA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+//		double[][] offsetVectorDA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+//		mAlignmentMatrixWRAccel = alignmentMatrixDA; 			
+//		mSensitivityMatrixWRAccel = sensitivityMatrixDA; 	
+//		mOffsetVectorWRAccel = offsetVectorDA;
+//	}
 
 	/**
 	 * Converts the LSM303DLHC Accel calibration variables from Shimmer Object
@@ -7579,13 +7597,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		byte[] bufferCalibrationParameters = new byte[21];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 0) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 0) & 0xFF);
 		}
 		// sensitivityMatrix -> buffer offset = 6
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 0) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 0) & 0xFF);
 		}
 		// alignmentMatrix -> buffer offset = 12
 		for (int i=0; i<3; i++) {
@@ -7987,6 +8005,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public void sensorMapUpdateFromEnabledSensorsVar() {
 
+		checkExgResolutionFromEnabledSensorsVar();
+
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
 		}
@@ -8032,7 +8052,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 //						mSensorMap.get(sensorMapKey).mIsEnabled = false;
 //						skipKey = true;
 //					}
-					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER){
+					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_STREAMING_PROPERTIES){
 						mSensorMap.get(sensorMapKey).mIsEnabled = true;
 						skipKey = true;
 					}
@@ -8071,22 +8091,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				// sensor channels that have special conditions. E.g. deciding
 				// what type of signal the ExG is configured for or what derived
 				// channel is enabled like whether PPG is on ADC12 or ADC13
-	
-//				// Set the ExG resolution variable based on which channels are
-//				// enabled in the sensor map
-//				if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
-//						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))) {
-//					mExGResolution = 0;
-//				}
-//				else if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
-//						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
-//					mExGResolution = 1;
-//				}
-				
 				
 				//Handle ExG sensors
-				checkExgResolutionFromEnabledSensorsVar();
-				checkExgMode();
+				internalCheckExgModeAndUpdateSensorMap();
 
 				// Handle PPG sensors so that it appears in Consensys as a
 				// single PPG channel with a selectable ADC based on different
@@ -8168,7 +8175,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mEnabledSensors |= (mIsExg2_16bitEnabled? mInfoMemLayout.maskExg2_16bitFlag:0);
 	}
 	
-	private void setExgChannelBitsPerMode(int exgRespiration){
+	private void setExgChannelBitsPerMode(int sensorMapKey){
 		mIsExg1_24bitEnabled = false;
 		mIsExg2_24bitEnabled = false;
 		mIsExg1_16bitEnabled = false;
@@ -8176,27 +8183,27 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		
 		boolean chip1Enabled = false;
 		boolean chip2Enabled = false;
-		if(exgRespiration==-1){
+		if(sensorMapKey==-1){
 			chip1Enabled = false;
 			chip2Enabled = false;
 		}
-		else if(exgRespiration==Configuration.Shimmer3.SensorMapKey.ECG){
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG){
 			chip1Enabled = true;
 			chip2Enabled = true;
 		}
-		else if(exgRespiration==Configuration.Shimmer3.SensorMapKey.EMG){
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EMG){
 			chip1Enabled = true;
 			chip2Enabled = false;
 		}
-		else if(exgRespiration==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION){
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION){
 			chip1Enabled = true;
 			chip2Enabled = true;
 		}
-		else if(exgRespiration==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM){
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM){
 			chip1Enabled = true;
 			chip2Enabled = true;
 		}
-		else if(exgRespiration==Configuration.Shimmer3.SensorMapKey.EXG_TEST){
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST){
 			chip1Enabled = true;
 			chip2Enabled = true;
 		}
@@ -8305,77 +8312,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					}
 				}
 				
-				// Unique cases for Shimmer3 ExG
-//				if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
-//						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)) {
-//					mExGResolution = 0;
-//				}
-//				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
-//						||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
-//					mExGResolution = 1;
-//				}
-//				else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-				if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
-						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG)
-						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)
-						|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)) {
-					
-					// If ExG sensor enabled, set default settings for that
-					// sensor. Otherwise set the default ECG configuration.
-					if(state) { 
-						if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION) {
-							setDefaultRespirationConfiguration();
-						}
-						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG) {
-							setDefaultECGConfiguration();
-						}
-						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
-							setDefaultEMGConfiguration();
-						}
-						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST) {
-							setEXGTestSignal();
-						}
-						else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM) {
-							setEXGCustom();
-						}
-					}
-					else {
-						clearExgConfig();
-//						setDefaultECGConfiguration();
-					}
-					
-//					if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-//							||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
-//							||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)
-//							||(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)) {
-//						if(mExGResolution == 0) {// 16-bit
-//							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = state;
-//							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = state;
-//						}
-//						else { // 24-bit
-//							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = state;
-//							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = state;
-//						}
-//					}
-//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
-//						if(mExGResolution == 0) {// 16-bit
-//							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = state;
-//							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = false;
-//						}
-//						else { // 24-bit
-//							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = state;
-//							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = false;
-//						}
-//					}
-
-				}
-				
 			}
 			else if (mHardwareVersion == HW_ID.SHIMMER_GQ) {
 				
 			}
-
 			
 			//Set sensor state
 			mSensorMap.get(sensorMapKey).mIsEnabled = state;
@@ -8742,18 +8682,37 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.GSR) {
 			setDefaultGsrSensorConfig(state);
 		}
-		else if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.ECG)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EMG)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_TEST)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION) ){
-//				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
-//				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)
-//				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
-//				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
-			if(!checkIfOtherExgChannelEnabled()) {
-				clearExgConfig();
-//				setDefaultECGConfiguration();
+		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+				|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG)
+				|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG)
+				|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST)
+				|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)) {
+			
+			// If ExG sensor enabled, set default settings for that
+			// sensor. Otherwise set the default ECG configuration.
+			if(state) { 
+				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION) {
+					setDefaultRespirationConfiguration();
+				}
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG) {
+					System.err.println("SET ECG CHANNEL");
+					setDefaultECGConfiguration();
+				}
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
+					setDefaultEMGConfiguration();
+				}
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST) {
+					setEXGTestSignal();
+				}
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM) {
+					setEXGCustom();
+				}
+			}
+			else {
+				if(!checkIfOtherExgChannelEnabled()) {
+					System.err.println("CLEAR EXG CHANNEL");
+					clearExgConfig();
+				}
 			}
 		}
 		else if(mListOfMplChannels.contains(sensorMapKey)){
@@ -8966,6 +8925,65 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
+	private void internalCheckExgModeAndUpdateSensorMap(){
+		if(mSensorMap!=null){
+			if(mHardwareVersion==HW_ID.SHIMMER_3){
+//				if((mIsExg1_24bitEnabled||mIsExg2_24bitEnabled||mIsExg1_16bitEnabled||mIsExg2_16bitEnabled)){
+//				if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
+//						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
+//						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
+//						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
+					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = true;
+					}
+					else if(isEXGUsingDefaultECGConfiguration()) {
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = true;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else if(isEXGUsingDefaultEMGConfiguration()) {
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = true;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else if(isEXGUsingDefaultTestSignalConfiguration()){
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = true;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else if(isEXGUsingCustomSignalConfiguration()){
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = true;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+					}
+					else {
+//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.ECG, false);
+//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.EMG, false);
+//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.EXG_TEST, false);
+//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM, false);
+//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION, false);
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
+						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
+					}
+				}
+//			}
+		}
+	}
 	
 	 /**
 	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
@@ -9466,124 +9484,20 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public int getEXG1RateSetting() {
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG1_DATA_RATE);
-//		return mEXG1RateSetting;
 	}
 
-
-//	/**
-//	 * @return the mEXG1CH1GainSetting
-//	 */
-//	public int getEXG1CH1GainSetting() {
-//		return getExgPropertySingleChip(CHIP_INDEX.CHIP1, ExGConfigBytesDetails.REG4_CHANNEL_1_PGA_GAIN);
-////		return mEXG1CH1GainSetting;
-//	}
-
-
-//	/**
-//	 * @return the mEXG1CH2GainSetting
-//	 */
-//	public int getEXG1CH2GainSetting() {
-//		return getExgPropertySingleChip(CHIP_INDEX.CHIP1, ExGConfigBytesDetails.REG5_CHANNEL_2_PGA_GAIN);
-////		return mEXG1CH2GainSetting;
-//	}
-
-
-
-//	/**
-//	 * @return the mEXG2RateSetting
-//	 */
-//	public int getEXG2RateSetting() {
-//		return mEXG2RateSetting;
-//	}
-
-
-//	/**
-//	 * @return the mEXG2CH1GainSetting
-//	 */
-//	public int getEXG2CH1GainSetting() {
-//		return mEXG2CH1GainSetting;
-//	}
-
-
-//	/**
-//	 * @return the mEXG2CH2GainSetting
-//	 */
-//	public int getEXG2CH2GainSetting() {
-//		return mEXG2CH2GainSetting;
-//	}
-//
-//
 	/**
 	 * @return the mEXGReferenceElectrode
 	 */
 	public int getEXGReferenceElectrode() {
 		return mExGConfigBytesDetails.getEXGReferenceElectrode();
-//		return mEXGReferenceElectrode;
 	}
-//
-//
-//	/**
-//	 * @return the mEXG1LeadOffCurrentMode
-//	 */
-//	public int getEXG1LeadOffCurrentMode() {
-//		return mEXG1LeadOffCurrentMode;
-//	}
-//
-//
-//	/**
-//	 * @return the mEXG2LeadOffCurrentMode
-//	 */
-//	public int getEXG2LeadOffCurrentMode() {
-//		return mEXG2LeadOffCurrentMode;
-//	}
-//
-//
-//	/**
-//	 * @return the mEXG1Comparators
-//	 */
-//	public int getEXG1Comparators() {
-//		return mEXG1Comparators;
-//	}
-//
-//
-//	/**
-//	 * @return the mEXG2Comparators
-//	 */
-//	public int getEXG2Comparators() {
-//		return mEXG2Comparators;
-//	}
-//
-//
-//	/**
-//	 * @return the mEXGRLDSense
-//	 */
-//	public int getEXGRLDSense() {
-//		return mEXGRLDSense;
-//	}
-//
-//
-//	/**
-//	 * @return the mEXG1LeadOffSenseSelection
-//	 */
-//	public int getEXG1LeadOffSenseSelection() {
-//		return mEXG1LeadOffSenseSelection;
-//	}
-//
-//
-//	/**
-//	 * @return the mEXG2LeadOffSenseSelection
-//	 */
-//	public int getEXG2LeadOffSenseSelection() {
-//		return mEXG2LeadOffSenseSelection;
-//	}
-//
-//
+	
 	/**
 	 * @return the mEXGLeadOffDetectionCurrent
 	 */
 	public int getEXGLeadOffDetectionCurrent() {
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT);
-//		return mEXGLeadOffDetectionCurrent;
 	}
 
 
@@ -9592,23 +9506,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public int getEXGLeadOffComparatorTreshold() {
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD);
-//		return mEXGLeadOffComparatorTreshold;
 	}
-
-
-//	/**
-//	 * @return the mEXG2RespirationDetectState
-//	 */
-//	public int getEXG2RespirationDetectState() {
-//		return mEXG2RespirationDetectState;
-//	}
 
 	/**
 	 * @return the mEXG2RespirationDetectFreq
 	 */
 	public int getEXG2RespirationDetectFreq() {
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY);
-//		return mEXG2RespirationDetectFreq;
 	}
 
 	/**
@@ -9616,15 +9520,299 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	public int getEXG2RespirationDetectPhase() {
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE);
-//		return mEXG2RespirationDetectPhase;
 	}
-
 	
 	public double getShimmerSamplingRate(){
 		return mShimmerSamplingRate; 
 	}
 
+	/**
+	 * @return the mEXG1RegisterArray
+	 */
+	public byte[] getEXG1RegisterArray() {
+		return mEXG1RegisterArray;
+	}
 
+	/**
+	 * @return the mEXG2RegisterArray
+	 */
+	public byte[] getEXG2RegisterArray() {
+		return mEXG2RegisterArray;
+	}
+
+	protected void setExGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int value){
+		if(chipID==EXG_CHIP_INDEX.CHIP1){
+			if(channel==1){
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
+			}
+			else if(channel==2){
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+			}
+		}
+		else if(chipID==EXG_CHIP_INDEX.CHIP2){
+			if(channel==1){
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
+			}
+			else if(channel==2){
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+			}
+		}
+	}
+
+	protected void setExGGainSetting(int value){
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+	}
+	
+	protected void setExGResolution(int i){
+		mExGResolution = i;
+		
+		if(i==0) { // 16-bit
+			if(mIsExg1_24bitEnabled){
+				mIsExg1_24bitEnabled = false;
+				mIsExg1_16bitEnabled = true;
+			}
+			if(mIsExg2_24bitEnabled){
+				mIsExg2_24bitEnabled = false;
+				mIsExg2_16bitEnabled = true;
+			}
+		}
+		else if(i==1) { // 24-bit
+			if(mIsExg1_16bitEnabled){
+				mIsExg1_24bitEnabled = true;
+				mIsExg1_16bitEnabled = false;
+			}
+			if(mIsExg2_16bitEnabled){
+				mIsExg2_24bitEnabled = true;
+				mIsExg2_16bitEnabled = false;
+			}
+		}
+		
+//		if(mSensorMap != null) {
+//			if(i==0) { // 16-bit
+//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)) {
+//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = false;
+//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = true;
+//				}
+//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
+//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = false;
+//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = true;
+//				}
+//			}
+//			else if(i==1) { // 24-bit
+//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)) {
+//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = false;
+//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = true;
+//				}
+//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)) {
+//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = false;
+//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = true;
+//				}
+//			}
+//		}
+	}
+	
+	public int getExGGainSetting(){
+//		mEXG1CH1GainSetting = i;
+//		mEXG1CH2GainSetting = i;
+//		mEXG2CH1GainSetting = i;
+//		mEXG2CH2GainSetting = i;
+//		System.out.println("SlotDetails: getExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
+		return this.mEXG1CH1GainSetting;
+	}
+	
+	/** Note: Doesn't update the Sensor Map
+	 * @param mEXG1RegisterArray the mEXG1RegisterArray to set
+	 */
+	protected void setEXG1RegisterArray(byte[] EXG1RegisterArray) {
+		this.mEXG1RegisterArray = EXG1RegisterArray;
+		exgBytesGetConfigFrom(1, EXG1RegisterArray);
+	}
+
+	/** Note: Doesn't update the Sensor Map
+	 * @param mEXG2RegisterArray the mEXG2RegisterArray to set
+	 */
+	protected void setEXG2RegisterArray(byte[] EXG2RegisterArray) {
+		this.mEXG2RegisterArray = EXG2RegisterArray;
+		exgBytesGetConfigFrom(2, EXG2RegisterArray);
+	}
+
+
+	/**
+	 *This can only be used for Shimmer3 devices (EXG) 
+	 *When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
+	 */
+	 protected void enableDefaultECGConfiguration() {
+		 if (mHardwareVersion==HW_ID.SHIMMER_3){
+			setDefaultECGConfiguration();
+		 }
+	}
+
+	/**
+	 * This can only be used for Shimmer3 devices (EXG)
+	 * When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
+	 */
+	protected void enableDefaultEMGConfiguration(){
+		if (mHardwareVersion==HW_ID.SHIMMER_3){
+			setDefaultEMGConfiguration();
+		}
+	}
+
+	/**
+	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
+	 */
+	protected void enableEXGTestSignal(){
+		if (mHardwareVersion==HW_ID.SHIMMER_3){
+			setEXGTestSignal();
+		}
+	}
+
+	/**
+	 * @param valueToSet the valueToSet to set
+	 */
+	protected void setEXGRateSetting(int valueToSet) {
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG1_DATA_RATE,(int)valueToSet);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG1_DATA_RATE,(int)valueToSet);
+	}
+	
+	/**
+	 * @param valueToSet the valueToSet to set
+	 */
+	protected void setEXGRateSetting(EXG_CHIP_INDEX chipID, int valueToSet) {
+		if(chipID==EXG_CHIP_INDEX.CHIP1){
+			setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG1_DATA_RATE,(int)valueToSet);
+		}
+		else if(chipID==EXG_CHIP_INDEX.CHIP2){
+			setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG1_DATA_RATE,(int)valueToSet);
+		}
+	}
+
+	/**
+	 * @param mEXGReferenceElectrode the mEXGReferenceElectrode to set
+	 */
+	protected void setEXGReferenceElectrode(int valueToSet) {
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS,((valueToSet&0x08) == 0x08)? 1:0);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS,((valueToSet&0x04) == 0x04)? 1:0);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS,((valueToSet&0x02) == 0x02)? 1:0);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS,((valueToSet&0x01) == 0x01)? 1:0);
+	}
+
+	protected void setEXGLeadOffCurrentMode(int mode){
+		if(mode==0){//Off
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.OFF);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.OFF);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.OFF);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
+			if(isEXGUsingDefaultEMGConfiguration()){
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.POWER_DOWN);
+			}
+		}
+		else if(mode==1){//DC Current
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.ON);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
+			
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
+
+			if(isEXGUsingDefaultEMGConfiguration()){
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.NORMAL_OPERATION);
+			}
+		}
+		else if(mode==2){//AC Current
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.AC);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.ON);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
+			
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
+
+			if(isEXGUsingDefaultEMGConfiguration()){
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.NORMAL_OPERATION);
+			}
+		}
+	}
+
+	protected int getEXGLeadOffCurrentMode(){
+		if(isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.ON)
+				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.ON)
+				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON)
+				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON)
+				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON)
+				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.ON)
+				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON)
+				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON)
+				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON)
+				){
+			if(isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC)){
+				return 1;//DC Current
+			}
+			else if(isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.AC)){
+				return 2;//AC Current
+			}
+		}
+		return 0;//Off
+	}
+
+	/**
+	 * @param mEXGLeadOffDetectionCurrent the mEXGLeadOffDetectionCurrent to set
+	 */
+	protected void setEXGLeadOffDetectionCurrent(int mEXGLeadOffDetectionCurrent) {
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, mEXGLeadOffDetectionCurrent);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, mEXGLeadOffDetectionCurrent);
+	}
+
+
+	/**
+	 * @param mEXGLeadOffComparatorTreshold the mEXGLeadOffComparatorTreshold to set
+	 */
+	protected void setEXGLeadOffComparatorTreshold(int mEXGLeadOffComparatorTreshold) {
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, mEXGLeadOffComparatorTreshold);
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, mEXGLeadOffComparatorTreshold);
+	}
+
+	/**
+	 * @param mEXG2RespirationDetectFreq the mEXG2RespirationDetectFreq to set
+	 */
+	protected void setEXG2RespirationDetectFreq(int mEXG2RespirationDetectFreq) {
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY, mEXG2RespirationDetectFreq);
+		checkWhichExgRespPhaseValuesToUse();
+		
+		if(isExgRespirationDetectFreq32kHz()) {
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_32KHZ.PHASE_112_5);
+		}
+		else {
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_64KHZ.PHASE_157_5);
+		}
+	}
+
+	/**
+	 * @param mEXG2RespirationDetectPhase the mEXG2RespirationDetectPhase to set
+	 */
+	protected void setEXG2RespirationDetectPhase(int mEXG2RespirationDetectPhase) {
+		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE, mEXG2RespirationDetectPhase);
+	}
+	
+	
 	/**
 	 * @return the mFirmwareIdentifier
 	 */
@@ -9866,83 +10054,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			mInternalExpPower = 0x00;
 	}
 	
-
-	/**
-	 * @return the mEXG1RegisterArray
-	 */
-	public byte[] getEXG1RegisterArray() {
-		return mEXG1RegisterArray;
-	}
-
-	/**
-	 * @return the mEXG2RegisterArray
-	 */
-	public byte[] getEXG2RegisterArray() {
-		return mEXG2RegisterArray;
-	}
-
-
-//	public byte[] getEXG1RegisterContents(){
-//		return mEXG1RegisterArray;
-//	}
-//
-//	public byte[] getEXG2RegisterContents(){
-//		return mEXG2RegisterArray;
-//	}
-//
-	
-//	public byte[] getExG1Register(){
-//  return mEXG1RegisterArray;
-//}
-//
-//public byte[] getExG2Register(){
-//  return mEXG2RegisterArray;
-//}
-
-
-	protected void setExGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int value){
-		if(chipID==EXG_CHIP_INDEX.CHIP1){
-			if(channel==1){
-				setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
-			}
-			else if(channel==2){
-				setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
-			}
-		}
-		else if(chipID==EXG_CHIP_INDEX.CHIP2){
-			if(channel==1){
-				setExgPropertyValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
-			}
-			else if(channel==2){
-				setExgPropertyValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
-			}
-		}
-
-	}
-
-	protected void setExGGainSetting(int value){
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
-		
-//		mEXG1CH1GainSetting = value;
-//		mEXG1CH1GainValue = convertEXGGainSettingToValue(mEXG1CH1GainSetting);
-//		mEXG1CH2GainSetting = value;
-//		mEXG1CH2GainValue = convertEXGGainSettingToValue(mEXG1CH2GainSetting);
-//		mEXG2CH1GainSetting = value;
-//		mEXG2CH1GainValue = convertEXGGainSettingToValue(mEXG2CH1GainSetting);
-//		mEXG2CH2GainSetting = value;
-//		mEXG2CH2GainValue = convertEXGGainSettingToValue(mEXG2CH2GainSetting);
-//		exgBytesGetFromConfig();
-		
-		
-//		System.out.println("SlotDetails: setExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
-//		System.out.println("SlotDetails: setExGGain - Setting: = " + mEXG1CH2GainSetting + " - Value = " + mEXG1CH2GainValue);
-//		System.out.println("SlotDetails: setExGGain - Setting: = " + mEXG2CH1GainSetting + " - Value = " + mEXG2CH1GainValue);
-//		System.out.println("SlotDetails: setExGGain - Setting: = " + mEXG2CH2GainSetting + " - Value = " + mEXG2CH2GainValue);
-	}
-	
 	protected void setLSM303MagRange(int i){
 		mMagRange = i;
 	}
@@ -9954,55 +10065,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void setGSRRange(int i){
 		mGSRRange = i;
 	}
-	protected void setExGResolution(int i){
-		mExGResolution = i;
-		
-		if(i==0) { // 16-bit
-			if(mIsExg1_24bitEnabled){
-				mIsExg1_24bitEnabled = false;
-				mIsExg1_16bitEnabled = true;
-			}
-			if(mIsExg2_24bitEnabled){
-				mIsExg2_24bitEnabled = false;
-				mIsExg2_16bitEnabled = true;
-			}
-		}
-		else if(i==1) { // 24-bit
-			if(mIsExg1_16bitEnabled){
-				mIsExg1_24bitEnabled = true;
-				mIsExg1_16bitEnabled = false;
-			}
-			if(mIsExg2_16bitEnabled){
-				mIsExg2_24bitEnabled = true;
-				mIsExg2_16bitEnabled = false;
-			}
-		}
-		
-//		if(mSensorMap != null) {
-//			if(i==0) { // 16-bit
-//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = false;
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = true;
-//				}
-//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = false;
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = true;
-//				}
-//			}
-//			else if(i==1) { // 24-bit
-//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).mIsEnabled = false;
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mIsEnabled = true;
-//				}
-//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).mIsEnabled = false;
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).mIsEnabled = true;
-//				}
-//			}
-//		}
-		
-	}
 	
+
 	/**
 	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
 	 */
@@ -10019,121 +10083,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 */
 	protected void setLSM303MagRate(int mLSM303MagRate) {
 		this.mLSM303MagRate = mLSM303MagRate;
-	}
-
-	
-//	protected void setLastReadRealTimeClockValue(long time) {
-//		mShimmerLastReadRealTimeClockValue = time;
-//		
-////		Date date = new Date(mShimmerLastReadRealTimeClockValue);
-////		mShimmerLastReadRtcValueParsed = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-//		
-//		mShimmerLastReadRtcValueParsed = Util.convertSecondsToDateString(time/1000);
-//	}
-	
-//	protected void setButtonStart(int i){
-//		mButtonStart = i; // 0 is undock start, 1 is button start
-//	}
-	
-//	/**
-//	 * @param mSyncTimeWhenLogging the mSyncTimeWhenLogging to set
-//	 */
-//	protected void setSyncTimeWhenLogging(int mSyncTimeWhenLogging) {
-//		this.mSyncTimeWhenLogging = mSyncTimeWhenLogging;
-//	}
-
-	
-//	protected void setShimmerSamplingRate(double enteredSamplingRate){
-//    	// don't let sampling rate < 0 OR > 32768
-//    	if(enteredSamplingRate <= 0) enteredSamplingRate = 1.0;
-//    	else if (enteredSamplingRate > 32768) enteredSamplingRate = 32768.0;
-//    	
-//    	 // get Shimmer compatible sampling rate
-//    	Double actualSamplingRate = 32768/Math.floor(32768/enteredSamplingRate);
-//    	 // round sampling rate to two decimal places
-//    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
-//		mSamplingRate = actualSamplingRate;
-//	}
-	
-//	protected void setDigitalAccelRange(int i){
-//		this.setDigitalAccelRange(i);
-//	}
-//	
-//	protected void setMPU9150GyroRange(int i){
-//		this.setMPU9150GyroRange(i);
-//	}
-//	
-//	protected void setPressureResolution(int i){
-//		this.setPressureResolution(i);
-//	}
-//	
-//	protected void setGSRRange(int i){
-//		this.setGSRRange(i);
-//	}
-//	
-//	protected void setExGResolution(int i){
-//		this.setExGResolution(i);
-//	}
-//	
-//	
-//	protected void setExGGainSetting(int i){
-//		this.setExGGainSetting(i);
-//	}
-
-	public int getExGGainSetting(){
-//		mEXG1CH1GainSetting = i;
-//		mEXG1CH2GainSetting = i;
-//		mEXG2CH1GainSetting = i;
-//		mEXG2CH2GainSetting = i;
-//		System.out.println("SlotDetails: getExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
-		return this.mEXG1CH1GainSetting;
-	}
-	
-	/**
-	 * @param mEXG1RegisterArray the mEXG1RegisterArray to set
-	 */
-	protected void setEXG1RegisterArray(byte[] EXG1RegisterArray) {
-		this.mEXG1RegisterArray = EXG1RegisterArray;
-		exgBytesGetConfigFrom(1, EXG1RegisterArray);
-	}
-
-	/**
-	 * @param mEXG2RegisterArray the mEXG2RegisterArray to set
-	 */
-	protected void setEXG2RegisterArray(byte[] EXG2RegisterArray) {
-		this.mEXG2RegisterArray = EXG2RegisterArray;
-		exgBytesGetConfigFrom(2, EXG2RegisterArray);
-	}
-
-
-	/**
-	 *This can only be used for Shimmer3 devices (EXG) 
-	 *When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
-	 */
-	 protected void enableDefaultECGConfiguration() {
-		 if (mHardwareVersion==HW_ID.SHIMMER_3){
-			setDefaultECGConfiguration();
-		 }
-	}
-
-	/**
-	 * This can only be used for Shimmer3 devices (EXG)
-	 * When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
-	 */
-	protected void enableDefaultEMGConfiguration(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3){
-			setDefaultEMGConfiguration();
-		}
-		
-	}
-
-	/**
-	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
-	 */
-	protected void enableEXGTestSignal(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3){
-			setEXGTestSignal();
-		}
 	}
 
 	/**
@@ -10183,45 +10132,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected void setBufferSize(int mBufferSize) {
 		this.mBufferSize = mBufferSize;
 	}
-
-	
-//	protected void setShimmerSensorMap(TreeMap<Integer,SensorDetails> sensorMap) {
-//		this.mSensorMapRef = sensorMap;	
-//	}
-	
-	
-//	/**
-//	 * @param mMPU9150GyroAccelRate the mMPU9150GyroAccelRate to set in Hz
-//	 */
-//	protected void setMPU9150GyroAccelRateInHz(double mMPU9150GyroAccelRate) {
-//		// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
-//		double numerator = 1000;
-//		if(mMPU9150LPF == 0) {
-//			numerator = 8000;
-//		}
-//		
-//		if(mMPU9150GyroAccelRate<4) {
-//			mMPU9150GyroAccelRate = 4;
-//		}
-//		else if(mMPU9150GyroAccelRate>numerator) {
-//			mMPU9150GyroAccelRate = numerator;
-//		}
-//		
-//		int result = (int) (numerator / mMPU9150GyroAccelRate);
-//		if(result>255) result = 255;
-//
-//		this.mMPU9150GyroAccelRate = result;
-//	}
-	
-
-	
-
-//	/**
-//	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
-//	 */
-//	protected void setMPU9150AccelRange(int mMPU9150AccelRange) {
-//		this.setMPU9150AccelRange(mMPU9150AccelRange);
-//	}
 
 	/**
 	 * @param mMPU9150MPLSamplingRate the mMPU9150MPLSamplingRate to set
@@ -10622,210 +10532,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		this.mBluetoothBaudRate = mBluetoothBaudRate;
 	}
 
-	/**
-	 * @param valueToSet the valueToSet to set
-	 */
-	protected void setEXGRateSetting(int valueToSet) {
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG1_DATA_RATE,(int)valueToSet);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG1_DATA_RATE,(int)valueToSet);
-	}
-	
-	/**
-	 * @param valueToSet the valueToSet to set
-	 */
-	protected void setEXGRateSetting(EXG_CHIP_INDEX chipID, int valueToSet) {
-		if(chipID==EXG_CHIP_INDEX.CHIP1){
-			setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG1_DATA_RATE,(int)valueToSet);
-		}
-		else if(chipID==EXG_CHIP_INDEX.CHIP2){
-			setExgPropertyValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG1_DATA_RATE,(int)valueToSet);
-		}
-	}
-
-
-	private void checkExgMode(){
-		if(mSensorMap!=null){
-			if(mHardwareVersion==HW_ID.SHIMMER_3){
-				checkExgResolutionFromEnabledSensorsVar();
-//				if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
-//						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
-//						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
-//						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
-					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = true;
-					}
-					else if(isEXGUsingDefaultECGConfiguration()) {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = true;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else if(isEXGUsingDefaultEMGConfiguration()) {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = true;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else if(isEXGUsingDefaultTestSignalConfiguration()){
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = true;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else if(isEXGUsingCustomSignalConfiguration()){
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = true;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
-					}
-					else {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mIsEnabled = false;
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mIsEnabled = false;
-					}
-					
-//				}
-			}
-		}
-	}
-	
-	/**
-	 * @param mEXGReferenceElectrode the mEXGReferenceElectrode to set
-	 */
-	protected void setEXGReferenceElectrode(int valueToSet) {
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS,((valueToSet&0x08) == 0x08)? 1:0);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS,((valueToSet&0x04) == 0x04)? 1:0);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS,((valueToSet&0x02) == 0x02)? 1:0);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS,((valueToSet&0x01) == 0x01)? 1:0);
-	}
-
-
-	protected void setEXGLeadOffCurrentMode(int mode){
-		if(mode==0){//Off
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.OFF);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.OFF);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
-			if(isEXGUsingDefaultEMGConfiguration()){
-				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.POWER_DOWN);
-			}
-		}
-		else if(mode==1){//DC Current
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
-			
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
-
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
-
-			if(isEXGUsingDefaultEMGConfiguration()){
-				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.NORMAL_OPERATION);
-			}
-		}
-		else if(mode==2){//AC Current
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.AC);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
-			
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
-
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
-
-			if(isEXGUsingDefaultEMGConfiguration()){
-				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.NORMAL_OPERATION);
-			}
-		}
-	}
-
-	protected int getEXGLeadOffCurrentMode(){
-		if(isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.RLD_LEAD_OFF_SENSE_FUNCTION.ON)
-				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.ON)
-				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON)
-				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON)
-				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON)
-				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH2.ON)
-				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON)
-				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON)
-				||isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON)
-				){
-			if(isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.DC)){
-				return 1;//DC Current
-			}
-			else if(isExgPropertyEnabled(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.AC)){
-				return 2;//AC Current
-			}
-		}
-		return 0;//Off
-	}
-	
-
-	/**
-	 * @param mEXGLeadOffDetectionCurrent the mEXGLeadOffDetectionCurrent to set
-	 */
-	protected void setEXGLeadOffDetectionCurrent(int mEXGLeadOffDetectionCurrent) {
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, mEXGLeadOffDetectionCurrent);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, mEXGLeadOffDetectionCurrent);
-	}
-
-
-	/**
-	 * @param mEXGLeadOffComparatorTreshold the mEXGLeadOffComparatorTreshold to set
-	 */
-	protected void setEXGLeadOffComparatorTreshold(int mEXGLeadOffComparatorTreshold) {
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, mEXGLeadOffComparatorTreshold);
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, mEXGLeadOffComparatorTreshold);
-	}
-
-
-	/**
-	 * @param mEXG2RespirationDetectFreq the mEXG2RespirationDetectFreq to set
-	 */
-	protected void setEXG2RespirationDetectFreq(int mEXG2RespirationDetectFreq) {
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY, mEXG2RespirationDetectFreq);
-		checkWhichExgRespPhaseValuesToUse();
-		
-		if(isExgRespirationDetectFreq32kHz()) {
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_32KHZ.PHASE_112_5);
-		}
-		else {
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_64KHZ.PHASE_157_5);
-		}
-	}
-
-
-	/**
-	 * @param mEXG2RespirationDetectPhase the mEXG2RespirationDetectPhase to set
-	 */
-	protected void setEXG2RespirationDetectPhase(int mEXG2RespirationDetectPhase) {
-		setExgPropertyValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE, mEXG2RespirationDetectPhase);
-	}
-	
 	/**
 	 * @param ppgAdcSelectionGsrBoard the mPpgAdcSelectionGsrBoard to set
 	 */
@@ -11506,13 +11212,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		return mLastReceivedTimeStamp;
 	}
 	
-//	/**
-//	 * @return
-//	 */
-//	public int getmExperimentNumberOfShimmers() {
-//		return mExperimentNumberOfShimmers;
-//	}
-//	
 	public String getCenter(){
 		return mCenter;
 	}

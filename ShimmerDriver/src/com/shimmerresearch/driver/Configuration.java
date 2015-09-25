@@ -420,7 +420,7 @@ public class Configuration {
 			public static final int PPG1_DUMMY = 110;
 			public static final int PPG2_DUMMY = 113;
 			
-			public static final int SHIMMER = 200;
+			public static final int SHIMMER_STREAMING_PROPERTIES = 200;
 
 		}
 
@@ -1021,7 +1021,7 @@ public class Configuration {
 	    static {
 	        Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer, SensorDetails>();
 
-	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER, new SensorDetails(0, 0, "Device Properties"));
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_STREAMING_PROPERTIES, new SensorDetails(0, 0, "Device Properties"));
 	        
 //	        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, new SensorDetails(0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP));
 //	        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC, new SensorDetails(0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC));
@@ -1669,7 +1669,7 @@ public class Configuration {
 			
 			
 			// All Information required for parsing each of the channels
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER).mListOfChannelsRef = Arrays.asList(
+			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_STREAMING_PROPERTIES).mListOfChannelsRef = Arrays.asList(
 					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 //					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
 					//temp only! JC: delete after db sync works
@@ -3077,13 +3077,13 @@ public class Configuration {
 								Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
 								Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
-								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
 								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
 								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
-								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A12,
 								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
 								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP, new SensorGroupingDetails(

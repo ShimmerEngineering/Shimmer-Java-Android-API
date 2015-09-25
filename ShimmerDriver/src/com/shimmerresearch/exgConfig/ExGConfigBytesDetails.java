@@ -562,42 +562,6 @@ public class ExGConfigBytesDetails implements Serializable {
     aMap.put(EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, new ExGConfigOptionDetails(EXG_CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, exGConfigOptions, 1, 0x01));
 //    aMap.put(EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, ListOfExGRespirationRefSignal, ListOfExGRespirationRefSignalConfigValues, 1, 0x01));
 
-        
-//		aMap.put(EXG_SETTINGS.REG1_CONVERSION_MODES, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 0, EXG_SETTINGS.REG1_CONVERSION_MODES, ListOfConversionModes, ListOfConversionModeConfigValues, 7, 0x01));
-//        aMap.put(EXG_SETTINGS.REG1_DATA_RATE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 0, EXG_SETTINGS.REG1_DATA_RATE, ListOfDataRates, ListOfDataRateConfigValues, 0, 0x07));
-//
-//      aMap.put(EXG_SETTINGS.REG2_VOLTAGE_REFERENCE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_VOLTAGE_REFERENCE, ListOfVoltageReference, ListOfVoltageReferenceConfigValues, 4, 0x01));
-//        aMap.put(EXG_SETTINGS.REG2_TEST_SIGNAL_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_TEST_SIGNAL_FREQUENCY, ListOfTestFreq, ListOfTestFreqConfigValues, 0, 0x01));
-//
-//        aMap.put(EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, ListOfLeadOffCompThres, ListOfLeadOffCompThresConfigValues, 5, 0x07));
-//        aMap.put(EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, ListOfLeadOffCurrent, ListOfLeadOffCurrentConfigValues, 2, 0x03));
-//        aMap.put(EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, ListOfLeadOffDetectionFreq, ListOfLeadOffDetectionFreqConfigValues, 0, 0x01));
-//
-//        aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, ListOfChannelPowerDown, ListOfChannelPowerDownConfigValues, 7, 0x01));
-//        aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, ListOfExGGain, ListOfExGGainConfigValues, 4, 0x07));
-//        aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, ListOfCh1InputSelection, ListOfInputSelectionConfigValues, 0, 0x0F));
-//
-//        aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, ListOfChannelPowerDown, ListOfChannelPowerDownConfigValues, 7, 0x01));
-//        aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, ListOfExGGain, ListOfExGGainConfigValues, 4, 0x07));
-//        aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, ListOfCh2InputSelection, ListOfInputSelectionConfigValues, 0, 0x0F));
-//
-//        aMap.put(EXG_SETTINGS.REG6_PGA_CHOP_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_PGA_CHOP_FREQUENCY, ListOfPgaChopFrequency, ListOfPgaChopFrequencyConfigValues, 6, 0x03));
-//        aMap.put(EXG_SETTINGS.REG6_RLD_BUFFER_POWER, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_RLD_BUFFER_POWER, ListOfRldBufferPower, ListOfRldBufferPowerConfigValues, 5, 0x01));
-//        aMap.put(EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS, ListOfCh2RldNegInputs, ListOfRldInputsConfigValues, 3, 0x01));
-//        aMap.put(EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS, ListOfCh2RldPosInputs, ListOfRldInputsConfigValues, 2, 0x01));
-//        aMap.put(EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS, ListOfCh1RldNegInputs, ListOfRldInputsConfigValues, 1, 0x01));
-//        aMap.put(EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS, ListOfCh1RldPosInputs, ListOfRldInputsConfigValues, 0, 0x01));
-//
-//        aMap.put(EXG_SETTINGS.REG8_CLOCK_DIVIDER_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 7, EXG_SETTINGS.REG8_CLOCK_DIVIDER_SELECTION, ListOfClockDividerSelection, ListOfClockDividerSelectionConfigValues, 6, 0x01));
-//
-//        aMap.put(EXG_SETTINGS.REG9_RESPIRATION_DEMOD_CIRCUITRY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_DEMOD_CIRCUITRY, ListOfOnOff, ListOfOnOffConfigValues, 7, 0x01));
-//        aMap.put(EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, ListOfOnOff, ListOfOnOffConfigValues, 6, 0x01));
-//        aMap.put(EXG_SETTINGS.REG9_RESPIRATION_PHASE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_PHASE, ListOfExGRespirationDetectPhase32khz, ListOfExGRespirationDetectPhase32khzConfigValues, 2, 0x0F));
-//        aMap.put(EXG_SETTINGS.REG9_RESPIRATION_CONTROL, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_CONTROL, ListOfRespControl, ListOfRespControlConfigValues, 0, 0x01));
-//
-//        aMap.put(EXG_SETTINGS.REG10_RESPIRATION_CALIBRATION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RESPIRATION_CALIBRATION, ListOfOnOff, ListOfOnOffConfigValues, 7, 0x01));
-//        aMap.put(EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY, ListOfExGRespirationDetectFreq, ListOfExGRespirationDetectFreqConfigValues, 2, 0x01));
-//        aMap.put(EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, ListOfExGRespirationRefSignal, ListOfExGRespirationRefSignalConfigValues, 1, 0x01));
         mMapOfExGSettingsChip1 = Collections.unmodifiableMap(aMap);
     }
 	
@@ -610,123 +574,7 @@ public class ExGConfigBytesDetails implements Serializable {
 			mMapOfExGSettingsChip1ThisShimmer.put(key, 0);
 			mMapOfExGSettingsChip2ThisShimmer.put(key, 0);
 		}
-		
-
-
-////		ExGConfigOption[] exGConfigOptions = new ExGConfigOption[]{EXG_SETTING_OPTIONS.CONVERSION_MODES.CONTINUOUS, EXG_SETTING_OPTIONS.CONVERSION_MODES.SINGLE_SHOT};
-//		ExGConfigOption[] exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.CONVERSION_MODES.class);
-//		mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG1_CONVERSION_MODES, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 0, EXG_SETTINGS.REG1_CONVERSION_MODES, exGConfigOptions, 7, 0x01));
-////		mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG1_CONVERSION_MODES, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 0, EXG_SETTINGS.REG1_CONVERSION_MODES, ListOfConversionModes, ListOfConversionModeConfigValues, 7, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.DATA_RATE.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG1_DATA_RATE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 0, EXG_SETTINGS.REG1_DATA_RATE, exGConfigOptions, 0, 0x07));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG1_DATA_RATE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 0, EXG_SETTINGS.REG1_DATA_RATE, ListOfDataRates, ListOfDataRateConfigValues, 0, 0x07));
-//        
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG2_LEAD_OFF_COMPARATORS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_LEAD_OFF_COMPARATORS, 6));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG2_REFERENCE_BUFFER, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_REFERENCE_BUFFER, 5));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG2_VOLTAGE_REFERENCE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_VOLTAGE_REFERENCE, exGConfigOptions, 4, 0x01));
-////      mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG2_VOLTAGE_REFERENCE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_VOLTAGE_REFERENCE, ListOfVoltageReference, ListOfVoltageReferenceConfigValues, 4, 0x01));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG2_OSCILLATOR_CLOCK_CONNECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_OSCILLATOR_CLOCK_CONNECTION, 3));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG2_TEST_SIGNAL_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_TEST_SIGNAL_SELECTION, 1));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.TEST_SIGNAL_FREQUENCY.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG2_TEST_SIGNAL_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_TEST_SIGNAL_FREQUENCY, exGConfigOptions, 0, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG2_TEST_SIGNAL_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 1, EXG_SETTINGS.REG2_TEST_SIGNAL_FREQUENCY, ListOfTestFreq, ListOfTestFreqConfigValues, 0, 0x01));
-//
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.COMPARATOR_THRESHOLD.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, exGConfigOptions, 5, 0x07));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, ListOfLeadOffCompThres, ListOfLeadOffCompThresConfigValues, 5, 0x07));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.LEAD_OFF_CURRENT.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, exGConfigOptions, 2, 0x03));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT, ListOfLeadOffCurrent, ListOfLeadOffCurrentConfigValues, 2, 0x03));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, exGConfigOptions, 0, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, ListOfLeadOffDetectionFreq, ListOfLeadOffDetectionFreqConfigValues, 0, 0x01));
-//
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.POWER_DOWN_CH1.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, exGConfigOptions, 7, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, ListOfChannelPowerDown, ListOfChannelPowerDownConfigValues, 7, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.GAIN_PGA_CH1.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, exGConfigOptions, 4, 0x07));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, ListOfExGGain, ListOfExGGainConfigValues, 4, 0x07));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH1.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, exGConfigOptions, 0, 0x0F));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, ListOfCh1InputSelection, ListOfInputSelectionConfigValues, 0, 0x0F));
-//
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.POWER_DOWN_CH2.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, exGConfigOptions, 7, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, ListOfChannelPowerDown, ListOfChannelPowerDownConfigValues, 7, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.GAIN_PGA_CH2.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, exGConfigOptions, 4, 0x07));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, ListOfExGGain, ListOfExGGainConfigValues, 4, 0x07));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, exGConfigOptions, 0, 0x0F));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, ListOfCh2InputSelection, ListOfInputSelectionConfigValues, 0, 0x0F));
-//
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.PGA_CHOP_FREQUENCY.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_PGA_CHOP_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_PGA_CHOP_FREQUENCY, exGConfigOptions, 6, 0x03));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_PGA_CHOP_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_PGA_CHOP_FREQUENCY, ListOfPgaChopFrequency, ListOfPgaChopFrequencyConfigValues, 6, 0x03));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RLD_BUFFER_POWER.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_RLD_BUFFER_POWER, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_RLD_BUFFER_POWER, exGConfigOptions, 5, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_RLD_BUFFER_POWER, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_RLD_BUFFER_POWER, ListOfRldBufferPower, ListOfRldBufferPowerConfigValues, 5, 0x01));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_RLD_LEAD_OFF_SENSE_FUNCTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_RLD_LEAD_OFF_SENSE_FUNCTION, 4));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RLD_NEG_INPUTS_CH2.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS, exGConfigOptions, 3, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH2_RLD_NEG_INPUTS, ListOfCh2RldNegInputs, ListOfRldInputsConfigValues, 3, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RLD_POS_INPUTS_CH2.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS, exGConfigOptions, 2, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH2_RLD_POS_INPUTS, ListOfCh2RldPosInputs, ListOfRldInputsConfigValues, 2, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RLD_NEG_INPUTS_CH1.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS, exGConfigOptions, 1, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH1_RLD_NEG_INPUTS, ListOfCh1RldNegInputs, ListOfRldInputsConfigValues, 1, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RLD_POS_INPUTS_CH1.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS, exGConfigOptions, 0, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 5, EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS, ListOfCh1RldPosInputs, ListOfRldInputsConfigValues, 0, 0x01));
-//
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG7_CH2_FLIP_CURRENT, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 6, EXG_SETTINGS.REG7_CH2_FLIP_CURRENT, 5));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG7_CH1_FLIP_CURRENT, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 6, EXG_SETTINGS.REG7_CH1_FLIP_CURRENT, 4));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG7_CH2_LEAD_OFF_DETECT_NEG_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 6, EXG_SETTINGS.REG7_CH2_LEAD_OFF_DETECT_NEG_INPUTS, 3));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG7_CH2_LEAD_OFF_DETECT_POS_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 6, EXG_SETTINGS.REG7_CH2_LEAD_OFF_DETECT_POS_INPUTS, 2));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG7_CH1_LEAD_OFF_DETECT_NEG_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 6, EXG_SETTINGS.REG7_CH1_LEAD_OFF_DETECT_NEG_INPUTS, 1));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 6, EXG_SETTINGS.REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, 0));
-//
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.CLOCK_DIVIDER_SELECTION.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG8_CLOCK_DIVIDER_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 7, EXG_SETTINGS.REG8_CLOCK_DIVIDER_SELECTION, exGConfigOptions, 6, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG8_CLOCK_DIVIDER_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 7, EXG_SETTINGS.REG8_CLOCK_DIVIDER_SELECTION, ListOfClockDividerSelection, ListOfClockDividerSelectionConfigValues, 6, 0x01));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG8_RLD_LEAD_OFF_STATUS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 7, EXG_SETTINGS.REG8_RLD_LEAD_OFF_STATUS, 4));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG8_CH2_NEG_ELECTRODE_STATUS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 7, EXG_SETTINGS.REG8_CH2_NEG_ELECTRODE_STATUS, 3));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG8_CH2_POS_ELECTRODE_STATUS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 7, EXG_SETTINGS.REG8_CH2_POS_ELECTRODE_STATUS, 2));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG8_CH1_NEG_ELECTRODE_STATUS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 7, EXG_SETTINGS.REG8_CH1_NEG_ELECTRODE_STATUS, 1));
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG8_CH1_POS_ELECTRODE_STATUS, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 7, EXG_SETTINGS.REG8_CH1_POS_ELECTRODE_STATUS, 0));
-//
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RESPIRATION_DEMOD_CIRCUITRY.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG9_RESPIRATION_DEMOD_CIRCUITRY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_DEMOD_CIRCUITRY, exGConfigOptions, 7, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG9_RESPIRATION_DEMOD_CIRCUITRY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_DEMOD_CIRCUITRY, ListOfOnOff, ListOfOnOffConfigValues, 7, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RESPIRATION_MOD_CIRCUITRY.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, exGConfigOptions, 6, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, ListOfOnOff, ListOfOnOffConfigValues, 6, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_32KHZ.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG9_RESPIRATION_PHASE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_PHASE, exGConfigOptions, 2, 0x0F));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG9_RESPIRATION_PHASE, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_PHASE, ListOfExGRespirationDetectPhase32khz, ListOfExGRespirationDetectPhase32khzConfigValues, 2, 0x0F));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RESPIRATION_CONTROL.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG9_RESPIRATION_CONTROL, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_CONTROL, exGConfigOptions, 0, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG9_RESPIRATION_CONTROL, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 8, EXG_SETTINGS.REG9_RESPIRATION_CONTROL, ListOfRespControl, ListOfRespControlConfigValues, 0, 0x01));
-//
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RESPIRATION_CALIBRATION.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG10_RESPIRATION_CALIBRATION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RESPIRATION_CALIBRATION, exGConfigOptions, 7, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG10_RESPIRATION_CALIBRATION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RESPIRATION_CALIBRATION, ListOfOnOff, ListOfOnOffConfigValues, 7, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RESPIRATION_CONTROL_FREQUENCY.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY, exGConfigOptions, 2, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY, ListOfExGRespirationDetectFreq, ListOfExGRespirationDetectFreqConfigValues, 2, 0x01));
-//		exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.RLD_REFERENCE_SIGNAL.class);
-//        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, exGConfigOptions, 1, 0x01));
-////        mMapOfExGSettingsChip1.put(EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 9, EXG_SETTINGS.REG10_RLD_REFERENCE_SIGNAL, ListOfExGRespirationRefSignal, ListOfExGRespirationRefSignalConfigValues, 1, 0x01));
-
-//        for(String key:mMapOfExGSettingsChip1.keySet()){
-//        	mMapOfExGSettingsChip2.put(key, mMapOfExGSettingsChip1.get(key).deepClone());
-//        	mMapOfExGSettingsChip2.get(key).chipIndex = CHIP_INDEX.CHIP2;
-//        }
 	}
-	
 
 	public static ExGConfigOption[] getExGConfigOptionFields(Class c) {
 	    List<ExGConfigOption> fields = new ArrayList<ExGConfigOption>();
@@ -747,55 +595,6 @@ public class ExGConfigBytesDetails implements Serializable {
 		ExGConfigOption[] exGConfigOptions = fields.toArray(new ExGConfigOption[fields.size()]);
 	    return exGConfigOptions;
 	}
-	
-	
-//	public static Integer[] getExGConfigValues(String guiLabel) {
-//		
-//		Class c;
-//		
-//		if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE)){
-//			c = EXG_SETTING_OPTIONS.DATA_RATE.class;
-//		}
-//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE)){
-////			c = EXG_SETTING_OPTIONS.re.COMPARATOR_THRESHOLD.class;
-//		}
-//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION)){
-////			c = EXG_SETTING_OPTIONS.LEAD_OFF_FREQUENCY.class;
-//		}
-//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT)){
-//			c = EXG_SETTING_OPTIONS.LEAD_OFF_CURRENT.class;
-//		}
-//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR)){
-//			c = EXG_SETTING_OPTIONS.LEAD_OFF_COMPARATORS.class;
-//		}
-//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ)){
-//			c = EXG_SETTING_OPTIONS.RESPIRATION_CONTROL_FREQUENCY.class;
-//		}
-//		else if(guiLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)){
-//			c = EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_32KHZ.class;
-////			c = EXG_SETTING_OPTIONS.RESPIRATION_PHASE_AT_64KHZ.class;
-//		}
-//		
-//		
-//	    List<ExGConfigOption> fields = new ArrayList<ExGConfigOption>();
-//	    java.lang.reflect.Field[] f = c.getDeclaredFields();
-//	    for (java.lang.reflect.Field field : f) {
-//	        int modifier = field.getModifiers();
-//	        if (java.lang.reflect.Modifier.isStatic(modifier)){
-//				try {
-//					ExGConfigOption val = (ExGConfigOption) field.get( null );
-////		            System.out.print(field.getName() +  ": " + val.guiValue + ", ");
-//		            fields.add(val);
-//				} catch (IllegalArgumentException | IllegalAccessException e) {
-////					e.printStackTrace();
-//				}
-//	        }
-//	    }
-//	    
-//		ExGConfigOption[] exGConfigOptions = fields.toArray(new ExGConfigOption[fields.size()]);
-//	    return exGConfigOptions;
-//	}
-	
     
     public byte[] generateExgByteArray(EXG_CHIP_INDEX chipIndex){
     	byte[] byteArray = new byte[10];
@@ -805,18 +604,7 @@ public class ExGConfigBytesDetails implements Serializable {
     	}
     	
     	for(String key:mMapOfExGSettingsToRef.keySet()){
-
     		byteArray[mMapOfExGSettingsChip1.get(key).byteIndex] |= ((mMapOfExGSettingsToRef.get(key) & mMapOfExGSettingsChip1.get(key).mask) << mMapOfExGSettingsChip1.get(key).bitShift);
-
-//    		if(mMapOfExGSettingsChip1.get(key).settingType==SettingType.COMBOBOX){
-//        		byteArray[mMapOfExGSettingsChip1.get(key).byteIndex] |= ((mMapOfExGSettingsToRef.get(key) & mMapOfExGSettingsChip1.get(key).mask) << mMapOfExGSettingsChip1.get(key).bitShift);
-////    			if(eSD.GuiLabel==REG6_RLD_BUFFER_POWER){
-////    				System.out.println(byteArray[eSD.byteIndex]);
-////    			}
-//    		}
-//    		else if(mMapOfExGSettingsChip1.get(key).settingType==SettingType.CHECKBOX){
-//        		byteArray[mMapOfExGSettingsChip1.get(key).byteIndex] |= (((eSD.valueBool? 1:0) & mMapOfExGSettingsChip1.get(key).mask) << mMapOfExGSettingsChip1.get(key).bitShift);
-//    		} 
     	}
     	
     	setExgByteArrayConstants(byteArray);
@@ -857,13 +645,6 @@ public class ExGConfigBytesDetails implements Serializable {
     	
     	for(String key:mMapOfExGSettingsToRef.keySet()){
 			mMapOfExGSettingsToRef.put(key,(registerArray[mMapOfExGSettingsChip1.get(key).byteIndex] >> mMapOfExGSettingsChip1.get(key).bitShift) & mMapOfExGSettingsChip1.get(key).mask); 
-
-//    		if(mMapOfExGSettingsChip1.get(key).settingType==SettingType.COMBOBOX){
-//    			mMapOfExGSettingsToRef.put(key,(registerArray[mMapOfExGSettingsChip1.get(key).byteIndex] >> mMapOfExGSettingsChip1.get(key).bitShift) & mMapOfExGSettingsChip1.get(key).mask); 
-//    		}
-//    		else if(mMapOfExGSettingsChip1.get(key).settingType==SettingType.CHECKBOX){
-////    			eSD.valueBool = (((registerArray[mMapOfExGSettingsChip1.get(key).byteIndex] >> mMapOfExGSettingsChip1.get(key).bitShift) & mMapOfExGSettingsChip1.get(key).mask)>=1? true:false); 
-//    		} 
     	}
 	}
 
@@ -876,13 +657,6 @@ public class ExGConfigBytesDetails implements Serializable {
 		if(mapToRef!=null){
 			if(mapToRef.containsKey(option.settingTitle)){
 				mapToRef.put(option.settingTitle, option.configValueInt); 
-
-//				if(mMapOfExGSettingsChip1.get(option.settingTitle).settingType==SettingType.CHECKBOX){
-//					mapToRef.get(option.settingTitle).valueBool = (option.configValueInt==1? true:false); 
-//				}
-//				else if(mMapOfExGSettingsChip1.get(option.settingTitle).settingType==SettingType.COMBOBOX){
-//					mapToRef.get(option.settingTitle).valueInt = option.configValueInt; 
-//				}
 			}
 		}
 	}
@@ -896,14 +670,6 @@ public class ExGConfigBytesDetails implements Serializable {
 		if(mapToRef!=null){
 			if(mapToRef.containsKey(propertyName)){
 				return mapToRef.get(propertyName); 
-
-				
-//				if(mapToRef.get(propertyName).settingType==SettingType.CHECKBOX){
-//					return (mapToRef.get(propertyName).valueBool? 1:0); 
-//				}
-//				else if(mapToRef.get(propertyName).settingType==SettingType.COMBOBOX){
-//					return mapToRef.get(propertyName).valueInt; 
-//				}
 			}
 		}
 		return -1;
@@ -936,19 +702,6 @@ public class ExGConfigBytesDetails implements Serializable {
 				}
 				
 				return (mapToRef.get(option.settingTitle)>=1? true:false); 
-
-				
-//				if(mapToRef.get(option.settingTitle).settingType==SettingType.CHECKBOX){
-//					return mapToRef.get(option.settingTitle).valueBool; 
-//				}
-//				else if(mapToRef.get(option.settingTitle).settingType==SettingType.COMBOBOX){
-//					if(mapToRef.get(option.settingTitle).valueInt == option.configValueInt){
-//						return true;
-//					}
-//					else {
-//						return false;
-//					}
-//				}
 			}
 		}
 		return false;
@@ -975,13 +728,6 @@ public class ExGConfigBytesDetails implements Serializable {
 		if(mapToRef!=null){
 			if(mapToRef.containsKey(propertyName)){
 				mapToRef.put(propertyName, value); 
-
-//				if(mapToRef.get(propertyName).settingType==SettingType.CHECKBOX){
-//					mapToRef.get(propertyName).valueBool = (boolean)value; 
-//				}
-//				else if(mapToRef.get(propertyName).settingType==SettingType.COMBOBOX){
-//					mapToRef.get(propertyName).valueInt = (int)value; 
-//				}
 			}
 		}
 	}

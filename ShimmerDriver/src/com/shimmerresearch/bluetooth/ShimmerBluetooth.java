@@ -1956,7 +1956,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
-		startTimerReadBattStatus();
+		startTimerReadBattStatus(); // if shimmer is using LogAndStream FW, read its status periodically
 		
 	}
 	
@@ -2275,7 +2275,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	} //End TimerTask
 	
 	public void startTimerReadBattStatus(){
-		if(mFirmwareVersionCode>=6){
+		//Instream response only supported in LogAndStream
+		if((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)&&(mFirmwareVersionCode>=6)){
 			if(mTimerReadBattStatus==null){ 
 				mTimerReadBattStatus = new Timer();
 			}
@@ -4472,7 +4473,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public byte[] generateShimmerInfoMemBytes() {
 		super.setConfigFileCreationFlag(true);
-		super.setCalibFileCreationFlag(true);
 		return super.infoMemByteArrayGenerate(true);
 	}
 
