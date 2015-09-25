@@ -579,24 +579,25 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected double[][] mOffsetVectorWRAccel = {{0},{0},{0}};	
 
 	//Default values Shimmer2 
-	protected static double[][] SensitivityMatrixAccel1p5gShimmer2 = {{101,0,0},{0,101,0},{0,0,101}};
-	protected static double[][] SensitivityMatrixAccel2gShimmer2 = {{76,0,0},{0,76,0},{0,0,76}};
-	protected static double[][] SensitivityMatrixAccel4gShimmer2 = {{38,0,0},{0,38,0},{0,0,38}};
-	protected static double[][] SensitivityMatrixAccel6gShimmer2 = {{25,0,0},{0,25,0},{0,0,25}};
-	protected static double[][] AlignmentMatrixAccelShimmer2 =  {{-1,0,0},{0,-1,0},{0,0,1}}; 			
-	protected static double[][] OffsetVectorAccelShimmer2 = {{2048},{2048},{2048}};			
+	protected static final double[][] SensitivityMatrixAccel1p5gShimmer2 = {{101,0,0},{0,101,0},{0,0,101}};
+	protected static final double[][] SensitivityMatrixAccel2gShimmer2 = {{76,0,0},{0,76,0},{0,0,76}};
+	protected static final double[][] SensitivityMatrixAccel4gShimmer2 = {{38,0,0},{0,38,0},{0,0,38}};
+	protected static final double[][] SensitivityMatrixAccel6gShimmer2 = {{25,0,0},{0,25,0},{0,0,25}};
+	protected static final double[][] AlignmentMatrixAccelShimmer2 =  {{-1,0,0},{0,-1,0},{0,0,1}}; 			
+	protected static final double[][] OffsetVectorAccelShimmer2 = {{2048},{2048},{2048}};			
 	//Shimmer3
-	public static double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
-	public static double[][] SensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};
-	public static double[][] SensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};
-	public static double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
-	public static double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
-	protected static double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
+	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
+	protected static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
+	
+	public static final double[][] SensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};
+	public static final double[][] SensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};
+	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
+	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
 
-	protected static double[][] AlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 	
-	protected static double[][] AlignmentMatrixAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
-	protected static double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
-	protected static double[][] OffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};
+	protected static final double[][] AlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 	
+	protected static final double[][] AlignmentMatrixAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
+	protected static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
+	protected static final double[][] OffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};
 
 	protected double OffsetECGRALL=2060;
 	protected double GainECGRALL=175;
@@ -611,16 +612,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};						
 
 	//Default values Shimmer2
-	protected static double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	protected static double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
-	protected static double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
+	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
+	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
 	//Shimmer3
-	public static double[][] SensitivityMatrixGyro250dpsShimmer3 = {{131,0,0},{0,131,0},{0,0,131}};
-	public static double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
-	public static double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
-	public static double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
-	protected static double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	protected static double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};		
+	public static final double[][] SensitivityMatrixGyro250dpsShimmer3 = {{131,0,0},{0,131,0},{0,0,131}};
+	public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
+	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
+	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
+	protected static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+	protected static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};		
 
 	protected int mCurrentLEDStatus=0;
 	protected boolean mDefaultCalibrationParametersMag = true;
@@ -629,13 +630,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected double[][] mOffsetVectorMagnetometer = {{0},{0},{0}};								
 
 	//Default values Shimmer2 and Shimmer3
-	protected static double[][] AlignmentMatrixMagShimmer2 = {{1,0,0},{0,1,0},{0,0,-1}};
-	protected static double[][] SensitivityMatrixMagShimmer2 = {{580,0,0},{0,580,0},{0,0,580}}; 		
-	protected static double[][] OffsetVectorMagShimmer2 = {{0},{0},{0}};				
+	protected static final double[][] AlignmentMatrixMagShimmer2 = {{1,0,0},{0,1,0},{0,0,-1}};
+	protected static final double[][] SensitivityMatrixMagShimmer2 = {{580,0,0},{0,580,0},{0,0,580}}; 		
+	protected static final double[][] OffsetVectorMagShimmer2 = {{0},{0},{0}};				
 	//Shimmer3
-	protected static double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
-	protected static double[][] SensitivityMatrixMagShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}}; 		
-	protected static double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
+	protected static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
+	protected static final double[][] SensitivityMatrixMagShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}}; 		
+	protected static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
 
 	
 	protected double[][] AlignmentMatrixMPLAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
@@ -651,22 +652,22 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected double[][] OffsetVectorMPLGyro = {{0},{0},{0}};
 	
 
-	public static double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
-	public static double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
-	public static double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
-	public static double[][] SensitivityMatrixMag4GaShimmer3 = {{450,0,0},{0,450,0},{0,0,400}};
-	public static double[][] SensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
-	public static double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
-	public static double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
+	public static final double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
+	public static final double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
+	public static final double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
+	public static final double[][] SensitivityMatrixMag4GaShimmer3 = {{450,0,0},{0,450,0},{0,0,400}};
+	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
+	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
+	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
 
-	protected static double[][] SensitivityMatrixMag0p8GaShimmer2 = {{1370,0,0},{0,1370,0},{0,0,1370}};
-	protected static double[][] SensitivityMatrixMag1p3GaShimmer2 = {{1090,0,0},{0,1090,0},{0,0,1090}};
-	protected static double[][] SensitivityMatrixMag1p9GaShimmer2 = {{820,0,0},{0,820,0},{0,0,820}};
-	protected static double[][] SensitivityMatrixMag2p5GaShimmer2 = {{660,0,0},{0,660,0},{0,0,660}};
-	protected static double[][] SensitivityMatrixMag4p0GaShimmer2 = {{440,0,0},{0,440,0},{0,0,440}};
-	protected static double[][] SensitivityMatrixMag4p7GaShimmer2 = {{390,0,0},{0,390,0},{0,0,390}};
-	protected static double[][] SensitivityMatrixMag5p6GaShimmer2 = {{330,0,0},{0,330,0},{0,0,330}};
-	protected static double[][] SensitivityMatrixMag8p1GaShimmer2 = {{230,0,0},{0,230,0},{0,0,230}};
+	protected static final double[][] SensitivityMatrixMag0p8GaShimmer2 = {{1370,0,0},{0,1370,0},{0,0,1370}};
+	protected static final double[][] SensitivityMatrixMag1p3GaShimmer2 = {{1090,0,0},{0,1090,0},{0,0,1090}};
+	protected static final double[][] SensitivityMatrixMag1p9GaShimmer2 = {{820,0,0},{0,820,0},{0,0,820}};
+	protected static final double[][] SensitivityMatrixMag2p5GaShimmer2 = {{660,0,0},{0,660,0},{0,0,660}};
+	protected static final double[][] SensitivityMatrixMag4p0GaShimmer2 = {{440,0,0},{0,440,0},{0,0,440}};
+	protected static final double[][] SensitivityMatrixMag4p7GaShimmer2 = {{390,0,0},{0,390,0},{0,0,390}};
+	protected static final double[][] SensitivityMatrixMag5p6GaShimmer2 = {{330,0,0},{0,330,0},{0,0,330}};
+	protected static final double[][] SensitivityMatrixMag8p1GaShimmer2 = {{230,0,0},{0,230,0},{0,0,230}};
 
 
 	protected double AC1 = 408;
@@ -4301,8 +4302,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			double[][] SensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
 			double[][] OffsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
 
-
-			if (packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
+			if(packetType==ACCEL_CALIBRATION_RESPONSE && checkIfDefaultAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
+				mDefaultCalibrationParametersAccel = true;
+				mAlignmentMatrixAnalogAccel = AlignmentMatrix;
+				mOffsetVectorAnalogAccel = OffsetVector;
+				mSensitivityMatrixAnalogAccel = SensitivityMatrix;
+			}
+			else if (packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
 				mDefaultCalibrationParametersAccel = false;
 				mAlignmentMatrixAnalogAccel = AlignmentMatrix;
 				mOffsetVectorAnalogAccel = OffsetVector;
@@ -4328,7 +4334,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			}
 
-			if (packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
+			if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE && checkIfDefaultWideRangeAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
+				mDefaultCalibrationParametersDigitalAccel = true;
+			}
+			else if (packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
 				mDefaultCalibrationParametersDigitalAccel = false;
 				mAlignmentMatrixWRAccel = AlignmentMatrix;
 				mOffsetVectorWRAccel = OffsetVector;
@@ -4338,7 +4347,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				setDefaultCalibrationShimmer3WideRangeAccel();
 			}
 			
-			if (packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
+			if(packetType==GYRO_CALIBRATION_RESPONSE && checkIfDefaulGyroCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
+				mDefaultCalibrationParametersGyro = true;
+				mAlignmentMatrixGyroscope = AlignmentMatrix;
+				mOffsetVectorGyroscope = OffsetVector;
+				mSensitivityMatrixGyroscope = SensitivityMatrix;
+				mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
+				mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
+				mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
+			}
+			else if (packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
 				mDefaultCalibrationParametersGyro = false;
 				mAlignmentMatrixGyroscope = AlignmentMatrix;
 				mOffsetVectorGyroscope = OffsetVector;
@@ -4359,7 +4377,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			} 
 			
-			if (packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
+			if(packetType==MAG_CALIBRATION_RESPONSE && checkIfDefaulMagCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
+				mDefaultCalibrationParametersMag = true;
+				mAlignmentMatrixMagnetometer = AlignmentMatrix;
+				mOffsetVectorMagnetometer = OffsetVector;
+				mSensitivityMatrixMagnetometer = SensitivityMatrix;
+			}
+			else if (packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
 				mDefaultCalibrationParametersMag = false;
 				mAlignmentMatrixMagnetometer = AlignmentMatrix;
 				mOffsetVectorMagnetometer = OffsetVector;
@@ -4394,6 +4418,166 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		}
 	}
 
+	private boolean checkIfDefaultAccelCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
+		
+		double[][] offsetVectorToCompare = OffsetVectorLowNoiseAccelShimmer3;
+		double[][] sensitivityVectorToCompare = SensitivityMatrixLowNoiseAccel2gShimmer3;
+		double[][] alignmentVectorToCompare = AlignmentMatrixLowNoiseAccelShimmer3;
+		
+		if (mHardwareVersion!=HW_ID.SHIMMER_3){
+			alignmentVectorToCompare = AlignmentMatrixAccelShimmer2;
+			offsetVectorToCompare = OffsetVectorAccelShimmer2;
+			if (getAccelRange()==0){
+				sensitivityVectorToCompare = SensitivityMatrixAccel1p5gShimmer2; 
+			} else if (getAccelRange()==1){
+				sensitivityVectorToCompare = SensitivityMatrixAccel2gShimmer2; 
+			} else if (getAccelRange()==2){
+				sensitivityVectorToCompare = SensitivityMatrixAccel4gShimmer2; 
+			} else if (getAccelRange()==3){
+				sensitivityVectorToCompare = SensitivityMatrixAccel6gShimmer2; 
+			}
+		} 
+		
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+		
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean checkIfDefaultWideRangeAccelCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
+		
+		double[][] offsetVectorToCompare = OffsetVectorWideRangeAccelShimmer3;
+		double[][] sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel2gShimmer3;
+		double[][] alignmentVectorToCompare = AlignmentMatrixWideRangeAccelShimmer3;
+		
+		if (getAccelRange()==0){
+			sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel2gShimmer3;
+			alignmentVectorToCompare = AlignmentMatrixWideRangeAccelShimmer3;
+			offsetVectorToCompare = OffsetVectorWideRangeAccelShimmer3;
+		} else if (getAccelRange()==1){
+			sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel4gShimmer3;
+			alignmentVectorToCompare = AlignmentMatrixWideRangeAccelShimmer3;
+			offsetVectorToCompare = OffsetVectorWideRangeAccelShimmer3;
+		} else if (getAccelRange()==2){
+			sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel8gShimmer3;
+			alignmentVectorToCompare = AlignmentMatrixWideRangeAccelShimmer3;
+			offsetVectorToCompare = OffsetVectorWideRangeAccelShimmer3;
+		} else if (getAccelRange()==3){
+			sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel16gShimmer3;
+			alignmentVectorToCompare = AlignmentMatrixWideRangeAccelShimmer3;
+			offsetVectorToCompare = OffsetVectorWideRangeAccelShimmer3;
+		}
+		
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+		
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
+		
+		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer2;
+		double[][] sensitivityVectorToCompare = SensitivityMatrixGyroShimmer2;
+		double[][] alignmentVectorToCompare = AlignmentMatrixGyroShimmer2;
+		
+		if(mHardwareVersion==HW_ID.SHIMMER_3){
+			if (mGyroRange==0){
+				sensitivityVectorToCompare = SensitivityMatrixGyro250dpsShimmer3;
+
+			} else if (mGyroRange==1){
+				sensitivityVectorToCompare = SensitivityMatrixGyro500dpsShimmer3;
+
+			} else if (mGyroRange==2){
+				sensitivityVectorToCompare = SensitivityMatrixGyro1000dpsShimmer3;
+
+			} else if (mGyroRange==3){
+				sensitivityVectorToCompare = SensitivityMatrixGyro2000dpsShimmer3;
+			}
+			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
+			offsetVectorToCompare = OffsetVectorGyroShimmer3;
+		}
+		
+		sensitivityVectorToCompare[0][0] = sensitivityVectorToCompare[0][0]*100;
+		sensitivityVectorToCompare[1][1] = sensitivityVectorToCompare[1][1]*100;
+		sensitivityVectorToCompare[2][2] = sensitivityVectorToCompare[2][2]*100;
+		
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+		
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean checkIfDefaulMagCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
+		
+		double[][] offsetVectorToCompare = new double[][]{};
+		double[][] sensitivityVectorToCompare = new double[][]{};
+		double[][] alignmentVectorToCompare = new double[][]{};
+		
+		if(mHardwareVersion==HW_ID.SHIMMER_3){
+			alignmentVectorToCompare = AlignmentMatrixMagShimmer3;
+			offsetVectorToCompare = OffsetVectorMagShimmer3;
+			if (mMagRange==1){
+				sensitivityVectorToCompare = SensitivityMatrixMag1p3GaShimmer3;
+			} else if (mMagRange==2){
+				sensitivityVectorToCompare = SensitivityMatrixMag1p9GaShimmer3;
+			} else if (mMagRange==3){
+				sensitivityVectorToCompare = SensitivityMatrixMag2p5GaShimmer3;
+			} else if (mMagRange==4){
+				sensitivityVectorToCompare = SensitivityMatrixMag4GaShimmer3;
+			} else if (mMagRange==5){
+				sensitivityVectorToCompare = SensitivityMatrixMag4p7GaShimmer3;
+			} else if (mMagRange==6){
+				sensitivityVectorToCompare = SensitivityMatrixMag5p6GaShimmer3;
+			} else if (mMagRange==7){
+				sensitivityVectorToCompare = SensitivityMatrixMag8p1GaShimmer3;
+			}
+		}
+		else{
+			alignmentVectorToCompare = AlignmentMatrixMagShimmer2;
+			offsetVectorToCompare = OffsetVectorMagShimmer2;
+			if (mMagRange==0){
+				sensitivityVectorToCompare = SensitivityMatrixMag0p8GaShimmer2;
+			} else if (mMagRange==1){
+				sensitivityVectorToCompare = SensitivityMatrixMag1p3GaShimmer2;
+			} else if (mMagRange==2){
+				sensitivityVectorToCompare = SensitivityMatrixMag1p9GaShimmer2;
+			} else if (mMagRange==3){
+				sensitivityVectorToCompare = SensitivityMatrixMag2p5GaShimmer2;
+			} else if (mMagRange==4){
+				sensitivityVectorToCompare = SensitivityMatrixMag4p0GaShimmer2;
+			} else if (mMagRange==5){
+				sensitivityVectorToCompare = SensitivityMatrixMag4p7GaShimmer2;
+			} else if (mMagRange==6){
+				sensitivityVectorToCompare = SensitivityMatrixMag5p6GaShimmer2;
+			} else if (mMagRange==7){
+				sensitivityVectorToCompare = SensitivityMatrixMag8p1GaShimmer2;
+			}			
+		}
+		
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+		
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
+	}
+	
+
+	
 	protected void setDefaultCalibrationShimmer3StandardImus(){
 		setDefaultCalibrationShimmer3LowNoiseAccel();
 		setDefaultCalibrationShimmer3WideRangeAccel();
@@ -8691,7 +8875,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					setDefaultRespirationConfiguration();
 				}
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG) {
-					System.err.println("SET ECG CHANNEL");
+//					System.err.println("SET ECG CHANNEL");
 					setDefaultECGConfiguration();
 				}
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
@@ -8706,7 +8890,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 			else {
 				if(!checkIfOtherExgChannelEnabled()) {
-					System.err.println("CLEAR EXG CHANNEL");
+//					System.err.println("CLEAR EXG CHANNEL");
 					clearExgConfig();
 				}
 			}
