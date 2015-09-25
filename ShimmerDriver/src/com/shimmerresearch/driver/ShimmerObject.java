@@ -7487,8 +7487,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = 0;
 					// Tells the Shimmer to create a new config file on undock/power cycle
-					byte configFileWriteBit = (byte) (mConfigFileCreationFlag? (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag):0x00);
-					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
+//					byte configFileWriteBit = (byte) (mConfigFileCreationFlag? (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag):0x00);
+//					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
+
+					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= mInfoMemLayout.bitShiftSDCfgFileWriteFlag;
 
 					 // Tells the Shimmer to create a new calibration files on undock/power cycle
 					byte calibFileWriteBit = (byte) (mCalibFileCreationFlag? (mInfoMemLayout.maskSDCalibFileWriteFlag << mInfoMemLayout.bitShiftSDCalibFileWriteFlag):0x00);
@@ -8329,12 +8331,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			refreshEnabledSensorsFromSensorMap();
 			
 			return ((mSensorMap.get(sensorMapKey).mIsEnabled==state)? true:false);
-//			if(mSensorMap.get(sensorMapKey).mIsEnabled == state) {
-//				return true;
-//			}
-//			else {
-//				return false;
-//			}
 			
 		}
 		else {

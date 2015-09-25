@@ -451,6 +451,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	DataProcessing mDataProcessing;
 
+//	private int mNumOfInfoMemSetCmds = 0;
+
 	
 	public class ProcessingThread extends Thread {
 		public boolean stop = false;
@@ -1303,7 +1305,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//Update configuration when all bytes received.
 			if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 				setShimmerInfoMemBytes(mInfoMemBuffer);
-				inquiry();
 			}
 		}
 		else {
@@ -1666,6 +1667,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 				else if(currentCommand==SET_INFOMEM_COMMAND){
 					//SET InfoMem is automatically followed by a GET so no need to handle here
+					
+					//Sleep for 1s to allow Shimmer to process new configuration
+//					mNumOfInfoMemSetCmds -= 1;
+//					if(mNumOfInfoMemSetCmds==0){
+						delayForBtResponse(1000);
+//					}
 				}
 				else if(currentCommand==SET_CRC_COMMAND){
 					mIsCrcEnabled = ((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
@@ -3324,6 +3331,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//TODO: MN
 	public void writeInfoMem(int startAddress, byte[] buf){
+//		this.mNumOfInfoMemSetCmds  = 0;
+		
 		if(this.mFirmwareVersionCode>=6){
 			int address = startAddress;
 			if (buf.length > (mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
@@ -3348,6 +3357,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] infoSegBuf = Arrays.copyOfRange(buf, currentBytePointer, currentBytePointer + currentPacketNumBytes);
 
 					writeMemCommand(SET_INFOMEM_COMMAND, currentStartAddr, infoSegBuf);
+//					mNumOfInfoMemSetCmds += 1;
 
 					currentStartAddr += currentPacketNumBytes;
 					numBytesRemaining -= currentPacketNumBytes;
@@ -3356,7 +3366,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		
+		// Thread sleeps for 1s when ACK from SET_INFOMEM_COMMAND is received so
+		// it is safe to cue the below here to allow Shimmer time to process
+		// configuration
 		readInfoMem(startAddress, buf.length);
+		inquiry();
 	}
     
 	//TODO: MN
