@@ -2422,7 +2422,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 	
 	private boolean isDerivedSensorsSupported(){
-		
 		if((isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.BTSTREAM, 0, 7, 0))
 		||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.SDLOG, 0, 8, 69))
 		||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.LOGANDSTREAM, 0, 3, 17))){

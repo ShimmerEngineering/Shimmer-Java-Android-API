@@ -1195,6 +1195,10 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mSensorBitmapIDSDLogHeader = aMap.get(Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14).mSensorBitmapIDSDLogHeader;
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
 
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mIsDummySensor = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mIsDummySensor = true;
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mIsDummySensor = true;
+			
 			
 			// Now that channel map is assembled we can add compatibility
 			// information, internal expansion board power requirements,
@@ -1732,6 +1736,29 @@ public class Configuration {
 			//GSR
 			aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfChannelsRef = Arrays.asList(
 							Configuration.Shimmer3.ObjectClusterSensorName.GSR);
+
+			//PPG
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_DUMMY).mListOfChannelsRef = Arrays.asList(
+//					Configuration.Shimmer3.ObjectClusterSensorName.PPG_A12,
+//					Configuration.Shimmer3.ObjectClusterSensorName.PPG_A13);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_DUMMY).mListOfChannelsRef = Arrays.asList(
+//					Configuration.Shimmer3.ObjectClusterSensorName.PPG1_A12,
+//					Configuration.Shimmer3.ObjectClusterSensorName.PPG1_A13);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mListOfChannelsRef = Arrays.asList(
+//					Configuration.Shimmer3.ObjectClusterSensorName.PPG2_A1,
+//					Configuration.Shimmer3.ObjectClusterSensorName.PPG2_A14);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfChannelsRef = Arrays.asList(
+					Configuration.Shimmer3.ObjectClusterSensorName.PPG_A12);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A13).mListOfChannelsRef = Arrays.asList(
+					Configuration.Shimmer3.ObjectClusterSensorName.PPG_A13);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A12).mListOfChannelsRef = Arrays.asList(
+							Configuration.Shimmer3.ObjectClusterSensorName.PPG1_A12);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mListOfChannelsRef = Arrays.asList(
+					Configuration.Shimmer3.ObjectClusterSensorName.PPG1_A13);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mListOfChannelsRef = Arrays.asList(
+					Configuration.Shimmer3.ObjectClusterSensorName.PPG2_A14);
+			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mListOfChannelsRef = Arrays.asList(
+					Configuration.Shimmer3.ObjectClusterSensorName.PPG2_A14);
 
 			//GyroMPU
 			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfChannelsRef = Arrays.asList(

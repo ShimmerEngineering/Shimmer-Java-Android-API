@@ -1035,7 +1035,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} 
 		else if(responseCommand==DERIVED_CHANNEL_BYTES_RESPONSE) {
 			byte[] byteArray = readBytes(3);
-			mDerivedSensors=(long)(((byteArray[0]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[2]&0xFF));
+			mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
 		}
 		else if(responseCommand==GET_SHIMMER_VERSION_RESPONSE) {
 			delayForBtResponse(100); // Wait to ensure the packet has been fully received
@@ -1915,6 +1915,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readEXGConfigurations();
 			//enableLowPowerMag(mLowPowerMag);
 			
+			readDerivedChannelBytes();
+			
 			if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.LOGANDSTREAM, 0, 5, 2)){
 				readTrial();
 				readConfigTime();
@@ -2564,29 +2566,29 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 */
 	public void readDerivedChannelBytes() {
-		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+		if(mFirmwareVersionCode>=6){
 			getListofInstructions().add(new byte[]{GET_DERIVED_CHANNEL_BYTES});
 		}
 	}
 	
 	/** Only applicable for Log and Stream
-	 * @param channel The derived channels (3 bytes), first array element = MSB (channel[0]), and channel[2]) = LSB
+	 * @param channel The derived channels (3 bytes), MSB = (channel[2]), and LSB = channel[0])
 	 */
 	public void writeDerivedChannelBytes(byte[] channel) {
-		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+		if(mFirmwareVersionCode>=6){
 			getListofInstructions().add(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2]});
 		}
 	}
 	
 	/** Only applicable for Log and Stream
-	 * @param channel The derived channels (3 bytes), first array element = MSB (channel[0]), and channel[2]) = LSB
+	 * @param channel The derived channels (3 bytes), MSB = (channel[2]), and LSB = channel[0])
 	 */
 	public void writeDerivedChannels(long channels) {
-		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+		if(mFirmwareVersionCode>=6){
 			byte[] channel = new byte[3];
-			channel[0] = (byte) ((channels >> 16) & 0xFF);
+			channel[2] = (byte) ((channels >> 16) & 0xFF);
 			channel[1] = (byte) ((channels >> 8) & 0xFF);
-			channel[2] = (byte) ((channels >> 0) & 0xFF);
+			channel[0] = (byte) ((channels >> 0) & 0xFF);
 			getListofInstructions().add(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2]});
 		}
 	}
