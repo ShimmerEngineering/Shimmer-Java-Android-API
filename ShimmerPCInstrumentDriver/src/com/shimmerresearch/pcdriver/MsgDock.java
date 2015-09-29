@@ -116,6 +116,7 @@ public class MsgDock {
 	
 	public final static int MSG_ID_BT_TO_DB_FINISHED = 170;
 	public final static int MSG_ID_BT_TO_DB_BUFFER_FILLED = 171;
+	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
