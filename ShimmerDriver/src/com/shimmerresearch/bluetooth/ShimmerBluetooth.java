@@ -565,7 +565,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mIamAlive = true;
 							
 							//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
-							if(mCurrentCommand==STOP_STREAMING_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
+							if(mCurrentCommand==STOP_STREAMING_COMMAND || mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
 								stopTimerCheckForAckOrResp();
 								mIsStreaming=false;
 								mTransactionCompleted=true;
@@ -579,6 +579,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								hasStopStreaming();					
 								getListofInstructions().remove(0);
 								getListofInstructions().removeAll(Collections.singleton(null));
+								if (mCurrentCommand==STOP_SDBT_COMMAND){
+									logAndStreamStatusChanged();	
+								}
 								setInstructionStackLock(false);
 							}
 //							//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
