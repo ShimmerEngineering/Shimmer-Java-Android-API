@@ -7670,8 +7670,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] = 0;
 					// Tells the Shimmer to create a new config file on undock/power cycle
-//					byte configFileWriteBit = (byte) (mConfigFileCreationFlag? (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag):0x00);
-//					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
+					//TODO RM enabled the two lines below (MN had the below two lines commented out.. but need them to write config successfully over UART)
+					byte configFileWriteBit = (byte) (mConfigFileCreationFlag? (mInfoMemLayout.maskSDCfgFileWriteFlag << mInfoMemLayout.bitShiftSDCfgFileWriteFlag):0x00);
+					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
 
 					mInfoMemBytes[mInfoMemLayout.idxSDConfigDelayFlag] |= mInfoMemLayout.bitShiftSDCfgFileWriteFlag;
 
