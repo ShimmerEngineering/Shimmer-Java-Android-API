@@ -355,10 +355,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 	            case Shimmer.MESSAGE_STATE_CHANGE:
                     switch (((ObjectCluster)msg.obj).mState) {
                     case CONNECTED:
-      
-                        break;
-                    case INITIALISED:
-	                	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
+                    	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
 	                    mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress; 
 	                    mService.enableGraphingHandler(true);
 	                    deviceState = "Connected";
@@ -367,6 +364,9 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 	                    buttonMenu.setEnabled(true);
 	                    printExGArrays();
                         break;
+                    /*case INITIALISED:
+	                	
+                        break;*/
                     case CONNECTING:
                     	Log.d("ShimmerActivity","Driver is attempting to establish connection with Shimmer device");
 	                	deviceState = "Connecting";
@@ -379,7 +379,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
                     	break;
                     case SDLOGGING:
                    	 break;
-                    case NONE:
+                    case DISCONNECTED:
 	                	Log.d("ShimmerActivity","Shimmer No State");
 	                    mBluetoothAddress=null;
 	                    // this also stops streaming

@@ -140,9 +140,6 @@ public class ShimmerLogExampleActivity extends Activity {
         	case Shimmer.MESSAGE_STATE_CHANGE:
         		switch (((ObjectCluster)msg.obj).mState) {
         		case CONNECTED:
-
-        			break;
-        		case INITIALISED:
         			Log.d("ConnectionStatus","Successful");
         			mShimmerDevice1.startStreaming();
         			shimmerTimer(30); //Disconnect in 30 seconds
@@ -156,7 +153,7 @@ public class ShimmerLogExampleActivity extends Activity {
         			break;
         		case SDLOGGING:
         			break;
-        		case NONE:
+        		case DISCONNECTED:
         			Log.d("ConnectionStatus","No State");
         			break;
         		}

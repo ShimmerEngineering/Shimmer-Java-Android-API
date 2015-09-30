@@ -146,7 +146,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED){
+			if (stemp.getBTState()==BT_STATE.CONNECTED){
 				stemp.toggleLed();
 			}
 		}
@@ -380,16 +380,15 @@ public class MultiShimmerPlayService extends Service {
 	            		 }
 	                     switch (((ObjectCluster)msg.obj).mState) {
 	                     case CONNECTED:
-	                    	
-	                         break;
-	                     case INITIALISED:
 	                    	 Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
-	                    	 
 	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
 	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-	                    	 intent.putExtra("ShimmerState",BT_STATE.INITIALISED);
+	                    	 intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
 	                    	 sendBroadcast(intent);
 	                         break;
+/*	                     case INITIALISED:
+	      
+	                         break;*/
 	                     case CONNECTING:
 	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
 	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
@@ -401,11 +400,11 @@ public class MultiShimmerPlayService extends Service {
 	                     	break;
 	                     case SDLOGGING:
 	                    	 break;
-	                     case NONE:
+	                     case DISCONNECTED:
 
 	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
 	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-	                    	 intent.putExtra("ShimmerState",BT_STATE.NONE);
+	                    	 intent.putExtra("ShimmerState",BT_STATE.DISCONNECTED);
 	                    	 sendBroadcast(intent);
 	                         break;
 	                     }
@@ -458,7 +457,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED){
+			if (stemp.getBTState()==BT_STATE.CONNECTED){
 				stemp.startStreaming();
 			}
 		}
@@ -470,7 +469,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED){
+			if (stemp.getBTState()==BT_STATE.CONNECTED){
 				stemp.startStreaming();
 				int mPosition = Integer.parseInt(stemp.getDeviceName());
 				long mEnabledSensors = stemp.getEnabledSensors();
@@ -536,7 +535,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED){
+			if (stemp.getBTState()==BT_STATE.CONNECTED){
 				stemp.writeSamplingRate(samplingRate);
 			}
 		}
@@ -548,7 +547,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED){
+			if (stemp.getBTState()==BT_STATE.CONNECTED){
 				stemp.writeAccelRange(accelRange);
 			}
 		}
@@ -560,7 +559,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED){
+			if (stemp.getBTState()==BT_STATE.CONNECTED){
 				stemp.writeGSRRange(gsrRange);
 			}
 		}
@@ -572,7 +571,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED){
+			if (stemp.getBTState()==BT_STATE.CONNECTED){
 				stemp.writeEnabledSensors(enabledSensors);
 			}
 		}
@@ -585,7 +584,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+			if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				stemp.writeEnabledSensors(enabledSensors);
 			}
 		}
@@ -597,7 +596,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+			if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				stemp.toggleLed();
 			}
 		}
@@ -638,7 +637,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+			if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				stemp.writeSamplingRate(samplingRate);
 			}
 		}
@@ -650,7 +649,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+			if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				stemp.writeAccelRange(accelRange);
 			}
 		}
@@ -662,7 +661,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if (stemp.getBTState()==BT_STATE.INITIALISED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+			if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				stemp.writeGSRRange(gsrRange);
 			}
 		}
@@ -703,7 +702,7 @@ public class MultiShimmerPlayService extends Service {
 		// TODO Auto-generated method stub
 		Collection<Object> colS=mMultiShimmer.values();
 		Iterator<Object> iterator = colS.iterator();
-		BT_STATE status= BT_STATE.NONE;
+		BT_STATE status= BT_STATE.DISCONNECTED;
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBluetoothAddress().equals(bluetoothAddress)){
@@ -735,7 +734,7 @@ public class MultiShimmerPlayService extends Service {
 				Iterator<Object> iterator = colS.iterator();
 				while (iterator.hasNext()) {
 					Shimmer stemp=(Shimmer) iterator.next();
-					if (stemp.getBTState()==BT_STATE.INITIALISED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+					if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 						stemp.startStreaming();
 						int mPosition = Integer.parseInt(stemp.getDeviceName());
 						long mEnabledSensors = stemp.getEnabledSensors();
@@ -820,7 +819,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if ((stemp.getBTState()==BT_STATE.INITIALISED || stemp.getBTState()==BT_STATE.STREAMING) && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+			if ((stemp.getBTState()==BT_STATE.CONNECTED || stemp.getBTState()==BT_STATE.STREAMING) && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				stemp.stop();
 				
 			}
@@ -847,7 +846,7 @@ public class MultiShimmerPlayService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if ((stemp.getBTState()==BT_STATE.INITIALISED || stemp.getBTState()==BT_STATE.STREAMING) && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+			if ((stemp.getBTState()==BT_STATE.CONNECTED || stemp.getBTState()==BT_STATE.STREAMING) && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				deviceConnected=true;
 			}
 		}

@@ -542,13 +542,14 @@ public class DevicesFragment extends Fragment{
 		        break;
 		        case Shimmer.MESSAGE_STATE_CHANGE:
                     switch (((ObjectCluster)msg.obj).mState) {
-                    case CONNECTED:
+                    /*case CONNECTED:
                      	//check to see if there are other Shimmer Devices which need to be connected
     		           	//sendBroadcast(intent);
+    		       	 	connectedShimmerAddresses.add(((ObjectCluster)msg.obj).mBluetoothAddress);
     		       	 		
-    		       	 		connectedShimmerAddresses.add(((ObjectCluster)msg.obj).mBluetoothAddress);
-                        break;
-                    case INITIALISED:
+                        break;*/
+                    case CONNECTED:
+                    	connectedShimmerAddresses.add(((ObjectCluster)msg.obj).mBluetoothAddress);
                     	int indexFully=0;
 //		            	if(currentPosition==1){
 		            		String addressInitialized = ((ObjectCluster) msg.obj).mBluetoothAddress;
@@ -616,7 +617,7 @@ public class DevicesFragment extends Fragment{
                     	break;
                     case SDLOGGING:
                    	 break;
-                    case NONE:
+                    case DISCONNECTED:
 
 		            	int indexNone=0;
 //		            	if(currentPosition==1){
@@ -633,7 +634,7 @@ public class DevicesFragment extends Fragment{
 //		            		indexNone=currentPosition;
 		            connectedShimmerAddresses.remove(((ObjectCluster)msg.obj).mBluetoothAddress);
 		           	Log.d("Shimmer","NO_State" + ((ObjectCluster)msg.obj).mBluetoothAddress);
-		           	devicesStates[indexNone] = BT_STATE.NONE;
+		           	devicesStates[indexNone] = BT_STATE.DISCONNECTED;
 		           	fully_initialized[indexNone] = false;
 		            mActivity.runOnUiThread(new Runnable() {
 		    		    public void run() {
@@ -803,7 +804,7 @@ public class DevicesFragment extends Fragment{
 
       		
       		devicesStates[pos] = state;
-      		if(state == BT_STATE.INITIALISED || state == BT_STATE.STREAMING)
+      		if(state == BT_STATE.CONNECTED || state == BT_STATE.STREAMING)
       			fully_initialized[pos] = true;
       		else
       			fully_initialized[pos] = false;

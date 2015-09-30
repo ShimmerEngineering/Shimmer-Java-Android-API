@@ -89,19 +89,16 @@ public class MultiShimmerExampleActivity extends Activity {
 
 
 			case Shimmer.MESSAGE_STATE_CHANGE:
-				switch (msg.arg1) {
-				case Shimmer.MSG_STATE_FULLY_INITIALIZED:
+				 switch (((ObjectCluster)msg.obj).mState) {
+                 case CONNECTED:
 					//Next connect the next device
 					Log.d("ConnectionStatus","Fully Initialized" + ((ObjectCluster)msg.obj).mBluetoothAddress);
 
-					if (mShimmerDevice2.getBTState()!=BT_STATE.CONNECTED){
+					if (mShimmerDevice2.getBTState()==BT_STATE.DISCONNECTED){
 						mShimmerDevice2.connect("00:06:66:66:96:86","default"); 
-					}
-					if (mShimmerDevice1.getState()==BT_STATE.INITIALISED && mShimmerDevice1.getStreamingStatus()==false && mShimmerDevice2.getBTState()==BT_STATE.INITIALISED && mShimmerDevice2.getStreamingStatus()==false){
+					} else if (mShimmerDevice1.getState()==BT_STATE.CONNECTED && mShimmerDevice1.getStreamingStatus()==false && mShimmerDevice2.getBTState()==BT_STATE.CONNECTED && mShimmerDevice2.getStreamingStatus()==false){
 						Log.d("ConnectionStatus","Successful!");
 
-						mShimmerDevice1.writeEnabledSensors(Shimmer.SENSOR_ACCEL);
-						mShimmerDevice1.writeSamplingRate(51.2);
 						mShimmerDevice1.startStreaming();
 
 						mShimmerDevice2.startStreaming();

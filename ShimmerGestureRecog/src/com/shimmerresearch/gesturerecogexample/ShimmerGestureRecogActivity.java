@@ -328,18 +328,19 @@ public static final Handler mHandler = new Handler() {
               switch (((ObjectCluster)msg.obj).mState) {
               case CONNECTED:
               	//this has been deprecated
+            	  Log.d("ConnectionStatus","Successful");
                   break;
-              case INITIALISED:
+              /*case INITIALISED:
 
-      	        Log.d("ConnectionStatus","Successful");
+      	        
       	        
       	        
               
-                  break;
+                  break;*/
               case CONNECTING:
               	
                   break;
-              case NONE:
+              case DISCONNECTED:
               	Log.d("ShimmerActivity","Shimmer No State");
             
                   break;

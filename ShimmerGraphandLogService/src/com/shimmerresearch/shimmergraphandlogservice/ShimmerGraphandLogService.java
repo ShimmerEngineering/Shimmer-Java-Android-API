@@ -88,6 +88,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.service.ShimmerService;
 import com.shimmerresearch.service.ShimmerService.LocalBinder;
 import com.shimmerresearch.tools.Logging;
@@ -380,9 +381,6 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             case Shimmer.MESSAGE_STATE_CHANGE:
                 switch (((ObjectCluster)msg.obj).mState) {
                 case CONNECTED:
-                	//this has been deprecated
-                    break;
-                case INITIALISED:
                 	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
                     mTitle.setText(R.string.title_connected_to);
                     mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress;
@@ -393,7 +391,7 @@ public class ShimmerGraphandLogService extends ServiceActivity {
                 	Log.d("ShimmerActivity","Driver is attempting to establish connection with Shimmer device");
                     mTitle.setText(R.string.title_connecting);
                     break;
-                case NONE:
+                case DISCONNECTED:
                 	Log.d("ShimmerActivity","Shimmer No State");
                     mTitle.setText(R.string.title_not_connected);;
                     mBluetoothAddress=null;
@@ -431,28 +429,48 @@ public class ShimmerGraphandLogService extends ServiceActivity {
             		if (mSensorView.equals("Wide Range Accelerometer")){
             			sensorName = new String[3]; // for x y and z axis
             			calibratedDataArray = new double[3];
-            			sensorName[0] = "Wide Range Accelerometer X";
-            			sensorName[1] = "Wide Range Accelerometer Y";
-            			sensorName[2] = "Wide Range Accelerometer Z";
+            			sensorName[0] = Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X;
+            			sensorName[1] = Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y;
+            			sensorName[2] = Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z;
             		}
             		if (mSensorView.equals("Gyroscope")){
             			sensorName = new String[3]; // for x y and z axis
             			calibratedDataArray = new double[3];
-            			sensorName[0] = "Gyroscope X";
-            			sensorName[1] = "Gyroscope Y";
-            			sensorName[2] = "Gyroscope Z";
+            			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
+            			if (shmr.getHardwareVersion()==HW_ID.SHIMMER_2R){
+            				sensorName[0] = Configuration.Shimmer2.ObjectClusterSensorName.GYRO_X;
+            				sensorName[1] = Configuration.Shimmer2.ObjectClusterSensorName.GYRO_Y;
+            				sensorName[2] = Configuration.Shimmer2.ObjectClusterSensorName.GYRO_Z;
+            			} else if (shmr.getHardwareVersion()==HW_ID.SHIMMER_3){
+            				sensorName[0] = Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X;
+            				sensorName[1] = Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y;
+            				sensorName[2] = Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z;
+            			}
             		}
             		if (mSensorView.equals("Magnetometer")){
             			sensorName = new String[3]; // for x y and z axis
             			calibratedDataArray = new double[3];
-            			sensorName[0] = "Magnetometer X";
-            			sensorName[1] = "Magnetometer Y";
-            			sensorName[2] = "Magnetometer Z";
+            			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
+            			if (shmr.getHardwareVersion()==HW_ID.SHIMMER_2R){
+            				sensorName[0] = Configuration.Shimmer2.ObjectClusterSensorName.MAG_X;
+            				sensorName[1] = Configuration.Shimmer2.ObjectClusterSensorName.MAG_Y;
+            				sensorName[2] = Configuration.Shimmer2.ObjectClusterSensorName.MAG_Z;
+            			} else if (shmr.getHardwareVersion()==HW_ID.SHIMMER_3){
+            				sensorName[0] = Configuration.Shimmer3.ObjectClusterSensorName.MAG_X;
+            				sensorName[1] = Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y;
+            				sensorName[2] = Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z;
+            			}
             		}
             		if (mSensorView.equals("GSR")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			sensorName[0] = "GSR";
+            			Shimmer shmr = mService.getShimmer(mBluetoothAddress);
+            			if (shmr.getHardwareVersion()==HW_ID.SHIMMER_2R){
+            				sensorName[0] = Configuration.Shimmer2.ObjectClusterSensorName.GSR;
+            			} else if (shmr.getHardwareVersion()==HW_ID.SHIMMER_3){
+            				sensorName[0] = Configuration.Shimmer3.ObjectClusterSensorName.GSR;
+            			}
+            			
             		}
             		if (mSensorView.equals("EMG")){
             			sensorName = new String[1]; 
