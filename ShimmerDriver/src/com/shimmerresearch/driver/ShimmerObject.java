@@ -4738,7 +4738,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
 			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
 			if (timeDifference>expectedTimeDifferenceLimit){
-				mPacketLossCount=mPacketLossCount+1;
+//				mPacketLossCount=mPacketLossCount+1;
+				mPacketLossCount+= (long) (timeDifference/expectedTimeDifferenceLimit);
 				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/mShimmerSamplingRate*1000));
 
 				mPacketReceptionRate = (double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100;
