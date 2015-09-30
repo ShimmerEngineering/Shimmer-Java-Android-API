@@ -319,13 +319,20 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	protected byte[] readBytes(int numberofBytes) {
 		// TODO Auto-generated method stub
 		try {
-			if (mSerialPort.isOpened())
-			{
-				return(mSerialPort.readBytes(numberofBytes));
-			} else {
-				System.out.println("ALERT!!");
+			if(mSerialPort != null){
+				if (mSerialPort.isOpened())
+				{
+					return(mSerialPort.readBytes(numberofBytes));
+				} else {
+					System.out.println("ALERT!!");
+				}
 			}
 		} catch (SerialPortException e) {
+			// TODO Auto-generated catch block
+			connectionLost();
+			e.printStackTrace();
+		}
+		catch (NullPointerException e) {
 			// TODO Auto-generated catch block
 			connectionLost();
 			e.printStackTrace();

@@ -1041,6 +1041,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==DERIVED_CHANNEL_BYTES_RESPONSE) {
 			byte[] byteArray = readBytes(3);
 			mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
+			//System.out.println("mDerivedSensors: " +mDerivedSensors);
 		}
 		else if(responseCommand==GET_SHIMMER_VERSION_RESPONSE) {
 			delayForBtResponse(100); // Wait to ensure the packet has been fully received
