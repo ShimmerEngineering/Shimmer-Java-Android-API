@@ -181,14 +181,14 @@ public class Shimmer3DOrientationExample extends Activity {
 	                 case Shimmer.MESSAGE_STATE_CHANGE:
 	                     switch (((ObjectCluster)msg.obj).mState) {
 	                     case CONNECTED:
-	       
+	                    	 Log.d("ConnectionStatus","Successful");
+	                    	 //because the default mag range for Shimmer2 and 3 are 0 and 1 respectively, please be aware of what range you use when calibrating using Shimmer 9DOF Cal App, and use the same range here
+	                    	 mShimmerDevice1.startStreaming();
 	                         break;
-	                     case INITIALISED:
+	                    /* case INITIALISED:
 
-                 	        Log.d("ConnectionStatus","Successful");
-                 	        //because the default mag range for Shimmer2 and 3 are 0 and 1 respectively, please be aware of what range you use when calibrating using Shimmer 9DOF Cal App, and use the same range here
-                 	        mShimmerDevice1.startStreaming();
-	                         break;
+
+	                         break;*/
 	                     case CONNECTING:
 	                    	 Log.d("ConnectionStatus","Connecting");
 	                         break;
@@ -198,7 +198,7 @@ public class Shimmer3DOrientationExample extends Activity {
 	                     	break;
 	                     case SDLOGGING:
 	                    	 break;
-	                     case NONE:
+	                     case DISCONNECTED:
 	                    	 Log.d("ConnectionStatus","No State");
 	                         break;
 	                     }

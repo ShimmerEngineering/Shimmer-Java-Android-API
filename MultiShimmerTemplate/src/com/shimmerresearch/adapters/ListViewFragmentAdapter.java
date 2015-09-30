@@ -71,13 +71,13 @@ public class ListViewFragmentAdapter extends ArrayAdapter<String>{
 	    deviceName.setText(devices_names[position]);
 	    if(!bluetooth_addresses[position].equals("")){
 	    	switch(devices_states[position]){
-		    	case NONE: // DISCONNECTED
+		    	case DISCONNECTED: // DISCONNECTED
 		    		state.setImageResource(R.drawable.circle_red);
 		    	break;
 		    	case CONNECTING: // CONNECTING
 		    		state.setImageResource(R.drawable.circle_yellow);
 		    	break;
-		    	case INITIALISED: // CONNECTED
+		    	case CONNECTED: // CONNECTED
 		    		state.setImageResource(R.drawable.circle_green);
 		    	break;
 		    	case STREAMING: // STREAMING
@@ -356,14 +356,14 @@ public class ListViewFragmentAdapter extends ArrayAdapter<String>{
 				else{
 					
 					switch(dF.mService.getShimmerState(dF.deviceBluetoothAddresses[currentPosition])){							
-						case NONE: // DISCONNECTED
+						case DISCONNECTED: // DISCONNECTED
 							dF.arrayAdapter.add(dF.CONNECT);
 							dF.arrayAdapter.add(dF.DELETE);
 						break;
 						case CONNECTING: // CONNECTING
 							Toast.makeText(dF.getActivity(), "The device is trying to connect", Toast.LENGTH_SHORT).show();
 						break;
-						case INITIALISED: // CONNECTED
+						case CONNECTED: // CONNECTED
 							dF.arrayAdapter.add(dF.DISCONNECT);
 							
 							dF.arrayAdapter.add(dF.START_STREAMING);

@@ -154,14 +154,14 @@ public class MyService extends Service {
 	                 case Shimmer.MESSAGE_STATE_CHANGE:
 	                     switch (((ObjectCluster)msg.obj).mState) {
 	                     case CONNECTED:
-	       
-	                         break;
-	                     case INITIALISED:
-
 	                    	 Log.d("ConnectionStatus","Successful");
 	                    	 shimmerDevice1.startStreaming();
 
 	                         break;
+/*	                     case INITIALISED:
+
+	                    	
+	                         break;*/
 	                     case CONNECTING:
 	                    	 Log.d("ConnectionStatus","Connecting");
 	                         break;
@@ -171,7 +171,7 @@ public class MyService extends Service {
 	                     	break;
 	                     case SDLOGGING:
 	                    	 break;
-	                     case NONE:
+	                     case DISCONNECTED:
 	                    	 Log.d("ConnectionStatus","No State");
 	                         break;
 	                     }

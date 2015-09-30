@@ -86,7 +86,7 @@ public class ShimmerExampleActivity extends Activity {
 			if (mShimmerDevice1.getState()==BT_STATE.CONNECTED){
 				mShimmerDevice1.startStreaming();
 			}
-			if (mShimmerDevice1.getState()==BT_STATE.NONE){
+			if (mShimmerDevice1.getState()==BT_STATE.DISCONNECTED){
 				mShimmerDevice1 = new Shimmer(this, mHandler,"RightArm", 51.2, 0, 0, Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO|Shimmer.SENSOR_MAG, false);
 			      String bluetoothAddress="00:06:66:66:96:86";
 			      mShimmerDevice1.connect(bluetoothAddress,"default");
@@ -147,16 +147,15 @@ public class ShimmerExampleActivity extends Activity {
                 break;
 
                  case Shimmer.MESSAGE_STATE_CHANGE:
-                	 ObjectCluster ojcC = (ObjectCluster)msg.obj; 
-                	 switch (msg.arg1) {
-                     	case Shimmer.MSG_STATE_FULLY_INITIALIZED:
-                    	    if (mShimmerDevice1.getState()==BT_STATE.CONNECTED){
-                    	        Log.d("ConnectionStatus","Successful");
-                    	        mShimmerDevice1.startStreaming();
-                    	        shimmerTimer(30); //Disconnect in 30 seconds
-                    	     }
-                    	    break;
-                     }
+                	 switch (((ObjectCluster)msg.obj).mState) {
+                     case CONNECTED:
+                    	 if (mShimmerDevice1.getState()==BT_STATE.CONNECTED){
+                    		 Log.d("ConnectionStatus","Successful");
+                    		 mShimmerDevice1.startStreaming();
+                    		 shimmerTimer(30); //Disconnect in 30 seconds
+                    	 }
+                    	 break;
+                	 }
                 break;
                 
             }

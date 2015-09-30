@@ -123,39 +123,36 @@ public class ShimmerTCPExampleActivity extends Activity {
 
                      switch (((ObjectCluster)msg.obj).mState) {
                      case CONNECTED:
-       
-                         break;
-                     case INITIALISED:
 
-           
-                 	    	if (firstTime){
-                 	    	mShimmerDevice1.writeEnabledSensors(ShimmerObject.SENSOR_ACCEL);
-                 	    	Thread thread = new Thread()
-                 			{
-                 			    @Override
-                 			    public void run() {
-                 			    	try {
-                 			    		clientSocket = new Socket("10.1.1.1", 5000);
-                 				        dOut = new DataOutputStream(clientSocket.getOutputStream());
-                 					} catch (UnknownHostException e) {
-                 						// TODO Auto-generated catch block
-                 						e.printStackTrace();
-                 					} catch (IOException e) {
-                 						// TODO Auto-generated catch block
-                 						e.printStackTrace();
-                 					}
-                 			    }
-                 			};
 
-                 			thread.start();
-                 	    	
-                 	    	
-                 	        Log.d("ConnectionStatus","Successful");
-                 	
-                 	        mShimmerDevice1.startStreaming();
-                 	        firstTime = false;
-                 	    	}
-                 	  
+                         
+              	    	if (firstTime){
+              	    	mShimmerDevice1.writeEnabledSensors(ShimmerObject.SENSOR_ACCEL);
+              	    	Thread thread = new Thread()
+              			{
+              			    @Override
+              			    public void run() {
+              			    	try {
+              			    		clientSocket = new Socket("10.1.1.1", 5000);
+              				        dOut = new DataOutputStream(clientSocket.getOutputStream());
+              					} catch (UnknownHostException e) {
+              						// TODO Auto-generated catch block
+              						e.printStackTrace();
+              					} catch (IOException e) {
+              						// TODO Auto-generated catch block
+              						e.printStackTrace();
+              					}
+              			    }
+              			};
+
+              			thread.start();
+              	    	
+              	    	
+              	        Log.d("ConnectionStatus","Successful");
+              	
+              	        mShimmerDevice1.startStreaming();
+              	        firstTime = false;
+              	    	}
                          break;
                      case CONNECTING:
 
@@ -167,7 +164,7 @@ public class ShimmerTCPExampleActivity extends Activity {
                      	break;
                      case SDLOGGING:
                     	 break;
-                     case NONE:
+                     case DISCONNECTED:
                     	 	Log.d("ConnectionStatus","No State");
                          break;
                      }

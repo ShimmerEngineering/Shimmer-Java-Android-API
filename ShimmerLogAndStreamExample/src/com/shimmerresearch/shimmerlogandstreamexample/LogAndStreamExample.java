@@ -261,9 +261,6 @@ public class LogAndStreamExample extends Activity{
 
                 switch (((ObjectCluster)msg.obj).mState) {
                 case CONNECTED:
-                	//this has been deprecated
-                    break;
-                case INITIALISED:
                 	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
                     mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress; 
                     deviceState = "Connected";
@@ -340,7 +337,7 @@ public class LogAndStreamExample extends Activity{
                 	else
                 		textSensing.setText("No");
                 break;
-                case NONE:
+                case DISCONNECTED:
                 	Log.d("ShimmerActivity","Shimmer No State");
                     mBluetoothAddress=null;
                     // this also stops streaming
