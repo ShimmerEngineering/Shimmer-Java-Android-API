@@ -9413,6 +9413,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mExGResolution
 	 */
 	public int getExGResolution() {
+		//System.out.println("mExGResolution: " +mExGResolution);
 		return mExGResolution;
 	}
 
