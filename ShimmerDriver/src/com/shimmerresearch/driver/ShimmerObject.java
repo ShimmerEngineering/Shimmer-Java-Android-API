@@ -7866,44 +7866,44 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 							||(key==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
 							||(key==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)
 							||(key==Configuration.Shimmer3.SensorMapKey.EXG_TEST)){
-						
+
 //						List<Object> objs;
 						Iterator<String> i = mSensorMap.get(key).mListOfChannels.iterator();
 						while (i.hasNext()) {
 						   String channelName = i.next();
 						   
-		    				if((getExGResolution()==1)
-		    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
-			    				||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
+						   		//System.out.println("getExGResolution(): " +getExGResolution());
+						   		
+			    				if((getExGResolution()==0)
+			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
+				    				||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
+			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
+									    i.remove();
+								}
+			    				else if((getExGResolution()==1)
+			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
 								    i.remove();
-							}
-		    				else if((getExGResolution()==0)
-		    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
-							    i.remove();
-							}
-						   
-						}
+								}
 
-						
+					   	}
 					}
 					
 				}
@@ -9413,6 +9413,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	 * @return the mExGResolution
 	 */
 	public int getExGResolution() {
+		//System.out.println("mExGResolution: " +mExGResolution);
 		return mExGResolution;
 	}
 
@@ -9751,6 +9752,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mExGResolution = i;
 		
 		if(i==0) { // 16-bit
+			//this is needed so the BT can write the correct sensor
+			if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG1_16BIT;
+			}
+			if ((mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG2_16BIT;
+			}
+			mEnabledSensors = SENSOR_EXG1_16BIT|SENSOR_EXG2_16BIT;
+			//
+			
 			if(mIsExg1_24bitEnabled){
 				mIsExg1_24bitEnabled = false;
 				mIsExg1_16bitEnabled = true;
@@ -9761,6 +9772,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		}
 		else if(i==1) { // 24-bit
+			if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG1_24BIT;
+			}
+			if ((mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG2_24BIT;
+			}
+			mEnabledSensors = SENSOR_EXG1_24BIT|SENSOR_EXG2_24BIT;
 			if(mIsExg1_16bitEnabled){
 				mIsExg1_24bitEnabled = true;
 				mIsExg1_16bitEnabled = false;
@@ -9770,6 +9788,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mIsExg2_16bitEnabled = false;
 			}
 		}
+		
+		
 		
 //		if(mSensorMap != null) {
 //			if(i==0) { // 16-bit

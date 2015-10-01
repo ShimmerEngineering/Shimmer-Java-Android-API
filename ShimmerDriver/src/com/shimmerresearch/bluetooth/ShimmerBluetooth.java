@@ -602,53 +602,53 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //								getListofInstructions().removeAll(Collections.singleton(null));
 //								setInstructionStackLock(false);
 //							}
-	
-							if((byte)tb[0]==ACK_COMMAND_PROCESSED) {
+							if(tb != null){
+								if((byte)tb[0]==ACK_COMMAND_PROCESSED) {
 
-								mWaitForAck=false;
-								printLogDataForDebugging("Ack Received for Command: \t\t\t" + btCommandToString(mCurrentCommand));
+									mWaitForAck=false;
+									printLogDataForDebugging("Ack Received for Command: \t\t\t" + btCommandToString(mCurrentCommand));
 
-								// Send status report if needed by the
-								// application and is not one of the below
-								// commands that are triggered by timers
-								if(mCurrentCommand!=GET_STATUS_COMMAND 
-										&& mCurrentCommand!=TEST_CONNECTION_COMMAND 
-										&& mCurrentCommand!=SET_BLINK_LED 
-										&& mOperationUnderway){
-									sendProgressReport(new ProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mUniqueID));
-								}
-								
-								// Process if currentCommand is a SET command
-								if(mBtSetCommandMap.containsKey(mCurrentCommand)){
-									stopTimerCheckForAckOrResp(); //cancel the ack timer
-									
-									processAckFromSetCommand(mCurrentCommand);
-									
-									mTransactionCompleted = true;
-									setInstructionStackLock(false);
-								}
-								
-								// Process if currentCommand is a GET command
-								else if(mBtGetCommandMap.containsKey(mCurrentCommand)){
-									
-									//Special cases
-									byte[] insBytes = getListofInstructions().get(0);
-									if(mCurrentCommand==GET_EXG_REGS_COMMAND){
-										// Need to store ExG chip number before receiving response
-										mTempChipID = insBytes[1];
+									// Send status report if needed by the
+									// application and is not one of the below
+									// commands that are triggered by timers
+									if(mCurrentCommand!=GET_STATUS_COMMAND 
+											&& mCurrentCommand!=TEST_CONNECTION_COMMAND 
+											&& mCurrentCommand!=SET_BLINK_LED 
+											&& mOperationUnderway){
+										sendProgressReport(new ProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mUniqueID));
 									}
-									else if(mCurrentCommand==GET_INFOMEM_COMMAND){
-										// store current address/InfoMem segment
-										mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
-										mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
+									
+									// Process if currentCommand is a SET command
+									if(mBtSetCommandMap.containsKey(mCurrentCommand)){
+										stopTimerCheckForAckOrResp(); //cancel the ack timer
+										
+										processAckFromSetCommand(mCurrentCommand);
+										
+										mTransactionCompleted = true;
+										setInstructionStackLock(false);
 									}
+									
+									// Process if currentCommand is a GET command
+									else if(mBtGetCommandMap.containsKey(mCurrentCommand)){
+										
+										//Special cases
+										byte[] insBytes = getListofInstructions().get(0);
+										if(mCurrentCommand==GET_EXG_REGS_COMMAND){
+											// Need to store ExG chip number before receiving response
+											mTempChipID = insBytes[1];
+										}
+										else if(mCurrentCommand==GET_INFOMEM_COMMAND){
+											// store current address/InfoMem segment
+											mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+											mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
+										}
 
-									mWaitForResponse=true;
-									getListofInstructions().remove(0);
+										mWaitForResponse=true;
+										getListofInstructions().remove(0);
+									}
+									
 								}
-								
 							}
-	
 						}
 					} 
 					//endregion --------- Process ACK from a GET or SET command while not streaming --------- 
