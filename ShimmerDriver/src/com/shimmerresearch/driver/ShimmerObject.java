@@ -9751,6 +9751,16 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		mExGResolution = i;
 		
 		if(i==0) { // 16-bit
+			//this is needed so the BT can write the correct sensor
+			if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG1_16BIT;
+			}
+			if ((mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG2_16BIT;
+			}
+			mEnabledSensors = SENSOR_EXG1_16BIT|SENSOR_EXG2_16BIT;
+			//
+			
 			if(mIsExg1_24bitEnabled){
 				mIsExg1_24bitEnabled = false;
 				mIsExg1_16bitEnabled = true;
@@ -9761,6 +9771,13 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			}
 		}
 		else if(i==1) { // 24-bit
+			if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG1_24BIT;
+			}
+			if ((mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG2_24BIT;
+			}
+			mEnabledSensors = SENSOR_EXG1_24BIT|SENSOR_EXG2_24BIT;
 			if(mIsExg1_16bitEnabled){
 				mIsExg1_24bitEnabled = true;
 				mIsExg1_16bitEnabled = false;
@@ -9770,6 +9787,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				mIsExg2_16bitEnabled = false;
 			}
 		}
+		
+		
 		
 //		if(mSensorMap != null) {
 //			if(i==0) { // 16-bit
