@@ -900,7 +900,7 @@ public class Configuration {
 		}
 		
 		
-		private static class CompatibilityInfoForMaps{
+		public static class CompatibilityInfoForMaps{
 			public static final int ANY_VERSION = -1;
 
 			// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
@@ -960,7 +960,7 @@ public class Configuration {
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
 					baseAnyIntExpBoardAndSdlog,baseAnyIntExpBoardAndBtStream,baseAnyIntExpBoardAndLogAndStream);
 
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGq,
 					baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, baseGsrUnifiedGq);
 			

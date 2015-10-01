@@ -10,8 +10,8 @@ import com.shimmerresearch.driver.ShimmerVerObject;
 
 public class KionixKXRB52042 extends AbstractSensor{
 
-	public KionixKXRB52042(int hardwareID, int firmwareType) {
-		super(hardwareID, firmwareType);
+	public KionixKXRB52042(ShimmerVerObject svo) {
+		super(svo);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -31,11 +31,7 @@ public class KionixKXRB52042 extends AbstractSensor{
 		return null;
 	}
 
-	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public Object processData(byte[] rawData, int FWType, int sensorFWID) {
@@ -49,11 +45,7 @@ public class KionixKXRB52042 extends AbstractSensor{
 		return null;
 	}
 
-	@Override
-	public void generateChannelDetailsMap(int firmwateType, int hardwareID) {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet,

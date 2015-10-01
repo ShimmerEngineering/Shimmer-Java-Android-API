@@ -20,8 +20,8 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	
 	//map infomem to fw, index, value
 	
-	public STMICROLSM303DLHC(int hardwareID, int firmwareType, int id) {
-		
+	public STMICROLSM303DLHC(ShimmerVerObject svo) {
+		super(svo);
 		
 		// TODO Auto-generated constructor stub
 		//build map here, 
@@ -117,6 +117,16 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 
 	@Override
 	public HashMap<COMMUNICATION_TYPE, HashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
+			ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		return null;
+	}
+
+	@Override
+	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
 			ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
