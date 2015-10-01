@@ -1677,8 +1677,8 @@ public class Configuration {
 					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 //					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
 					//temp only! JC: delete after db sync works
-					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC
+//					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
@@ -2018,21 +2018,21 @@ public class Configuration {
 							CHANNEL_UNITS.MILLISECONDS,
 							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
 			
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-							DatabaseChannelHandles.REAL_TIME_CLOCK,
-							CHANNEL_UNITS.MILLISECONDS,
-							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
-
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
 //					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-//							DatabaseChannelHandles.REAL_TIME_CLOCK_SYNC,
+//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+//							DatabaseChannelHandles.REAL_TIME_CLOCK,
 //							CHANNEL_UNITS.MILLISECONDS,
 //							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
+
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+							DatabaseChannelHandles.REAL_TIME_CLOCK_SYNC,
+							CHANNEL_UNITS.MILLISECONDS,
+							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
 			
 //			TIMESTAMP_SYNC
 			
