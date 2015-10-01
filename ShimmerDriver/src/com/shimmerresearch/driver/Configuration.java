@@ -2018,13 +2018,13 @@ public class Configuration {
 							CHANNEL_UNITS.MILLISECONDS,
 							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
 			
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//							DatabaseChannelHandles.REAL_TIME_CLOCK,
-//							CHANNEL_UNITS.MILLISECONDS,
-//							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+							DatabaseChannelHandles.REAL_TIME_CLOCK,
+							CHANNEL_UNITS.MILLISECONDS,
+							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 					new ChannelDetails(
