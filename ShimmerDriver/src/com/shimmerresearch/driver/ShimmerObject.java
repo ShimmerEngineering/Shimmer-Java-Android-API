@@ -7445,7 +7445,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			System.arraycopy(infoMemBackup, 0, mInfoMemBytes, 0, (infoMemBackup.length > mInfoMemBytes.length) ? mInfoMemBytes.length:infoMemBackup.length);
 		}	
 		
-		
 		// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 		// Sampling Rate
 		int samplingRate = (int)(32768 / mShimmerSamplingRate);
@@ -7566,6 +7565,28 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mDerivedSensors |= mSensorMap.get(key).mDerivedSensorBitmapID;
 				}
 			}
+			
+			/*
+			 * Infomem layout and values for derived channels (added by RM for debug)
+			 * 
+			mInfoMemLayout.idxDerivedSensors0 = 31
+			mInfoMemLayout.idxDerivedSensors1 = 32	
+			mInfoMemLayout.idxDerivedSensors2 = 33	
+			
+			mDerivedSensors = 1 (Resistance Amp - BAMP)
+			mDerivedSensors = 2 (Skin Temp - BAMP)
+			mDerivedSensors = 4 (PPG - GSR+)
+			mDerivedSensors = 8 (PPG1 - P3D)
+			mDerivedSensors = 16 (PPG2 - P3D)
+			
+			byteShiftDerivedSensors0 = 0
+			byteShiftDerivedSensors1 = 8
+			byteShiftDerivedSensors2 = 16
+			
+ 			mInfoMemLayout.maskDerivedChannelsByte = 0xFF
+ 			
+ 			*/
+			
 			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors0) & mInfoMemLayout.maskDerivedChannelsByte);
 			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors1) & mInfoMemLayout.maskDerivedChannelsByte);
 			if(mInfoMemLayout.idxDerivedSensors2>=0) { // Check if compatible
