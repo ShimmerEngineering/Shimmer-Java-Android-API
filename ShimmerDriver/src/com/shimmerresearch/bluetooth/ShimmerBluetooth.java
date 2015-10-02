@@ -1041,6 +1041,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==DERIVED_CHANNEL_BYTES_RESPONSE) {
 			byte[] byteArray = readBytes(3);
 			mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
+			System.out.println("DERIVED_CHANNEL_BYTES_RESPONSE mDerivedSensors: " +mDerivedSensors);
 			//System.out.println("mDerivedSensors: " +mDerivedSensors);
 		}
 		else if(responseCommand==GET_SHIMMER_VERSION_RESPONSE) {
@@ -1599,7 +1600,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					GainEMG=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
 				}
 				else if(currentCommand==SET_DERIVED_CHANNEL_BYTES){
-					mDerivedSensors=(long)(((((byte[])getListofInstructions().get(0))[0]&0xFF)<<16) + ((((byte[])getListofInstructions().get(0))[1]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[2]&0xFF));
+					mDerivedSensors=(long)(((((byte[])getListofInstructions().get(0))[3]&0xFF)<<16) + ((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[1]&0xFF));
+					System.out.println("SET_DERIVED_CHANNEL_BYTES mDerivedSensors: " +mDerivedSensors);
 				}
 				else if(currentCommand==SET_SHIMMERNAME_COMMAND){
 					byte[] instruction =getListofInstructions().get(0);

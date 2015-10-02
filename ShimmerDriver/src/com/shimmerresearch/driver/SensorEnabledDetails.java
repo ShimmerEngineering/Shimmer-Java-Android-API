@@ -23,6 +23,11 @@ public class SensorEnabledDetails implements Serializable{
 		for(String channelName:sensorDetails.mListOfChannelsRef){
 			mListOfChannels.add(channelName);
 		}
+		
+		if(mDerivedSensorBitmapID>0) {
+			//System.out.println("mSensorDetails " +mSensorDetails.mLabel + " mDerivedSensorBitmapID: " +mDerivedSensorBitmapID);
+			//System.out.println("HERE");
+		}
 	}
 
 	public boolean isDerivedChannel() {

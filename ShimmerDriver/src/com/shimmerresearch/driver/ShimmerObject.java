@@ -8536,6 +8536,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			
 			refreshEnabledSensorsFromSensorMap();
 			
+			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SKIN_TEMPERATURE_PROBE ||
+					sensorMapKey == Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP ||
+						sensorMapKey == Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP){
+				
+				System.out.println("mSensorMap.get(sensorMapKey) " +mSensorMap.get(sensorMapKey).mSensorDetails.mLabel + " " + mSensorMap.get(sensorMapKey).mIsEnabled);
+				System.out.println("here");
+			}
+
 			return ((mSensorMap.get(sensorMapKey).mIsEnabled==state)? true:false);
 			
 		}
@@ -8794,7 +8802,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			}
 		}
-
+		//System.out.println("sensorMapConflictCheckandCorrect(): " +mDerivedSensors);
 		sensorMapCheckandCorrectSensorDependencies();
 		sensorMapCheckandCorrectHwDependencies();
 	}
@@ -8814,6 +8822,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						break;
 					}
 				}
+				//System.out.println("sensorMapCheckandCorrectSensorDependencies(): " +mDerivedSensors);
 			}
 			
 //			if (mHardwareVersion == HW_ID.SHIMMER_3){
@@ -8849,14 +8858,18 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
 			if(mSensorMap.get(sensorMapKey).mSensorDetails.mListOfCompatibleVersionInfo != null) {
 				if(!checkIfVersionCompatible(mSensorMap.get(sensorMapKey).mSensorDetails.mListOfCompatibleVersionInfo)) {
+					//System.out.println("mSensorMap.get(sensorMapKey): " +mSensorMap.get(sensorMapKey).mSensorDetails.mLabel);
 					mSensorMap.get(sensorMapKey).mIsEnabled = false;
 					if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+						//System.out.println("mSensorMap.get(sensorMapKey): " +mSensorMap.get(sensorMapKey).mSensorDetails.mLabel);
 						mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
 					}
 					setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
 				}
 			}
 		}
+		
+		//System.out.println("sensorMapCheckandCorrectHwDependencies mDerivedSensors: " +mDerivedSensors);
 	}
 	
 
