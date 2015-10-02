@@ -7895,7 +7895,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						   
 						   		//System.out.println("getExGResolution(): " +getExGResolution());
 						   		
-			    				if((getExGResolution()==0)
+			    				if((getExGResolution()==1)
 			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
@@ -7909,7 +7909,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
 									    i.remove();
 								}
-			    				else if((getExGResolution()==1)
+			    				else if((getExGResolution()==0)
 			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
 				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
 				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
@@ -8282,7 +8282,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 								}
 							}
 							else {
-								//System.out.println("Derived Channel - " + mSensorMap.get(sensorMapKey).mLabel + " no associated required keys:");
 							}
 						}
 						// This is not a derived sensor
@@ -8535,14 +8534,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			checkIfInternalExpBrdPowerIsNeeded();
 			
 			refreshEnabledSensorsFromSensorMap();
-			
-			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SKIN_TEMPERATURE_PROBE ||
-					sensorMapKey == Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP ||
-						sensorMapKey == Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP){
-				
-				System.out.println("mSensorMap.get(sensorMapKey) " +mSensorMap.get(sensorMapKey).mSensorDetails.mLabel + " " + mSensorMap.get(sensorMapKey).mIsEnabled);
-				System.out.println("here");
-			}
 
 			return ((mSensorMap.get(sensorMapKey).mIsEnabled==state)? true:false);
 			
@@ -8802,7 +8793,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			}
 		}
-		//System.out.println("sensorMapConflictCheckandCorrect(): " +mDerivedSensors);
+		
 		sensorMapCheckandCorrectSensorDependencies();
 		sensorMapCheckandCorrectHwDependencies();
 	}
@@ -8822,7 +8813,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						break;
 					}
 				}
-				//System.out.println("sensorMapCheckandCorrectSensorDependencies(): " +mDerivedSensors);
+				
 			}
 			
 //			if (mHardwareVersion == HW_ID.SHIMMER_3){
@@ -8858,18 +8849,14 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
 			if(mSensorMap.get(sensorMapKey).mSensorDetails.mListOfCompatibleVersionInfo != null) {
 				if(!checkIfVersionCompatible(mSensorMap.get(sensorMapKey).mSensorDetails.mListOfCompatibleVersionInfo)) {
-					//System.out.println("mSensorMap.get(sensorMapKey): " +mSensorMap.get(sensorMapKey).mSensorDetails.mLabel);
 					mSensorMap.get(sensorMapKey).mIsEnabled = false;
 					if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
-						//System.out.println("mSensorMap.get(sensorMapKey): " +mSensorMap.get(sensorMapKey).mSensorDetails.mLabel);
 						mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
 					}
 					setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).mIsEnabled);
 				}
 			}
 		}
-		
-		//System.out.println("sensorMapCheckandCorrectHwDependencies mDerivedSensors: " +mDerivedSensors);
 	}
 	
 
