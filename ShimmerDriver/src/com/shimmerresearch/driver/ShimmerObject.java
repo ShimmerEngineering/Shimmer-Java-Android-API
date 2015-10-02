@@ -856,7 +856,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 		int numAdditionalChannels = 0;
 		
 		if (fwIdentifier == FW_TYPE_BT){
-			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
+			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 			//plus 1 because of: timestamp
 			numAdditionalChannels += 1;
 			
