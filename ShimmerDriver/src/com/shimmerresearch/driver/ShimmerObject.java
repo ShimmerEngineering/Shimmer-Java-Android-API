@@ -7445,7 +7445,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			System.arraycopy(infoMemBackup, 0, mInfoMemBytes, 0, (infoMemBackup.length > mInfoMemBytes.length) ? mInfoMemBytes.length:infoMemBackup.length);
 		}	
 		
-		
 		// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 		// Sampling Rate
 		int samplingRate = (int)(32768 / mShimmerSamplingRate);
@@ -7566,6 +7565,28 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 					mDerivedSensors |= mSensorMap.get(key).mDerivedSensorBitmapID;
 				}
 			}
+			
+			/*
+			 * Infomem layout and values for derived channels (added by RM for debug)
+			 * 
+			mInfoMemLayout.idxDerivedSensors0 = 31
+			mInfoMemLayout.idxDerivedSensors1 = 32	
+			mInfoMemLayout.idxDerivedSensors2 = 33	
+			
+			mDerivedSensors = 1 (Resistance Amp - BAMP)
+			mDerivedSensors = 2 (Skin Temp - BAMP)
+			mDerivedSensors = 4 (PPG - GSR+)
+			mDerivedSensors = 8 (PPG1 - P3D)
+			mDerivedSensors = 16 (PPG2 - P3D)
+			
+			byteShiftDerivedSensors0 = 0
+			byteShiftDerivedSensors1 = 8
+			byteShiftDerivedSensors2 = 16
+			
+ 			mInfoMemLayout.maskDerivedChannelsByte = 0xFF
+ 			
+ 			*/
+			
 			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors0) & mInfoMemLayout.maskDerivedChannelsByte);
 			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors1) & mInfoMemLayout.maskDerivedChannelsByte);
 			if(mInfoMemLayout.idxDerivedSensors2>=0) { // Check if compatible
@@ -7874,8 +7895,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						   
 						   		//System.out.println("getExGResolution(): " +getExGResolution());
 						   		
-						   	
-			    				if((getExGResolution()==1)//JC: Correct Fix?
+			    				if((getExGResolution()==1)
 			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
@@ -7889,7 +7909,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
 									    i.remove();
 								}
-			    				else if((getExGResolution()==0)//JC: Correct Fix?
+			    				else if((getExGResolution()==0)
 			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
 				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
 				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
@@ -8262,7 +8282,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 								}
 							}
 							else {
-								//System.out.println("Derived Channel - " + mSensorMap.get(sensorMapKey).mLabel + " no associated required keys:");
 							}
 						}
 						// This is not a derived sensor
@@ -8515,7 +8534,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			checkIfInternalExpBrdPowerIsNeeded();
 			
 			refreshEnabledSensorsFromSensorMap();
-			
+
 			return ((mSensorMap.get(sensorMapKey).mIsEnabled==state)? true:false);
 			
 		}
@@ -8774,7 +8793,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 				}
 			}
 		}
-
+		
 		sensorMapCheckandCorrectSensorDependencies();
 		sensorMapCheckandCorrectHwDependencies();
 	}
@@ -8794,6 +8813,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						break;
 					}
 				}
+				
 			}
 			
 //			if (mHardwareVersion == HW_ID.SHIMMER_3){
