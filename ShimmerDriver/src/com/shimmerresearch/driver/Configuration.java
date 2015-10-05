@@ -1729,6 +1729,10 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,
 							Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW);
 			
+			//Resistance Amplifier
+			aMap.get(Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP).mListOfChannelsRef = Arrays.asList(
+							Configuration.Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP);
+			
 			// Phillps Skin Temperature Probe (through Bridge Amp)
 			aMap.get(Configuration.Shimmer3.SensorMapKey.SKIN_TEMPERATURE_PROBE).mListOfChannelsRef = Arrays.asList(
 					Configuration.Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE);
@@ -1756,7 +1760,7 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG1_A13).mListOfChannelsRef = Arrays.asList(
 					Configuration.Shimmer3.ObjectClusterSensorName.PPG1_A13);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A1).mListOfChannelsRef = Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.PPG2_A14);
+					Configuration.Shimmer3.ObjectClusterSensorName.PPG2_A1);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_A14).mListOfChannelsRef = Arrays.asList(
 					Configuration.Shimmer3.ObjectClusterSensorName.PPG2_A14);
 

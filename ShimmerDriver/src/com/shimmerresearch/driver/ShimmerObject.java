@@ -7895,7 +7895,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						   
 						   		//System.out.println("getExGResolution(): " +getExGResolution());
 						   		
-			    				if((getExGResolution()==0)
+			    				if((getExGResolution()==1)
 			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
@@ -7909,7 +7909,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
 									    i.remove();
 								}
-			    				else if((getExGResolution()==1)
+			    				else if((getExGResolution()==0)
 			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
 				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
 				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
