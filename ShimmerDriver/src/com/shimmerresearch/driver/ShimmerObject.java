@@ -126,7 +126,7 @@ import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
-public abstract class ShimmerObject extends BasicProcessWithCallBack implements Serializable {
+public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
 
 	/**
 	 * 
@@ -813,9 +813,6 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	
 	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
 	
-	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
-	public String mUniqueID = "";
-
 	private boolean isOverrideShowRwcErrorLeds = true;
 
 

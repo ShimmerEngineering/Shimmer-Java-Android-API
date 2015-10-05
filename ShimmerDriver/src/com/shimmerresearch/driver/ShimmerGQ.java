@@ -10,7 +10,8 @@ import com.shimmerresearch.sensor.AbstractSensor;
 
 public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, ShimmerDataProcessing {
 	
-
+	ShimmerVerObject mShimmerVerObject;
+	
 	/**Each integer is a unique identifier
 	 * 
 	 */
@@ -24,6 +25,14 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	//priority of comm type to know whether it is dock and radio connected, if dock connected send uart priority
 	
 	//
+	
+	/**
+	 * @param uniqueID unique id of the shimmer
+	 * @param shimmerVersionObject the FW and HW details of the devices
+	 */
+	public ShimmerGQ(String uniqueID, ShimmerVerObject shimmerVersionObject){
+		
+	}
 	
 	
 	/** This is derived from all the sensors
@@ -74,6 +83,12 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 			HashMap<Integer, AbstractSensor> sensorMap) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

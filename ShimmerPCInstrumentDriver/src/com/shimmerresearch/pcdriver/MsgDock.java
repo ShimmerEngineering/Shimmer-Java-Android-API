@@ -118,6 +118,11 @@ public class MsgDock {
 	public final static int MSG_ID_BT_TO_DB_BUFFER_FILLED = 171;
 	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
 	
+	public final static int MSG_ID_SPAN_SCAN_FINISHED = 180;
+	public final static int MSG_ID_SPAN_NEW_PACKET_RECEIVED = 181;
+	
+	
+	
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
