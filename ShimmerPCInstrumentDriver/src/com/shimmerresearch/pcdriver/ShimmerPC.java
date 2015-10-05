@@ -388,7 +388,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
         
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-		
+		if (mTimerCheckAlive==null && mTimerReadStatus==null && mTimerReadBattStatus==null){
+        	super.operationFinished();
+        }
 		setState(BT_STATE.CONNECTED);
 	}
 
@@ -589,9 +591,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 			progressReportPerDevice.finishOperation();
 			progressReportPerDevice.mOperationState = ProgressReportPerDevice.OperationState.SUCCESS;
-
-			super.operationFinished();
-			
+			//JC: moved operationFinished to is ready for streaming, seems to be called before the inquiry response is received
+			//super.operationFinished();
 			CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mUniqueID, progressReportPerDevice);
 			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 			
