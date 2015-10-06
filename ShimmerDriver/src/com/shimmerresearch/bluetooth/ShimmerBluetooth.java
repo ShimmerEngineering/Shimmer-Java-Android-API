@@ -537,6 +537,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 									}
 								}
 							}
+							try {
+								Thread.sleep((int)((Math.random()+.1)*100.0));
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							writeBytes(insBytes);
 							printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(insBytes));
 	
@@ -2331,7 +2337,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if(mTimerCheckAlive==null){ 
 				mTimerCheckAlive = new Timer();
 			}
-			mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
+			//mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
 		}
 	}
 	
