@@ -929,6 +929,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS));
 					calibratedData[iTimeStamp] = calibratedTS;
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
+					objectCluster.mShimmerCalibratedTimeStamp = calibratedTS;
 				}
 			}
 

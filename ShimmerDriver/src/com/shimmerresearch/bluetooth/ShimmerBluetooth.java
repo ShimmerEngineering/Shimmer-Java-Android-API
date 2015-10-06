@@ -94,8 +94,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.driver.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ExpansionBoardDetails;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.InfoMemLayout;
 import com.shimmerresearch.driver.ShimmerBattStatusDetails;
+import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
@@ -116,7 +120,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
 	
 	private int mNumberofTXRetriesCount=0;
-	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 2;
+	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	
 	public enum BT_STATE{
 		//Removed the below
@@ -201,7 +205,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void batteryStatusChanged();
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
-	
+	private boolean mFirstPacketParsed=true;
+	private double mOffsetFirstTime=-1;
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
 	protected boolean mDummy=false;
@@ -885,6 +890,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		ObjectCluster objectCluster = null;
 		try {
 			objectCluster = buildMsg(packet, fwID, timeSync, pcTimeStamp);
+			if(mFirstPacketParsed)
+			{
+				mFirstPacketParsed=false;
+				FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
+				byte[] bSystemTS = objectCluster.mSystemTimeStamp;
+				ByteBuffer bb = ByteBuffer.allocate(8);
+		    	bb.put(bSystemTS);
+		    	bb.flip();
+		    	long systemTimeStamp = bb.getLong();
+				mOffsetFirstTime = systemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
+			}
+			
+			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2087,6 +2106,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		mPacketLossCount = 0;
 		mPacketReceptionRate = 100;
+		mFirstPacketParsed=true;
 		mFirstTimeCalTime=true;
 		resetCalibratedTimeStamp();
 		mLastReceivedCalibratedTimeStamp = -1;
@@ -2123,6 +2143,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mPacketLossCount = 0;
 			mPacketReceptionRate = 100;
 			mFirstTimeCalTime=true;
+			mFirstPacketParsed=true;
 			resetCalibratedTimeStamp();
 			mLastReceivedCalibratedTimeStamp = -1;
 			mSync=true; // a backup sync done every time you start streaming
@@ -2246,6 +2267,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						killConnection(); //If command fail exit device	
 					} else {
 						mWaitForAck=false;
+						mWaitForResponse=false;
 						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
 						setInstructionStackLock(false);
 						//this is needed because if u dc the shimmer the write call gets stuck
