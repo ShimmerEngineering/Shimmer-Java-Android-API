@@ -2023,7 +2023,7 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 			//Additional Channels Offset
 			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels+1; //+1 because timestamp channel appears at the start
 			
-			if (fwIdentifier == FW_TYPE_BT){ // Here so as not to mess with ShimmerSDLog
+			if (fwIdentifier == FW_TYPE_BT || fwIdentifier == FW_TYPE_SD){ // Here so as not to mess with ShimmerSDLog
 				if(isEXGUsingDefaultECGConfiguration()){
 					if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
 							|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)){
@@ -2031,18 +2031,38 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						int iexg1ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT);
 						int iexg1ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT);
 	
-						sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT;
-	
-						uncalibratedData[additionalChannelsOffset]= uncalibratedData[iexg1ch1] - uncalibratedData[iexg1ch2];
-						uncalibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.NO_UNITS;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[additionalChannelsOffset]));
-						
-						if(mEnableCalibration){
-							calibratedData[additionalChannelsOffset]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
-							calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
-							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]));
+						if(fwIdentifier == FW_TYPE_SD){
+							int iexg2ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT);
+							sensorNames[iexg2ch1] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT;
+							objectCluster.mPropertyCluster.removeAll(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT);
+							
+							uncalibratedData[iexg2ch1]= uncalibratedData[iexg1ch1] - uncalibratedData[iexg1ch2];
+							uncalibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.NO_UNITS;
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iexg2ch1]));
+							
+							if(mEnableCalibration){
+								calibratedData[iexg2ch1]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
+								calibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.MILLIVOLTS;
+								objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iexg2ch1]));
+							}
 						}
-						additionalChannelsOffset += 1;
+						else{
+							sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT;
+							
+							uncalibratedData[additionalChannelsOffset]= uncalibratedData[iexg1ch1] - uncalibratedData[iexg1ch2];
+							uncalibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.NO_UNITS;
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[additionalChannelsOffset]));
+							
+							if(mEnableCalibration){
+								calibratedData[additionalChannelsOffset]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
+								calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
+								objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]));
+							}
+							additionalChannelsOffset += 1;
+						}
+						
+	
+						
 					}
 					else if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
 							|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_24BIT) > 0)){
@@ -2050,18 +2070,37 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						int iexg1ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT);
 						int iexg1ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT);
 	
-						sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT;
-	
-						uncalibratedData[additionalChannelsOffset]= uncalibratedData[iexg1ch1] - uncalibratedData[iexg1ch2];
-						uncalibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.NO_UNITS;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[additionalChannelsOffset]));
-						
-						if(mEnableCalibration){
-							calibratedData[additionalChannelsOffset]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
-							calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
-							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]));
+						if(fwIdentifier == FW_TYPE_SD){
+							int iexg2ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT);
+							sensorNames[iexg2ch1] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT;
+							objectCluster.mPropertyCluster.removeAll(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT);
+							
+							uncalibratedData[iexg2ch1]= uncalibratedData[iexg1ch1] - uncalibratedData[iexg1ch2];
+							uncalibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.NO_UNITS;
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iexg2ch1]));
+							
+							if(mEnableCalibration){
+								calibratedData[iexg2ch1]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
+								calibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.MILLIVOLTS;
+								objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iexg2ch1]));
+							}
 						}
-						additionalChannelsOffset += 1;
+						else{
+							sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT;
+							
+							uncalibratedData[additionalChannelsOffset]= uncalibratedData[iexg1ch1] - uncalibratedData[iexg1ch2];
+							uncalibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.NO_UNITS;
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[additionalChannelsOffset]));
+							
+							if(mEnableCalibration){
+								calibratedData[additionalChannelsOffset]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
+								calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
+								objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]));
+							}
+							additionalChannelsOffset += 1;
+						}
+	
+						
 					}
 				}
 			}
@@ -5983,11 +6022,11 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isEXGUsingDefaultECGConfiguration(){
-		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
+//		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
 			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
 				return true;
 			}
-		}
+//		}
 		return false;
 	}
 
