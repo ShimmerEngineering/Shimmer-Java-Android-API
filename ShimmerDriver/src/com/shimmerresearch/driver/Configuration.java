@@ -739,6 +739,7 @@ public class Configuration {
 			public static  String SYSTEM_TIMESTAMP = "System_Timestamp";
 			public static  String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 			public static  String TIMESTAMP_SYNC = "Timestamp_Sync";
+			public static  String PC_TIMESTAMP_PLOT = "System_Timestamp_plot";
 			
 			public static  String ACCEL_LN_X = "Accel_LN_X";
 			public static  String ACCEL_LN_Y = "Accel_LN_Y";

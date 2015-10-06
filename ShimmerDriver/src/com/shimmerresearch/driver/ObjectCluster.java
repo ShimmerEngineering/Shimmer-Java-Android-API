@@ -78,6 +78,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	
 	
 	public byte[] mSystemTimeStamp = new byte[8];
+	public double mShimmerCalibratedTimeStamp;
 	
 	public ObjectCluster(){
 	}
