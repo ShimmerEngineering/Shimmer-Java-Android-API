@@ -2151,6 +2151,39 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRate()));
 				} 
 				
+				//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
+				//we will send the status changed to the GUI anyway
+				if(mCurrentCommand==START_LOGGING_ONLY_COMMAND){
+					
+					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+					
+					mIsSDLogging = true;
+					logAndStreamStatusChanged();
+					mWaitForAck=false;
+					mWaitForResponse=false;
+					
+					getListofInstructions().remove(0);
+					mTransactionCompleted = true;
+					setInstructionStackLock(false);
+					
+					return;
+				}
+				else if(mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
+					
+					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+					
+					mIsSDLogging = false;
+					logAndStreamStatusChanged();
+					mWaitForAck=false;
+					mWaitForResponse=false;
+					
+					getListofInstructions().remove(0);
+					mTransactionCompleted = true;
+					setInstructionStackLock(false);
+					
+					return;
+				}
+				
 
 				if(mCurrentCommand==GET_FW_VERSION_COMMAND){
 					setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject(HW_ID.SHIMMER_2R, FW_ID.SHIMMER2R.BOILER_PLATE, 0, 1, 0));
