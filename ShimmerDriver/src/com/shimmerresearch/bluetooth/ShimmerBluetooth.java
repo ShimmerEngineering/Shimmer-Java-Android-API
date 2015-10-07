@@ -2056,13 +2056,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void operationPrepare(){
 		stopAllTimers();
 
-		//make sure no nulls
-		getListofInstructions().removeAll(Collections.singleton(null));
+		//make sure no more instructions
+		//shouldnt matter since the configuration are being rewritten by consensys
+		//used in initializeshimmer3 (this class) and BluetoothManager class
+		getListofInstructions().clear();
 		// wait for instruction stack to clear			
 		while(getListofInstructions().size()>0); //TODO add timeout
 		// lock the instruction stack
 		setInstructionStackLock(true);
-		mOperationUnderway = true;
+		mOperationUnderway = true; 
 	}
 	
 	/**
@@ -2375,7 +2377,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if(mTimerCheckAlive==null){ 
 				mTimerCheckAlive = new Timer();
 			}
+			//dont really need this for log and stream since we already have the get status timer
+			if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // check if Shimmer is using LogAndStream firmware
 			//mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
+			} else if (mFirmwareIdentifier==FW_ID.SHIMMER3.BTSTREAM) {
+				mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
+			}
 		}
 	}
 	
