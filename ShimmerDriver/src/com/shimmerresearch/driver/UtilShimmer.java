@@ -16,6 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author Mark Nolan
  *
  */
+
 public class UtilShimmer implements Serializable {
 	
 	public String mParentClassName = "UpdateCheck";
