@@ -6019,13 +6019,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	}
 
-	public boolean isEXGUsingDefaultECGConfiguration(){
-//		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
-			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
-				return true;
-			}
-//		}
-		return false;
+//	public boolean isEXGUsingDefaultECGConfiguration(){
+////		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
+//			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
+//				return true;
+//			}
+////		}
+//		return false;
+//	}
+	
+   public boolean isEXGUsingDefaultECGConfiguration(){
+	  if((mIsExg1_16bitEnabled && mIsExg2_16bitEnabled) || (mIsExg1_24bitEnabled && mIsExg2_24bitEnabled)){
+		  if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
+			  return true;
+		  }
+	  }
+	  return false;
 	}
 
 	public boolean isEXGUsingDefaultEMGConfiguration(){
