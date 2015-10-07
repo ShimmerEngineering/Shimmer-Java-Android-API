@@ -768,18 +768,21 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							&& bytesAvailableToBeRead()) {
 						
 						tb=readBytes(1);
-						if(tb[0]==ACK_COMMAND_PROCESSED) {
-							consolePrintLn("ACK RECEIVED , Connected State!!");
-							tb = readBytes(1);
-							if (tb!=null){ //an android fix.. not fully investigated (JC)
-								if(tb[0]==ACK_COMMAND_PROCESSED){
-									tb = readBytes(1);
-								}
-								if(tb[0]==INSTREAM_CMD_RESPONSE){
-									processResponseCommand(INSTREAM_CMD_RESPONSE);
+						if(tb != null){
+							if(tb[0]==ACK_COMMAND_PROCESSED) {
+								consolePrintLn("ACK RECEIVED , Connected State!!");
+								tb = readBytes(1);
+								if (tb!=null){ //an android fix.. not fully investigated (JC)
+									if(tb[0]==ACK_COMMAND_PROCESSED){
+										tb = readBytes(1);
+									}
+									if(tb[0]==INSTREAM_CMD_RESPONSE){
+										processResponseCommand(INSTREAM_CMD_RESPONSE);
+									}
 								}
 							}
 						}
+
 						
 						clearSerialBuffer();
 					}
