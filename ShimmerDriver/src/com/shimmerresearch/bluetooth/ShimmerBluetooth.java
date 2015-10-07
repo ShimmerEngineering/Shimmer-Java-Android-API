@@ -120,7 +120,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
 	
 	private int mNumberofTXRetriesCount=0;
-	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
+	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 2;
 	
 	public enum BT_STATE{
 		//Removed the below
@@ -2053,6 +2053,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void operationPrepare(){
 		stopAllTimers();
 
+		//make sure no nulls
+		getListofInstructions().removeAll(Collections.singleton(null));
 		// wait for instruction stack to clear			
 		while(getListofInstructions().size()>0); //TODO add timeout
 		// lock the instruction stack
