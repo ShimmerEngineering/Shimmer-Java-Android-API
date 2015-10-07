@@ -2379,7 +2379,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			//dont really need this for log and stream since we already have the get status timer
 			if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // check if Shimmer is using LogAndStream firmware
-			//mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
+				mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
 			} else if (mFirmwareIdentifier==FW_ID.SHIMMER3.BTSTREAM) {
 				mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
 			}
@@ -2415,11 +2415,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			else{
 				mCountDeadConnection++;
-				if(mFirmwareVersionCode>=6){
+				if(mFirmwareVersionCode>=6 && !mIsStreaming){
 					if(getListofInstructions().size()==0 
 							&&!getListofInstructions().contains(new byte[]{TEST_CONNECTION_COMMAND})){
 						consolePrintLn("Check Alive Task");
-						writeTestConnectionCommand();
+						if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+							//writeTestConnectionCommand(); //dont need this because of the get status command
+						} else if (mFirmwareIdentifier==FW_ID.SHIMMER3.BTSTREAM){
+							writeTestConnectionCommand();
+						}
 					}
 				} 
 				else {
