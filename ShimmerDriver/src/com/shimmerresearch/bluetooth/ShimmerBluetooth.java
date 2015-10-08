@@ -2344,6 +2344,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ 
 			if(mTimerReadStatus==null){ 
 				mTimerReadStatus = new Timer();
+			} else {
+				mTimerReadStatus.cancel();
+				mTimerReadStatus.purge();
+				mTimerReadStatus = null;
 			}
 			mTimerReadStatus.schedule(new readStatusTask(), mReadStatusPeriod, mReadStatusPeriod);
 		}
@@ -2414,9 +2418,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mIamAlive=false;
 			}
 			else{
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM & !mIsStreaming){
+				if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM & mIsStreaming){
 					mCountDeadConnection++;
-				} else {
+				} else if(mFirmwareIdentifier==FW_ID.SHIMMER3.BTSTREAM) {
 					mCountDeadConnection++;
 				}
 				if(mFirmwareVersionCode>=6 && !mIsStreaming){
