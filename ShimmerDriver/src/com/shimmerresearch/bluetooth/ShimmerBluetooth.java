@@ -2414,7 +2414,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mIamAlive=false;
 			}
 			else{
-				mCountDeadConnection++;
+				if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM & !mIsStreaming){
+					mCountDeadConnection++;
+				} else {
+					mCountDeadConnection++;
+				}
 				if(mFirmwareVersionCode>=6 && !mIsStreaming){
 					if(getListofInstructions().size()==0 
 							&&!getListofInstructions().contains(new byte[]{TEST_CONNECTION_COMMAND})){

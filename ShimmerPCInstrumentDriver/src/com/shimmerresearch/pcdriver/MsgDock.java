@@ -118,8 +118,13 @@ public class MsgDock {
 	public final static int MSG_ID_BT_TO_DB_BUFFER_FILLED = 171;
 	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
 	
-	public final static int MSG_ID_SPAN_SCAN_FINISHED = 180;
-	public final static int MSG_ID_SPAN_NEW_PACKET_RECEIVED = 181;
+	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_FAILED = 180;
+	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_FAILED = 181;
+	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_FINISHED = 182;
+	public final static int MSG_ID_SPAN_ENABLE_BROADCAST_FAILED = 183;
+	public final static int MSG_ID_SPAN_BROADCAST_FAILED = 184;
+	public final static int MSG_ID_SPAN_BROADCAST_FINISHED = 185;
+	public final static int MSG_ID_SPAN_NEW_PACKET_RECEIVED = 186;
 	
 	
 	
