@@ -121,16 +121,17 @@ public class MsgDock {
 	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_FAILED = 180;
 	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_SUCCESS = 181;
 	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_FAILED = 182;
-	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_FINISHED = 183;
-	public final static int MSG_ID_SPAN_ENABLE_BROADCAST_FAILED = 184;
-	public final static int MSG_ID_SPAN_ENABLE_BROADCAST_SUCCESS = 185;
+	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_SUCCESS = 183;
+	public final static int MSG_ID_SPAN_ENABLE_BASESTATION_FAILED = 184;
+	public final static int MSG_ID_SPAN_ENABLE_BASESTATION_SUCCESS = 185;
 	public final static int MSG_ID_SPAN_NEW_PACKET_RECEIVED = 186;
 	
 	public final static int MSG_ID_SPANMANAGER_ENABLE_SPECTRUM_SCANNER_FAILED = 190;
 	public final static int MSG_ID_SPANMANAGER_ENABLE_SPECTRUM_SCANNER_SUCCESS = 191;
 	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_FAILED = 192;
-	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_FINISHED = 193;
-	public final static int MSG_ID_SPANMANAGER_ENABLE_BROADCAST_FAILED = 194;
+	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_SUCCESS = 193;
+	public final static int MSG_ID_SPANMANAGER_ENABLE_BASESTATION_FAILED = 194;
+	public final static int MSG_ID_SPANMANAGER_ENABLE_BASESTATION_SUCCESS = 195;
 	
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
