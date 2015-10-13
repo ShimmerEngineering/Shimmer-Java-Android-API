@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.shimmerresearch.algorithms.Filter;
 import com.shimmerresearch.android.Shimmer;
+import com.shimmerresearch.biophysicalprocessing.ECGtoHRAdaptive;
 import com.shimmerresearch.biophysicalprocessing.ECGtoHRAlgorithm;
 import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.database.DatabaseHandler;
@@ -91,7 +92,7 @@ public class MultiShimmerTemplateService extends Service {
 	private static int mNumberOfBeatsToAverage=5;
 	private static Shimmer mShimmerHeartRate;
 	private static PPGtoHRAlgorithm mHeartRateCalculation;
-	private static ECGtoHRAlgorithm mHeartRateCalculationECG;
+	private static ECGtoHRAdaptive mHeartRateCalculationECG;
 	static Filter mLPFilter;
 	static Filter mHPFilter;
 	static Filter mLPFilterECG;
@@ -910,7 +911,7 @@ public class MultiShimmerTemplateService extends Service {
 					if(bluetoothAddress.equals(mBluetoothAddressToHeartRate) && mHeartRateCalculation!=null)
 						mHeartRateCalculation.resetParameters();
 					if(bluetoothAddress.equals(mBluetoothAddressToHeartRate) && mHeartRateCalculationECG!=null)
-						mHeartRateCalculationECG.resetParameters();
+						mHeartRateCalculationECG.reset();
 				}
 				Collection<Object> colS=mMultiShimmer.values();
 				Iterator<Object> iterator = colS.iterator();
@@ -1692,7 +1693,7 @@ public void enableHeartRateECG(String bluetoothAddress, boolean enabled, String 
 			mBluetoothAddressToHeartRate = bluetoothAddress;
 			mShimmerHeartRate = (Shimmer) mMultiShimmer.get(mBluetoothAddressToHeartRate);
 			mSensortoHR = sensorToHeartRate;
-			mHeartRateCalculationECG = new ECGtoHRAlgorithm(mShimmerHeartRate.getSamplingRate(), 10 ,mNumberOfBeatsToAverage); //10 second training period
+			mHeartRateCalculationECG = new ECGtoHRAdaptive(mShimmerHeartRate.getSamplingRate());
 	
 			
 	    	try {

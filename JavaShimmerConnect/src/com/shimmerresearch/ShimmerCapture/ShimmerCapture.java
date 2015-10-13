@@ -78,6 +78,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.collect.Multimap;
+import com.shimmerresearch.biophysicalprocessing.ECGtoHRAdaptive;
 import com.shimmerresearch.biophysicalprocessing.ECGtoHRAlgorithm;
 import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
@@ -241,7 +242,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	double[] exg2Data16bit = new double[4];
 	
 	private PPGtoHRAlgorithm heartRateCalculation;
-	private ECGtoHRAlgorithm heartRateCalculationECG;
+	private ECGtoHRAdaptive heartRateCalculationECG;
 	private boolean calculateHeartRate = false;
 	private int INVALID_RESULT=-1;
 	
@@ -397,7 +398,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 					spinnerNumberOfBeatsToAve.setValue(1);
 				}
 				heartRateCalculation = new PPGtoHRAlgorithm(mShimmer.getSamplingRate(), (Integer)spinnerNumberOfBeatsToAve.getValue(),10); //10 second training period
-				heartRateCalculationECG = new ECGtoHRAlgorithm(mShimmer.getSamplingRate(),10,(Integer)spinnerNumberOfBeatsToAveECG.getValue()); //10 second training period
+				heartRateCalculationECG = new ECGtoHRAdaptive(mShimmer.getSamplingRate());
 				mShimmer.startStreaming();
 			}
 		});

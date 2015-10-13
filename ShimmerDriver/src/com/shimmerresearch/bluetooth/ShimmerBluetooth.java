@@ -558,6 +558,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForAck=false;
 								mListofInstructions.remove(0);
 								mInstructionStackLock=false;
+							} else if (mCurrentCommand==SET_VBATT_FREQ_COMMAND){
+								mTimer.cancel(); //cancel the ack timer
+								mTransactionCompleted=true;
+								mWaitForAck=false;
+								mListofInstructions.remove(0);
+								mInstructionStackLock=false;
 							}
 							else if (mCurrentCommand==SET_ACCEL_SENSITIVITY_COMMAND) {
 								mTimer.cancel(); //cancel the ack timer
@@ -906,28 +912,45 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							if(mFirmwareIdentifier==1){ //BTStream
 								if((mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1) || (mFirmwareVersionMajor==1 && mFirmwareVersionMinor==2 && mHardwareVersion==HW_ID.SHIMMER_2R))
 									mFirmwareVersionCode = 1;
-								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
+								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
 									mFirmwareVersionCode = 2;
-								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==3)
+								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==3)
 									mFirmwareVersionCode = 3;
-								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==4)
+								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==4)
 									mFirmwareVersionCode = 4;
-								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor>=5)
+								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor>=5)
 									mFirmwareVersionCode = 5;
+								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==7 && mFirmwareVersionInternal>=3)//need to change to 8
+									mFirmwareVersionCode = 7;
+								if (mFirmwareVersionMajor==0 && mFirmwareVersionMinor>=8)
+									mFirmwareVersionCode = 7;
 								
 								mFirmwareVersionParsed = "BtStream " + mFirmwareVersionMajor + "." + mFirmwareVersionMinor + "."+ mFirmwareVersionInternal;
 							}
 							else if(mFirmwareIdentifier==3){ //LogAndStream
 								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1)
 									mFirmwareVersionCode = 3;
-								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
+								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
 									mFirmwareVersionCode = 4;
-								else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor>=3)
+								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor>=3)
 									mFirmwareVersionCode = 5;
-								
+								if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor>=6)
+									mFirmwareVersionCode = 6;
+																
 								mFirmwareVersionParsed = "LogAndStream " + mFirmwareVersionMajor + "." + mFirmwareVersionMinor + "."+ mFirmwareVersionInternal;
 							}
 
+							//Once the version is known update settings accordingly 
+							if (mFirmwareVersionCode>=6){
+								mTimeStampPacketByteSize =3;
+								mTimeStampPacketRawMaxValue = 16777216;
+							} 
+							else if (mFirmwareVersionCode<6){
+								mTimeStampPacketByteSize =2;
+								mTimeStampPacketRawMaxValue = 65536;
+							}
+							
+							
 							printLogDataForDebugging("FW Version Response Received. FW Code: " + mFirmwareVersionCode);
 							msg = "FW Version Response Received: " +mFirmwareVersionParsed;
 							printLogDataForDebugging(msg);
@@ -1941,6 +1964,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readpressurecalibrationcoefficients();
 		readEXGConfigurations(1);
 		readEXGConfigurations(2);
+		if (mFirmwareVersionCode==7){
+			writeDisableBattTXFreq();
+		}
 		//enableLowPowerMag(mLowPowerMag);
 		if (mSetupDevice==true){
 			//writeAccelRange(mDigitalAccelRange);
@@ -2357,6 +2383,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if (mHardwareVersion==HW_ID.SHIMMER_3){
 			mListofInstructions.add(new byte[]{SET_BMP180_PRES_RESOLUTION_COMMAND, (byte)setting});
 		}
+	}
+	
+	/**
+	 * 
+	 * 
+	 */
+	private void writeDisableBattTXFreq() {
+		if (mFirmwareVersionCode==7){
+			byte[] freq={SET_VBATT_FREQ_COMMAND,0,0,0,0};
+			mListofInstructions.add(freq);
+		}
+		
 	}
 
 	/**
