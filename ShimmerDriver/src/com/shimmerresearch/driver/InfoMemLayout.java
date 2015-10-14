@@ -510,13 +510,11 @@ public class InfoMemLayout implements Serializable {
 			idxLSM303DLHCAccelCalibration = 97;
 		}
 
-		//TODO update with relative SDLog version number
 		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,11,3))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,12))) {
 			maskShowRwcErrorLeds =	 		0x01;
 		}
 		
-		//TODO update with relative SDLog version number
 		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,11,5))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,16))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.BTSTREAM,0,7,3))) {

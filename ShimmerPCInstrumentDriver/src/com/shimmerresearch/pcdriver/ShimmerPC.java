@@ -380,7 +380,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		// Do something here
         mIsInitialised = true;
         sensorAndConfigMapsCreate();
-        sensorMapUpdateFromEnabledSensorsVar();
+        sensorMapUpdateFromEnabledSensorsVars();
 
         if (mSendProgressReport){
         	finishOperation(BT_STATE.CONNECTING);

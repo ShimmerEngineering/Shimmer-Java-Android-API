@@ -7197,61 +7197,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
 			retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
 
-			
-			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
-//			// Analog Accel Calibration Parameters
-//			byte[] bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
-//			System.arraycopy(infoMemContents, mInfoMemLayout.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-//			int[] formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-//			double[] AM=new double[9];
-//			for (int i=0;i<9;i++){
-//				AM[i]=((double)formattedPacket[6+i])/100;
-//			}
-//			double[][] alignmentMatrixAA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-//			double[][] sensitivityMatrixAA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-//			double[][] offsetVectorAA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-//			mAlignmentMatrixAnalogAccel = alignmentMatrixAA; 			
-//			mSensitivityMatrixAnalogAccel = sensitivityMatrixAA; 	
-//			mOffsetVectorAnalogAccel = offsetVectorAA;
-//			
-//			// MPU9150 Gyroscope Calibration Parameters
-//			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
-//			System.arraycopy(infoMemContents, mInfoMemLayout.idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-//			formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-//			AM=new double[9];
-//			for (int i=0;i<9;i++){
-//				AM[i]=((double)formattedPacket[6+i])/100;
-//			}
-//			double[][] alignmentMatrixG = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-//			double[][] sensitivityMatrixG = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-//			double[][] offsetVectorG = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-//			mAlignmentMatrixGyroscope = alignmentMatrixG; 			
-//			mSensitivityMatrixGyroscope = sensitivityMatrixG; 	
-//			mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
-//			mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
-//			mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
-//			mOffsetVectorGyroscope = offsetVectorG;
-//	
-//			// LSM303DLHC Magnetometer Calibration Parameters
-//			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
-//			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-//			formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-//			AM=new double[9];
-//			for (int i=0;i<9;i++){
-//				AM[i]=((double)formattedPacket[6+i])/100;
-//			}
-//			double[][] alignmentMatrixM = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-//			double[][] sensitivityMatrixM = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-//			double[][] offsetVectorM = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-//			mAlignmentMatrixMagnetometer = alignmentMatrixM; 			
-//			mSensitivityMatrixMagnetometer = sensitivityMatrixM; 	
-//			mOffsetVectorMagnetometer = offsetVectorM;
-//			
-//			// LSM303DLHC Digital Accel Calibration Parameters
-//			bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
-//			System.arraycopy(infoMemContents, mInfoMemLayout.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
-//			parseCalParamLSM303DLHCAccel(bufferCalibrationParameters);
-
 			//TODO: decide what to do
 			// BMP180 Pressure Calibration Parameters
 
@@ -7268,13 +7213,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			}
 			
 			mDerivedSensors = (long)0;
-			if((mInfoMemLayout.idxDerivedSensors0>=0)&&(infoMemContents[mInfoMemLayout.idxDerivedSensors0] != (byte)mInfoMemLayout.maskDerivedChannelsByte)
-					&&(mInfoMemLayout.idxDerivedSensors1>=0)&&(infoMemContents[mInfoMemLayout.idxDerivedSensors1] != (byte)mInfoMemLayout.maskDerivedChannelsByte)) { // Check if compatible
+			// Check if compatible and not equal to 0xFF
+			if((mInfoMemLayout.idxDerivedSensors0>0) && (infoMemContents[mInfoMemLayout.idxDerivedSensors0]!=(byte)mInfoMemLayout.maskDerivedChannelsByte)
+					&& (mInfoMemLayout.idxDerivedSensors1>0) && (infoMemContents[mInfoMemLayout.idxDerivedSensors1]!=(byte)mInfoMemLayout.maskDerivedChannelsByte)) { 
 				
-				mDerivedSensors = ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors0] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors0;
+				mDerivedSensors |= ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors0] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors0;
 				mDerivedSensors |= ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors1] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors1;
 				
-				if((mInfoMemLayout.idxDerivedSensors2>=0)&&(infoMemContents[mInfoMemLayout.idxDerivedSensors2] != (byte)mInfoMemLayout.maskDerivedChannelsByte)){ // Check if compatible
+				// Check if compatible and not equal to 0xFF
+				if((mInfoMemLayout.idxDerivedSensors2>0) && (infoMemContents[mInfoMemLayout.idxDerivedSensors2]!=(byte)mInfoMemLayout.maskDerivedChannelsByte)){ 
 					mDerivedSensors |= ((long)infoMemContents[mInfoMemLayout.idxDerivedSensors2] & mInfoMemLayout.maskDerivedChannelsByte) << mInfoMemLayout.byteShiftDerivedSensors2;
 				}
 			}
@@ -7302,6 +7249,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mMPLMagDistCal = (infoMemContents[mInfoMemLayout.idxConfigSetupByte6] >> mInfoMemLayout.bitShiftMPLMagDistCal) & mInfoMemLayout.maskMPLMagDistCal;
 					mMPLEnable = (infoMemContents[mInfoMemLayout.idxConfigSetupByte6] >> mInfoMemLayout.bitShiftMPLEnable) & mInfoMemLayout.maskMPLEnable;
 					
+					String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 					//MPL Accel Calibration Parameters
 					bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 					System.arraycopy(infoMemContents, mInfoMemLayout.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , mInfoMemLayout.lengthGeneralCalibrationBytes);
@@ -7452,7 +7400,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//TODO Complete and tidy below
 			sensorAndConfigMapsCreate();
-			sensorMapUpdateFromEnabledSensorsVar();
+			sensorMapUpdateFromEnabledSensorsVars();
 			
 //			sensorMapCheckandCorrectSensorDependencies();
 		}
@@ -7489,7 +7437,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		byte[] infoMemBackup = mInfoMemBytes.clone();
 		
 		mInfoMemBytes = new byte[mInfoMemLayout.mInfoMemSize];
-//		mShimmerInfoMemBytes = createEmptyInfoMemByteArray(getExpectedInfoMemByteLength());
 		
 		// InfoMem defaults to 0xFF on firmware flash
 		mInfoMemBytes = createEmptyInfoMemByteArray(mInfoMemBytes.length);
@@ -7609,50 +7556,59 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, mInfoMemLayout.idxLSM303DLHCMagCalibration, mInfoMemLayout.lengthGeneralCalibrationBytes);
 
 		// LSM303DLHC Digital Accel Calibration Parameters
-//		bufferCalibrationParameters = new byte[mInfoMemLayout.lengthGeneralCalibrationBytes];
 		bufferCalibrationParameters = generateCalParamLSM303DLHCAccel();
 		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, mInfoMemLayout.idxLSM303DLHCAccelCalibration, mInfoMemLayout.lengthGeneralCalibrationBytes);
 		
 		//TODO: decide what to do
 		// BMP180 Pressure Calibration Parameters
-		
+
 		// Derived Sensors
-		mDerivedSensors = (long)0;
-		if((mInfoMemLayout.idxDerivedSensors0>=0)&&(mInfoMemLayout.idxDerivedSensors1>=0)) { // Check if compatible
-			for(Integer key:mSensorMap.keySet()) {
-				if(mSensorMap.get(key).mIsEnabled) {
-					mDerivedSensors |= mSensorMap.get(key).mDerivedSensorBitmapID;
-				}
-			}
-			
-			/*
-			 * Infomem layout and values for derived channels (added by RM for debug)
-			 * 
-			mInfoMemLayout.idxDerivedSensors0 = 31
-			mInfoMemLayout.idxDerivedSensors1 = 32	
-			mInfoMemLayout.idxDerivedSensors2 = 33	
-			
-			mDerivedSensors = 1 (Resistance Amp - BAMP)
-			mDerivedSensors = 2 (Skin Temp - BAMP)
-			mDerivedSensors = 4 (PPG - GSR+)
-			mDerivedSensors = 8 (PPG1 - P3D)
-			mDerivedSensors = 16 (PPG2 - P3D)
-			
-			byteShiftDerivedSensors0 = 0
-			byteShiftDerivedSensors1 = 8
-			byteShiftDerivedSensors2 = 16
-			
- 			mInfoMemLayout.maskDerivedChannelsByte = 0xFF
- 			
- 			*/
-			
+		if((mInfoMemLayout.idxDerivedSensors0>0)&&(mInfoMemLayout.idxDerivedSensors1>0)) { // Check if compatible
 			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors0) & mInfoMemLayout.maskDerivedChannelsByte);
 			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors1) & mInfoMemLayout.maskDerivedChannelsByte);
-			if(mInfoMemLayout.idxDerivedSensors2>=0) { // Check if compatible
+			if(mInfoMemLayout.idxDerivedSensors2>0) { // Check if compatible
 				mInfoMemBytes[mInfoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors2) & mInfoMemLayout.maskDerivedChannelsByte);
 			}
-
 		}
+		
+//		// Derived Sensors
+//		mDerivedSensors = (long)0;
+//		// Check if compatible
+//		if((mInfoMemLayout.idxDerivedSensors0>0)&&(mInfoMemLayout.idxDerivedSensors1>0)) {
+//			for(Integer key:mSensorMap.keySet()) {
+//				if(mSensorMap.get(key).mIsEnabled) {
+//					mDerivedSensors |= mSensorMap.get(key).mDerivedSensorBitmapID;
+//				}
+//			}
+//			
+//			/*
+//			 * Infomem layout and values for derived channels (added by RM for debug)
+//			 * 
+//			mInfoMemLayout.idxDerivedSensors0 = 31
+//			mInfoMemLayout.idxDerivedSensors1 = 32	
+//			mInfoMemLayout.idxDerivedSensors2 = 33	
+//			
+//			mDerivedSensors = 1 (Resistance Amp - BAMP)
+//			mDerivedSensors = 2 (Skin Temp - BAMP)
+//			mDerivedSensors = 4 (PPG - GSR+)
+//			mDerivedSensors = 8 (PPG1 - P3D)
+//			mDerivedSensors = 16 (PPG2 - P3D)
+//			
+//			byteShiftDerivedSensors0 = 0
+//			byteShiftDerivedSensors1 = 8
+//			byteShiftDerivedSensors2 = 16
+//			
+// 			mInfoMemLayout.maskDerivedChannelsByte = 0xFF
+// 			
+// 			*/
+//			
+//			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors0) & mInfoMemLayout.maskDerivedChannelsByte);
+//			mInfoMemBytes[mInfoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors1) & mInfoMemLayout.maskDerivedChannelsByte);
+//			if(mInfoMemLayout.idxDerivedSensors2>=0) { // Check if compatible
+//				mInfoMemBytes[mInfoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> mInfoMemLayout.byteShiftDerivedSensors2) & mInfoMemLayout.maskDerivedChannelsByte);
+//			}
+//
+//		}
 		
 		// InfoMem D - End
 
@@ -7783,7 +7739,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mInfoMemBytes;
 	}
 	
-
 	/**
 	 * Creates an empty byte array for the purposes of generating the
 	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
@@ -7820,39 +7775,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(mSensorMap!=null) {
 			if (mHardwareVersion == HW_ID.SHIMMER_3){
 				mEnabledSensors = (long)0;
+				mDerivedSensors = (long)0;
 				sensorMapCheckandCorrectHwDependencies();
-				for(Integer key:mSensorMap.keySet()) {
-					if(mSensorMap.get(key).mIsEnabled) {
-						mEnabledSensors |= mSensorMap.get(key).mSensorDetails.mSensorBitmapIDSDLogHeader;
+				for(SensorEnabledDetails sED:mSensorMap.values()) {
+					if(sED.mIsEnabled) {
+						mEnabledSensors |= sED.mSensorDetails.mSensorBitmapIDSDLogHeader;
+						
+						if(sED.isDerivedChannel()){
+							mDerivedSensors |= sED.mDerivedSensorBitmapID;
+						}
 					}
 				}
 				updateEnabledSensorsFromExgResolution();
 			}
 		}
 	}
-
-//	/**
-//	 * Parses the LSM303DLHC Accel calibration variables from a byte array stored
-//	 * in the Shimmer's infomem or in the SD header of logged data files.
-//	 * 
-//	 * @param bufferCalibrationParameters
-//	 *            the byte array containing the LSM303DLHC Accel calibration
-//	 */
-//	public void parseCalParamLSM303DLHCAccel(byte[] bufferCalibrationParameters){
-//		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
-//		int[] formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
-//		double[] AM=new double[9];
-//		for (int i=0;i<9;i++)
-//		{
-//			AM[i]=((double)formattedPacket[6+i])/100;
-//		}
-//		double[][] alignmentMatrixDA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-//		double[][] sensitivityMatrixDA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-//		double[][] offsetVectorDA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-//		mAlignmentMatrixWRAccel = alignmentMatrixDA; 			
-//		mSensitivityMatrixWRAccel = sensitivityMatrixDA; 	
-//		mOffsetVectorWRAccel = offsetVectorDA;
-//	}
+	
 
 	/**
 	 * Converts the LSM303DLHC Accel calibration variables from Shimmer Object
@@ -8270,7 +8208,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * Map. Used in Consensys for dynamic GUI generation to configure a Shimmer.
 	 * 
 	 */
-	public void sensorMapUpdateFromEnabledSensorsVar() {
+	public void sensorMapUpdateFromEnabledSensorsVars() {
 
 		checkExgResolutionFromEnabledSensorsVar();
 
@@ -8330,23 +8268,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						mSensorMap.get(sensorMapKey).mIsEnabled = false;
 						// Check if this sensor is a derived sensor
 						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
-							//Check if all associated derived channels are enabled 
+							//Check if associated derived channels are enabled 
 							if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
-								//TODO comment
-								if((mEnabledSensors & mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
+								//TODO add comment
+								if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
 									mSensorMap.get(sensorMapKey).mIsEnabled = true;
 								}
-								else {
-									mSensorMap.get(sensorMapKey).mIsEnabled = false;
-								}
-							}
-							else {
 							}
 						}
 						// This is not a derived sensor
 						else {
 							//Check if sensor's bit in sensor bitmap is enabled
-							if((mEnabledSensors & mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
+							if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
 								mSensorMap.get(sensorMapKey).mIsEnabled = true;
 							}
 						}

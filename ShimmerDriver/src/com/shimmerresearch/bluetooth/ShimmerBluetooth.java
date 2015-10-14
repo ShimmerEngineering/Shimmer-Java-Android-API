@@ -459,7 +459,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	DataProcessing mDataProcessing;
 
-//	private int mNumOfInfoMemSetCmds = 0;
+	private int mNumOfInfoMemSetCmds = 0;
 
 	
 	public class ProcessingThread extends Thread {
@@ -651,7 +651,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								if((byte)tb[0]==ACK_COMMAND_PROCESSED) {
 
 									mWaitForAck=false;
-									printLogDataForDebugging("Ack Received for Command: \t\t\t" + btCommandToString(mCurrentCommand));
+									printLogDataForDebugging("Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand));
 
 									// Send status report if needed by the
 									// application and is not one of the below
@@ -739,7 +739,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForResponse=false;
 								mTransactionCompleted=true;
 								setInstructionStackLock(false);
-								printLogDataForDebugging("Response Received:\t\t\t\t" + btCommandToString(responseCommand));
+								printLogDataForDebugging("Response Received:\t\t\t" + btCommandToString(responseCommand));
 								
 								// Special case for FW_VERSION_RESPONSE because it
 								// needs to initialize the Shimmer after releasing
@@ -1657,21 +1657,24 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 				}
 				else if(currentCommand==SET_ECG_CALIBRATION_COMMAND){
+					byte[] instruction = getListofInstructions().get(0);
 					//mGSRRange=mTempIntValue;
 					mDefaultCalibrationParametersECG = false;
-					OffsetECGLALL=(double)((((byte[])getListofInstructions().get(0))[0]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[1]&0xFF);
-					GainECGLALL=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
-					OffsetECGRALL=(double)((((byte[])getListofInstructions().get(0))[4]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[5]&0xFF);
-					GainECGRALL=(double)((((byte[])getListofInstructions().get(0))[6]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[7]&0xFF);
+					OffsetECGLALL=(double)((instruction[0]&0xFF)<<8)+(instruction[1]&0xFF);
+					GainECGLALL=(double)((instruction[2]&0xFF)<<8)+(instruction[3]&0xFF);
+					OffsetECGRALL=(double)((instruction[4]&0xFF)<<8)+(instruction[5]&0xFF);
+					GainECGRALL=(double)((instruction[6]&0xFF)<<8)+(instruction[7]&0xFF);
 				}
 				else if(currentCommand==SET_EMG_CALIBRATION_COMMAND){
+					byte[] instruction = getListofInstructions().get(0);
 					//mGSRRange=mTempIntValue;
 					mDefaultCalibrationParametersEMG = false;
-					OffsetEMG=(double)((((byte[])getListofInstructions().get(0))[0]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[1]&0xFF);
-					GainEMG=(double)((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[3]&0xFF);
+					OffsetEMG=(double)((instruction[0]&0xFF)<<8)+(instruction[1]&0xFF);
+					GainEMG=(double)((instruction[2]&0xFF)<<8)+(instruction[3]&0xFF);
 				}
 				else if(currentCommand==SET_DERIVED_CHANNEL_BYTES){
-					mDerivedSensors=(long)(((((byte[])getListofInstructions().get(0))[3]&0xFF)<<16) + ((((byte[])getListofInstructions().get(0))[2]&0xFF)<<8)+(((byte[])getListofInstructions().get(0))[1]&0xFF));
+					byte[] instruction = getListofInstructions().get(0);
+					mDerivedSensors = (long)(((instruction[3]&0xFF)<<16) + ((instruction[2]&0xFF)<<8) + (instruction[1]&0xFF));
 				}
 				else if(currentCommand==SET_SHIMMERNAME_COMMAND){
 					byte[] instruction =getListofInstructions().get(0);
@@ -1747,10 +1750,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					//SET InfoMem is automatically followed by a GET so no need to handle here
 					
 					//Sleep for 1s to allow Shimmer to process new configuration
-//					mNumOfInfoMemSetCmds -= 1;
-//					if(mNumOfInfoMemSetCmds==0){
-						delayForBtResponse(1000);
-//					}
+					mNumOfInfoMemSetCmds -= 1;
+					if(mNumOfInfoMemSetCmds==0){
+						delayForBtResponse(2000);
+					}
+					else {
+						delayForBtResponse(5000);
+					}
 				}
 				else if(currentCommand==SET_CRC_COMMAND){
 					mIsCrcEnabled = ((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
@@ -3438,7 +3444,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if (size > (mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
 //				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE);
 //				throw(de);
-			} else {
+			} 
+			else {
 				int maxBytesRXed = 128;
 				int numBytesRemaining = size;
 				int currentPacketNumBytes;
@@ -3448,7 +3455,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				while (numBytesRemaining > 0) {
 					if (numBytesRemaining > maxBytesRXed) {
 						currentPacketNumBytes = maxBytesRXed;
-					} else {
+					} 
+					else {
 						currentPacketNumBytes = numBytesRemaining;
 					}
 
@@ -3496,7 +3504,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//TODO: MN
 	public void writeInfoMem(int startAddress, byte[] buf){
-//		this.mNumOfInfoMemSetCmds  = 0;
+		this.mNumOfInfoMemSetCmds  = 0;
 		
 		if(this.mFirmwareVersionCode>=6){
 			int address = startAddress;
@@ -3522,7 +3530,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] infoSegBuf = Arrays.copyOfRange(buf, currentBytePointer, currentBytePointer + currentPacketNumBytes);
 
 					writeMemCommand(SET_INFOMEM_COMMAND, currentStartAddr, infoSegBuf);
-//					mNumOfInfoMemSetCmds += 1;
+					mNumOfInfoMemSetCmds += 1;
 
 					currentStartAddr += currentPacketNumBytes;
 					numBytesRemaining -= currentPacketNumBytes;
