@@ -515,8 +515,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							if(mCurrentCommand==SET_RWC_COMMAND){
 								// for Real-world time -> grab PC time just before
 								// writing to Shimmer
-								byte[] rwcTimeArray = UtilShimmer.convertSystemTimeToShimmerRwcDataBytes(System.currentTimeMillis());
-								System.arraycopy(rwcTimeArray, 0, insBytes, 1, 8);
+								byte[] rtcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(System.currentTimeMillis());
+								System.arraycopy(rtcTimeArray, 0, insBytes, 1, 8);
 							}
 							//TODO: are the two stops needed here? better to wait for ack from Shimmer
 							if(mCurrentCommand==STOP_STREAMING_COMMAND || mCurrentCommand==STOP_SDBT_COMMAND){} 
@@ -1323,7 +1323,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 				if(!mIsSensing){
 					if(!isInitialized()){
-						writeRealWorldClock();
+						writeRealTimeClock();
 					}
 				}
 				logAndStreamStatusChanged();
@@ -1694,8 +1694,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] instruction = getListofInstructions().get(0);
 					byte[] rwcTimeArray = new byte[8];
 					System.arraycopy(instruction, 1, rwcTimeArray, 0, 8);
-					long milisecondTicks = UtilShimmer.convertShimmerRwcDataBytesToSystemTime(rwcTimeArray);
-					mShimmerRealWorldClockConFigTime = milisecondTicks;
+					long milisecondTicks = UtilShimmer.convertShimmerRtcDataBytesToSystemTime(rwcTimeArray);
+					mShimmerRealTimeClockConFigTime = milisecondTicks;
 				}
 				else if(currentCommand==SET_CONFIGTIME_COMMAND){
 					byte[] instruction =getListofInstructions().get(0);
@@ -2110,7 +2110,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public void startStreaming() {
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM && mFirmwareVersionCode >=6){
-			readRealWorldClock();
+			readRealTimeClock();
 		}
 		//mCurrentLEDStatus=-1;	
 		//provides a callback for users to initialize their algorithms when start streaming is called
@@ -2149,7 +2149,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public void startDataLogAndStreaming(){
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
-			readRealWorldClock();
+			readRealTimeClock();
 			if(mDataProcessing!=null){
 				mDataProcessing.InitializeProcessData();
 			} 	
@@ -2927,7 +2927,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	public void readRealWorldClock(){
+	public void readRealTimeClock(){
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
 			getListofInstructions().add(new byte[]{GET_RWC_COMMAND});
 		}
@@ -2936,9 +2936,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**Gets pc time and writes the 8 byte value to shimmer device
 	 * 
 	 */
-	public void writeRealWorldClock(){
+	public void writeRealTimeClock(){
 		if(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
-			//Just fill empty bytes here for RWC, set them just before writing to Shimmer
+			//Just fill empty bytes here for RTC, set them just before writing to Shimmer
 		    byte[] bytearraycommand= new byte[9];
 			bytearraycommand[0]=SET_RWC_COMMAND;
 			getListofInstructions().add(bytearraycommand);

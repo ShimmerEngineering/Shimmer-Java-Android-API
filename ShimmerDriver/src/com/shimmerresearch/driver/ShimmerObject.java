@@ -807,7 +807,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mTimeStampPacketByteSize = 2;
 //	protected byte[] mSetRWC;
 //	protected byte[] mGetRWC;
-	public long mShimmerRealWorldClockConFigTime = 0;
+	public long mShimmerRealTimeClockConFigTime = 0;
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
 	
