@@ -467,7 +467,7 @@ public class Configuration {
 
 			public static final String MPU9150_ACCEL_RANGE = "MPU Accel Range";
 			public static final String MPU9150_DMP_GYRO_CAL = "MPU Gyro Cal";
-			public static final String MPU9150_LPF = "MPU LPF";
+			public static final String MPU9150_MPL_LPF = "MPU LPF";
 			public static final String MPU9150_MPL_RATE = "MPL Rate";
 			public static final String MPU9150_MAG_RATE = "MPU Mag Rate";
 
@@ -1662,14 +1662,14 @@ public class Configuration {
 					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
 					Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE,
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
 					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF,
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF,
 					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE,
 					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF);
+					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
 			
 			
 			
@@ -3368,7 +3368,7 @@ public class Configuration {
 											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF, 
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF, 
 					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
 											Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,

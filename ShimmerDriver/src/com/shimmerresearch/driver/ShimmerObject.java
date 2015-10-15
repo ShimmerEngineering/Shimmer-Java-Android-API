@@ -10984,7 +10984,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
 				returnValue = getMPU9150MotCalCfg();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF):
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF):
 				returnValue = getMPU9150LPF();
             	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
@@ -11211,7 +11211,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
 				setMPU9150MotCalCfg((int)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_LPF):
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF):
 				setMPU9150LPF((int)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
