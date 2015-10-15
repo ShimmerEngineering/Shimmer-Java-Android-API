@@ -733,6 +733,8 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	protected int mDirectoryNameLength;
 	protected boolean mSensingStatus;
 	protected boolean mDockedStatus;
+	protected boolean mIsSDLogging;
+    protected boolean mIsStreaming;
 	private List<String[]> mExtraSignalProperties = null;
 	
 	//Testing for GQ

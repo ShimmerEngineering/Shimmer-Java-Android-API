@@ -267,8 +267,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								tb=readBytes(availableBytes());
 							}
 						}
-						 
-
+						if(mCurrentCommand==SET_RWC_COMMAND){
+							byte[] bytearray=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
+							ArrayUtils.reverse(bytearray);
+							byte[] bytearraycommand= new byte[9];
+							bytearraycommand[0]=SET_RWC_COMMAND;
+							System.arraycopy(bytearray, 0, bytearraycommand, 1, 8);
+							insBytes=bytearraycommand;
+						}
 						writeBytes(insBytes);
 
 						
@@ -1573,10 +1579,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								else
 									mDockedStatus = false;
 								
+								mIsSDLogging = ((bufferLogCommandType[1] & 0x08) > 0)? true:false;
+					            mIsStreaming = ((bufferLogCommandType[1] & 0x10) > 0)? true:false;
+
+								
 								System.out.println("Sensing = "+sensing);
 								System.out.println("Sensing status = "+mSensingStatus);
 								System.out.println("Docked = "+docked);
 								System.out.println("Docked status = "+mDockedStatus);
+								
+								if (mSensingStatus == false){
+									if (mInitialized== false){
+										writeRTCCommand();	
+									}
+								}
 								
 							}
 							mInstructionStackLock=false;
@@ -1990,7 +2006,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		if (mFirmwareVersionCode>=6 && mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM){
 			//readRWCCommand();
-			writeRWCCommand();
+			//writeRWCCommand();
+			readStatusLogAndStream();
 		}
 		//enableLowPowerMag(mLowPowerMag);
 		if (mSetupDevice==true){
@@ -2422,11 +2439,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 	}
 	
-	private void readRWCCommand(){
+	private void readRTCCommand(){
 		mListofInstructions.add(new byte[]{GET_ACCEL_SENSITIVITY_COMMAND});
 	}
 	
-	private void writeRWCCommand(){
+	private void writeRTCCommand(){
 		byte[] bytearray=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
 		ArrayUtils.reverse(bytearray);
 		byte[] bytearraycommand= new byte[9];
