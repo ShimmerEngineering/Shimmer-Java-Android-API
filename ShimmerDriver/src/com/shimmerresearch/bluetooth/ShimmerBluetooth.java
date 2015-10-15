@@ -79,6 +79,7 @@ package com.shimmerresearch.bluetooth;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -106,6 +107,7 @@ import java.util.TimerTask;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
@@ -406,6 +408,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mWaitForResponse=true;
 								mListofInstructions.remove(0);
 							}
+							else if (mCurrentCommand==GET_RWC_COMMAND) {
+								mWaitForAck=false;
+								mWaitForResponse=true;
+								mListofInstructions.remove(0);
+							}
 							else if (mCurrentCommand==GET_BLINK_LED) {
 								mWaitForAck=false;
 								mWaitForResponse=true;
@@ -559,6 +566,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								mListofInstructions.remove(0);
 								mInstructionStackLock=false;
 							} else if (mCurrentCommand==SET_VBATT_FREQ_COMMAND){
+								mTimer.cancel(); //cancel the ack timer
+								mTransactionCompleted=true;
+								mWaitForAck=false;
+								mListofInstructions.remove(0);
+								mInstructionStackLock=false;
+							}
+							else if (mCurrentCommand==SET_RWC_COMMAND){
 								mTimer.cancel(); //cancel the ack timer
 								mTransactionCompleted=true;
 								mWaitForAck=false;
@@ -1070,6 +1084,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mTransactionCompleted=true;
 							byte[] bufferAns = readBytes(1); 
 							mLSM303DigitalAccelRate=bufferAns[0];
+							mInstructionStackLock=false;
+						} else if(tb[0] == RWC_RESPONSE) {
+							mTimer.cancel(); //cancel the ack timer
+							mTimer.purge();
+							mWaitForResponse=false;
+							mTransactionCompleted=true;
+							byte[] bufferAns = readBytes(8); 
 							mInstructionStackLock=false;
 						} else if(tb[0] == 	EXG_REGS_RESPONSE){
 							mTimer.cancel(); //cancel the ack timer
@@ -1964,8 +1985,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readpressurecalibrationcoefficients();
 		readEXGConfigurations(1);
 		readEXGConfigurations(2);
-		if (mFirmwareVersionCode==7){
+		if (mFirmwareVersionCode>=7){
 			writeDisableBattTXFreq();
+		}
+		if (mFirmwareVersionCode>=6 && mFirmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM){
+			//readRWCCommand();
+			writeRWCCommand();
 		}
 		//enableLowPowerMag(mLowPowerMag);
 		if (mSetupDevice==true){
@@ -2395,6 +2420,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mListofInstructions.add(freq);
 		}
 		
+	}
+	
+	private void readRWCCommand(){
+		mListofInstructions.add(new byte[]{GET_ACCEL_SENSITIVITY_COMMAND});
+	}
+	
+	private void writeRWCCommand(){
+		byte[] bytearray=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
+		ArrayUtils.reverse(bytearray);
+		byte[] bytearraycommand= new byte[9];
+		bytearraycommand[0]=SET_RWC_COMMAND;
+		System.arraycopy(bytearray, 0, bytearraycommand, 1, 8);
+		mListofInstructions.add(bytearraycommand);
 	}
 
 	/**

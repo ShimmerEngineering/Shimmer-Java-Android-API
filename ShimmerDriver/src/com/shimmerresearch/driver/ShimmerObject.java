@@ -412,6 +412,9 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 	public static final byte DIR_RESPONSE		 					= (byte) 0x88;
 	public static final byte GET_DIR_COMMAND 						= (byte) 0x89;
 	public static final byte INSTREAM_CMD_RESPONSE 					= (byte) 0x8A;
+	public static final byte SET_RWC_COMMAND                        = (byte) 0x8F;
+	public static final byte RWC_RESPONSE                           = (byte) 0x90;
+	public static final byte GET_RWC_COMMAND                        = (byte) 0x91;
 	public static final byte SET_VBATT_FREQ_COMMAND                 = (byte) 0x98;
 	public static final byte VBATT_FREQ_RESPONSE                    = (byte) 0x99;
 	public static final byte GET_VBATT_FREQ_COMMAND                 = (byte) 0x9A;
