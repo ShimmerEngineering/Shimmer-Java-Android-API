@@ -44,8 +44,8 @@ public class ChannelDetails implements Serializable {
 	public enum CHANNEL_TYPE{
 //		RAW("RAW"),
 		CAL("CAL"),
-		UNCAL("UNCAL");
-		
+		UNCAL("UNCAL"),
+		DERIVED("DERIVED");
 	    private final String text;
 
 	    /**
