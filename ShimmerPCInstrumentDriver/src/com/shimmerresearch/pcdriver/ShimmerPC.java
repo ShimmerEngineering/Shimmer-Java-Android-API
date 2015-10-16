@@ -614,7 +614,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				// Do something here
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-		
+		startTimerReadStatus();
 		setState(BT_STATE.CONNECTED);
 	}
 
