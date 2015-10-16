@@ -81,7 +81,10 @@ public class Configuration {
 		//Sensors units
 		public static final String NO_UNITS = "no units";
 		public static final String MILLISECONDS = "ms";
+		public static final String METER = "m";
+		public static final String METER_PER_SECOND = "m/s";
 		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";
+		public static final String METER_SQUARE = "m^2";
 		public static final String DEGREES_PER_SECOND = "deg/s";
 		public static final String LOCAL_FLUX = "local_flux";
 		public static final String KOHMS = "kOhms";
@@ -94,6 +97,7 @@ public class Configuration {
 		public static final String DATE_FORMAT = "yyyy/mm/dd hh:mm:ss.000";
 		public static final String GRAVITY = "g";
 		public static final String CLOCK_UNIT = "Ticks";
+		public static final String RPM = "rpm";
 
 		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
 		public static final String GYRO_CAL_UNIT = DEGREES_PER_SECOND;

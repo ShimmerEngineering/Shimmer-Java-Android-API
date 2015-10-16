@@ -55,6 +55,7 @@
 package com.shimmerresearch.algorithms;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -241,6 +242,24 @@ public class Filter implements Serializable{
         	 for(int i=0; i<data.length; i++){
         		 double individualDataFiltered = filterData(data[i]);
         		 dataFiltered[i] = individualDataFiltered;
+        	 }
+        	 
+        	 return dataFiltered;
+         }
+    }
+    
+    public List<Double> filterData(List<Double> data) throws Exception
+    {
+    	if (!this.validparameters)
+         	throw new Exception("Error. Filter parameters are invalid. Please set filter parameters before filtering data.");
+         else
+         {
+        	 int dataSize = data.size();
+        	 List<Double> dataFiltered = new ArrayList<Double>(dataSize);
+        	 
+        	 for(int i=0; i<dataSize; i++){
+        		 double individualDataFiltered = filterData(data.get(i));
+        		 dataFiltered.add(i, individualDataFiltered);
         	 }
         	 
         	 return dataFiltered;
