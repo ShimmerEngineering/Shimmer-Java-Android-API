@@ -81,6 +81,7 @@ public class Configuration {
 		//Sensors units
 		public static final String NO_UNITS = "no units";
 		public static final String MILLISECONDS = "ms";
+		public static final String SECONDS = "s";
 		public static final String METER = "m";
 		public static final String METER_PER_SECOND = "m/s";
 		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";
