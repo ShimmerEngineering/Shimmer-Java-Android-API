@@ -134,7 +134,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private static final long serialVersionUID = -1364568867018921219L;
 	
 	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
-	public final static String DEFAULT_EXPERIMENT_NAME = "Trial";
+	public final static String DEFAULT_EXPERIMENT_NAME = "DefaultTrial";
 
 	protected boolean mFirstTime = true;
 	double mFirstRawTS = 0;
@@ -483,7 +483,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mLSM303DigitalAccelRate=0;
 	protected int mMPU9150GyroAccelRate=0;
 	protected int mMagRange=1;														// Currently not supported on Shimmer2. This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga
-	protected int mGyroRange=1;													// This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps 
+	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
+	protected int mGyroRange=1;													 
 	protected int mMPU9150AccelRange=0;											// This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
 	protected int mGSRRange=4;													// This stores the current GSR range being used.
 	protected int mPastGSRRange=4; // this is to fix a bug with SDLog v0.9
@@ -553,8 +554,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mTrialDurationEstimated = 0;
 	protected int mTrialDurationMaximum = 0;
 	
+	/** Used in BT communication */
 	protected String mMyBluetoothAddress="";
+	/** Used in UART command through the base/dock*/
 	protected String mMacIdFromUart = "";
+	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
 	
 	protected String mShimmerUserAssignedName=""; // This stores the user assigned name
@@ -4397,18 +4401,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mAlignmentMatrixGyroscope = AlignmentMatrix;
 				mOffsetVectorGyroscope = OffsetVector;
 				mSensitivityMatrixGyroscope = SensitivityMatrix;
-				mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
-				mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
-				mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
+				for(int i=0;i<=2;i++){
+					mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
+				}
 			}
 			else if (packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
 				mDefaultCalibrationParametersGyro = false;
 				mAlignmentMatrixGyroscope = AlignmentMatrix;
 				mOffsetVectorGyroscope = OffsetVector;
 				mSensitivityMatrixGyroscope = SensitivityMatrix;
-				mSensitivityMatrixGyroscope[0][0] = mSensitivityMatrixGyroscope[0][0]/100;
-				mSensitivityMatrixGyroscope[1][1] = mSensitivityMatrixGyroscope[1][1]/100;
-				mSensitivityMatrixGyroscope[2][2] = mSensitivityMatrixGyroscope[2][2]/100;
+				for(int i=0;i<=2;i++){
+					mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
+				}
 			} 
 			else if(packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
 				if(mHardwareVersion!=3){
@@ -4535,24 +4539,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if(mHardwareVersion==HW_ID.SHIMMER_3){
 			if (mGyroRange==0){
-				sensitivityVectorToCompare = SensitivityMatrixGyro250dpsShimmer3;
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
 
 			} else if (mGyroRange==1){
-				sensitivityVectorToCompare = SensitivityMatrixGyro500dpsShimmer3;
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
 
 			} else if (mGyroRange==2){
-				sensitivityVectorToCompare = SensitivityMatrixGyro1000dpsShimmer3;
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
 
 			} else if (mGyroRange==3){
-				sensitivityVectorToCompare = SensitivityMatrixGyro2000dpsShimmer3;
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
 			}
 			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
 			offsetVectorToCompare = OffsetVectorGyroShimmer3;
 		}
 		
-		sensitivityVectorToCompare[0][0] = sensitivityVectorToCompare[0][0]*100;
-		sensitivityVectorToCompare[1][1] = sensitivityVectorToCompare[1][1]*100;
-		sensitivityVectorToCompare[2][2] = sensitivityVectorToCompare[2][2]*100;
+		for(int i=0;i<=2;i++){
+			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
+		}
 		
 		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
 		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
@@ -4632,67 +4636,61 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
 		mDefaultCalibrationParametersAccel = true;
-		mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-		mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-		mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
+		mSensitivityMatrixAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixLowNoiseAccel2gShimmer3);
+		mAlignmentMatrixAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixLowNoiseAccelShimmer3);
+		mOffsetVectorAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorLowNoiseAccelShimmer3);
 	}
 	
 	private void setDefaultCalibrationShimmer3WideRangeAccel() {
 		mDefaultCalibrationParametersDigitalAccel = true;
 		if (getAccelRange()==0){
-			mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel2gShimmer3;
-			mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-			mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+			mSensitivityMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixWideRangeAccel2gShimmer3);
 		} else if (getAccelRange()==1){
-			mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-			mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-			mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+			mSensitivityMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixWideRangeAccel4gShimmer3);
 		} else if (getAccelRange()==2){
-			mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-			mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-			mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+			mSensitivityMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixWideRangeAccel8gShimmer3);
 		} else if (getAccelRange()==3){
-			mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-			mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-			mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+			mSensitivityMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixWideRangeAccel16gShimmer3);
 		}
+		mAlignmentMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixWideRangeAccelShimmer3);
+		mOffsetVectorWRAccel = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorWideRangeAccelShimmer3);
 	}
 
 	private void setDefaultCalibrationShimmer3Gyro() {
 		mDefaultCalibrationParametersGyro = true;
 		if (mGyroRange==0){
-			mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
 
 		} else if (mGyroRange==1){
-			mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
 
 		} else if (mGyroRange==2){
-			mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
 
 		} else if (mGyroRange==3){
-			mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
 		}
-		mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
-		mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
+		mAlignmentMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixGyroShimmer3);
+		mOffsetVectorGyroscope = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorGyroShimmer3);
 	}
 	
 	private void setDefaultCalibrationShimmer3Mag() {
-		mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
-		mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
+		mAlignmentMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixMagShimmer3);
+		mOffsetVectorMagnetometer = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorMagShimmer3);
 		if (mMagRange==1){
-			mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer3;
+			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag1p3GaShimmer3);
 		} else if (mMagRange==2){
-			mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer3;
+			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag1p9GaShimmer3);
 		} else if (mMagRange==3){
-			mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer3;
+			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag2p5GaShimmer3);
 		} else if (mMagRange==4){
-			mSensitivityMatrixMagnetometer = SensitivityMatrixMag4GaShimmer3;
+			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag4GaShimmer3);
 		} else if (mMagRange==5){
-			mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer3;
+			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag4p7GaShimmer3);
 		} else if (mMagRange==6){
-			mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer3;
+			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag5p6GaShimmer3);
 		} else if (mMagRange==7){
-			mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer3;
+			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag8p1GaShimmer3);
 		}
 	}
 
@@ -7042,7 +7040,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void setDefaultShimmerConfiguration() {
 		if (mHardwareVersion != -1){
 			
-			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
+//			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
+			setDefaultShimmerName();
+			
 			mTrialName = DEFAULT_EXPERIMENT_NAME;
 			
 			mTrialNumberOfShimmers = 1;
@@ -7083,6 +7083,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
+	private void setDefaultShimmerName(){
+		mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
+
+		String macParsed = getMacIdParsed();
+		if(macParsed.isEmpty()){
+			return;
+		}
+		
+		if(mShimmerUserAssignedName.length()>7) { // 12 char max minus "_XXXX"
+			mShimmerUserAssignedName = mShimmerUserAssignedName.substring(0, 7);
+		}
+		mShimmerUserAssignedName += "_" + macParsed; 
+		return;
+	}
 	
 	public boolean checkInfoMemValid(byte[] infoMemContents){
 		// Check first 6 bytes of InfoMem for 0xFF to determine if contents are valid 
@@ -7524,8 +7538,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		// sensitivityMatrix -> buffer offset = 6
 		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]) >> 8) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]) >> 0) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
 		}
 		// alignmentMatrix -> buffer offset = 12
 		for (int i=0; i<3; i++) {
@@ -8549,6 +8563,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if (mHardwareVersion == HW_ID.SHIMMER_3){
 			
+			// If Shimmer name is default, update with MAC ID if available.
+			if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
+				setDefaultShimmerName();
+			}
+			
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL)) {
 				setDefaultLsm303dlhcAccelSensorConfig(false);
 			}
@@ -8981,9 +9000,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			
-			if(!state){
-				mGyroRange=1;
-			}
+			mGyroRange=1;
+//			if(!state){
+//				mGyroRange=1; // 500dps
+//			}
 		}
 		else {
 			mGyroRange=3; // 2000dps
@@ -10168,7 +10188,36 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(this.mMyBluetoothAddress.length()>=12) {
 			return this.mMyBluetoothAddress.substring(8, 12);
 		}
-		return "0000";	}
+		return "0000";
+	}
+	
+	/**
+	 * @return the Parsed MAC address from any source available
+	 */
+	public String getMacIdParsed() {
+		String macToUse = "";
+		if(!mMacIdFromUart.isEmpty()){
+			macToUse = mMacIdFromUart; 
+		}
+		else {
+			if(!mMacIdFromInfoMem.isEmpty()){
+				macToUse = mMacIdFromInfoMem; 
+			}
+			else {
+				if(!mMacIdFromInfoMem.isEmpty()){
+					macToUse = mMacIdFromInfoMem; 
+				}
+				else {
+					macToUse = mMyBluetoothAddress; 
+				}
+			}
+		}
+		
+		if(macToUse.length()>=12) {
+			return macToUse.substring(8, 12);
+		}
+		return "";
+	}
 
 	/**
 	 * @return the mSamplingDividerVBatt
