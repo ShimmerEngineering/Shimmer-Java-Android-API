@@ -92,10 +92,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
 	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
 	
-	public static final int NOTIFICATION_STOP_STREAMING = 0;
-	public static final int NOTIFICATION_START_STREAMING = 1;
-	public static final int NOTIFICATION_FULLY_INITIALIZED = 2;
-	public final static int NOTIFICATION_STATE_CHANGE = 3;
+	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0;
+	public static final int NOTIFICATION_SHIMMER_START_STREAMING = 1;
+	public static final int NOTIFICATION_SHIMMER_FULLY_INITIALIZED = 2;
+	public final static int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	public ProgressReportPerDevice progressReportPerDevice;
@@ -350,7 +350,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 		// Do something here
 		
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_START_STREAMING, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_START_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
 		if (mIsSDLogging){
@@ -369,7 +369,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void inquiryDone() {
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 		isReadyForStreaming();
 	}
@@ -386,7 +386,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
         	finishOperation(BT_STATE.CONNECTING);
         }
         
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		if (mTimerCheckAlive==null && mTimerReadStatus==null && mTimerReadBattStatus==null){
         	//super.operationFinished();
@@ -538,7 +538,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		
 //		System.out.println("SetState: " + mUniqueID + "\tState:" + mState + "\tisConnected:" + mIsConnected + "\tisInitialised:" + mIsInitialised + "\tisStreaming:" + mIsStreaming);
 		
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	
@@ -612,7 +612,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	protected void hasStopStreaming() {
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 				// Do something here
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		startTimerReadStatus();
 		setState(BT_STATE.CONNECTED);
@@ -658,7 +658,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //					setState(BT_STATE.CONNECTED);
 //				}
 				
-				CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+				CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
 				sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 			}
 		}
@@ -691,7 +691,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void batteryStatusChanged() {
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	

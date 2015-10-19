@@ -2072,7 +2072,7 @@ public class ShimmerConnectBCove extends BasicProcessWithCallBack{
 		} else if (ind == ShimmerPCBTBCove.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)objectCluster;
 			int msg = callbackObject.mIndicator;
-			if (msg== ShimmerPC.NOTIFICATION_FULLY_INITIALIZED){
+			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				connected();
 			}
 			if (msg == ShimmerPCBTBCove.NOTIFICATION_STOP_STREAMING) {
