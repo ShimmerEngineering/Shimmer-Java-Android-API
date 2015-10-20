@@ -2194,17 +2194,17 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
 			int msg = callbackObject.mIndicator;
-			if (msg== ShimmerPC.NOTIFICATION_FULLY_INITIALIZED){
+			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				connected();
 			}
-			if (msg == ShimmerPC.NOTIFICATION_STOP_STREAMING) {
+			if (msg == ShimmerPC.NOTIFICATION_SHIMMER_STOP_STREAMING) {
 				menuItemConfigure.setEnabled(true);
 				if (mShimmer.getShimmerVersion()==SHIMMER_3 || mShimmer.getShimmerVersion()==SHIMMER_SR30) {
 					menuItemExgSettings.setEnabled(true);
 				}
 				btnStopStreaming.setEnabled(false);
 				btnStartStreaming.setEnabled(true);
-			} else if (msg == ShimmerPC.NOTIFICATION_START_STREAMING) {
+			} else if (msg == ShimmerPC.NOTIFICATION_SHIMMER_START_STREAMING) {
 				menuItemConfigure.setEnabled(false);
 				menuItemExgSettings.setEnabled(false);
 				btnStopStreaming.setEnabled(true);

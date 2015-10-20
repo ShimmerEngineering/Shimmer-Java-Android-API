@@ -45,8 +45,9 @@ public class MsgDock {
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
 	
 	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS = 91;
-	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_FAIL = 99;
+	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_FAIL = 92;
 
+	public final static int MSG_ID_SPANMANAGER_INITIALIZED_SUCCESS = 95;
 	
 	public final static int MSG_ID_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_ID_DOCK_SD_SCAN_UPDATE = 101;

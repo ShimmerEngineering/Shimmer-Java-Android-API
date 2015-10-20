@@ -399,16 +399,16 @@ public class UtilShimmer implements Serializable {
 	}
 }
 
-	public static byte[] convertSystemTimeToShimmerRwcDataBytes(long milliseconds) {
+	public static byte[] convertSystemTimeToShimmerRtcDataBytes(long milliseconds) {
 		long milisecondTicks = (long)(((double)milliseconds) * 32.768); // Convert miliseconds to clock ticks
-		byte[] rwcTimeArray = ByteBuffer.allocate(8).putLong(milisecondTicks).array();
-		ArrayUtils.reverse(rwcTimeArray); // Big-endian by default
-		return rwcTimeArray;
+		byte[] rtcTimeArray = ByteBuffer.allocate(8).putLong(milisecondTicks).array();
+		ArrayUtils.reverse(rtcTimeArray); // Big-endian by default
+		return rtcTimeArray;
 	}
 
-	public static long convertShimmerRwcDataBytesToSystemTime(byte[] rwcTimeArray) {
-		ArrayUtils.reverse(rwcTimeArray); // Big-endian by default
-		long milisecondTicks = (long)(((double)(ByteBuffer.wrap(rwcTimeArray).getLong())/32.768));  // Convert clock ticks to milliseconds
+	public static long convertShimmerRtcDataBytesToSystemTime(byte[] rtcTimeArray) {
+		ArrayUtils.reverse(rtcTimeArray); // Big-endian by default
+		long milisecondTicks = (long)(((double)(ByteBuffer.wrap(rtcTimeArray).getLong())/32.768));  // Convert clock ticks to milliseconds
 		return milisecondTicks;
 	}
 
@@ -426,5 +426,15 @@ public class UtilShimmer implements Serializable {
 			}
 		}
 		return js;
+	}
+
+	public static double[][] deepCopyDoubleMatrix(double[][] input) {
+	    if (input == null)
+	        return null;
+	    double[][] result = new double[input.length][];
+	    for (int r = 0; r < input.length; r++) {
+	        result[r] = input[r].clone();
+	    }
+	    return result;
 	}
 }
