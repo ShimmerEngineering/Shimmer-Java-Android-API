@@ -31,6 +31,9 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	 * @param shimmerVersionObject the FW and HW details of the devices
 	 */
 	public ShimmerGQ(ShimmerGQInitSettings settings){
+		mUniqueID = settings.mShimmerGQID;
+		
+		
 		
 	}
 	

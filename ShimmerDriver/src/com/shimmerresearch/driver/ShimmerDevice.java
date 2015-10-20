@@ -12,4 +12,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
 	
+
+	
 }
