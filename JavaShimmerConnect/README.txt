@@ -1,4 +1,7 @@
-Java Shimmer Connect
+Java Shimmer Connect/Capture
+
+October 2015
+- Updated to the use of ECG to HR adaptive
 
 February 2015
 - Found a bottleneck in performance in the plotting function of ShimmerConnect and ShimmerCapture (1024Hz, 6 Channels)
