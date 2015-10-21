@@ -1,5 +1,9 @@
 # Shimmer-Java-Android-API
 
+21 October 2015
+- Major updates to get API working with LogandStream 0.6 and BTStream 0.8 which uses a 3 byte time stamp
+- New algorithm ecgtohradaptive added to ShimmerBiophysicalProcessingLibrary_Rev_0_10.jar, new algorithm is more accurate and efficient
+
 4 June 2015 (Beta 2.10)
  - fixes to MultiShimmerTemaplate and ShimmerGraphandLogService (A0 and A7)
  - update to filter (BSF) --> coefficients[(nTaps/2)] = coefficients[(nTaps/2)] +1;
