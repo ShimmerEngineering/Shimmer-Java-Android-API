@@ -119,6 +119,9 @@ public class MsgDock {
 	public final static int MSG_ID_BT_TO_DB_BUFFER_FILLED = 171;
 	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
 	
+	//TODO: Temp here
+	public final static int MSG_ID_SPAN_UPDATE = 200;
+
 	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_FAILED = 180;
 	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_SUCCESS = 181;
 	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_FAILED = 182;
@@ -220,6 +223,12 @@ public class MsgDock {
         aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
         aMap.put(MSG_ID_PLOT_CLOSED, "MSG_ID_PLOT_CLOSED");
         aMap.put(MSG_ID_PLOT_OUT_OF_BOUNDS, "MSG_ID_PLOT_OUT_OF_BOUNDS");
+
+        aMap.put(MSG_ID_BT_TO_DB_FINISHED, "MSG_ID_BT_TO_DB_FINISHED");
+        aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");
+        aMap.put(MSG_ID_BT_TO_DB_FAIL, "MSG_ID_BT_TO_DB_FAIL");
+        
+
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }
