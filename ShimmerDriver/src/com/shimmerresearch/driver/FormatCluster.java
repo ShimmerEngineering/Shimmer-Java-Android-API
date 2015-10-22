@@ -34,6 +34,8 @@
 package com.shimmerresearch.driver;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FormatCluster  implements Serializable{
@@ -45,12 +47,19 @@ public class FormatCluster  implements Serializable{
 	public String mFormat;
 	public String mUnits;
 	public double mData;
+	public List<Double> mDataObject = new ArrayList<Double>();
 	public boolean mIsUsingDefaultCalibration = false;
 
 	public FormatCluster(String format, String units, double data){
 		mFormat = format;
 		mUnits = units;
 		mData = data;
+	}
+
+	public FormatCluster(String format, String units, List<Double> dataObject){
+		mFormat = format;
+		mUnits = units;
+		mDataObject = dataObject;
 	}
 
 	public FormatCluster(String format, String units, double data, boolean isUsingDefaultCalibration){
