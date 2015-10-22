@@ -99,6 +99,8 @@ public class Configuration {
 		public static final String GRAVITY = "g";
 		public static final String CLOCK_UNIT = "Ticks";
 		public static final String RPM = "rpm";
+		public static final String FREQUENCY = "Hz";
+		public static final String POWER = "dB";
 
 		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
 		public static final String GYRO_CAL_UNIT = DEGREES_PER_SECOND;
@@ -180,11 +182,16 @@ public class Configuration {
 
 		}
 		
+		//GUI AND EXPORT CHANNELS
+		public static class ObjectClusterSensorName{
+			public static  String FREQUENCY = "Frequency";
+			public static  String POWER = "Power";
+		}
+		
 		public static final String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
 		public static final Integer[] ListofSamplingRateDividersValues={0,1,2,3,4,5,6,7};
-
-		
 	}
+	
 	
 	public static class Shimmer3{
 		public class Channel{
@@ -894,12 +901,6 @@ public class Configuration {
 			//TODO: remove two old channels names below
 			public static  String ECG_TO_HR = "ECGtoHR";
 			public static  String PPG_TO_HR = "PPGtoHR";
-			
-			
-			//TODO: GQv2 - temp here, move to ShimmerGq different object  
-			public static  String FREQUENCY = "Frequency";
-			public static  String POWER = "Power";
-
 			
 		}
 		
