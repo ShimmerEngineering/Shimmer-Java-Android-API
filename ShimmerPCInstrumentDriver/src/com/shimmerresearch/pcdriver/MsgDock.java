@@ -115,6 +115,10 @@ public class MsgDock {
 	public final static int MSG_ID_PLOT_CLOSED = 151;
 	public final static int MSG_ID_PLOT_OUT_OF_BOUNDS = 152;
 	
+	public final static int MSG_ID_EVENT_PULSE = 160;
+	public final static int MSG_ID_EVENT_TOGGLE_START = 161;
+	public final static int MSG_ID_EVENT_TOGGLE_END = 162;
+	
 	public final static int MSG_ID_BT_TO_DB_FINISHED = 170;
 	public final static int MSG_ID_BT_TO_DB_BUFFER_FILLED = 171;
 	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
