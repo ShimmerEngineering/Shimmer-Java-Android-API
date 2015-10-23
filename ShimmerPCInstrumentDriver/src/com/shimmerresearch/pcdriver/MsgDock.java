@@ -124,7 +124,7 @@ public class MsgDock {
 	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
 	
 	//TODO: Temp here
-	public final static int MSG_ID_SPAN_UPDATE = 200;
+	public final static int MSG_ID_SOURCE_SPANMANAGER = 200;
 
 	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_FAILED = 180;
 	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_SUCCESS = 181;
