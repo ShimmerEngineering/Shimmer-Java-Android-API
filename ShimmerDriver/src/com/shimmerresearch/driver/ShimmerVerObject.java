@@ -102,12 +102,12 @@ public class ShimmerVerObject implements Serializable {
 		if (ShimmerVerDetails.mMapOfShimmerRevisions.containsKey(mHardwareVersion)) {
 			mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(mHardwareVersion);
 		} else {
-			mHardwareVersionParsed = "Unknown";
+			mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.UNKNOWN);
 		}
 		
 		// Handle parsed FW description. Keep first entry as a separate IF
 		// statement
-		mFirmwareIdentifierParsed = "Unknown";
+		mFirmwareIdentifierParsed = FW_LABEL.UNKNOWN;
 		if (mHardwareVersion==HW_ID.SHIMMER_2R){
 			mFirmwareIdentifierParsed = FW_LABEL.BOILERPLATE;
 		}
@@ -127,8 +127,11 @@ public class ShimmerVerObject implements Serializable {
 		else if ((mHardwareVersion==HW_ID.SHIMMER_3)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.GPIO_TEST)){
 			mFirmwareIdentifierParsed = FW_LABEL.GPIO_TEST;
 		}
-		else if ((mHardwareVersion==HW_ID.SHIMMER_3)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.GQ_GSR)){
-			mFirmwareIdentifierParsed = FW_LABEL.GQ_GSR;
+		else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_BLE)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.GQ_BLE)){
+			mFirmwareIdentifierParsed = FW_LABEL.GQ_BLE;
+		}
+		else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_802154)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.GQ_802154)){
+			mFirmwareIdentifierParsed = FW_LABEL.GQ_802154;
 		}
 		
 		// Handle FW version code.

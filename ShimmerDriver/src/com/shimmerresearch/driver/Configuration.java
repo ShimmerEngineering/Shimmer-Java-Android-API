@@ -125,9 +125,16 @@ public class Configuration {
 //		public static final String UNCAL = "UNCAL";
 //		public static final String RAW = "RAW";
 //	}
-	
-	//Channel Contents
-	public static class ShimmerGQ{
+
+	public static class ShimmerGq802154{
+		public class SensorMapKey{
+			public static final int GSR = 1;
+			public static final int ECGtoHR = 2;
+		}
+		
+	}
+
+	public static class ShimmerGqBle{
 		public class SensorMapKey{
 			public static final int MPU9150_ACCEL = 17;
 			public static final int MPU9150_GYRO = 1;
@@ -141,12 +148,12 @@ public class Configuration {
 
 		// GUI Sensor Tiles
 		public class GuiLabelSensorTiles{
-			public static final String GYRO = Configuration.ShimmerGQ.GuiLabelSensors.GYRO;
-			public static final String MAG = Configuration.ShimmerGQ.GuiLabelSensors.MAG;
-			public static final String BATTERY_MONITORING = Configuration.ShimmerGQ.GuiLabelSensors.BATTERY;
-			public static final String WIDE_RANGE_ACCEL = Configuration.ShimmerGQ.GuiLabelSensors.ACCEL_WR;
+			public static final String GYRO = Configuration.ShimmerGqBle.GuiLabelSensors.GYRO;
+			public static final String MAG = Configuration.ShimmerGqBle.GuiLabelSensors.MAG;
+			public static final String BATTERY_MONITORING = Configuration.ShimmerGqBle.GuiLabelSensors.BATTERY;
+			public static final String WIDE_RANGE_ACCEL = Configuration.ShimmerGqBle.GuiLabelSensors.ACCEL_WR;
 			public static final String GSR = "GSR+";
-			public static final String BEACON = Configuration.ShimmerGQ.GuiLabelSensors.BEACON;
+			public static final String BEACON = Configuration.ShimmerGqBle.GuiLabelSensors.BEACON;
 		}
 		
 		//GUI SENSORS
@@ -193,6 +200,197 @@ public class Configuration {
 		
 		public static final String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
 		public static final Integer[] ListofSamplingRateDividersValues={0,1,2,3,4,5,6,7};
+		
+		
+		public static class CompatibilityInfoForMaps{
+			public static final int ANY_VERSION = -1;
+
+			// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
+			private static final ShimmerVerObject baseAnyIntExpBoardAndFw = 			new ShimmerVerObject(HW_ID.SHIMMER_GQ_BLE,FW_ID.SHIMMER3.GQ_BLE,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(baseAnyIntExpBoardAndFw);
+		}
+		
+		
+		// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
+	    public static final Map<Integer, SensorDetails> mSensorMapRef;
+	    static {
+	        Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer, SensorDetails>();
+
+//	        aMap.put(Configuration.ShimmerGQ.SensorMapKey.SHIMMER_STREAMING_PROPERTIES, new SensorDetails(0, 0, "Device Properties"));
+
+			aMap.put(Configuration.ShimmerGqBle.SensorMapKey.VBATT, new SensorDetails(0, 0, Configuration.ShimmerGqBle.GuiLabelSensors.BATTERY));
+			aMap.put(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL, new SensorDetails(0, 0, Configuration.ShimmerGqBle.GuiLabelSensors.ACCEL_WR));
+			aMap.put(Configuration.ShimmerGqBle.SensorMapKey.GSR, new SensorDetails(0, 0, Configuration.ShimmerGqBle.GuiLabelSensors.GSR));
+			aMap.put(Configuration.ShimmerGqBle.SensorMapKey.BEACON, new SensorDetails(0, 0, Configuration.ShimmerGqBle.GuiLabelSensors.BEACON));
+			aMap.put(Configuration.ShimmerGqBle.SensorMapKey.PPG, new SensorDetails(0, 0, Configuration.ShimmerGqBle.GuiLabelSensors.PPG));
+			
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.VBATT).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.GSR).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.BEACON).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.PPG).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
+			
+			// Associated config options for each channel (currently used for the ChannelTileMap)
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.VBATT).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT);
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.ShimmerGqBle.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,
+					Configuration.ShimmerGqBle.GuiLabelConfig.LSM303DLHC_ACCEL_RATE,
+					Configuration.ShimmerGqBle.GuiLabelConfig.LSM303DLHC_ACCEL_LPM,
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL);
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.GSR).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.ShimmerGqBle.GuiLabelConfig.GSR_RANGE,
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR);
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.BEACON).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_BEACON);
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.PPG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG);
+			mSensorMapRef = Collections.unmodifiableMap(aMap);
+	    }
+
+		
+	    public static final Map<String, SensorGroupingDetails> mSensorGroupingMap;
+	    static {
+	        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		
+
+			//Sensor Grouping for Configuration Panel 'tile' generation. 
+	        aMap.put(Configuration.ShimmerGqBle.GuiLabelSensorTiles.BATTERY_MONITORING, new SensorGroupingDetails(
+				Arrays.asList(Configuration.ShimmerGqBle.SensorMapKey.VBATT)));
+	        aMap.put(Configuration.ShimmerGqBle.GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(
+				Arrays.asList(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL)));
+	        aMap.put(Configuration.ShimmerGqBle.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+				Arrays.asList(Configuration.ShimmerGqBle.SensorMapKey.GSR,
+							Configuration.ShimmerGqBle.SensorMapKey.PPG)));
+	        aMap.put(Configuration.ShimmerGqBle.GuiLabelSensorTiles.BEACON, new SensorGroupingDetails(
+				Arrays.asList(Configuration.ShimmerGqBle.SensorMapKey.BEACON)));
+		
+			// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
+			aMap.get(Configuration.ShimmerGqBle.GuiLabelSensorTiles.BATTERY_MONITORING).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;;
+			aMap.get(Configuration.ShimmerGqBle.GuiLabelSensorTiles.WIDE_RANGE_ACCEL).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;;
+			aMap.get(Configuration.ShimmerGqBle.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;;
+			aMap.get(Configuration.ShimmerGqBle.GuiLabelSensorTiles.BEACON).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;;
+			
+			// For loop to automatically inherit associated channel configuration options from ChannelMap in the ChannelTileMap
+			for (String channelGroup : aMap.keySet()) {
+				// Ok to clear here because variable is initiated in the class
+				aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.clear();
+				for (Integer channel : aMap.get(channelGroup).mListOfSensorMapKeysAssociated) {
+					if(mSensorMapRef.containsKey(channel)){
+						List<String> associatedConfigOptions = mSensorMapRef.get(channel).mListOfConfigOptionKeysAssociated;
+						if (associatedConfigOptions != null) {
+							for (String configOption : associatedConfigOptions) {
+								// do not add duplicates
+								if (!(aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+									aMap.get(channelGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+	        mSensorGroupingMap = Collections.unmodifiableMap(aMap);
+	    }
+
+		// Assemble the channel configuration options map
+	    public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMap;
+	    static {
+	        Map<String, SensorConfigOptionDetails> aMap = new LinkedHashMap<String, SensorConfigOptionDetails>();
+
+			aMap = new HashMap<String,SensorConfigOptionDetails>();
+			
+	//		aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
+	//				new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+	//						listOfCompatibleVersionInfoGq));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
+	//		aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, 
+	//				new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+							Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+							Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+	//		aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
+	//				new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+	//						Configuration.ShimmerGQ.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+	
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
+											Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+											Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);
+			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
+	
+	//		if(mLowPowerAccelWR) {
+	//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+	//					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
+	//											Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
+	//											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+	//		}
+	//		else {
+	//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+	//					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+	//											Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+	//											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+	//		}
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
+											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+			
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR, 
+					new SensorConfigOptionDetails(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL, 
+					new SensorConfigOptionDetails(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, 
+					new SensorConfigOptionDetails(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT, 
+					new SensorConfigOptionDetails(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_BEACON, 
+					new SensorConfigOptionDetails(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+	
+		    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
+		    	      new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfOnOff, 
+				    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
+				    	        SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+			
+			//General Config
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+	
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX));
+			
+			
+			mConfigOptionsMap = Collections.unmodifiableMap(aMap);
+	    }
+
+		
 	}
 	
 	
@@ -945,8 +1143,8 @@ public class Configuration {
 			private static final ShimmerVerObject baseGsrUnifiedBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
 			private static final ShimmerVerObject baseGsrLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_GSR);
 			private static final ShimmerVerObject baseGsrUnifiedLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
-			private static final ShimmerVerObject baseGsrGq = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR);
-			private static final ShimmerVerObject baseGsrUnifiedGq = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.GQ_GSR,ANY_VERSION,ANY_VERSION,ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
+			private static final ShimmerVerObject baseGsrGq = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.GQ_BLE,ANY_VERSION,ANY_VERSION,ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR);
+			private static final ShimmerVerObject baseGsrUnifiedGq = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.GQ_BLE,ANY_VERSION,ANY_VERSION,ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
 
 			private static final ShimmerVerObject baseBrAmpSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP);
 			private static final ShimmerVerObject baseBrAmpUnifiedSdLog = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SHIMMER3.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED);

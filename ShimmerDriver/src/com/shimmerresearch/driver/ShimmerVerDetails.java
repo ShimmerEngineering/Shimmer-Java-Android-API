@@ -29,19 +29,23 @@ public class ShimmerVerDetails implements Serializable {
 		public final static int SHIMMER_3 = 3;
 		public final static int SHIMMER_SR30 = 4;
 //		public final static int DCU_SWEATSENSOR = 4;
-		public final static int SHIMMER_GQ = 5;
+		public final static int SHIMMER_GQ_BLE = 5;
+//		public final static int BIOSENSICS = 6;
+		public final static int SHIMMER_GQ_802154 = 7;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
+        aMap.put(HW_ID.UNKNOWN, "Unknown");
         aMap.put(HW_ID.SHIMMER_1, "Shimmer1");
         aMap.put(HW_ID.SHIMMER_2, "Shimmer2");
         aMap.put(HW_ID.SHIMMER_2R, "Shimmer2r");
         aMap.put(HW_ID.SHIMMER_3, "Shimmer3");
         aMap.put(HW_ID.SHIMMER_SR30, "Shimmer SR30");
-        aMap.put(HW_ID.SHIMMER_GQ, "ShimmerGQ");
+        aMap.put(HW_ID.SHIMMER_GQ_BLE, "ShimmerGQBle");
 //        aMap.put(HW_ID.DCU_SWEATSENSOR, "DCU_SWEATSENSOR");
+        aMap.put(HW_ID.SHIMMER_GQ_802154, "ShimmerGQ");
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
     
@@ -87,13 +91,19 @@ public class ShimmerVerDetails implements Serializable {
 			public final static int BTSTREAM = 1;
 		}
 		
+		/**
+		 * FW_ID is hardware generation dependent, not hardware version
+		 * dependent (e.g., Shimmer3 covers a range of custom hardware all based
+		 * on the same microcontroller in the Shimmmer3)
+		 */
 		public final static class SHIMMER3 {
 			public final static int BTSTREAM = 1;
 			public final static int SDLOG = 2;
 			public final static int LOGANDSTREAM = 3;
 			public final static int DCU_SWEATSENSOR = 4;
-			public final static int GQ_GSR = 5;
+			public final static int GQ_BLE = 5;
 			public final static int GPIO_TEST = 6;
+			public final static int GQ_802154 = 7;
 		}
 		
 		public final static class BASES {
@@ -102,22 +112,19 @@ public class ShimmerVerDetails implements Serializable {
 			public final static int BASE6U = 2;
 		}
 		
-		public final static class SHIMMER_GQ {
-			public final static int GQ_GSR = 0;
-			public final static int GQ_802154 = 1; //this is used to identify the 802154 radio for GQ
-		}
-
 		public static final int UNKNOWN = -1;
 	}
 	
 	public final static class FW_LABEL {
+		public final static String UNKNOWN = "Unknown";
 		public final static String BOILERPLATE = "BoilerPlate";
 		public final static String BTSTREAM = "BtStream";
 		public final static String SDLOG = "SDLog";
 		public final static String LOGANDSTREAM = "LogAndStream";
 		public final static String DCU_SWEATSENSOR = "Swatch";
-		public final static String GQ_GSR = "GQ_GSR";
+		public final static String GQ_BLE = "GQ_BLE";
 		public final static String GPIO_TEST = "GPIO_TEST";
+		public final static String GQ_802154 = "GQ_802154";
 	}
 
 

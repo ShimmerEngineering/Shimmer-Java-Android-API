@@ -151,7 +151,7 @@ public class FwImageVersionDetails {
 					}
 					else if(fileNameWithExtension.contains(FW_STRING.SHIMMER3_GQ_GSR)) {
 						mHardwareVersion = HW_ID.SHIMMER_3;
-						mFirmwareIdentifier = FW_ID.SHIMMER3.GQ_GSR;
+						mFirmwareIdentifier = FW_ID.SHIMMER3.GQ_BLE;
 					}
 					else if(fileNameWithExtension.contains(FW_STRING.SMARTDOCK15U_REV2)) {
 						mHardwareVersion = HW_ID_SR_CODES.BASE15U;
