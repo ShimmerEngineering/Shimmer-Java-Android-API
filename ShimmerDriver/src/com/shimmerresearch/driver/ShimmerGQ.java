@@ -1,5 +1,6 @@
 package com.shimmerresearch.driver;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.sensor.AbstractSensor;
 
-public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, ShimmerDataProcessing {
+public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, ShimmerDataProcessing, Serializable {
 	
 	ShimmerVerObject mShimmerVerObject;
 	

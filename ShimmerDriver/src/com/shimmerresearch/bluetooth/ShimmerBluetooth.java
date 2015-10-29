@@ -123,10 +123,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	
 	public enum BT_STATE{
-		//Removed the below
-//		NONE("None"),       // The class is doing nothing
-//		CONFIGURED("Configured"), // 
-		
 		DISCONNECTED("Disconnected"),
 		CONNECTING("Connecting"), // The class is now initiating an outgoing connection
 		CONNECTED("Ready"),  // The class is now connected to a remote device
@@ -137,8 +133,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		CONNECTION_LOST("Lost connection"),
 		CONNECTION_FAILED("Connection Failed");
 		
-//		FAILED(),  // The class is now connected to a remote device
-
 	    private final String text;
 
 	    /**

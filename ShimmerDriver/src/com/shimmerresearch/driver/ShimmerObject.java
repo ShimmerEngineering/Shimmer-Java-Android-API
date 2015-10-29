@@ -445,26 +445,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	//TODO switch to just using ShimmerVerObject rather then individual variables 
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
-	protected int mHardwareVersion=HW_ID.UNKNOWN;
-	public String mHardwareVersionParsed = "";
-	public int mFirmwareVersionCode = 0;
-	public int mFirmwareIdentifier = 0;
-	public int mFirmwareVersionMajor = 0;
-	public int mFirmwareVersionMinor = 0;
-	public int mFirmwareVersionInternal = 0;
-	public String mFirmwareVersionParsed = "";
-	
-	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
+	protected int mHardwareVersion = mShimmerVerObject.mHardwareVersion;
+	public String mHardwareVersionParsed = mShimmerVerObject.mHardwareVersionParsed;
+	public int mFirmwareVersionCode = mShimmerVerObject.mFirmwareVersionCode;
+	public int mFirmwareIdentifier = mShimmerVerObject.mFirmwareIdentifier;
+	public int mFirmwareVersionMajor = mShimmerVerObject.mFirmwareVersionMajor;
+	public int mFirmwareVersionMinor = mShimmerVerObject.mFirmwareVersionMinor;
+	public int mFirmwareVersionInternal = mShimmerVerObject.mFirmwareVersionInternal;
+	public String mFirmwareVersionParsed = mShimmerVerObject.mFirmwareVersionParsed;
 	
 	//TODO switch to just using ExpansionBoardDetails rather then individual variables 
 	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
-	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN; 
-	public int mExpansionBoardRev = -1;
-	public int mExpansionBoardRevSpecial = -1;
-	public String mExpansionBoardParsed = "";  
-	public String mExpansionBoardParsedWithVer = "";  
-	protected byte[] mExpBoardArray = null; // Array where the expansion board response is stored
-	
+	protected int mExpansionBoardId = mExpansionBoardDetails.mExpBoardId; 
+	protected int mExpansionBoardRev = mExpansionBoardDetails.mExpBoardRev;
+	protected int mExpansionBoardRevSpecial = mExpansionBoardDetails.mExpBoardRevSpecial;
+	protected String mExpansionBoardParsed = mExpansionBoardDetails.mExpBoardParsed;  
+	protected String mExpansionBoardParsedWithVer = mExpansionBoardDetails.mExpBoardParsedWithVer;  
+	protected byte[] mExpBoardArray = mExpansionBoardDetails.mExpBoardArray; // Array where the expansion board response is stored
+
+	protected ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails();
+	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
+
+
 	public static final int ANY_VERSION = -1;
 	
 	protected String mClassName="Shimmer";
@@ -764,13 +766,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mIsSensing;
 	private List<String[]> mExtraSignalProperties = null;
 	
-	protected ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails();
-//	protected String mChargingState = "";
-//	protected int mChargingStatus = 0;
-//	protected String mBattVoltage = "";
-//	protected Double mEstimatedChargePercentage = 0.0;
-//	protected String mEstimatedChargePercentageParsed = "";
-
 	protected boolean mIsInitialised = false;
 	protected boolean mIsDocked = false;
 	protected boolean mHaveAttemptedToReadConfig = false;
@@ -792,12 +787,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public static final double ACCELERATION_DUE_TO_GRAVITY = 9.81;
 	
-	//Testing for GQ
+	/** GQ BLE */
 	protected int mGqPacketNumHeaderBytes = 0;
+	/** GQ BLE */
 	protected int mSamplingDividerVBatt = 0;
+	/** GQ BLE */
 	protected int mSamplingDividerGsr = 0;
+	/** GQ BLE */
 	protected int mSamplingDividerPpg = 0;
+	/** GQ BLE */
 	protected int mSamplingDividerLsm303dlhcAccel = 0;
+	/** GQ BLE */
 	protected int mSamplingDividerBeacon = 0;
 
 	/** A shimmer device will have multiple sensors, depending on HW type and revision, 
@@ -10743,21 +10743,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mExpansionBoardRevSpecial;
 	}
 	
-	public String getExpansionBoardIdParsed(){
+	/**
+	 * @return the mExpansionBoardParsed
+	 */
+	public String getExpansionBoardParsed() {
 		return mExpansionBoardParsed;
 	}
-
-	protected void setExpansionBoardId(int expansionBoardId){
-		mExpansionBoardId = expansionBoardId;
+	
+	public String getExpansionBoardParsedWithVer() {
+		return mExpansionBoardParsedWithVer;
 	}
 
 	protected void clearExpansionBoardDetails(){
-		mExpansionBoardId = -1;
-		mExpansionBoardRev = -1;
-		mExpansionBoardRevSpecial = -1;
-		mExpansionBoardParsed = "";
-		mExpansionBoardParsedWithVer = "";
-		mExpBoardArray = null;
+		mExpansionBoardDetails = new ExpansionBoardDetails();
+		mExpansionBoardId = mExpansionBoardDetails.mExpBoardId;
+		mExpansionBoardRev = mExpansionBoardDetails.mExpBoardRev;
+		mExpansionBoardRevSpecial = mExpansionBoardDetails.mExpBoardRevSpecial;
+		mExpansionBoardParsed = mExpansionBoardDetails.mExpBoardParsed;
+		mExpansionBoardParsedWithVer = mExpansionBoardDetails.mExpBoardParsedWithVer;
+		mExpBoardArray = mExpansionBoardDetails.mExpBoardArray;
 	}
 	
 	
@@ -11406,5 +11410,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mShimmerLastReadRealTimeClockValue = time;
 		mShimmerLastReadRtcValueParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(time), false);
 	}
+
+
+
 
 }

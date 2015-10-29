@@ -20,17 +20,17 @@ public class ShimmerVerObject implements Serializable {
 	 */
 	private static final long serialVersionUID = -1966526754185423783L;
 	
-	public int mHardwareVersion = 0;
-	public String mHardwareVersionParsed = "";
+	public int mHardwareVersion = HW_ID.UNKNOWN;
+	public String mHardwareVersionParsed = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
 	
 	public int mFirmwareIdentifier = 0;
 	public int mFirmwareVersionMajor = 0;
 	public int mFirmwareVersionMinor = 0;
 	public int mFirmwareVersionInternal = 0;
 	public int mFirmwareVersionCode = 0;
-	public String mFirmwareIdentifierParsed = "";
-	public String mFirmwareVersionParsed = "Unknown";
-	public String mFirmwareVersionParsedJustVersionNumber = "Unknown";
+	public String mFirmwareIdentifierParsed = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
+	public String mFirmwareVersionParsed = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
+	public String mFirmwareVersionParsedJustVersionNumber = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
 
 	public int mShimmerExpansionBoardId = 0;
 	

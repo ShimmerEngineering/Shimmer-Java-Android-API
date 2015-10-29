@@ -3,6 +3,7 @@ package com.shimmerresearch.driver;
 import java.io.Serializable;
 
 import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
 
 /**
  * Holds the Shimmer's Expansion board information as read from the memory chip
@@ -13,11 +14,11 @@ import com.shimmerresearch.driver.ShimmerVerDetails;
  */
 public class ExpansionBoardDetails implements Serializable {
 	
-	public int mExpBoardId = -1;
-	public int mExpBoardRev = -1;
-	public int mExpBoardRevSpecial = -1;
-	public String mExpBoardParsed = "Unknown";
-	public String mExpBoardParsedWithVer = "Unknown";
+	public int mExpBoardId = HW_ID_SR_CODES.UNKNOWN;
+	public int mExpBoardRev = HW_ID_SR_CODES.UNKNOWN;
+	public int mExpBoardRevSpecial = HW_ID_SR_CODES.UNKNOWN;
+	public String mExpBoardParsed = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
+	public String mExpBoardParsedWithVer = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
 	public byte[] mExpBoardArray = new byte[]{}; 
 	
 	public ExpansionBoardDetails(
@@ -55,12 +56,12 @@ public class ExpansionBoardDetails implements Serializable {
 				boardName = ShimmerVerDetails.mMapOfShimmerHardware.get(boardID);
 			}
 			else {
-				boardName="Unknown";
+				boardName = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
 			}
 		}
 			
 		boardNameWithVer = boardName;
-		if((!boardName.equals("Unknown"))&&(!boardName.equals("None"))){
+		if((!boardName.equals(ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN))&&(!boardName.equals("None"))){
 			boardNameWithVer += " (SR" + boardID + "." + boardRev + "." + specialRev +")";
 		}
 		mExpBoardId = boardID;

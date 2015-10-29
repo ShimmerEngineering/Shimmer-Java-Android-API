@@ -20,6 +20,7 @@ public class ShimmerVerDetails implements Serializable {
 	
 	public final static int EXP_BRD_NONE_ID = 255;
 	public static final String EXP_BRD_NONE = "None";
+	public static final String STRING_CONSTANT_FOR_UNKNOWN = "Unknown";
 	
 	public final static class HW_ID {
 		public final static int UNKNOWN = -1;
@@ -37,7 +38,7 @@ public class ShimmerVerDetails implements Serializable {
 	public static final Map<Integer, String> mMapOfShimmerRevisions;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
-        aMap.put(HW_ID.UNKNOWN, "Unknown");
+        aMap.put(HW_ID.UNKNOWN, STRING_CONSTANT_FOR_UNKNOWN);
         aMap.put(HW_ID.SHIMMER_1, "Shimmer1");
         aMap.put(HW_ID.SHIMMER_2, "Shimmer2");
         aMap.put(HW_ID.SHIMMER_2R, "Shimmer2r");
@@ -116,7 +117,7 @@ public class ShimmerVerDetails implements Serializable {
 	}
 	
 	public final static class FW_LABEL {
-		public final static String UNKNOWN = "Unknown";
+		public final static String UNKNOWN = STRING_CONSTANT_FOR_UNKNOWN;
 		public final static String BOILERPLATE = "BoilerPlate";
 		public final static String BTSTREAM = "BtStream";
 		public final static String SDLOG = "SDLog";
