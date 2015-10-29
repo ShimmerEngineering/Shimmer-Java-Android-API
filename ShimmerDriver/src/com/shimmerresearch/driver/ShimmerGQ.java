@@ -15,7 +15,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	/**Each integer is a unique identifier
 	 * 
 	 */
-	Map<Integer,AbstractSensor> mMapofSensors = new HashMap<Integer,AbstractSensor>();
+	Map<Integer,AbstractSensor> mMapOfSensors = new HashMap<Integer,AbstractSensor>();
 	
 	//This maps the channel ID to sensor
 	//Map<Integer,AbstractSensor> mMapofSensorChannelToSensor = new HashMap<Integer,AbstractSensor>();

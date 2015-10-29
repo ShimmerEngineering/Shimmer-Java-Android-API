@@ -132,6 +132,16 @@ public class Configuration {
 			public static final int ECGtoHR = 2;
 		}
 		
+		//GUI AND EXPORT CHANNELS
+		public static class ObjectClusterSensorName{
+			//Related to the Spectrum Analyser
+			public static  String POWER_CALC_85 = "SpanManager-85";//"Results-85";
+			public static  String POWER_CALC_15 = "SpanManager-15";//"Results-15";
+			public static  String FREQUENCY = "Frequency";
+			public static  String POWER = "Power";
+		}
+		
+		
 	}
 
 	public static class ShimmerGqBle{
@@ -187,15 +197,6 @@ public class Configuration {
 			public static final String CONFIG_TIME = "Config Time";
 			public static final String SHIMMER_MAC_FROM_INFOMEM = "InfoMem MAC";
 
-		}
-		
-		//GUI AND EXPORT CHANNELS
-		public static class ObjectClusterSensorName{
-			//Related to the Spectrum Analyser
-			public static  String POWER_CALC_85 = "SpanManager-85";//"Results-85";
-			public static  String POWER_CALC_15 = "SpanManager-15";//"Results-15";
-			public static  String FREQUENCY = "Frequency";
-			public static  String POWER = "Power";
 		}
 		
 		public static final String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
