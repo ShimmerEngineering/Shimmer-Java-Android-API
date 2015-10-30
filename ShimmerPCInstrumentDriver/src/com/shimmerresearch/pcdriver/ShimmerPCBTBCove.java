@@ -58,11 +58,12 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 
 
 public class ShimmerPCBTBCove extends ShimmerBluetooth{
-			// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
+	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	StreamConnection conn=null;
 	ObjectCluster objectClusterTemp = null;
 	//InputStream mIN;
@@ -441,6 +442,12 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	protected void batteryStatusChanged() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ShimmerDevice deepClone() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

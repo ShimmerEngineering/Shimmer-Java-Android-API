@@ -64,6 +64,7 @@ import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 
 import jssc.SerialPort;
@@ -705,6 +706,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
 			System.out.println(rightNowString + " " + mParentClassName + ": " + mUniqueID + " " + getMacIdFromBtParsed() + " " + message);
 		}		
+	}
+
+	@Override
+	public ShimmerDevice deepClone() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

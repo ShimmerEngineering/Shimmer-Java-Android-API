@@ -1,5 +1,10 @@
 package com.shimmerresearch.driver;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,13 +16,16 @@ import com.shimmerresearch.sensor.AbstractSensor;
 
 public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, ShimmerDataProcessing, Serializable {
 	
-	ShimmerVerObject mShimmerVerObject;
-	
 	/**Each integer is a unique identifier
 	 * 
 	 */
 	Map<Integer,AbstractSensor> mMapOfSensors = new HashMap<Integer,AbstractSensor>();
 	
+	/** This is derived from all the sensors
+	 * 
+	 */
+	public HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>> mMapOfChannel = new HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>>(); 
+
 	//This maps the channel ID to sensor
 	//Map<Integer,AbstractSensor> mMapofSensorChannelToSensor = new HashMap<Integer,AbstractSensor>();
 	
@@ -26,25 +34,18 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	//priority of comm type to know whether it is dock and radio connected, if dock connected send uart priority
 	
 	//
-	
+
+	public ShimmerGQ(ShimmerVerObject sVO) {
+		super.setShimmerVerObject(sVO);
+	}
+
 	/**
 	 * @param uniqueID unique id of the shimmer
 	 * @param shimmerVersionObject the FW and HW details of the devices
 	 */
 	public ShimmerGQ(ShimmerGQInitSettings settings){
 		mUniqueID = settings.mShimmerGQID;
-		
-		
-		
 	}
-	
-	
-	/** This is derived from all the sensors
-	 * 
-	 */
-	public HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>> mMapOfChannel = new HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>>(); 
-	
-	
 	
 
 
@@ -95,10 +96,30 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 		
 	}
 
+	/**Performs a deep copy of ShimmerGQ by Serializing
+	 * @return ShimmerGQ the deep copy of the current ShimmerGQ
+	 * @see java.io.Serializable
+	 */
+	@Override
+	public ShimmerGQ deepClone() {
+//		System.out.println("Cloning:" + mUniqueID);
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
 
-
-
-
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (ShimmerGQ) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	
 	
 	/*
@@ -111,5 +132,8 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 		//return action setting
  	}
 	*/
+	
+	
+
 
 }
