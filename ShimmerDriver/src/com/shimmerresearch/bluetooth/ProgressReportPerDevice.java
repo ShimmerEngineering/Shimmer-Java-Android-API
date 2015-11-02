@@ -94,7 +94,7 @@ public class ProgressReportPerDevice implements Serializable {
 		mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.mUniqueID;
 		mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();
 		mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmerBluetooth.getMacIdFromBtParsed();
-		mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.mFirmwareVersionParsed;
+		mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.getFirmwareVersionParsed();
 //		mShimmerBluetoothDetailsMini.mListOfFailMsg = shimmerBluetooth.mListOfFailMsg;
 		mShimmerBluetoothDetailsMini.mShimmerUserAssignedName = shimmerBluetooth.getShimmerUserAssignedName();
 //		mShimmerBluetoothDetailsMini.mShimmerLastReadRealTimeClockValue = shimmerBluetooth.mShimmerLastReadRealTimeClockValue;
@@ -108,7 +108,7 @@ public class ProgressReportPerDevice implements Serializable {
 			mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.mUniqueID;
 			mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();
 			mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmerBluetooth.getMacIdFromBtParsed();
-			mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.mFirmwareVersionParsed;
+			mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.getFirmwareVersionParsed();
 	//		mshimmerBluetoothMini.mListOfFailMsg = shimmerBluetooth.mListOfFailMsg;
 			mShimmerBluetoothDetailsMini.mShimmerUserAssignedName = shimmerBluetooth.getShimmerUserAssignedName();
 //			mShimmerBluetoothDetailsMini.mShimmerLastReadRealTimeClockValue = shimmerBluetooth.mShimmerLastReadRealTimeClockValue;

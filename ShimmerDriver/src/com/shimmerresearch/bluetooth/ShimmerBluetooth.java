@@ -1053,9 +1053,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mFirmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
 			mFirmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
 			mFirmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
-			mFirmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
+			getFirmwareVersionInternal()=(int)(bufferInquiry[5]&0xFF);
 			
-			ShimmerVerObject shimmerVerObject = new ShimmerVerObject(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+			ShimmerVerObject shimmerVerObject = new ShimmerVerObject(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, getFirmwareVersionInternal());
 			setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
 
 			printLogDataForDebugging("FW Version Response Received. FW Code: " + mFirmwareVersionCode);
@@ -2996,7 +2996,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * This reads the configuration of both chips from the EXG board
 	 */
 	public void readEXGConfigurations(){
-		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+		if((getFirmwareVersionInternal() >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
 			readEXGConfigurations(EXG_CHIP_INDEX.CHIP1);
 			readEXGConfigurations(EXG_CHIP_INDEX.CHIP2);
 		}
@@ -3007,7 +3007,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @see EXG_CHIP_INDEX
 	 */
 	public void readEXGConfigurations(EXG_CHIP_INDEX chipID){
-		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+		if((getFirmwareVersionInternal() >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
 			getListofInstructions().add(new byte[]{GET_EXG_REGS_COMMAND,(byte)(chipID.ordinal()),0,10});
 		}
 	}
@@ -3108,7 +3108,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *            , where 0=125SPS ; 1=250SPS; 2=500SPS; 3=1000SPS; 4=2000SPS
 	 */
 	public void writeEXGRateSetting(int rateSetting){
-		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+		if((getFirmwareVersionInternal() >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
 			if(rateSetting>=0 && rateSetting<=4){
 				setEXGRateSetting(rateSetting);
 				writeEXGConfiguration();
@@ -3129,7 +3129,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *            , where 0=125SPS ; 1=250SPS; 2=500SPS; 3=1000SPS; 4=2000SPS
 	 */
 	public void writeEXGRateSetting(EXG_CHIP_INDEX chipID, int rateSetting){
-		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+		if((getFirmwareVersionInternal() >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
 			if(rateSetting>=0 && rateSetting<=4){
 				setEXGRateSetting(chipID, rateSetting);
 				if(chipID==EXG_CHIP_INDEX.CHIP1){
@@ -3148,7 +3148,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *            6 = 12x
 	 */
 	public void writeEXGGainSetting(int gainSetting){
-		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+		if((getFirmwareVersionInternal() >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
 			if(gainSetting>=0 && gainSetting<=6){
 				setExGGainSetting(gainSetting);
 				writeEXGConfiguration();
@@ -3172,7 +3172,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *            Either a 1 or 2 value
 	 */
 	public void writeEXGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int gainSetting){
-		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+		if((getFirmwareVersionInternal() >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
 			if(gainSetting>=0 && gainSetting<=6){
 				setExGGainSetting(chipID, channel, gainSetting);
 				if(chipID==EXG_CHIP_INDEX.CHIP1){
@@ -3186,7 +3186,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void writeEXGConfiguration(){
-		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+		if((getFirmwareVersionInternal() >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
 			writeEXGConfiguration(getEXG1RegisterArray(),EXG_CHIP_INDEX.CHIP1);
 			writeEXGConfiguration(getEXG2RegisterArray(),EXG_CHIP_INDEX.CHIP2);
 		}
@@ -3199,7 +3199,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @see EXG_CHIP_INDEX
 	 */
 	public void writeEXGConfiguration(byte[] reg, EXG_CHIP_INDEX chipID){
-		if((mFirmwareVersionInternal >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
+		if((getFirmwareVersionInternal() >=8 && mFirmwareVersionCode==FW_ID.SHIMMER3.SDLOG) || mFirmwareVersionCode>2){
 			getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte)(chipID.ordinal()),0,10,reg[0],reg[1],reg[2],reg[3],reg[4],reg[5],reg[6],reg[7],reg[8],reg[9]});
 		}
 	}
@@ -3214,7 +3214,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void writeGSRRange(int range) {
 		if(mHardwareVersion==HW_ID.SHIMMER_3){
-			if(mFirmwareVersionCode!=1 || mFirmwareVersionInternal >4){
+			if(mFirmwareVersionCode!=1 || getFirmwareVersionInternal() >4){
 				getListofInstructions().add(new byte[]{SET_GSR_RANGE_COMMAND, (byte)range});
 			}
 		} 
@@ -3247,7 +3247,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void readCalibrationParameters(String sensor) {
 		if(!mIsInitialised){
-			if(mFirmwareVersionCode==1 && mFirmwareVersionInternal==0  && mHardwareVersion!=HW_ID.SHIMMER_3) {
+			if(mFirmwareVersionCode==1 && getFirmwareVersionInternal()==0  && mHardwareVersion!=HW_ID.SHIMMER_3) {
 				//mFirmwareVersionParsed=boilerPlateString;
 				/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
       	        Bundle bundle = new Bundle();
@@ -3425,7 +3425,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//TODO: MN
 	public void readConfigurationFromInfoMem(){
 		if(this.mFirmwareVersionCode>=6){
-			int size = InfoMemLayout.calculateInfoMemByteLength(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+			int size = InfoMemLayout.calculateInfoMemByteLength(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, getFirmwareVersionInternal());
 			readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size);
 		}
 	}
@@ -3551,14 +3551,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //				this.mFirmwareIdentifier, 
 //				this.mFirmwareVersionMajor,
 //				this.mFirmwareVersionMinor, 
-//				this.mFirmwareVersionInternal, 
+//				this.getFirmwareVersionInternal(), 
 //				FW_ID.SHIMMER3.BTSTREAM, 
 //				0,7,2))
 //				||(Util.compareVersions(
 //						this.mFirmwareIdentifier, 
 //						this.mFirmwareVersionMajor,
 //						this.mFirmwareVersionMinor, 
-//						this.mFirmwareVersionInternal, 
+//						this.getFirmwareVersionInternal(), 
 //						FW_ID.SHIMMER3.LOGANDSTREAM, 
 //						0,5,4)))
 //						||(this.mFirmwareVersionCode>=6)){
@@ -3858,7 +3858,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void enableHighResolutionMode(boolean enable) {
 		while(!getInstructionStatus()) {};
 		
-		if(mFirmwareVersionCode==1 && mFirmwareVersionInternal==0) {
+		if(mFirmwareVersionCode==1 && getFirmwareVersionInternal()==0) {
 
 		} 
 		else if(mHardwareVersion==HW_ID.SHIMMER_3) {
@@ -4705,7 +4705,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @return
 	 */
 	public boolean isThisVerCompatibleWith(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
-		return UtilShimmer.compareVersions(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal,
+		return UtilShimmer.compareVersions(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, getFirmwareVersionInternal(),
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 

@@ -444,15 +444,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
 	//TODO switch to just using ShimmerVerObject rather then individual variables 
-	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
-	protected int mHardwareVersion = mShimmerVerObject.mHardwareVersion;
-	public String mHardwareVersionParsed = mShimmerVerObject.mHardwareVersionParsed;
-	public int mFirmwareVersionCode = mShimmerVerObject.mFirmwareVersionCode;
-	public int mFirmwareIdentifier = mShimmerVerObject.mFirmwareIdentifier;
-	public int mFirmwareVersionMajor = mShimmerVerObject.mFirmwareVersionMajor;
-	public int mFirmwareVersionMinor = mShimmerVerObject.mFirmwareVersionMinor;
-	public int mFirmwareVersionInternal = mShimmerVerObject.mFirmwareVersionInternal;
-	public String mFirmwareVersionParsed = mShimmerVerObject.mFirmwareVersionParsed;
+//	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
+//	protected int getHardwareVersion() = mShimmerVerObject.getHardwareVersion();
+//	public String getHardwareVersionParsed() = mShimmerVerObject.getHardwareVersionParsed();
+//	public int mFirmwareVersionCode = mShimmerVerObject.getFirmwareVersionCode();
+//	public int getFirmwareIdentifier() = mShimmerVerObject.getFirmwareIdentifier();
+//	public int getFirmwareVersionMajor() = mShimmerVerObject.getFirmwareVersionMajor();
+//	public int getFirmwareVersionMinor() = mShimmerVerObject.getFirmwareVersionMinor();
+//	public int getFirmwareVersionInternal() = mShimmerVerObject.getFirmwareVersionInternal();
+//	public String mFirmwareVersionParsed = mShimmerVerObject.mFirmwareVersionParsed;
 	
 	//TODO switch to just using ExpansionBoardDetails rather then individual variables 
 	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
@@ -463,7 +463,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected String mExpansionBoardParsedWithVer = mExpansionBoardDetails.mExpBoardParsedWithVer;  
 	protected byte[] mExpBoardArray = mExpansionBoardDetails.mExpBoardArray; // Array where the expansion board response is stored
 
-	protected ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails();
+//	protected ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails();
 	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
 
 
@@ -898,7 +898,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		Vector3d gyroscope = new Vector3d();
 		
 		
-		if (mHardwareVersion==HW_ID.SHIMMER_SR30 || mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
 			
 			int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
 			if(mFirstTime && fwIdentifier == FW_TYPE_SD){
@@ -1750,7 +1750,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					) {
 				int iGSR = getSignalIndex(Shimmer3.ObjectClusterSensorName.GSR);
 				double p1=0,p2=0;//,p3=0,p4=0,p5=0;
-				if (fwIdentifier == FW_TYPE_SD && mFirmwareVersionMajor ==0 && mFirmwareVersionMinor==9){
+				if (fwIdentifier == FW_TYPE_SD && getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==9){
 					tempData[0] = (double)newPacketInt[iGSR];
 					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 					int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
@@ -1785,7 +1785,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 					if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+						if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 							p1 = 0.0373;
 							p2 = -24.9915;
 						} else {
@@ -1795,7 +1795,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p2 = -24.9915;
 						}
 					} else if (mGSRRange==1 || newGSRRange==1) {
-						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+						if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 							p1 = 0.0054;
 							p2 = -3.5194;
 						} else {
@@ -1805,7 +1805,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p2 = -3.5194;
 						}
 					} else if (mGSRRange==2 || newGSRRange==2) {
-						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+						if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 							p1 = 0.0015;
 							p2 = -1.0163;
 						} else {
@@ -1815,7 +1815,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p2 = -1.0163;
 						}
 					} else if (mGSRRange==3  || newGSRRange==3) {
-						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+						if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 							p1 = 4.5580e-04;
 							p2 = -0.3014;
 						} else {
@@ -1834,7 +1834,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 					if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+						if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 							p1 = 0.0373;
 							p2 = -24.9915;
 
@@ -1845,7 +1845,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p2 = -24.9915;
 						}
 					} else if (mGSRRange==1 || newGSRRange==1) {
-						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+						if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 							p1 = 0.0054;
 							p2 = -3.5194;
 						} else {
@@ -1855,7 +1855,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p2 = -3.5194;
 						}
 					} else if (mGSRRange==2 || newGSRRange==2) {
-						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+						if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 							p1 = 0.0015;
 							p2 = -1.0163;
 						} else {
@@ -1865,7 +1865,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p2 = -1.0163;
 						}
 					} else if (mGSRRange==3  || newGSRRange==3) {
-						if (mHardwareVersion!=HW_ID.SHIMMER_3){
+						if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 							p1 = 4.5580e-04;
 							p2 = -0.3014;
 						} else {
@@ -2156,7 +2156,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			objectCluster.mSensorNames = sensorNames;
 
 		} 
-		else if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
+		else if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 			 //start of Shimmer2
 
 			int iTimeStamp=getSignalIndex(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP); //find index
@@ -2393,7 +2393,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.mPropertyCluster.put(Shimmer2.ObjectClusterSensorName.HEART_RATE,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,tempData[0]));
 				if (mEnableCalibration){
 					calibratedData[iHeartRate]=tempData[0];
-					if (mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1){
+					if (getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==1){
 
 					} else {
 						if (tempData[0]==0){
@@ -2481,7 +2481,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public boolean isThisVerCompatibleWith(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
-		return UtilShimmer.compareVersions(mHardwareVersion, mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal,
+		return UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 	
@@ -2506,7 +2506,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		objectCluster = callAdditionalServices(objectCluster);
 
 
-		if (mHardwareVersion==HW_ID.SHIMMER_SR30 || mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
 			if (((mEnabledSensors & SENSOR_ACCEL) > 0)){
 				int iAccelX=getSignalIndex("Low Noise Accelerometer X"); //find index
 				int iAccelY=getSignalIndex("Low Noise Accelerometer Y"); //find index
@@ -2932,7 +2932,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		                    p3 = 2.699E-1;
 		                    p4 = -4.769835E+2;
 		                    p5 = 3.403513341E+5;*/
-					if (mHardwareVersion!=HW_ID.SHIMMER_3){
+					if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 						p1 = 0.0373;
 						p2 = -24.9915;
 					} else {
@@ -2945,7 +2945,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		                    p3 = 7.54199E-1;
 		                    p4 = -1.5726287856E+3;
 		                    p5 = 1.367507927E+6;*/
-					if (mHardwareVersion!=HW_ID.SHIMMER_3){
+					if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 						p1 = 0.0054;
 						p2 = -3.5194;
 					} else {
@@ -2958,7 +2958,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		                    p3 = 1.6509426597E+0;
 		                    p4 = -3.833348044E+3;
 		                    p5 = 3.8063176947E+6;*/
-					if (mHardwareVersion!=HW_ID.SHIMMER_3){
+					if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 						p1 = 0.0015;
 						p2 = -1.0163;
 					} else {
@@ -2971,7 +2971,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		                    p3 = 1.7905709E+1;
 		                    p4 = -3.37238657E+4;
 		                    p5 = 2.53680446279E+7;*/
-					if (mHardwareVersion!=HW_ID.SHIMMER_3){
+					if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 						p1 = 4.5580e-04;
 						p2 = -0.3014;
 					} else {
@@ -3225,7 +3225,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.mPropertyCluster.put("Heart Rate",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,tempData[0]));
 				if (mEnableCalibration){
 					calibratedData[iHeartRate]=tempData[0];
-					if (mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1){
+					if (getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==1){
 
 					} else {
 						if (tempData[0]==0){
@@ -3491,7 +3491,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
 		
-		if (mHardwareVersion==HW_ID.SHIMMER_SR30 || mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
 			signalNameArray[0]=Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP;
 		}
 		else{
@@ -3508,7 +3508,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int enabledSensors= 0x00;
 		for (int i=0;i<nC;i++) {
 			if ((byte)signalid[i]==(byte)0x00){
-				if (mHardwareVersion==HW_ID.SHIMMER_SR30 || mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -3522,7 +3522,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x01){
-				if (mHardwareVersion==HW_ID.SHIMMER_SR30 || mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2; 
@@ -3536,7 +3536,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x02){
-				if (mHardwareVersion==HW_ID.SHIMMER_SR30 || mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -3551,13 +3551,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if ((byte)signalid[i]==(byte)0x03){
 
-				if (mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} 
-				else if (mHardwareVersion==HW_ID.SHIMMER_3){
+				else if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.BATTERY; //should be the battery but this will do for now
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -3572,13 +3572,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if ((byte)signalid[i]==(byte)0x04){
 
-				if (mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				} 
-				else if (mHardwareVersion==HW_ID.SHIMMER_3){
+				else if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_X;
@@ -3592,13 +3592,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x05){
-				if (mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO);
 				}
-				else if (mHardwareVersion==HW_ID.SHIMMER_3){
+				else if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y;
@@ -3612,13 +3612,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x06){
-				if(mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if(getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.BATTERY; //should be the battery but this will do for now
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_VBATT);	
 				} 
-				else if (mHardwareVersion==HW_ID.SHIMMER_3){
+				else if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z;
@@ -3632,13 +3632,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x07){
-				if(mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if(getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_X;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} 
-				else if(mHardwareVersion==HW_ID.SHIMMER_3){
+				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_X;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
@@ -3653,13 +3653,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if ((byte)signalid[i]==(byte)0x08)
 			{	
-				if(mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if(getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} 
-				else if(mHardwareVersion==HW_ID.SHIMMER_3){
+				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Y;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
@@ -3673,13 +3673,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x09){
-				if(mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if(getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL);
 				} 
-				else if(mHardwareVersion==HW_ID.SHIMMER_3){
+				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Z;
 					signalDataTypeArray[i+1] = "i16r";			
 					packetSize=packetSize+2;
@@ -3693,13 +3693,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x0A){
-				if(mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if(getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_X;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				}
-				else if (mHardwareVersion==HW_ID.SHIMMER_3) {
+				else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_X;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -3713,13 +3713,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x0B){
-				if(mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if(getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Y;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				}
-				else if (mHardwareVersion==HW_ID.SHIMMER_3) {
+				else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Y;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -3733,13 +3733,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x0C){
-				if(mHardwareVersion==HW_ID.SHIMMER_SR30){
+				if(getHardwareVersion()==HW_ID.SHIMMER_SR30){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Z;
 					signalDataTypeArray[i+1] = "i16";			
 					packetSize=packetSize+2;
 					enabledSensors= (enabledSensors|Configuration.Shimmer3.SensorBitmap.SENSOR_MAG);
 				}
-				else if (mHardwareVersion==HW_ID.SHIMMER_3) {
+				else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Z;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -3753,7 +3753,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x0D){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -3767,7 +3767,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x0E){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -3781,7 +3781,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x0F){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -3794,7 +3794,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x10){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -3808,7 +3808,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x11){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -3822,7 +3822,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x12){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -3830,7 +3830,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} 
 				else {
 					signalNameArray[i+1]=Shimmer2.ObjectClusterSensorName.HEART_RATE;
-					if (mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1){
+					if (getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==1){
 						signalDataTypeArray[i+1] = "u8";
 						packetSize=packetSize+1;
 					} else {
@@ -3841,7 +3841,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x13){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -3849,7 +3849,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1A){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180;
 					signalDataTypeArray[i+1] = "u16r";
 					packetSize=packetSize+2;
@@ -3857,7 +3857,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1B){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180;
 					signalDataTypeArray[i+1] = "u24r";
 					packetSize=packetSize+3;
@@ -3865,7 +3865,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1C){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GSR;
 					signalDataTypeArray[i+1] = "u16";
 					packetSize=packetSize+2;
@@ -3873,14 +3873,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1D){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG1_STATUS;
 					signalDataTypeArray[i+1] = "u8";
 					packetSize=packetSize+1;
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1E){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
 					signalDataTypeArray[i+1] = "i24r";
 					packetSize=packetSize+3;
@@ -3888,7 +3888,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x1F){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
 					signalDataTypeArray[i+1] = "i24r";
 					packetSize=packetSize+3;
@@ -3896,14 +3896,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x20){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG2_STATUS;
 					signalDataTypeArray[i+1] = "u8";
 					packetSize=packetSize+1;
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x21){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
 					signalDataTypeArray[i+1] = "i24r";
 					packetSize=packetSize+3;
@@ -3911,7 +3911,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x22){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT;
 					signalDataTypeArray[i+1] = "i24r";
 					packetSize=packetSize+3;
@@ -3919,7 +3919,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x23){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -3927,7 +3927,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x24){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -3935,7 +3935,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x25){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -3943,7 +3943,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x26){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT;
 					signalDataTypeArray[i+1] = "i16r";
 					packetSize=packetSize+2;
@@ -3951,7 +3951,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x27){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -3959,7 +3959,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} 
 			}
 			else if ((byte)signalid[i]==(byte)0x28){
-				if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW;
 					signalDataTypeArray[i+1] = "u12";
 					packetSize=packetSize+2;
@@ -4063,8 +4063,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Deprecated
 	public void generateBiMapSensorIDtoSensorName(){
-		if (mHardwareVersion != -1){
-			if (mHardwareVersion != HW_ID.SHIMMER_2R){
+		if (getHardwareVersion() != -1){
+			if (getHardwareVersion() != HW_ID.SHIMMER_2R){
 				final Map<String, String> tempSensorBMtoName = new HashMap<String, String>();  
 				tempSensorBMtoName.put(Integer.toString(SENSOR_BMP180), "Pressure");
 				tempSensorBMtoName.put(Integer.toString(SENSOR_GYRO), "Gyroscope");  
@@ -4119,7 +4119,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public String[] getListofEnabledSensorSignals(){
 		List<String> listofSignals = new ArrayList<String>();
 		String[] enabledSignals; 
-		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
+		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 			listofSignals.add("Timestamp");
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.ACCEL_X);
@@ -4364,7 +4364,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mSensitivityMatrixAnalogAccel = SensitivityMatrix;
 			} 
 			else if(packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
-				if (mHardwareVersion!=3){
+				if (getHardwareVersion()!=3){
 					mDefaultCalibrationParametersAccel = true;
 					mAlignmentMatrixAnalogAccel = AlignmentMatrixAccelShimmer2;
 					mOffsetVectorAnalogAccel = OffsetVectorAccelShimmer2;
@@ -4415,7 +4415,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			} 
 			else if(packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
-				if(mHardwareVersion!=3){
+				if(getHardwareVersion()!=3){
 					mDefaultCalibrationParametersGyro = true;
 					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
 					mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
@@ -4440,7 +4440,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if(packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
 				mDefaultCalibrationParametersMag = true;
-				if (mHardwareVersion!=3){
+				if (getHardwareVersion()!=3){
 					mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer2;
 					mOffsetVectorMagnetometer = OffsetVectorMagShimmer2;
 					if (mMagRange==0){
@@ -4473,7 +4473,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		double[][] sensitivityVectorToCompare = SensitivityMatrixLowNoiseAccel2gShimmer3;
 		double[][] alignmentVectorToCompare = AlignmentMatrixLowNoiseAccelShimmer3;
 		
-		if (mHardwareVersion!=HW_ID.SHIMMER_3){
+		if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 			alignmentVectorToCompare = AlignmentMatrixAccelShimmer2;
 			offsetVectorToCompare = OffsetVectorAccelShimmer2;
 			if (getAccelRange()==0){
@@ -4537,7 +4537,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		double[][] sensitivityVectorToCompare = SensitivityMatrixGyroShimmer2;
 		double[][] alignmentVectorToCompare = AlignmentMatrixGyroShimmer2;
 		
-		if(mHardwareVersion==HW_ID.SHIMMER_3){
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			if (mGyroRange==0){
 				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
 
@@ -4574,7 +4574,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		double[][] sensitivityVectorToCompare = new double[][]{};
 		double[][] alignmentVectorToCompare = new double[][]{};
 		
-		if(mHardwareVersion==HW_ID.SHIMMER_3){
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			alignmentVectorToCompare = AlignmentMatrixMagShimmer3;
 			offsetVectorToCompare = OffsetVectorMagShimmer3;
 			if (mMagRange==1){
@@ -4942,7 +4942,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	protected void interpretInqResponse(byte[] bufferInquiry){
-		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
+		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 
 			
 			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
@@ -4961,7 +4961,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mInquiryResponseBytes = new byte[5+mNChannels];
 			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
 		} 
-		else if (mHardwareVersion==HW_ID.SHIMMER_3) {
+		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
 			mShimmerSamplingRate = (32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8)));
 			mNChannels = bufferInquiry[6];
@@ -4992,7 +4992,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			updateEnabledSensorsFromChannels(signalIdArray);
 			interpretDataPacketFormat(mNChannels,signalIdArray);
 		} 
-		else if (mHardwareVersion==HW_ID.SHIMMER_SR30) {
+		else if (getHardwareVersion()==HW_ID.SHIMMER_SR30) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
 			mShimmerSamplingRate = (double)1024/bufferInquiry[0];
 			mAccelRange = bufferInquiry[1];
@@ -5015,7 +5015,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int enabledSensors = 0;
 		for (int i=0;i<channels.length;i++)
 		{
-			if (mHardwareVersion==HW_ID.SHIMMER_3){
+			if (getHardwareVersion()==HW_ID.SHIMMER_3){
 				if (channels[i]==Configuration.Shimmer3.Channel.XAAccel || channels[i]==Configuration.Shimmer3.Channel.YAAccel || channels[i]==Configuration.Shimmer3.Channel.ZAAccel){
 					enabledSensors = enabledSensors | SENSOR_ACCEL;
 				}
@@ -5096,7 +5096,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					enabledSensors = enabledSensors | SENSOR_BRIDGE_AMP;
 				}
 
-			} else if(mHardwareVersion==HW_ID.SHIMMER_2R){
+			} else if(getHardwareVersion()==HW_ID.SHIMMER_2R){
 				if (channels[i]==Configuration.Shimmer2.Channel.XAccel || channels[i]==Configuration.Shimmer2.Channel.YAccel||channels[i]==Configuration.Shimmer2.Channel.ZAccel){
 					enabledSensors = enabledSensors | SENSOR_ACCEL;
 				}
@@ -5169,7 +5169,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public byte[] getRawCalibrationParameters(){
 
 		byte[] rawcal=new byte[1];
-		if (mHardwareVersion==HW_ID.SHIMMER_3)
+		if (getHardwareVersion()==HW_ID.SHIMMER_3)
 		{
 			//Accel + Digi Accel + Gyro + Mag + Pressure
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -5190,7 +5190,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				e.printStackTrace();
 			}			
 
-		} else if (mHardwareVersion==HW_ID.SHIMMER_2 ||mHardwareVersion==HW_ID.SHIMMER_2R)
+		} else if (getHardwareVersion()==HW_ID.SHIMMER_2 ||getHardwareVersion()==HW_ID.SHIMMER_2R)
 		{
 			//Accel + Digi Accel + Gyro + Mag + Pressure
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -5223,7 +5223,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public List<String> getListofEnabledSensors(){
 		List<String> listofSensors = new ArrayList<String>();
-		if (mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3){
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				listofSensors.add("Low Noise Accelerometer");
 			}
@@ -5244,7 +5244,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (((mEnabledSensors & 0xFF) & SENSOR_GSR) > 0) {
 			listofSensors.add("GSR");
 		}
-		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
+		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 			if (((mEnabledSensors & 0xFF) & SENSOR_ECG) > 0) {
 				listofSensors.add("ECG");
 			}
@@ -5259,49 +5259,49 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (((mEnabledSensors & 0xFF00) & SENSOR_HEART) > 0) {
 			listofSensors.add("Heart Rate");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A0) > 0 && (mEnabledSensors & SENSOR_BATT) == 0 && mHardwareVersion != HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A0) > 0 && (mEnabledSensors & SENSOR_BATT) == 0 && getHardwareVersion() != HW_ID.SHIMMER_3) {
 			listofSensors.add("ExpBoard A0");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A7) > 0  && (mEnabledSensors & SENSOR_BATT) == 0 && mHardwareVersion != HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFF) & SENSOR_EXP_BOARD_A7) > 0  && (mEnabledSensors & SENSOR_BATT) == 0 && getHardwareVersion() != HW_ID.SHIMMER_3) {
 			listofSensors.add("ExpBoard A7");
 		}
 		if ((mEnabledSensors & SENSOR_BATT) > 0) {
 			listofSensors.add("Battery Voltage");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EXT_ADC_A7) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFF) & SENSOR_EXT_ADC_A7) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("External ADC A7");
 		}
-		if (((mEnabledSensors & 0xFF) & SENSOR_EXT_ADC_A6) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFF) & SENSOR_EXT_ADC_A6) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("External ADC A6");
 		}
-		if (((mEnabledSensors & 0xFFFF) & SENSOR_EXT_ADC_A15) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFF) & SENSOR_EXT_ADC_A15) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("External ADC A15");
 		}
-		if (((mEnabledSensors & 0xFFFF) & SENSOR_INT_ADC_A1) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFF) & SENSOR_INT_ADC_A1) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("Internal ADC A1");
 		}
-		if (((mEnabledSensors & 0xFFFF) & SENSOR_INT_ADC_A12) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFF) & SENSOR_INT_ADC_A12) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("Internal ADC A12");
 		}
-		if (((mEnabledSensors & 0xFFFFFF) & SENSOR_INT_ADC_A13) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFFFF) & SENSOR_INT_ADC_A13) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("Internal ADC A13");
 		}
-		if (((mEnabledSensors & 0xFFFFFF) & SENSOR_INT_ADC_A14) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if (((mEnabledSensors & 0xFFFFFF) & SENSOR_INT_ADC_A14) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("Internal ADC A14");
 		}
-		if ((mEnabledSensors & SENSOR_BMP180) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_BMP180) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("Pressure");
 		}
-		if ((mEnabledSensors & SENSOR_EXG1_24BIT) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("EXG1");
 		}
-		if ((mEnabledSensors & SENSOR_EXG2_24BIT) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_EXG2_24BIT) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("EXG2");
 		}
-		if ((mEnabledSensors & SENSOR_EXG1_16BIT) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("EXG1 16Bit");
 		}
-		if ((mEnabledSensors & SENSOR_EXG2_16BIT) > 0  && mHardwareVersion == HW_ID.SHIMMER_3) {
+		if ((mEnabledSensors & SENSOR_EXG2_16BIT) > 0  && getHardwareVersion() == HW_ID.SHIMMER_3) {
 			listofSensors.add("EXG2 16Bit");
 		}
 
@@ -5314,7 +5314,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public List<String[]> getListofEnabledSensorSignalsandFormats(){
 		List<String[]> listofSignals = new ArrayList<String[]>();
 		 
-		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R){
+		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 			String[] channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS};
 			listofSignals.add(channel);
 			channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
@@ -5492,7 +5492,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //				listofSignals.add(channel);
 //			}
 
-		} else if (mHardwareVersion==HW_ID.SHIMMER_3) {
+		} else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 
 			String[] channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS};
 			listofSignals.add(channel);
@@ -5967,9 +5967,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public String[] getListofSupportedSensors(){
 		String[] sensorNames = null;
-		if (mHardwareVersion==HW_ID.SHIMMER_2R || mHardwareVersion==HW_ID.SHIMMER_2){
+		if (getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){
 			sensorNames = Configuration.Shimmer2.ListofCompatibleSensors;
-		} else if  (mHardwareVersion==HW_ID.SHIMMER_3){
+		} else if  (getHardwareVersion()==HW_ID.SHIMMER_3){
 			sensorNames = Configuration.Shimmer3.ListofCompatibleSensors;
 		}
 		return sensorNames;
@@ -6207,11 +6207,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		double maxGUISamplingRate = 2048.0;
 		double maxShimmerSamplingRate = 32768.0;
 		
-		if (mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R) {
+		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R) {
 			maxGUISamplingRate = 1024.0;
-		} else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ_BLE) {
+		} else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			//check if an MPL channel is enabled - limit rate to 51.2Hz
-			if(checkIfAnyMplChannelEnabled() && mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.SDLOG){
+			if(checkIfAnyMplChannelEnabled() && getFirmwareIdentifier() == ShimmerVerDetails.FW_ID.SHIMMER3.SDLOG){
 				rate = 51.2;
 			}
 		}		
@@ -6229,7 +6229,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
 		mShimmerSamplingRate = actualSamplingRate;
 		
-		if(mHardwareVersion==HW_ID.SHIMMER_2 || mHardwareVersion==HW_ID.SHIMMER_2R) {
+		if(getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R) {
 			if(!mLowPowerMag){
 				if(rate<=10) {
 					mShimmer2MagRate = 4;
@@ -6245,13 +6245,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mShimmer2MagRate = 4;
 			}
 		} 
-		else if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ_BLE) {
+		else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			setLSM303MagRateFromFreq(mShimmerSamplingRate);
 			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
 			setExGRateFromFreq(mShimmerSamplingRate);
 			
-			if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG){
+			if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG){
 				setMPU9150MagRateFromFreq(mShimmerSamplingRate);
 				setMPU9150MplRateFromFreq(mShimmerSamplingRate);
 			}
@@ -6765,7 +6765,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected void setLowPowerMag(boolean enable){
 		mLowPowerMag = enable;
-		if((mHardwareVersion==HW_ID.SHIMMER_2)||(mHardwareVersion==HW_ID.SHIMMER_2R)){
+		if((getHardwareVersion()==HW_ID.SHIMMER_2)||(getHardwareVersion()==HW_ID.SHIMMER_2R)){
 			if (!mLowPowerMag){
 				if (mShimmerSamplingRate>=50){
 					mShimmer2MagRate = 6;
@@ -6791,7 +6791,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 */
 	 protected void setDefaultECGConfiguration() {
-		 if (mHardwareVersion==HW_ID.SHIMMER_3){
+		 if (getHardwareVersion()==HW_ID.SHIMMER_3){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 
@@ -6825,7 +6825,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * needs to be set again
 	 */
 	 protected void setDefaultEMGConfiguration(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
@@ -6861,7 +6861,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * enabled
 	 */
 	 protected void setEXGTestSignal(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
@@ -6891,7 +6891,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 */
 	 protected void setDefaultRespirationConfiguration() {
-		 if (mHardwareVersion==HW_ID.SHIMMER_3){
+		 if (getHardwareVersion()==HW_ID.SHIMMER_3){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 234,(byte) 1};
 			
@@ -6945,7 +6945,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 */
 	 protected void setEXGCustom(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
@@ -7038,7 +7038,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 */
 	public void setDefaultShimmerConfiguration() {
-		if (mHardwareVersion != -1){
+		if (getHardwareVersion() != -1){
 			
 //			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME;
 			setDefaultShimmerName();
@@ -7074,7 +7074,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			syncNodesList.clear();
 			
 			sensorAndConfigMapsCreate();
-			if (mHardwareVersion == HW_ID.SHIMMER_3){
+			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.A_ACCEL, true);
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO, true);
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG, true);
@@ -7243,10 +7243,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			// InfoMem D - End
 
 //			//SDLog and LogAndStream
-//			if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
+//			if(((getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
 				
 				// InfoMem C - Start - used by SdLog and LogAndStream
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
 					mMPU9150DMP = (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150DMP) & mInfoMemLayout.maskMPU9150DMP;
 					mMPU9150LPF = (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150LPF) & mInfoMemLayout.maskMPU9150LPF;
 					mMPU9150MotCalCfg =  (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150MotCalCfg) & mInfoMemLayout.maskMPU9150MotCalCfg;
@@ -7352,17 +7352,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					mConfigTime = 0;
 //				}
 
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
 					mTrialId = infoMemContents[mInfoMemLayout.idxSDMyTrialID] & 0xFF;
 					mTrialNumberOfShimmers = infoMemContents[mInfoMemLayout.idxSDNumOfShimmers] & 0xFF;
 				}
 				
-				if((mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG)||(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)) {
+				if((getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)) {
 					mButtonStart = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftButtonStart) & mInfoMemLayout.maskButtonStart;
 					mShowRtcErrorLeds = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftShowRwcErrorLeds) & mInfoMemLayout.maskShowRwcErrorLeds;
 				}
 				
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
 					mSyncWhenLogging = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftTimeSyncWhenLogging) & mInfoMemLayout.maskTimeSyncWhenLogging;
 					mMasterShimmer = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftMasterShimmer) & mInfoMemLayout.maskTimeMasterShimmer;
 					mSingleTouch = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig1] >> mInfoMemLayout.bitShiftSingleTouch) & mInfoMemLayout.maskTimeSingleTouch;
@@ -7395,7 +7395,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				// InfoMem C - End
 					
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					syncNodesList.clear();
 					for (int i = 0; i < mInfoMemLayout.maxNumOfExperimentNodes; i++) {
@@ -7446,7 +7446,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 
-		InfoMemLayout mInfoMemLayout = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+		InfoMemLayout mInfoMemLayout = new InfoMemLayout(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		
 		byte[] infoMemBackup = mInfoMemBytes.clone();
 		
@@ -7458,7 +7458,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			mInfoMemBytes[i] = (byte) 0xFF;
 //		}
 		
-		if(mHardwareVersion==HW_ID.SHIMMER_3){
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 		
 			// If not being generated from scratch then copy across exisiting InfoMem contents
 			if(!generateForWritingToShimmer) {
@@ -7631,10 +7631,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//TODO: Add full FW version checking here to support future changes to FW
 			//SDLog and LogAndStream
-	//		if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
+	//		if(((getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
 	
 				// InfoMem C - Start - used by SdLog and LogAndStream
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
 					mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & mInfoMemLayout.maskMPU9150DMP) << mInfoMemLayout.bitShiftMPU9150DMP);
 					mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & mInfoMemLayout.maskMPU9150LPF) << mInfoMemLayout.bitShiftMPU9150LPF);
 					mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & mInfoMemLayout.maskMPU9150MotCalCfg) << mInfoMemLayout.bitShiftMPU9150MotCalCfg);
@@ -7683,13 +7683,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mInfoMemBytes[mInfoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 				mInfoMemBytes[mInfoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 				
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
 					mInfoMemBytes[mInfoMemLayout.idxSDMyTrialID] = (byte) (mTrialId & 0xFF);
 		
 					mInfoMemBytes[mInfoMemLayout.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
 				}
 				
-				if((mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG)||(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)) {
+				if((getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)) {
 					mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] = (byte) ((mButtonStart & mInfoMemLayout.maskButtonStart) << mInfoMemLayout.bitShiftButtonStart);
 					if(this.isOverrideShowRwcErrorLeds){
 						mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mInfoMemLayout.maskShowRwcErrorLeds) << mInfoMemLayout.bitShiftShowRwcErrorLeds);
@@ -7699,7 +7699,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 				
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
 					mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & mInfoMemLayout.maskTimeSyncWhenLogging) << mInfoMemLayout.bitShiftTimeSyncWhenLogging);
 					mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & mInfoMemLayout.maskTimeMasterShimmer) << mInfoMemLayout.bitShiftMasterShimmer);
 					
@@ -7715,7 +7715,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mInfoMemBytes[mInfoMemLayout.idxMaxExpLengthMsb] = (byte) ((mTrialDurationMaximum >> 8) & 0xFF);
 				}
 				
-				if(((mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)||(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG))) {
+				if(((getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG))) {
 					if(generateForWritingToShimmer) {
 						// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
 						// (already set to 0xFF at start of method but just incase)
@@ -7736,7 +7736,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				// InfoMem C - End
 					
-				if(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					for (int i = 0; i < mInfoMemLayout.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 						byte[] macIdArray;
@@ -7789,7 +7789,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
-			if (mHardwareVersion == HW_ID.SHIMMER_3){
+			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				mEnabledSensors = (long)0;
 				mDerivedSensors = (long)0;
 				sensorMapCheckandCorrectHwDependencies();
@@ -7852,14 +7852,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 		
-		if (mHardwareVersion != -1){
-			if (mHardwareVersion == HW_ID.SHIMMER_2R){
+		if (getHardwareVersion() != -1){
+			if (getHardwareVersion() == HW_ID.SHIMMER_2R){
 				Map<Integer,SensorDetails> sensorMapRef = Configuration.Shimmer2.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
 					mSensorMap.put(key, new SensorEnabledDetails(false, 0, sensorMapRef.get(key)));
 				}
 			} 
-			else if (mHardwareVersion == HW_ID.SHIMMER_3) {
+			else if (getHardwareVersion() == HW_ID.SHIMMER_3) {
 				createInfoMemLayoutObjectIfNeeded();
 
 				Map<Integer,SensorDetails> sensorMapRef = Configuration.Shimmer3.mSensorMapRef;
@@ -7971,7 +7971,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 
 			}
-			else if (mHardwareVersion == HW_ID.SHIMMER_GQ_BLE) {
+			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
 				Map<Integer,SensorDetails> sensorMapRef = Configuration.ShimmerGqBle.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
@@ -7990,7 +7990,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void checkConfigOptionValues(String stringKey) {
 		if(mConfigOptionsMap!=null){
 			if(mConfigOptionsMap.containsKey(stringKey)){
-				if(mHardwareVersion==HW_ID.SHIMMER_3){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			        if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)) {
 			        	if(isLSM303DigitalAccelLPM()) {
 							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM);
@@ -8008,7 +8008,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			        	checkWhichExgRefElectrodeValuesToUse();
 			        }
 				}
-				else if(mHardwareVersion==HW_ID.SHIMMER_GQ_BLE){
+				else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
 				}
 			}
 		}
@@ -8018,7 +8018,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
 		if(mConfigOptionsMap!=null){
 			if(mConfigOptionsMap.containsKey(stringKey)){
-				if(mHardwareVersion==HW_ID.SHIMMER_3){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					if(isExgRespirationDetectFreq32kHz()) {
 						mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_32KHZ);
 					}
@@ -8041,7 +8041,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
 		if(mConfigOptionsMap!=null){
 			if(mConfigOptionsMap.containsKey(stringKey)){
-				if(mHardwareVersion==HW_ID.SHIMMER_3){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
 						mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP);
 					}
@@ -8086,7 +8086,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if(mSensorMap!=null) {
 
-			if (mHardwareVersion == HW_ID.SHIMMER_3) {
+			if (getHardwareVersion() == HW_ID.SHIMMER_3) {
 				
 				for(Integer sensorMapKey:mSensorMap.keySet()) {
 					boolean skipKey = false;
@@ -8206,7 +8206,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY).mIsEnabled = false;
 				}
 			}
-			else if (mHardwareVersion == HW_ID.SHIMMER_GQ_BLE) {
+			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
 			}
 			
@@ -8288,7 +8288,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public boolean checkIfSensorEnabled(int sensorMapKey){
-		if (mHardwareVersion == HW_ID.SHIMMER_3) {
+		if (getHardwareVersion() == HW_ID.SHIMMER_3) {
 			//Used for Shimmer GSR hardware
 			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.PPG_DUMMY){
 				if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.PPG_A12))||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.PPG_A13)))
@@ -8343,7 +8343,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if(mSensorMap!=null) {
 			
-			if (mHardwareVersion == HW_ID.SHIMMER_3){
+			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				
 				// Special case for Dummy entries in the Sensor Map
 				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.PPG_DUMMY) {
@@ -8382,7 +8382,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 			}
-			else if (mHardwareVersion == HW_ID.SHIMMER_GQ_BLE) {
+			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
 			}
 			
@@ -8415,7 +8415,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public void checkShimmerConfigBeforeConfiguring() {
 		
-		if (mHardwareVersion == HW_ID.SHIMMER_3){
+		if (getHardwareVersion() == HW_ID.SHIMMER_3){
 			
 			// If Shimmer name is default, update with MAC ID if available.
 			if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
@@ -8471,7 +8471,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	private void checkIfInternalExpBrdPowerIsNeeded(){
 
-		if (mHardwareVersion == HW_ID.SHIMMER_3){
+		if (getHardwareVersion() == HW_ID.SHIMMER_3){
 			for(Integer channelKey:mSensorMap.keySet()) {
 				if(mSensorMap.get(channelKey).mIsEnabled && mSensorMap.get(channelKey).mSensorDetails.mIntExpBoardPowerRequired) {
 					mInternalExpPower = 1;
@@ -8548,7 +8548,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			
 			if((compatible)&&(checkHardwareVersion)) {
-				if(mHardwareVersion != compatibleVersionInfo.mHardwareVersion) {
+				if(getHardwareVersion() != compatibleVersionInfo.mHardwareVersion) {
 					compatible = false;
 				}
 			}
@@ -8558,48 +8558,48 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 //			if((compatible)&&(checkFirmwareIdentifier)) {
-//				if(mFirmwareIdentifier != compatibleVersionInfo.mFirmwareIdentifier) {
+//				if(getFirmwareIdentifier() != compatibleVersionInfo.getFirmwareIdentifier()) {
 //					compatible = false;
 //				}
 //			}
 			
 //			if((compatible)&&(checkFirmwareVersionMajor)) {
-//				if(mFirmwareVersionMajor < compatibleVersionInfo.mFirmwareVersionMajor) {
+//				if(getFirmwareVersionMajor() < compatibleVersionInfo.getFirmwareVersionMajor()) {
 //					compatible = false;
 //				}
 //				if((compatible)&&(checkFirmwareVersionMinor)) {
-//					if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
+//					if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
 //						compatible = false;
 //					}
 //				}
 //				if((compatible)&&(checkFirmwareVersionInternal)) {
-//					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
 //						compatible = false;
 //					}
 //				}
 //			}
 //			else if((compatible)&&(checkFirmwareVersionMinor)) {
-//				if(mFirmwareVersionMinor < compatibleVersionInfo.mFirmwareVersionMinor) {
+//				if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
 //					compatible = false;
 //				}
 //				if((compatible)&&(checkFirmwareVersionInternal)) {
-//					if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
 //						compatible = false;
 //					}
 //				}
 //			}
 //			else if((compatible)&&(checkFirmwareVersionInternal)) {
-//				if(mFirmwareVersionInternal < compatibleVersionInfo.mFirmwareVersionInternal) {
+//				if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
 //					compatible = false;
 //				}
 //			}
 			
 			if(checkFirmwareVersionMajor){
 				// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored
-				if((compatible)&&(!UtilShimmer.compareVersions(mFirmwareIdentifier, 
-						mFirmwareVersionMajor, 
-						mFirmwareVersionMinor, 
-						mFirmwareVersionInternal, 
+				if((compatible)&&(!UtilShimmer.compareVersions(getFirmwareIdentifier(), 
+						getFirmwareVersionMajor(), 
+						getFirmwareVersionMinor(), 
+						getFirmwareVersionInternal(), 
 						compatibleVersionInfo.mFirmwareIdentifier, 
 						compatibleVersionInfo.mFirmwareVersionMajor, 
 						compatibleVersionInfo.mFirmwareVersionMinor, 
@@ -8621,7 +8621,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
 		
-		if (mHardwareVersion == HW_ID.SHIMMER_3){
+		if (getHardwareVersion() == HW_ID.SHIMMER_3){
 			if(mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting != null) {
 				for(Integer sensorMapKey:mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting) {
 					if(isSensorEnabled(sensorMapKey)) {
@@ -8683,7 +8683,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 			}
 			
-//			if (mHardwareVersion == HW_ID.SHIMMER_3){
+//			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 //				//Exceptions for Shimmer3 ExG
 //				
 //				//TODO tidy below
@@ -8946,7 +8946,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}	
 	
 	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
-		if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ_BLE) {
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorMap.keySet().size()>0){
 				
 				for(int key:mListOfMplChannels){
@@ -8963,7 +8963,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 			
 	protected boolean checkIfAnyMplChannelEnabled(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3 || mHardwareVersion==HW_ID.SHIMMER_GQ_BLE) {
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorMap.keySet().size()>0){
 				
 				for(int key:mListOfMplChannels){
@@ -8997,7 +8997,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private void internalCheckExgModeAndUpdateSensorMap(){
 		if(mSensorMap!=null){
-			if(mHardwareVersion==HW_ID.SHIMMER_3){
+			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 //				if((mIsExg1_24bitEnabled||mIsExg2_24bitEnabled||mIsExg1_16bitEnabled||mIsExg2_16bitEnabled)){
 //				if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
 //						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
@@ -9068,12 +9068,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(mInfoMemLayout==null){
 			create = true;
 		}
-		else if(mInfoMemLayout.isDifferent(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal)){
+		else if(mInfoMemLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
 			create = true;
 		}
 		
 		if(create){
-			mInfoMemLayout = new InfoMemLayout(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
+			mInfoMemLayout = new InfoMemLayout(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		}
 	}
 	
@@ -9306,13 +9306,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mExGResolution;
 	}
 
-	/**
-	 * @return the mShimmerVersion
-	 */
-	public int getHardwareVersion() {
-		return mHardwareVersion;
-	}
-	
+
 	
 	//TODO: MN -> move gets to ShimmerObject (could be duplicated there already)
 
@@ -9348,7 +9342,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return 0 in case the 5V Reg is disableb, 1 in case the 5V Reg is enabled, and -1 in case the device doesn't support this feature
 	 */
 	public int get5VReg(){
-		if(mHardwareVersion!=HW_ID.SHIMMER_3){
+		if(getHardwareVersion()!=HW_ID.SHIMMER_3){
 			if((mConfigByte0 & (byte)128)!=0) {
 				//then set ConfigByte0 at bit position 7
 				return 1;
@@ -9395,7 +9389,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public int getShimmerVersion(){
-		return mHardwareVersion;
+		return getHardwareVersion();
 	}
 
     /** Returns true if device is streaming (Bluetooth)
@@ -9737,7 +9731,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 *When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
 	 */
 	 protected void enableDefaultECGConfiguration() {
-		 if (mHardwareVersion==HW_ID.SHIMMER_3){
+		 if (getHardwareVersion()==HW_ID.SHIMMER_3){
 			setDefaultECGConfiguration();
 		 }
 	}
@@ -9747,7 +9741,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
 	 */
 	protected void enableDefaultEMGConfiguration(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3){
 			setDefaultEMGConfiguration();
 		}
 	}
@@ -9756,7 +9750,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
 	 */
 	protected void enableEXGTestSignal(){
-		if (mHardwareVersion==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3){
 			setEXGTestSignal();
 		}
 	}
@@ -9904,42 +9898,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE, mEXG2RespirationDetectPhase);
 	}
 	
-	
-	/**
-	 * @return the mFirmwareIdentifier
-	 */
-	public int getFirmwareIdentifier() {
-		return mFirmwareIdentifier;
-	}
-	
-	public int getFirmwareMajorVersion(){
-		return mFirmwareVersionMajor;
-	}
-	
-	public int getFirmwareMinorVersion(){
-		return mFirmwareVersionMinor;
-	}
-
-	public int getFirmwareInternalVersion(){
-		return mFirmwareVersionInternal;
-	}
-	
-	
-	public int getFirmwareCode(){
-		return mFirmwareVersionCode;
-	}
-	
-	public String getFWVersionName(){
-		return mFirmwareVersionParsed;
-	}
-	
-	/**
-	 * Get the FW Identifier. It is equal to 3 when LogAndStream, and equal to 4 when BTStream. 
-	 * @return The FW identifier
-	 */
-	public int getFWIdentifier(){
-		return (int) mFirmwareIdentifier;
-	}
 	
 	public double getPressTempAC1(){
 		return AC1;
@@ -11304,34 +11262,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	/**
-	 * @return the mChargingState
-	 */
-	public String getChargingStateParsed() {
-		return mShimmerBattStatusDetails.getChargingStatusParsed();
-	}
-
-	/**
-	 * @return the mBattVoltage
-	 */
-	public String getBattVoltage() {
-		return mShimmerBattStatusDetails.mBattVoltageParsed;
-	}
-
-	/**
-	 * @return the mEstimatedChargePercentageParsed
-	 */
-	public String getEstimatedChargePercentageParsed() {
-		return mShimmerBattStatusDetails.mEstimatedChargePercentageParsed;
-	}
-	
-	/**
-	 * @return the mEstimatedChargePercentage
-	 */
-	public Double getEstimatedChargePercentage() {
-		return mShimmerBattStatusDetails.mEstimatedChargePercentage;
-	}
-	
-	/**
 	 * @return the mLastReceivedTimeStamp
 	 */
 	public double getLastReceivedTimeStamp(){
@@ -11382,25 +11312,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mShimmerVerObject;
 	}
 
-	public void setShimmerVersionInfo(ShimmerVerObject hwfw) {
-		mShimmerVerObject = hwfw;
-		mHardwareVersion = hwfw.mHardwareVersion;
-		mHardwareVersionParsed = hwfw.mHardwareVersionParsed;
-		mFirmwareIdentifier = hwfw.mFirmwareIdentifier;
-		mFirmwareVersionMajor = hwfw.mFirmwareVersionMajor;
-		mFirmwareVersionMinor = hwfw.mFirmwareVersionMinor;
-		mFirmwareVersionInternal = hwfw.mFirmwareVersionInternal;
-		mFirmwareVersionParsed = hwfw.mFirmwareVersionParsed;
-		mFirmwareVersionCode = hwfw.mFirmwareVersionCode;
+	@Override
+	public void setShimmerVerObject(ShimmerVerObject hwfw) {
+		super.setShimmerVerObject(hwfw);
 		
 		createInfoMemLayoutObjectIfNeeded();
 		
 		//Once the version is known update settings accordingly 
-		if (mFirmwareVersionCode>=6){
+		if (getFirmwareVersionCode()>=6){
 			mTimeStampPacketByteSize =3;
 			mTimeStampPacketRawMaxValue = 16777216;
 		} 
-		else if (mFirmwareVersionCode<6){
+		else if (getFirmwareVersionCode()<6){
 			mTimeStampPacketByteSize =2;
 			mTimeStampPacketRawMaxValue = 65536;
 		}
