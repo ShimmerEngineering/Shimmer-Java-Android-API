@@ -35,6 +35,29 @@ public class ChannelDetails implements Serializable {
 		public static final String MSB = "MSB";
 	}
 	
+	public enum CHANNEL_TYPE{
+//		RAW("RAW"),
+		CAL("CAL"),
+		UNCAL("UNCAL");
+		
+	    private final String text;
+
+	    /**
+	     * @param text
+	     */
+	    private CHANNEL_TYPE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
+	
 	public String mChannelName = "";
 	public String mChannelDataType = "";
 	public int mNumBytes = 0;
