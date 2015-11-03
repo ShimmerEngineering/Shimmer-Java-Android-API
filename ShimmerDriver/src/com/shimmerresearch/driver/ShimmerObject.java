@@ -3960,23 +3960,10 @@ public abstract class ShimmerObject extends BasicProcessWithCallBack implements 
 						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
 					}
 				} else {
-					if (getAccelRange()==0){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
-					} else if (getAccelRange()==1){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					} else if (getAccelRange()==2){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					} else if (getAccelRange()==3){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					}
+					
+					mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
+					mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
+					mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
 
 				}
 			}
