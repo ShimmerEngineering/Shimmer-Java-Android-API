@@ -11,7 +11,9 @@ import java.util.List;
 
 
 
+
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.ShimmerDevice;
 //import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
 
@@ -23,7 +25,7 @@ import com.shimmerresearch.driver.ShimmerObject;
 //TODO remove unnecessary code carried over from dock progress details
 public class ProgressReportAll implements Serializable {
 
-	public List<ShimmerObject> mListOfShimmers;
+	public List<ShimmerDevice> mListOfShimmers;
 	public LinkedHashMap<String, ProgressReportPerDevice> mMapOfOperationProgressInfo = new LinkedHashMap<String, ProgressReportPerDevice>();
 	
 	public BT_STATE currentOperationBtState = BT_STATE.DISCONNECTED;
@@ -51,12 +53,12 @@ public class ProgressReportAll implements Serializable {
 //	public List<Integer> mListOfFailedCmds = new ArrayList<Integer>();
 	public int mProgressPercentageComplete = 0;
 
-	public ProgressReportAll(BT_STATE currentOperationBtState, List<ShimmerObject> lso) {
+	public ProgressReportAll(BT_STATE currentOperationBtState, List<ShimmerDevice> lso) {
 		this.currentOperationBtState = currentOperationBtState;
 		mListOfShimmers = lso;
 		
 		mMapOfOperationProgressInfo.clear();
-		for(ShimmerObject shimmer:lso){
+		for(ShimmerDevice shimmer:lso){
 			mMapOfOperationProgressInfo.put(shimmer.mUniqueID, new ProgressReportPerDevice(shimmer, currentOperationBtState, 1));
 		}
 		updateProgressTotal();

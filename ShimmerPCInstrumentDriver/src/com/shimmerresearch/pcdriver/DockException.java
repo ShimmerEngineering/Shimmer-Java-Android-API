@@ -2,7 +2,7 @@ package com.shimmerresearch.pcdriver;
 
 import java.util.concurrent.ExecutionException;
 
-import com.shimmerresearch.pcdriver.MsgDock.ExceptionLevel;
+import com.shimmerresearch.driver.MsgDock.ExceptionLevel;
 
 /**
  * @author Mark Nolan

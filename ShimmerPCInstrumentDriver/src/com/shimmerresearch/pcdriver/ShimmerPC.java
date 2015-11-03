@@ -66,6 +66,8 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.ShimmerVerObject;
+import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -202,6 +204,21 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
+	}
+    
+	/** Replaces ShimmerDocked
+	 * @param dockId
+	 * @param slotNumber
+	 */
+	public ShimmerPC(String dockId, int slotNumber){
+		mDockID = dockId;
+		parseDockType();
+		
+		mSlotNumber = slotNumber;
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+		
+		initialise(HW_ID.SHIMMER_3);
+		setDefaultShimmerConfiguration();
 	}
 	
 	/**
@@ -709,9 +726,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	public ShimmerDevice deepClone() {
-		// TODO Auto-generated method stub
-		return null;
+	public void clearShimmerVersionObject() {
+		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
 	}
+
 }
 

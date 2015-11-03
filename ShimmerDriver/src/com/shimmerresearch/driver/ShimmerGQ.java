@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	//
 
 	public ShimmerGQ(ShimmerVerObject sVO) {
-		super.setShimmerVerObject(sVO);
+		super.setShimmerVersionObject(sVO);
 	}
 
 	/**
@@ -47,7 +46,17 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 		mUniqueID = settings.mShimmerGQID;
 	}
 	
-
+	/** 
+	 * @param dockId
+	 * @param slotNumber
+	 */
+	public ShimmerGQ(String dockId, int slotNumber){
+		mDockID = dockId;
+		parseDockType();
+		
+		mSlotNumber = slotNumber;
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+	}
 
 	@Override
 	public void deleteSensor(int uniqueID) {
@@ -119,6 +128,85 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 			return null;
 		}
 	}
+
+	@Override
+	protected void checkBattery() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<Integer, SensorEnabledDetails> getSensorMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getValueUsingGuiComponent(String componentName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void infoMemByteArrayParse(byte[] infoMemContents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object setValueUsingGuiComponent(String componentName, Object configValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDefaultShimmerConfiguration() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public byte[] refreshShimmerInfoMemBytes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Integer> sensorMapConflictCheck(Integer key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 	
 	

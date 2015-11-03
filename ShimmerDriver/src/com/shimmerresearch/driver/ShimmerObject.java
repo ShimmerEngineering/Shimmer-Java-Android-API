@@ -87,8 +87,11 @@
 
 package com.shimmerresearch.driver;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -112,6 +115,7 @@ import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
+import com.shimmerresearch.driver.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.SensorDetails;
@@ -445,30 +449,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	//TODO switch to just using ShimmerVerObject rather then individual variables 
 //	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
-//	protected int getHardwareVersion() = mShimmerVerObject.getHardwareVersion();
-//	public String getHardwareVersionParsed() = mShimmerVerObject.getHardwareVersionParsed();
+//	protected int mHardwareVersion = mShimmerVerObject.getHardwareVersion();
+//	public String mHardwareVersionParsed = mShimmerVerObject.getHardwareVersionParsed();
 //	public int mFirmwareVersionCode = mShimmerVerObject.getFirmwareVersionCode();
-//	public int getFirmwareIdentifier() = mShimmerVerObject.getFirmwareIdentifier();
-//	public int getFirmwareVersionMajor() = mShimmerVerObject.getFirmwareVersionMajor();
-//	public int getFirmwareVersionMinor() = mShimmerVerObject.getFirmwareVersionMinor();
-//	public int getFirmwareVersionInternal() = mShimmerVerObject.getFirmwareVersionInternal();
+//	public int mFirmwareIdentifier = mShimmerVerObject.getFirmwareIdentifier();
+//	public int mFirmwareVersionMajor = mShimmerVerObject.getFirmwareVersionMajor();
+//	public int mFirmwareVersionMinor = mShimmerVerObject.getFirmwareVersionMinor();
+//	public int mFirmwareVersionInternal = mShimmerVerObject.getFirmwareVersionInternal();
 //	public String mFirmwareVersionParsed = mShimmerVerObject.mFirmwareVersionParsed;
 	
-	//TODO switch to just using ExpansionBoardDetails rather then individual variables 
-	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
-	protected int mExpansionBoardId = mExpansionBoardDetails.mExpBoardId; 
-	protected int mExpansionBoardRev = mExpansionBoardDetails.mExpBoardRev;
-	protected int mExpansionBoardRevSpecial = mExpansionBoardDetails.mExpBoardRevSpecial;
-	protected String mExpansionBoardParsed = mExpansionBoardDetails.mExpBoardParsed;  
-	protected String mExpansionBoardParsedWithVer = mExpansionBoardDetails.mExpBoardParsedWithVer;  
-	protected byte[] mExpBoardArray = mExpansionBoardDetails.mExpBoardArray; // Array where the expansion board response is stored
+//	//TODO switch to just using ExpansionBoardDetails rather then individual variables 
+//	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
+//	protected int mExpansionBoardId = mExpansionBoardDetails.mExpBoardId; 
+//	protected int mExpansionBoardRev = mExpansionBoardDetails.mExpBoardRev;
+//	protected int mExpansionBoardRevSpecial = mExpansionBoardDetails.mExpBoardRevSpecial;
+//	protected String mExpansionBoardParsed = mExpansionBoardDetails.mExpBoardParsed;  
+//	protected String mExpansionBoardParsedWithVer = mExpansionBoardDetails.mExpBoardParsedWithVer;  
+//	protected byte[] mExpBoardArray = mExpansionBoardDetails.mExpBoardArray; // Array where the expansion board response is stored
 
 //	protected ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails();
-	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
+//	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
 
 
-	public static final int ANY_VERSION = -1;
-	
 	protected String mClassName="Shimmer";
 	protected double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
@@ -539,7 +541,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected long mRTCOffset; //this is in ticks
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
-	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
+//	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
 	protected boolean mIsCrcEnabled = false;
 	protected String mCenter = "";
@@ -558,12 +560,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	/** Used in BT communication */
 	protected String mMyBluetoothAddress="";
-	/** Used in UART command through the base/dock*/
-	protected String mMacIdFromUart = "";
+//	/** Used in UART command through the base/dock*/
+//	protected String mMacIdFromUart = "";
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
 	
-	protected String mShimmerUserAssignedName=""; // This stores the user assigned name
+//	protected String mShimmerUserAssignedName=""; // This stores the user assigned name
 
 	protected boolean mConfigFileCreationFlag = true;
 	protected boolean mCalibFileCreationFlag = false;
@@ -579,7 +581,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double[][] mAlignmentMatrixAnalogAccel = {{-1,0,0},{0,-1,0},{0,0,1}}; 			
 	protected double[][] mSensitivityMatrixAnalogAccel = {{38,0,0},{0,38,0},{0,0,38}}; 	
 	protected double[][] mOffsetVectorAnalogAccel = {{2048},{2048},{2048}};				
-	protected abstract void checkBattery();
 	protected double[][] mAlignmentMatrixWRAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
 	protected double[][] mSensitivityMatrixWRAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
 	protected double[][] mOffsetVectorWRAccel = {{0},{0},{0}};	
@@ -714,7 +715,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	DescriptiveStatistics mGyroZRaw;
 	protected boolean mEnableCalibration = true;
 	protected byte[] mInquiryResponseBytes;
-	protected boolean mIsStreaming =false;											// This is used to monitor whether the device is in streaming mode
+//	protected boolean mIsStreaming =false;											// This is used to monitor whether the device is in streaming mode
 	protected boolean mIsSDLogging =false;											// This is used to monitor whether the device is in sd log mode
 	//all raw params should start with a 1 byte identifier in position [0]
 	protected byte[] mAccelCalRawParams = new byte[22];
@@ -766,10 +767,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mIsSensing;
 	private List<String[]> mExtraSignalProperties = null;
 	
-	protected boolean mIsInitialised = false;
-	protected boolean mIsDocked = false;
-	protected boolean mHaveAttemptedToReadConfig = false;
-	
 	List<Integer> mListOfMplChannels = Arrays.asList(
 			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
 			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF,
@@ -811,9 +808,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mTimeStampPacketByteSize = 2;
 //	protected byte[] mSetRWC;
 //	protected byte[] mGetRWC;
-	public long mShimmerRealTimeClockConFigTime = 0;
-	public long mShimmerLastReadRealTimeClockValue = 0;
-	public String mShimmerLastReadRtcValueParsed = "";
+//	public long mShimmerRealTimeClockConFigTime = 0;
+//	public long mShimmerLastReadRealTimeClockValue = 0;
+//	public String mShimmerLastReadRtcValueParsed = "";
 	
 	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
 	
@@ -4627,7 +4624,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 
 	
-	protected void setDefaultCalibrationShimmer3StandardImus(){
+	public void setDefaultCalibrationShimmer3StandardImus(){
 		setDefaultCalibrationShimmer3LowNoiseAccel();
 		setDefaultCalibrationShimmer3WideRangeAccel();
 		setDefaultCalibrationShimmer3Gyro();
@@ -5152,9 +5149,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public String getDeviceName(){
 		return mShimmerUserAssignedName;
 	}
+	
 	public String getBluetoothAddress(){
 		return  mMyBluetoothAddress;
 	}
+	
 	/** replaced with setShimmerUserAssignedName()
 	 * @return
 	 */
@@ -5162,6 +5161,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void setDeviceName(String deviceName) {
 		mShimmerUserAssignedName = deviceName;
 	}
+	
 	public byte[] getRawInquiryResponse(){
 		return mInquiryResponseBytes;
 	}
@@ -6730,7 +6730,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @param enable
 	 */
-	protected void setLowPowerAccelWR(boolean enable){
+	public void setLowPowerAccelWR(boolean enable){
 		mLowPowerAccelWR = enable;
 		mHighResAccelWR = !enable;
 
@@ -6790,7 +6790,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * needs to be set again
 	 * 
 	 */
-	 protected void setDefaultECGConfiguration() {
+	 public void setDefaultECGConfiguration() {
 		 if (getHardwareVersion()==HW_ID.SHIMMER_3){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
@@ -7118,7 +7118,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param infoMemContents
 	 *            the array of InfoMem bytes.
 	 */
-	protected void infoMemByteArrayParse(byte[] infoMemContents) {
+	public void infoMemByteArrayParse(byte[] infoMemContents) {
 		String shimmerName = "";
 
 		if(!checkInfoMemValid(infoMemContents)){
@@ -7444,7 +7444,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param generateForWritingToShimmer
 	 * @return
 	 */
-	protected byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 
 		InfoMemLayout mInfoMemLayout = new InfoMemLayout(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		
@@ -7755,20 +7755,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mInfoMemBytes;
 	}
 	
-	/**
-	 * Creates an empty byte array for the purposes of generating the
-	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
-	 * 
-	 * @param size the size of the byte array to create.
-	 * @return byte array
-	 */
-	public byte[] createEmptyInfoMemByteArray(int size) {
-		byte[] newArray = new byte[size];
-		for(byte b:newArray) {
-			b = (byte)0xFF;
-		}
-		return newArray;
-	}
+//	/**
+//	 * Creates an empty byte array for the purposes of generating the
+//	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
+//	 * 
+//	 * @param size the size of the byte array to create.
+//	 * @return byte array
+//	 */
+//	public byte[] createEmptyInfoMemByteArray(int size) {
+//		byte[] newArray = new byte[size];
+//		for(byte b:newArray) {
+//			b = (byte)0xFF;
+//		}
+//		return newArray;
+//	}
 	
 
 	/**
@@ -8511,109 +8511,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		}		
 //	}
 	
-	//TODO improve this method - was changed at the last minute and is not fully operational
-	public boolean checkIfVersionCompatible(List<ShimmerVerObject> listOfCompatibleVersionInfo) {
-		if(listOfCompatibleVersionInfo == null) {
-			return true;
-		}
-		
-		for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo) {
-
-			boolean compatible = true;
-			
-			boolean checkHardwareVersion = false;
-			boolean checkExpansionBoardId = false;
-			boolean checkFirmwareIdentifier = false;
-			boolean checkFirmwareVersionMajor = false;
-			boolean checkFirmwareVersionMinor = false;
-			boolean checkFirmwareVersionInternal = false;
-			
-			if(compatibleVersionInfo.mHardwareVersion!=ANY_VERSION) {
-				checkHardwareVersion = true;
-			}
-			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
-				checkExpansionBoardId = true;
-			}
-			if(compatibleVersionInfo.mFirmwareIdentifier!=ANY_VERSION) {
-				checkFirmwareIdentifier = true;
-			}
-			if(compatibleVersionInfo.mFirmwareVersionMajor!=ANY_VERSION) {
-				checkFirmwareVersionMajor = true;
-			}
-			if(compatibleVersionInfo.mFirmwareVersionMinor!=ANY_VERSION) {
-				checkFirmwareVersionMinor = true;
-			}
-			if(compatibleVersionInfo.mFirmwareVersionInternal!=ANY_VERSION) {
-				checkFirmwareVersionInternal = true;
-			}
-			
-			if((compatible)&&(checkHardwareVersion)) {
-				if(getHardwareVersion() != compatibleVersionInfo.mHardwareVersion) {
-					compatible = false;
-				}
-			}
-			if((compatible)&&(checkExpansionBoardId)) {
-				if(mExpansionBoardId != compatibleVersionInfo.mShimmerExpansionBoardId) {
-					compatible = false;
-				}
-			}
-//			if((compatible)&&(checkFirmwareIdentifier)) {
-//				if(getFirmwareIdentifier() != compatibleVersionInfo.getFirmwareIdentifier()) {
-//					compatible = false;
-//				}
-//			}
-			
-//			if((compatible)&&(checkFirmwareVersionMajor)) {
-//				if(getFirmwareVersionMajor() < compatibleVersionInfo.getFirmwareVersionMajor()) {
-//					compatible = false;
-//				}
-//				if((compatible)&&(checkFirmwareVersionMinor)) {
-//					if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
-//						compatible = false;
-//					}
-//				}
-//				if((compatible)&&(checkFirmwareVersionInternal)) {
-//					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-//						compatible = false;
-//					}
-//				}
-//			}
-//			else if((compatible)&&(checkFirmwareVersionMinor)) {
-//				if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
-//					compatible = false;
-//				}
-//				if((compatible)&&(checkFirmwareVersionInternal)) {
-//					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-//						compatible = false;
-//					}
-//				}
-//			}
-//			else if((compatible)&&(checkFirmwareVersionInternal)) {
-//				if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-//					compatible = false;
-//				}
-//			}
-			
-			if(checkFirmwareVersionMajor){
-				// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored
-				if((compatible)&&(!UtilShimmer.compareVersions(getFirmwareIdentifier(), 
-						getFirmwareVersionMajor(), 
-						getFirmwareVersionMinor(), 
-						getFirmwareVersionInternal(), 
-						compatibleVersionInfo.mFirmwareIdentifier, 
-						compatibleVersionInfo.mFirmwareVersionMajor, 
-						compatibleVersionInfo.mFirmwareVersionMinor, 
-						compatibleVersionInfo.mFirmwareVersionInternal))){
-					compatible = false;
-				}
-			}
-			
-			if(compatible) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	
 	public List<Integer> sensorMapConflictCheck(Integer key){
@@ -9055,27 +8952,27 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-	 /**
-	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
-	 */
-	public int getExpectedInfoMemByteLength() {
-		createInfoMemLayoutObjectIfNeeded();
-		return mInfoMemLayout.mInfoMemSize;
-	}
-	
-	public void createInfoMemLayoutObjectIfNeeded(){
-		boolean create = false;
-		if(mInfoMemLayout==null){
-			create = true;
-		}
-		else if(mInfoMemLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
-			create = true;
-		}
-		
-		if(create){
-			mInfoMemLayout = new InfoMemLayout(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-		}
-	}
+//	 /**
+//	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
+//	 */
+//	public int getExpectedInfoMemByteLength() {
+//		createInfoMemLayoutObjectIfNeeded();
+//		return mInfoMemLayout.mInfoMemSize;
+//	}
+//	
+//	public void createInfoMemLayoutObjectIfNeeded(){
+//		boolean create = false;
+//		if(mInfoMemLayout==null){
+//			create = true;
+//		}
+//		else if(mInfoMemLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
+//			create = true;
+//		}
+//		
+//		if(create){
+//			mInfoMemLayout = new InfoMemLayout(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+//		}
+//	}
 	
 	 /**
 	 * @return the mConfigTime
@@ -9231,12 +9128,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		return mLowPowerGyro;
 //	}
 
-	/**
-	 * @return the mShimmerUserAssignedName
-	 */
-	public String getShimmerUserAssignedName() {
-		return mShimmerUserAssignedName;
-	}
+//	/**
+//	 * @return the mShimmerUserAssignedName
+//	 */
+//	public String getShimmerUserAssignedName() {
+//		return mShimmerUserAssignedName;
+//	}
 
 	/**
 	 * @return the mLSM303MagRate
@@ -9392,12 +9289,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return getHardwareVersion();
 	}
 
-    /** Returns true if device is streaming (Bluetooth)
-     * @return
-     */
-    public boolean isStreaming(){
-    	return mIsStreaming;
-    }
+//    /** Returns true if device is streaming (Bluetooth)
+//     * @return
+//     */
+//    public boolean isStreaming(){
+//    	return mIsStreaming;
+//    }
     
     //region --------- IS+something FUNCTIONS --------- 
     
@@ -9977,21 +9874,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	
-	/**
-	 * @return the mMacIdFromUart
-	 */
-	public String getMacIdFromUart() {
-		return mMacIdFromUart;
-	}
-
-	/**
-	 * @return the mMacIdFromUartParsed
-	 */
-	public String getMacIdFromUartParsed() {
-		if(this.mMacIdFromUart.length()>=12) {
-			return this.mMacIdFromUart.substring(8, 12);
-		}		return "0000";
-	}
+//	/**
+//	 * @return the mMacIdFromUart
+//	 */
+//	public String getMacIdFromUart() {
+//		return mMacIdFromUart;
+//	}
+//
+//	/**
+//	 * @return the mMacIdFromUartParsed
+//	 */
+//	public String getMacIdFromUartParsed() {
+//		if(this.mMacIdFromUart.length()>=12) {
+//			return this.mMacIdFromUart.substring(8, 12);
+//		}		return "0000";
+//	}
 
 	/**
 	 * @return the mMacIdFromBtParsed
@@ -10096,7 +9993,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 
-	protected void setDigitalAccelRange(int i){
+	public void setDigitalAccelRange(int i){
 		mAccelRange = i;
 	}
 	
@@ -10142,7 +10039,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mPressureResolution = i;
 	}
 	
-	protected void setGSRRange(int i){
+	public void setGSRRange(int i){
 		mGSRRange = i;
 	}
 	
@@ -10150,7 +10047,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
 	 */
-	protected void setLSM303DigitalAccelRate(int mLSM303DigitalAccelRate) {
+	public void setLSM303DigitalAccelRate(int mLSM303DigitalAccelRate) {
 		// double check that rate is compatible with LPM (8 not compatible so to higher rate)
 		if((!isLSM303DigitalAccelLPM()) && (mLSM303DigitalAccelRate==8)) {
 			mLSM303DigitalAccelRate = 9;
@@ -10165,19 +10062,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mLSM303MagRate = mLSM303MagRate;
 	}
 
-	/**
-	 * @param shimmerInfoMemBytes the shimmerInfoMemBytes to set
-	 */
-	protected void setShimmerInfoMemBytes(byte[] shimmerInfoMemBytes) {
-		this.infoMemByteArrayParse(shimmerInfoMemBytes);
-	}
-	
-	/**
-	 * @return the mShimmerInfoMemBytes
-	 */
-	public byte[] getShimmerInfoMemBytes() {
-		return mInfoMemBytes;
-	}
+//	/**
+//	 * @param shimmerInfoMemBytes the shimmerInfoMemBytes to set
+//	 */
+//	public void setShimmerInfoMemBytes(byte[] shimmerInfoMemBytes) {
+//		this.infoMemByteArrayParse(shimmerInfoMemBytes);
+//	}
+//	
+//	/**
+//	 * @return the mShimmerInfoMemBytes
+//	 */
+//	public byte[] getShimmerInfoMemBytes() {
+//		return mInfoMemBytes;
+//	}
 	
 //	protected void checkShimmerConfigurationBeforeConfiguring() {
 //		this.checkShimmerConfigurationBeforeConfiguring();
@@ -10279,17 +10176,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     	this.mTrialDurationMaximum = mExperimentDurationMaximum;
 	}
 
-	/**
-	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
-	 */
-	public void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
-		if(mShimmerUserAssignedName.length()>12) {
-			this.mShimmerUserAssignedName = mShimmerUserAssignedName.substring(0, 12);
-		}
-		else { 
-			this.mShimmerUserAssignedName = mShimmerUserAssignedName;
-		}
-	}
+//	/**
+//	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
+//	 */
+//	public void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
+//		if(mShimmerUserAssignedName.length()>12) {
+//			this.mShimmerUserAssignedName = mShimmerUserAssignedName.substring(0, 12);
+//		}
+//		else { 
+//			this.mShimmerUserAssignedName = mShimmerUserAssignedName;
+//		}
+//	}
 	
 	/**
 	 * @param state the mInternalExpPower state to set
@@ -10608,7 +10505,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param mBluetoothBaudRate the mBluetoothBaudRate to set
 	 */
-	protected void setBluetoothBaudRate(int mBluetoothBaudRate) {
+	public void setBluetoothBaudRate(int mBluetoothBaudRate) {
 		this.mBluetoothBaudRate = mBluetoothBaudRate;
 	}
 
@@ -10639,12 +10536,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.setSensorEnabledState(key, mSensorMap.get(key).mIsEnabled);
 	}
 
-	/**
-	 * @param macIdFromUart the mMacIdFromUart to set
-	 */
-	protected void setMacIdFromUart(String macIdFromUart) {
-		this.mMacIdFromUart = macIdFromUart;
-	}
+//	/**
+//	 * @param macIdFromUart the mMacIdFromUart to set
+//	 */
+//	protected void setMacIdFromUart(String macIdFromUart) {
+//		this.mMacIdFromUart = macIdFromUart;
+//	}
 
 	/**
 	 * @param myBluetoothAddress the myBluetoothAddress to set
@@ -10652,76 +10549,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void setMacIdFromBt(String myBluetoothAddress){
 		this.mMyBluetoothAddress = myBluetoothAddress;
 	}
-	
-	/**
-	 * @param mSamplingDividerVBatt the mSamplingDividerVBatt to set
-	 */
-	protected void setSamplingDividerVBatt(int mSamplingDividerVBatt) {
-		this.mSamplingDividerVBatt = mSamplingDividerVBatt;
-	}
-
-	/**
-	 * @param mSamplingDividerGsr the mSamplingDividerGsr to set
-	 */
-	protected void setSamplingDividerGsr(int mSamplingDividerGsr) {
-		this.mSamplingDividerGsr = mSamplingDividerGsr;
-	}
-
-	/**
-	 * @param mSamplingDividerPpg the mSamplingDividerPpg to set
-	 */
-	protected void setSamplingDividerPpg(int mSamplingDividerPpg) {
-		this.mSamplingDividerPpg = mSamplingDividerPpg;
-	}
-
-	/**
-	 * @param mSamplingDividerLsm303dlhcAccel the mSamplingDividerLsm303dlhcAccel to set
-	 */
-	protected void setSamplingDividerLsm303dlhcAccel(int mSamplingDividerLsm303dlhcAccel) {
-		this.mSamplingDividerLsm303dlhcAccel = mSamplingDividerLsm303dlhcAccel;
-	}
-
-	/**
-	 * @param mSamplingDividerBeacon the mSamplingDividerBeacon to set
-	 */
-	protected void setSamplingDividerBeacon(int mSamplingDividerBeacon) {
-		this.mSamplingDividerBeacon = mSamplingDividerBeacon;
-	}
-	
-	
-	public int getExpansionBoardId(){
-		return mExpansionBoardId;
-	}
-	
-	public int getExpansionBoardRev(){
-		return mExpansionBoardRev;
-	}
-	
-	public int getExpansionBoardRevSpecial(){
-		return mExpansionBoardRevSpecial;
-	}
-	
-	/**
-	 * @return the mExpansionBoardParsed
-	 */
-	public String getExpansionBoardParsed() {
-		return mExpansionBoardParsed;
-	}
-	
-	public String getExpansionBoardParsedWithVer() {
-		return mExpansionBoardParsedWithVer;
-	}
-
-	protected void clearExpansionBoardDetails(){
-		mExpansionBoardDetails = new ExpansionBoardDetails();
-		mExpansionBoardId = mExpansionBoardDetails.mExpBoardId;
-		mExpansionBoardRev = mExpansionBoardDetails.mExpBoardRev;
-		mExpansionBoardRevSpecial = mExpansionBoardDetails.mExpBoardRevSpecial;
-		mExpansionBoardParsed = mExpansionBoardDetails.mExpBoardParsed;
-		mExpansionBoardParsedWithVer = mExpansionBoardDetails.mExpBoardParsedWithVer;
-		mExpBoardArray = mExpansionBoardDetails.mExpBoardArray;
-	}
-	
 	
 	public Object getValueUsingGuiComponent(String componentName) {
 		Object returnValue = null;
@@ -10967,7 +10794,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return returnValue;
 	}		
 	
-	protected Object setValueUsingGuiComponent(String componentName, Object valueToSet) {
+	@Override
+	public Object setValueUsingGuiComponent(String componentName, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
@@ -11276,45 +11104,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCenter = value;
 	}
 
-	/**
-	 * @return the mHaveAttemptedToRead
-	 */
-	public boolean isHaveAttemptedToRead() {
-		return haveAttemptedToRead();
-	}
+//	public ExpansionBoardDetails getExpansionBoardDetails() {
+//		return mExpansionBoardDetails;
+//	}
 
-	/**
-	 * @return the mDocked
-	 */
-	public boolean isDocked() {
-		return mIsDocked;
-	}
-
-	/**
-	 * @return the mIsInitialized
-	 */
-	public boolean isInitialized() {
-		return mIsInitialised;
-	}
-
-	/**
-	 * @return the mHaveAttemptedToRead
-	 */
-	public boolean haveAttemptedToRead() {
-		return mHaveAttemptedToReadConfig;
-	}
-
-	public ExpansionBoardDetails getExpansionBoardDetails() {
-		return mExpansionBoardDetails;
-	}
-
-	public ShimmerVerObject getShimmerVerDetails() {
-		return mShimmerVerObject;
-	}
+//	public ShimmerVerObject getShimmerVerDetails() {
+//		return mShimmerVerObject;
+//	}
 
 	@Override
-	public void setShimmerVerObject(ShimmerVerObject hwfw) {
-		super.setShimmerVerObject(hwfw);
+	public void setShimmerVersionObject(ShimmerVerObject hwfw) {
+		super.setShimmerVersionObject(hwfw);
 		
 		createInfoMemLayoutObjectIfNeeded();
 		
@@ -11329,11 +11129,417 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	public void setLastReadRealTimeClockValue(long time) {
-		mShimmerLastReadRealTimeClockValue = time;
-		mShimmerLastReadRtcValueParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(time), false);
+//	public void setLastReadRealTimeClockValue(long time) {
+//		mShimmerLastReadRealTimeClockValue = time;
+//		mShimmerLastReadRtcValueParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(time), false);
+//	}
+
+	/**Performs a deep copy of SlotDetails by Serializing
+	 * @return SlotDetails the deep copy of the current SlotDetails
+	 * @see java.io.Serializable
+	 */
+	@Override
+	public ShimmerObject deepClone() {
+//		System.out.println("Cloning:" + mUniqueID);
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (ShimmerObject) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void checkBattery() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	// --------------- Set Methods Start --------------------------
+
+	public void setUniqueID(String uniqueID){
+		mUniqueID = uniqueID;
+		String[] idSplit = mUniqueID.split(".");
+		if(idSplit.length>=3) {
+			mDockID = idSplit[0] + "." + idSplit[1];
+			try {
+				mSlotNumber = Integer.parseInt(idSplit[2]);
+			}
+			catch (NumberFormatException nFE) {
+			}
+		}
+	}
+
+	public void setIDs(String dockID, int slotNumber){
+		mDockID = dockID;
+		mSlotNumber = slotNumber;
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+	}
+
+	public void initialise(int hardwareVersion) {
+		this.setHardwareVersion(hardwareVersion);
+		sensorAndConfigMapsCreate();
+	}
+
+//	public void setDefaultShimmerConfiguration() {
+//		super.setDefaultShimmerConfiguration();
+//	}
+
+//	public void setDefaultCalibrationShimmer3StandardImus() {
+//		super.setDefaultCalibrationShimmer3StandardImus();
+//	}
+	
+	public void updateShimmerDriveInfo(ShimmerSDCardDetails shimmerSDCardDetails) {
+		this.mShimmerSDCardDetails = shimmerSDCardDetails;
+	}
+	
+//	public void updateShimmerDriveInfo(File drivePath) {
+//		mDriveTotalSpace = drivePath.getTotalSpace(); //total disk space in bytes.
+//		mDriveUsableSpace = drivePath.getUsableSpace(); ///unallocated / free disk space in bytes.
+//		mDriveFreeSpace = drivePath.getFreeSpace(); //unallocated / free disk space in bytes.
+//		mDriveUsedSpace = mDriveTotalSpace - mDriveFreeSpace;
+//		
+//	    double spaceTotal = (double)mDriveTotalSpace / 1024 / 1024 / 1024;
+//	    double spaceUsed = (double)(mDriveUsedSpace) / 1024 / 1024 / 1024;
+//	    //double spacePercentage = (spaceUsed / spaceTotal) * 100;
+//	    String spaceUsedTxt = " GB";
+//	    String spaceTotalTxt = " GB";
+//	    if (spaceUsed < 1.0) {
+//	        spaceUsed = spaceUsed * 1024;
+//	        spaceUsedTxt = " MB";
+//	    }
+//	    if (spaceTotal < 1.0) {
+//	        spaceTotal = spaceTotal * 1024;
+//	        spaceTotalTxt = " MB";
+//	    }
+//	    mDriveUsedSpaceParsed = String.format("%.2f", spaceUsed) + spaceUsedTxt;
+//	    mDriveTotalSpaceParsed = String.format("%.2f", spaceTotal) + spaceTotalTxt; 
+//	}
+
+
+//	/**
+//	 * @return the mShimmerInfoMemBytes generated from an empty byte array. This
+//	 *         is called to generate the InfoMem bytes for writing to the
+//	 *         Shimmer.
+//	 */
+//	public byte[] generateShimmerInfoMemBytes() {
+//		setConfigFileCreationFlag(true);
+//		return infoMemByteArrayGenerate(true);
+//	}
+
+	/** setShimmerVerionObject should be used instead
+	 * @param hardwareVersion the mHardwareVersion to set
+	 */
+	public void setHardwareVersion(int hardwareVersion) {
+//		mShimmerVerObject.mHardwareVersion = hardwareVersion;
+		
+		ShimmerVerObject sVOHw = new ShimmerVerObject(hardwareVersion, getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		setShimmerVersionObject(sVOHw);
+
+//		this.sensorAndConfigMapsCreate();
+	}
+
+	/** setShimmerVerionObject should be used instead
+	 * @param firmwareId the firmwareId to set
+	 */
+	public void setFirmwareIdentifier(int firmwareId) {
+		ShimmerVerObject sVOFwId = new ShimmerVerObject(getHardwareVersion(), firmwareId, getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		setShimmerVersionObject(sVOFwId);
+	}
+
+	/** setShimmerVerionObject should be used instead
+	 * @param firmwareId the firmwareId to set
+	 */
+	public void setFirmwareVersion(int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+		ShimmerVerObject sVOFwId = new ShimmerVerObject(getHardwareVersion(), getFirmwareIdentifier(), firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+		setShimmerVersionObject(sVOFwId);
+	}
+
+	
+//	/**
+//	 * @param mExperimentId the mExperimentId to set
+//	 */
+//	public void setExperimentId(int mExperimentId) {
+//		super.setExperimentId(mExperimentId);
+//	}
+//	
+//	/**
+//	 * @param mExperimentNumberOfShimmers the mExperimentNumberOfShimmers to set
+//	 */
+//	public void setExperimentNumberOfShimmers(int mExperimentNumberOfShimmers) {
+//		super.setExperimentNumberOfShimmers(mExperimentNumberOfShimmers);
+//	}
+//	
+//	/**
+//	 * @param syncNodesList the syncNodesList to set
+//	 */
+//	public void setSyncNodesList(List<String> syncNodesList) {
+//		super.setSyncNodesList(syncNodesList);
+//	}
+//	
+//	/**
+//	 * @param state the mSyncWhenLogging state to set
+//	 */
+//	public void setSyncWhenLogging(boolean state) {
+//		super.setSyncWhenLogging(state);
+//	}
+//	
+//	/**
+//	 * @param state the mBluetoothBaudRate state to set
+//	 */
+//	public void setBluetoothBaudRate(int bluetoothBaudRate) {
+//		super.mBluetoothBaudRate = bluetoothBaudRate;
+//	}
+//	
+//	/**
+//	 * @param mConfigTime the mConfigTime to set
+//	 */
+//	public void setConfigTime(long mConfigTime) {
+//		super.setConfigTime(mConfigTime);
+//	}
+//	
+//	/**
+//	 * @param mExperimentDurationEstimated the mExperimentDurationEstimated to set.  Min value is 1.
+//	 */
+//	public void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
+//		super.setExperimentDurationEstimated(mExperimentDurationEstimated);
+//	}
+//	
+//	/**
+//	 * @param mExperimentDurationMaximum the mExperimentDurationMaximum to set. Min value is 0.
+//	 */
+//	public void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
+//		super.setExperimentDurationMaximum(mExperimentDurationMaximum);
+//	}
+//	
+//	/**
+//	 * @param state the mSingleTouch state to set
+//	 */
+//	public void setSingleTouch(boolean state) {
+//		super.setSingleTouch(state);
+//	}
+//	
+//	/**
+//	 * @param mExperimentName the mExperimentName to set
+//	 */
+//	public void setExperimentName(String mExperimentName) {
+//		super.setExperimentName(mExperimentName);
+//	}
+//	
+//	/**
+//	 * @param state the mButtonStart state to set
+//	 */
+//	public void setButtonStart(boolean state) {
+//		super.setButtonStart(state);
+//	}
+//	
+//	/**
+//	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
+//	 */
+//	public void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
+//		super.setShimmerUserAssignedName(mShimmerUserAssignedName);
+//	}
+//	
+//	/**
+//	 * @param state the mMasterShimmer state to set
+//	 */
+//	public void setMasterShimmer(boolean state) {
+//		super.setMasterShimmer(state);
+//	}
+//	
+//	/**
+//	 * Computes the closest compatible sampling rate for the Shimmer based on
+//	 * the passed in 'rate' variable. Also computes the next highest available
+//	 * sampling rate for the Shimmer's sensors (dependent on pre-set low-power
+//	 * modes).
+//	 * 
+//	 * @param rate
+//	 */
+//	public void setShimmerSamplingRate(double rate){
+//		super.setShimmerSamplingRate(rate);
+//	}
+//	
+//	/**
+//	 * @param mShimmerInfoMemBytes the mShimmerInfoMemBytes to set
+//	 */
+//	public void setShimmerInfoMemBytes(byte[] mShimmerInfoMemBytes) {
+//		super.setShimmerInfoMemBytes(mShimmerInfoMemBytes);
+//	}
+//	
+//	/**
+//	 * @param macIdFromUart the mMacIdFromUart to set
+//	 */
+//	public void setMacIdFromUart(String macIdFromUart) {
+//		super.setMacIdFromUart(macIdFromUart);
+//	}
+//
+//	/**
+//	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
+//	 */
+//	public void setLSM303DigitalAccelRate(int mLSM303DigitalAccelRate) {
+//		super.setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
+//	}
+//	
+//	public void setDigitalAccelRange(int i){
+//		super.setDigitalAccelRange(i);
+//	}
+//	
+//	/**
+//	 * This enables the low power accel option. When not enabled the sampling
+//	 * rate of the accel is set to the closest value to the actual sampling rate
+//	 * that it can achieve. In low power mode it defaults to 10Hz. Also and
+//	 * additional low power mode is used for the LSM303DLHC. This command will
+//	 * only supports the following Accel range +4g, +8g , +16g
+//	 * 
+//	 * @param enable
+//	 */
+//	public void setLowPowerAccelWR(boolean enable){
+//		super.setLowPowerAccelWR(enable);
+//	}
+	
+	/**
+	 * @param mHighResAccelWR the mHighResAccelWR to set
+	 */
+	public void setHighResAccelWR(boolean mHighResAccelWR) {
+		this.mHighResAccelWR = mHighResAccelWR;
+	}
+
+//	public void setGSRRange(int i){
+//		super.mGSRRange = i;
+//	}
+//
+//	public Object setValueUsingGuiComponent(String componentName, Object valueToSet) {
+//		return super.setValueUsingGuiComponent(componentName, valueToSet);
+//	}
+//	
+//	public void clearExpansionBoardDetails(){
+//		super.clearExpansionBoardDetails();
+//	}
+//
+	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
+		setShimmerVersionObject(hwfw);
+		sensorAndConfigMapsCreate();
+	}
+//
+//	@Override
+//	public void setShimmerVersionInfo(ShimmerVerObject sVO) {
+//		super.setShimmerVersionInfo(sVO);
+//		
+//		if(sVO.mHardwareVersion==HW_ID.SHIMMER_GQ_802154){
+//			mShimmerDevice = new ShimmerGQ(sVO);
+//		}
+//	}
+
+	//TODO
+	public void clearShimmerVersionInfo() {
+		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
+	}
+	
+//	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
+//		mExpansionBoardDetails  = eBD;
+//		mExpansionBoardId = eBD.mExpBoardId;
+//		mExpansionBoardRev = eBD.mExpBoardRev;
+//		mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
+//		mExpansionBoardParsed = eBD.mExpBoardParsed;
+//		mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
+//		mExpBoardArray = eBD.mExpBoardArray;
+//	}
+
+//	public void setBattStatusDetails(ShimmerBattStatusDetails s) {
+//		super.mShimmerBattStatusDetails = s;
+//		
+//		if(mShimmerDevice!=null){
+//			mShimmerDevice.setBattStatusDetails(s);
+//		}
+//	}
+
+	public void clearBattStatusDetails() {
+		setBattStatusDetails(new ShimmerBattStatusDetails());
+	}
+
+	/**
+	 * @param haveAttemptedToRead the mHaveAttemptedToRead to set
+	 */
+	public void setHaveAttemptedToRead(boolean haveAttemptedToRead) {
+		mHaveAttemptedToReadConfig = haveAttemptedToRead;
+	}
+	
+	/**
+	 * @param docked the mDocked to set
+	 */
+	public void setDocked(boolean docked) {
+		mIsDocked = docked;
+	}
+
+	/**
+	 * @param isInitialized the mSuccessfullyInitialized to set
+	 */
+	public void setInitialized(boolean isInitialized) {
+		mIsInitialised = isInitialized;
+	}
+	
+	// --------------- Set Methods End --------------------------
+
+	
+	// --------------- ShimmerGQ BLE related start --------------------------
+	
+	/** ShimmerGQBle
+	 * @param mSamplingDividerVBatt the mSamplingDividerVBatt to set
+	 */
+	public void setSamplingDividerVBatt(int mSamplingDividerVBatt) {
+		this.mSamplingDividerVBatt = mSamplingDividerVBatt;
+	}
+
+	/** ShimmerGQBle
+	 * @param mSamplingDividerGsr the mSamplingDividerGsr to set
+	 */
+	public void setSamplingDividerGsr(int mSamplingDividerGsr) {
+		this.mSamplingDividerGsr = mSamplingDividerGsr;
+	}
+
+	/** ShimmerGQBle
+	 * @param mSamplingDividerPpg the mSamplingDividerPpg to set
+	 */
+	public void setSamplingDividerPpg(int mSamplingDividerPpg) {
+		this.mSamplingDividerPpg = mSamplingDividerPpg;
+	}
+
+	/** ShimmerGQBle
+	 * @param mSamplingDividerLsm303dlhcAccel the mSamplingDividerLsm303dlhcAccel to set
+	 */
+	public void setSamplingDividerLsm303dlhcAccel(int mSamplingDividerLsm303dlhcAccel) {
+		this.mSamplingDividerLsm303dlhcAccel = mSamplingDividerLsm303dlhcAccel;
+	}
+
+	/** ShimmerGQBle
+	 * @param mSamplingDividerBeacon the mSamplingDividerBeacon to set
+	 */
+	public void setSamplingDividerBeacon(int mSamplingDividerBeacon) {
+		this.mSamplingDividerBeacon = mSamplingDividerBeacon;
+	}
+
+	public void setExpansionBoardId(int expansionBoardId) {
+		mExpansionBoardDetails.mExpBoardId = expansionBoardId;
+	}
+
+	
+	// --------------- ShimmerGQ BLE related end --------------------------
 
 
 

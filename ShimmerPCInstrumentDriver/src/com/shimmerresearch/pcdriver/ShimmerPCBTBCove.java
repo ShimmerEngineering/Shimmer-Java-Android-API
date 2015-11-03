@@ -445,11 +445,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	}
 
 	@Override
-	public ShimmerDevice deepClone() {
+	public ShimmerPCBTBCove deepClone() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	
 	

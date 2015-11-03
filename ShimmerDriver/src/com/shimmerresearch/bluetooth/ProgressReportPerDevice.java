@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 
+
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.ShimmerDevice;
 //import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
 
@@ -61,7 +63,7 @@ public class ProgressReportPerDevice implements Serializable {
 //	public List<ErrorDetails> mListOfErrors = new ArrayList<ErrorDetails>(); 
 //	public String mLog = "";
 
-	public ProgressReportPerDevice(ShimmerObject shimmerObject, BT_STATE currentOperationBtState, int endValue) {
+	public ProgressReportPerDevice(ShimmerDevice shimmerObject, BT_STATE currentOperationBtState, int endValue) {
 		if(shimmerObject instanceof ShimmerBluetooth){
 			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerObject;
 			setShimmerBluetooth(shimmerBluetooth);
