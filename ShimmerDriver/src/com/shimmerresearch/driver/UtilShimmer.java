@@ -30,6 +30,8 @@ public class UtilShimmer implements Serializable {
 	public String mParentClassName = "UpdateCheck";
 	public Boolean mVerboseMode = true;
 	
+	public static final String STRING_CONSTANT_FOR_UNKNOWN = "Unknown";
+
 	public UtilShimmer(String parentClassName, Boolean verboseMode){
 		this.mParentClassName = parentClassName;
 		this.mVerboseMode = verboseMode;

@@ -116,7 +116,9 @@ public class Configuration {
 	}	
 	
 	public enum COMMUNICATION_TYPE{
+		DOCK,
 		BLUETOOTH,
+		IEEE802154,
 		SD
 	}
 	

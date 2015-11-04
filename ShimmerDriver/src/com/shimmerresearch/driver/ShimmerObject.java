@@ -797,13 +797,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/** GQ BLE */
 	protected int mSamplingDividerBeacon = 0;
 
-	/** A shimmer device will have multiple sensors, depending on HW type and revision, 
-	 * these type of sensors can change, this holds a list of all the sensors for different versions.
-	 * This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ
-	 * 
-	 */
-	protected List<AbstractSensor> mListOfSensors = new ArrayList<AbstractSensor>();
-	
 	
 	protected int mTimeStampPacketByteSize = 2;
 //	protected byte[] mSetRWC;
@@ -10550,7 +10543,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mMyBluetoothAddress = myBluetoothAddress;
 	}
 	
-	public Object getValueUsingGuiComponent(String componentName) {
+	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
 		
         if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))
@@ -10795,7 +10788,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}		
 	
 	@Override
-	public Object setValueUsingGuiComponent(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
@@ -11134,41 +11127,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		mShimmerLastReadRtcValueParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(time), false);
 //	}
 
-	/**Performs a deep copy of SlotDetails by Serializing
-	 * @return SlotDetails the deep copy of the current SlotDetails
-	 * @see java.io.Serializable
-	 */
-	@Override
-	public ShimmerObject deepClone() {
-//		System.out.println("Cloning:" + mUniqueID);
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
 
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (ShimmerObject) ois.readObject();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
-	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void checkBattery() {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	protected void checkBattery() {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	
 	// --------------- Set Methods Start --------------------------
@@ -11535,7 +11505,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public void setExpansionBoardId(int expansionBoardId) {
-		mExpansionBoardDetails.mExpBoardId = expansionBoardId;
+		mExpansionBoardDetails.mExpansionBoardId = expansionBoardId;
 	}
 
 	

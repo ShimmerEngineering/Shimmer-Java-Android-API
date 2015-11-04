@@ -2,10 +2,13 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
+import com.shimmerresearch.sensor.AbstractSensor;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -17,11 +20,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
 	
+	/** A shimmer device will have multiple sensors, depending on HW type and revision, 
+	 * these type of sensors can change, this holds a list of all the sensors for different versions.
+	 * This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ
+	 * 
+	 */
+	protected List<AbstractSensor> mListOfSensors = new ArrayList<AbstractSensor>();
+	
 	public ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	public ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
 	public ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails(); 
 	public ShimmerSDCardDetails mShimmerSDCardDetails = new ShimmerSDCardDetails(); 
 
+	private List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
+	
 	//Temp here from ShimmerDocked - start
 	
 	/** Used in UART command through the base/dock*/
@@ -84,8 +96,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
 	// Device Config related
 	public abstract Map<String, SensorConfigOptionDetails> getConfigOptionsMap();
-	public abstract Object setValueUsingGuiComponent(String componentName, Object configValue);
-	public abstract Object getValueUsingGuiComponent(String componentName);
+	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object configValue);
+	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 	public abstract void checkConfigOptionValues(String stringKey);
 
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
@@ -151,6 +163,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		infoMemByteArrayParse(shimmerInfoMemBytes);
 	}
 	
+	public void addCommunicationRoute(COMMUNICATION_TYPE communicationType) {
+		mListOfAvailableCommunicationTypes.add(communicationType);
+		Collections.sort(mListOfAvailableCommunicationTypes);
+	}
+
+	public void removeCommunicationRoute(COMMUNICATION_TYPE communicationType) {
+		mListOfAvailableCommunicationTypes.remove(communicationType);
+		Collections.sort(mListOfAvailableCommunicationTypes);
+	}
 
 	// --------------- Set Methods End --------------------------
 
@@ -226,46 +247,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public int getExpansionBoardId(){
-		return mExpansionBoardDetails.mExpBoardId;
+		return mExpansionBoardDetails.mExpansionBoardId;
 	}
 	
 	public int getExpansionBoardRev(){
-		return mExpansionBoardDetails.mExpBoardRev;
+		return mExpansionBoardDetails.mExpansionBoardRev;
 	}
 	
 	public int getExpansionBoardRevSpecial(){
-		return mExpansionBoardDetails.mExpBoardRevSpecial;
+		return mExpansionBoardDetails.mExpansionBoardRevSpecial;
 	}
 	
 	/**
 	 * @return the mExpansionBoardParsed
 	 */
 	public String getExpansionBoardParsed() {
-		return mExpansionBoardDetails.mExpBoardParsed;
+		return mExpansionBoardDetails.mExpansionBoardParsed;
 	}
 	
 	public String getExpansionBoardParsedWithVer() {
-		return mExpansionBoardDetails.mExpBoardParsedWithVer;
+		return mExpansionBoardDetails.mExpansionBoardParsedWithVer;
 	}
 
 	public void clearExpansionBoardDetails(){
 		mExpansionBoardDetails = new ExpansionBoardDetails();
-//		mExpansionBoardId = mExpansionBoardDetails.mExpBoardId;
-//		mExpansionBoardRev = mExpansionBoardDetails.mExpBoardRev;
-//		mExpansionBoardRevSpecial = mExpansionBoardDetails.mExpBoardRevSpecial;
-//		mExpansionBoardParsed = mExpansionBoardDetails.mExpBoardParsed;
-//		mExpansionBoardParsedWithVer = mExpansionBoardDetails.mExpBoardParsedWithVer;
-//		mExpBoardArray = mExpansionBoardDetails.mExpBoardArray;
 	}
 
 	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
 		mExpansionBoardDetails  = eBD;
-//		mExpansionBoardId = eBD.mExpBoardId;
-//		mExpansionBoardRev = eBD.mExpBoardRev;
-//		mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
-//		mExpansionBoardParsed = eBD.mExpBoardParsed;
-//		mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
-//		mExpBoardArray = eBD.mExpBoardArray;
 	}
 
 	
@@ -344,7 +353,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mIsInitialized
 	 */
-	public boolean isInitialized() {
+	public boolean isInitialised() {
 		return mIsInitialised;
 	}
 

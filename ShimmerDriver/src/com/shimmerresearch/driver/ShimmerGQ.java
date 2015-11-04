@@ -50,12 +50,14 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	 * @param dockId
 	 * @param slotNumber
 	 */
-	public ShimmerGQ(String dockId, int slotNumber){
+	public ShimmerGQ(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType){
 		mDockID = dockId;
 		parseDockType();
 		
 		mSlotNumber = slotNumber;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+		
+		addCommunicationRoute(connectionType);
 	}
 
 	@Override
@@ -80,8 +82,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	public ObjectCluster processData(
 			byte[] rawData,
 			int[] channelIdentifier,
-			HashMap<COMMUNICATION_TYPE, HashMap<String, ChannelDetails>> mapOfAllChannels,
-			COMMUNICATION_TYPE comType) {
+			HashMap<COMMUNICATION_TYPE, HashMap<String, ChannelDetails>> mapOfAllChannels, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -93,8 +94,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	}
 
 	@Override
-	public HashMap<COMMUNICATION_TYPE, HashMap<Integer, ChannelDetails>> generateAllSensorChannels(
-			HashMap<Integer, AbstractSensor> sensorMap) {
+	public HashMap<COMMUNICATION_TYPE, HashMap<Integer, ChannelDetails>> generateAllSensorChannels(HashMap<Integer, AbstractSensor> sensorMap) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -160,7 +160,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	}
 
 	@Override
-	public Object getValueUsingGuiComponent(String componentName) {
+	public Object getConfigValueUsingConfigLabel(String componentName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -178,7 +178,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	}
 
 	@Override
-	public Object setValueUsingGuiComponent(String componentName, Object configValue) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object configValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -206,8 +206,6 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 	
 	
 	/*

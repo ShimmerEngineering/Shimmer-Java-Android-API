@@ -1316,7 +1316,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				parseStatusByte(responseData[0]);
 
 				if(!mIsSensing){
-					if(!isInitialized()){
+					if(!isInitialised()){
 						writeRealTimeClock();
 					}
 				}

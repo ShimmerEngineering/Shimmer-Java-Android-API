@@ -57,12 +57,18 @@
 
 package com.shimmerresearch.pcdriver;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -210,17 +216,20 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param dockId
 	 * @param slotNumber
 	 */
-	public ShimmerPC(String dockId, int slotNumber){
+	public ShimmerPC(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType) {
 		mDockID = dockId;
 		parseDockType();
 		
 		mSlotNumber = slotNumber;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
 		
-		initialise(HW_ID.SHIMMER_3);
-		setDefaultShimmerConfiguration();
+		addCommunicationRoute(connectionType);
+		
+		//TODO: remove??
+//		initialise(HW_ID.SHIMMER_3);
+//		setDefaultShimmerConfiguration();
 	}
-	
+
 	/**
 	 * Connect to device specified by address
 	 * @param address  The comport of the device e.g. COM32, note device will have to be paired first
@@ -564,13 +573,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		return mIsConnected;
 	}
 
-	public boolean isInitialised(){
-		return mIsInitialised;
-	}
-	
-	public boolean isStreaming(){
-		return mIsStreaming;
-	}
+//	public boolean isInitialised(){
+//		return mIsInitialised;
+//	}
+//	
+//	public boolean isStreaming(){
+//		return mIsStreaming;
+//	}
 	
 	public boolean isSDLogging(){
 		return mIsSDLogging;
@@ -725,6 +734,25 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		}		
 	}
 
+	@Override
+	public ShimmerPC deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (ShimmerPC) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public void clearShimmerVersionObject() {
 		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());

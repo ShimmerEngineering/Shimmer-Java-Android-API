@@ -14,11 +14,11 @@ import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
  */
 public class ExpansionBoardDetails implements Serializable {
 	
-	public int mExpBoardId = HW_ID_SR_CODES.UNKNOWN;
-	public int mExpBoardRev = HW_ID_SR_CODES.UNKNOWN;
-	public int mExpBoardRevSpecial = HW_ID_SR_CODES.UNKNOWN;
-	public String mExpBoardParsed = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
-	public String mExpBoardParsedWithVer = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
+	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN;
+	public int mExpansionBoardRev = HW_ID_SR_CODES.UNKNOWN;
+	public int mExpansionBoardRevSpecial = HW_ID_SR_CODES.UNKNOWN;
+	public String mExpansionBoardParsed = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
+	public String mExpansionBoardParsedWithVer = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 	public byte[] mExpBoardArray = new byte[]{}; 
 	
 	public ExpansionBoardDetails(
@@ -45,8 +45,9 @@ public class ExpansionBoardDetails implements Serializable {
 	private void parseExpansionBoardDetails(int boardID,
 											int boardRev,
 											int specialRev) {
-		String boardName = "";
-		String boardNameWithVer = "";
+		String boardName = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
+		String boardNameWithVer = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
+		String boardVer = "SR" + boardID + "." + boardRev + "." + specialRev;
 		
 		if(boardID==ShimmerVerDetails.EXP_BRD_NONE_ID){
 			boardName = ShimmerVerDetails.EXP_BRD_NONE;
@@ -54,20 +55,22 @@ public class ExpansionBoardDetails implements Serializable {
 		else {
 			if(ShimmerVerDetails.mMapOfShimmerHardware.containsKey(boardID)){
 				boardName = ShimmerVerDetails.mMapOfShimmerHardware.get(boardID);
+				boardNameWithVer = boardName + " (" + boardVer + ")";
 			}
 			else {
-				boardName = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
+//				boardName = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
+				boardName = boardVer;
 			}
 		}
 			
-		boardNameWithVer = boardName;
-		if((!boardName.equals(ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN))&&(!boardName.equals("None"))){
-			boardNameWithVer += " (SR" + boardID + "." + boardRev + "." + specialRev +")";
-		}
-		mExpBoardId = boardID;
-		mExpBoardRev = boardRev;
-		mExpBoardRevSpecial = specialRev;
-		mExpBoardParsed = boardName;
-		mExpBoardParsedWithVer = boardNameWithVer;
+//		boardNameWithVer = boardName;
+//		if((!boardName.equals(ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN))&&(!boardName.equals("None"))){
+//			boardNameWithVer += " (SR" + boardID + "." + boardRev + "." + specialRev +")";
+//		}
+		mExpansionBoardId = boardID;
+		mExpansionBoardRev = boardRev;
+		mExpansionBoardRevSpecial = specialRev;
+		mExpansionBoardParsed = boardName;
+		mExpansionBoardParsedWithVer = boardNameWithVer;
 	}
 }
