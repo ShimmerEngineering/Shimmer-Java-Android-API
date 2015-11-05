@@ -49,9 +49,15 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	/** 
 	 * @param dockId
 	 * @param slotNumber
+	 * @param macId 
 	 */
-	public ShimmerGQ(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType){
-		mDockID = dockId;
+	public ShimmerGQ(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE connectionType){
+		this(dockId, slotNumber, connectionType);
+		setMacIdFromUart(macId);
+	}
+
+	public ShimmerGQ(String dockID, int slotNumber, COMMUNICATION_TYPE connectionType) {
+		mDockID = dockID;
 		parseDockType();
 		
 		mSlotNumber = slotNumber;
