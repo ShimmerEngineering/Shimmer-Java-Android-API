@@ -11460,7 +11460,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param isInitialized the mSuccessfullyInitialized to set
 	 */
-	public void setInitialized(boolean isInitialized) {
+	public void setInitialised(boolean isInitialized) {
 		mIsInitialised = isInitialized;
 	}
 	

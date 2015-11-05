@@ -346,7 +346,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param isInitialized the mSuccessfullyInitialized to set
 	 */
-	public void setInitialized(boolean isInitialized) {
+	public void setInitialised(boolean isInitialized) {
 		mIsInitialised = isInitialized;
 	}
 	
