@@ -2,8 +2,12 @@ package com.shimmerresearch.shimmercapture;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.service.ShimmerService;
 import com.shimmerresearch.service.ShimmerService.LocalBinder;
@@ -25,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
@@ -38,6 +43,8 @@ public class CommandsActivity extends ServiceActivity {
 	CheckBox cBoxLowPowerGyro;
 	CheckBox cBox5VReg;
 	CheckBox cBoxInternalExpPower;
+	CheckBox cBoxPPGtoHR;
+	CheckBox cBoxECGtoHR;
 	Button buttonGyroRange;
 	Button buttonMagRange;
 	Button buttonGsr;
@@ -48,6 +55,8 @@ public class CommandsActivity extends ServiceActivity {
 	Button buttonToggleLED;
 	Button buttonDone;
 	public boolean isLedChecked;
+	AlertDialog.Builder dialogPPGtoHR;
+	AlertDialog.Builder dialogECGtoHR;
 	
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,18 +108,7 @@ public class CommandsActivity extends ServiceActivity {
         	}
         } 
         
-        if (mGSRRangeV==0) {
-        	buttonGsr.setText("GSR RANGE"+"\n"+"(10kOhm to 56kOhm)");
-        } else if (mGSRRangeV==1) {
-        	buttonGsr.setText("GSR RANGE"+"\n"+"(56kOhm to 220kOhm)");
-        } else if (mGSRRangeV==2) {
-        	buttonGsr.setText("GSR RANGE"+"\n"+"(220kOhm to 680kOhm)");
-        } else if (mGSRRangeV==3) {
-        	buttonGsr.setText("GSR RANGE"+"\n"+"(680kOhm to 4.7MOhm)");
-        } else if (mGSRRangeV==4) {
-        	buttonGsr.setText("GSR RANGE"+"\n"+"(Auto Range)");
-        }
-                  
+        buttonGsr.setText("GSR Range"+"\n"+Configuration.Shimmer3.ListofGSRRange[mGSRRangeV]);                  
         
         buttonToggleLED.setOnClickListener(new OnClickListener() {
 			
@@ -163,13 +161,14 @@ public class CommandsActivity extends ServiceActivity {
     	
     	final AlertDialog.Builder dialogRate = new AlertDialog.Builder(this);		 
         dialogRate.setTitle("Sampling Rate").setItems(samplingRate, new DialogInterface.OnClickListener() {
-                	public void onClick(DialogInterface dialog, int item) {
-                		 Log.d("Shimmer",samplingRate[item]);
-                		 double newRate = Double.valueOf(samplingRate[item]);
-                		 ServiceActivity.mService.writeSamplingRate(mBluetoothAddress, newRate);
-                		 Toast.makeText(getApplicationContext(), "Sample rate changed. New rate = "+newRate+" Hz", Toast.LENGTH_SHORT).show();
-                		 buttonSampleRate.setText("SAMPLING RATE "+"\n"+"("+newRate+" HZ)");
-                }
+        	public void onClick(DialogInterface dialog, int item) {
+        		Log.d("Shimmer",samplingRate[item]);
+        		double newRate = Double.valueOf(samplingRate[item]);
+        		ServiceActivity.mService.writeSamplingRate(mBluetoothAddress, newRate);
+        		Toast.makeText(getApplicationContext(), "Sample rate changed. New rate = "+newRate+" Hz", Toast.LENGTH_SHORT).show();
+        		buttonSampleRate.setText("SAMPLING RATE "+"\n"+"("+newRate+" HZ)");
+
+        	}
         });
     	
     	buttonSampleRate.setOnClickListener(new OnClickListener() {
@@ -254,21 +253,24 @@ public class CommandsActivity extends ServiceActivity {
                 		 Log.d("Shimmer",Configuration.Shimmer3.ListofGyroRange[item]);
              		    int gyroRange=0;
                		  
-               		    if (Configuration.Shimmer3.ListofGyroRange[item]=="250dps"){
-             	  		    	gyroRange=0;
-             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]=="500dps"){
-             	  		    	gyroRange=1;
-             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]=="1000dps"){
-             	  		    	gyroRange=2;
-             	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]=="2000dps"){
-             	  		    	gyroRange=3;
-             	  		    }
+             		   if (Configuration.Shimmer3.ListofGyroRange[item]==Configuration.Shimmer3.ListofGyroRange[0]){
+        	  		    	gyroRange=0;
+	    	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]==Configuration.Shimmer3.ListofGyroRange[1]){
+	    	  		    	gyroRange=1;
+	    	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]==Configuration.Shimmer3.ListofGyroRange[2]){
+	    	  		    	gyroRange=2;
+	    	  		    } else if (Configuration.Shimmer3.ListofGyroRange[item]==Configuration.Shimmer3.ListofGyroRange[3]){
+	    	  		    	gyroRange=3;
+	    	  		    }
 
                		    ServiceActivity.mService.writeGyroRange(mBluetoothAddress, gyroRange);
                		    Toast.makeText(getApplicationContext(), "Gyroscope rate changed. New rate = "+Configuration.Shimmer3.ListofGyroRange[item], Toast.LENGTH_SHORT).show();
                		    buttonGyroRange.setText("GYRO RANGE"+"\n"+"("+Configuration.Shimmer3.ListofGyroRange[item]+")");
                 }
         });
+        
+        
+
         
         buttonGyroRange.setOnClickListener(new OnClickListener() {
 			
@@ -319,19 +321,19 @@ public class CommandsActivity extends ServiceActivity {
                 		 Log.d("Shimmer",Configuration.Shimmer3.ListofMagRange[item]);
                 		 int magRange=0;
              		  
-             		    	if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 1.3Ga"){
+             		    	if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[0]){
              		    		magRange=1;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 1.9Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[1]){
              		    		magRange=2;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 2.5Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[2]){
              		    		magRange=3;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 4.0Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[3]){
              		    		magRange=4;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 4.7Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[4]){
              		    		magRange=5;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 5.6Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[5]){
              		    		magRange=6;
-             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]=="+/- 8.1Ga"){
+             		    	} else if (Configuration.Shimmer3.ListofMagRange[item]==Configuration.Shimmer3.ListofMagRange[6]){
              		    		magRange=7;
              		    	}
 
@@ -353,8 +355,40 @@ public class CommandsActivity extends ServiceActivity {
 			}
 		});
 
+        dialogPPGtoHR = new AlertDialog.Builder(this);
+        long enabledSensors = mService.getShimmer(mBluetoothAddress).getEnabledSensors();
+        List<String> list = new ArrayList<String>();
+        if ((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A13) > 0){
+			list.add(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
+		}
+		if ((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A1) > 0){
+			list.add(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1);
+		}
+		if ((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A12) > 0){
+			list.add(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12);
+		}
+		if ((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A14) > 0){
+			list.add(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14);
+		} 
+		//No way it will reach here without auto A13 enabling
+		if (list.size()==0){
+			list.add(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
+		}
+        String[] arrayPPG = new String[list.size()];
+        arrayPPG = list.toArray(arrayPPG);
+        dialogPPGtoHR.setCancelable(false);
+        dialogPPGtoHR.setTitle("PPG to HR : Select PPG signal source").setItems(arrayPPG, new DialogInterface.OnClickListener() {
+        	public void onClick(DialogInterface dialog, int item) {
 
-        
+        		ListView lw = ((AlertDialog)dialog).getListView();	
+        		Object checkedItem = lw.getAdapter().getItem(item);
+        		mService.setPPGtoHRSignal((String)checkedItem);
+
+        	}
+        });
+
+        dialogECGtoHR = new AlertDialog.Builder(this);
+        dialogECGtoHR.setCancelable(false);
         final AlertDialog.Builder dialogPressureResolutionShimmer3 = new AlertDialog.Builder(this);		 
         dialogPressureResolutionShimmer3.setTitle("Pressure Resolution").setItems(Configuration.Shimmer3.ListofPressureResolution, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int item) {
@@ -393,17 +427,17 @@ public class CommandsActivity extends ServiceActivity {
                 	public void onClick(DialogInterface dialog, int item) {
                 		 Log.d("Shimmer",Configuration.Shimmer3.ListofGSRRange[item]);
              		    int gsrRange=0;
-             		    if (Configuration.Shimmer3.ListofGSRRange[item]=="10kOhm to 56kOhm"){
-             		    	gsrRange=0;
-             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]=="56kOhm to 220kOhm"){
-             		    	gsrRange=1;
-             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]=="220kOhm to 680kOhm"){
-             		    	gsrRange=2;
-             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]=="680kOhm to 4.7MOhm"){
-             		    	gsrRange=3;
-             		    } else if (Configuration.Shimmer3.ListofGSRRange[item]=="Auto Range"){
-             		    	gsrRange=4;
-             		    }
+             		   if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[0]){
+            		    	gsrRange=0;
+            		    } else if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[1]){
+            		    	gsrRange=1;
+            		    } else if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[2]){
+            		    	gsrRange=2;
+            		    } else if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[3]){
+            		    	gsrRange=3;
+            		    } else if (Configuration.Shimmer3.ListofGSRRange[item]==Configuration.Shimmer3.ListofGSRRange[4]){
+            		    	gsrRange=4;
+            		    }
 
              		    ServiceActivity.mService.writeGSRRange(mBluetoothAddress, gsrRange);
              		    Toast.makeText(getApplicationContext(), "Gsr range changed. New range = "+Configuration.Shimmer3.ListofGSRRange[item], Toast.LENGTH_SHORT).show();
@@ -442,8 +476,9 @@ public class CommandsActivity extends ServiceActivity {
     		cBoxLowPowerMag = (CheckBox) findViewById(R.id.checkBoxLowPowerMag);
     		cBoxLowPowerAccel = (CheckBox) findViewById(R.id.checkBoxLowPowerAccel);
     		cBoxLowPowerGyro = (CheckBox) findViewById(R.id.checkBoxLowPowerGyro);
-    		cBoxInternalExpPower  = (CheckBox) findViewById(R.id.CheckBoxIntExpPow);
-    		
+    		cBoxInternalExpPower = (CheckBox) findViewById(R.id.CheckBoxIntExpPow);
+    		cBoxPPGtoHR = (CheckBox) findViewById(R.id.CheckBoxPPGtoHR);
+    		cBoxECGtoHR = (CheckBox) findViewById(R.id.CheckBoxECGtoHR);
     		cBox5VReg.setTextColor(getResources().getColor(R.color.black));
     		cBoxLowPowerMag.setTextColor(getResources().getColor(R.color.black));
     		cBoxLowPowerAccel.setTextColor(getResources().getColor(R.color.black));
@@ -457,6 +492,19 @@ public class CommandsActivity extends ServiceActivity {
       		} else {
       			cBoxInternalExpPower.setChecked(false);
       		}
+      		
+      		if (mService.isPPGtoHREnabled()){
+      			cBoxPPGtoHR.setChecked(true);	
+      		}else {
+      			cBoxPPGtoHR.setChecked(false);
+      		}
+      		
+      		if (mService.isECGtoHREnabled()){
+      			cBoxECGtoHR.setChecked(true);	
+      		}else {
+      			cBoxECGtoHR.setChecked(false);
+      		}
+      		
       		
       		if (shimmer.isLowPowerMagEnabled()){
         		cBoxLowPowerMag.setChecked(true);
@@ -476,7 +524,7 @@ public class CommandsActivity extends ServiceActivity {
             	buttonGsr.setVisibility(View.VISIBLE);
             	cBox5VReg.setEnabled(false);
             	cBox5VReg.setTextColor(getResources().getColor(R.color.shimmer_grey_checkbox));
-            	String currentGyroRange = "("+Configuration.Shimmer3.ListofGyroRange[shimmer.getAccelRange()]+")";
+            	String currentGyroRange = "("+Configuration.Shimmer3.ListofGyroRange[shimmer.getGyroRange()]+")";
             	buttonGyroRange.setText("GYRO RANGE"+"\n"+currentGyroRange);
             	String currentMagRange = "("+Configuration.Shimmer3.ListofMagRange[shimmer.getMagRange()-1]+")";
         		buttonMagRange.setText("MAG RANGE"+"\n"+currentMagRange);
@@ -565,8 +613,102 @@ public class CommandsActivity extends ServiceActivity {
     			}
         		
         	});
-
   
+            
+      		
+      		cBoxPPGtoHR.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+    			public void onCheckedChanged(CompoundButton arg0, boolean checked) {
+    				// TODO Auto-generated method stub
+    				mService.enablePPGtoHR(mBluetoothAddress, checked);
+    				if (checked){
+    					if (cBoxECGtoHR.isChecked()){
+							cBoxECGtoHR.setChecked(false);
+    					}
+    					if (cBoxInternalExpPower.isChecked()) {
+    					} else {
+    						Toast.makeText(getApplicationContext(), "Enabling Int Exp Power", Toast.LENGTH_LONG).show();
+    						cBoxInternalExpPower.setChecked(true);
+    					}
+						long enabledSensors = mService.getEnabledSensors(mBluetoothAddress); 
+						if ((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A13) > 0){
+							Toast.makeText(getApplicationContext(), "Int ADC A13 is Enabled", Toast.LENGTH_LONG).show();
+						}
+						if ((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A1) > 0){
+							Toast.makeText(getApplicationContext(), "Int ADC A1 is Enabled", Toast.LENGTH_LONG).show();
+						}
+						if ((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A12) > 0){
+							Toast.makeText(getApplicationContext(), "Int ADC A12 is Enabled", Toast.LENGTH_LONG).show();
+						}
+						if ((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A14) > 0){
+							Toast.makeText(getApplicationContext(), "Int ADC A14 is Enabled", Toast.LENGTH_LONG).show();
+						} 
+						if (((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A13) == 0) &&
+								((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A1) == 0) &&
+								((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A12) == 0) &&
+								((enabledSensors & ShimmerObject.SENSOR_INT_ADC_A14) == 0)) {
+							 
+							Toast.makeText(getApplicationContext(), "Enabling Int ADC A13, please attach PPG sensor to Int ADC A13", Toast.LENGTH_LONG).show();
+							long newES = mService.sensorConflictCheckandCorrection(mBluetoothAddress,enabledSensors,ShimmerObject.SENSOR_INT_ADC_A13);
+							mService.setEnabledSensors(newES, mBluetoothAddress);
+						}
+						dialogPPGtoHR.show();
+    				}
+    			}
+        		
+        	});
+      		
+      		cBoxECGtoHR.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+    			public void onCheckedChanged(CompoundButton arg0, boolean checked) {
+    				// TODO Auto-generated method stub
+    				
+    				if (checked){
+    					long enabledSensors = mService.getEnabledSensors(mBluetoothAddress); 
+    						if (mService.isEXGUsingECG24Configuration(mBluetoothAddress) || mService.isEXGUsingECG16Configuration(mBluetoothAddress)){
+    							mService.enableECGtoHR(mBluetoothAddress, checked);
+    							if (cBoxPPGtoHR.isChecked()){
+    								cBoxPPGtoHR.setChecked(false);
+    							}
+    							final String[] arrayECG = {Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT};
+    							final String[] arrayECG16 = {Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT};
+    							if (mService.isEXGUsingECG16Configuration(mBluetoothAddress)){
+    								dialogECGtoHR.setTitle("ECG to HR : Select ECG signal source").setItems(arrayECG16, new DialogInterface.OnClickListener() {
+    									public void onClick(DialogInterface dialog, int item) {
+
+    										mService.setECGtoHRSignal(arrayECG16[item]);
+
+    									}
+    								});
+    								dialogECGtoHR.show();
+
+    							} else {
+
+    								dialogECGtoHR.setTitle("ECG to HR : Select ECG signal source").setItems(arrayECG, new DialogInterface.OnClickListener() {
+    									public void onClick(DialogInterface dialog, int item) {
+
+    										mService.setECGtoHRSignal(arrayECG[item]);
+
+    									}
+    								});
+    								dialogECGtoHR.show();
+
+    							}
+
+    						} else {
+    							Toast.makeText(getApplicationContext(), "Please enable ECG", Toast.LENGTH_LONG).show();
+    							cBoxECGtoHR.setChecked(false);
+
+    						}
+    					
+					
+    				} else {
+    					mService.enableECGtoHR(mBluetoothAddress, checked);
+    				}
+    			}
+        		
+        	});
+      		
       		cBoxLowPowerMag.setChecked(mService.isLowPowerMagEnabled(mBluetoothAddress));
       		
       		cBoxLowPowerMag.setOnCheckedChangeListener(new OnCheckedChangeListener(){
@@ -606,5 +748,14 @@ public class CommandsActivity extends ServiceActivity {
   	  	Log.d("ShimmerH","on Resume");
   	  	getApplicationContext().bindService(intent,mTestServiceConnection, Context.BIND_AUTO_CREATE);
 	}
+	
+	public String[] concat(String[] a, String[] b) {
+		   int aLen = a.length;
+		   int bLen = b.length;
+		   String[] c= new String[aLen+bLen];
+		   System.arraycopy(a, 0, c, 0, aLen);
+		   System.arraycopy(b, 0, c, aLen, bLen);
+		   return c;
+		}
 	
 }

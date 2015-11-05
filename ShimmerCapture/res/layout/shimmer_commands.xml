@@ -32,69 +32,81 @@
      </LinearLayout>
     
      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp" 
-        android:layout_weight="0.20" 
-        android:orientation="horizontal">
-       	 
-         <LinearLayout 
-             android:layout_width="0dp"
-             android:layout_height="wrap_content"
-             android:layout_weight="0.5" 
-             android:orientation="vertical">
-             
-             <CheckBox
-            android:id="@+id/checkBox5VReg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="5VReg" />
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="0.20"
+         android:orientation="horizontal" >
 
-        <CheckBox
-            android:id="@+id/CheckBoxIntExpPow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:text="IntExpPow" />
-        
-             
-         </LinearLayout>
-       	 
          <LinearLayout
              android:layout_width="0dp"
-             android:layout_height="wrap_content" 
-             android:layout_weight="0.5" 
-             android:orientation="vertical">
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:orientation="vertical" >
+
+             <CheckBox
+                 android:id="@+id/checkBox5VReg"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center_vertical"
+                 android:layout_weight="1"
+                 android:text="5VReg" />
+
+             <CheckBox
+                 android:id="@+id/CheckBoxIntExpPow"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center_vertical"
+                 android:layout_weight="1"
+                 android:text="IntExpPow" />
+
+             <CheckBox
+                 android:id="@+id/CheckBoxPPGtoHR"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center_vertical"
+                 android:layout_weight="1"
+                 android:text="PPG to HR" />
              
              <CheckBox
-            android:id="@+id/checkBoxLowPowerMag"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:text="Low Power Mag" />
-        
-        <CheckBox
-            android:id="@+id/checkBoxLowPowerAccel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:text="Low Power Acc" />
-        
-        <CheckBox
-            android:id="@+id/checkBoxLowPowerGyro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:text="Low Power Gyro" />
-             
+                 android:id="@+id/CheckBoxECGtoHR"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center_vertical"
+                 android:layout_weight="1"
+                 android:text="ECG to HR" />
          </LinearLayout>
-       	 
-      </LinearLayout>
+
+         <LinearLayout
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:layout_weight="1"
+             android:orientation="vertical" >
+
+             <CheckBox
+                 android:id="@+id/checkBoxLowPowerMag"
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_gravity="center_vertical"
+                 android:layout_weight="1"
+                 android:text="Low Power Mag" />
+
+             <CheckBox
+                 android:id="@+id/checkBoxLowPowerAccel"
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_gravity="center_vertical"
+                 android:layout_weight="1"
+                 android:text="Low Power Acc" />
+
+             <CheckBox
+                 android:id="@+id/checkBoxLowPowerGyro"
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_gravity="center_vertical"
+                 android:layout_weight="1"
+                 android:text="Low Power Gyro" />
+         </LinearLayout>
+     </LinearLayout>
       
      <LinearLayout 
          android:layout_width="match_parent"

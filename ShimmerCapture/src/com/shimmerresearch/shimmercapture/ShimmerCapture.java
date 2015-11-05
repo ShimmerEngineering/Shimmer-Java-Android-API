@@ -114,6 +114,8 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driver.Configuration.Shimmer2;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.service.ShimmerService;
 import com.shimmerresearch.service.ShimmerService.LocalBinder;
 import com.shimmerresearch.tools.Logging;
@@ -190,7 +192,8 @@ public class ShimmerCapture extends ServiceActivity {
 	CheckBox mCheckBoxEnableLogging, mCheckBoxResetScreen;
 	Button mButtonCommitChanges, mButtonGraphConfiguration;
 	EditText mEditFileName, mEditXAxisLimit;
-	
+	static boolean mValueConstant = true;
+	static int mValueConstantTimes = 0;
     
     /** Called when the activity is first created. */
     @Override
@@ -532,6 +535,127 @@ public class ShimmerCapture extends ServiceActivity {
 			switch (msg.what) {
             
             case Shimmer.MESSAGE_STATE_CHANGE:
+
+                switch (((ObjectCluster)msg.obj).mState) {
+                case CONNECTED:
+  
+                    break;
+                case INITIALISED:
+
+                	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
+                    mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress; 
+                    mService.enableGraphingHandler(true);
+                    deviceState = "Connected";
+                    textDeviceName.setText(mBluetoothAddress);
+                    textDeviceState.setText(deviceState);
+                    buttonMenu.setEnabled(true);
+                    /*
+                    if(mService.isUsingLogAndStreamFW(mBluetoothAddress)){
+                    	mService.readStatusLogAndStream(mBluetoothAddress);
+                    	try {
+    						Thread.sleep(300);
+    					} catch (InterruptedException e) {
+    						// TODO Auto-generated catch block
+    						e.printStackTrace();
+    					}
+                    	logAndStreamStatusLayout.setVisibility(View.VISIBLE);
+                    	if(mService.isDocked(mBluetoothAddress))
+                    		textDockedStatus.setText("Yes");
+                    	else
+                    		textDockedStatus.setText("No");
+                    	
+                    	if(mService.isSensing(mBluetoothAddress))
+                    		textSensingStatus.setText("Yes");
+                    	else
+                    		textSensingStatus.setText("No");
+                    }*/
+                    break;
+                case CONNECTING:
+                	Log.d("ShimmerActivity","Driver is attempting to establish connection with Shimmer device");
+                	deviceState = "Connecting";
+                    textDeviceName.setText(mBluetoothAddress);
+                    textDeviceState.setText(deviceState);
+                    break;
+                case STREAMING:
+                	textSensingStatus.setText("Yes");
+                	deviceState="Streaming";
+                    textDeviceName.setText(mBluetoothAddress);
+                    textDeviceState.setText(deviceState);
+                    //set the enable logging regarding the user selection
+                    mService.setEnableLogging(mEnableLogging);
+                    if(!mSensorView.equals(""))
+                    	setLegend();
+                    else{
+                    	List<String> sensorList = mService.getListofEnabledSensors(mBluetoothAddress);
+                    	if(sensorList!=null){
+    	            		if(mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+    	            			sensorList.remove("ECG");
+    	            			sensorList.remove("EMG");
+    	            			if(sensorList.contains("EXG1")){
+    	            				sensorList.remove("EXG1");
+    	            				sensorList.remove("EXG2");
+    	            				if(mService.isEXGUsingECG24Configuration(mBluetoothAddress)){
+    	            					sensorList.add("ECG");
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+    	            					//sensorName[0] = "ECG LL-RA";
+    	                    			//sensorName[1] = "ECG LA-RA";
+    	                    			//sensorName[2] = "EXG2 CH1";
+    	                    			//sensorName[3] = "ECG Vx-RL";
+    	            				}
+    	            					
+    	            				else if(mService.isEXGUsingEMG24Configuration(mBluetoothAddress)){
+    	            					sensorList.add("EMG");
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT);
+    	            				}
+	            					
+    	            				else if(mService.isEXGUsingTestSignal24Configuration(mBluetoothAddress))
+    	            					sensorList.add("ExG Test Signal");
+    	            			}
+    	            			if(sensorList.contains("EXG1 16Bit")){
+    	            				sensorList.remove("EXG1 16Bit");
+    	            				sensorList.remove("EXG2 16Bit");
+    	            				if(mService.isEXGUsingECG16Configuration(mBluetoothAddress)){
+    	            					sensorList.add("ECG 16Bit");
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
+    	            				}
+    	            				else if(mService.isEXGUsingEMG16Configuration(mBluetoothAddress)){
+    	            					sensorList.add("EMG 16Bit");
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT);
+    	            				}
+    	            				else if(mService.isEXGUsingTestSignal16Configuration(mBluetoothAddress))
+    	            					sensorList.add("ExG Test Signal 16Bit");
+    	            			}
+    	            		}
+                    	}
+                			
+                		sensorList.add("Timestamp");
+                    	mSensorView = sensorList.get(0);
+                    	setLegend();
+                    }
+                	break;
+                case STREAMING_AND_SDLOGGING:
+                	break;
+                case SDLOGGING:
+               	 break;
+                case NONE:
+                	Log.d("ShimmerActivity","Shimmer No State");
+                    mBluetoothAddress=null;
+                    // this also stops streaming
+                    deviceState = "Disconnected";
+                    textDeviceName.setText("Unknown");
+                    textDeviceState.setText(deviceState);
+                    buttonMenu.setEnabled(true);
+                    logAndStreamStatusLayout.setVisibility(View.INVISIBLE);
+                    break;
+                }
+           	 
+            	/*
                 switch (msg.arg1) {
                 case Shimmer.STATE_CONNECTED:
                 	//this has been deprecated
@@ -599,20 +723,40 @@ public class ShimmerCapture extends ServiceActivity {
     	            			if(sensorList.contains("EXG1")){
     	            				sensorList.remove("EXG1");
     	            				sensorList.remove("EXG2");
-    	            				if(mService.isEXGUsingECG24Configuration(mBluetoothAddress))
+    	            				if(mService.isEXGUsingECG24Configuration(mBluetoothAddress)){
     	            					sensorList.add("ECG");
-    	            				else if(mService.isEXGUsingEMG24Configuration(mBluetoothAddress))
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+    	            					//sensorName[0] = "ECG LL-RA";
+    	                    			//sensorName[1] = "ECG LA-RA";
+    	                    			//sensorName[2] = "EXG2 CH1";
+    	                    			//sensorName[3] = "ECG Vx-RL";
+    	            				}
+    	            					
+    	            				else if(mService.isEXGUsingEMG24Configuration(mBluetoothAddress)){
     	            					sensorList.add("EMG");
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT);
+    	            				}
+	            					
     	            				else if(mService.isEXGUsingTestSignal24Configuration(mBluetoothAddress))
     	            					sensorList.add("ExG Test Signal");
     	            			}
     	            			if(sensorList.contains("EXG1 16Bit")){
     	            				sensorList.remove("EXG1 16Bit");
     	            				sensorList.remove("EXG2 16Bit");
-    	            				if(mService.isEXGUsingECG16Configuration(mBluetoothAddress))
+    	            				if(mService.isEXGUsingECG16Configuration(mBluetoothAddress)){
     	            					sensorList.add("ECG 16Bit");
-    	            				else if(mService.isEXGUsingEMG16Configuration(mBluetoothAddress))
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
+    	            				}
+    	            				else if(mService.isEXGUsingEMG16Configuration(mBluetoothAddress)){
     	            					sensorList.add("EMG 16Bit");
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT);
+    	            				}
     	            				else if(mService.isEXGUsingTestSignal16Configuration(mBluetoothAddress))
     	            					sensorList.add("ExG Test Signal 16Bit");
     	            			}
@@ -646,7 +790,7 @@ public class ShimmerCapture extends ServiceActivity {
         			mTextSensor4.setVisibility(View.INVISIBLE);
         			greenCircle.setVisibility(View.INVISIBLE);
                 	break;
-                }
+                }*/
                 break;
             case Shimmer.MESSAGE_READ:
 
@@ -721,12 +865,12 @@ public class ShimmerCapture extends ServiceActivity {
             			calibratedDataArray = new double[1];
             			sensorName[0] = "Heart Rate";
             		}
-            		if (mSensorView.equals("ExpBoardA0")){
+            		if (mSensorView.equals("ExpBoard A0")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
             			sensorName[0] = "ExpBoard A0";
             		}
-            		if (mSensorView.equals("ExpBoardA7")){
+            		if (mSensorView.equals("ExpBoard A7")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
             			sensorName[0] = "ExpBoard A7";
@@ -750,12 +894,20 @@ public class ShimmerCapture extends ServiceActivity {
             		if (mSensorView.equals("External ADC A7")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			sensorName[0] = "External ADC A7";
+            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7;
+	            		} else {
+	            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A7;
+	            		}
             		}
             		if (mSensorView.equals("External ADC A6")){
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
-            			sensorName[0] = "External ADC A6";
+            			if( mService.getShimmer(mBluetoothAddress).getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+            				sensorName[0] = Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6;
+	            		} else {
+	            			sensorName[0] = Shimmer2.ObjectClusterSensorName.EXT_EXP_A6;
+	            		}
             		}
             		if (mSensorView.equals("External ADC A15")){
             			sensorName = new String[1]; 
@@ -796,6 +948,22 @@ public class ShimmerCapture extends ServiceActivity {
             			sensorName[2] = "EXG2 CH1";
             			sensorName[3] = "ECG Vx-RL";
             		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
+            		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
+            		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
+            		}
+            		
             		if (mSensorView.equals("EMG") && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
             			sensorName = new String[2]; 
             			calibratedDataArray = new double[2];
@@ -804,13 +972,23 @@ public class ShimmerCapture extends ServiceActivity {
 //            			sensorName[2] = "EXG2 CH1";
 //            			sensorName[3] = "EXG2 CH2";
             		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT;
+            		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT;
+            		}
             		if (mSensorView.equals("ExG Test Signal")){
             			sensorName = new String[4]; 
             			calibratedDataArray = new double[4];
-            			sensorName[0] = "EXG1 CH1";
-            			sensorName[1] = "EXG1 CH2";
-            			sensorName[2] = "EXG2 CH1";
-            			sensorName[3] = "EXG2 CH2";
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
+            			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
+            			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
+            			sensorName[3] = Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT;
             		}
             		if (mSensorView.equals("ECG 16Bit")){
             			sensorName = new String[4]; 
@@ -820,6 +998,21 @@ public class ShimmerCapture extends ServiceActivity {
             			sensorName[2] = "EXG2 CH1";
             			sensorName[3] = "ECG Vx-RL";
             		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT;
+            		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT;
+            		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT;
+            		}
             		if (mSensorView.equals("EMG 16Bit")){
             			sensorName = new String[2]; 
             			calibratedDataArray = new double[2];
@@ -828,15 +1021,39 @@ public class ShimmerCapture extends ServiceActivity {
 //            			sensorName[2] = "EXG2 CH1";
 //            			sensorName[3] = "EXG2 CH2";
             		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT;
+            		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT;
+            		}
             		if (mSensorView.equals("ExG Test Signal 16Bit")){
             			sensorName = new String[4]; 
             			calibratedDataArray = new double[4];
-            			sensorName[0] = "EXG1 CH1 16Bit";
-            			sensorName[1] = "EXG1 CH2 16Bit";
-            			sensorName[2] = "EXG2 CH1 16Bit";
-            			sensorName[3] = "EXG2 CH2 16Bit";
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT;
+            			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT;
+            			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
+            			sensorName[3] = Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT;
             		}
-         	    
+            		if (mSensorView.equals(Configuration.Shimmer3.GuiLabelSensors.PPG_TO_HR)){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.PPG_TO_HR;
+            		}
+            		if (mSensorView.equals(Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR)){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_TO_HR;
+            		}
+            		if (mSensorView.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE)){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE;
+            		}
             		
             		if (sensorName.length!=0){  // Device 1 is the assigned user id, see constructor of the Shimmer
 				 	    if (sensorName.length>0){
@@ -858,7 +1075,38 @@ public class ShimmerCapture extends ServiceActivity {
     		 	    			if (data.size()>X_AXIS_LENGTH){
     		 	    				data.clear();
     		 	    			}
+    		 	    			/*
+    		 	    			if (sensorName[0].equals(Shimmer3.ObjectClusterSensorName.PPG_TO_HR)){
+    		 	    				if (formatCluster.mData==-1){
+    		 	    					data.add(formatCluster.mData + Math.random()/1000);
+    		 	    				} else {
+    		 	    					data.add(formatCluster.mData);
+    		 	    				}
+    		 	    			} else {
+    		 	    				data.add(formatCluster.mData);
+        		 	    			
+    		 	    			}
+    		 	    			*/
+    		 	    			
+    		 	    			if (mValueConstant || mValueConstantTimes>499){
+    		 	    				dynamicPlot.setRangeBoundaries(formatCluster.mData-10, formatCluster.mData+10, BoundaryMode.FIXED); // freeze the range boundary:	
+    		 	    			} else {
+    		 	    				dynamicPlot.setRangeBoundaries(formatCluster.mData-10, formatCluster.mData+10, BoundaryMode.AUTO); // freeze the range boundary:
+    		 	    			}
+    		 	    			
+    		 	    			if (data.size()>1){
+    		 	    				double lastValue = data.get(data.size()-1).doubleValue();
+    		 	    				if (lastValue==formatCluster.mData){
+    		 	    					mValueConstantTimes++;
+    		 	    				} else {
+    		 	    					mValueConstantTimes=0;
+    		 	    					mValueConstant = false;
+    		 	    				}
+    		 	    			}
     		 	    			data.add(formatCluster.mData);
+    		 	    			
+    		 	    			
+    		 	    			Log.d("ShimmerActivity", "Graph data length "+ data.size());
     		 	    			mPlotDataMap.put("serie 1", data);
     		 	    			
     		 	    			//next check if the series exist 
@@ -1065,7 +1313,7 @@ public class ShimmerCapture extends ServiceActivity {
     			greenCircle.setVisibility(View.INVISIBLE);
 				
 			} else if(optionSelected.equals(START_STREAMING)){
-				
+				mValueConstant = true;
 				mService.startStreaming(mBluetoothAddress);
 //				deviceState="Streaming";
 //                textDeviceName.setText(mBluetoothAddress);
@@ -1201,17 +1449,23 @@ public class ShimmerCapture extends ServiceActivity {
 				Shimmer shimmer = mService.getShimmer(mBluetoothAddress);
 				String[] sensors = shimmer.getListofSupportedSensors();
 				String[] enableSensorsForListView = new String[sensors.length+2]; 
-				//remove from the list of sensors EXG1, EXG2, EXG1 16bits, EXG2 16bits, and add ECG,EMG,TestSignal,ECG 16Bits,EMG 16Bits, TestSignal 16Bits
-				for(int i=0; i<sensors.length-5;i++)
-					enableSensorsForListView[i] = sensors[i];
 				
-				enableSensorsForListView[sensors.length-5] = sensors[sensors.length-1]; // add "Strain gauge" which is the last one in the sensor list
-				enableSensorsForListView[sensors.length-4] = "ECG";
-				enableSensorsForListView[sensors.length-3] = "ECG 16Bit";
-				enableSensorsForListView[sensors.length-2] = "EMG";
-				enableSensorsForListView[sensors.length-1] = "EMG 16Bit";
-				enableSensorsForListView[sensors.length] = "ExG Test Signal";
-				enableSensorsForListView[sensors.length+1] = "ExG Test Signal 16Bit";
+				if (shimmer.getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+					//remove from the list of sensors EXG1, EXG2, EXG1 16bits, EXG2 16bits, and add ECG,EMG,TestSignal,ECG 16Bits,EMG 16Bits, TestSignal 16Bits
+					for(int i=0; i<sensors.length-5;i++)
+						enableSensorsForListView[i] = sensors[i];
+
+					enableSensorsForListView[sensors.length-5] = sensors[sensors.length-1]; // add "Strain gauge" which is the last one in the sensor list
+					enableSensorsForListView[sensors.length-4] = "ECG";
+					enableSensorsForListView[sensors.length-3] = "ECG 16Bit";
+					enableSensorsForListView[sensors.length-2] = "EMG";
+					enableSensorsForListView[sensors.length-1] = "EMG 16Bit";
+					enableSensorsForListView[sensors.length] = "ExG Test Signal";
+					enableSensorsForListView[sensors.length+1] = "ExG Test Signal 16Bit";
+				} else if (shimmer.getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_2 ||
+						shimmer.getShimmerVersion() == ShimmerVerDetails.HW_ID.SHIMMER_2R){
+					enableSensorsForListView = sensors;
+				}
 								
 				showEnableSensors(enableSensorsForListView,mService.getEnabledSensors(mBluetoothAddress));
 				
@@ -1386,6 +1640,7 @@ public class ShimmerCapture extends ServiceActivity {
 	}
 	
 	public void showSelectSensorPlot(){
+
 		mDialog.setContentView(R.layout.dialog_sensor_view);
 		TextView title = (TextView) mDialog.findViewById(android.R.id.title);
  		title.setText("Signals To Graph");
@@ -1399,23 +1654,49 @@ public class ShimmerCapture extends ServiceActivity {
 				if(sensorList.contains("EXG1")){
 					sensorList.remove("EXG1");
 					sensorList.remove("EXG2");
-					if(mService.isEXGUsingECG24Configuration(mBluetoothAddress))
+					if(mService.isEXGUsingECG24Configuration(mBluetoothAddress)){
 						sensorList.add("ECG");
-					else if(mService.isEXGUsingEMG24Configuration(mBluetoothAddress))
+						sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+					}
+					else if(mService.isEXGUsingEMG24Configuration(mBluetoothAddress)){
 						sensorList.add("EMG");
+						sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT);
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT);
+					}
 					else if(mService.isEXGUsingTestSignal24Configuration(mBluetoothAddress))
 						sensorList.add("ExG Test Signal");
 				}
 				if(sensorList.contains("EXG1 16Bit")){
 					sensorList.remove("EXG1 16Bit");
 					sensorList.remove("EXG2 16Bit");
-					if(mService.isEXGUsingECG16Configuration(mBluetoothAddress))
+					if(mService.isEXGUsingECG16Configuration(mBluetoothAddress)){
 						sensorList.add("ECG 16Bit");
-					else if(mService.isEXGUsingEMG16Configuration(mBluetoothAddress))
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
+					}
+					else if(mService.isEXGUsingEMG16Configuration(mBluetoothAddress)){
 						sensorList.add("EMG 16Bit");
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT);
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT);
+					}
 					else if(mService.isEXGUsingTestSignal16Configuration(mBluetoothAddress))
 						sensorList.add("ExG Test Signal 16Bit");
 				}
+				if (sensorList.contains(Configuration.Shimmer3.ObjectClusterSensorName.GSR) && mService.isGSRtoSiemensEnabled()){
+					sensorList.add(Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE);
+				}
+				//add ppg to hr
+				Shimmer shimmer = mService.getShimmer(mBluetoothAddress);
+				if (mService.isPPGtoHREnabled()){
+					sensorList.add(Configuration.Shimmer3.GuiLabelSensors.PPG_TO_HR);
+				}
+				if (mService.isECGtoHREnabled()){
+					sensorList.add(Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR);
+				}
+				
 			}
 		}
 			
@@ -1439,6 +1720,7 @@ public class ShimmerCapture extends ServiceActivity {
 		    	 dynamicPlot.clear();
 				// TODO Auto-generated method stub
     			mSensorView=sensorNames[arg2];      
+    			mValueConstant = true;
         		setLegend();
     			mDialog.dismiss();
 			}
@@ -1589,8 +1871,8 @@ public class ShimmerCapture extends ServiceActivity {
 			mTextSensor4.setVisibility(View.INVISIBLE);
 			greenCircle.setVisibility(View.INVISIBLE);
 		}
-		if (mSensorView.equals("ExpBoardA0")){
-			mTextSensor1.setText("ExpBoardA0");
+		if (mSensorView.equals("ExpBoard A0")){
+			mTextSensor1.setText("ExpBoard A0");
 			mTextSensor1.setVisibility(View.VISIBLE);
 			blueCircle.setVisibility(View.VISIBLE);
 			mTextSensor2.setVisibility(View.INVISIBLE);
@@ -1600,8 +1882,8 @@ public class ShimmerCapture extends ServiceActivity {
 			mTextSensor4.setVisibility(View.INVISIBLE);
 			greenCircle.setVisibility(View.INVISIBLE);
 		}
-		if (mSensorView.equals("ExpBoardA7")){
-			mTextSensor1.setText("ExpBoardA7");
+		if (mSensorView.equals("ExpBoard A7")){
+			mTextSensor1.setText("ExpBoard A7");
 			mTextSensor1.setVisibility(View.VISIBLE);
 			blueCircle.setVisibility(View.VISIBLE);
 			mTextSensor2.setVisibility(View.INVISIBLE);
@@ -1702,6 +1984,40 @@ public class ShimmerCapture extends ServiceActivity {
 		}
 		if (mSensorView.equals("Internal ADC A13")){
 			mTextSensor1.setText("Internal ADC A13");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Configuration.Shimmer3.GuiLabelSensors.PPG_TO_HR)){
+			mTextSensor1.setText(Configuration.Shimmer3.GuiLabelSensors.PPG_TO_HR);
+			dynamicPlot.setRangeBoundaries(-15, 300, BoundaryMode.FIXED); // freeze the range boundary:
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR)){
+			mTextSensor1.setText(Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR);
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE)){
+			mTextSensor1.setText(Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE);
 			mTextSensor1.setVisibility(View.VISIBLE);
 			blueCircle.setVisibility(View.VISIBLE);
 			mTextSensor2.setVisibility(View.INVISIBLE);
@@ -1818,7 +2134,146 @@ public class ShimmerCapture extends ServiceActivity {
 			mTextSensor4.setVisibility(View.VISIBLE);
 			greenCircle.setVisibility(View.VISIBLE);
 		}
-		
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
 	}
 	
 	
