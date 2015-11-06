@@ -1111,7 +1111,7 @@ public class Shimmer extends ShimmerBluetooth{
 //				else if(getBTState() != BT_STATE.CONNECTED){
 //					setState(BT_STATE.CONNECTED);
 //				}
-				
+				setState(BT_STATE.CONNECTED);
 				mHandler.obtainMessage(MESSAGE_STATE_CHANGE, -1, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),getBTState())).sendToTarget();
 				
 			}
