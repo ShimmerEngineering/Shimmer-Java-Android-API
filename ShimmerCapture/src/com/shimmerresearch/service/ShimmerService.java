@@ -389,6 +389,12 @@ public class ShimmerService extends Service {
 	                       case STREAMING_AND_SDLOGGING:
 	                       	break;
 	                       case SDLOGGING:
+	                    	   Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
+		                    	 
+		                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
+		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+		                    	 intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
+		                    	 sendBroadcast(intent);
 	                      	 break;
 	                       case DISCONNECTED:
 		                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
