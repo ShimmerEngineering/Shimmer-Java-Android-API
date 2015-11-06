@@ -716,7 +716,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mEnableCalibration = true;
 	protected byte[] mInquiryResponseBytes;
 //	protected boolean mIsStreaming =false;											// This is used to monitor whether the device is in streaming mode
-	protected boolean mIsSDLogging =false;											// This is used to monitor whether the device is in sd log mode
+//	protected boolean mIsSDLogging =false;											// This is used to monitor whether the device is in sd log mode
 	//all raw params should start with a 1 byte identifier in position [0]
 	protected byte[] mAccelCalRawParams = new byte[22];
 	protected byte[] mDigiAccelCalRawParams  = new byte[22];
@@ -764,7 +764,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//This features are only used in LogAndStream FW 
 	protected String mDirectoryName;
 	protected int mDirectoryNameLength;
-	protected boolean mIsSensing;
 	private List<String[]> mExtraSignalProperties = null;
 	
 	List<Integer> mListOfMplChannels = Arrays.asList(
@@ -9303,13 +9302,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mOrientationEnabled;
 	}
     
-	/**Only used for LogAndStream
-	 * @return
-	 */
-	public boolean isSensing(){
-		return mIsSensing;
-	}
-	
 	public boolean isLowPowerAccelEnabled() {
 		return mLowPowerAccelWR;
 	}
@@ -11076,10 +11068,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 		return returnValue;
 
-	}
-	
-	public Boolean isStreaming(ShimmerObject obj){
-		return obj.mIsStreaming;
 	}
 	
 	/**
