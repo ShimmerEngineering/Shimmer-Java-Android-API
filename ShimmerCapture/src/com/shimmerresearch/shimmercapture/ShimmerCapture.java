@@ -133,9 +133,11 @@ public class ShimmerCapture extends ServiceActivity {
 	private String CONNECT = "Connect";
 	private String DISCONNECT = "Disconnect";
 	private String START_STREAMING = "Start Streaming";
-	private String START_STREAMING_AND_LOGGING = "Start Streaming+Logging";
+	private String START_LOGGING = "Start Logging";
+	private String STOP_LOGGING = "Stop Logging";
+	//private String START_STREAMING_AND_LOGGING = "Start Streaming+Logging";
 	private String STOP_STREAMING = "Stop Streaming";
-	private String STOP = "Stop";
+	//private String STOP_STRAMING_AND_LOGGING = "Stop Streaming+Logging";
 	private String EDIT_GRAPH = "Signals To Graph";
 	private String LOG_FILE = "Write Data To File";
 	private String SHIMMER_CONFIGURATION = "Shimmer Configuration";
@@ -335,15 +337,27 @@ public class ShimmerCapture extends ServiceActivity {
 				if(mService.DevicesConnected(mBluetoothAddress)){
 					arrayAdapter.add(DISCONNECT);
 					if(mService.DeviceIsStreaming(mBluetoothAddress)){
-						if(mService.isUsingLogAndStreamFW(mBluetoothAddress))
-							arrayAdapter.add(STOP);
-						else
+						if(mService.isUsingLogAndStreamFW(mBluetoothAddress)){
+							if (mService.DeviceIsLogging(mBluetoothAddress)){
+								arrayAdapter.add(STOP_LOGGING);
+							} else {
+								arrayAdapter.add(START_LOGGING);
+							}
+						arrayAdapter.add(STOP_STREAMING);
+						}
+						else{
 							arrayAdapter.add(STOP_STREAMING);
+						}
 					}
 					else{
 						arrayAdapter.add(START_STREAMING);
-						if(mService.isUsingLogAndStreamFW(mBluetoothAddress))
-							arrayAdapter.add(START_STREAMING_AND_LOGGING);
+						if(mService.isUsingLogAndStreamFW(mBluetoothAddress)){
+							if (mService.DeviceIsLogging(mBluetoothAddress)){
+								arrayAdapter.add(STOP_LOGGING);
+							} else {
+								arrayAdapter.add(START_LOGGING);
+							}
+						}
 						arrayAdapter.add(ENABLE_SENSOR);
 						arrayAdapter.add(SHIMMER_CONFIGURATION);
 						arrayAdapter.add(GRAPH_CONFIGURATION);
@@ -538,9 +552,6 @@ public class ShimmerCapture extends ServiceActivity {
 
                 switch (((ObjectCluster)msg.obj).mState) {
                 case CONNECTED:
-  
-                    break;
-                case INITIALISED:
 
                 	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
                     mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress; 
@@ -568,7 +579,7 @@ public class ShimmerCapture extends ServiceActivity {
                     		textSensingStatus.setText("Yes");
                     	else
                     		textSensingStatus.setText("No");
-                    }*/
+                    }*/  
                     break;
                 case CONNECTING:
                 	Log.d("ShimmerActivity","Driver is attempting to establish connection with Shimmer device");
@@ -643,7 +654,7 @@ public class ShimmerCapture extends ServiceActivity {
                 	break;
                 case SDLOGGING:
                	 break;
-                case NONE:
+                case DISCONNECTED:
                 	Log.d("ShimmerActivity","Shimmer No State");
                     mBluetoothAddress=null;
                     // this also stops streaming
@@ -1356,9 +1367,9 @@ public class ShimmerCapture extends ServiceActivity {
 //                	setLegend();
 //                }
 			} 
-			 else if(optionSelected.equals(START_STREAMING_AND_LOGGING)){
+			 else if(optionSelected.equals(START_LOGGING)){
 					
-					mService.startLogAndStreaming(mBluetoothAddress);
+					mService.startLogging(mBluetoothAddress);
 //					deviceState="Streaming";
 //	                textDeviceName.setText(mBluetoothAddress);
 //	                textDeviceState.setText(deviceState);
@@ -1422,9 +1433,9 @@ public class ShimmerCapture extends ServiceActivity {
 //    			greyCircle.setVisibility(View.INVISIBLE);
 //    			mTextSensor4.setVisibility(View.INVISIBLE);
 //    			greenCircle.setVisibility(View.INVISIBLE);
-			}else if(optionSelected.equals(STOP)){
+			}else if(optionSelected.equals(STOP_LOGGING)){
 				
-				mService.stopStreaming(mBluetoothAddress);
+				mService.stopLogging(mBluetoothAddress);
 //				if(mEnableLogging){
 //					mService.setEnableLogging(false);
 //					mService.closeAndRemoveFile(mBluetoothAddress);
