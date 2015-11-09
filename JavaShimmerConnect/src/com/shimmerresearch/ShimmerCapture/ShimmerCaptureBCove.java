@@ -1,4 +1,4 @@
-/* Rev 0.5
+/* Rev 0.1
  * 
  * Copyright (c) 2014, Shimmer Research, Ltd.
  * All rights reserved
@@ -31,24 +31,11 @@
  * 
  * @author Cathy Swanton , Jong Chern Lim, Ruaidhri Molloy
  * @date   May, 2014
- * 
- * Changes since 0.4
- * - HPF implemented before PPG->HR conversion
- * - Support for Shimmer3 bridge amplifier module
- * 
- * Changes since 0.3
- * - Update mag range index for Shimmer3, taking into account mag range setting starts at 1
- * - Added and updated PPGtoHR includes LPF implementation
- * 
- * Changes since 0.2
- * - moved JFileChooser from logging to here.
- * - added pop-up window if file already exists - overwrite or choose new file
- * 
- * Changes since 0.1
- * - adding EXG:
+ *
+ * Purpose of this example is to demonstrate some of the functionality of LogandStream firmware and not a fully completed application
  */
 
-package com.shimmerresearch.ShimmerConnect;
+package com.shimmerresearch.ShimmerCapture;
 
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
@@ -62,7 +49,10 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,11 +72,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.common.collect.Multimap;
+import com.shimmerresearch.biophysicalprocessing.ECGtoHRAdaptive;
+import com.shimmerresearch.biophysicalprocessing.ECGtoHRAlgorithm;
 import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
@@ -100,24 +93,27 @@ import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcdriver.CallbackObject;
 import com.shimmerresearch.pcdriver.ShimmerPC;
+import com.shimmerresearch.pcdriver.ShimmerPCBTBCove;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
 
-public class ShimmerConnect extends BasicProcessWithCallBack {
+import javax.swing.SpinnerNumberModel;
 
+public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
+	
 	public static final int SHIMMER_1=0;
 	public static final int SHIMMER_2=1;
 	public static final int SHIMMER_2R=2;
 	public static final int SHIMMER_3=3;
 	public static final int SHIMMER_SR30=4;
 	protected int mShimmerVersion;
-	int downSample=0;
+	private int downSample=0;
 	private JFrame frame;
 	private JFrame configFrame;
 	private JFrame exgFrame;
-	ShimmerPC mShimmer = new ShimmerPC("ShimmerDevice", true);
-
-
+	ShimmerPCBTBCove mShimmer = new ShimmerPCBTBCove("ShimmerDevice", true);
+	
+	
 	private JButton btnStartStreaming;
 	private JButton btnStopStreaming;
 	private JButton btnDisconnect;
@@ -125,11 +121,11 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	private JButton btnOK;
 	private JButton btnCancel;
 	private JButton btnToggleLed;
-
+	
 	private JTextField textFieldComPort;
 	private JTextField textFieldState;
 	private JTextField textFieldMessage;
-
+	
 	private JLabel lblShimmerState;
 	private JLabel lblSampFreq;
 	private JLabel lblEXG;
@@ -142,14 +138,14 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	private JLabel lblSelectComPort;
 	private JLabel lblSignals;
 	private JLabel lblNumberOfBeats;
-
+	
 	private JComboBox<String> comboBoxSamplingRate;
 	private JComboBox<String> comboBoxAccelRange;
 	private JComboBox<String> comboBoxGyroRange;
 	private JComboBox<String> comboBoxMagRange;
 	private JComboBox<String> comboBoxGsrRange;
 	private JComboBox<String> comboBoxPressureResolution;
-
+	
 	private JCheckBox chckbx5VReg;
 	private JCheckBox chckbxVoltageMon;
 	private JCheckBox chckbx3DOrientation;
@@ -159,17 +155,18 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	private JCheckBox chckbxLowPowerGyro;
 	private JCheckBox chckbxInternalExpPower;
 	private JCheckBox chckbxEnablePPGtoHR;
+	private JCheckBox chckbxEnableECGtoHR;
 	private JCheckBox[] listOfSensorsShimmer3;
 	private JCheckBox[] listOfSensorsShimmer2;
 	private JCheckBox[] listOfSignals;
 	private JCheckBox[] calibratedSignals;
 	private JCheckBox chckbxHeartRate;
-
+	
 	private JSpinner spinnerNumberOfBeatsToAve;
-
+	
 	private Chart2D chart;
 	private IAxis<?> yAxis;
-
+	
 	private JMenuBar menuBar;
 	private JMenu menuFile;
 	private JMenu menuTools;
@@ -177,7 +174,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	private JMenuItem menuItemConfigure;
 	private JMenuItem menuItemExgSettings;
 	private JCheckBox menuItemSaveToCsv;
-
+	
 	private float   mSpeed = 1.0f;
 	private float   mLastX;
 	private String samplingFreqS3[] = {"1Hz","10.2Hz","51.2Hz", "102.4Hz", "204.8Hz", "250.1Hz", "512Hz", "1024Hz"};
@@ -185,14 +182,14 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	private Color traceColours[] = {Color.RED, Color.BLUE, Color.GREEN, Color.BLACK, Color.YELLOW, Color.CYAN, Color.GRAY, Color.MAGENTA, Color.ORANGE, Color.LIGHT_GRAY, Color.PINK, Color.DARK_GRAY};
 	private ITrace2D[] traces = new ITrace2D[12];
 	private ITrace2D traceHR;		
-
+	
 	private String[] enabledSensorSignals;
 	private String listofCompatibleSensorsShimmer3[];
 	private String listofCompatibleSensorsShimmer2[];
-	private boolean firstConfiguration=true;
+    private boolean firstConfiguration=true;
 	private Boolean loggingData=false;
 	private Boolean calibrated[] = {false, false, false, false, false, false, false, false, false, false, false, false};
-	private int mReturnEnabledSensors = 0;
+    private int mReturnEnabledSensors = 0;
 	private int numberOfSignals;
 	private int indexAccel;
 	private int indexGyro;
@@ -200,45 +197,45 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	private int indexGSR;
 	private int indexPressureRes;
 	private int maxTraces= traceColours.length;
-	private int calibratedCount;
-	private int maxDataPoint=-10000;
-	private int minDataPoint=10000;
-	private int returnVal;
-	private double samplingRate;
+    private int calibratedCount;
+    private int maxDataPoint=-10000;
+    private int minDataPoint=10000;
+    private int returnVal;
+    private double samplingRate;
 	private Color backgroundColor;
-	static LoggingPC log;
-	private String fileName = "ShimmerConnect.csv";
-
-	//EXG Frame
-	private JLabel lblChip1;
-	private JLabel lblChip2;
-	private JLabel lblExgGainChip1Channel1;
-	private JLabel lblExgGainChip1Channel2;
-	private JLabel lblExgGainChip2Channel1;
-	private JLabel lblExgGainChip2Channel2;
-	private JCheckBox chckbxHPF0_05;
-	private JCheckBox chckbxHPF0_5;
-	private JCheckBox chckbxHPF5;
-	private JCheckBox chckbxBSF_50;
-	private JCheckBox chckbxBSF_60;
-	private JCheckBox chckbxEcgConfig;
-	private JCheckBox chckbxEmgConfig;
-	private JCheckBox chckbxTestSignal;
-	private JComboBox<Integer> comboBoxGainChip1Channel1;
-	private JComboBox<Integer> comboBoxGainChip1Channel2;
-	private JComboBox<Integer> comboBoxGainChip2Channel1;
-	private JComboBox<Integer> comboBoxGainChip2Channel2;
-	private JTextField[] textFieldChip1 = new JTextField[10];
-	private JTextField[] textFieldChip2 = new JTextField[10];
-	private JButton btnExgOk;
-	private JButton btnExgCancel;
-
-	private double cornerFrequencyHPF=-1;
-	private double cornerFrequencyBSF1=-1;
-	private double cornerFrequencyBSF2=-1;
-	private boolean firstExgConfiguration=true;
-	private boolean highPassFilterEnabled=false;
-	private boolean bandStopFilterEnabled=false;
+    static LoggingPC log;
+    private String fileName = "ShimmerConnect.csv";
+    
+    //EXG Frame
+    private JLabel lblChip1;
+    private JLabel lblChip2;
+    private JLabel lblExgGainChip1Channel1;
+    private JLabel lblExgGainChip1Channel2;
+    private JLabel lblExgGainChip2Channel1;
+    private JLabel lblExgGainChip2Channel2;
+    private JCheckBox chckbxHPF0_05;
+    private JCheckBox chckbxHPF0_5;
+    private JCheckBox chckbxHPF5;
+    private JCheckBox chckbxBSF_50;
+    private JCheckBox chckbxBSF_60;
+    private JCheckBox chckbxEcgConfig;
+    private JCheckBox chckbxEmgConfig;
+    private JCheckBox chckbxTestSignal;
+    private JComboBox<Integer> comboBoxGainChip1Channel1;
+    private JComboBox<Integer> comboBoxGainChip1Channel2;
+    private JComboBox<Integer> comboBoxGainChip2Channel1;
+    private JComboBox<Integer> comboBoxGainChip2Channel2;
+    private JTextField[] textFieldChip1 = new JTextField[10];
+    private JTextField[] textFieldChip2 = new JTextField[10];
+    private JButton btnExgOk;
+    private JButton btnExgCancel;
+    
+    private double cornerFrequencyHPF=-1;
+    private double cornerFrequencyBSF1=-1;
+    private double cornerFrequencyBSF2=-1;
+    private boolean firstExgConfiguration=true;
+    private boolean highPassFilterEnabled=false;
+    private boolean bandStopFilterEnabled=false;
 
 	private int[] exgConfigurationChip1 = new int[10];
 	private int[] exgConfigurationChip2 = new int[10];
@@ -247,11 +244,13 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	double[] exg2Data24bit = new double[4];
 	double[] exg1Data16bit = new double[4];
 	double[] exg2Data16bit = new double[4];
-
+	
 	private PPGtoHRAlgorithm heartRateCalculation;
+	//private ECGtoHRAlgorithm heartRateCalculationECG;
+	private ECGtoHRAdaptive heartRateCalculationECG;
 	private boolean calculateHeartRate = false;
 	private int INVALID_RESULT=-1;
-
+	
 	//Logging - file already exists
 	private JFrame fileExistsWindow = new JFrame();
 	private JLabel lblFileExists;
@@ -269,8 +268,16 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	Filter bsfexg2ch2;
 	Filter lpf;
 	Filter hpf;
-
-
+	Filter lpfECG;
+	Filter hpfECG;
+	
+	private JButton btnReadStatus;
+	private JButton btnReadDirectory;
+	private JLabel lblnoOfBeats;
+	private JSpinner spinnerNumberOfBeatsToAveECG;
+	
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -279,8 +286,10 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
+					
 					Configuration.setTooLegacyObjectClusterSensorNames();
-					ShimmerConnect window = new ShimmerConnect();
+					ShimmerCaptureBCove window = new ShimmerCaptureBCove();
 					window.frame.setVisible(true);
 					/*SerialPort serialPort = new SerialPort("COM155");
 					try {
@@ -308,28 +317,27 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	/**
 	 * Create the application.
 	 */
-	public ShimmerConnect() {
+	public ShimmerCaptureBCove() {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {	
+	private void initialize() {
 		setWaitForData(mShimmer);
-		//mShimmer.enableCheckifAlive(true);
-		frame = new JFrame("Shimmer Connect");
+		frame = new JFrame("Shimmer Capture");
 		frame.setBounds(100, 100, 720, 592);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		backgroundColor = frame.getBackground();
-
+		
 		configFrame = new JFrame("Configure");
-		configFrame.setBounds(150, 150, 370, 735);
+		configFrame.setBounds(150, 150, 434, 772);
 		configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		configFrame.getContentPane().setLayout(null);
 		configFrame.setVisible(false);
-
+		
 		exgFrame = new JFrame("EXG");
 		exgFrame.setBounds(150, 150, 400, 540);
 		exgFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -341,31 +349,39 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Connect");
 				mShimmer.connect(textFieldComPort.getText(),"");
-
+				
 			}
 		});
-		btnConnect.setBounds(140, 45, 116, 25);
+		btnConnect.setBounds(140, 45, 98, 25);
 		frame.getContentPane().add(btnConnect);
-
+		
 		btnDisconnect = new JButton("Disconnect");
 		btnDisconnect.setEnabled(false);
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				mShimmer.disconnect();
+				//mShimmer = new ShimmerPC("ShimmerDevice", true);
 			}
 		});
-		btnDisconnect.setBounds(270, 45, 116, 25);
+		btnDisconnect.setBounds(252, 45, 98, 25);
 		frame.getContentPane().add(btnDisconnect);
 
 		btnStartStreaming = new JButton("Stream");
 		btnStartStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//Create HPFs for EXG
+				//Create HPFs for EXG	
 				try {
 				double [] cutoff = {5.0};
 				lpf = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRate(), cutoff);
 				cutoff[0] = 0.5;
 				hpf = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				
+				cutoff[0] = 51.2;
+				lpfECG = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRate(), cutoff);
+				cutoff[0] = 0.5;
+				hpfECG = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				
+				
 				cutoff[0] = cornerFrequencyHPF;
 				hpfexg1ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
 				hpfexg1ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
@@ -387,54 +403,57 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 					spinnerNumberOfBeatsToAve.setValue(1);
 				}
 				heartRateCalculation = new PPGtoHRAlgorithm(mShimmer.getSamplingRate(), (Integer)spinnerNumberOfBeatsToAve.getValue(),10); //10 second training period
+				heartRateCalculationECG = new ECGtoHRAdaptive(mShimmer.getSamplingRate());
+				
 				mShimmer.startStreaming();
 			}
 		});
-		btnStartStreaming.setBounds(10, 95, 116, 25);
+		btnStartStreaming.setBounds(10, 95, 98, 25);
 		frame.getContentPane().add(btnStartStreaming);
 		btnStartStreaming.setEnabled(false);
-
-
+		
+		
 		btnStopStreaming = new JButton("Stop");
 		btnStopStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mShimmer.stopStreaming();
 			}
 		});
-		btnStopStreaming.setBounds(140, 95, 116, 25);
+		btnStopStreaming.setBounds(252, 95, 98, 25);
 		frame.getContentPane().add(btnStopStreaming);
 		btnStopStreaming.setEnabled(false);
-
+		
 		textFieldComPort = new JTextField();
 		textFieldComPort.setBounds(10, 46, 116, 24);
 		frame.getContentPane().add(textFieldComPort);
 		textFieldComPort.setColumns(10);
+		textFieldComPort.setText("btspp://0006667452fe:1");
 
 		textFieldState = new JTextField();
 		textFieldState.setBounds(450, 46, 150, 24);
 		frame.getContentPane().add(textFieldState);
 		textFieldState.setColumns(10);
 		textFieldState.setText("Shimmer Disconnected");
-
+		
 		textFieldMessage = new JTextField();
 		textFieldMessage.setBounds(0, 535, 704, 20);
 		frame.getContentPane().add(textFieldMessage);
 		textFieldMessage.setColumns(10);
 		textFieldMessage.setBackground(backgroundColor);
-
+		
 		lblSelectComPort = new JLabel("Select COM Port");
 		lblSelectComPort.setBounds(10, 32, 116, 14);
 		frame.getContentPane().add(lblSelectComPort);
-
+		
 		lblShimmerState = new JLabel("Shimmer State");
 		lblShimmerState.setBounds(450, 32, 98, 14);
 		frame.getContentPane().add(lblShimmerState);
-
+		
 		lblSignals = new JLabel("Signals to View");
 		lblSignals.setBounds(10, 200, 100, 14);
 		frame.getContentPane().add(lblSignals);
 		lblSignals.setVisible(false);
-
+		
 		chart = new Chart2D();
 		chart.setBounds(270, 180, 400, 300);
 		frame.getContentPane().add(chart);
@@ -448,7 +467,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		menuBar = new JMenuBar();
 		menuBar.setBounds(0, 0, 703, 25);
 		frame.getContentPane().add(menuBar);
-
+		
 		menuFile = new JMenu("File	");
 		menuBar.add(menuFile);
 		menuItemQuit = new JMenuItem("Quit");
@@ -459,7 +478,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				System.exit(0); 
 			}
 		});
-
+		
 		menuTools = new JMenu("Tools");
 		menuBar.add(menuTools);
 		menuItemConfigure = new JMenuItem("Configure Shimmer");
@@ -470,7 +489,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				configuration();
 			}
 		});
-
+		
 		menuItemExgSettings = new JMenuItem("EXG Settings");
 		menuItemExgSettings.setEnabled(false);
 		menuTools.add(menuItemExgSettings);
@@ -483,6 +502,36 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 
 		menuItemSaveToCsv = new JCheckBox("Save to CSV");
 		menuTools.add(menuItemSaveToCsv);
+		
+		JButton btnStreamandlog = new JButton("Stream and Log");
+		btnStreamandlog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mShimmer.startDataLogAndStreaming();
+			}
+		});
+		btnStreamandlog.setEnabled(true);
+		btnStreamandlog.setBounds(118, 96, 120, 25);
+		frame.getContentPane().add(btnStreamandlog);
+		
+		btnReadStatus = new JButton("Read Status");
+		btnReadStatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mShimmer.readStatusLogAndStream();
+			}
+		});
+		btnReadStatus.setEnabled(true);
+		btnReadStatus.setBounds(360, 96, 120, 25);
+		frame.getContentPane().add(btnReadStatus);
+		
+		btnReadDirectory = new JButton("Read Directory");
+		btnReadDirectory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mShimmer.readDirectoryName();
+			}
+		});
+		btnReadDirectory.setEnabled(true);
+		btnReadDirectory.setBounds(492, 96, 120, 25);
+		frame.getContentPane().add(btnReadDirectory);
 		menuItemSaveToCsv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(menuItemSaveToCsv.isSelected()) {
@@ -521,22 +570,22 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				listOfSensorsShimmer2[count].setBounds(10, 30+(25*count), 150, 20);
 			}
 		}	
-
+		
 		listOfSignals = new JCheckBox[maxTraces]; 
 		for (int count=0; count<maxTraces; count++) {
 			listOfSignals[count] = new JCheckBox("", false);
 			frame.getContentPane().add(listOfSignals[count]);
 		}
-
+		
 		calibratedSignals = new JCheckBox[maxTraces]; 
 		for (int count=0; count<maxTraces; count++) {
 			calibratedSignals[count] = new JCheckBox("", false);
 			frame.getContentPane().add(calibratedSignals[count]);
 		}
-
+		
 		chckbxHeartRate = new JCheckBox("Heart Rate");
 		chckbxHeartRate.setVisible(false);
-
+		
 		//Config Frame
 		btnOK = new JButton("OK");
 		btnOK.addActionListener(new ActionListener() {
@@ -544,128 +593,143 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				configurationDone();
 			}
 		});
-		btnOK.setBounds(200, 640, 110, 25);
+		btnOK.setBounds(200, 668, 216, 25);
 		configFrame.getContentPane().add(btnOK);
-
+		
 		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				configFrame.setVisible(false);
 			}
 		});
-		btnCancel.setBounds(10, 640, 110, 25);
+		btnCancel.setBounds(10, 668, 110, 25);
 		configFrame.getContentPane().add(btnCancel);
-
+		
 		btnToggleLed = new JButton("Toggle LED");
 		btnToggleLed.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0){
 				mShimmer.toggleLed();
 			}
 		});
-		btnToggleLed.setBounds(10, 600, 110, 23);
+		btnToggleLed.setBounds(10, 628, 110, 23);
 		configFrame.getContentPane().add(btnToggleLed);
-
+		
 		comboBoxSamplingRate = new JComboBox<String>();
 		comboBoxSamplingRate.setBounds(10, 305, 100, 20);
 		configFrame.getContentPane().add(comboBoxSamplingRate);
-
+		
 		comboBoxAccelRange = new JComboBox<String>();
 		comboBoxAccelRange.setBounds(10, 350, 100, 20);
 		configFrame.getContentPane().add(comboBoxAccelRange);
-
+		
 		comboBoxGyroRange = new JComboBox<String>();
 		comboBoxGyroRange.setBounds(10, 395, 100, 20);
 		configFrame.getContentPane().add(comboBoxGyroRange);
-
+		
 		comboBoxMagRange = new JComboBox<String>();
 		comboBoxMagRange.setBounds(200, 305, 100, 20);
 		configFrame.getContentPane().add(comboBoxMagRange);
-
+		
 		comboBoxGsrRange = new JComboBox<String>();
 		comboBoxGsrRange.setBounds(200, 350, 100, 20);
 		configFrame.getContentPane().add(comboBoxGsrRange);
-
+		
 		comboBoxPressureResolution = new JComboBox<String>();
 		comboBoxPressureResolution.setBounds(200, 395, 100, 20);
 		configFrame.getContentPane().add(comboBoxPressureResolution);
-
+		
 		lblSampFreq = new JLabel("Sampling Frequency");
 		lblSampFreq.setBounds(10, 290, 130, 14);
 		configFrame.getContentPane().add(lblSampFreq);
-
+		
 		lblAccelRange = new JLabel("Accel Range");
 		lblAccelRange.setBounds(10, 335, 130, 14);
 		configFrame.getContentPane().add(lblAccelRange);
-
+		
 		lblGyroRange = new JLabel("Gyro Range");
 		lblGyroRange.setBounds(10, 380, 130, 14);
 		configFrame.getContentPane().add(lblGyroRange);
-
+		
 		lblMagRange = new JLabel("Mag Range");
 		lblMagRange.setBounds(200, 290, 130, 14);
 		configFrame.getContentPane().add(lblMagRange);
-
+		
 		lblGSRRange = new JLabel("GSR Range");
 		lblGSRRange.setBounds(200, 335, 130, 14);
 		configFrame.getContentPane().add(lblGSRRange);
-
+		
 		lblPressRange = new JLabel("Pressure Resolution");
 		lblPressRange.setBounds(200, 380, 130, 14);
 		configFrame.getContentPane().add(lblPressRange);
-
+		
 		lblSensors = new JLabel("Sensors to Sample");
 		lblSensors.setBounds(10, 10, 116, 14);
 		configFrame.getContentPane().add(lblSensors);
-
+		
 		chckbxVoltageMon = new JCheckBox("Enable Voltage Monitoring");
-		chckbxVoltageMon.setBounds(10, 400, 230, 23);
+		chckbxVoltageMon.setBounds(10, 424, 230, 23);
 		configFrame.getContentPane().add(chckbxVoltageMon);
 		chckbxVoltageMon.setEnabled(false);
-
+		
 		chckbx5VReg = new JCheckBox("Enable 5V Regulator");
-		chckbx5VReg.setBounds(10, 420, 230, 23);
+		chckbx5VReg.setBounds(10, 444, 230, 23);
 		configFrame.getContentPane().add(chckbx5VReg);
-
+		
 		chckbx3DOrientation = new JCheckBox("Enable 3D Orientation");
-		chckbx3DOrientation.setBounds(10, 440, 230, 23);
+		chckbx3DOrientation.setBounds(10, 464, 230, 23);
 		configFrame.getContentPane().add(chckbx3DOrientation);
-
+		
 		chckbxOnTheFlyGyroCal = new JCheckBox("Enable Gyro On-the-Fly Calibration");
-		chckbxOnTheFlyGyroCal.setBounds(10, 460, 230, 23);
+		chckbxOnTheFlyGyroCal.setBounds(10, 484, 230, 23);
 		configFrame.getContentPane().add(chckbxOnTheFlyGyroCal);
-
+		
 		chckbxLowPowerMag = new JCheckBox("Enable Low Power Magnetometer");
-		chckbxLowPowerMag.setBounds(10, 480, 230, 23);
+		chckbxLowPowerMag.setBounds(10, 504, 230, 23);
 		configFrame.getContentPane().add(chckbxLowPowerMag);
 		chckbxLowPowerMag.setEnabled(false);
-
+		
 		chckbxLowPowerAcc = new JCheckBox("Enable Low Power Acceleration");
-		chckbxLowPowerAcc.setBounds(10, 500, 230, 23);
+		chckbxLowPowerAcc.setBounds(10, 524, 230, 23);
 		configFrame.getContentPane().add(chckbxLowPowerAcc);
-
+		
 		chckbxLowPowerGyro = new JCheckBox("Enable Low Power Gyroscope");
-		chckbxLowPowerGyro.setBounds(10, 520, 230, 23);
+		chckbxLowPowerGyro.setBounds(10, 544, 230, 23);
 		configFrame.getContentPane().add(chckbxLowPowerGyro);
-
+		
 		chckbxInternalExpPower = new JCheckBox("Enable Internal Exp Power");
-		chckbxInternalExpPower.setBounds(10, 540, 230, 23);
+		chckbxInternalExpPower.setBounds(10, 564, 230, 23);
 		configFrame.getContentPane().add(chckbxInternalExpPower);
-
+		
 		chckbxEnablePPGtoHR = new JCheckBox("Enable PPG-HR");
-		chckbxEnablePPGtoHR.setBounds(10, 560, 180, 23);
+		chckbxEnablePPGtoHR.setBounds(10, 584, 180, 23);
 		configFrame.getContentPane().add(chckbxEnablePPGtoHR);
 		chckbxEnablePPGtoHR.setEnabled(false);
-
+		
 		spinnerNumberOfBeatsToAve = new JSpinner();
-		spinnerNumberOfBeatsToAve.setBounds(200, 600, 40, 24);
+		spinnerNumberOfBeatsToAve.setBounds(200, 628, 106, 24);
 		configFrame.getContentPane().add(spinnerNumberOfBeatsToAve);
 		spinnerNumberOfBeatsToAve.setValue(5);
 		spinnerNumberOfBeatsToAve.setEnabled(false);
-
+		
 		lblNumberOfBeats = new JLabel("<html>No. Of Beats To<br/>Average (PPG-HR)</html>");
-		lblNumberOfBeats.setBounds(200, 565, 180, 30);
+		lblNumberOfBeats.setBounds(200, 593, 106, 30);
 		configFrame.getContentPane().add(lblNumberOfBeats);
-
+		
+		lblnoOfBeats = new JLabel("<html>No. Of Beats To<br/>Average (ECG-HR)</html>");
+		lblnoOfBeats.setBounds(310, 592, 106, 30);
+		configFrame.getContentPane().add(lblnoOfBeats);
+		
+		spinnerNumberOfBeatsToAveECG = new JSpinner();
+		spinnerNumberOfBeatsToAveECG.setModel(new SpinnerNumberModel(new Integer(1), null, null, new Integer(1)));
+		spinnerNumberOfBeatsToAveECG.setEnabled(false);
+		spinnerNumberOfBeatsToAveECG.setBounds(310, 627, 106, 24);
+		configFrame.getContentPane().add(spinnerNumberOfBeatsToAveECG);
+		
+		chckbxEnableECGtoHR = new JCheckBox("Enable ECG-HR");
+		chckbxEnableECGtoHR.setEnabled(false);
+		chckbxEnableECGtoHR.setBounds(10, 604, 180, 23);
+		configFrame.getContentPane().add(chckbxEnableECGtoHR);
+		
 		//EXG Frame
 		JPanel filteringPane = new JPanel();
 		filteringPane.setLayout(null);
@@ -675,36 +739,36 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		chckbxHPF0_05 = new JCheckBox("Enable HPF 0.05Hz");
 		chckbxHPF0_05.setBounds(10, 25, 140, 23);
 		filteringPane.add(chckbxHPF0_05);
-
+		
 		chckbxHPF0_5 = new JCheckBox("Enable HPF 0.5Hz");
 		chckbxHPF0_5.setBounds(10, 55, 140, 23);
 		filteringPane.add(chckbxHPF0_5);
-
+		
 		chckbxHPF5 = new JCheckBox("Enable HPF 5Hz");
 		chckbxHPF5.setBounds(10, 85, 140, 23);
 		filteringPane.add(chckbxHPF5);
-
+		
 		chckbxBSF_50 = new JCheckBox("Enable BSF 49-51Hz");
 		chckbxBSF_50.setBounds(180, 25, 140, 23);
 		filteringPane.add(chckbxBSF_50);
-
+		
 		chckbxBSF_60 = new JCheckBox("Enable BSF 59-61Hz");
 		chckbxBSF_60.setBounds(180, 55, 140, 23);
 		filteringPane.add(chckbxBSF_60);
-
+		
 		JPanel settingsPane = new JPanel();
 		settingsPane.setLayout(null);
 		settingsPane.setBounds(10, 140, 360, 300);
 		exgFrame.getContentPane().add(settingsPane);
-
+		
 		chckbxEcgConfig = new JCheckBox("Default ECG Config");
 		chckbxEcgConfig.setBounds(10, 25, 150, 23);
 		settingsPane.add(chckbxEcgConfig);
-
+		
 		chckbxEmgConfig = new JCheckBox("Default EMG Config");
 		chckbxEmgConfig.setBounds(10, 55, 150, 23);
 		settingsPane.add(chckbxEmgConfig);
-
+		
 		chckbxTestSignal = new JCheckBox("Test Signal");
 		chckbxTestSignal.setBounds(10, 85, 150, 23);
 		settingsPane.add(chckbxTestSignal);
@@ -712,31 +776,31 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		lblExgGainChip1Channel1 = new JLabel("EXG Gain Chip 1 Channel 1:");
 		lblExgGainChip1Channel1.setBounds(10, 130, 153, 14);
 		settingsPane.add(lblExgGainChip1Channel1);
-
+		
 		lblExgGainChip1Channel2 = new JLabel("EXG Gain Chip 1 Channel 2:");
 		lblExgGainChip1Channel2.setBounds(180, 130, 153, 14);
 		settingsPane.add(lblExgGainChip1Channel2);
-
+		
 		lblExgGainChip2Channel1 = new JLabel("EXG Gain Chip 2 Channel 1:");
 		lblExgGainChip2Channel1.setBounds(10, 175, 153, 14);
 		settingsPane.add(lblExgGainChip2Channel1);
-
+		
 		lblExgGainChip2Channel2 = new JLabel("EXG Gain Chip 2 Channel 2:");
 		lblExgGainChip2Channel2.setBounds(180, 175, 153, 14);
 		settingsPane.add(lblExgGainChip2Channel2);
-
+		
 		comboBoxGainChip1Channel1 = new JComboBox<Integer>();
 		comboBoxGainChip1Channel1.setBounds(10, 145, 100, 20);
 		settingsPane.add(comboBoxGainChip1Channel1);
-
+		
 		comboBoxGainChip1Channel2 = new JComboBox<Integer>();
 		comboBoxGainChip1Channel2.setBounds(180, 145, 100, 20);
 		settingsPane.add(comboBoxGainChip1Channel2);
-
+		
 		comboBoxGainChip2Channel1 = new JComboBox<Integer>();
 		comboBoxGainChip2Channel1.setBounds(10, 190, 100, 20);
 		settingsPane.add(comboBoxGainChip2Channel1);
-
+		
 		comboBoxGainChip2Channel2 = new JComboBox<Integer>();
 		comboBoxGainChip2Channel2.setBounds(180, 190, 100, 20);
 		settingsPane.add(comboBoxGainChip2Channel2);
@@ -744,11 +808,11 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		lblChip1 = new JLabel("Chip 1:");
 		lblChip1.setBounds(10, 240, 45, 14);
 		settingsPane.add(lblChip1);
-
+		
 		lblChip2 = new JLabel("Chip 2:");
 		lblChip2.setBounds(10, 270, 45, 14);
 		settingsPane.add(lblChip2);
-
+		
 		for (int count=0; count<10; count++) {
 			textFieldChip1[count] = new JTextField();
 			textFieldChip1[count].setBounds(60+((count)*28), 240, 25, 20);
@@ -761,7 +825,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			settingsPane.add(textFieldChip2[count]);
 			textFieldChip2[count].setColumns(10);
 		}
-
+		
 		btnExgOk = new JButton("OK");
 		btnExgOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -770,7 +834,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		});
 		btnExgOk.setBounds(190, 455, 110, 25);
 		exgFrame.getContentPane().add(btnExgOk);
-
+		
 		btnExgCancel = new JButton("Cancel");
 		btnExgCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -779,97 +843,94 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		});
 		btnExgCancel.setBounds(20, 455, 110, 25);
 		exgFrame.getContentPane().add(btnExgCancel);
-
+		
 		Color gray = new Color(214, 214, 214);
 		Border border = BorderFactory.createLineBorder(gray);
 		filteringPane.setBorder(BorderFactory.createTitledBorder(border, "Filtering Options *", TitledBorder.LEFT, TitledBorder.TOP));
 		Border settingsBorder = BorderFactory.createLineBorder(gray);
 		settingsPane.setBorder(BorderFactory.createTitledBorder(settingsBorder, "EXG Settings", TitledBorder.LEFT, TitledBorder.TOP));
 
-		lblEXG = new JLabel("Check user guide for data rates supported by filters");
-		lblEXG.setBounds(20, 478, 400, 25);
-		exgFrame.getContentPane().add(lblEXG);
-
+		
 		//Logging - file exists
 		fileExistsWindow.setBounds (300, 300, 320, 150);
 		fileExistsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		fileExistsWindow.getContentPane().setLayout(null);
 		fileExistsWindow.setVisible(false);
-
+		
 		lblFileExists = new JLabel("<html>File already exists. <br/>Do you want to overwrite this file?</html>");
 		lblFileExists.setBounds(10, 10, 250, 40);
 		fileExistsWindow.getContentPane().add(lblFileExists);
-
+		
 		btnOverwriteFile = new JButton("Overwrite");
 		btnOverwriteFile.setBounds(160, 70, 130, 25);
 		fileExistsWindow.getContentPane().add(btnOverwriteFile);
-
+		
 		btnCancelWriteFile = new JButton("Choose New File");
 		btnCancelWriteFile.setBounds(10, 70, 130, 25);
 		fileExistsWindow.getContentPane().add(btnCancelWriteFile);
-
-
-
-		//		//Heart Rate panel
-		//		chartPPG = new Chart2D();
-		//		chartPPG.setBounds(10, 100, 650, 220);
-		//		paneHeartRate.add(chartPPG);
-		//		IAxis<?> xAxisPPG = chartPPG.getAxisX();
-		////		xAxisPPG.setVisible(false);
-		//		IAxis<?> yAxisPPG = chartPPG.getAxisY();
-		//		yAxisPPG.setAxisTitle(new IAxis.AxisTitle("Heart Rate (BPM)"));
-		//		chartPPG.setBackground(Color.WHITE);
-		//		tracePPG = new Trace2DLtd(500); 
-		//		tracePPG.setColor(Color.RED);
-		//		tracePPG.setName("PPG");
-		//		
-		//		chartHR = new Chart2D();
-		//		chartHR.setBounds(10, 340, 650, 220);
-		//		paneHeartRate.add(chartHR);
-		//		IAxis<?> xAxisHR = chartHR.getAxisX();
-		//		xAxisHR.setVisible(false);
-		//		yAxisHR = chartHR.getAxisY();
-		//		yAxisHR.setAxisTitle(new IAxis.AxisTitle("Heart Rate (BPM)"));
-		//		chartHR.setBackground(Color.WHITE);
-		//		traceHR = new Trace2DLtd(500); 
-		//		traceHR.setColor(Color.RED);
-		//		traceHR.setName("Heart Rate");
-		//		
-		//		lblPpgSignal = new JLabel("PPG Signal");
-		//		lblPpgSignal.setBounds(10, 85, 100, 14);
-		//		paneHeartRate.add(lblPpgSignal);
-		//		
-		//		lblHeartRate = new JLabel("Heart Rate");
-		//		lblHeartRate.setBounds(10, 325, 100, 14);
-		//		paneHeartRate.add(lblHeartRate);
-		//		
-		//		lblHeartRateOutput = new JLabel("Heart Rate");
-		//		lblHeartRateOutput.setBounds(670, 340, 100, 14);
-		//		paneHeartRate.add(lblHeartRateOutput);
-		//		
-		//		lblPpgChannelName = new JLabel("PPG Channel Name");
-		//		lblPpgChannelName.setBounds(50, 20, 150, 14);
-		//		paneHeartRate.add(lblPpgChannelName);
-		//		
-		//		lblNumberOfBeats = new JLabel("Number Of Beats To Average");
-		//		lblNumberOfBeats.setBounds(300, 20, 200, 14);
-		//		paneHeartRate.add(lblNumberOfBeats);
-		//		
-		//		comboBoxPpgChannel = new JComboBox<String>();
-		//		comboBoxPpgChannel.setBounds(50, 35, 150, 24);
-		//		paneHeartRate.add(comboBoxPpgChannel);
-		//		
-		//		spinnerNumberOfBeatsToAve = new JSpinner();
-		//		spinnerNumberOfBeatsToAve.setBounds(300, 35, 40, 24);
-		//		paneHeartRate.add(spinnerNumberOfBeatsToAve);
-		//		spinnerNumberOfBeatsToAve.setValue(5);
-		//		
-		//		textFieldHeartRate = new JTextField("");
-		//		textFieldHeartRate.setBounds(670, 355, 80, 24);
-		//		paneHeartRate.add(textFieldHeartRate);
-		//		textFieldHeartRate.setColumns(10);
+		
+		
+		
+//		//Heart Rate panel
+//		chartPPG = new Chart2D();
+//		chartPPG.setBounds(10, 100, 650, 220);
+//		paneHeartRate.add(chartPPG);
+//		IAxis<?> xAxisPPG = chartPPG.getAxisX();
+////		xAxisPPG.setVisible(false);
+//		IAxis<?> yAxisPPG = chartPPG.getAxisY();
+//		yAxisPPG.setAxisTitle(new IAxis.AxisTitle("Heart Rate (BPM)"));
+//		chartPPG.setBackground(Color.WHITE);
+//		tracePPG = new Trace2DLtd(500); 
+//		tracePPG.setColor(Color.RED);
+//		tracePPG.setName("PPG");
+//		
+//		chartHR = new Chart2D();
+//		chartHR.setBounds(10, 340, 650, 220);
+//		paneHeartRate.add(chartHR);
+//		IAxis<?> xAxisHR = chartHR.getAxisX();
+//		xAxisHR.setVisible(false);
+//		yAxisHR = chartHR.getAxisY();
+//		yAxisHR.setAxisTitle(new IAxis.AxisTitle("Heart Rate (BPM)"));
+//		chartHR.setBackground(Color.WHITE);
+//		traceHR = new Trace2DLtd(500); 
+//		traceHR.setColor(Color.RED);
+//		traceHR.setName("Heart Rate");
+//		
+//		lblPpgSignal = new JLabel("PPG Signal");
+//		lblPpgSignal.setBounds(10, 85, 100, 14);
+//		paneHeartRate.add(lblPpgSignal);
+//		
+//		lblHeartRate = new JLabel("Heart Rate");
+//		lblHeartRate.setBounds(10, 325, 100, 14);
+//		paneHeartRate.add(lblHeartRate);
+//		
+//		lblHeartRateOutput = new JLabel("Heart Rate");
+//		lblHeartRateOutput.setBounds(670, 340, 100, 14);
+//		paneHeartRate.add(lblHeartRateOutput);
+//		
+//		lblPpgChannelName = new JLabel("PPG Channel Name");
+//		lblPpgChannelName.setBounds(50, 20, 150, 14);
+//		paneHeartRate.add(lblPpgChannelName);
+//		
+//		lblNumberOfBeats = new JLabel("Number Of Beats To Average");
+//		lblNumberOfBeats.setBounds(300, 20, 200, 14);
+//		paneHeartRate.add(lblNumberOfBeats);
+//		
+//		comboBoxPpgChannel = new JComboBox<String>();
+//		comboBoxPpgChannel.setBounds(50, 35, 150, 24);
+//		paneHeartRate.add(comboBoxPpgChannel);
+//		
+//		spinnerNumberOfBeatsToAve = new JSpinner();
+//		spinnerNumberOfBeatsToAve.setBounds(300, 35, 40, 24);
+//		paneHeartRate.add(spinnerNumberOfBeatsToAve);
+//		spinnerNumberOfBeatsToAve.setValue(5);
+//		
+//		textFieldHeartRate = new JTextField("");
+//		textFieldHeartRate.setBounds(670, 355, 80, 24);
+//		paneHeartRate.add(textFieldHeartRate);
+//		textFieldHeartRate.setColumns(10);
 	}
-
+	
 	private void openFile() {
 		JFileChooser fr = new JFileChooser();
 		fr.setAcceptAllFileFilterUsed(false);
@@ -877,36 +938,36 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		fr.setFileFilter(filter);
 		returnVal = fr.showOpenDialog(frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fr.getSelectedFile();
-			fileName = file.toString();	
-			log = new LoggingPC(fileName, ",");
-			if (log.mFileExists) {
-				fileExistsWindow.setVisible(true);
-
-				btnOverwriteFile.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						fileExistsWindow.setVisible(false);
-						loggingData=true;
-					}
-				});
-				btnCancelWriteFile.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						fileExistsWindow.setVisible(false);
-						loggingData=false;
-						openFile();
-					}
-				});
-			} else {
-				loggingData=true;
+            File file = fr.getSelectedFile();
+            fileName = file.toString();	
+            log = new LoggingPC(fileName, ",");
+            if (log.mFileExists) {
+            	fileExistsWindow.setVisible(true);
+            	
+        		btnOverwriteFile.addActionListener(new ActionListener() {
+        			public void actionPerformed(ActionEvent arg0) {
+        				fileExistsWindow.setVisible(false);
+        				loggingData=true;
+        			}
+        		});
+        		btnCancelWriteFile.addActionListener(new ActionListener() {
+        			public void actionPerformed(ActionEvent arg0) {
+        				fileExistsWindow.setVisible(false);
+        				loggingData=false;
+        				openFile();
+        			}
+        		});
+            } else {
+            	loggingData=true;
 				textFieldMessage.setText("Saving data to " + fileName);
-			}
+            }
 		} else {
 			menuItemSaveToCsv.setSelected(false);
 		}
 	}
-
+	
 	private void connected() {
-
+		
 		mShimmerVersion = mShimmer.getShimmerVersion();
 		if (firstConfiguration) {
 			if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3) {
@@ -920,6 +981,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 					comboBoxAccelRange.addItem(Configuration.Shimmer3.ListofAccelRange[j]);
 				}
 				for (int k=0; k<Configuration.Shimmer3.ListofGyroRange.length; k++) {
+					System.out.print("SetComboBox");
 					comboBoxGyroRange.addItem(Configuration.Shimmer3.ListofGyroRange[k]);
 				}
 				for (int l=0; l<Configuration.Shimmer3.ListofMagRange.length; l++) {
@@ -955,7 +1017,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			comboBoxGyroRange.setEnabled(false);
 			comboBoxMagRange.setEnabled(false);
 			comboBoxPressureResolution.setEnabled(false);
-
+			
 			firstConfiguration=false;
 		}
 
@@ -964,7 +1026,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		if (numberOfSignals>maxTraces){
 			numberOfSignals=maxTraces;
 		}
-
+		
 		for (int count=0; count<numberOfSignals; count++) {
 			traces[count] = new Trace2DLtd(500); 
 			traces[count].setColor(traceColours[count]);
@@ -978,10 +1040,10 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		if (calculateHeartRate){
 			//chart.addTrace(traceHR);
 		}
-
+		
 		menuItemConfigure.setEnabled(true);
 		lblSignals.setVisible(true);
-
+			
 		samplingRate = mShimmer.getSamplingRate();
 		DecimalFormat df = new DecimalFormat("#.#");
 		String rate = df.format(samplingRate);
@@ -991,22 +1053,25 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		comboBoxMagRange.setSelectedIndex(mShimmer.getMagRange()-1);
 		comboBoxGsrRange.setSelectedIndex(mShimmer.getGSRRange());			
 		if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3) {
+			System.out.print("Gyro Range  "+  comboBoxGyroRange.getItemCount()  + " "+ mShimmer.getGyroRange() + "\n");
+			
+			
 			comboBoxGyroRange.setSelectedIndex(mShimmer.getGyroRange());
 			comboBoxPressureResolution.setSelectedIndex(mShimmer.getPressureResolution());
 			menuItemExgSettings.setEnabled(true);
 		}
 		chart.setVisible(true);	
-
+		
 	}
-
+	
 	/**
 	 * Setting up configuration panel.
 	 */
 	private void configuration() {
-
+		
 		configFrame.setVisible(true);
 		List<String> enabledSensors = mShimmer.getListofEnabledSensors();
-
+		
 		//Incase Cancel was clicked last time
 		if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3){
 			for (int i=0; i<enabledSensors.size(); i++) {
@@ -1031,7 +1096,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				}
 			}
 		}
-
+		
 		for (int i=0; i<enabledSensors.size(); i++){
 			String enabledSensor = enabledSensors.get(i);
 			if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3){
@@ -1063,7 +1128,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				if (listOfSensorsShimmer3[13].isSelected()) {
 					comboBoxGsrRange.setEnabled(true);
 					listOfSensorsShimmer3[10].setText("Internal ADC A13");
-					//	listOfSensorsShimmer3[10].setText("Internal ADC A13/PPG");
+				//	listOfSensorsShimmer3[10].setText("Internal ADC A13/PPG");
 				} else {
 					comboBoxGsrRange.setEnabled(false);
 					listOfSensorsShimmer3[10].setText("Internal ADC A13");
@@ -1086,7 +1151,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				}
 			}
 		}
-
+		
 		if (mShimmer.get5VReg() == 1){
 			chckbx5VReg.setSelected(true);
 		} else {
@@ -1122,13 +1187,13 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		} else {
 			chckbxInternalExpPower.setSelected(false);
 		}
-
+		
 		if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3) {
 			chckbx5VReg.setEnabled(false);
 			chckbxLowPowerAcc.setEnabled(true);
 			chckbxLowPowerGyro.setEnabled(true);
 			chckbxInternalExpPower.setEnabled(true);
-
+			
 			if (listOfSensorsShimmer3[10].isSelected() && listOfSensorsShimmer3[13].isSelected() && chckbxInternalExpPower.isSelected()){
 				chckbxEnablePPGtoHR.setEnabled(true);
 			} else {
@@ -1136,13 +1201,29 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				chckbxEnablePPGtoHR.setSelected(false);
 				spinnerNumberOfBeatsToAve.setEnabled(false);
 			}
-
+			
+			if (((listOfSensorsShimmer3[14].isSelected() && listOfSensorsShimmer3[15].isSelected()) 
+					|| (listOfSensorsShimmer3[16].isSelected() && listOfSensorsShimmer3[17].isSelected())) 
+					&& (mShimmer.isEXGUsingDefaultECGConfiguration())){
+				chckbxEnableECGtoHR.setEnabled(true);
+			} else {
+				chckbxEnableECGtoHR.setEnabled(false);
+				chckbxEnableECGtoHR.setSelected(false);
+				spinnerNumberOfBeatsToAveECG.setEnabled(false);
+			}
+			
+			if (chckbxEnableECGtoHR.isSelected()){
+				spinnerNumberOfBeatsToAveECG.setEnabled(true);
+			} else {
+				spinnerNumberOfBeatsToAveECG.setEnabled(false);
+			}
+			
 			if (chckbxEnablePPGtoHR.isSelected()){
 				spinnerNumberOfBeatsToAve.setEnabled(true);
 			} else {
 				spinnerNumberOfBeatsToAve.setEnabled(false);
 			}
-
+			
 			listOfSensorsShimmer3[1].addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
 					if (listOfSensorsShimmer3[1].isSelected()) {
@@ -1200,7 +1281,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 					if (listOfSensorsShimmer3[13].isSelected()) {
 						comboBoxGsrRange.setEnabled(true);
 						listOfSensorsShimmer3[10].setText("Internal ADC A13");
-						//		listOfSensorsShimmer3[10].setText("Internal ADC A13/PPG");
+				//		listOfSensorsShimmer3[10].setText("Internal ADC A13/PPG");
 						if (listOfSensorsShimmer3[10].isSelected() && chckbxInternalExpPower.isSelected())
 						{
 							chckbxEnablePPGtoHR.setEnabled(true);
@@ -1219,13 +1300,21 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 					if (listOfSensorsShimmer3[14].isSelected()) {
 						listOfSensorsShimmer3[16].setSelected(false);
 					} 
+					if (listOfSensorsShimmer3[14].isSelected() && listOfSensorsShimmer3[15].isSelected() && mShimmer.isEXGUsingDefaultECGConfiguration())
+					{
+						chckbxEnableECGtoHR.setEnabled(true);
+					}
 				}
 			});
 			listOfSensorsShimmer3[15].addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
 					if (listOfSensorsShimmer3[15].isSelected()) {
 						listOfSensorsShimmer3[17].setSelected(false);
-					} 
+					}
+					if (listOfSensorsShimmer3[14].isSelected() && listOfSensorsShimmer3[15].isSelected() && mShimmer.isEXGUsingDefaultECGConfiguration())
+					{
+						chckbxEnableECGtoHR.setEnabled(true);
+					}
 				}
 			});
 			listOfSensorsShimmer3[16].addActionListener(new ActionListener(){
@@ -1233,6 +1322,10 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 					if (listOfSensorsShimmer3[16].isSelected()) {
 						listOfSensorsShimmer3[14].setSelected(false);
 					} 
+					if (listOfSensorsShimmer3[16].isSelected() && listOfSensorsShimmer3[17].isSelected() && mShimmer.isEXGUsingDefaultECGConfiguration())
+					{
+						chckbxEnableECGtoHR.setEnabled(true);
+					}
 				}
 			});
 			listOfSensorsShimmer3[17].addActionListener(new ActionListener(){
@@ -1240,6 +1333,10 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 					if (listOfSensorsShimmer3[17].isSelected()) {
 						listOfSensorsShimmer3[15].setSelected(false);
 					} 
+					if (listOfSensorsShimmer3[16].isSelected() && listOfSensorsShimmer3[17].isSelected() && mShimmer.isEXGUsingDefaultECGConfiguration())
+					{
+						chckbxEnableECGtoHR.setEnabled(true);
+					}
 				}
 			});
 			chckbxInternalExpPower.addActionListener(new ActionListener(){
@@ -1259,21 +1356,36 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			chckbxEnablePPGtoHR.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
 					if (chckbxEnablePPGtoHR.isSelected()){
-						spinnerNumberOfBeatsToAve.setEnabled(true);
-						JOptionPane.showMessageDialog(null,"Users should note that the Low Pass Filter (5Hz Cutoff) on supports sampling rates of 51.2/102.4/128/204.8/256/512/1024. The Low Pass Filter is essential to getting a good PPG signal for PPG to HR calculation. No results will appear for ten seconds on the plot, due to the algorithm going through a training period.","PPG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+						if (!spinnerNumberOfBeatsToAve.isEnabled()){
+							spinnerNumberOfBeatsToAve.setEnabled(true);
+							JOptionPane.showMessageDialog(null,"Users should note that a Low Pass Filter (5Hz Cutoff) and a High Pass Filter (0.5Hz Cutoff) is used when calculating Heart Rate value","PPG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+						}
 					} else {
 						spinnerNumberOfBeatsToAve.setEnabled(false);
 					}
 				}
 			});
-
+			
+			chckbxEnableECGtoHR.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent arg0) {
+					if (chckbxEnableECGtoHR.isSelected()){
+						if (!spinnerNumberOfBeatsToAveECG.isEnabled()){
+							spinnerNumberOfBeatsToAveECG.setEnabled(true);
+							JOptionPane.showMessageDialog(null,"Users are recomended to use High Pass Filter (0.5Hz Cutoff) and appropriate band stop filter. Filters can be selected in ExG Settings page. LA_RA used for calculation.","ECG To Heart Rate",JOptionPane.WARNING_MESSAGE);
+						}
+					} else {
+						spinnerNumberOfBeatsToAveECG.setEnabled(false);
+					}
+				}
+			});
+			
 		} else { //Shimmer 2
 			chckbx5VReg.setEnabled(true);
 			chckbxVoltageMon.setEnabled(true);
 			chckbxLowPowerAcc.setEnabled(false);
 			chckbxLowPowerGyro.setEnabled(false);
 			chckbxInternalExpPower.setEnabled(false);
-
+			
 			listOfSensorsShimmer2[0].addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
 					if (listOfSensorsShimmer2[0].isSelected()) {
@@ -1290,7 +1402,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 					} else {
 						chckbxLowPowerMag.setEnabled(false);
 					}
-
+					
 				}
 			});
 			listOfSensorsShimmer2[6].addActionListener(new ActionListener(){
@@ -1300,7 +1412,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 					} else {
 						comboBoxGsrRange.setEnabled(false);
 					}
-
+					
 				}
 			});
 			listOfSensorsShimmer2[3].addActionListener(new ActionListener(){
@@ -1321,7 +1433,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			});
 		}
 	}
-
+	
 	/**
 	 * Applying configuration changes
 	 */
@@ -1336,7 +1448,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		} else {
 			mShimmer.enable3DOrientation(false);
 		}
-
+		
 		double threshold = 1.2; //Default value.
 		int bufferSize = 100;
 		if (chckbxOnTheFlyGyroCal.isSelected()) {
@@ -1344,13 +1456,13 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		} else {
 			mShimmer.enableOnTheFlyGyroCal(false, bufferSize, threshold);
 		}
-
+		
 		if (chckbxLowPowerMag.isSelected()) {
 			mShimmer.enableLowPowerMag(true);
 		} else {
 			mShimmer.enableLowPowerMag(false);
 		}
-
+		
 		indexAccel = comboBoxAccelRange.getSelectedIndex();
 		indexGyro = comboBoxGyroRange.getSelectedIndex();
 		indexMag = comboBoxMagRange.getSelectedIndex();
@@ -1379,6 +1491,8 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			}
 			if (chckbxEnablePPGtoHR.isSelected()) {
 				calculateHeartRate = true;
+			} else if (chckbxEnableECGtoHR.isSelected()) {
+				calculateHeartRate = true;
 			} else {
 				calculateHeartRate = false;
 			}
@@ -1392,113 +1506,113 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		configFrame.setVisible(false);
 		enableSensors();
 	}
-
+	
 	/**
 	 * Enabling selected sensors
 	 */
 	private void enableSensors() {
 		chart.removeAllTraces();
 		for (int count=0; count<maxTraces; count++) {
-			traces[count] = new Trace2DLtd(300); 
-			traces[count].setColor(traceColours[count]);
-			chart.addTrace(traces[count]);
-			traces[count].setVisible(false);
-		}
+	    	traces[count] = new Trace2DLtd(300); 
+	    	traces[count].setColor(traceColours[count]);
+	    	chart.addTrace(traces[count]);
+	    	traces[count].setVisible(false);
+	    }
 		if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3) {
 			if (listOfSensorsShimmer3[0].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_ACCEL;
-			}
-			if (listOfSensorsShimmer3[1].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_DACCEL;
-			}
-			if (listOfSensorsShimmer3[2].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GYRO;
-			}
-			if (listOfSensorsShimmer3[3].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_MAG;
-			}
-			if (listOfSensorsShimmer3[4].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BATT;
-			}
-			if (listOfSensorsShimmer3[5].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXT_ADC_A7;
-			}
-			if (listOfSensorsShimmer3[6].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXT_ADC_A6;
-			}
-			if (listOfSensorsShimmer3[7].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXT_ADC_A15;
-			}
-			if (listOfSensorsShimmer3[8].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A1;
-			}
-			if (listOfSensorsShimmer3[9].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A12;
-			}
-			if (listOfSensorsShimmer3[10].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A13;
-			}
-			if (listOfSensorsShimmer3[11].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A14;
-			}
-			if (listOfSensorsShimmer3[12].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BMP180;
-			}
-			if (listOfSensorsShimmer3[13].isSelected()){
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GSR;
-			}
-			if (listOfSensorsShimmer3[14].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXG1_24BIT;
-			} 
-			if (listOfSensorsShimmer3[15].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXG2_24BIT;
-			} 
-			if (listOfSensorsShimmer3[16].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXG1_16BIT;
-			}
-			if (listOfSensorsShimmer3[17].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXG2_16BIT;
-			}
-			if (listOfSensorsShimmer3[18].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BRIDGE_AMP;
-			}
+        		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_ACCEL;
+	       	}
+	       	if (listOfSensorsShimmer3[1].isSelected()) {
+        		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_DACCEL;
+	        }
+	       	if (listOfSensorsShimmer3[2].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GYRO;
+	       	}
+	       	if (listOfSensorsShimmer3[3].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_MAG;
+	       	}
+	       	if (listOfSensorsShimmer3[4].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BATT;
+        	}
+	        if (listOfSensorsShimmer3[5].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXT_ADC_A7;
+	       	}
+	       	if (listOfSensorsShimmer3[6].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXT_ADC_A6;
+	       	}
+	       	if (listOfSensorsShimmer3[7].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXT_ADC_A15;
+	       	}
+        	if (listOfSensorsShimmer3[8].isSelected()) {
+	        	mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A1;
+	        }
+	       	if (listOfSensorsShimmer3[9].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A12;
+	       	}
+	       	if (listOfSensorsShimmer3[10].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A13;
+	       	}
+	       	if (listOfSensorsShimmer3[11].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A14;
+        	}
+	        if (listOfSensorsShimmer3[12].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BMP180;
+	       	}
+	       	if (listOfSensorsShimmer3[13].isSelected()){
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GSR;
+	       	}
+	       	if (listOfSensorsShimmer3[14].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXG1_24BIT;
+	       	} 
+	       	if (listOfSensorsShimmer3[15].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXG2_24BIT;
+	       	} 
+	       	if (listOfSensorsShimmer3[16].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXG1_16BIT;
+	       	}
+	       	if (listOfSensorsShimmer3[17].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXG2_16BIT;
+	       	}
+	       	if (listOfSensorsShimmer3[18].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BRIDGE_AMP;
+	       	}
 		} else { //Shimmer 2
-			if (listOfSensorsShimmer2[0].isSelected()) {
-				mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_ACCEL;
-			}
-		if (listOfSensorsShimmer2[1].isSelected()) {
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GYRO;
-		}
-		if (listOfSensorsShimmer2[2].isSelected()) {
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_MAG;
-		}
-		if (listOfSensorsShimmer2[3].isSelected()) {
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BATT;
-		}
-		if (listOfSensorsShimmer2[4].isSelected()) {
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_ECG;
-		}
-		if (listOfSensorsShimmer2[5].isSelected()) {
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EMG;
-		}
-		if (listOfSensorsShimmer2[6].isSelected()) {
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GSR;
-		}
-		if (listOfSensorsShimmer2[7].isSelected()) {
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXP_BOARD_A0;
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXP_BOARD_A7;
-		}
-		if (listOfSensorsShimmer2[8].isSelected()) {
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BRIDGE_AMP;
-		}
-		if (listOfSensorsShimmer2[9].isSelected()){
-			mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_HEART;
-		}
+	        if (listOfSensorsShimmer2[0].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_ACCEL;
+	       	}
+	       	if (listOfSensorsShimmer2[1].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GYRO;
+	       	}
+	       	if (listOfSensorsShimmer2[2].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_MAG;
+	       	}
+        	if (listOfSensorsShimmer2[3].isSelected()) {
+	        	mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BATT;
+	        }
+	       	if (listOfSensorsShimmer2[4].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_ECG;
+	       	}
+	       	if (listOfSensorsShimmer2[5].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EMG;
+	       	}
+	       	if (listOfSensorsShimmer2[6].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GSR;
+        	}
+	        if (listOfSensorsShimmer2[7].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXP_BOARD_A0;
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_EXP_BOARD_A7;
+	       	}
+	       	if (listOfSensorsShimmer2[8].isSelected()) {
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BRIDGE_AMP;
+	       	}
+	       	if (listOfSensorsShimmer2[9].isSelected()){
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_HEART;
+	       	}
 		}
 		mShimmer.writeEnabledSensors(mReturnEnabledSensors);
 		mReturnEnabledSensors=0;
 	}
-
+	
 	/**
 	 * Setting up check boxes of enabled sensor signals on main panel
 	 */
@@ -1522,14 +1636,14 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			listOfSignals[count] = new JCheckBox(enabledSensorSignals[count], false);
 			frame.getContentPane().add(listOfSignals[count]);	
 			listOfSignals[count].setBounds(10,220+(20*count),200,15);
-
+			
 			calibratedSignals[count] = new JCheckBox("CAL", false);
 			frame.getContentPane().add(calibratedSignals[count]);
 			calibratedSignals[count].setBounds(207, 220+(20*count),50,15);
 			if (listOfSignals[count].getText() == "EXG1 STATUS" || listOfSignals[count].getText() == "EXG2 STATUS") {
 				calibratedSignals[count].setEnabled(false);
 			} 
-
+			
 			yLocationForHeartRate = 220+(20*(count+1)); 
 		}
 		if (calculateHeartRate)
@@ -1537,9 +1651,10 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			chckbxHeartRate.setVisible(true);
 			chckbxHeartRate.setBounds(10, yLocationForHeartRate, 200, 15);
 			frame.getContentPane().add(chckbxHeartRate);
+			SwingUtilities.updateComponentTreeUI(frame);
 		}
 	}
-
+	
 	/**
 	 * Detecting which signals are chosen to show on the graph
 	 * @return a list of chosen sensor signals
@@ -1580,11 +1695,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		selectedSignals = listofSignals.toArray(new String[listofSignals.size()]);
 		return selectedSignals;
 	}
-
-
-
-
-
+	
 	private void exgConfiguration() {
 		byte[] exg1RegisterContents = mShimmer.getEXG1RegisterArray();
 		byte[] exg2RegisterContents = mShimmer.getEXG2RegisterArray();
@@ -1596,134 +1707,134 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				comboBoxGainChip2Channel1.addItem(gain[i]);
 				comboBoxGainChip2Channel2.addItem(gain[i]);
 			}
-
+			
 			firstExgConfiguration=false;
 		}
-
+		
 		int exgGain = (exg1RegisterContents[3] >> 4) & 7;
-		//CATHY: cmdEXGGain1.SelectedIndex = ??
-		if (exgGain == 0)
-		{
-			comboBoxGainChip1Channel1.setSelectedIndex(4);
-		}
-		else if (exgGain == 1)
-		{
-			comboBoxGainChip1Channel1.setSelectedIndex(0);
-		}
-		else if (exgGain == 2)
-		{
-			comboBoxGainChip1Channel1.setSelectedIndex(1);
-		}
-		else if (exgGain == 3)
-		{
-			comboBoxGainChip1Channel1.setSelectedIndex(2);
-		}
-		else if (exgGain == 4)
-		{
-			comboBoxGainChip1Channel1.setSelectedIndex(3);
-		}
-		else if (exgGain == 5)
-		{
-			comboBoxGainChip1Channel1.setSelectedIndex(5);
-		}
-		else if (exgGain == 6)
-		{
-			comboBoxGainChip1Channel1.setSelectedIndex(6);
-		}
-
-		exgGain = (exg1RegisterContents[4] >> 4) & 7;
-		//CATHY: cmdEXGGain1.SelectedIndex = ??
-		if (exgGain == 0)
-		{
-			comboBoxGainChip1Channel2.setSelectedIndex(4);
-		}
-		else if (exgGain == 1)
-		{
-			comboBoxGainChip1Channel2.setSelectedIndex(0);
-		}
-		else if (exgGain == 2)
-		{
-			comboBoxGainChip1Channel2.setSelectedIndex(1);
-		}
-		else if (exgGain == 3)
-		{
-			comboBoxGainChip1Channel2.setSelectedIndex(2);
-		}
-		else if (exgGain == 4)
-		{
-			comboBoxGainChip1Channel2.setSelectedIndex(3);
-		}
-		else if (exgGain == 5)
-		{
-			comboBoxGainChip1Channel2.setSelectedIndex(5);
-		}
-		else if (exgGain == 6)
-		{
-			comboBoxGainChip1Channel2.setSelectedIndex(6);
-		}
-
-		exgGain = (exg2RegisterContents[3] >> 4) & 7;
-		//CATHY: cmdEXGGain1.SelectedIndex = ??
-		if (exgGain == 0)
-		{
-			comboBoxGainChip2Channel1.setSelectedIndex(4);
-		}
-		else if (exgGain == 1)
-		{
-			comboBoxGainChip2Channel1.setSelectedIndex(0);
-		}
-		else if (exgGain == 2)
-		{
-			comboBoxGainChip2Channel1.setSelectedIndex(1);
-		}
-		else if (exgGain == 3)
-		{
-			comboBoxGainChip2Channel1.setSelectedIndex(2);
-		}
-		else if (exgGain == 4)
-		{
-			comboBoxGainChip2Channel1.setSelectedIndex(3);
-		}
-		else if (exgGain == 5)
-		{
-			comboBoxGainChip2Channel1.setSelectedIndex(5);
-		}
-		else if (exgGain == 6)
-		{
-			comboBoxGainChip2Channel1.setSelectedIndex(6);
-		}
-
-		exgGain = (exg2RegisterContents[4] >> 4) & 7;
-		//CATHY: cmdEXGGain1.SelectedIndex = ??
-		if (exgGain == 0)
-		{
-			comboBoxGainChip2Channel2.setSelectedIndex(4);
-		}
-		else if (exgGain == 1)
-		{
-			comboBoxGainChip2Channel2.setSelectedIndex(0);
-		}
-		else if (exgGain == 2)
-		{
-			comboBoxGainChip2Channel2.setSelectedIndex(1);
-		}
-		else if (exgGain == 3)
-		{
-			comboBoxGainChip2Channel2.setSelectedIndex(2);
-		}
-		else if (exgGain == 4)
-		{
-			comboBoxGainChip2Channel2.setSelectedIndex(3);
-		}
-		else if (exgGain == 5)
-		{
-			comboBoxGainChip2Channel2.setSelectedIndex(5);
-		}
-		else if (exgGain == 6)
-		{
-			comboBoxGainChip2Channel2.setSelectedIndex(6);
-		}
-
+        //CATHY: cmdEXGGain1.SelectedIndex = ??
+        if (exgGain == 0)
+        {
+        	comboBoxGainChip1Channel1.setSelectedIndex(4);
+        }
+        else if (exgGain == 1)
+        {
+        	comboBoxGainChip1Channel1.setSelectedIndex(0);
+        }
+        else if (exgGain == 2)
+        {
+        	comboBoxGainChip1Channel1.setSelectedIndex(1);
+        }
+        else if (exgGain == 3)
+        {
+        	comboBoxGainChip1Channel1.setSelectedIndex(2);
+        }
+        else if (exgGain == 4)
+        {
+        	comboBoxGainChip1Channel1.setSelectedIndex(3);
+        }
+        else if (exgGain == 5)
+        {
+        	comboBoxGainChip1Channel1.setSelectedIndex(5);
+        }
+        else if (exgGain == 6)
+        {
+        	comboBoxGainChip1Channel1.setSelectedIndex(6);
+        }
+		
+        exgGain = (exg1RegisterContents[4] >> 4) & 7;
+        //CATHY: cmdEXGGain1.SelectedIndex = ??
+        if (exgGain == 0)
+        {
+        	comboBoxGainChip1Channel2.setSelectedIndex(4);
+        }
+        else if (exgGain == 1)
+        {
+        	comboBoxGainChip1Channel2.setSelectedIndex(0);
+        }
+        else if (exgGain == 2)
+        {
+        	comboBoxGainChip1Channel2.setSelectedIndex(1);
+        }
+        else if (exgGain == 3)
+        {
+        	comboBoxGainChip1Channel2.setSelectedIndex(2);
+        }
+        else if (exgGain == 4)
+        {
+        	comboBoxGainChip1Channel2.setSelectedIndex(3);
+        }
+        else if (exgGain == 5)
+        {
+        	comboBoxGainChip1Channel2.setSelectedIndex(5);
+        }
+        else if (exgGain == 6)
+        {
+        	comboBoxGainChip1Channel2.setSelectedIndex(6);
+        }
+		
+        exgGain = (exg2RegisterContents[3] >> 4) & 7;
+        //CATHY: cmdEXGGain1.SelectedIndex = ??
+        if (exgGain == 0)
+        {
+        	comboBoxGainChip2Channel1.setSelectedIndex(4);
+        }
+        else if (exgGain == 1)
+        {
+        	comboBoxGainChip2Channel1.setSelectedIndex(0);
+        }
+        else if (exgGain == 2)
+        {
+        	comboBoxGainChip2Channel1.setSelectedIndex(1);
+        }
+        else if (exgGain == 3)
+        {
+        	comboBoxGainChip2Channel1.setSelectedIndex(2);
+        }
+        else if (exgGain == 4)
+        {
+        	comboBoxGainChip2Channel1.setSelectedIndex(3);
+        }
+        else if (exgGain == 5)
+        {
+        	comboBoxGainChip2Channel1.setSelectedIndex(5);
+        }
+        else if (exgGain == 6)
+        {
+        	comboBoxGainChip2Channel1.setSelectedIndex(6);
+        }
+		
+        exgGain = (exg2RegisterContents[4] >> 4) & 7;
+        //CATHY: cmdEXGGain1.SelectedIndex = ??
+        if (exgGain == 0)
+        {
+        	comboBoxGainChip2Channel2.setSelectedIndex(4);
+        }
+        else if (exgGain == 1)
+        {
+        	comboBoxGainChip2Channel2.setSelectedIndex(0);
+        }
+        else if (exgGain == 2)
+        {
+        	comboBoxGainChip2Channel2.setSelectedIndex(1);
+        }
+        else if (exgGain == 3)
+        {
+        	comboBoxGainChip2Channel2.setSelectedIndex(2);
+        }
+        else if (exgGain == 4)
+        {
+        	comboBoxGainChip2Channel2.setSelectedIndex(3);
+        }
+        else if (exgGain == 5)
+        {
+        	comboBoxGainChip2Channel2.setSelectedIndex(5);
+        }
+        else if (exgGain == 6)
+        {
+        	comboBoxGainChip2Channel2.setSelectedIndex(6);
+        }
+        
 		chckbxHPF0_05.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if (chckbxHPF0_05.isSelected()) {
@@ -1762,8 +1873,8 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				}
 			}
 		});
-
-
+			
+		
 		for (int i=0; i<exg1RegisterContents.length; i++) {
 			int exg1 = exg1RegisterContents[i] & 0xFF;
 			exgConfigurationChip1[i]=exg1;
@@ -1774,7 +1885,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			exgConfigurationChip2[i]=exg2;
 			textFieldChip2[i].setText(Integer.toString(exg2));
 		}
-
+		
 		chckbxEcgConfig.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if (chckbxEcgConfig.isSelected()) {
@@ -1825,159 +1936,159 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				}
 			}
 		});
-
+		
 		comboBoxGainChip1Channel1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int exgGain = Integer.parseInt(textFieldChip1[3].getText());
-				exgGain = (exgGain & 143);
-				if (comboBoxGainChip1Channel1.getSelectedIndex() == 0){
-					exgGain = (exgGain | 0x10) ;
-				}
-				else if (comboBoxGainChip1Channel1.getSelectedIndex() == 1)
-				{
-					exgGain = (exgGain | 0x20);
-				}
-				else if (comboBoxGainChip1Channel1.getSelectedIndex() == 2)
-				{
-					exgGain = (exgGain | 0x30);
-				}
-				else if (comboBoxGainChip1Channel1.getSelectedIndex() == 3)
-				{
-					exgGain = (exgGain | 0x40);
-				}
-				else if (comboBoxGainChip1Channel1.getSelectedIndex() == 4)
-				{
-					exgGain = (exgGain | 0x00);
-				}
-				else if (comboBoxGainChip1Channel1.getSelectedIndex() == 5)
-				{
-					exgGain = (exgGain | 0x50);
-				}
-				else if (comboBoxGainChip1Channel1.getSelectedIndex() == 6)
-				{
-					exgGain = (exgGain | 0x60);
-				}
-				textFieldChip1[3].setText(Integer.toString(exgGain));
-
+	            exgGain = (exgGain & 143);
+	            if (comboBoxGainChip1Channel1.getSelectedIndex() == 0){
+	                exgGain = (exgGain | 0x10) ;
+	            }
+	            else if (comboBoxGainChip1Channel1.getSelectedIndex() == 1)
+	            {
+	                exgGain = (exgGain | 0x20);
+	            }
+	            else if (comboBoxGainChip1Channel1.getSelectedIndex() == 2)
+	            {
+	                exgGain = (exgGain | 0x30);
+	            }
+	            else if (comboBoxGainChip1Channel1.getSelectedIndex() == 3)
+	            {
+	                exgGain = (exgGain | 0x40);
+	            }
+	            else if (comboBoxGainChip1Channel1.getSelectedIndex() == 4)
+	            {
+	                exgGain = (exgGain | 0x00);
+	            }
+	            else if (comboBoxGainChip1Channel1.getSelectedIndex() == 5)
+	            {
+	                exgGain = (exgGain | 0x50);
+	            }
+	            else if (comboBoxGainChip1Channel1.getSelectedIndex() == 6)
+	            {
+	                exgGain = (exgGain | 0x60);
+	            }
+	            textFieldChip1[3].setText(Integer.toString(exgGain));
+				
 			}
 		});
 		comboBoxGainChip1Channel2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int exgGain = Integer.parseInt(textFieldChip1[4].getText());
-				exgGain = (exgGain & 143);
-				if (comboBoxGainChip1Channel2.getSelectedIndex() == 0){
-					exgGain = (exgGain | 0x10) ;
-				}
-				else if (comboBoxGainChip1Channel2.getSelectedIndex() == 1)
-				{
-					exgGain = (exgGain | 0x20);
-				}
-				else if (comboBoxGainChip1Channel2.getSelectedIndex() == 2)
-				{
-					exgGain = (exgGain | 0x30);
-				}
-				else if (comboBoxGainChip1Channel2.getSelectedIndex() == 3)
-				{
-					exgGain = (exgGain | 0x40);
-				}
-				else if (comboBoxGainChip1Channel2.getSelectedIndex() == 4)
-				{
-					exgGain = (exgGain | 0x00);
-				}
-				else if (comboBoxGainChip1Channel2.getSelectedIndex() == 5)
-				{
-					exgGain = (exgGain | 0x50);
-				}
-				else if (comboBoxGainChip1Channel2.getSelectedIndex() == 6)
-				{
-					exgGain = (exgGain | 0x60);
-				}
-				textFieldChip1[4].setText(Integer.toString(exgGain));
-
+	            exgGain = (exgGain & 143);
+	            if (comboBoxGainChip1Channel2.getSelectedIndex() == 0){
+	                exgGain = (exgGain | 0x10) ;
+	            }
+	            else if (comboBoxGainChip1Channel2.getSelectedIndex() == 1)
+	            {
+	                exgGain = (exgGain | 0x20);
+	            }
+	            else if (comboBoxGainChip1Channel2.getSelectedIndex() == 2)
+	            {
+	                exgGain = (exgGain | 0x30);
+	            }
+	            else if (comboBoxGainChip1Channel2.getSelectedIndex() == 3)
+	            {
+	                exgGain = (exgGain | 0x40);
+	            }
+	            else if (comboBoxGainChip1Channel2.getSelectedIndex() == 4)
+	            {
+	                exgGain = (exgGain | 0x00);
+	            }
+	            else if (comboBoxGainChip1Channel2.getSelectedIndex() == 5)
+	            {
+	                exgGain = (exgGain | 0x50);
+	            }
+	            else if (comboBoxGainChip1Channel2.getSelectedIndex() == 6)
+	            {
+	                exgGain = (exgGain | 0x60);
+	            }
+	            textFieldChip1[4].setText(Integer.toString(exgGain));
+				
 			}
 		});
 		comboBoxGainChip2Channel1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int exgGain = Integer.parseInt(textFieldChip2[3].getText());
-				exgGain = (exgGain & 143);
-				if (comboBoxGainChip2Channel1.getSelectedIndex() == 0){
-					exgGain = (exgGain | 0x10) ;
-				}
-				else if (comboBoxGainChip2Channel1.getSelectedIndex() == 1)
-				{
-					exgGain = (exgGain | 0x20);
-				}
-				else if (comboBoxGainChip2Channel1.getSelectedIndex() == 2)
-				{
-					exgGain = (exgGain | 0x30);
-				}
-				else if (comboBoxGainChip2Channel1.getSelectedIndex() == 3)
-				{
-					exgGain = (exgGain | 0x40);
-				}
-				else if (comboBoxGainChip2Channel1.getSelectedIndex() == 4)
-				{
-					exgGain = (exgGain | 0x00);
-				}
-				else if (comboBoxGainChip2Channel1.getSelectedIndex() == 5)
-				{
-					exgGain = (exgGain | 0x50);
-				}
-				else if (comboBoxGainChip2Channel1.getSelectedIndex() == 6)
-				{
-					exgGain = (exgGain | 0x60);
-				}
-				textFieldChip2[3].setText(Integer.toString(exgGain));
-
+	            exgGain = (exgGain & 143);
+	            if (comboBoxGainChip2Channel1.getSelectedIndex() == 0){
+	                exgGain = (exgGain | 0x10) ;
+	            }
+	            else if (comboBoxGainChip2Channel1.getSelectedIndex() == 1)
+	            {
+	                exgGain = (exgGain | 0x20);
+	            }
+	            else if (comboBoxGainChip2Channel1.getSelectedIndex() == 2)
+	            {
+	                exgGain = (exgGain | 0x30);
+	            }
+	            else if (comboBoxGainChip2Channel1.getSelectedIndex() == 3)
+	            {
+	                exgGain = (exgGain | 0x40);
+	            }
+	            else if (comboBoxGainChip2Channel1.getSelectedIndex() == 4)
+	            {
+	                exgGain = (exgGain | 0x00);
+	            }
+	            else if (comboBoxGainChip2Channel1.getSelectedIndex() == 5)
+	            {
+	                exgGain = (exgGain | 0x50);
+	            }
+	            else if (comboBoxGainChip2Channel1.getSelectedIndex() == 6)
+	            {
+	                exgGain = (exgGain | 0x60);
+	            }
+	            textFieldChip2[3].setText(Integer.toString(exgGain));
+				
 			}
 		});
 		comboBoxGainChip2Channel2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int exgGain = Integer.parseInt(textFieldChip2[4].getText());
-				exgGain = (exgGain & 143);
-				if (comboBoxGainChip2Channel2.getSelectedIndex() == 0){
-					exgGain = (exgGain | 0x10) ;
-				}
-				else if (comboBoxGainChip2Channel2.getSelectedIndex() == 1)
-				{
-					exgGain = (exgGain | 0x20);
-				}
-				else if (comboBoxGainChip2Channel2.getSelectedIndex() == 2)
-				{
-					exgGain = (exgGain | 0x30);
-				}
-				else if (comboBoxGainChip2Channel2.getSelectedIndex() == 3)
-				{
-					exgGain = (exgGain | 0x40);
-				}
-				else if (comboBoxGainChip2Channel2.getSelectedIndex() == 4)
-				{
-					exgGain = (exgGain | 0x00);
-				}
-				else if (comboBoxGainChip2Channel2.getSelectedIndex() == 5)
-				{
-					exgGain = (exgGain | 0x50);
-				}
-				else if (comboBoxGainChip2Channel2.getSelectedIndex() == 6)
-				{
-					exgGain = (exgGain | 0x60);
-				}
-				textFieldChip2[4].setText(Integer.toString(exgGain));
-
+	            exgGain = (exgGain & 143);
+	            if (comboBoxGainChip2Channel2.getSelectedIndex() == 0){
+	                exgGain = (exgGain | 0x10) ;
+	            }
+	            else if (comboBoxGainChip2Channel2.getSelectedIndex() == 1)
+	            {
+	                exgGain = (exgGain | 0x20);
+	            }
+	            else if (comboBoxGainChip2Channel2.getSelectedIndex() == 2)
+	            {
+	                exgGain = (exgGain | 0x30);
+	            }
+	            else if (comboBoxGainChip2Channel2.getSelectedIndex() == 3)
+	            {
+	                exgGain = (exgGain | 0x40);
+	            }
+	            else if (comboBoxGainChip2Channel2.getSelectedIndex() == 4)
+	            {
+	                exgGain = (exgGain | 0x00);
+	            }
+	            else if (comboBoxGainChip2Channel2.getSelectedIndex() == 5)
+	            {
+	                exgGain = (exgGain | 0x50);
+	            }
+	            else if (comboBoxGainChip2Channel2.getSelectedIndex() == 6)
+	            {
+	                exgGain = (exgGain | 0x60);
+	            }
+	            textFieldChip2[4].setText(Integer.toString(exgGain));
+				
 			}
 		});
-
+		
 	}
 
-
+	
 	/**
 	 * Applying EXG Configuration Changes and filter parameters
 	 */
 	private void exgConfigurationDone() {
-
+		
 		int[] chip = new int[3];
 		chip[0]=1;
-
+		
 		byte[] chip1 = new byte[10];
 		byte[] chip2 = new byte[10];
 		for (int i=0; i<textFieldChip1.length; i++) {
@@ -2002,7 +2113,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			cornerFrequencyHPF=-1;
 			highPassFilterEnabled=false;
 		}
-
+		
 		if (chckbxBSF_50.isSelected()) {
 			cornerFrequencyBSF1=49;
 			cornerFrequencyBSF2=51;
@@ -2016,7 +2127,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			cornerFrequencyBSF2=-1;
 			bandStopFilterEnabled=false;
 		}
-
+		
 		// add a delay here for the sensors to take effect
 		try {
 			Thread.sleep(500);	// Wait to ensure that we dont missed any bytes which need to be cleared
@@ -2026,7 +2137,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		setupListOfEnabledSensors();
 		exgFrame.setVisible(false);
 	}
-
+	
 	/**
 	 * Removing data
 	 */
@@ -2037,14 +2148,14 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 		comboBoxGainChip1Channel2.removeAllItems();
 		comboBoxGainChip2Channel1.removeAllItems();
 		comboBoxGainChip2Channel2.removeAllItems();
-
+		
 		comboBoxSamplingRate.removeAllItems();
 		comboBoxAccelRange.removeAllItems();
 		comboBoxGsrRange.removeAllItems();
 		comboBoxGyroRange.removeAllItems();
 		comboBoxMagRange.removeAllItems();
 		comboBoxPressureResolution.removeAllItems();
-
+		
 		chart.removeAllTraces();
 		for (int count=0; count<listofCompatibleSensorsShimmer3.length; count++) {
 			configFrame.getContentPane().remove(listOfSensorsShimmer3[count]);
@@ -2057,19 +2168,24 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
-		int ind = shimmerMSG.mIdentifier;
-		Object objectCluster = shimmerMSG.mB;
+		  int ind = shimmerMSG.mIdentifier;
+
+		  Object object = (Object) shimmerMSG.mB;
+
 		if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
-			CallbackObject callbackObject = (CallbackObject)objectCluster;
-			int state = callbackObject.mIndicator;
+			CallbackObject callbackObject = (CallbackObject)object;
+			
 			if (callbackObject.mState == BT_STATE.CONNECTING) {	//Never called
 				textFieldState.setText("Shimmer Connecting");
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				textFieldState.setText("Shimmer Connected");
 				btnConnect.setEnabled(false);
 				btnDisconnect.setEnabled(true);
-				//connected();
-			} else {
+				
+			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
+//					|| callbackObject.mState == BT_STATE.NONE
+					|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
+				
 				textFieldState.setText("Shimmer Disconnected");
 				textFieldMessage.setText("");
 				btnDisconnect.setEnabled(false);
@@ -2081,7 +2197,7 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				onDisconnect();
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
-			CallbackObject callbackObject = (CallbackObject)objectCluster;
+			CallbackObject callbackObject = (CallbackObject)object;
 			int msg = callbackObject.mIndicator;
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				connected();
@@ -2102,189 +2218,189 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				setupListOfEnabledSensors();
 				btnStartStreaming.setEnabled(true);
 			}
-		} 
-		else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
-			ObjectCluster objc = (ObjectCluster)objectCluster;
-			String[] exgnames = {Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT,Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT};
+		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
+			if (object instanceof ObjectCluster){
+			ObjectCluster objc = (ObjectCluster)object;
+			String[] exgnames = {"EXG1 CH1","EXG1 CH2","EXG2 CH1","EXG2 CH2","ECG LL-RA","ECG LA-RA","ECG Vx-RL","EMG CH1","EMG CH2","EXG1 CH1 16Bit","EXG1 CH2 16Bit","EXG2 CH1 16Bit","EXG2 CH2 16Bit"};
 			//Filter signals
 			if (highPassFilterEnabled || bandStopFilterEnabled){
 				for (int indexgnames=0;indexgnames<exgnames.length;indexgnames++){
 					Collection<FormatCluster> cf = objc.mPropertyCluster.get(exgnames[indexgnames]);
 					try {
-					if (cf.size()!=0){
-						double data =((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData;
-						if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT)) {
-							if (highPassFilterEnabled){
-								
+						if (cf.size()!=0){
+							double data =((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData;
+							if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT)) {
+								if (highPassFilterEnabled){
 									data = hpfexg1ch1.filterData(data);
-						
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch1.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data); 
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data); 
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch1.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data); 
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg2ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg2ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg2Ch2Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch1.filterData(data); 
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch1.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch1Data=data;
+							} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT)) {
+								if (highPassFilterEnabled){
+									data = hpfexg1ch2.filterData(data);
+								}
+								if (bandStopFilterEnabled){
+									data = bsfexg1ch2.filterData(data);
+								}
+								((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
+								exg1Ch2Data=data;
 							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch1.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data); 
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data); 
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch1.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data); 
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg2ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg2ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg2Ch2Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch1.filterData(data); 
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch1.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch1Data=data;
-						} else if (exgnames[indexgnames].equals(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT)) {
-							if (highPassFilterEnabled){
-								data = hpfexg1ch2.filterData(data);
-							}
-							if (bandStopFilterEnabled){
-								data = bsfexg1ch2.filterData(data);
-							}
-							((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData = data;
-							exg1Ch2Data=data;
 						}
-					}		} catch (Exception e) {
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+
 				}
 			}
-
+			
 			String[] selectedSensorSignals = selectSignalsToView();
 			int numberOfSelectedSignals = selectedSensorSignals.length;
 			if (numberOfSelectedSignals>maxTraces) {
@@ -2292,20 +2408,16 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 			}
 			chart.removeAllTraces();
 			double dataArrayPPG = 0;
+			double dataArrayECG = 0;
 			double heartRate = Double.NaN;
 
-			if (calculateHeartRate){
-				
+			if (calculateHeartRate && chckbxEnablePPGtoHR.isSelected()) {
 				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
 				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
 				dataArrayPPG = format.mData;
 				try {
-
 					dataArrayPPG = lpf.filterData(dataArrayPPG);
-
 					dataArrayPPG = hpf.filterData(dataArrayPPG);
-
-
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -2317,6 +2429,34 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG, ppgTimeStamp);
 				if (heartRate == INVALID_RESULT){
 					heartRate = Double.NaN;
+				}
+				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
+				if (chckbxHeartRate.isSelected()) {
+					chart.addTrace(traceHR);
+				}
+			}
+			
+			if (calculateHeartRate && chckbxEnableECGtoHR.isSelected()) {
+				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
+				dataArrayECG = format.mData;
+				try {
+					//dataArrayECG = lpfECG.filterData(dataArrayECG);
+					//dataArrayECG = hpfECG.filterData(dataArrayECG);
+					format.mData = dataArrayECG;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
+				double ecgTimeStamp = ts.mData;
+				heartRate = heartRateCalculationECG.ecgToHrConversion(dataArrayECG, ecgTimeStamp);
+				if (heartRate == INVALID_RESULT){
+					heartRate = Double.NaN;
+				} else {
+					//System.out.println("Heart Rate: " + heartRate);
 				}
 				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
 				if (chckbxHeartRate.isSelected()) {
@@ -2394,23 +2534,22 @@ public class ShimmerConnect extends BasicProcessWithCallBack {
 				}
 
 			}
-
+			
 			if (returnVal == JFileChooser.APPROVE_OPTION && loggingData) {
-				log.logData(objc);
+					log.logData(objc);
 			}
-
-
+			}
+			
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE) {
-			CallbackObject callbackObject = (CallbackObject)objectCluster;
+			CallbackObject callbackObject = (CallbackObject)object;
 			double packetReceptionRate = callbackObject.mPacketReceptionRate;
 
-//			double packetReceptionRate = (Double) objectCluster;
+//			double packetReceptionRate = (Double) object;
 			if(downSample%50==0){
 				textFieldMessage.setText("Packet Reception Rate: " + Double.toString(packetReceptionRate));
 			}
 		}
-
-
+	
 	}
 }
 
