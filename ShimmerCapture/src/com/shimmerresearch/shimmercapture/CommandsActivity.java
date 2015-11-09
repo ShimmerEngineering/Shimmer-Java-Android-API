@@ -164,9 +164,14 @@ public class CommandsActivity extends ServiceActivity {
         	public void onClick(DialogInterface dialog, int item) {
         		Log.d("Shimmer",samplingRate[item]);
         		double newRate = Double.valueOf(samplingRate[item]);
-        		ServiceActivity.mService.writeSamplingRate(mBluetoothAddress, newRate);
-        		Toast.makeText(getApplicationContext(), "Sample rate changed. New rate = "+newRate+" Hz", Toast.LENGTH_SHORT).show();
-        		buttonSampleRate.setText("SAMPLING RATE "+"\n"+"("+newRate+" HZ)");
+        		if (cBoxECGtoHR.isChecked() && newRate<128){
+        			Toast.makeText(getApplicationContext(), "Please use a sampling rate of 128Hz or higher when using the ECG to HR algorithm", Toast.LENGTH_LONG).show();
+					
+        		} else {
+        			ServiceActivity.mService.writeSamplingRate(mBluetoothAddress, newRate);
+        			Toast.makeText(getApplicationContext(), "Sample rate changed. New rate = "+newRate+" Hz", Toast.LENGTH_SHORT).show();
+        			buttonSampleRate.setText("SAMPLING RATE "+"\n"+"("+newRate+" HZ)");
+        		}
 
         	}
         });
@@ -664,7 +669,8 @@ public class CommandsActivity extends ServiceActivity {
     				// TODO Auto-generated method stub
     				
     				if (checked){
-    					long enabledSensors = mService.getEnabledSensors(mBluetoothAddress); 
+    					if (mService.getSamplingRate(mBluetoothAddress)>=128){
+    						long enabledSensors = mService.getEnabledSensors(mBluetoothAddress); 
     						if (mService.isEXGUsingECG24Configuration(mBluetoothAddress) || mService.isEXGUsingECG16Configuration(mBluetoothAddress)){
     							mService.enableECGtoHR(mBluetoothAddress, checked);
     							if (cBoxPPGtoHR.isChecked()){
@@ -700,8 +706,11 @@ public class CommandsActivity extends ServiceActivity {
     							cBoxECGtoHR.setChecked(false);
 
     						}
-    					
-					
+
+    					} else {
+    						Toast.makeText(getApplicationContext(), "Please use a sampling rate of 128Hz or higher", Toast.LENGTH_LONG).show();
+							cBoxECGtoHR.setChecked(false);
+    					}
     				} else {
     					mService.enableECGtoHR(mBluetoothAddress, checked);
     				}
