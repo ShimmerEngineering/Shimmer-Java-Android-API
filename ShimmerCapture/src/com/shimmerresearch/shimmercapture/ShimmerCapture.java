@@ -2436,11 +2436,10 @@ public class ShimmerCapture extends ServiceActivity {
 					}
 					else
 						listView.setItemChecked(clickIndex, true); //ECG
-					
-					listView.setItemChecked(clickIndex+1, false); //ECG 16Bit
-					listView.setItemChecked(clickIndex+2, false);// EMG
-					listView.setItemChecked(clickIndex+3, false);// EMG 16Bit
-					listView.setItemChecked(clickIndex+4, false);// Test Signal
+						listView.setItemChecked(clickIndex+1, false); //ECG 16Bit
+						listView.setItemChecked(clickIndex+2, false);// EMG
+						listView.setItemChecked(clickIndex+3, false);// EMG 16Bit
+						listView.setItemChecked(clickIndex+4, false);// Test Signal
 					listView.setItemChecked(clickIndex+5, false);// Test Signal 16Bit
 					if(listView.isItemChecked(clickIndex))
 						mService.writeEXGSetting(mBluetoothAddress, 0);
@@ -2556,12 +2555,11 @@ public class ShimmerCapture extends ServiceActivity {
 					}
 					else
 						listView.setItemChecked(clickIndex, true); //Test Signal 16Bit
-						
-					listView.setItemChecked(clickIndex-5, false); //ECG
-					listView.setItemChecked(clickIndex-4, false);// ECG 16Bit
-					listView.setItemChecked(clickIndex-3, false);// EMG 
-					listView.setItemChecked(clickIndex-2, false);// EMG 16Bit
-					listView.setItemChecked(clickIndex-1, false);// Test Signal
+						listView.setItemChecked(clickIndex-5, false); //ECG
+						listView.setItemChecked(clickIndex-4, false);// ECG 16Bit
+						listView.setItemChecked(clickIndex-3, false);// EMG 
+						listView.setItemChecked(clickIndex-2, false);// EMG 16Bit
+						listView.setItemChecked(clickIndex-1, false);// Test Signal
 					if(listView.isItemChecked(clickIndex))
 						mService.writeEXGSetting(mBluetoothAddress, 2);
 				}

@@ -586,7 +586,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 	}
 	
-//	@Override
+	@Override
 	public void finishOperation(BT_STATE btState){
 		
 		consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + btState);

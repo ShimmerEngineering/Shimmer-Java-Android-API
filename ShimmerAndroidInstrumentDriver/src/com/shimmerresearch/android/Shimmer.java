@@ -1207,6 +1207,12 @@ public class Shimmer extends ShimmerBluetooth{
 		
 	}
 
+	@Override
+	protected void finishOperation(BT_STATE currentOperation) {
+		// TODO Auto-generated method stub
+		
+	}
+
 //	@Override
 //	protected void checkBatteryShimmer2r() {
 //		if (!mWaitForAck) {	

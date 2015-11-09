@@ -4991,6 +4991,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
 			updateEnabledSensorsFromChannels(signalIdArray);
 			interpretDataPacketFormat(mNChannels,signalIdArray);
+			checkExgResolutionFromEnabledSensorsVar();
 		} 
 		else if (mHardwareVersion==HW_ID.SHIMMER_SR30) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
@@ -8214,7 +8215,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 	}
 	
-	private void checkExgResolutionFromEnabledSensorsVar(){
+	protected void checkExgResolutionFromEnabledSensorsVar(){
 		mIsExg1_24bitEnabled = ((mEnabledSensors & mInfoMemLayout.maskExg1_24bitFlag)==mInfoMemLayout.maskExg1_24bitFlag)? true:false;
 		mIsExg2_24bitEnabled = ((mEnabledSensors & mInfoMemLayout.maskExg2_24bitFlag)==mInfoMemLayout.maskExg2_24bitFlag)? true:false;
 		mIsExg1_16bitEnabled = ((mEnabledSensors & mInfoMemLayout.maskExg1_16bitFlag)==mInfoMemLayout.maskExg1_16bitFlag)? true:false;
