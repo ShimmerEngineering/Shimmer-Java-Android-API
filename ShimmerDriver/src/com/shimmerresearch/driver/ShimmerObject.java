@@ -693,9 +693,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mLowPowerAccelWR = false;
 	protected boolean mLowPowerGyro = false;
 	
-	protected long mPacketLossCount=0;
-	protected double mPacketReceptionRate=100;
-	protected double mPacketReceptionRateCurrent=100;
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	protected boolean mFirstTimeCalTime=true;
 	protected double mCalTimeStart;

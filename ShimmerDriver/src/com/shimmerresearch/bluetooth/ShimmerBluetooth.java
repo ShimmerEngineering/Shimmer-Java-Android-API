@@ -150,7 +150,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	        return text;
 	    }
 	}
-//	public BT_STATE mState = BT_STATE.NONE;
 	public BT_STATE mState = BT_STATE.DISCONNECTED;
 
 	protected boolean mIsConnected = false;
@@ -3606,10 +3605,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public int getPacketSize(){
 		return mPacketSize;
-	}
-
-	public double getPacketReceptionRate(){
-		return mPacketReceptionRate;
 	}
 
 	public String getDirectoryName(){

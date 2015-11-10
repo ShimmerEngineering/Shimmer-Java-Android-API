@@ -83,6 +83,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
 	
+	protected long mPacketLossCount=0;
+	protected double mPacketReceptionRate=100;
+	protected double mPacketReceptionRateCurrent=100;
 
 	// --------------- Abstract Methods Start --------------------------
 	
@@ -411,7 +414,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mInfoMemBytes;
 	}
 
-	
+	public double getPacketReceptionRate(){
+		return mPacketReceptionRate;
+	}
+
+	public double getPacketReceptionRateCurrent(){
+		return mPacketReceptionRateCurrent;
+	}
+
 	// --------------- Get Methods End --------------------------
 
 	

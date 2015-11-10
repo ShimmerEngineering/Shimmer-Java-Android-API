@@ -31,7 +31,7 @@ public class ShimmerVerDetails implements Serializable {
 //		public final static int DCU_SWEATSENSOR = 4;
 		public final static int SHIMMER_GQ_BLE = 5;
 //		public final static int BIOSENSICS = 6;
-		public final static int SHIMMER_GQ_802154 = 7;
+		public final static int SHIMMER_GQ_802154 = 56;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;
@@ -89,6 +89,14 @@ public class ShimmerVerDetails implements Serializable {
 		public final static class SHIMMER2R {
 			public final static int BOILER_PLATE = 0;
 			public final static int BTSTREAM = 1;
+			
+			public static final Map<Integer, String> mMapOfFirmwareLabels;
+		    static {
+		        Map<Integer, String> aMap = new TreeMap<Integer,String>();
+		        aMap.put(BOILER_PLATE, "BoilerPlate");
+		        aMap.put(BTSTREAM, "BtStream");
+		        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
+		    }
 		}
 		
 		/**
@@ -103,7 +111,30 @@ public class ShimmerVerDetails implements Serializable {
 			public final static int DCU_SWEATSENSOR = 4;
 			public final static int GQ_BLE = 5;
 			public final static int GPIO_TEST = 6;
-			public final static int GQ_802154 = 7;
+			
+			public static final Map<Integer, String> mMapOfFirmwareLabels;
+		    static {
+		        Map<Integer, String> aMap = new TreeMap<Integer,String>();
+		        aMap.put(BTSTREAM, "BtStream");
+		        aMap.put(SDLOG, "SDLog");
+		        aMap.put(LOGANDSTREAM, "LogAndStream");
+		        aMap.put(DCU_SWEATSENSOR, "Swatch");
+		        aMap.put(GQ_BLE, "GQ_BLE");
+		        aMap.put(GPIO_TEST, "GPIO_TEST");
+		        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
+		    }
+		}
+
+		public final static class SHIMMER_GQ {
+			public final static int GQ_802154 = 1;
+			
+			public static final Map<Integer, String> mMapOfFirmwareLabels;
+		    static {
+		        Map<Integer, String> aMap = new TreeMap<Integer,String>();
+		        aMap.put(GQ_802154, "GQ_802154");
+		        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
+		    }
+
 		}
 		
 		public final static class BASES {
@@ -117,14 +148,14 @@ public class ShimmerVerDetails implements Serializable {
 	
 	public final static class FW_LABEL {
 		public final static String UNKNOWN = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
-		public final static String BOILERPLATE = "BoilerPlate";
-		public final static String BTSTREAM = "BtStream";
-		public final static String SDLOG = "SDLog";
-		public final static String LOGANDSTREAM = "LogAndStream";
-		public final static String DCU_SWEATSENSOR = "Swatch";
-		public final static String GQ_BLE = "GQ_BLE";
-		public final static String GPIO_TEST = "GPIO_TEST";
-		public final static String GQ_802154 = "GQ_802154";
+//		public final static String BOILERPLATE = "BoilerPlate";
+//		public final static String BTSTREAM = "BtStream";
+//		public final static String SDLOG = "SDLog";
+//		public final static String LOGANDSTREAM = "LogAndStream";
+//		public final static String DCU_SWEATSENSOR = "Swatch";
+//		public final static String GQ_BLE = "GQ_BLE";
+//		public final static String GPIO_TEST = "GPIO_TEST";
+//		public final static String GQ_802154 = "GQ_802154";
 	}
 
 

@@ -106,33 +106,52 @@ public class ShimmerVerObject implements Serializable {
 				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.UNKNOWN);
 			}
 			
+			//TODO change to static map approach rather then if statements
 			// Handle parsed FW description. Keep first entry as a separate IF
 			// statement
 			mFirmwareIdentifierParsed = FW_LABEL.UNKNOWN;
+			// Set default on Shimmer2R
 			if (mHardwareVersion==HW_ID.SHIMMER_2R){
-				mFirmwareIdentifierParsed = FW_LABEL.BOILERPLATE;
+				if(FW_ID.SHIMMER2R.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
+					mFirmwareIdentifierParsed = FW_ID.SHIMMER2R.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
+				}
+//				mFirmwareIdentifierParsed = FW_LABEL.BOILERPLATE;
+//				if (mFirmwareIdentifier==FW_ID.SHIMMER2R.BTSTREAM){
+//					mFirmwareIdentifierParsed = FW_LABEL.BTSTREAM;
+//				}
 			}
-			if (((mHardwareVersion==HW_ID.SHIMMER_2R)&&(mFirmwareIdentifier==FW_ID.SHIMMER2R.BTSTREAM))
-					||((mHardwareVersion==HW_ID.SHIMMER_3)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.BTSTREAM))){
-				mFirmwareIdentifierParsed = FW_LABEL.BTSTREAM;
-			}
-			else if ((mHardwareVersion==HW_ID.SHIMMER_3)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM)){
-				mFirmwareIdentifierParsed = FW_LABEL.LOGANDSTREAM;
-			}
-			else if ((mHardwareVersion==HW_ID.SHIMMER_3)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG)){
-				mFirmwareIdentifierParsed = FW_LABEL.SDLOG;
-			}
-			else if ((mHardwareVersion==HW_ID.SHIMMER_3)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.DCU_SWEATSENSOR)){
-				mFirmwareIdentifierParsed = FW_LABEL.DCU_SWEATSENSOR;
-			}
-			else if ((mHardwareVersion==HW_ID.SHIMMER_3)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.GPIO_TEST)){
-				mFirmwareIdentifierParsed = FW_LABEL.GPIO_TEST;
+			else if (mHardwareVersion==HW_ID.SHIMMER_3){
+				if(FW_ID.SHIMMER3.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
+					mFirmwareIdentifierParsed = FW_ID.SHIMMER3.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
+				}
+
+//				if (mFirmwareIdentifier==FW_ID.SHIMMER3.BTSTREAM){
+//					mFirmwareIdentifierParsed = FW_LABEL.BTSTREAM;
+//				}
+//				else if (mFirmwareIdentifier==FW_ID.SHIMMER3.LOGANDSTREAM){
+//					mFirmwareIdentifierParsed = FW_LABEL.LOGANDSTREAM;
+//				}
+//				else if (mFirmwareIdentifier==FW_ID.SHIMMER3.SDLOG){
+//					mFirmwareIdentifierParsed = FW_LABEL.SDLOG;
+//				}
+//				else if (mFirmwareIdentifier==FW_ID.SHIMMER3.DCU_SWEATSENSOR){
+//					mFirmwareIdentifierParsed = FW_LABEL.DCU_SWEATSENSOR;
+//				}
+//				else if (mFirmwareIdentifier==FW_ID.SHIMMER3.GPIO_TEST){
+//					mFirmwareIdentifierParsed = FW_LABEL.GPIO_TEST;
+//				}
 			}
 			else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_BLE)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.GQ_BLE)){
-				mFirmwareIdentifierParsed = FW_LABEL.GQ_BLE;
+//				mFirmwareIdentifierParsed = FW_LABEL.GQ_BLE;
+				if(FW_ID.SHIMMER3.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
+					mFirmwareIdentifierParsed = FW_ID.SHIMMER3.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
+				}
 			}
-			else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_802154)&&(mFirmwareIdentifier==FW_ID.SHIMMER3.GQ_802154)){
-				mFirmwareIdentifierParsed = FW_LABEL.GQ_802154;
+			else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_802154)&&(mFirmwareIdentifier==FW_ID.SHIMMER_GQ.GQ_802154)){
+//				mFirmwareIdentifierParsed = FW_LABEL.GQ_802154;
+				if(FW_ID.SHIMMER_GQ.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
+					mFirmwareIdentifierParsed = FW_ID.SHIMMER_GQ.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
+				}
 			}
 			
 			mFirmwareVersionParsed = mFirmwareIdentifierParsed;

@@ -13,7 +13,7 @@ import java.util.Map;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.sensor.AbstractSensor;
 
-public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, ShimmerDataProcessing, Serializable {
+public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSensors, ShimmerDataProcessing, Serializable {
 	
 	/**Each integer is a unique identifier
 	 * 
@@ -23,7 +23,16 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	/** This is derived from all the sensors
 	 * 
 	 */
-	public HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>> mMapOfChannel = new HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>>(); 
+	public HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>> mMapOfChannel = new HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>>();
+
+	public static final int VARIABLE_NOT_SET = -1;
+	public int mRadioChannel = VARIABLE_NOT_SET;
+	public int mRadioGroupId = VARIABLE_NOT_SET;
+	public int mRadioAddr = VARIABLE_NOT_SET;
+
+	public String mSpanId = "N/A";
+	
+	private int mRadioResponseWindow = -1; 
 
 	//This maps the channel ID to sensor
 	//Map<Integer,AbstractSensor> mMapofSensorChannelToSensor = new HashMap<Integer,AbstractSensor>();
@@ -34,7 +43,32 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	
 	//
 
-	public ShimmerGQ(ShimmerVerObject sVO) {
+	public enum GQ_STATE{
+		IDLE("Idle"),
+		STREAMING("Streaming"),
+		STREAMING_AND_SDLOGGING("Streaming and SD Logging");
+		
+	    private final String text;
+
+	    /**
+	     * @param text
+	     */
+	    private GQ_STATE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
+	public GQ_STATE mState = GQ_STATE.IDLE;
+	
+	
+	public ShimmerGQ_802154(ShimmerVerObject sVO) {
 		super.setShimmerVersionObject(sVO);
 	}
 
@@ -42,7 +76,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	 * @param uniqueID unique id of the shimmer
 	 * @param shimmerVersionObject the FW and HW details of the devices
 	 */
-	public ShimmerGQ(ShimmerGQInitSettings settings){
+	public ShimmerGQ_802154(ShimmerGQInitSettings settings){
 		mUniqueID = settings.mShimmerGQID;
 	}
 	
@@ -51,12 +85,12 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	 * @param slotNumber
 	 * @param macId 
 	 */
-	public ShimmerGQ(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE connectionType){
+	public ShimmerGQ_802154(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE connectionType){
 		this(dockId, slotNumber, connectionType);
 		setMacIdFromUart(macId);
 	}
 
-	public ShimmerGQ(String dockID, int slotNumber, COMMUNICATION_TYPE connectionType) {
+	public ShimmerGQ_802154(String dockID, int slotNumber, COMMUNICATION_TYPE connectionType) {
 		mDockID = dockID;
 		parseDockType();
 		
@@ -116,7 +150,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	 * @see java.io.Serializable
 	 */
 	@Override
-	public ShimmerGQ deepClone() {
+	public ShimmerGQ_802154 deepClone() {
 //		System.out.println("Cloning:" + mUniqueID);
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -125,7 +159,7 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (ShimmerGQ) ois.readObject();
+			return (ShimmerGQ_802154) ois.readObject();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -211,6 +245,49 @@ public class ShimmerGQ extends ShimmerDevice implements ShimmerHardwareSensors, 
 	public List<Integer> sensorMapConflictCheck(Integer key) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setRadioConfig(byte[] radioConfigArray) {
+		if(radioConfigArray.length>=9){
+	        this.mRadioChannel = radioConfigArray[0];
+	        this.mRadioGroupId = (radioConfigArray[1]<<8) + radioConfigArray[2];
+	        this.mRadioAddr = (radioConfigArray[3]<<8) + radioConfigArray[4];
+	        this.mRadioResponseWindow  = (radioConfigArray[5]<<24) + (radioConfigArray[6]<<16) + (radioConfigArray[7]<<8) + radioConfigArray[8];
+		}
+	}
+	
+	public void setRadioConfig(int radioChannel, int radioGroupId, int radioAddr, int radioResponseWindow) {
+        this.mRadioChannel = radioChannel;
+        this.mRadioGroupId = radioGroupId;
+        this.mRadioAddr = radioAddr;
+        this.mRadioResponseWindow = radioResponseWindow;
+	}
+	
+	public byte[] getRadioConfig() {
+		byte[] radioConfigArray = new byte[9];
+		
+        radioConfigArray[0] = (byte)(mRadioChannel & 0xFF);
+        radioConfigArray[2] = (byte)((mRadioGroupId & 0xFF00) >> 8);
+        radioConfigArray[3] = (byte)(mRadioGroupId & 0xFF);
+        radioConfigArray[4] = (byte)((mRadioAddr & 0xFF00) >> 8);
+        radioConfigArray[5] = (byte)(mRadioAddr & 0xFF);
+
+        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 24) & 0xFF);
+        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 16) & 0xFF);
+        radioConfigArray[7] = (byte)((mRadioResponseWindow >> 8) & 0xFF);
+        radioConfigArray[8] = (byte)((mRadioResponseWindow >> 0) & 0xFF);
+        
+		return radioConfigArray;
+	}
+
+
+	public boolean isConnected() {
+		if(mRadioChannel==ShimmerGQ_802154.VARIABLE_NOT_SET){
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	
 	
