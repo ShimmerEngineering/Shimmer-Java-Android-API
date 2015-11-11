@@ -126,20 +126,20 @@ public class MsgDock {
 	//TODO: Temp here
 	public final static int MSG_ID_SOURCE_SPANMANAGER = 200;
 
-	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_FAILED = 180;
-	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_SUCCESS = 181;
-	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_FAILED = 182;
-	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_SUCCESS = 183;
-	public final static int MSG_ID_SPAN_ENABLE_BASESTATION_FAILED = 184;
-	public final static int MSG_ID_SPAN_ENABLE_BASESTATION_SUCCESS = 185;
-	public final static int MSG_ID_SPAN_NEW_PACKET_RECEIVED = 186;
+//	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_FAILED = 180;
+//	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_SUCCESS = 181;
+//	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_FAILED = 182;
+//	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_SUCCESS = 183;
+//	public final static int MSG_ID_SPAN_ENABLE_BASESTATION_FAILED = 184;
+//	public final static int MSG_ID_SPAN_ENABLE_BASESTATION_SUCCESS = 185;
+//	public final static int MSG_ID_SPAN_NEW_PACKET_RECEIVED = 186;
 	
-	public final static int MSG_ID_SPANMANAGER_ENABLE_SPECTRUM_SCANNER_FAILED = 190;
-	public final static int MSG_ID_SPANMANAGER_ENABLE_SPECTRUM_SCANNER_SUCCESS = 191;
-	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_FAILED = 192;
-	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_SUCCESS = 193;
-	public final static int MSG_ID_SPANMANAGER_ENABLE_BASESTATION_FAILED = 194;
-	public final static int MSG_ID_SPANMANAGER_ENABLE_BASESTATION_SUCCESS = 195;
+//	public final static int MSG_ID_SPANMANAGER_ENABLE_SPECTRUM_SCANNER_FAILED = 190;
+//	public final static int MSG_ID_SPANMANAGER_ENABLE_SPECTRUM_SCANNER_SUCCESS = 191;
+//	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_FAILED = 192;
+//	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_SUCCESS = 193;
+//	public final static int MSG_ID_SPANMANAGER_ENABLE_BASESTATION_FAILED = 194;
+//	public final static int MSG_ID_SPANMANAGER_ENABLE_BASESTATION_SUCCESS = 195;
 	
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
@@ -232,7 +232,8 @@ public class MsgDock {
         aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");
         aMap.put(MSG_ID_BT_TO_DB_FAIL, "MSG_ID_BT_TO_DB_FAIL");
         
-
+        aMap.put(MSG_ID_SOURCE_SPANMANAGER, "MSG_ID_SOURCE_SPANMANAGER");
+        
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }
