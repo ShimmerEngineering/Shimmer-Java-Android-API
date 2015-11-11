@@ -2,13 +2,13 @@ package com.shimmerresearch.sensor;
 
 import java.util.HashMap;
 
-import com.shimmerresearch.driver.ChannelDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.SensorConfigOptionDetails;
-import com.shimmerresearch.driver.ShimmerVerDetails;
-import com.shimmerresearch.driver.ShimmerVerObject;
 
 public class ShimmerGSRSensor extends AbstractSensor{
 	

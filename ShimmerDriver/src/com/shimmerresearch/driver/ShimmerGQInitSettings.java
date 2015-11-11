@@ -2,6 +2,8 @@ package com.shimmerresearch.driver;
 
 import java.util.HashMap;
 
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+
 public class ShimmerGQInitSettings {
 
 	String mShimmerGQID;

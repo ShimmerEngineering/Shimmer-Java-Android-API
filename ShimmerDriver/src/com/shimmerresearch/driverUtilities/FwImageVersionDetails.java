@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driverUtilities;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,7 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 
-import com.shimmerresearch.driver.ShimmerVerDetails.*;
+import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.*;
 
 /**
  * Object to processes and stores the information related to a firmware image

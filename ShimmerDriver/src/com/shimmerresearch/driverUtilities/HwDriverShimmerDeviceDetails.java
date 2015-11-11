@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driverUtilities;
 
 
 /**Holds HW information of a connected SmartDock (used by DeviceInfo)

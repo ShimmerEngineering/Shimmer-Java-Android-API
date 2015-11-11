@@ -87,11 +87,8 @@
 
 package com.shimmerresearch.driver;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -112,21 +109,28 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
-import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
-import com.shimmerresearch.driver.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
-import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.driver.SensorDetails;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
-import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
+import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.sensor.AbstractSensor;
+import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
+import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
@@ -7435,7 +7439,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 
-		InfoMemLayout mInfoMemLayout = new InfoMemLayout(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		InfoMemLayoutShimmer3 mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		
 		byte[] infoMemBackup = mInfoMemBytes.clone();
 		
@@ -11497,5 +11501,124 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// --------------- ShimmerGQ BLE related end --------------------------
 
 
+	@Override
+	public void parseUartConfigResponse(ComponentPropertyDetails cPD, byte[] response){
+		// Parse response string
+		if(cPD==COMPONENT_PROPERTY.BAT.ENABLE){
+			//TODO Shimmer3 vs. ShimmerGQ
+			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+				getSensorMap().get(Configuration.Shimmer3.SensorMapKey.VBATT).mIsEnabled = (response[0]==0)? false:true;
+			}
+			else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
+				getSensorMap().get(Configuration.ShimmerGqBle.SensorMapKey.VBATT).mIsEnabled = (response[0]==0)? false:true;
+			}
+		}
+		else if(cPD==COMPONENT_PROPERTY.BAT.FREQ_DIVIDER){
+			setSamplingDividerVBatt(response[0]);
+		}
+
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
+			//TODO Shimmer3 vs. ShimmerGQ
+			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+				getSensorMap().get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mIsEnabled = (response[0]==0)? false:true;
+			}
+			else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
+				getSensorMap().get(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL).mIsEnabled = (response[0]==0)? false:true;
+			}
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
+			setLSM303DigitalAccelRate(response[0]);
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE){
+			setDigitalAccelRange(response[0]);
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
+			setLowPowerAccelWR((response[0]==0)? false:true);
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
+			setHighResAccelWR((response[0]==0)? false:true);
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
+			setSamplingDividerLsm303dlhcAccel(response[0]);
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
+//			parseCalParamLSM303DLHCAccel(response);
+			retrieveKinematicCalibrationParametersFromPacket(response, ShimmerObject.LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+		}
+		else if(cPD==COMPONENT_PROPERTY.GSR.ENABLE){
+			//TODO Shimmer3 vs. ShimmerGQ
+			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+				getSensorMap().get(Configuration.Shimmer3.SensorMapKey.GSR).mIsEnabled = (response[0]==0)? false:true;
+			}
+			else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
+				getSensorMap().get(Configuration.ShimmerGqBle.SensorMapKey.GSR).mIsEnabled = (response[0]==0)? false:true;
+			}
+		}
+		else if(cPD==COMPONENT_PROPERTY.GSR.RANGE){
+			setGSRRange(response[0]);
+		}
+		else if(cPD==COMPONENT_PROPERTY.GSR.FREQ_DIVIDER){
+			setSamplingDividerGsr(response[0]);
+		}
+		else if(cPD==COMPONENT_PROPERTY.BEACON.ENABLE){
+			//TODO Shimmer3 vs. ShimmerGQ
+			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+				getSensorMap().get(Configuration.ShimmerGqBle.SensorMapKey.BEACON).mIsEnabled = (response[0]==0)? false:true;
+			}
+			else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
+				getSensorMap().get(Configuration.ShimmerGqBle.SensorMapKey.BEACON).mIsEnabled = (response[0]==0)? false:true;
+			}
+		}
+		else if(cPD==COMPONENT_PROPERTY.BEACON.FREQ_DIVIDER){
+			setSamplingDividerBeacon(response[0]);
+		}
+		else {
+			super.parseUartConfigResponse(cPD, response);
+		}
+	}
+
+	@Override
+	public byte[] generateUartConfigMessage(ComponentPropertyDetails cPD){
+		
+//		System.out.println("Component:" + cPD.component + " Property:" + cPD.property + " ByteArray:" + cPD.byteArray.length);
+		
+		if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
+			byte[] response = new byte[1]; 
+			response[0] = (byte)(getSensorMap().get(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL).mIsEnabled? 1:0);
+			return response;
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
+			byte[] response = new byte[1]; 
+			response[0] = (byte)getLSM303DigitalAccelRate();
+			return response;
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE){
+			byte[] response = new byte[1]; 
+			response[0] = (byte)getAccelRange();
+			return response;
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
+			byte[] response = new byte[1]; 
+			response[0] = (byte)(isLowPowerAccelWR()? 1:0);
+			return response;
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
+			byte[] response = new byte[1]; 
+			response[0] = (byte)(isHighResAccelWR()? 1:0);
+			return response;
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
+			byte[] response = new byte[1]; 
+			response[0] = (byte)(getSamplingDividerLsm303dlhcAccel());
+			return response;
+		}
+		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
+			byte[] response = generateCalParamLSM303DLHCAccel();
+			return response;
+		}
+		else {
+			return super.generateUartConfigMessage(cPD);
+		}			
+	}
 
 }

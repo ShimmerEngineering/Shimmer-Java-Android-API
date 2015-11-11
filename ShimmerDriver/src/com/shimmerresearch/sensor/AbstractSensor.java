@@ -3,11 +3,11 @@ package com.shimmerresearch.sensor;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.shimmerresearch.driver.ChannelDetails;
-import com.shimmerresearch.driver.SensorDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.SensorConfigOptionDetails;
-import com.shimmerresearch.driver.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractSensor {
 	protected String mSensorName;

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensor.AbstractSensor;
 
 public interface ShimmerHardwareSensors {

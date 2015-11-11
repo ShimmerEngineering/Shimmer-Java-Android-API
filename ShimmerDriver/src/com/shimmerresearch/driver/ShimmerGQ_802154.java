@@ -11,7 +11,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
+import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
+import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
 
 public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSensors, ShimmerDataProcessing, Serializable {
 	
@@ -68,6 +76,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 	public GQ_STATE mState = GQ_STATE.IDLE;
 	
 	
+	/**
+	 * @param shimmerVersionObject the FW and HW details of the devices
+	 */
 	public ShimmerGQ_802154(ShimmerVerObject sVO) {
 		super.setShimmerVersionObject(sVO);
 	}
@@ -302,7 +313,29 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
  	}
 	*/
 	
+	@Override
+	public void parseUartConfigResponse(ComponentPropertyDetails cPD, byte[] response){
+		// Parse response string
+		if(cPD==COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
+			setRadioConfig(response);
+		}
+		else {
+			super.parseUartConfigResponse(cPD, response);
+		}
+	}
 	
+	@Override
+	public byte[] generateUartConfigMessage(ComponentPropertyDetails cPD){
+		
+//		System.out.println("Component:" + cPD.component + " Property:" + cPD.property + " ByteArray:" + cPD.byteArray.length);
+		
+		if(cPD==COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
+			return getRadioConfig();
+		}
+		else {
+			return super.generateUartConfigMessage(cPD);
+		}			
 
+	}
 
 }

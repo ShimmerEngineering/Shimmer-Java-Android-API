@@ -1,10 +1,11 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 
-import com.shimmerresearch.driver.ShimmerVerDetails.FW_LABEL;
-import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 
 /**
  * Holds HW, FW and expansion board infomation. Used for docked Shimmers current
