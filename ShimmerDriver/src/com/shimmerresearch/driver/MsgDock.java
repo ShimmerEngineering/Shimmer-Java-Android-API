@@ -263,17 +263,13 @@ public class MsgDock {
 	public int mErrorCodeLowLevel;
 	public int mErrorCodeLowBsl;
 	
-	/** Contains the error message as copied from a caught exception. 
-	 * 
-	 */
+	/** Contains the error message as copied from a caught exception. */
 	public String mExceptionMsg;
-	/** Contains the stracktrace as copied from a caught exception. 
-	 * 
-	 */
+	
+	/** Contains the stracktrace as copied from a caught exception. */
 	public StackTraceElement[] mExceptionStackTrace;
-	/**Indicates whether the Exception is critical to the operation underway.
-	 * 
-	 */
+	
+	/** Indicates whether the Exception is critical to the operation underway. */
 	public ExceptionLevel mExceptionLevel = ExceptionLevel.HIGH;
 	public static enum ExceptionLevel {
 		LOW,
