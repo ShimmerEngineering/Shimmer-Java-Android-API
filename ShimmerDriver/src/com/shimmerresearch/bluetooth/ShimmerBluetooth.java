@@ -151,8 +151,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	public BT_STATE mState = BT_STATE.DISCONNECTED;
 
-	protected boolean mIsConnected = false;
-	
 	private boolean mInstructionStackLock = false;
 	protected boolean mSendProgressReport = false;
 	protected boolean mOperationUnderway = false;

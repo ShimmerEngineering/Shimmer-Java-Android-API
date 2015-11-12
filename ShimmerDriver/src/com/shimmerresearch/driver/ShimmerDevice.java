@@ -67,9 +67,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean mReadDaughterIDSuccess = false;
 	public boolean writeRealWorldClockFromPcTimeSuccess = false;
 	
+	protected boolean mIsConnected = false;
 	protected boolean mIsSensing = false;
 	protected boolean mIsSDLogging = false;											// This is used to monitor whether the device is in sd log mode
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
+	public boolean mIsInitialised = false;
+	public boolean mIsDocked = false;
+	public boolean mHaveAttemptedToReadConfig = false;
 
 	//TODO Below items are based on progress details being stored in each 
 	// slotdetails, should these be removed in favor of the newer method for 
@@ -82,9 +86,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public List<MsgDock> mListOfFailMsg = new ArrayList<MsgDock>();
 	//Temp here from ShimmerDocked - end
 	
-	public boolean mIsInitialised = false;
-	public boolean mIsDocked = false;
-	public boolean mHaveAttemptedToReadConfig = false;
 
 	//TODO: are these variables too specific to different versions of Shimmer HW?
 	public long mShimmerRealTimeClockConFigTime = 0;
@@ -363,6 +364,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public boolean isDocked() {
 		return mIsDocked;
+	}
+	
+	/**
+	 * @return the mIsConnected
+	 */
+	public boolean isConnected() {
+		return mIsConnected;
 	}
 
     /** Returns true if device is streaming (Bluetooth)
