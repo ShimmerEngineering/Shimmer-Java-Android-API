@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.bluetooth;
 
 public class BtCommandDetails{
 	public byte mCommand = (byte) 0x00;

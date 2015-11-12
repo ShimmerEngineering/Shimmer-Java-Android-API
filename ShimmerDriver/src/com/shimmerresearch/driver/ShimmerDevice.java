@@ -7,8 +7,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
+import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
+import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
+import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
+import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
+import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.sensor.AbstractSensor;
+import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -80,7 +90,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mShimmerRealTimeClockConFigTime = 0;
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
-	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
+	public InfoMemLayoutShimmer3 mInfoMemLayout = new InfoMemLayoutShimmer3();
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
 	
 	protected long mPacketLossCount=0;
@@ -576,7 +586,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		
 		if(create){
-			mInfoMemLayout = new InfoMemLayout(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+			mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		}
 	}
 	
@@ -591,6 +601,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			mDockType = DEVICE_TYPE.BASE6;
 		}
 	}
+	
+	
+	public byte[] generateUartConfigMessage(ComponentPropertyDetails cPD){
+		//TODO: process common ShimmerDevice configs
+		return null;
+	}
+	
+	public void parseUartConfigResponse(ComponentPropertyDetails cPD, byte[] response) {
+		//TODO: process common ShimmerDevice configs
+	}
+
 
 
 

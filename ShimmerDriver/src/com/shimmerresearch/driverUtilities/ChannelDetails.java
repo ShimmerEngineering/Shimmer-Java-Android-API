@@ -1,11 +1,11 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
 /**
  * Holds Channel details for parsing. Experimental feature not used currently

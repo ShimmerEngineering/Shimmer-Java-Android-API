@@ -1,4 +1,4 @@
-package com.shimmerresearch.pcdriver;
+package com.shimmerresearch.uartViaDock;
 
 import java.util.concurrent.ExecutionException;
 

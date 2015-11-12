@@ -91,20 +91,19 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.shimmerresearch.driver.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.ExpansionBoardDetails;
 import com.shimmerresearch.driver.FormatCluster;
-import com.shimmerresearch.driver.InfoMemLayout;
-import com.shimmerresearch.driver.ShimmerBattStatusDetails;
-import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
-import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driver.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
+import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 
@@ -3424,7 +3423,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//TODO: MN
 	public void readConfigurationFromInfoMem(){
 		if(this.getFirmwareVersionCode()>=6){
-			int size = InfoMemLayout.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 			readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size);
 		}
 	}

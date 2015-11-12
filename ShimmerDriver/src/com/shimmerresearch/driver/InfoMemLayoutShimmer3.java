@@ -2,7 +2,7 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 
-import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 
 /**
  * Hold the Shimmer3's microcontroller information memory layout. This region of
@@ -15,7 +15,7 @@ import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
  * @author Mark Nolan
  *
  */
-public class InfoMemLayout implements Serializable {
+public class InfoMemLayoutShimmer3 implements Serializable {
 
 	/**
 	 * 
@@ -454,7 +454,7 @@ public class InfoMemLayout implements Serializable {
 //	public int GYRO_AND_MAG =                 0x02;
 //	public int GYRO_AND_SOME_MAG =            0x03;
 	
-	public InfoMemLayout() {
+	public InfoMemLayoutShimmer3() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -471,7 +471,7 @@ public class InfoMemLayout implements Serializable {
 	 * @param firmwareVersionMinor
 	 * @param firmwareVersionInternal
 	 */
-	public InfoMemLayout(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+	public InfoMemLayoutShimmer3(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		mFirmwareIdentifier = firmwareIdentifier;
 		mFirmwareVersionMajor = firmwareVersionMajor;
 		mFirmwareVersionMinor = firmwareVersionMinor;

@@ -1,9 +1,9 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 
-import com.shimmerresearch.driver.ShimmerVerDetails;
-import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 /**
  * Holds the Shimmer's Expansion board information as read from the memory chip

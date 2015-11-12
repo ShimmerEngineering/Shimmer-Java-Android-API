@@ -58,12 +58,18 @@ import java.util.TreeMap;
 
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
-import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driver.ChannelDetails.ChannelDataEndian;
-import com.shimmerresearch.driver.ChannelDetails.ChannelDataType;
-import com.shimmerresearch.driver.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.driver.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
+import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a

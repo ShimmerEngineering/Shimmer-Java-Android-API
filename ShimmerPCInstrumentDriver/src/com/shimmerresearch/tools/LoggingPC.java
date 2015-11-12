@@ -53,9 +53,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.google.common.collect.Multimap;
-import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
 
 public class LoggingPC {
