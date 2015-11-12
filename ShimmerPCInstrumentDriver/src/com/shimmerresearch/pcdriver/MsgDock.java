@@ -109,6 +109,11 @@ public class MsgDock {
 	public final static int MSG_IDENTIFIER_DB_PARSER_FAILURE_IO_EXCEPTION = 133;
 	
 	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
+	
+	//this two are used for clearsky
+	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_UPDATE = 137;
+	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_SUCCESS = 138;
+	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_FAILURE_IO_EXCEPTION = 139;
 
 	public final static int MSG_ID_BT_STREAM = 140;
 	public final static int MSG_ID_PLOT_UPDATE = 150;
