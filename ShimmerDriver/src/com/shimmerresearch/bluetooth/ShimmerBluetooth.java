@@ -170,7 +170,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected int numBytesToReadFromExpBoard=0;
 	
 	private boolean mUseInfoMemConfigMethod = false;
-	
+	protected String mComPort = "";
 	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
 	List<Long> mListofPCTimeStamps = new ArrayList<Long>();
 	
@@ -654,7 +654,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 											&& mCurrentCommand!=SET_BLINK_LED 
 											//&& mCurrentCommand!= GET_VBATT_COMMAND
 											&& mOperationUnderway){
-										sendProgressReport(new ProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mUniqueID));
+										sendProgressReport(new ProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mComPort));
 									}
 									
 									// Process if currentCommand is a SET command
@@ -4715,7 +4715,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
 					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
 					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString + " " + mParentClassName + ": " + mUniqueID + " " + getMacIdFromBtParsed() + " " + message);
+			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
 		}		
 	}
 	
@@ -4727,5 +4727,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	public void setVerboseMode(boolean verboseMode) {
 		mVerboseMode = verboseMode;
+	}
+	
+	public String getComPort(){
+		return mComPort;
+	}
+	
+	public void setComPort(String comport){
+		mComPort = comport;
 	}
 }

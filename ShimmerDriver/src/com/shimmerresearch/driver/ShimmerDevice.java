@@ -124,7 +124,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		setShimmerVersionObject(new ShimmerVerObject());
 	}
 
-
+	/** If the device instance is already created use this to add a dock communication type to the instance
+	 * @param dockID
+	 * @param slotNumber
+	 */
+	public void addDOCKCoummnicationRoute(String dockId,int slotNumber) {
+		mDockID = dockId;
+		parseDockType();
+		
+		mSlotNumber = slotNumber;
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+		
+		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
+	}
+	
+	
 	public void setBattStatusDetails(ShimmerBattStatusDetails shimmerBattStatusDetails) {
 		mShimmerBattStatusDetails = shimmerBattStatusDetails;
 	}
@@ -577,6 +591,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			mDockType = DEVICE_TYPE.BASE6;
 		}
 	}
+
 
 
 }

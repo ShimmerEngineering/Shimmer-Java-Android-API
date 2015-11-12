@@ -67,7 +67,7 @@ public class ProgressReportPerDevice implements Serializable {
 		if(shimmerObject instanceof ShimmerBluetooth){
 			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerObject;
 			setShimmerBluetooth(shimmerBluetooth);
-			mComPort = shimmerBluetooth.mUniqueID;
+			mComPort = shimmerBluetooth.getComPort();
 			mCurrentOperationBtState = currentOperationBtState;
 			mProgressEndValue = endValue;
 		}
@@ -93,7 +93,7 @@ public class ProgressReportPerDevice implements Serializable {
 	}
 	
 	public void setShimmerBluetooth(ShimmerBluetooth shimmerBluetooth) {
-		mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.mUniqueID;
+		mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.getComPort();
 		mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();
 		mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmerBluetooth.getMacIdFromBtParsed();
 		mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.getFirmwareVersionParsed();
@@ -107,7 +107,7 @@ public class ProgressReportPerDevice implements Serializable {
 	
 	public void updateProgressDetails(ShimmerBluetooth shimmerBluetooth) {
 		if(shimmerBluetooth!=null){
-			mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.mUniqueID;
+			mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.getComPort();
 			mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();
 			mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmerBluetooth.getMacIdFromBtParsed();
 			mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.getFirmwareVersionParsed();
