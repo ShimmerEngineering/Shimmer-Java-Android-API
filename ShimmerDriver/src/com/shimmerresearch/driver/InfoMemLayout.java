@@ -517,7 +517,7 @@ public class InfoMemLayout implements Serializable {
 		
 		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,11,5))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,16))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.BTSTREAM,0,7,4))) {
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.BTSTREAM,0,7,5))) {
 			MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
 			MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
 			MSP430_5XX_INFOMEM_B_ADDRESS = 256;
