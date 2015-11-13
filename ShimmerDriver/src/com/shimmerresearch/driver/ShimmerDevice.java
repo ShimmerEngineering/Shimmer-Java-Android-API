@@ -379,7 +379,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
     public boolean isStreaming(){
     	return mIsStreaming;
     }
-    
+
 	/**Only used for LogAndStream
 	 * @return
 	 */
@@ -429,7 +429,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public String getMacIdFromUartParsed() {
 		if(this.mMacIdFromUart.length()>=12) {
 			return this.mMacIdFromUart.substring(8, 12);
-		}		return "0000";
+		}		
+		return "0000";
 	}
 
 	/**

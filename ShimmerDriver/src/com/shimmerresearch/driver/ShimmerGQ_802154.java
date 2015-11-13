@@ -338,4 +338,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 
 	}
 
+	public void setConnected(boolean state) {
+		mIsConnected = state;
+	}
+
 }

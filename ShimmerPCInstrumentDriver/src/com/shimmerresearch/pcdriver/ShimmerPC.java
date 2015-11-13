@@ -569,9 +569,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	
-	public boolean isConnected(){
-		return mIsConnected;
-	}
+//	public boolean isConnected(){
+//		return mIsConnected;
+//	}
 
 //	public boolean isInitialised(){
 //		return mIsInitialised;

@@ -13,6 +13,14 @@ public class MsgDock {
 	//callback msg options
 	public final static int MSG_ID_UNKNOWN = 0;
 
+	public final static int MSG_ID_SOURCE_SPAN_MANAGER = 1000;
+	public final static int MSG_ID_SOURCE_PLOT_MANAGER = 1001;
+	public final static int MSG_ID_SOURCE_BLUETOOTH_MANAGER = 140;
+	
+	//Device Info
+	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
+
+	// --------------- DockManager Start -------------------------
 	public final static int MSG_ID_BSL_FW_WRITE_SUCCESS = 30;
 	public final static int MSG_ID_BSL_FW_WRITE_PROGRESS = 31; 
 	public final static int MSG_ID_BSL_FW_WRITE_FAIL = 32;
@@ -42,12 +50,8 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_JOB_SUCCESS_PER_DOCK = 57;
 	public final static int MSG_ID_DOCK_JOB_FAIL_PER_DOCK = 58;
 	
-	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
-	
 	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS = 91;
 	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_FAIL = 92;
-
-	public final static int MSG_ID_SPANMANAGER_INITIALIZED_SUCCESS = 95;
 	
 	public final static int MSG_ID_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_ID_DOCK_SD_SCAN_UPDATE = 101;
@@ -58,10 +62,7 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_SD_COPY_PROGRESS = 106;
 	public final static int MSG_ID_DOCK_SD_COPY_SUCCESS = 107;
 	public final static int MSG_ID_DOCK_SD_COPY_FAILED = 108;
-	public final static int MSG_ID_DATA_SYNC_UPDATE = 109;
-	public final static int MSG_ID_DATA_SESSION_FINISHED= 110;
-	
-	//From JC
+
 //	public final static int MSG_ID_DOCK_SD_SCAN_COMPLETED = 110;
 	public final static int MSG_ID_DOCK_SD_COPY_COMPLETED = 111;
 	public final static int MSG_ID_DOCK_SD_CLEAR_UPDATE = 112;
@@ -70,18 +71,11 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_SD_CLEAR_SUCCESS = 115;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_UPDATE = 113;
 //	public final static int MSG_ID_DOCK_WRITE_INFOMEM_COMPLETED = 114;
-	
 
 	public final static int MSG_ID_DOCK_OPERATION_PROGRESS = 200;
 	public final static int MSG_ID_DOCK_OPERATION_FINISHED = 201;
 	public final static int MSG_ID_DOCK_OPERATION_CANCELLED = 202;
-	
-	public final static int MSG_ID_DATA_OPERATION_PROGRESS = 300;
-	public final static int MSG_ID_DATA_OPERATION_FINISHED = 301;
-	
-	public final static int MSG_ID_PROCESS_DATA_OPERATION_PROGRESS = 400;
-	public final static int MSG_ID_PROCESS_DATA_OPERATION_FINISHED = 401;
-	
+
 	//TODO move closer to SmartDockUart?
 	//TODO rename UART to MSG?
 //	public final static int MSG_ID_SMARTDOCK_UART_ERR_NONE = 110;
@@ -101,8 +95,27 @@ public class MsgDock {
 	public final static int MSG_ID_SMARTDOCK_UART_ALL_SHIMMER_RST = 124;
 	public final static int MSG_ID_SMARTDOCK_UART_INDICATOR_LEDS = 125;
 	public final static int MSG_ID_SMARTDOCK_UART_ERROR = 129;
+
+	// --------------- DockManager End -------------------------
+
+	
+	//ImportManager and DataprocessingManager
+	public final static int MSG_ID_DATA_SYNC_UPDATE = 109;
+	
+	//ImportManager
+	public final static int MSG_ID_DATA_SESSION_FINISHED = 110;
+	
+	//DockManager and ImportManager
+	public final static int MSG_ID_DATA_OPERATION_PROGRESS = 300;
+	public final static int MSG_ID_DATA_OPERATION_FINISHED = 301;
+	
+	//DataprocessingManager
+	public final static int MSG_ID_PROCESS_DATA_OPERATION_PROGRESS = 400;
+	public final static int MSG_ID_PROCESS_DATA_OPERATION_FINISHED = 401;
+
 	
 
+	//ImportManager
 	public final static int MSG_IDENTIFIER_DB_PARSER_UPDATE = 130;
 	public final static int MSG_IDENTIFIER_DB_PARSER_SUCCESS = 131;
 	public final static int MSG_IDENTIFIER_DB_PARSER_FAILURE_SQLITE_EXCEPTION = 132;
@@ -110,7 +123,7 @@ public class MsgDock {
 	
 	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
 
-	public final static int MSG_ID_BT_STREAM = 140;
+	//PlotManager
 	public final static int MSG_ID_PLOT_UPDATE = 150;
 	public final static int MSG_ID_PLOT_CLOSED = 151;
 	public final static int MSG_ID_PLOT_OUT_OF_BOUNDS = 152;
@@ -119,27 +132,11 @@ public class MsgDock {
 	public final static int MSG_ID_EVENT_TOGGLE_START = 161;
 	public final static int MSG_ID_EVENT_TOGGLE_END = 162;
 	
+	//DatabaseManager
 	public final static int MSG_ID_BT_TO_DB_FINISHED = 170;
 	public final static int MSG_ID_BT_TO_DB_BUFFER_FILLED = 171;
 	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
 	
-	//TODO: Temp here
-	public final static int MSG_ID_SOURCE_SPANMANAGER = 200;
-
-//	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_FAILED = 180;
-//	public final static int MSG_ID_SPAN_ENABLE_SPECTRUM_SCANNER_SUCCESS = 181;
-//	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_FAILED = 182;
-//	public final static int MSG_ID_SPAN_SPECTRUM_SCAN_SUCCESS = 183;
-//	public final static int MSG_ID_SPAN_ENABLE_BASESTATION_FAILED = 184;
-//	public final static int MSG_ID_SPAN_ENABLE_BASESTATION_SUCCESS = 185;
-//	public final static int MSG_ID_SPAN_NEW_PACKET_RECEIVED = 186;
-	
-//	public final static int MSG_ID_SPANMANAGER_ENABLE_SPECTRUM_SCANNER_FAILED = 190;
-//	public final static int MSG_ID_SPANMANAGER_ENABLE_SPECTRUM_SCANNER_SUCCESS = 191;
-//	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_FAILED = 192;
-//	public final static int MSG_ID_SPANMANAGER_SPECTRUM_SCAN_SUCCESS = 193;
-//	public final static int MSG_ID_SPANMANAGER_ENABLE_BASESTATION_FAILED = 194;
-//	public final static int MSG_ID_SPANMANAGER_ENABLE_BASESTATION_SUCCESS = 195;
 	
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
@@ -223,7 +220,7 @@ public class MsgDock {
         
         aMap.put(MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION, "MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION");
         
-        aMap.put(MSG_ID_BT_STREAM, "MSG_ID_BT_STREAM");
+        aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_BT_STREAM");
         aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
         aMap.put(MSG_ID_PLOT_CLOSED, "MSG_ID_PLOT_CLOSED");
         aMap.put(MSG_ID_PLOT_OUT_OF_BOUNDS, "MSG_ID_PLOT_OUT_OF_BOUNDS");
@@ -232,7 +229,8 @@ public class MsgDock {
         aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");
         aMap.put(MSG_ID_BT_TO_DB_FAIL, "MSG_ID_BT_TO_DB_FAIL");
         
-        aMap.put(MSG_ID_SOURCE_SPANMANAGER, "MSG_ID_SOURCE_SPANMANAGER");
+        aMap.put(MSG_ID_SOURCE_SPAN_MANAGER, "MSG_ID_SOURCE_SPANMANAGER");
+        aMap.put(MSG_ID_SOURCE_PLOT_MANAGER, "MSG_ID_SOURCE_PLOTMANAGER");
         
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
