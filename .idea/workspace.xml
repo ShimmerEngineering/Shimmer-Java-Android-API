@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AndroidLayouts">
-    <shared>
-      <config />
-    </shared>
-  </component>
-  <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="2824e305-c848-4197-9204-672cad05f1e2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JavaShimmerConnect/.gitignore" afterPath="$PROJECT_DIR$/JavaShimmerConnect/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MultiShimmerTemplate/.gitignore" afterPath="$PROJECT_DIR$/MultiShimmerTemplate/.gitignore" />
+    <list default="true" id="8f54813a-5deb-4870-9c80-9ebf3b18ea97" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
-    <ignored path="Shimmer-Java-Android-API.iws" />
+    <ignored path="Shimmer-Java-Android-API3.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,7 +21,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
-    <favorites_list name="Shimmer-Java-Android-API" />
+    <favorites_list name="Shimmer-Java-Android-API3" />
   </component>
   <component name="FileEditorManager">
     <leaf>
@@ -38,32 +29,115 @@
         <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="1243" column="63" selection-start-line="1243" selection-start-column="63" selection-end-line="1243" selection-end-column="63" />
+              <caret line="100" column="13" selection-start-line="100" selection-start-column="13" selection-end-line="100" selection-end-column="13" />
               <folding>
                 <element signature="e#0#93144#0" expanded="false" />
                 <element signature="imports" expanded="false" />
+                <element signature="e#10488#11398#0" expanded="false" />
+                <element signature="e#11397#11398#0" expanded="false" />
                 <element signature="e#11468#11469#0" expanded="false" />
                 <element signature="e#11487#11488#0" expanded="false" />
-                <element signature="e#15173#15174#0" expanded="false" />
-                <element signature="e#15208#15209#0" expanded="false" />
-                <element signature="e#17430#17431#0" expanded="false" />
-                <element signature="e#17456#17457#0" expanded="false" />
-                <element signature="e#18039#18040#0" expanded="false" />
-                <element signature="e#18085#18086#0" expanded="false" />
-                <element signature="e#18378#18379#0" expanded="false" />
-                <element signature="e#18422#18423#0" expanded="false" />
-                <element signature="e#18718#18719#0" expanded="false" />
-                <element signature="e#18757#18758#0" expanded="false" />
-                <element signature="e#21076#21077#0" expanded="false" />
-                <element signature="e#21106#21107#0" expanded="false" />
-                <element signature="e#21337#21338#0" expanded="false" />
-                <element signature="e#21377#21378#0" expanded="false" />
-                <element signature="e#21624#21625#0" expanded="false" />
-                <element signature="e#21655#21656#0" expanded="false" />
-                <element signature="e#30199#30200#0" expanded="false" />
-                <element signature="e#30232#30233#0" expanded="false" />
-                <element signature="e#30472#30473#0" expanded="false" />
-                <element signature="e#30509#30510#0" expanded="false" />
+                <element signature="e#12334#12509#0" expanded="false" />
+                <element signature="e#12508#12509#0" expanded="false" />
+                <element signature="e#12712#12876#0" expanded="false" />
+                <element signature="e#12875#12876#0" expanded="false" />
+                <element signature="e#13052#14881#0" expanded="false" />
+                <element signature="e#14880#14881#0" expanded="false" />
+                <element signature="e#15104#15213#0" expanded="false" />
+                <element signature="e#15212#15213#0" expanded="false" />
+                <element signature="e#16991#17121#0" expanded="false" />
+                <element signature="e#17120#17121#0" expanded="false" />
+                <element signature="e#17358#17461#0" expanded="false" />
+                <element signature="e#17460#17461#0" expanded="false" />
+                <element signature="e#17641#17777#0" expanded="false" />
+                <element signature="e#17776#17777#0" expanded="false" />
+                <element signature="e#17967#18090#0" expanded="false" />
+                <element signature="e#18089#18090#0" expanded="false" />
+                <element signature="e#18306#18427#0" expanded="false" />
+                <element signature="e#18426#18427#0" expanded="false" />
+                <element signature="e#18646#18762#0" expanded="false" />
+                <element signature="e#18761#18762#0" expanded="false" />
+                <element signature="e#18936#19176#0" expanded="false" />
+                <element signature="e#19175#19176#0" expanded="false" />
+                <element signature="e#21004#21111#0" expanded="false" />
+                <element signature="e#21110#21111#0" expanded="false" />
+                <element signature="e#21265#21382#0" expanded="false" />
+                <element signature="e#21381#21382#0" expanded="false" />
+                <element signature="e#21553#21660#0" expanded="false" />
+                <element signature="e#21659#21660#0" expanded="false" />
+                <element signature="e#30127#30237#0" expanded="false" />
+                <element signature="e#30236#30237#0" expanded="false" />
+                <element signature="e#30400#30514#0" expanded="false" />
+                <element signature="e#30513#30514#0" expanded="false" />
+                <element signature="e#34570#34754#0" expanded="false" />
+                <element signature="e#34753#34754#0" expanded="false" />
+                <element signature="e#34804#35013#0" expanded="false" />
+                <element signature="e#35012#35013#0" expanded="false" />
+                <element signature="e#44422#44664#0" expanded="false" />
+                <element signature="e#44663#44664#0" expanded="false" />
+                <element signature="e#44713#44953#0" expanded="false" />
+                <element signature="e#44952#44953#0" expanded="false" />
+                <element signature="e#45002#45325#0" expanded="false" />
+                <element signature="e#45324#45325#0" expanded="false" />
+                <element signature="e#45375#45823#0" expanded="false" />
+                <element signature="e#45822#45823#0" expanded="false" />
+                <element signature="e#45873#46132#0" expanded="false" />
+                <element signature="e#46131#46132#0" expanded="false" />
+                <element signature="e#46182#46902#0" expanded="false" />
+                <element signature="e#46901#46902#0" expanded="false" />
+                <element signature="e#46952#47344#0" expanded="false" />
+                <element signature="e#47343#47344#0" expanded="false" />
+                <element signature="e#47394#47785#0" expanded="false" />
+                <element signature="e#47784#47785#0" expanded="false" />
+                <element signature="e#47835#48227#0" expanded="false" />
+                <element signature="e#48226#48227#0" expanded="false" />
+                <element signature="e#48277#48669#0" expanded="false" />
+                <element signature="e#48668#48669#0" expanded="false" />
+                <element signature="e#48716#49164#0" expanded="false" />
+                <element signature="e#49163#49164#0" expanded="false" />
+                <element signature="e#49208#49746#0" expanded="false" />
+                <element signature="e#49745#49746#0" expanded="false" />
+                <element signature="e#49794#50375#0" expanded="false" />
+                <element signature="e#50374#50375#0" expanded="false" />
+                <element signature="e#50652#50894#0" expanded="false" />
+                <element signature="e#50893#50894#0" expanded="false" />
+                <element signature="e#50943#51189#0" expanded="false" />
+                <element signature="e#51188#51189#0" expanded="false" />
+                <element signature="e#51238#51482#0" expanded="false" />
+                <element signature="e#51481#51482#0" expanded="false" />
+                <element signature="e#51531#51772#0" expanded="false" />
+                <element signature="e#51771#51772#0" expanded="false" />
+                <element signature="e#51821#52062#0" expanded="false" />
+                <element signature="e#52061#52062#0" expanded="false" />
+                <element signature="e#61000#61008#0" expanded="false" />
+                <element signature="e#61472#61666#0" expanded="false" />
+                <element signature="e#61665#61666#0" expanded="false" />
+                <element signature="e#61715#62023#0" expanded="false" />
+                <element signature="e#62022#62023#0" expanded="false" />
+                <element signature="e#66087#66286#0" expanded="false" />
+                <element signature="e#66285#66286#0" expanded="false" />
+                <element signature="e#66322#66521#0" expanded="false" />
+                <element signature="e#66520#66521#0" expanded="false" />
+                <element signature="e#66555#66754#0" expanded="false" />
+                <element signature="e#66753#66754#0" expanded="false" />
+                <element signature="e#66790#66952#0" expanded="false" />
+                <element signature="e#66951#66952#0" expanded="false" />
+                <element signature="e#66988#67150#0" expanded="false" />
+                <element signature="e#67149#67150#0" expanded="false" />
+                <element signature="e#67583#68212#0" expanded="false" />
+                <element signature="e#68211#68212#0" expanded="false" />
+                <element signature="e#68251#69099#0" expanded="false" />
+                <element signature="e#69098#69099#0" expanded="false" />
+                <element signature="e#69139#69765#0" expanded="false" />
+                <element signature="e#69764#69765#0" expanded="false" />
+                <element signature="e#69817#71093#0" expanded="false" />
+                <element signature="e#71092#71093#0" expanded="false" />
+                <element signature="e#71142#72418#0" expanded="false" />
+                <element signature="e#72417#72418#0" expanded="false" />
+                <element signature="e#72467#73743#0" expanded="false" />
+                <element signature="e#73742#73743#0" expanded="false" />
+                <element signature="e#73792#75068#0" expanded="false" />
+                <element signature="e#75067#75068#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -73,109 +147,31 @@
         <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/exgConfig/ExGConfigBytesDetails.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="602" column="71" selection-start-line="602" selection-start-column="71" selection-end-line="602" selection-end-column="71" />
+              <caret line="588" column="66" selection-start-line="588" selection-start-column="66" selection-end-line="588" selection-end-column="66" />
               <folding>
                 <element signature="imports" expanded="false" />
                 <element signature="e#678#695#0" expanded="false" />
                 <element signature="e#779#796#0" expanded="false" />
                 <element signature="e#32343#32375#0" expanded="false" />
                 <element signature="e#48418#48435#0" expanded="false" />
-                <element signature="e#52712#52713#0" expanded="false" />
-                <element signature="e#52768#52769#0" expanded="false" />
-                <element signature="e#52811#52812#0" expanded="false" />
-                <element signature="e#52867#52868#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ObjectCluster.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ObjectCluster.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="54" column="32" selection-start-line="54" selection-start-column="32" selection-end-line="54" selection-end-column="32" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ShimmerObject.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ShimmerObject.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="5999" column="38" selection-start-line="5999" selection-start-column="38" selection-end-line="5999" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MultiShimmerTemplate/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.20695652">
-              <caret line="7" column="5" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MultiShimmerPlay.iml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/MultiShimmerPlay.iml">
+      <file leaf-file-name="workspace.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ShimmerGraphandLogService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/src/com/shimmerresearch/shimmergraphandlogservice/ShimmerGraphandLogService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="101" column="51" selection-start-line="101" selection-start-column="51" selection-end-line="101" selection-end-column="51" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/res/layout/main.xml">
-          <provider editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-          <provider selected="true" editor-type-id="android-designer">
-            <state />
           </provider>
         </entry>
       </file>
     </leaf>
   </component>
   <component name="Git.Settings">
-    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -191,10 +187,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java" />
-        <option value="$PROJECT_DIR$/MultiShimmerPlay/.gitignore" />
-        <option value="$PROJECT_DIR$/MultiShimmerTemplate/.gitignore" />
-        <option value="$PROJECT_DIR$/JavaShimmerConnect/.gitignore" />
+        <option value="$PROJECT_DIR$/.idea/workspace.xml" />
       </list>
     </option>
   </component>
@@ -218,7 +211,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="Scope" currentSubView="Project Files" proportions="" version="1">
+    <navigator currentView="AndroidView" proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -230,64 +223,25 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="JavaShimmerConnect">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="JavaShimmerConnect">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="ProjectPane" />
       <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Shimmer-Java-Android-API" />
+              <option name="myItemId" value="Shimmer-Java-Android-API3" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Shimmer-Java-Android-API" />
+              <option name="myItemId" value="Shimmer-Java-Android-API3" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="ShimmerGraphandLogService" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="shimmergraphandlogservice" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Shimmer-Java-Android-API" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ShimmerGraphandLogService" />
+              <option name="myItemId" value="JavaShimmerConnect" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -299,19 +253,30 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-        </subPane>
-      </pane>
-      <pane id="ProjectPane">
-        <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Shimmer-Java-Android-API" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+              <option name="myItemId" value="Shimmer-Java-Android-API3" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="JavaShimmerConnect" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shimmerresearch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ShimmerCapture" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -321,32 +286,12 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../AndroidStudio" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/sdk" />
     <property name="recentsLimit" value="5" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.17178503" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="restartRequiresConfirmation" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
-    <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="FullScreen" value="false" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="267" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="296" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="298" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="972" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="290" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="289" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="290" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="964" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
     <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RunManager" selected="Application.ShimmerCapture">
@@ -358,11 +303,11 @@
         </pattern>
       </extension>
       <option name="MAIN_CLASS_NAME" value="com.shimmerresearch.ShimmerCapture.ShimmerCapture" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
@@ -525,72 +470,8 @@
       <listeners />
       <method />
     </configuration>
-    <configuration default="false" name="MST" type="AndroidRunConfigurationType" factoryName="Android Application">
-      <module name="MultiShimmerTemplate" />
-      <option name="ACTIVITY_CLASS" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="default_activity" />
-      <option name="DEPLOY" value="true" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="TARGET_SELECTION_MODE" value="USB_DEVICE" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="USE_COMMAND_LINE" value="true" />
-      <option name="COMMAND_LINE" value="" />
-      <option name="WIPE_USER_DATA" value="false" />
-      <option name="DISABLE_BOOT_ANIMATION" value="false" />
-      <option name="NETWORK_SPEED" value="full" />
-      <option name="NETWORK_LATENCY" value="none" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="Please select a project..." />
-      <option name="SELECTED_CLOUD_DEVICE_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_DEVICE_PROJECT_ID" value="Please select a project..." />
-      <option name="IS_VALID_CLOUD_MATRIX_SELECTION" value="false" />
-      <option name="INVALID_CLOUD_MATRIX_SELECTION_ERROR" value="Cloud configuration not specified" />
-      <option name="IS_VALID_CLOUD_DEVICE_SELECTION" value="false" />
-      <option name="INVALID_CLOUD_DEVICE_SELECTION_ERROR" value="Cloud configuration not specified" />
-      <option name="CLOUD_DEVICE_SERIAL_NUMBER" value="" />
-      <method />
-    </configuration>
-    <configuration default="false" name="SGL" type="AndroidRunConfigurationType" factoryName="Android Application">
-      <module name="ShimmerGraphandLogService" />
-      <option name="ACTIVITY_CLASS" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="default_activity" />
-      <option name="DEPLOY" value="true" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="TARGET_SELECTION_MODE" value="USB_DEVICE" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="USE_COMMAND_LINE" value="true" />
-      <option name="COMMAND_LINE" value="" />
-      <option name="WIPE_USER_DATA" value="false" />
-      <option name="DISABLE_BOOT_ANIMATION" value="false" />
-      <option name="NETWORK_SPEED" value="full" />
-      <option name="NETWORK_LATENCY" value="none" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="Please select a project..." />
-      <option name="SELECTED_CLOUD_DEVICE_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_DEVICE_PROJECT_ID" value="Please select a project..." />
-      <option name="IS_VALID_CLOUD_MATRIX_SELECTION" value="false" />
-      <option name="INVALID_CLOUD_MATRIX_SELECTION_ERROR" value="Cloud configuration not specified" />
-      <option name="IS_VALID_CLOUD_DEVICE_SELECTION" value="false" />
-      <option name="INVALID_CLOUD_DEVICE_SELECTION_ERROR" value="Cloud configuration not specified" />
-      <option name="CLOUD_DEVICE_SERIAL_NUMBER" value="" />
-      <method />
-    </configuration>
-    <list size="3">
-      <item index="0" class="java.lang.String" itemvalue="Android Application.MST" />
-      <item index="1" class="java.lang.String" itemvalue="Android Application.SGL" />
-      <item index="2" class="java.lang.String" itemvalue="Application.ShimmerCapture" />
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Application.ShimmerCapture" />
     </list>
     <recent_temporary>
       <list size="1">
@@ -620,68 +501,43 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2824e305-c848-4197-9204-672cad05f1e2" name="Default" comment="" />
-      <created>1447384120649</created>
+      <changelist id="8f54813a-5deb-4870-9c80-9ebf3b18ea97" name="Default" comment="" />
+      <created>1447397965606</created>
       <option name="number" value="Default" />
-      <updated>1447384120649</updated>
+      <updated>1447397965606</updated>
     </task>
-    <task id="LOCAL-00001" summary="minor updates">
-      <created>1447391620625</created>
-      <option name="number" value="00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1447391620625</updated>
-    </task>
-    <task id="LOCAL-00002" summary="add iml files">
-      <created>1447392625108</created>
-      <option name="number" value="00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1447392625108</updated>
-    </task>
-    <task id="LOCAL-00003" summary="add iml files">
-      <created>1447393204879</created>
-      <option name="number" value="00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1447393204879</updated>
-    </task>
-    <task id="LOCAL-00004" summary="add iml files">
-      <created>1447395129053</created>
-      <option name="number" value="00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1447395129053</updated>
-    </task>
-    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32925472" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32925472" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -695,11 +551,6 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="minor updates" />
-    <MESSAGE value="add iml files" />
-    <option name="LAST_COMMIT_MESSAGE" value="add iml files" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
@@ -708,32 +559,115 @@
     <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1243" column="63" selection-start-line="1243" selection-start-column="63" selection-end-line="1243" selection-end-column="63" />
+          <caret line="100" column="13" selection-start-line="100" selection-start-column="13" selection-end-line="100" selection-end-column="13" />
           <folding>
             <element signature="e#0#93144#0" expanded="false" />
             <element signature="imports" expanded="false" />
+            <element signature="e#10488#11398#0" expanded="false" />
+            <element signature="e#11397#11398#0" expanded="false" />
             <element signature="e#11468#11469#0" expanded="false" />
             <element signature="e#11487#11488#0" expanded="false" />
-            <element signature="e#15173#15174#0" expanded="false" />
-            <element signature="e#15208#15209#0" expanded="false" />
-            <element signature="e#17430#17431#0" expanded="false" />
-            <element signature="e#17456#17457#0" expanded="false" />
-            <element signature="e#18039#18040#0" expanded="false" />
-            <element signature="e#18085#18086#0" expanded="false" />
-            <element signature="e#18378#18379#0" expanded="false" />
-            <element signature="e#18422#18423#0" expanded="false" />
-            <element signature="e#18718#18719#0" expanded="false" />
-            <element signature="e#18757#18758#0" expanded="false" />
-            <element signature="e#21076#21077#0" expanded="false" />
-            <element signature="e#21106#21107#0" expanded="false" />
-            <element signature="e#21337#21338#0" expanded="false" />
-            <element signature="e#21377#21378#0" expanded="false" />
-            <element signature="e#21624#21625#0" expanded="false" />
-            <element signature="e#21655#21656#0" expanded="false" />
-            <element signature="e#30199#30200#0" expanded="false" />
-            <element signature="e#30232#30233#0" expanded="false" />
-            <element signature="e#30472#30473#0" expanded="false" />
-            <element signature="e#30509#30510#0" expanded="false" />
+            <element signature="e#12334#12509#0" expanded="false" />
+            <element signature="e#12508#12509#0" expanded="false" />
+            <element signature="e#12712#12876#0" expanded="false" />
+            <element signature="e#12875#12876#0" expanded="false" />
+            <element signature="e#13052#14881#0" expanded="false" />
+            <element signature="e#14880#14881#0" expanded="false" />
+            <element signature="e#15104#15213#0" expanded="false" />
+            <element signature="e#15212#15213#0" expanded="false" />
+            <element signature="e#16991#17121#0" expanded="false" />
+            <element signature="e#17120#17121#0" expanded="false" />
+            <element signature="e#17358#17461#0" expanded="false" />
+            <element signature="e#17460#17461#0" expanded="false" />
+            <element signature="e#17641#17777#0" expanded="false" />
+            <element signature="e#17776#17777#0" expanded="false" />
+            <element signature="e#17967#18090#0" expanded="false" />
+            <element signature="e#18089#18090#0" expanded="false" />
+            <element signature="e#18306#18427#0" expanded="false" />
+            <element signature="e#18426#18427#0" expanded="false" />
+            <element signature="e#18646#18762#0" expanded="false" />
+            <element signature="e#18761#18762#0" expanded="false" />
+            <element signature="e#18936#19176#0" expanded="false" />
+            <element signature="e#19175#19176#0" expanded="false" />
+            <element signature="e#21004#21111#0" expanded="false" />
+            <element signature="e#21110#21111#0" expanded="false" />
+            <element signature="e#21265#21382#0" expanded="false" />
+            <element signature="e#21381#21382#0" expanded="false" />
+            <element signature="e#21553#21660#0" expanded="false" />
+            <element signature="e#21659#21660#0" expanded="false" />
+            <element signature="e#30127#30237#0" expanded="false" />
+            <element signature="e#30236#30237#0" expanded="false" />
+            <element signature="e#30400#30514#0" expanded="false" />
+            <element signature="e#30513#30514#0" expanded="false" />
+            <element signature="e#34570#34754#0" expanded="false" />
+            <element signature="e#34753#34754#0" expanded="false" />
+            <element signature="e#34804#35013#0" expanded="false" />
+            <element signature="e#35012#35013#0" expanded="false" />
+            <element signature="e#44422#44664#0" expanded="false" />
+            <element signature="e#44663#44664#0" expanded="false" />
+            <element signature="e#44713#44953#0" expanded="false" />
+            <element signature="e#44952#44953#0" expanded="false" />
+            <element signature="e#45002#45325#0" expanded="false" />
+            <element signature="e#45324#45325#0" expanded="false" />
+            <element signature="e#45375#45823#0" expanded="false" />
+            <element signature="e#45822#45823#0" expanded="false" />
+            <element signature="e#45873#46132#0" expanded="false" />
+            <element signature="e#46131#46132#0" expanded="false" />
+            <element signature="e#46182#46902#0" expanded="false" />
+            <element signature="e#46901#46902#0" expanded="false" />
+            <element signature="e#46952#47344#0" expanded="false" />
+            <element signature="e#47343#47344#0" expanded="false" />
+            <element signature="e#47394#47785#0" expanded="false" />
+            <element signature="e#47784#47785#0" expanded="false" />
+            <element signature="e#47835#48227#0" expanded="false" />
+            <element signature="e#48226#48227#0" expanded="false" />
+            <element signature="e#48277#48669#0" expanded="false" />
+            <element signature="e#48668#48669#0" expanded="false" />
+            <element signature="e#48716#49164#0" expanded="false" />
+            <element signature="e#49163#49164#0" expanded="false" />
+            <element signature="e#49208#49746#0" expanded="false" />
+            <element signature="e#49745#49746#0" expanded="false" />
+            <element signature="e#49794#50375#0" expanded="false" />
+            <element signature="e#50374#50375#0" expanded="false" />
+            <element signature="e#50652#50894#0" expanded="false" />
+            <element signature="e#50893#50894#0" expanded="false" />
+            <element signature="e#50943#51189#0" expanded="false" />
+            <element signature="e#51188#51189#0" expanded="false" />
+            <element signature="e#51238#51482#0" expanded="false" />
+            <element signature="e#51481#51482#0" expanded="false" />
+            <element signature="e#51531#51772#0" expanded="false" />
+            <element signature="e#51771#51772#0" expanded="false" />
+            <element signature="e#51821#52062#0" expanded="false" />
+            <element signature="e#52061#52062#0" expanded="false" />
+            <element signature="e#61000#61008#0" expanded="false" />
+            <element signature="e#61472#61666#0" expanded="false" />
+            <element signature="e#61665#61666#0" expanded="false" />
+            <element signature="e#61715#62023#0" expanded="false" />
+            <element signature="e#62022#62023#0" expanded="false" />
+            <element signature="e#66087#66286#0" expanded="false" />
+            <element signature="e#66285#66286#0" expanded="false" />
+            <element signature="e#66322#66521#0" expanded="false" />
+            <element signature="e#66520#66521#0" expanded="false" />
+            <element signature="e#66555#66754#0" expanded="false" />
+            <element signature="e#66753#66754#0" expanded="false" />
+            <element signature="e#66790#66952#0" expanded="false" />
+            <element signature="e#66951#66952#0" expanded="false" />
+            <element signature="e#66988#67150#0" expanded="false" />
+            <element signature="e#67149#67150#0" expanded="false" />
+            <element signature="e#67583#68212#0" expanded="false" />
+            <element signature="e#68211#68212#0" expanded="false" />
+            <element signature="e#68251#69099#0" expanded="false" />
+            <element signature="e#69098#69099#0" expanded="false" />
+            <element signature="e#69139#69765#0" expanded="false" />
+            <element signature="e#69764#69765#0" expanded="false" />
+            <element signature="e#69817#71093#0" expanded="false" />
+            <element signature="e#71092#71093#0" expanded="false" />
+            <element signature="e#71142#72418#0" expanded="false" />
+            <element signature="e#72417#72418#0" expanded="false" />
+            <element signature="e#72467#73743#0" expanded="false" />
+            <element signature="e#73742#73743#0" expanded="false" />
+            <element signature="e#73792#75068#0" expanded="false" />
+            <element signature="e#75067#75068#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -741,497 +675,21 @@
     <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/exgConfig/ExGConfigBytesDetails.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="602" column="71" selection-start-line="602" selection-start-column="71" selection-end-line="602" selection-end-column="71" />
+          <caret line="588" column="66" selection-start-line="588" selection-start-column="66" selection-end-line="588" selection-end-column="66" />
           <folding>
             <element signature="imports" expanded="false" />
             <element signature="e#678#695#0" expanded="false" />
             <element signature="e#779#796#0" expanded="false" />
             <element signature="e#32343#32375#0" expanded="false" />
             <element signature="e#48418#48435#0" expanded="false" />
-            <element signature="e#52712#52713#0" expanded="false" />
-            <element signature="e#52768#52769#0" expanded="false" />
-            <element signature="e#52811#52812#0" expanded="false" />
-            <element signature="e#52867#52868#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ObjectCluster.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="32" selection-start-line="54" selection-start-column="32" selection-end-line="54" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ShimmerObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5999" column="38" selection-start-line="5999" selection-start-column="38" selection-end-line="5999" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerTemplate/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/MultiShimmerPlay.iml">
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/src/com/shimmerresearch/shimmergraphandlogservice/ShimmerGraphandLogService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/res/layout/main.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1243" column="63" selection-start-line="1243" selection-start-column="63" selection-end-line="1243" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#93144#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#11468#11469#0" expanded="false" />
-            <element signature="e#11487#11488#0" expanded="false" />
-            <element signature="e#15173#15174#0" expanded="false" />
-            <element signature="e#15208#15209#0" expanded="false" />
-            <element signature="e#17430#17431#0" expanded="false" />
-            <element signature="e#17456#17457#0" expanded="false" />
-            <element signature="e#18039#18040#0" expanded="false" />
-            <element signature="e#18085#18086#0" expanded="false" />
-            <element signature="e#18378#18379#0" expanded="false" />
-            <element signature="e#18422#18423#0" expanded="false" />
-            <element signature="e#18718#18719#0" expanded="false" />
-            <element signature="e#18757#18758#0" expanded="false" />
-            <element signature="e#21076#21077#0" expanded="false" />
-            <element signature="e#21106#21107#0" expanded="false" />
-            <element signature="e#21337#21338#0" expanded="false" />
-            <element signature="e#21377#21378#0" expanded="false" />
-            <element signature="e#21624#21625#0" expanded="false" />
-            <element signature="e#21655#21656#0" expanded="false" />
-            <element signature="e#30199#30200#0" expanded="false" />
-            <element signature="e#30232#30233#0" expanded="false" />
-            <element signature="e#30472#30473#0" expanded="false" />
-            <element signature="e#30509#30510#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/exgConfig/ExGConfigBytesDetails.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="602" column="71" selection-start-line="602" selection-start-column="71" selection-end-line="602" selection-end-column="71" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#678#695#0" expanded="false" />
-            <element signature="e#779#796#0" expanded="false" />
-            <element signature="e#32343#32375#0" expanded="false" />
-            <element signature="e#48418#48435#0" expanded="false" />
-            <element signature="e#52712#52713#0" expanded="false" />
-            <element signature="e#52768#52769#0" expanded="false" />
-            <element signature="e#52811#52812#0" expanded="false" />
-            <element signature="e#52867#52868#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ObjectCluster.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="32" selection-start-line="54" selection-start-column="32" selection-end-line="54" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ShimmerObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5999" column="38" selection-start-line="5999" selection-start-column="38" selection-end-line="5999" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerTemplate/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/MultiShimmerPlay.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/src/com/shimmerresearch/shimmergraphandlogservice/ShimmerGraphandLogService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/res/layout/main.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1243" column="63" selection-start-line="1243" selection-start-column="63" selection-end-line="1243" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#93144#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#11468#11469#0" expanded="false" />
-            <element signature="e#11487#11488#0" expanded="false" />
-            <element signature="e#15173#15174#0" expanded="false" />
-            <element signature="e#15208#15209#0" expanded="false" />
-            <element signature="e#17430#17431#0" expanded="false" />
-            <element signature="e#17456#17457#0" expanded="false" />
-            <element signature="e#18039#18040#0" expanded="false" />
-            <element signature="e#18085#18086#0" expanded="false" />
-            <element signature="e#18378#18379#0" expanded="false" />
-            <element signature="e#18422#18423#0" expanded="false" />
-            <element signature="e#18718#18719#0" expanded="false" />
-            <element signature="e#18757#18758#0" expanded="false" />
-            <element signature="e#21076#21077#0" expanded="false" />
-            <element signature="e#21106#21107#0" expanded="false" />
-            <element signature="e#21337#21338#0" expanded="false" />
-            <element signature="e#21377#21378#0" expanded="false" />
-            <element signature="e#21624#21625#0" expanded="false" />
-            <element signature="e#21655#21656#0" expanded="false" />
-            <element signature="e#30199#30200#0" expanded="false" />
-            <element signature="e#30232#30233#0" expanded="false" />
-            <element signature="e#30472#30473#0" expanded="false" />
-            <element signature="e#30509#30510#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/exgConfig/ExGConfigBytesDetails.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="602" column="71" selection-start-line="602" selection-start-column="71" selection-end-line="602" selection-end-column="71" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#678#695#0" expanded="false" />
-            <element signature="e#779#796#0" expanded="false" />
-            <element signature="e#32343#32375#0" expanded="false" />
-            <element signature="e#48418#48435#0" expanded="false" />
-            <element signature="e#52712#52713#0" expanded="false" />
-            <element signature="e#52768#52769#0" expanded="false" />
-            <element signature="e#52811#52812#0" expanded="false" />
-            <element signature="e#52867#52868#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ObjectCluster.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="32" selection-start-line="54" selection-start-column="32" selection-end-line="54" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ShimmerObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5999" column="38" selection-start-line="5999" selection-start-column="38" selection-end-line="5999" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerTemplate/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/MultiShimmerPlay.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/src/com/shimmerresearch/shimmergraphandlogservice/ShimmerGraphandLogService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/res/layout/main.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1244" column="63" selection-start-line="1244" selection-start-column="63" selection-end-line="1244" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#93144#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#11468#11469#0" expanded="false" />
-            <element signature="e#11487#11488#0" expanded="false" />
-            <element signature="e#15173#15174#0" expanded="false" />
-            <element signature="e#15208#15209#0" expanded="false" />
-            <element signature="e#17430#17431#0" expanded="false" />
-            <element signature="e#17456#17457#0" expanded="false" />
-            <element signature="e#18039#18040#0" expanded="false" />
-            <element signature="e#18085#18086#0" expanded="false" />
-            <element signature="e#18378#18379#0" expanded="false" />
-            <element signature="e#18422#18423#0" expanded="false" />
-            <element signature="e#18718#18719#0" expanded="false" />
-            <element signature="e#18757#18758#0" expanded="false" />
-            <element signature="e#21076#21077#0" expanded="false" />
-            <element signature="e#21106#21107#0" expanded="false" />
-            <element signature="e#21337#21338#0" expanded="false" />
-            <element signature="e#21377#21378#0" expanded="false" />
-            <element signature="e#21624#21625#0" expanded="false" />
-            <element signature="e#21655#21656#0" expanded="false" />
-            <element signature="e#30199#30200#0" expanded="false" />
-            <element signature="e#30232#30233#0" expanded="false" />
-            <element signature="e#30472#30473#0" expanded="false" />
-            <element signature="e#30509#30510#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/exgConfig/ExGConfigBytesDetails.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="602" column="71" selection-start-line="602" selection-start-column="71" selection-end-line="602" selection-end-column="71" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#678#695#0" expanded="false" />
-            <element signature="e#779#796#0" expanded="false" />
-            <element signature="e#32343#32375#0" expanded="false" />
-            <element signature="e#48418#48435#0" expanded="false" />
-            <element signature="e#52712#52713#0" expanded="false" />
-            <element signature="e#52768#52769#0" expanded="false" />
-            <element signature="e#52811#52812#0" expanded="false" />
-            <element signature="e#52867#52868#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ObjectCluster.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="32" selection-start-line="54" selection-start-column="32" selection-end-line="54" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ShimmerObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5999" column="38" selection-start-line="5999" selection-start-column="38" selection-end-line="5999" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerTemplate/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1243" column="63" selection-start-line="1243" selection-start-column="63" selection-end-line="1243" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#93144#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#11468#11469#0" expanded="false" />
-            <element signature="e#11487#11488#0" expanded="false" />
-            <element signature="e#15173#15174#0" expanded="false" />
-            <element signature="e#15208#15209#0" expanded="false" />
-            <element signature="e#17430#17431#0" expanded="false" />
-            <element signature="e#17456#17457#0" expanded="false" />
-            <element signature="e#18039#18040#0" expanded="false" />
-            <element signature="e#18085#18086#0" expanded="false" />
-            <element signature="e#18378#18379#0" expanded="false" />
-            <element signature="e#18422#18423#0" expanded="false" />
-            <element signature="e#18718#18719#0" expanded="false" />
-            <element signature="e#18757#18758#0" expanded="false" />
-            <element signature="e#21076#21077#0" expanded="false" />
-            <element signature="e#21106#21107#0" expanded="false" />
-            <element signature="e#21337#21338#0" expanded="false" />
-            <element signature="e#21377#21378#0" expanded="false" />
-            <element signature="e#21624#21625#0" expanded="false" />
-            <element signature="e#21655#21656#0" expanded="false" />
-            <element signature="e#30199#30200#0" expanded="false" />
-            <element signature="e#30232#30233#0" expanded="false" />
-            <element signature="e#30472#30473#0" expanded="false" />
-            <element signature="e#30509#30510#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/exgConfig/ExGConfigBytesDetails.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="602" column="71" selection-start-line="602" selection-start-column="71" selection-end-line="602" selection-end-column="71" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#678#695#0" expanded="false" />
-            <element signature="e#779#796#0" expanded="false" />
-            <element signature="e#32343#32375#0" expanded="false" />
-            <element signature="e#48418#48435#0" expanded="false" />
-            <element signature="e#52712#52713#0" expanded="false" />
-            <element signature="e#52768#52769#0" expanded="false" />
-            <element signature="e#52811#52812#0" expanded="false" />
-            <element signature="e#52867#52868#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ObjectCluster.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="32" selection-start-line="54" selection-start-column="32" selection-end-line="54" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/driver/ShimmerObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5999" column="38" selection-start-line="5999" selection-start-column="38" selection-end-line="5999" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerPlay/MultiShimmerPlay.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/res/layout/main.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ShimmerGraphandLogService/src/com/shimmerresearch/shimmergraphandlogservice/ShimmerGraphandLogService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="101" column="51" selection-start-line="101" selection-start-column="51" selection-end-line="101" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MultiShimmerTemplate/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20695652">
-          <caret line="7" column="5" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
           <folding />
         </state>
       </provider>
@@ -1312,7 +770,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>libs1</last-edited>
+          <last-edited>forms-1.3.0</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
