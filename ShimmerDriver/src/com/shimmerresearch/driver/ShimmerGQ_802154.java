@@ -37,10 +37,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 	public int mRadioChannel = VARIABLE_NOT_SET;
 	public int mRadioGroupId = VARIABLE_NOT_SET;
 	public int mRadioAddr = VARIABLE_NOT_SET;
+	private int mRadioResponseWindow = VARIABLE_NOT_SET; 
 
 	public String mSpanId = "N/A";
 	
-	private int mRadioResponseWindow = -1; 
 
 	//This maps the channel ID to sensor
 	//Map<Integer,AbstractSensor> mMapofSensorChannelToSensor = new HashMap<Integer,AbstractSensor>();
@@ -292,14 +292,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 	}
 
 
-	public boolean isConnected() {
-		if(mRadioChannel==ShimmerGQ_802154.VARIABLE_NOT_SET){
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
+//	public boolean isConnected() {
+//		if(mRadioChannel==ShimmerGQ_802154.VARIABLE_NOT_SET){
+//			return false;
+//		}
+//		else {
+//			return true;
+//		}
+//	}
 	
 	
 	/*
@@ -338,8 +338,5 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 
 	}
 
-	public void setConnected(boolean state) {
-		mIsConnected = state;
-	}
 
 }

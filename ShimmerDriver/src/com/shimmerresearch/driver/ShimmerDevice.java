@@ -71,9 +71,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected boolean mIsSensing = false;
 	protected boolean mIsSDLogging = false;											// This is used to monitor whether the device is in sd log mode
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
-	public boolean mIsInitialised = false;
-	public boolean mIsDocked = false;
-	public boolean mHaveAttemptedToReadConfig = false;
+	protected boolean mIsInitialised = false;
+	protected boolean mIsDocked = false;
+	protected boolean mHaveAttemptedToReadConfig = false;
 
 	//TODO Below items are based on progress details being stored in each 
 	// slotdetails, should these be removed in favor of the newer method for 
@@ -371,6 +371,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public boolean isConnected() {
 		return mIsConnected;
+	}
+
+	public void setConnected(boolean state) {
+		mIsConnected = state;
 	}
 
     /** Returns true if device is streaming (Bluetooth)
