@@ -139,7 +139,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param dockID
 	 * @param slotNumber
 	 */
-	public void addDOCKCoummnicationRoute(String dockId,int slotNumber) {
+	public void addDOCKCoummnicationRoute(String dockId, int slotNumber) {
 		mDockID = dockId;
 		parseDockType();
 		
