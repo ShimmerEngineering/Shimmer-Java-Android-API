@@ -331,6 +331,13 @@ public class ShimmerService extends Service {
 	            			}
 	            				
             			}
+	            		
+	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE);
+	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT);
+	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL);
+	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT);
+	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP);
+	            		
 	            	   if (mEnableLogging==true){
 		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.mBluetoothAddress);
 		            	   if (shimmerLog1!=null){
@@ -568,6 +575,18 @@ public class ShimmerService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if ((stemp.getBTState()==BT_STATE.CONNECTED || stemp.getBTState()==BT_STATE.SDLOGGING) && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+				
+				if (((enabledSensors & Shimmer.SENSOR_EXG1_16BIT)>0 && (enabledSensors & Shimmer.SENSOR_EXG2_16BIT)>0)||((enabledSensors & Shimmer.SENSOR_EXG1_24BIT)>0 && (enabledSensors & Shimmer.SENSOR_EXG2_24BIT)>0)){
+				
+				} else {
+					mECGtoHREnabled = false;
+				}
+				
+				if (stemp.getInternalExpPower()==1 && (((enabledSensors & Shimmer.SENSOR_INT_ADC_A1)>0)||((enabledSensors & Shimmer.SENSOR_INT_ADC_A12)>0)|((enabledSensors & Shimmer.SENSOR_INT_ADC_A13)>0)||((enabledSensors & Shimmer.SENSOR_INT_ADC_A14)>0))){
+					
+				} else {
+					mPPGtoHREnabled = false;
+				}
 				stemp.writeEnabledSensors(enabledSensors);
 			}
 		}

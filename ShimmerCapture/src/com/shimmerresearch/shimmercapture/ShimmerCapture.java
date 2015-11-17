@@ -639,6 +639,7 @@ public class ShimmerCapture extends ServiceActivity {
     	            					sensorList.add("ECG");
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT);
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
     	            					//sensorName[0] = "ECG LL-RA";
     	                    			//sensorName[1] = "ECG LA-RA";
@@ -703,6 +704,7 @@ public class ShimmerCapture extends ServiceActivity {
     	            					sensorList.add("ECG");
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT);
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
     	            					//sensorName[0] = "ECG LL-RA";
     	                    			//sensorName[1] = "ECG LA-RA";
@@ -726,6 +728,7 @@ public class ShimmerCapture extends ServiceActivity {
     	            					sensorList.add("ECG 16Bit");
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+    	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT);
     	            					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
     	            				}
     	            				else if(mService.isEXGUsingEMG16Configuration(mBluetoothAddress)){
@@ -1044,10 +1047,10 @@ public class ShimmerCapture extends ServiceActivity {
             		if (mSensorView.equals("ECG") && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
             			sensorName = new String[4]; 
             			calibratedDataArray = new double[4];
-            			sensorName[0] = "ECG LL-RA";
-            			sensorName[1] = "ECG LA-RA";
-            			sensorName[2] = "EXG2 CH1";
-            			sensorName[3] = "ECG Vx-RL";
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
+            			sensorName[1] = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
+            			sensorName[2] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT;
+            			sensorName[3] = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
             		}
             		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
             			sensorName = new String[1]; 
@@ -1094,10 +1097,10 @@ public class ShimmerCapture extends ServiceActivity {
             		if (mSensorView.equals("ECG 16Bit")){
             			sensorName = new String[4]; 
             			calibratedDataArray = new double[4];
-            			sensorName[0] = "ECG LL-RA";
-            			sensorName[1] = "ECG LA-RA";
-            			sensorName[2] = "EXG2 CH1";
-            			sensorName[3] = "ECG Vx-RL";
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT;
+            			sensorName[1] = Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT;
+            			sensorName[2] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT;
+            			sensorName[3] = Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT;
             		}
             		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
             			sensorName = new String[1]; 
@@ -1108,6 +1111,11 @@ public class ShimmerCapture extends ServiceActivity {
             			sensorName = new String[1]; 
             			calibratedDataArray = new double[1];
             			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT;
+            		}
+            		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
+            			sensorName = new String[1]; 
+            			calibratedDataArray = new double[1];
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT;
             		}
             		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT) && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
             			sensorName = new String[1]; 
@@ -1759,6 +1767,7 @@ public class ShimmerCapture extends ServiceActivity {
 						sensorList.add("ECG");
 						sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
     					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT);
     					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
 					}
 					else if(mService.isEXGUsingEMG24Configuration(mBluetoothAddress)){
@@ -1776,6 +1785,7 @@ public class ShimmerCapture extends ServiceActivity {
 						sensorList.add("ECG 16Bit");
     					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
     					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+    					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT);
     					sensorList.add(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
 					}
 					else if(mService.isEXGUsingEMG16Configuration(mBluetoothAddress)){
@@ -2154,7 +2164,7 @@ public class ShimmerCapture extends ServiceActivity {
 		if (mSensorView.equals("ECG") && mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3){
 			mTextSensor1.setText("ECG LL-RA");
 			mTextSensor2.setText("ECG LA-RA");
-			mTextSensor3.setText("EXG2 CH1");
+			mTextSensor3.setText("ECG LL-LA");
 			mTextSensor4.setText("ECG Vx-RL");
 			mTextSensor1.setVisibility(View.VISIBLE);
 			blueCircle.setVisibility(View.VISIBLE);
@@ -2166,10 +2176,10 @@ public class ShimmerCapture extends ServiceActivity {
 			greenCircle.setVisibility(View.VISIBLE);
 		}
 		if (mSensorView.equals("ECG 16Bit")){
-			mTextSensor1.setText("ECG1 LL-RA 16B");
-			mTextSensor2.setText("ECG2 LA-RA 16B");
-			mTextSensor3.setText("EXG2 CH1 16B");
-			mTextSensor4.setText("ECG Vx-RL 16B");
+			mTextSensor1.setText("ECG LL-RA");
+			mTextSensor2.setText("ECG LA-RA");
+			mTextSensor3.setText("ECG LL-LA");
+			mTextSensor4.setText("ECG Vx-RL");
 			mTextSensor1.setVisibility(View.VISIBLE);
 			blueCircle.setVisibility(View.VISIBLE);
 			mTextSensor2.setVisibility(View.VISIBLE);
@@ -2251,6 +2261,34 @@ public class ShimmerCapture extends ServiceActivity {
 		}
 		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT)){
 			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT);
+			mTextSensor2.setText("");
+			mTextSensor3.setText("");
+			mTextSensor4.setText("");
+			mTextSensor1.setVisibility(View.VISIBLE);
+			blueCircle.setVisibility(View.VISIBLE);
+			mTextSensor2.setVisibility(View.INVISIBLE);
+			orangeCircle.setVisibility(View.INVISIBLE);
+			mTextSensor3.setVisibility(View.INVISIBLE);
+			greyCircle.setVisibility(View.INVISIBLE);
+			mTextSensor4.setVisibility(View.INVISIBLE);
+			greenCircle.setVisibility(View.INVISIBLE);
+		}
+		if (mSensorView.equals(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)){
+			mTextSensor1.setText(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT);
 			mTextSensor2.setText("");
 			mTextSensor3.setText("");
 			mTextSensor4.setText("");
