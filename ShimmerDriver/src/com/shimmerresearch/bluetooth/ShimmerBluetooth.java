@@ -119,7 +119,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
 	
-	private int mNumberofTXRetriesCount=0;
+	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	
 	public enum BT_STATE{
