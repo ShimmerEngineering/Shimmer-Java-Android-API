@@ -64,6 +64,8 @@ public class ShimmerVerDetails implements Serializable {
 		public final static int EXP_BRD_HIGH_G_ACCEL = 44;
 		public final static int EXP_BRD_GPS = 46;
 		
+		public final static int SHIMMER_GQ_802154 = 56;
+		
 		public final static int SHIMMER3 = 31;
 		public final static int BASE15U = 41;
 		public final static int BASE6U = 42;
@@ -82,6 +84,9 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, "PROTO3 Deluxe");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL, "High-g Accel");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_GPS, "GPS");
+        
+        aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154, "ShimmerGQ 802.15.4");
+        
         aMap.put(HW_ID_SR_CODES.BASE15U, "Base15U");
         aMap.put(HW_ID_SR_CODES.BASE6U, "Base6U");
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
