@@ -115,7 +115,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object configValue);
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 	public abstract void checkConfigOptionValues(String stringKey);
-
+	public abstract void sensorAndConfigMapsCreate();
+	
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
 	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
 	public abstract byte[] refreshShimmerInfoMemBytes();
@@ -129,6 +130,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setShimmerVersionObject(ShimmerVerObject sVO) {
 		mShimmerVerObject = sVO;
+		sensorAndConfigMapsCreate();
 	}
 	
 	public void clearShimmerVersionObject() {

@@ -29,7 +29,7 @@ public class ShimmerECGSensor extends AbstractSensor{
 	}
 
 	@Override
-	public Object getSettings(String componentName) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

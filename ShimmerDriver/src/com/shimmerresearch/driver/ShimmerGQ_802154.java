@@ -18,6 +18,8 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
+import com.shimmerresearch.sensor.ShimmerECGtoHRSensor;
+import com.shimmerresearch.sensor.ShimmerGSRSensor;
 import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
 
@@ -41,7 +43,17 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 
 	public String mSpanId = "N/A";
 	
-
+	
+		public static final ShimmerVerObject SVO_RELEASE_REV_0_1 = new ShimmerVerObject( //just use fillers for now
+				10, 
+				10,
+				10, 
+				10, 
+				10,
+				10);
+	
+	
+	
 	//This maps the channel ID to sensor
 	//Map<Integer,AbstractSensor> mMapofSensorChannelToSensor = new HashMap<Integer,AbstractSensor>();
 	
@@ -336,6 +348,21 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 			return super.generateUartConfigMessage(cPD);
 		}			
 
+	}
+
+	@Override
+	public void sensorAndConfigMapsCreate() {
+		
+		//in future should compare and build map
+		if( UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
+				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
+			
+			
+		} else {
+			mListOfSensors.add(new ShimmerGSRSensor(mShimmerVerObject));
+			mListOfSensors.add(new ShimmerECGtoHRSensor(mShimmerVerObject));
+		}
+		
 	}
 
 

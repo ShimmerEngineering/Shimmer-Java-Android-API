@@ -9,6 +9,7 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ShimmerObject;
 
 public class ShimmerGSRSensor extends AbstractSensor{
 	
@@ -26,7 +27,7 @@ public class ShimmerGSRSensor extends AbstractSensor{
 	}
 
 	@Override
-	public Object getSettings(String componentName) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -38,7 +39,17 @@ public class ShimmerGSRSensor extends AbstractSensor{
 	public ActionSetting setSettings(String componentName, Object valueToSet,
 			COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
-		return null;
+		ActionSetting actionSetting = new ActionSetting(comType);
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+				if (comType == COMMUNICATION_TYPE.BLUETOOTH){
+					
+				} else if (comType == COMMUNICATION_TYPE.DOCK){
+					
+				}
+			break;
+		}
+		return actionSetting;
 	}
 
 	@Override
@@ -52,13 +63,15 @@ public class ShimmerGSRSensor extends AbstractSensor{
 	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
 			ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
+		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.BTSTREAM ||
+				svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.SDLOG)
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
 												Configuration.Shimmer3.ListofGSRRangeConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 												CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
 				
-		return null;
+		return mConfigOptionsMap;
 	}
 
 	@Override
