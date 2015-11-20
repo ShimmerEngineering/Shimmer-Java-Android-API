@@ -1,5 +1,6 @@
 package com.shimmerresearch.sensor;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -11,10 +12,15 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerObject;
 
-public class ShimmerGSRSensor extends AbstractSensor{
+public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1773291747371088953L;
+
 	public ShimmerGSRSensor(ShimmerVerObject svo) {
 		super(svo);
 		

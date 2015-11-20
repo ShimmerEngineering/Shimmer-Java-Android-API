@@ -1,5 +1,6 @@
 package com.shimmerresearch.sensor;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -7,10 +8,15 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class ShimmerECGtoHRSensor extends AbstractSensor {
+public class ShimmerECGtoHRSensor extends AbstractSensor implements Serializable{
 
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4160314338085066414L;
+
 	public ShimmerECGtoHRSensor(ShimmerVerObject svo) {
 		super(svo);
 		// TODO Auto-generated constructor stub

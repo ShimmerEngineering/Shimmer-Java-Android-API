@@ -1,5 +1,6 @@
 package com.shimmerresearch.sensor;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,11 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public abstract class AbstractSensor {
+public abstract class AbstractSensor implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3465427544416038676L;
 	protected String mSensorName;
 	protected String[] mSignalOutputNameArray;
 	protected String[] mSignalOutputFormatArray;
