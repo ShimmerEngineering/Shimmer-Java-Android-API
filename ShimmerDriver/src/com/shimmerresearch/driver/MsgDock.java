@@ -46,9 +46,9 @@ public class MsgDock {
 	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 54;
 	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 55;
 	
-//	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_SUCCESS = 51;
-//	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_FAIL = 52;
-//	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_PROGRESS = 53;
+	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_SUCCESS = 51;
+	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_FAIL = 52;
+	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_PROGRESS = 53;
 	
 	public final static int MSG_ID_DOCK_JOB_STARTED_PER_DOCK = 56;
 	public final static int MSG_ID_DOCK_JOB_SUCCESS_PER_DOCK = 57;
