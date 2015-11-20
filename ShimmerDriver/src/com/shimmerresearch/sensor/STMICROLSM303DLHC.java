@@ -68,7 +68,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	}
 
 	@Override
-	public Object getSettings(String componentName) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -76,7 +76,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
 		// 		Object returnValue = null;
-		ActionSetting actionsetting = new ActionSetting();
+		ActionSetting actionsetting = new ActionSetting(comType);
 		/*
 		 switch(componentName){
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):

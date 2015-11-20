@@ -1,14 +1,18 @@
 package com.shimmerresearch.sensor;
 
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_ACTION;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+
 public class ActionSetting {
 	
-	public enum Modes{
-		Bluetooth,
-		SD,
-		Radio802154
+	public COMMUNICATION_TYPE mComType;
+	public COMMUNICATION_ACTION mAction;
+	
+	public ActionSetting(COMMUNICATION_TYPE comType){
+		mComType = comType;
 	}
 	
-	public int mAction;
 	public byte[] mActionByteArray;
+	
 	
 }

@@ -18,6 +18,7 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
+import com.shimmerresearch.sensor.ShimmerECGtoHRSensor;
 import com.shimmerresearch.sensor.ShimmerGSRSensor;
 import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
@@ -359,7 +360,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 			
 		} else {
 			mListOfSensors.add(new ShimmerGSRSensor(mShimmerVerObject));
-			mListOfSensors.add(new ShimmerGSRSensor(mShimmerVerObject));
+			mListOfSensors.add(new ShimmerECGtoHRSensor(mShimmerVerObject));
 		}
 		
 	}

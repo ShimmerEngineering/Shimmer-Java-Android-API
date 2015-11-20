@@ -27,7 +27,7 @@ public class ShimmerGSRSensor extends AbstractSensor{
 	}
 
 	@Override
-	public Object getSettings(String componentName) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -39,7 +39,17 @@ public class ShimmerGSRSensor extends AbstractSensor{
 	public ActionSetting setSettings(String componentName, Object valueToSet,
 			COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
-		return null;
+		ActionSetting actionSetting = new ActionSetting(comType);
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+				if (comType == COMMUNICATION_TYPE.BLUETOOTH){
+					
+				} else if (comType == COMMUNICATION_TYPE.DOCK){
+					
+				}
+			break;
+		}
+		return actionSetting;
 	}
 
 	@Override

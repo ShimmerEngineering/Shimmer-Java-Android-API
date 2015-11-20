@@ -23,11 +23,11 @@ public class ShimmerECGtoHRSensor extends AbstractSensor {
 	@Override
 	public String getSensorName() {
 		// TODO Auto-generated method stub
-		return null;
+		return mSensorName;
 	}
 
 	@Override
-	public Object getSettings(String componentName) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

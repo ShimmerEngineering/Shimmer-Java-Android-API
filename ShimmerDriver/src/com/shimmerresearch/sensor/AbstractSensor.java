@@ -24,7 +24,7 @@ public abstract class AbstractSensor {
 	 */
 	public HashMap<COMMUNICATION_TYPE,HashMap<Integer,ChannelDetails>> mMapOfChannel = new HashMap<COMMUNICATION_TYPE,HashMap<Integer,ChannelDetails>>(); 
 	public abstract String getSensorName();
-	public abstract Object getSettings(String componentName);
+	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE comType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE comType);
 	public abstract Object processData(byte[] rawData,int FWType, int sensorFWID);
 	
