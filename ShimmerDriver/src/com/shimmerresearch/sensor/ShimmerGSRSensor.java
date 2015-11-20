@@ -9,6 +9,7 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ShimmerObject;
 
 public class ShimmerGSRSensor extends AbstractSensor{
 	
@@ -52,13 +53,15 @@ public class ShimmerGSRSensor extends AbstractSensor{
 	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
 			ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
+		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.BTSTREAM ||
+				svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.SDLOG)
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
 												Configuration.Shimmer3.ListofGSRRangeConfigValues, 
 												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 												CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
 				
-		return null;
+		return mConfigOptionsMap;
 	}
 
 	@Override

@@ -122,4 +122,10 @@ public class ShimmerShell extends ShimmerDevice {
 		
 	}
 
+	@Override
+	public void sensorAndConfigMapsCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
