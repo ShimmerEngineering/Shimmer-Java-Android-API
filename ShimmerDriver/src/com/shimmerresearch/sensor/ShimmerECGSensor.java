@@ -36,7 +36,7 @@ public class ShimmerECGSensor extends AbstractSensor{
 
 
 	@Override
-	public Object processData(byte[] rawData, int FWType, int sensorFWID) {
+	public Object processData(byte[] rawData) {
 		// TODO Auto-generated method stub
 		return null;
 	}

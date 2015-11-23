@@ -19,7 +19,8 @@ public class ShimmerECGtoHRSensor extends AbstractSensor implements Serializable
 
 	public ShimmerECGtoHRSensor(ShimmerVerObject svo) {
 		super(svo);
-		// TODO Auto-generated constructor stub
+		mSensorName = SENSOR_NAMES.ECG_TO_HR;
+
 	}
 	
 	{
@@ -46,8 +47,9 @@ public class ShimmerECGtoHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public Object processData(byte[] rawData, int FWType, int sensorFWID) {
+	public Object processData(byte[] rawData) {
 		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

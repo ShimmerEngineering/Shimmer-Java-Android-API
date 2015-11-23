@@ -11,6 +11,12 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractSensor implements Serializable{
+	
+	public static class SENSOR_NAMES{
+		public static final String GSR = "GSR";
+		public static final String ECG_TO_HR = "ECG to Heart Rate";
+	}
+	
 	/**
 	 * 
 	 */
@@ -23,6 +29,7 @@ public abstract class AbstractSensor implements Serializable{
 	protected int mHardwareID;
 	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor 
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
+	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
 	/** Each communication type might have a different Integer key representing the channel, e.g. BT Stream inquiry response (holds the channel sequence of the packet)
 	 * 
@@ -31,7 +38,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract String getSensorName();
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE comType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE comType);
-	public abstract Object processData(byte[] rawData,int FWType, int sensorFWID);
+	public abstract Object processData(byte[] rawData);
 	
 	
 	/**
@@ -56,6 +63,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public AbstractSensor(ShimmerVerObject svo){
+		mShimmerVerObject = svo;
 		mConfigOptionsMap = generateConfigOptionsMap(svo);
 		mMapOfChannel = generateChannelDetailsMap(svo);
 	}

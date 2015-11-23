@@ -3,6 +3,8 @@ package com.shimmerresearch.driver;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +19,9 @@ import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
+import com.shimmerresearch.sensor.AbstractSensor.SENSOR_NAMES;
 import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
@@ -53,6 +57,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public final static String DEFAULT_DOCKID = "Default.01";
 	public final static int DEFAULT_SLOTNUMBER = 1;
+	
+	public final static String DEVICE_ID = "Device_ID";
 
 	public List<ShimmerLogDetails> mListofLogs = new ArrayList<ShimmerLogDetails>();
 	
@@ -116,11 +122,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 	public abstract void checkConfigOptionValues(String stringKey);
 	public abstract void sensorAndConfigMapsCreate();
-	
+		
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
 	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
 	public abstract byte[] refreshShimmerInfoMemBytes();
-
+	/**Hash Map: Key integer, is to indicate the communication type, e.g. interpreting data via sd or bt might be different
+	 * 
+	 * Linked Hash Map :Integer is the index of where the sensor data for a particular sensor starts, String is the name of that particular sensor
+	 * 
+	 */
+	protected HashMap<Integer,LinkedHashMap<Integer,String>> mMapOfPacketFormat = new HashMap<Integer,LinkedHashMap<Integer,String>>();
+	
 
 	
 	// --------------- Abstract Methods End --------------------------
@@ -617,6 +629,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	public Object buildMsg(){
+		return null;
+	}
 	
 	public byte[] generateUartConfigMessage(ComponentPropertyDetails cPD){
 		//TODO: process common ShimmerDevice configs
@@ -627,7 +642,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//TODO: process common ShimmerDevice configs
 	}
 
-
+	/**
+	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
+	 */
+	private void interpretDataPacketFormat(Object object){
+		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.SHIMMER3.GQ_802154){
+			
+			LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
+			mIndexToSensor.put(0,SENSOR_NAMES.GSR);
+			mIndexToSensor.put(0,SENSOR_NAMES.ECG_TO_HR);
+			
+		} 
+		
+	}
 
 
 }
