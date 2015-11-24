@@ -666,6 +666,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		} 
 		
 	}
+	
+	
+	public String getMacId() {
+		return mMacIdFromUart;
+	}
 
 
 }

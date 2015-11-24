@@ -141,17 +141,18 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 					p2 = -0.3014;
 				}
 			}
-			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
-			uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
-			uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
-			if (mEnableCalibration){
-				calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
-				calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
-				//			calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
-				//			calibratedDataUnits[iGSR]=CHANNEL_UNITS.MICROSIEMENS;
-				//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
-			}
+			//Temp commented out by MN to stop errors in driver
+//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
+//			uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
+//			uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
+//			if (mEnableCalibration){
+//				calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+//				calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
+//				//			calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
+//				//			calibratedDataUnits[iGSR]=CHANNEL_UNITS.MICROSIEMENS;
+//				//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
+//			}
 
 		}
 		return null;

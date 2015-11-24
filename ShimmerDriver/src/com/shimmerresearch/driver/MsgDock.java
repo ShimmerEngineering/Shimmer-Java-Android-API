@@ -126,9 +126,9 @@ public class MsgDock {
 	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
 
 	//PlotManager
-	public final static int MSG_ID_PLOT_UPDATE = 150;
-	public final static int MSG_ID_PLOT_CLOSED = 151;
-	public final static int MSG_ID_PLOT_OUT_OF_BOUNDS = 152;
+//	public final static int MSG_ID_PLOT_UPDATE = 150;
+//	public final static int MSG_ID_PLOT_CLOSED = 151;
+//	public final static int MSG_ID_PLOT_OUT_OF_BOUNDS = 152;
 	
 	public final static int MSG_ID_EVENT_PULSE = 160;
 	public final static int MSG_ID_EVENT_TOGGLE_START = 161;
@@ -223,9 +223,9 @@ public class MsgDock {
         aMap.put(MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION, "MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION");
         
         aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_BT_STREAM");
-        aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
-        aMap.put(MSG_ID_PLOT_CLOSED, "MSG_ID_PLOT_CLOSED");
-        aMap.put(MSG_ID_PLOT_OUT_OF_BOUNDS, "MSG_ID_PLOT_OUT_OF_BOUNDS");
+//        aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
+//        aMap.put(MSG_ID_PLOT_CLOSED, "MSG_ID_PLOT_CLOSED");
+//        aMap.put(MSG_ID_PLOT_OUT_OF_BOUNDS, "MSG_ID_PLOT_OUT_OF_BOUNDS");
 
         aMap.put(MSG_ID_BT_TO_DB_FINISHED, "MSG_ID_BT_TO_DB_FINISHED");
         aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");

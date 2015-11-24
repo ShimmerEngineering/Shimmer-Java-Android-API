@@ -9890,29 +9890,35 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the Parsed MAC address from any source available
 	 */
 	public String getMacIdParsed() {
-		String macToUse = "";
-		if(!mMacIdFromUart.isEmpty()){
-			macToUse = mMacIdFromUart; 
-		}
-		else {
-			if(!mMacIdFromInfoMem.isEmpty()){
-				macToUse = mMacIdFromInfoMem; 
-			}
-			else {
-				if(!mMacIdFromInfoMem.isEmpty()){
-					macToUse = mMacIdFromInfoMem; 
-				}
-				else {
-					macToUse = mMyBluetoothAddress; 
-				}
-			}
-		}
-		
+		String macToUse = getMacId();
 		if(macToUse.length()>=12) {
 			return macToUse.substring(8, 12);
 		}
 		return "";
 	}
+	
+	/**
+	 * @return the MAC address from any source available
+	 */
+	@Override
+	public String getMacId() {
+		if(!mMacIdFromUart.isEmpty()){
+			return mMacIdFromUart; 
+		}
+		else {
+			if(!mMacIdFromInfoMem.isEmpty()){
+				return mMacIdFromInfoMem; 
+			}
+			else {
+				if(!mMacIdFromInfoMem.isEmpty()){
+					return mMacIdFromInfoMem; 
+				}
+				else {
+					return mMyBluetoothAddress; 
+				}
+			}
+		}
+	}	
 
 	/**
 	 * @return the mSamplingDividerVBatt
