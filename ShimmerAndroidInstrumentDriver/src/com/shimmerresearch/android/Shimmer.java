@@ -1059,7 +1059,7 @@ public class Shimmer extends ShimmerBluetooth{
 
 	@Override
 	protected void hasStopStreaming() {
-		// TODO Auto-generated method stub
+		startTimerReadStatus();
 		Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
 		bundle.putString(TOAST, "Device " + mMyBluetoothAddress +" stopped streaming");
