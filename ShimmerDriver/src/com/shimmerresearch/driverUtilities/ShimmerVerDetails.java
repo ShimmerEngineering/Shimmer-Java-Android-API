@@ -93,58 +93,33 @@ public class ShimmerVerDetails implements Serializable {
     }
 
 	public final static class FW_ID {
-		public final static class SHIMMER2R {
-			public final static int BOILER_PLATE = 0;
-			public final static int BTSTREAM = 1;
-			
-			public static final Map<Integer, String> mMapOfFirmwareLabels;
-		    static {
-		        Map<Integer, String> aMap = new TreeMap<Integer,String>();
-		        aMap.put(BOILER_PLATE, "BoilerPlate");
-		        aMap.put(BTSTREAM, "BtStream");
-		        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
-		    }
-		}
-		
 		/**
 		 * FW_ID is hardware generation dependent, not hardware version
 		 * dependent (e.g., Shimmer3 covers a range of custom hardware all based
 		 * on the same microcontroller in the Shimmmer3)
 		 */
-		public final static class SHIMMER3 {
-			public final static int BTSTREAM = 1;
-			public final static int SDLOG = 2;
-			public final static int LOGANDSTREAM = 3;
-			public final static int DCU_SWEATSENSOR = 4;
-			public final static int GQ_BLE = 5;
-			public final static int GPIO_TEST = 6;
-			public final static int GQ_802154 = 7;
-			
-			public static final Map<Integer, String> mMapOfFirmwareLabels;
-		    static {
-		        Map<Integer, String> aMap = new TreeMap<Integer,String>();
-		        aMap.put(BTSTREAM, "BtStream");
-		        aMap.put(SDLOG, "SDLog");
-		        aMap.put(LOGANDSTREAM, "LogAndStream");
-		        aMap.put(DCU_SWEATSENSOR, "Swatch");
-		        aMap.put(GQ_BLE, "GQ_BLE");
-		        aMap.put(GPIO_TEST, "GPIO_TEST");
-		        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
-		    }
-		}
-
-		public final static class SHIMMER_GQ {
-			public final static int GQ_802154 = 1;
-			
-			public static final Map<Integer, String> mMapOfFirmwareLabels;
-		    static {
-		        Map<Integer, String> aMap = new TreeMap<Integer,String>();
-		        aMap.put(GQ_802154, "GQ_802154");
-		        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
-		    }
-
-		}
+		public final static int BOILER_PLATE = 0;
+		public final static int BTSTREAM = 1;
+		public final static int SDLOG = 2;
+		public final static int LOGANDSTREAM = 3;
+		public final static int DCU_SWEATSENSOR = 4;
+		public final static int GQ_BLE = 5;
+		public final static int GPIO_TEST = 6;
+		public final static int GQ_802154 = 9;
 		
+		public static final Map<Integer, String> mMapOfFirmwareLabels;
+	    static {
+	        Map<Integer, String> aMap = new TreeMap<Integer,String>();
+	        aMap.put(BTSTREAM, "BtStream");
+	        aMap.put(SDLOG, "SDLog");
+	        aMap.put(LOGANDSTREAM, "LogAndStream");
+	        aMap.put(DCU_SWEATSENSOR, "Swatch");
+	        aMap.put(GQ_BLE, "GQ_BLE");
+	        aMap.put(GPIO_TEST, "GPIO_TEST");
+	        aMap.put(GQ_802154, "GQ_802154");
+	        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
+	    }
+
 		public final static class BASES {
 			public final static int BASE15U_REV2 = 0;
 			public final static int BASE15U_REV4 = 1;

@@ -43,7 +43,7 @@ public class HwDriverShimmerDeviceDetails {
 		public final static String CONFIG_WRITE = "4";
 		public final static String SD_CARD_CLEAR = "5";
 		public final static String JOB_QUEUE = "6";
-		public static final String EXPANSION_MEMORY_WRITE = "7";
+//		public static final String EXPANSION_MEMORY_WRITE = "7";
 	}
 
 	public enum DOCK_JOB {

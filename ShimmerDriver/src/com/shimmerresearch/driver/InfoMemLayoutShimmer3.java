@@ -482,12 +482,12 @@ public class InfoMemLayoutShimmer3 implements Serializable {
 		//Include changes to mapping below in order of oldest to newest in 
 		//seperate "if statements"
 		
-//		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,10,1)){
+//		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,10,1)){
 //			idxMplCalibration = 128+128+128+0;
 //		}
 		
-		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,8,42))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,4))) {
+		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,8,42))
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,3,4))) {
 			idxSensors3 =			128+0;
 			idxSensors4 =			128+1;
 			idxConfigSetupByte4 =	128+2;
@@ -498,9 +498,9 @@ public class InfoMemLayoutShimmer3 implements Serializable {
 			idxDerivedSensors2 = 117;
 		}
 		
-		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,8,68))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,3,17))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.BTSTREAM,0,6,0))) {
+		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,8,68))
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,3,17))
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.BTSTREAM,0,6,0))) {
 			idxDerivedSensors0 =		    31;
 			idxDerivedSensors1 =		    32;
 			idxDerivedSensors2 =		    33;
@@ -510,14 +510,14 @@ public class InfoMemLayoutShimmer3 implements Serializable {
 			idxLSM303DLHCAccelCalibration = 97;
 		}
 
-		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,11,3))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,12))) {
+		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,11,3))
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,5,12))) {
 			maskShowRwcErrorLeds =	 		0x01;
 		}
 		
-		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.SDLOG,0,11,5))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.LOGANDSTREAM,0,5,16))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER3.BTSTREAM,0,7,4))) {
+		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,11,5))
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,5,16))
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.BTSTREAM,0,7,4))) {
 			MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
 			MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
 			MSP430_5XX_INFOMEM_B_ADDRESS = 256;
@@ -531,20 +531,20 @@ public class InfoMemLayoutShimmer3 implements Serializable {
 		
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
 //		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,
-//				FW_ID.SHIMMER3.SDLOG, 0, 10, 1)) {
+//				FW_ID.SDLOG, 0, 10, 1)) {
 //			return 512;
 //		}
 		
-//		if(firmwareIdentifier == FW_ID.SHIMMER3.SDLOG) {
+//		if(firmwareIdentifier == FW_ID.SDLOG) {
 //			return 384;
 //		}
-//		else if(firmwareIdentifier == FW_ID.SHIMMER3.BTSTREAM) {
+//		else if(firmwareIdentifier == FW_ID.BTSTREAM) {
 //			return 128;
 //		}
-//		else if(firmwareIdentifier == FW_ID.SHIMMER3.LOGANDSTREAM) {
+//		else if(firmwareIdentifier == FW_ID.LOGANDSTREAM) {
 //			return 384;
 //		}
-//		else if(firmwareIdentifier == FW_ID.SHIMMER3.GQ_GSR) {
+//		else if(firmwareIdentifier == FW_ID.GQ_GSR) {
 //			return 128;
 //		}
 //		else {

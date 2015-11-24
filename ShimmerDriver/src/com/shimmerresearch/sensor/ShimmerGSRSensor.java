@@ -70,8 +70,8 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
 			ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
-		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.BTSTREAM ||
-				svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.SDLOG)
+		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM ||
+				svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG)
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
 												Configuration.Shimmer3.ListofGSRRangeConfigValues, 

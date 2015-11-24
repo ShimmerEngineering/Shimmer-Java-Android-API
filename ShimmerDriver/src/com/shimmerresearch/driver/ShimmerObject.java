@@ -2462,9 +2462,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	private boolean isDerivedSensorsSupported(){
-		if((isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.BTSTREAM, 0, 7, 0))
-		||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.SDLOG, 0, 8, 69))
-		||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SHIMMER3.LOGANDSTREAM, 0, 3, 17))){
+		if((isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 0))
+		||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 69))
+		||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 3, 17))){
 			return true;
 		}
 		return false;
@@ -6204,7 +6204,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			maxGUISamplingRate = 1024.0;
 		} else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			//check if an MPL channel is enabled - limit rate to 51.2Hz
-			if(checkIfAnyMplChannelEnabled() && getFirmwareIdentifier() == ShimmerVerDetails.FW_ID.SHIMMER3.SDLOG){
+			if(checkIfAnyMplChannelEnabled() && getFirmwareIdentifier() == ShimmerVerDetails.FW_ID.SDLOG){
 				rate = 51.2;
 			}
 		}		
@@ -6244,7 +6244,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
 			setExGRateFromFreq(mShimmerSamplingRate);
 			
-			if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG){
+			if(getFirmwareIdentifier()==FW_ID.SDLOG){
 				setMPU9150MagRateFromFreq(mShimmerSamplingRate);
 				setMPU9150MplRateFromFreq(mShimmerSamplingRate);
 			}
@@ -7236,10 +7236,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			// InfoMem D - End
 
 //			//SDLog and LogAndStream
-//			if(((getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
+//			if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SDLOG))&&(mInfoMemBytes.length >=384)) {
 				
 				// InfoMem C - Start - used by SdLog and LogAndStream
-				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					mMPU9150DMP = (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150DMP) & mInfoMemLayout.maskMPU9150DMP;
 					mMPU9150LPF = (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150LPF) & mInfoMemLayout.maskMPU9150LPF;
 					mMPU9150MotCalCfg =  (infoMemContents[mInfoMemLayout.idxConfigSetupByte4] >> mInfoMemLayout.bitShiftMPU9150MotCalCfg) & mInfoMemLayout.maskMPU9150MotCalCfg;
@@ -7345,17 +7345,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					mConfigTime = 0;
 //				}
 
-				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					mTrialId = infoMemContents[mInfoMemLayout.idxSDMyTrialID] & 0xFF;
 					mTrialNumberOfShimmers = infoMemContents[mInfoMemLayout.idxSDNumOfShimmers] & 0xFF;
 				}
 				
-				if((getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)) {
+				if((getFirmwareIdentifier()==FW_ID.SDLOG)||(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)) {
 					mButtonStart = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftButtonStart) & mInfoMemLayout.maskButtonStart;
 					mShowRtcErrorLeds = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftShowRwcErrorLeds) & mInfoMemLayout.maskShowRwcErrorLeds;
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					mSyncWhenLogging = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftTimeSyncWhenLogging) & mInfoMemLayout.maskTimeSyncWhenLogging;
 					mMasterShimmer = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig0] >> mInfoMemLayout.bitShiftMasterShimmer) & mInfoMemLayout.maskTimeMasterShimmer;
 					mSingleTouch = (infoMemContents[mInfoMemLayout.idxSDExperimentConfig1] >> mInfoMemLayout.bitShiftSingleTouch) & mInfoMemLayout.maskTimeSingleTouch;
@@ -7388,7 +7388,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				// InfoMem C - End
 					
-				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					syncNodesList.clear();
 					for (int i = 0; i < mInfoMemLayout.maxNumOfExperimentNodes; i++) {
@@ -7624,10 +7624,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//TODO: Add full FW version checking here to support future changes to FW
 			//SDLog and LogAndStream
-	//		if(((getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG))&&(mInfoMemBytes.length >=384)) {
+	//		if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SDLOG))&&(mInfoMemBytes.length >=384)) {
 	
 				// InfoMem C - Start - used by SdLog and LogAndStream
-				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] = (byte) ((mMPU9150DMP & mInfoMemLayout.maskMPU9150DMP) << mInfoMemLayout.bitShiftMPU9150DMP);
 					mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & mInfoMemLayout.maskMPU9150LPF) << mInfoMemLayout.bitShiftMPU9150LPF);
 					mInfoMemBytes[mInfoMemLayout.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & mInfoMemLayout.maskMPU9150MotCalCfg) << mInfoMemLayout.bitShiftMPU9150MotCalCfg);
@@ -7676,13 +7676,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mInfoMemBytes[mInfoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 				mInfoMemBytes[mInfoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 				
-				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					mInfoMemBytes[mInfoMemLayout.idxSDMyTrialID] = (byte) (mTrialId & 0xFF);
 		
 					mInfoMemBytes[mInfoMemLayout.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
 				}
 				
-				if((getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)) {
+				if((getFirmwareIdentifier()==FW_ID.SDLOG)||(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)) {
 					mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] = (byte) ((mButtonStart & mInfoMemLayout.maskButtonStart) << mInfoMemLayout.bitShiftButtonStart);
 					if(this.isOverrideShowRwcErrorLeds){
 						mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mInfoMemLayout.maskShowRwcErrorLeds) << mInfoMemLayout.bitShiftShowRwcErrorLeds);
@@ -7692,7 +7692,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & mInfoMemLayout.maskTimeSyncWhenLogging) << mInfoMemLayout.bitShiftTimeSyncWhenLogging);
 					mInfoMemBytes[mInfoMemLayout.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & mInfoMemLayout.maskTimeMasterShimmer) << mInfoMemLayout.bitShiftMasterShimmer);
 					
@@ -7708,7 +7708,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mInfoMemBytes[mInfoMemLayout.idxMaxExpLengthMsb] = (byte) ((mTrialDurationMaximum >> 8) & 0xFF);
 				}
 				
-				if(((getFirmwareIdentifier()==FW_ID.SHIMMER3.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG))) {
+				if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SDLOG))) {
 					if(generateForWritingToShimmer) {
 						// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
 						// (already set to 0xFF at start of method but just incase)
@@ -7729,7 +7729,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				// InfoMem C - End
 					
-				if(getFirmwareIdentifier()==FW_ID.SHIMMER3.SDLOG) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					for (int i = 0; i < mInfoMemLayout.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 						byte[] macIdArray;

@@ -15,7 +15,7 @@ public class ShimmerECGSensor extends AbstractSensor{
 	public ShimmerECGSensor(ShimmerVerObject svo) {
 		super(svo);
 		// TODO Auto-generated constructor stub
-		if (mFirmwareType == FW_ID.SHIMMER_GQ.GQ_802154){
+		if (mFirmwareType == FW_ID.GQ_802154){
 			
 		} 
 		
