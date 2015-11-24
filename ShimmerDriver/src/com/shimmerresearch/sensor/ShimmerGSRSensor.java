@@ -3,14 +3,19 @@ package com.shimmerresearch.sensor;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerObject;
 
 public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
@@ -82,57 +87,73 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public Object processData(byte[] rawData) {
-		
-		int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
-		double p1=0,p2=0;
-		if (mGSRRange==4){
-			newGSRRange=(49152 & (int)rawData[0])>>14; 
-		}
-		if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-			// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-			if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
-				p1 = 0.0373;
-				p2 = -24.9915;
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE comType, Object obj) {
 
-			} else { //Values have been reverted to 2r values
-				//p1 = 0.0363;
-				//p2 = -24.8617;
-				p1 = 0.0373;
-				p2 = -24.9915;
+		if (comType == COMMUNICATION_TYPE.IEEE802154){
+
+
+			ObjectCluster objectCluster = (ObjectCluster) obj;
+			int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+			double p1=0,p2=0;
+			if (mGSRRange==4){
+				newGSRRange=(49152 & (int)rawData[0])>>14; 
 			}
-		} else if (mGSRRange==1 || newGSRRange==1) {
-			if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
-				p1 = 0.0054;
-				p2 = -3.5194;
-			} else {
-				//p1 = 0.0051;
-				//p2 = -3.8357;
-				p1 = 0.0054;
-				p2 = -3.5194;
+			if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+				// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+				if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+					p1 = 0.0373;
+					p2 = -24.9915;
+
+				} else { //Values have been reverted to 2r values
+					//p1 = 0.0363;
+					//p2 = -24.8617;
+					p1 = 0.0373;
+					p2 = -24.9915;
+				}
+			} else if (mGSRRange==1 || newGSRRange==1) {
+				if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+					p1 = 0.0054;
+					p2 = -3.5194;
+				} else {
+					//p1 = 0.0051;
+					//p2 = -3.8357;
+					p1 = 0.0054;
+					p2 = -3.5194;
+				}
+			} else if (mGSRRange==2 || newGSRRange==2) {
+				if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+					p1 = 0.0015;
+					p2 = -1.0163;
+				} else {
+					//p1 = 0.0015;
+					//p2 = -1.0067;
+					p1 = 0.0015;
+					p2 = -1.0163;
+				}
+			} else if (mGSRRange==3  || newGSRRange==3) {
+				if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+					p1 = 4.5580e-04;
+					p2 = -0.3014;
+				} else {
+					//p1 = 4.4513e-04;
+					//p2 = -0.3193;
+					p1 = 4.5580e-04;
+					p2 = -0.3014;
+				}
 			}
-		} else if (mGSRRange==2 || newGSRRange==2) {
-			if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
-				p1 = 0.0015;
-				p2 = -1.0163;
-			} else {
-				//p1 = 0.0015;
-				//p2 = -1.0067;
-				p1 = 0.0015;
-				p2 = -1.0163;
+			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
+			uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
+			uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
+			if (mEnableCalibration){
+				calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+				calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
+				//			calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
+				//			calibratedDataUnits[iGSR]=CHANNEL_UNITS.MICROSIEMENS;
+				//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
 			}
-		} else if (mGSRRange==3  || newGSRRange==3) {
-			if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
-				p1 = 4.5580e-04;
-				p2 = -0.3014;
-			} else {
-				//p1 = 4.4513e-04;
-				//p2 = -0.3193;
-				p1 = 4.5580e-04;
-				p2 = -0.3014;
-			}
+
 		}
-	
 		return null;
 	}
 

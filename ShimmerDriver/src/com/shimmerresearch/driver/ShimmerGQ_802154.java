@@ -18,17 +18,15 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
+import com.shimmerresearch.sensor.AbstractSensor.SENSOR_NAMES;
 import com.shimmerresearch.sensor.ShimmerECGtoHRSensor;
 import com.shimmerresearch.sensor.ShimmerGSRSensor;
 import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
 
-public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSensors, ShimmerDataProcessing, Serializable {
+public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
-	/**Each integer is a unique identifier
-	 * 
-	 */
-	Map<Integer,AbstractSensor> mMapOfSensors = new HashMap<Integer,AbstractSensor>();
+	
 	
 	/** This is derived from all the sensors
 	 * 
@@ -123,44 +121,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 		addCommunicationRoute(connectionType);
 	}
 
-	@Override
-	public void deleteSensor(int uniqueID) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addSensor(int uniqueID, AbstractSensor abstractSensor) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public AbstractSensor getSensor(int uniqueID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ObjectCluster processData(
-			byte[] rawData,
-			int[] channelIdentifier,
-			HashMap<COMMUNICATION_TYPE, HashMap<String, ChannelDetails>> mapOfAllChannels, COMMUNICATION_TYPE comType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HashMap<Integer, AbstractSensor> generateSensors(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HashMap<COMMUNICATION_TYPE, HashMap<Integer, ChannelDetails>> generateAllSensorChannels(HashMap<Integer, AbstractSensor> sensorMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
@@ -359,8 +320,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements ShimmerHardwareSe
 			
 			
 		} else {
-			mListOfSensors.add(new ShimmerGSRSensor(mShimmerVerObject));
-			mListOfSensors.add(new ShimmerECGtoHRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSOR_NAMES.GSR,new ShimmerGSRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGtoHRSensor(mShimmerVerObject));
 		}
 		
 	}

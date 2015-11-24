@@ -39,7 +39,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ
 	 * 
 	 */
-	protected List<AbstractSensor> mListOfSensors = new ArrayList<AbstractSensor>();
+	protected HashMap<String,AbstractSensor> mMapOfSensors = new HashMap<String,AbstractSensor>();
 	
 	public ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	public ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
@@ -131,7 +131,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * Linked Hash Map :Integer is the index of where the sensor data for a particular sensor starts, String is the name of that particular sensor
 	 * 
 	 */
-	protected HashMap<Integer,LinkedHashMap<Integer,String>> mMapOfPacketFormat = new HashMap<Integer,LinkedHashMap<Integer,String>>();
+	protected HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,String>> mMapOfPacketFormat = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,String>>();
 	
 
 	
@@ -143,6 +143,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setShimmerVersionObject(ShimmerVerObject sVO) {
 		mShimmerVerObject = sVO;
 		sensorAndConfigMapsCreate();
+		interpretDataPacketFormat(null);
 	}
 	
 	public void clearShimmerVersionObject() {
@@ -629,7 +630,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public Object buildMsg(){
+	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
+		ObjectCluster ojc = new ObjectCluster();
+		for (int index:mMapOfPacketFormat.get(comType).keySet()){
+			AbstractSensor sensor = mMapOfSensors.get(mMapOfPacketFormat.get(comType).get(index));
+			sensor.processData(packetByteArray,comType,ojc);
+		}
+		 
+		
+		
 		return null;
 	}
 	
@@ -651,7 +660,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
 			mIndexToSensor.put(0,SENSOR_NAMES.GSR);
 			mIndexToSensor.put(0,SENSOR_NAMES.ECG_TO_HR);
+			mMapOfPacketFormat.put(COMMUNICATION_TYPE.IEEE802154,mIndexToSensor);
 			
+			mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
 		} 
 		
 	}

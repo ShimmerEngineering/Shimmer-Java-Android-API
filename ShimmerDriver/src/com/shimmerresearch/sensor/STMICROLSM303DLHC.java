@@ -108,7 +108,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	
 	
 	@Override
-	public Object processData(byte[] rawData) {
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE comTYPE, Object obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
