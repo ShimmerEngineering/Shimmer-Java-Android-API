@@ -639,7 +639,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			AbstractSensor sensor = mMapOfSensors.get(mMapOfPacketFormat.get(comType).get(index));
 			sensor.processData(packetByteArray,comType,ojc);
 		}
-		return null;
+		return ojc;
 	}
 	
 	public byte[] generateUartConfigMessage(ComponentPropertyDetails cPD){

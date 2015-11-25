@@ -326,7 +326,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 	}
 
-	
+	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
+		ObjectCluster ojc = (ObjectCluster) super.buildMsg(packetByteArray, comType);
+		//sendCallBackMsg();
+		return ojc;
+	}
 
 
 }
