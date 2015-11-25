@@ -655,7 +655,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
 	 */
 	private void interpretDataPacketFormat(Object object){
-		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.SHIMMER3.GQ_802154){
+		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.GQ_802154){
 			
 			LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
 			mIndexToSensor.put(0,SENSOR_NAMES.GSR);
@@ -665,6 +665,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
 		} 
 		
+	}
+	
+	
+	public String getMacId() {
+		return mMacIdFromUart;
 	}
 
 

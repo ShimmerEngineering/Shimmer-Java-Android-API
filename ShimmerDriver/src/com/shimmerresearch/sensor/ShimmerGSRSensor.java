@@ -75,8 +75,8 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
 			ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
-		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.BTSTREAM ||
-				svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SHIMMER3.SDLOG)
+		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM ||
+				svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG)
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
 						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
 												Configuration.Shimmer3.ListofGSRRangeConfigValues, 
@@ -142,17 +142,18 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 					p2 = -0.3014;
 				}
 			}
-			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
-			uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
-			uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
-			if (mEnableCalibration){
-				calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
-				calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
-				//			calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
-				//			calibratedDataUnits[iGSR]=CHANNEL_UNITS.MICROSIEMENS;
-				//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
-			}
+			//Temp commented out by MN to stop errors in driver
+//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
+//			uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
+//			uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
+//			if (mEnableCalibration){
+//				calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+//				calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
+//				//			calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
+//				//			calibratedDataUnits[iGSR]=CHANNEL_UNITS.MICROSIEMENS;
+//				//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
+//			}
 
 		}
 		return null;

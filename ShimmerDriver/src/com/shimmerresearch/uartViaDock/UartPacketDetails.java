@@ -50,7 +50,7 @@ public class UartPacketDetails {
 		final static int RADIO_802154     = 0x09;
 	}
 	
-	static ShimmerVerObject baseGqBle = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_BLE,FW_ID.SHIMMER3.GQ_BLE,0,0,5,ShimmerObject.ANY_VERSION);
+	static ShimmerVerObject baseGqBle = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_BLE,FW_ID.GQ_BLE,0,0,5,ShimmerObject.ANY_VERSION);
 	static ShimmerVerObject baseGq802154 = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION);
 	
 	//TODO improve

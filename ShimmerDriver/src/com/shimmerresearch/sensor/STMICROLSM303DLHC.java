@@ -82,10 +82,10 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
 				mAccelRange = ((int)valueToSet);
 				//
-			if(mFirmwareType==FW_ID.SHIMMER3.BTSTREAM||mFirmwareType==FW_ID.SHIMMER3.LOGANDSTREAM){ //mcommtype
+			if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
 				actionsetting.mActionByteArray = new byte[]{ShimmerObject.SET_ACCEL_SENSITIVITY_COMMAND, (byte)mAccelRange};
 				return actionsetting;
-			} else if (mFirmwareType==FW_ID.SHIMMER3.SDLOG){
+			} else if (mFirmwareType==FW_ID.SDLOG){
 				//compatiblity check and instruction generation
 			}
         	break;

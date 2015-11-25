@@ -140,19 +140,19 @@ public class FwImageVersionDetails {
 					
 					if(fileNameWithExtension.contains(FW_STRING.SHIMMER3_BTSTREAM)) {
 						mHardwareVersion = HW_ID.SHIMMER_3;
-						mFirmwareIdentifier = FW_ID.SHIMMER3.BTSTREAM;
+						mFirmwareIdentifier = FW_ID.BTSTREAM;
 					}
 					else if(fileNameWithExtension.contains(FW_STRING.SHIMMER3_SDLOG)) {
 						mHardwareVersion = HW_ID.SHIMMER_3;
-						mFirmwareIdentifier = FW_ID.SHIMMER3.SDLOG;
+						mFirmwareIdentifier = FW_ID.SDLOG;
 					}
 					else if(fileNameWithExtension.contains(FW_STRING.SHIMMER3_LOGANDSTREAM)) {
 						mHardwareVersion = HW_ID.SHIMMER_3;
-						mFirmwareIdentifier = FW_ID.SHIMMER3.LOGANDSTREAM;
+						mFirmwareIdentifier = FW_ID.LOGANDSTREAM;
 					}
 					else if(fileNameWithExtension.contains(FW_STRING.SHIMMER3_GQ_GSR)) {
 						mHardwareVersion = HW_ID.SHIMMER_3;
-						mFirmwareIdentifier = FW_ID.SHIMMER3.GQ_BLE;
+						mFirmwareIdentifier = FW_ID.GQ_BLE;
 					}
 					else if(fileNameWithExtension.contains(FW_STRING.SMARTDOCK15U_REV2)) {
 						mHardwareVersion = HW_ID_SR_CODES.BASE15U;
@@ -175,7 +175,7 @@ public class FwImageVersionDetails {
 				else if(fileNameWithExtension.contains(FW_STRING.GPIO_TEST)) {
 //					System.err.println(mFileName);
 					mHardwareVersion = HW_ID.SHIMMER_3;
-					mFirmwareIdentifier = FW_ID.SHIMMER3.GPIO_TEST;
+					mFirmwareIdentifier = FW_ID.GPIO_TEST;
 				}
 				else {
 					mHardwareVersion = FW_ID_UNKNOWN;

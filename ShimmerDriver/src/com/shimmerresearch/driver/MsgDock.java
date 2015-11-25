@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.shimmerresearch.driverUtilities.DockJobDetails;
+
 /**
  * @author JC, Mark Nolan
  *
@@ -45,10 +47,6 @@ public class MsgDock {
 	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS = 53;
 	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 54;
 	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 55;
-	
-	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_SUCCESS = 51;
-	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_FAIL = 52;
-	public final static int MSG_ID_SHIMMERUART_EXP_BRD_MEM_WRITE_PROGRESS = 53;
 	
 	public final static int MSG_ID_DOCK_JOB_STARTED_PER_DOCK = 56;
 	public final static int MSG_ID_DOCK_JOB_SUCCESS_PER_DOCK = 57;
@@ -128,9 +126,9 @@ public class MsgDock {
 	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
 
 	//PlotManager
-	public final static int MSG_ID_PLOT_UPDATE = 150;
-	public final static int MSG_ID_PLOT_CLOSED = 151;
-	public final static int MSG_ID_PLOT_OUT_OF_BOUNDS = 152;
+//	public final static int MSG_ID_PLOT_UPDATE = 150;
+//	public final static int MSG_ID_PLOT_CLOSED = 151;
+//	public final static int MSG_ID_PLOT_OUT_OF_BOUNDS = 152;
 	
 	public final static int MSG_ID_EVENT_PULSE = 160;
 	public final static int MSG_ID_EVENT_TOGGLE_START = 161;
@@ -225,9 +223,9 @@ public class MsgDock {
         aMap.put(MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION, "MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION");
         
         aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_BT_STREAM");
-        aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
-        aMap.put(MSG_ID_PLOT_CLOSED, "MSG_ID_PLOT_CLOSED");
-        aMap.put(MSG_ID_PLOT_OUT_OF_BOUNDS, "MSG_ID_PLOT_OUT_OF_BOUNDS");
+//        aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
+//        aMap.put(MSG_ID_PLOT_CLOSED, "MSG_ID_PLOT_CLOSED");
+//        aMap.put(MSG_ID_PLOT_OUT_OF_BOUNDS, "MSG_ID_PLOT_OUT_OF_BOUNDS");
 
         aMap.put(MSG_ID_BT_TO_DB_FINISHED, "MSG_ID_BT_TO_DB_FINISHED");
         aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");
@@ -280,7 +278,7 @@ public class MsgDock {
 	
 	public byte[] mSlotMap = new byte[]{};
 	
-	public Object mCurrentJobDetails;
+	public DockJobDetails mCurrentJobDetails;
 	
 	/**SmartDockActiveSlotDetails
 	 * @see SmartDockActiveSlotDetails
@@ -353,14 +351,36 @@ public class MsgDock {
 	 * @param dockID
 	 * @param slotIdentifier
 	 */
-	public MsgDock(int msgID, String dockID, Object currentJobDetails) {
+	public MsgDock(int msgID, String dockID, DockJobDetails currentJobDetails) {
 		mMsgID = msgID;
 		mDockID = dockID;
-		mSlotNumber = -1;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+//		mSlotNumber = -1;
+//		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
 		
+		//For Dock jobs keep 
+		mUniqueID = dockID;
+		mSlotNumber = convertUniqueIdToSlotNumer(mUniqueID);
+
 		mCurrentJobDetails = currentJobDetails;
 	}
 
+	
+	public static int convertUniqueIdToSlotNumer(String uniqueId){
+		int slotNumber = -1;
+		String[] subString = uniqueId.split("\\.");
+		if(subString.length>2) {
+			slotNumber = Integer.parseInt(subString[2]);
+		}
+		return slotNumber;
+	}
+
+	public static String convertUniqueIdToDockId(String uniqueId){
+		String[] subString = uniqueId.split("\\.");
+		return (subString[0]+"."+subString[1]);
+	}
+
+	public static String convertDockIdAndSlotNumberToUniqueId(String dockId, int slotNumber){
+		return (dockId + "." + String.format("%02d",slotNumber));
+	}
 	
 }
