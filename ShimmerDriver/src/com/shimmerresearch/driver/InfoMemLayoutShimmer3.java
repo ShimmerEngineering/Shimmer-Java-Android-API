@@ -15,29 +15,29 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
  * @author Mark Nolan
  *
  */
-public class InfoMemLayoutShimmer3 implements Serializable {
+public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5729543049033754281L;
 	
-	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
-	public byte[] invalidMacId2 = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+//	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+//	public byte[] invalidMacId2 = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
 	public int maxNumOfExperimentNodes = 21;
 
-	int mFirmwareIdentifier = -1;
-	int mFirmwareVersionMajor = -1;
-	int mFirmwareVersionMinor = -1;
-	int mFirmwareVersionInternal = -1;
-	int mInfoMemSize = 512;
-	
-	public int MSP430_5XX_INFOMEM_D_ADDRESS = 0x001800; 
-	public int MSP430_5XX_INFOMEM_C_ADDRESS = 0x001880; 
-	public int MSP430_5XX_INFOMEM_B_ADDRESS = 0x001900;
-	public int MSP430_5XX_INFOMEM_A_ADDRESS = 0x001980; 
-	public int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
-//	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
+//	int mFirmwareIdentifier = -1;
+//	int mFirmwareVersionMajor = -1;
+//	int mFirmwareVersionMinor = -1;
+//	int mFirmwareVersionInternal = -1;
+//	int mInfoMemSize = 512;
+//	
+//	public int MSP430_5XX_INFOMEM_D_ADDRESS = 0x001800; 
+//	public int MSP430_5XX_INFOMEM_C_ADDRESS = 0x001880; 
+//	public int MSP430_5XX_INFOMEM_B_ADDRESS = 0x001900;
+//	public int MSP430_5XX_INFOMEM_A_ADDRESS = 0x001980; 
+//	public int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
+////	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
 
 	
 //	//SENSORS0
@@ -527,7 +527,7 @@ public class InfoMemLayoutShimmer3 implements Serializable {
 
 	}
 	
-	public static int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
+	public int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
 		
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
 //		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,
@@ -553,19 +553,6 @@ public class InfoMemLayoutShimmer3 implements Serializable {
 		
 		return 384;
 	}
-	
-	public int calculateInfoMemByteLength(){
-		return calculateInfoMemByteLength(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
-	}
 
-	public boolean isDifferent(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
-		if((mFirmwareIdentifier!=firmwareIdentifier)
-				||(mFirmwareVersionMajor!=firmwareVersionMajor)
-				||(mFirmwareVersionMinor!=firmwareVersionMinor)
-				||(mFirmwareVersionInternal!=firmwareVersionInternal)){
-			return true;
-		}
-		return false;
-	}
 
 }

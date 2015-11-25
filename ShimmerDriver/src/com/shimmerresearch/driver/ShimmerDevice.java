@@ -99,7 +99,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mShimmerRealTimeClockConFigTime = 0;
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
-	public InfoMemLayoutShimmer3 mInfoMemLayout = new InfoMemLayoutShimmer3();
+	public InfoMemLayout mInfoMemLayout = new InfoMemLayoutShimmer3(); //default
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
 	
 	protected String mTrialName = "";
@@ -614,13 +614,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mInfoMemLayout==null){
 			create = true;
 		}
-		else if(mInfoMemLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
-			create = true;
+		else {
+			if(mInfoMemLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
+				create = true;
+			}
 		}
 		
 		if(create){
-			mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+			createInfoMemLayout();
 		}
+	}
+	
+	protected void createInfoMemLayout(){
+		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 	
 	protected void parseDockType(){
@@ -687,7 +693,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mMacIdFromUart;
 	}
 	
-	public byte[] infoMemByteArrayGenerate(){
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer){
 		return mInfoMemBytes;
 	}
 	

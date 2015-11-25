@@ -15,28 +15,28 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
  * @author Mark Nolan
  *
  */
-public class InfoMemLayoutShimmerGq802154 implements Serializable {
+public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5729543049033754281L;
 	
-	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
-	public byte[] invalidMacId2 = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-
-	int mFirmwareIdentifier = -1;
-	int mFirmwareVersionMajor = -1;
-	int mFirmwareVersionMinor = -1;
-	int mFirmwareVersionInternal = -1;
-	int mInfoMemSize = 512;
-	
-	public int MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
-	public int MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
-	public int MSP430_5XX_INFOMEM_B_ADDRESS = 256;
-	public int MSP430_5XX_INFOMEM_A_ADDRESS = 384; 
-	public int MSP430_5XX_INFOMEM_LAST_ADDRESS = 511;
-//	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
+//	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+//	public byte[] invalidMacId2 = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+//
+//	int mFirmwareIdentifier = -1;
+//	int mFirmwareVersionMajor = -1;
+//	int mFirmwareVersionMinor = -1;
+//	int mFirmwareVersionInternal = -1;
+//	int mInfoMemSize = 512;
+//	
+//	public int MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
+//	public int MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
+//	public int MSP430_5XX_INFOMEM_B_ADDRESS = 256;
+//	public int MSP430_5XX_INFOMEM_A_ADDRESS = 384; 
+//	public int MSP430_5XX_INFOMEM_LAST_ADDRESS = 511;
+////	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
 
 ////	//SENSORS0
 ////	public int SENSOR_A_ACCEL =                     0x80;
@@ -313,13 +313,13 @@ public class InfoMemLayoutShimmerGq802154 implements Serializable {
 //	public int maskTimeTCX0 = 					0x01;
 //
 //	public int lengthMacIdBytes = 				6;
-//
-//	public int bitShiftSDConfigTime0 = 			24;
-//	public int bitShiftSDConfigTime1 = 			16;
-//	public int bitShiftSDConfigTime2 = 			8;
-//	public int bitShiftSDConfigTime3 = 			0;
-//
-//	
+
+	public int bitShiftSDConfigTime0 = 			24;
+	public int bitShiftSDConfigTime1 = 			16;
+	public int bitShiftSDConfigTime2 = 			8;
+	public int bitShiftSDConfigTime3 = 			0;
+
+	
 //	public int bitShiftSDCfgFileWriteFlag =		0; 
 //	public int maskSDCfgFileWriteFlag =			0x01; 
 //	public int bitShiftSDCalibFileWriteFlag =	1; 
@@ -488,6 +488,12 @@ public class InfoMemLayoutShimmerGq802154 implements Serializable {
 		
 		mInfoMemSize = calculateInfoMemByteLength(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
 
+		MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
+		MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
+		MSP430_5XX_INFOMEM_B_ADDRESS = 256;
+		MSP430_5XX_INFOMEM_A_ADDRESS = 384; 
+		MSP430_5XX_INFOMEM_LAST_ADDRESS = 511;
+		
 		//Include changes to mapping below in order of oldest to newest in 
 		//seperate "if statements"
 		
@@ -497,7 +503,7 @@ public class InfoMemLayoutShimmerGq802154 implements Serializable {
 		
 	}
 	
-	public static int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
+	public int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
 		
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
 //		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,
@@ -523,19 +529,6 @@ public class InfoMemLayoutShimmerGq802154 implements Serializable {
 		
 		return 384;
 	}
-	
-	public int calculateInfoMemByteLength(){
-		return calculateInfoMemByteLength(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);
-	}
 
-	public boolean isDifferent(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
-		if((mFirmwareIdentifier!=firmwareIdentifier)
-				||(mFirmwareVersionMajor!=firmwareVersionMajor)
-				||(mFirmwareVersionMinor!=firmwareVersionMinor)
-				||(mFirmwareVersionInternal!=firmwareVersionInternal)){
-			return true;
-		}
-		return false;
-	}
 
 }

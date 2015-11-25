@@ -65,8 +65,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public HashMap<COMMUNICATION_TYPE, HashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
-			ShimmerVerObject svo) {
+	public HashMap<COMMUNICATION_TYPE, HashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
 	}

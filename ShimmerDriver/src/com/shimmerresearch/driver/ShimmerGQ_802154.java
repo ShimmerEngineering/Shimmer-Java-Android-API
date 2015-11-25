@@ -15,6 +15,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
@@ -42,13 +43,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public String mSpanId = "N/A";
 	
 	
-		public static final ShimmerVerObject SVO_RELEASE_REV_0_1 = new ShimmerVerObject( //just use fillers for now
-				10, 
-				10,
-				10, 
-				10, 
-				10,
-				10);
+	 //just use fillers for now
+	public static final ShimmerVerObject SVO_RELEASE_REV_0_1 = new ShimmerVerObject(
+			HW_ID.UNKNOWN, 
+			FW_ID.UNKNOWN,
+			FW_ID.UNKNOWN, 
+			FW_ID.UNKNOWN, 
+			FW_ID.UNKNOWN,
+			FW_ID.UNKNOWN);
 	
 	
 	
@@ -86,6 +88,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public GQ_STATE mState = GQ_STATE.IDLE;
 	
 	
+	// ----------------- Constructors Start ---------------------------------
+	
 	/**
 	 * @param shimmerVersionObject the FW and HW details of the devices
 	 */
@@ -122,7 +126,53 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		addCommunicationRoute(connectionType);
 	}
 
+	// ----------------- Constructors End ---------------------------------
+
 	
+	// ----------------- Local Sets/Gets Start ----------------------------
+
+	public void setRadioConfig(byte[] radioConfigArray) {
+		if(radioConfigArray.length>=9){
+	        this.mRadioChannel = radioConfigArray[0];
+	        this.mRadioGroupId = (radioConfigArray[1]<<8) + radioConfigArray[2];
+	        this.mRadioMyAddress = (radioConfigArray[3]<<8) + radioConfigArray[4];
+	        this.mRadioResponseWindow  = (radioConfigArray[5]<<24) + (radioConfigArray[6]<<16) + (radioConfigArray[7]<<8) + radioConfigArray[8];
+		}
+	}
+	
+	public void setRadioConfig(int radioChannel, int radioGroupId, int radioAddr, int radioResponseWindow) {
+        this.mRadioChannel = radioChannel;
+        this.mRadioGroupId = radioGroupId;
+        this.mRadioMyAddress = radioAddr;
+        this.mRadioResponseWindow = radioResponseWindow;
+	}
+	
+	public byte[] getRadioConfigByteArray() {
+		byte[] radioConfigArray = new byte[9];
+		
+        radioConfigArray[0] = (byte)(mRadioChannel & 0xFF);
+        radioConfigArray[2] = (byte)((mRadioGroupId & 0xFF00) >> 8);
+        radioConfigArray[3] = (byte)(mRadioGroupId & 0xFF);
+        radioConfigArray[4] = (byte)((mRadioMyAddress & 0xFF00) >> 8);
+        radioConfigArray[5] = (byte)(mRadioMyAddress & 0xFF);
+
+//        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 24) & 0xFF);
+//        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 16) & 0xFF);
+        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 8) & 0xFF);
+        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 0) & 0xFF);
+        
+		return radioConfigArray;
+	}
+
+	@Override
+	protected void createInfoMemLayout(){
+		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+	}
+
+	// ----------------- Local Sets/Gets End ----------------------------
+
+
+	// ----------------- Overrides from ShimmerDevice start -------------
 
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
@@ -219,52 +269,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return null;
 	}
 
-	public void setRadioConfig(byte[] radioConfigArray) {
-		if(radioConfigArray.length>=9){
-	        this.mRadioChannel = radioConfigArray[0];
-	        this.mRadioGroupId = (radioConfigArray[1]<<8) + radioConfigArray[2];
-	        this.mRadioMyAddress = (radioConfigArray[3]<<8) + radioConfigArray[4];
-	        this.mRadioResponseWindow  = (radioConfigArray[5]<<24) + (radioConfigArray[6]<<16) + (radioConfigArray[7]<<8) + radioConfigArray[8];
-		}
-	}
-	
-	public void setRadioConfig(int radioChannel, int radioGroupId, int radioAddr, int radioResponseWindow) {
-        this.mRadioChannel = radioChannel;
-        this.mRadioGroupId = radioGroupId;
-        this.mRadioMyAddress = radioAddr;
-        this.mRadioResponseWindow = radioResponseWindow;
-	}
-	
-	public byte[] getRadioConfig() {
-		byte[] radioConfigArray = new byte[9];
-		
-        radioConfigArray[0] = (byte)(mRadioChannel & 0xFF);
-        radioConfigArray[2] = (byte)((mRadioGroupId & 0xFF00) >> 8);
-        radioConfigArray[3] = (byte)(mRadioGroupId & 0xFF);
-        radioConfigArray[4] = (byte)((mRadioMyAddress & 0xFF00) >> 8);
-        radioConfigArray[5] = (byte)(mRadioMyAddress & 0xFF);
-
-//        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 24) & 0xFF);
-//        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 16) & 0xFF);
-        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 8) & 0xFF);
-        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 0) & 0xFF);
-        
-		return radioConfigArray;
-	}
-
-
-//	public boolean isConnected() {
-//		if(mRadioChannel==ShimmerGQ_802154.VARIABLE_NOT_SET){
-//			return false;
-//		}
-//		else {
-//			return true;
-//		}
-//	}
-	
-	
 	@Override
-	public byte[] infoMemByteArrayGenerate() {
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 		
 		InfoMemLayoutShimmerGq802154 infoMemLayout = new InfoMemLayoutShimmerGq802154(
 				getFirmwareIdentifier(), 
@@ -272,27 +278,25 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				getFirmwareVersionMinor(), 
 				getFirmwareVersionInternal());
 		
+//		byte[] infoMemBackup = mInfoMemBytes.clone();
 		mInfoMemBytes = createEmptyInfoMemByteArray(infoMemLayout.calculateInfoMemByteLength());
 		
 		//TODO: Trial name, shimmer name
 		
 		//Configuration Time
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime0) & 0xFF);
-		mInfoMemBytes[mInfoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime1) & 0xFF);
-		mInfoMemBytes[mInfoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime2) & 0xFF);
-		mInfoMemBytes[mInfoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime3) & 0xFF);
+		mInfoMemBytes[infoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime0) & 0xFF);
+		mInfoMemBytes[infoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime1) & 0xFF);
+		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
+		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 
-		byte[] radioConfig = getRadioConfig();
+		byte[] radioConfig = getRadioConfigByteArray();
 		System.arraycopy(radioConfig, 0, mInfoMemBytes, infoMemLayout.idxSrRadioConfigStart, radioConfig.length);
 
 //		mInfoMemBytes[infoMemLayout.idxSrRadioChannel] = (byte) mRadioChannel;
-//		
 //		mInfoMemBytes[infoMemLayout.idxSrRadioGroupId] = (byte) ((mRadioGroupId >> 8) & 0xFF);
 //		mInfoMemBytes[infoMemLayout.idxSrRadioGroupId+1] = (byte) (mRadioGroupId & 0xFF);
-//		
 //		mInfoMemBytes[infoMemLayout.idxSrRadioMyAddress] = (byte) ((mRadioMyAddress >> 8) & 0xFF);
 //		mInfoMemBytes[infoMemLayout.idxSrRadioMyAddress+1] = (byte) (mRadioMyAddress & 0xFF);
-//
 //		mInfoMemBytes[infoMemLayout.idxSrRadioResponseWindow] = (byte) ((mRadioResponseWindow >> 8) & 0xFF);
 //		mInfoMemBytes[infoMemLayout.idxSrRadioResponseWindow+1] = (byte) (mRadioResponseWindow & 0xFF);
 		
@@ -303,17 +307,12 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public void infoMemByteArrayParse(byte[] infoMemContents) {
 		mInfoMemBytes = infoMemContents;
 		
-		InfoMemLayoutShimmerGq802154 infoMemLayout = new InfoMemLayoutShimmerGq802154(
-				getFirmwareIdentifier(), 
-				getFirmwareVersionMajor(), 
-				getFirmwareVersionMinor(), 
-				getFirmwareVersionInternal());
-
+		InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154) mInfoMemLayout;
 		
 		// Shimmer Name
 		String shimmerName = "";
-		byte[] shimmerNameBuffer = new byte[infoMemLayout.lengthShimmerName];
-		System.arraycopy(infoMemContents, infoMemLayout.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayout.lengthShimmerName);
+		byte[] shimmerNameBuffer = new byte[infoMemLayoutCast.lengthShimmerName];
+		System.arraycopy(infoMemContents, infoMemLayoutCast.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayoutCast.lengthShimmerName);
 		for(byte b : shimmerNameBuffer) {
 			if(!UtilShimmer.isAsciiPrintable((char)b)) {
 				break;
@@ -322,8 +321,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 		
 		// Experiment Name
-		byte[] experimentNameBuffer = new byte[infoMemLayout.lengthExperimentName];
-		System.arraycopy(infoMemContents, infoMemLayout.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemLayout.lengthExperimentName);
+		byte[] experimentNameBuffer = new byte[infoMemLayoutCast.lengthExperimentName];
+		System.arraycopy(infoMemContents, infoMemLayoutCast.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemLayoutCast.lengthExperimentName);
 		String experimentName = "";
 		for(byte b : experimentNameBuffer) {
 			if(!UtilShimmer.isAsciiPrintable((char)b)) {
@@ -334,15 +333,15 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mTrialName = new String(experimentName);
 
 		//Configuration Time
-		int bitShift = (infoMemLayout.lengthConfigTimeBytes-1) * 8;
+		int bitShift = (infoMemLayoutCast.lengthConfigTimeBytes-1) * 8;
 		mConfigTime = 0;
-		for(int x=0; x<infoMemLayout.lengthConfigTimeBytes; x++ ) {
-			mConfigTime += (((long)(infoMemContents[infoMemLayout.idxSDConfigTime0+x] & 0xFF)) << bitShift);
+		for(int x=0; x<infoMemLayoutCast.lengthConfigTimeBytes; x++ ) {
+			mConfigTime += (((long)(infoMemContents[infoMemLayoutCast.idxSDConfigTime0+x] & 0xFF)) << bitShift);
 			bitShift -= 8;
 		}
 
-		byte[] radioConfig = new byte[infoMemLayout.lengthRadioConfig];
-		System.arraycopy(infoMemContents, infoMemLayout.idxSrRadioConfigStart, radioConfig, 0 , infoMemLayout.lengthRadioConfig);
+		byte[] radioConfig = new byte[infoMemLayoutCast.lengthRadioConfig];
+		System.arraycopy(infoMemContents, infoMemLayoutCast.idxSrRadioConfigStart, radioConfig, 0 , infoMemLayoutCast.lengthRadioConfig);
 		setRadioConfig(radioConfig);
 		
 		
@@ -374,7 +373,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		System.out.println("Component:" + cPD.component + " Property:" + cPD.property + " ByteArray:" + cPD.byteArray.length);
 		
 		if(cPD==COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
-			return getRadioConfig();
+			return getRadioConfigByteArray();
 		}
 		else {
 			return super.generateUartConfigMessage(cPD);
@@ -397,11 +396,17 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 	}
 
+	@Override
 	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
 		ObjectCluster ojc = (ObjectCluster) super.buildMsg(packetByteArray, comType);
 		//sendCallBackMsg();
 		return ojc;
 	}
+	
+	
+	// ----------------- Overrides from ShimmerDevice end -------------
+
+
 
 
 }
