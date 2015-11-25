@@ -21,7 +21,7 @@ import com.shimmerresearch.driver.ShimmerObject;
 public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	
 	private int mGSRRange;
-	
+
 	/**
 	 * 
 	 */
@@ -143,22 +143,38 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				}
 			}
 			//Temp commented out by MN to stop errors in driver
-//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
-//			uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
-//			uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
-//			if (mEnableCalibration){
-//				calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
-//				calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
-//				//			calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
-//				//			calibratedDataUnits[iGSR]=CHANNEL_UNITS.MICROSIEMENS;
-//				//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
-//			}
-
+			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)rawValue[0]));
+			objectCluster.mUncalData[objectCluster.indexKeeper]=(double)rawValue[0];
+			objectCluster.mUnitUncal[objectCluster.indexKeeper]=CHANNEL_UNITS.NO_UNITS;
+			if (mEnableCalibration){
+				/*objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawValue[0],p1,p2);
+				objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));*/
+				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawValue[0],p1,p2);
+				objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.MICROSIEMENS;
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
+			}
+			objectCluster.indexKeeper++;
 		}
-		return null;
+		return obj;
+	}
+	protected double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
+		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
+		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
+		//the following is the new linear method see user GSR user guide for further details
+		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
+		return gsrCalibratedData;  
 	}
 
+	protected double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
+		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
+		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
+		//the following is the new linear method see user GSR user guide for further details
+		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
+		return gsrCalibratedData;  
+	}
 	
 	
 }

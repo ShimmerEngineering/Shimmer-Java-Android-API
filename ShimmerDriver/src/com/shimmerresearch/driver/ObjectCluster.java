@@ -70,6 +70,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public String[] mSensorNames;
 	public String[] mUnitCal;
 	public String[] mUnitUncal;
+	
+	public int indexKeeper = 0;
+	
 	public BT_STATE mState;
 	
 	String[] mSensorFormats;

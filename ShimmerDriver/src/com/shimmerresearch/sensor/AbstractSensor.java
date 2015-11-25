@@ -15,11 +15,13 @@ public abstract class AbstractSensor implements Serializable{
 	public static class SENSOR_NAMES{
 		public static final String GSR = "GSR";
 		public static final String ECG_TO_HR = "ECG to Heart Rate";
+		public static final String CLOCK = "Clock";
 	}
 	
 	/**
 	 * 
 	 */
+	protected boolean mEnableCalibration = true;
 	private static final long serialVersionUID = 3465427544416038676L;
 	protected String mSensorName;
 	protected String[] mSignalOutputNameArray;

@@ -631,14 +631,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
+		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.GQ_802154){
+			interpretDataPacketFormat(packetByteArray[0]);
+		}
 		ObjectCluster ojc = new ObjectCluster();
 		for (int index:mMapOfPacketFormat.get(comType).keySet()){
 			AbstractSensor sensor = mMapOfSensors.get(mMapOfPacketFormat.get(comType).get(index));
 			sensor.processData(packetByteArray,comType,ojc);
 		}
-		 
-		
-		
 		return null;
 	}
 	
@@ -658,8 +658,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.GQ_802154){
 			
 			LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
-			mIndexToSensor.put(0,SENSOR_NAMES.GSR);
-			mIndexToSensor.put(0,SENSOR_NAMES.ECG_TO_HR);
+			//byte 0 is the enabled sensors
+			mIndexToSensor.put(1,SENSOR_NAMES.GSR);
+			mIndexToSensor.put(3,SENSOR_NAMES.ECG_TO_HR);
 			mMapOfPacketFormat.put(COMMUNICATION_TYPE.IEEE802154,mIndexToSensor);
 			
 			mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
