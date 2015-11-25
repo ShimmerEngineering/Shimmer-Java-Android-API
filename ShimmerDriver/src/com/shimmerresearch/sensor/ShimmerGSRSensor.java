@@ -90,8 +90,9 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	public Object processData(byte[] rawData, COMMUNICATION_TYPE comType, Object obj) {
 
 		if (comType == COMMUNICATION_TYPE.IEEE802154){
-
-
+			String[] format = new String[1];
+			format[0] = "u16";
+			long[] rawValue = parsedData(rawData,format);
 			ObjectCluster objectCluster = (ObjectCluster) obj;
 			int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 			double p1=0,p2=0;
