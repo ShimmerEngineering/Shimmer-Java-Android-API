@@ -141,9 +141,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	private static final long serialVersionUID = -1364568867018921219L;
 	
-	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
-	public final static String DEFAULT_EXPERIMENT_NAME = "DefaultTrial";
-
 	protected boolean mFirstTime = true;
 	double mFirstRawTS = 0;
 	public int OFFSET_LENGTH = 9;
@@ -541,7 +538,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mMasterShimmer = 0;
 	protected int mSingleTouch = 0;
 	protected int mTCXO = 0;
-	protected long mConfigTime; //this is in milliseconds, utc
 	protected long mRTCOffset; //this is in ticks
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
@@ -555,7 +551,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected final static int FW_TYPE_BT=0;
 	protected final static int FW_TYPE_SD=1;
 	
-	protected String mTrialName = "";
 	protected int mTrialId = 0;
 	protected int mTrialNumberOfShimmers = 0;
 
@@ -7415,14 +7410,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		// Set name if nothing was read from InfoMem
 		if(!shimmerName.isEmpty()) {
 			mShimmerUserAssignedName = new String(shimmerName);
-			
 		}
 		else {
 			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
-			
-//			if(!mMacIdFromUartParsed.isEmpty()) {
-//				mShimmerUserAssignedName += "_" + getMacIdFromUartParsed();
-//			}
 		}
 		
 	}
@@ -9052,13 +9042,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public int getTCXO() {
 		return mTCXO;
-	}
-
-	/**
-	 * @return the mTrialName
-	 */
-	public String getTrialName() {
-		return mTrialName;
 	}
 
 	/**

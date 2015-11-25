@@ -36,7 +36,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public static final int VARIABLE_NOT_SET = -1;
 	public int mRadioChannel = VARIABLE_NOT_SET;
 	public int mRadioGroupId = VARIABLE_NOT_SET;
-	public int mRadioAddr = VARIABLE_NOT_SET;
+	public int mRadioMyAddress = VARIABLE_NOT_SET;
 	private int mRadioResponseWindow = VARIABLE_NOT_SET; 
 
 	public String mSpanId = "N/A";
@@ -97,6 +97,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	 * @param uniqueID unique id of the shimmer
 	 * @param shimmerVersionObject the FW and HW details of the devices
 	 */
+	@Deprecated
 	public ShimmerGQ_802154(ShimmerGQInitSettings settings){
 		mUniqueID = settings.mShimmerGQID;
 	}
@@ -126,7 +127,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	/**Performs a deep copy of ShimmerGQ by Serializing
@@ -196,12 +196,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 
 	@Override
-	public void infoMemByteArrayParse(byte[] infoMemContents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public Object setConfigValueUsingConfigLabel(String componentName, Object configValue) {
 		// TODO Auto-generated method stub
 		return null;
@@ -211,12 +205,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public void setDefaultShimmerConfiguration() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -235,7 +223,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		if(radioConfigArray.length>=9){
 	        this.mRadioChannel = radioConfigArray[0];
 	        this.mRadioGroupId = (radioConfigArray[1]<<8) + radioConfigArray[2];
-	        this.mRadioAddr = (radioConfigArray[3]<<8) + radioConfigArray[4];
+	        this.mRadioMyAddress = (radioConfigArray[3]<<8) + radioConfigArray[4];
 	        this.mRadioResponseWindow  = (radioConfigArray[5]<<24) + (radioConfigArray[6]<<16) + (radioConfigArray[7]<<8) + radioConfigArray[8];
 		}
 	}
@@ -243,7 +231,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public void setRadioConfig(int radioChannel, int radioGroupId, int radioAddr, int radioResponseWindow) {
         this.mRadioChannel = radioChannel;
         this.mRadioGroupId = radioGroupId;
-        this.mRadioAddr = radioAddr;
+        this.mRadioMyAddress = radioAddr;
         this.mRadioResponseWindow = radioResponseWindow;
 	}
 	
@@ -253,13 +241,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
         radioConfigArray[0] = (byte)(mRadioChannel & 0xFF);
         radioConfigArray[2] = (byte)((mRadioGroupId & 0xFF00) >> 8);
         radioConfigArray[3] = (byte)(mRadioGroupId & 0xFF);
-        radioConfigArray[4] = (byte)((mRadioAddr & 0xFF00) >> 8);
-        radioConfigArray[5] = (byte)(mRadioAddr & 0xFF);
+        radioConfigArray[4] = (byte)((mRadioMyAddress & 0xFF00) >> 8);
+        radioConfigArray[5] = (byte)(mRadioMyAddress & 0xFF);
 
-        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 24) & 0xFF);
-        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 16) & 0xFF);
-        radioConfigArray[7] = (byte)((mRadioResponseWindow >> 8) & 0xFF);
-        radioConfigArray[8] = (byte)((mRadioResponseWindow >> 0) & 0xFF);
+//        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 24) & 0xFF);
+//        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 16) & 0xFF);
+        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 8) & 0xFF);
+        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 0) & 0xFF);
         
 		return radioConfigArray;
 	}
@@ -275,16 +263,99 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //	}
 	
 	
-	/*
-	public Object generateInfoMem(enum fwtype){
-		byte[] array = new byte[x];
-		for(sensor){
-			array = sensor.gimmeInfoMem(array) 
+	@Override
+	public byte[] infoMemByteArrayGenerate() {
+		
+		InfoMemLayoutShimmerGq802154 infoMemLayout = new InfoMemLayoutShimmerGq802154(
+				getFirmwareIdentifier(), 
+				getFirmwareVersionMajor(), 
+				getFirmwareVersionMinor(), 
+				getFirmwareVersionInternal());
+		
+		mInfoMemBytes = createEmptyInfoMemByteArray(infoMemLayout.calculateInfoMemByteLength());
+		
+		//TODO: Trial name, shimmer name
+		
+		//Configuration Time
+		mInfoMemBytes[infoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime0) & 0xFF);
+		mInfoMemBytes[mInfoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime1) & 0xFF);
+		mInfoMemBytes[mInfoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime2) & 0xFF);
+		mInfoMemBytes[mInfoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> mInfoMemLayout.bitShiftSDConfigTime3) & 0xFF);
+
+		byte[] radioConfig = getRadioConfig();
+		System.arraycopy(radioConfig, 0, mInfoMemBytes, infoMemLayout.idxSrRadioConfigStart, radioConfig.length);
+
+//		mInfoMemBytes[infoMemLayout.idxSrRadioChannel] = (byte) mRadioChannel;
+//		
+//		mInfoMemBytes[infoMemLayout.idxSrRadioGroupId] = (byte) ((mRadioGroupId >> 8) & 0xFF);
+//		mInfoMemBytes[infoMemLayout.idxSrRadioGroupId+1] = (byte) (mRadioGroupId & 0xFF);
+//		
+//		mInfoMemBytes[infoMemLayout.idxSrRadioMyAddress] = (byte) ((mRadioMyAddress >> 8) & 0xFF);
+//		mInfoMemBytes[infoMemLayout.idxSrRadioMyAddress+1] = (byte) (mRadioMyAddress & 0xFF);
+//
+//		mInfoMemBytes[infoMemLayout.idxSrRadioResponseWindow] = (byte) ((mRadioResponseWindow >> 8) & 0xFF);
+//		mInfoMemBytes[infoMemLayout.idxSrRadioResponseWindow+1] = (byte) (mRadioResponseWindow & 0xFF);
+		
+		return mInfoMemBytes;
+	}
+
+	@Override
+	public void infoMemByteArrayParse(byte[] infoMemContents) {
+		mInfoMemBytes = infoMemContents;
+		
+		InfoMemLayoutShimmerGq802154 infoMemLayout = new InfoMemLayoutShimmerGq802154(
+				getFirmwareIdentifier(), 
+				getFirmwareVersionMajor(), 
+				getFirmwareVersionMinor(), 
+				getFirmwareVersionInternal());
+
+		
+		// Shimmer Name
+		String shimmerName = "";
+		byte[] shimmerNameBuffer = new byte[infoMemLayout.lengthShimmerName];
+		System.arraycopy(infoMemContents, infoMemLayout.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayout.lengthShimmerName);
+		for(byte b : shimmerNameBuffer) {
+			if(!UtilShimmer.isAsciiPrintable((char)b)) {
+				break;
+			}
+			shimmerName += (char)b;
 		}
-		//determine if you can act on it if not
-		//return action setting
- 	}
-	*/
+		
+		// Experiment Name
+		byte[] experimentNameBuffer = new byte[infoMemLayout.lengthExperimentName];
+		System.arraycopy(infoMemContents, infoMemLayout.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemLayout.lengthExperimentName);
+		String experimentName = "";
+		for(byte b : experimentNameBuffer) {
+			if(!UtilShimmer.isAsciiPrintable((char)b)) {
+				break;
+			}
+			experimentName += (char)b;
+		}
+		mTrialName = new String(experimentName);
+
+		//Configuration Time
+		int bitShift = (infoMemLayout.lengthConfigTimeBytes-1) * 8;
+		mConfigTime = 0;
+		for(int x=0; x<infoMemLayout.lengthConfigTimeBytes; x++ ) {
+			mConfigTime += (((long)(infoMemContents[infoMemLayout.idxSDConfigTime0+x] & 0xFF)) << bitShift);
+			bitShift -= 8;
+		}
+
+		byte[] radioConfig = new byte[infoMemLayout.lengthRadioConfig];
+		System.arraycopy(infoMemContents, infoMemLayout.idxSrRadioConfigStart, radioConfig, 0 , infoMemLayout.lengthRadioConfig);
+		setRadioConfig(radioConfig);
+		
+		
+		//TODO below copied from Shimmer Object -> make single shared class
+		// Set name if nothing was read from InfoMem
+		if(!shimmerName.isEmpty()) {
+			mShimmerUserAssignedName = new String(shimmerName);
+		}
+		else {
+			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
+		}
+
+	}
 	
 	@Override
 	public void parseUartConfigResponse(ComponentPropertyDetails cPD, byte[] response){
