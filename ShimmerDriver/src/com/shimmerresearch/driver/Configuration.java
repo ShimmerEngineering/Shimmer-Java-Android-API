@@ -1901,9 +1901,9 @@ public class Configuration {
 					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
-					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL
+					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
 					); 
 			
 			
@@ -2222,7 +2222,7 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL), false, false));			
+							Arrays.asList(CHANNEL_TYPE.CAL), true, false));			
 			
 			// All Information required for parsing each of the channels
 			//TODO incorportate 3 byte timestamp change for newer firmware

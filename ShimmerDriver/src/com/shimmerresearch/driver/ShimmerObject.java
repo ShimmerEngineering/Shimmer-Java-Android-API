@@ -125,6 +125,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
+import com.sun.xml.internal.messaging.saaj.soap.Envelope;
 
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
 
@@ -692,6 +693,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mLowPowerAccelWR = false;
 	protected boolean mLowPowerGyro = false;
 	
+	protected int mCodeLasteEvent = 0;
+	protected boolean mIsPulseEvent = false;
+	protected int mEvents=0;
 	protected long mPacketLossCount=0;
 	protected double mPacketReceptionRate=100;
 	protected double mPacketReceptionRateCurrent=100;
@@ -863,6 +867,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//plus 4 because of: batt percent, PRR Current, PRR Trial, system timestamp
 			numAdditionalChannels += 4;
+			
+			//Event Markers
+			numAdditionalChannels += 1;
+			
 		} 
 		else {
 			if (mRTCOffset == 0){
@@ -2147,6 +2155,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[additionalChannelsOffset] = "";
 				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP;
 				additionalChannelsOffset+=1;
+				
+				//event
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,mEvents));
+				if(mIsPulseEvent){
+					mIsPulseEvent = false;
+					setEventUntrigger(mCodeLasteEvent);
+				}
+//				calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRate;
+//				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+//				uncalibratedData[additionalChannelsOffset] = Double.NaN;
+//				uncalibratedDataUnits[additionalChannelsOffset] = "";
+//				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
+//				additionalChannelsOffset+=1;
 			}
 			
 			objectCluster.mCalData = calibratedData;
@@ -2469,6 +2490,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		
 		return objectCluster;
+	}
+	
+	public void setEventTriggered(int eventCode, int eventType){
+		
+		mCodeLasteEvent = eventCode;
+		mEvents += eventCode;
+		
+		//TOGGLE(1),
+		//PULSE(2);
+		//event type is defined in UtilDb, defined it here too
+		if(eventType == 2){ 
+			mIsPulseEvent = true;
+		}
+	}
+	
+	public void setEventUntrigger(int eventCode){
+		mEvents -= eventCode;
 	}
 	
 	private boolean isDerivedSensorsSupported(){
