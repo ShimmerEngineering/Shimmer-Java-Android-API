@@ -656,14 +656,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	private void interpretDataPacketFormat(Object object){
 		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.GQ_802154){
-			
-			LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
-			//byte 0 is the enabled sensors
-			mIndexToSensor.put(1,SENSOR_NAMES.GSR);
-			mIndexToSensor.put(3,SENSOR_NAMES.ECG_TO_HR);
-			mMapOfPacketFormat.put(COMMUNICATION_TYPE.IEEE802154,mIndexToSensor);
-			
-			mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
+			if (object==null){
+				LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
+				//byte 0 is the enabled sensors and assuming no time stamps
+				mIndexToSensor.put(1,SENSOR_NAMES.GSR);
+				mIndexToSensor.put(3,SENSOR_NAMES.ECG_TO_HR);
+				mMapOfPacketFormat.put(COMMUNICATION_TYPE.IEEE802154,mIndexToSensor);
+				mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
+			} else {
+				//TODO: some bit tester to find enabled sensors
+				LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
+				//byte 0 is the enabled sensors and assuming no time stamps
+				mIndexToSensor.put(1,SENSOR_NAMES.CLOCK); //assuming clock is 3 bytes
+				mIndexToSensor.put(4,SENSOR_NAMES.GSR); 
+				mIndexToSensor.put(6,SENSOR_NAMES.ECG_TO_HR);
+				mMapOfPacketFormat.put(COMMUNICATION_TYPE.IEEE802154,mIndexToSensor);
+				mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
+				
+			}
 		} 
 		
 	}
