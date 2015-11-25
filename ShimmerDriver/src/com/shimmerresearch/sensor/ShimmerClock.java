@@ -2,6 +2,7 @@ package com.shimmerresearch.sensor;
 
 import java.util.HashMap;
 
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -15,6 +16,7 @@ public class ShimmerClock extends AbstractSensor {
 		super(svo);
 		// TODO Auto-generated constructor stub
 		mSensorName = SENSOR_NAMES.CLOCK;
+		
 	}
 
 	
@@ -22,7 +24,7 @@ public class ShimmerClock extends AbstractSensor {
 	@Override
 	public String getSensorName() {
 		// TODO Auto-generated method stub
-		return null;
+		return mSensorName;
 	}
 
 	@Override
@@ -41,7 +43,13 @@ public class ShimmerClock extends AbstractSensor {
 	@Override
 	public Object processData(byte[] rawData, COMMUNICATION_TYPE comType,
 			Object object) {
-		// TODO Auto-generated method stub
+		if (comType == COMMUNICATION_TYPE.IEEE802154){
+			String[] format = new String[1];
+			format[0] = "u24";
+			long[] rawValue = parsedData(rawData,format);
+			ObjectCluster objectCluster = (ObjectCluster) object;
+		}
+		
 		return null;
 	}
 

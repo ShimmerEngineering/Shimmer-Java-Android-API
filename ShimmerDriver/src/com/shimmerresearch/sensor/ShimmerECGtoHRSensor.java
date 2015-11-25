@@ -3,6 +3,7 @@ package com.shimmerresearch.sensor;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -47,9 +48,15 @@ public class ShimmerECGtoHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public Object processData(byte[] rawData, COMMUNICATION_TYPE comTYPE, Object obj) {
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE comType, Object obj) {
 		// TODO Auto-generated method stub
-		
+		if (comType == COMMUNICATION_TYPE.IEEE802154){
+			String[] format = new String[1];
+			format[0] = "u8";
+			long[] rawValue = parsedData(rawData,format);
+			ObjectCluster objectCluster = (ObjectCluster) obj;
+			
+		}
 		return null;
 	}
 
