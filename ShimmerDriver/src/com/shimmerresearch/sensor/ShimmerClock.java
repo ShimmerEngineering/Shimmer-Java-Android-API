@@ -48,6 +48,8 @@ public class ShimmerClock extends AbstractSensor {
 			format[0] = "u24";
 			long[] rawValue = parsedData(rawData,format);
 			ObjectCluster objectCluster = (ObjectCluster) object;
+		} else if (comType == COMMUNICATION_TYPE.SD){
+			
 		}
 		
 		return null;

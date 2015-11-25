@@ -630,10 +630,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	/** The packet format can be changed by calling interpretpacketformat
+	 * @param packetByteArray
+	 * @param comType
+	 * @return
+	 */
 	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
-		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.GQ_802154){
-			interpretDataPacketFormat(packetByteArray[0]);
-		}
+		
 		ObjectCluster ojc = new ObjectCluster();
 		for (int index:mMapOfPacketFormat.get(comType).keySet()){
 			AbstractSensor sensor = mMapOfSensors.get(mMapOfPacketFormat.get(comType).get(index));
@@ -654,7 +657,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
 	 */
-	private void interpretDataPacketFormat(Object object){
+	protected void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE comType ){
 		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.GQ_802154){
 			if (object==null){
 				LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
