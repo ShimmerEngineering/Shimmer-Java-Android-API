@@ -453,11 +453,12 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 ////	public int GYRO_AND_SOME_MAG =            0x03;
 	
 	
-	public int idxSrRadioConfigStart =            128+128+0; // 
 	public int idxSrRadioChannel =                128+128+0; // 1bytes
 	public int idxSrRadioGroupId =                128+128+1; // 2bytes
 	public int idxSrRadioMyAddress =              128+128+3; // 2bytes
 	public int idxSrRadioResponseWindow =         128+128+5; // 2bytes
+
+	public int idxSrRadioConfigStart =            idxSrRadioChannel; // 
 
 	public int lengthRadioConfig = 7;
 
