@@ -73,6 +73,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	}
 	
 	@Override
+
 	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
 			ShimmerVerObject svo) {
 		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
@@ -103,6 +104,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		
 		
 		return mMapOfComTypetoChannel;
+
 	}
 
 	@Override

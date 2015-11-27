@@ -52,7 +52,9 @@ public class ShimmerClock extends AbstractSensor {
 	@Override
 	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
 			ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
+		
+		
+		
 		return null;
 	}
 

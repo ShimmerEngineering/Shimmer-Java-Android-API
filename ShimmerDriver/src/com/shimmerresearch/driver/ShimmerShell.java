@@ -105,12 +105,6 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public byte[] refreshShimmerInfoMemBytes() {
 		// TODO Auto-generated method stub
 		return null;

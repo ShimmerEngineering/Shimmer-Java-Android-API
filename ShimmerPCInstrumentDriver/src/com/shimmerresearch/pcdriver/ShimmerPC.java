@@ -62,7 +62,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.Calendar;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
@@ -250,6 +252,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 					getListofInstructions().clear();
 					mFirstTime=true;
 					try {
+						consolePrintLn("Connecting to Shimmer");
+						
 						consolePrintLn("Port open: " + mSerialPort.openPort());
 						consolePrintLn("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
 						consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
@@ -274,16 +278,18 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 						}
 					}
 					catch (SerialPortException ex){
+						consolePrintException(ex.getMessage(), ex.getStackTrace());
+						
 						connectionLost();
 						closeConnection();
 						setState(BT_STATE.CONNECTION_FAILED);
-						//System.out.println(ex);
 					}
 				} else {
 					
 				}
 				
 			}
+
 	    };
 	    
 	    if (!mIsConnected){
@@ -307,9 +313,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				}
 			}
 
-		} catch (SerialPortException e) {
+		} catch (SerialPortException ex) {
+			consolePrintException(ex.getMessage(), ex.getStackTrace());
+
 			connectionLost();
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return false;
 	}
@@ -323,9 +331,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				return 0;
 			}
 			
-		} catch (SerialPortException e) {
+		} catch (SerialPortException ex) {
+			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
-			e.printStackTrace();
 			return 0;
 		}
 	}
@@ -335,10 +343,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		// TODO Auto-generated method stub
 		try {
 			mSerialPort.writeBytes(data);
-		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
+		} catch (SerialPortException ex) {
+			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
-			e.printStackTrace();
 		}
 	}
 
@@ -481,7 +488,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	protected void connectionLost() {
 		closeConnection();
-		System.out.println("Connection Lost");
+//		consolePrintLn("Connection Lost");
 		setState(BT_STATE.CONNECTION_LOST);
 	}
 	
@@ -494,12 +501,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				mPThread.stop = true;
 				mPThread = null;
 				}
-				
 			}
 			mIsStreaming = false;
 			mIsInitialised = false;
 
-//			setState(BT_STATE.NONE);
 			setState(BT_STATE.DISCONNECTED);
 			if (mSerialPort != null){
 				
@@ -507,16 +512,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				  mSerialPort.purgePort (1);
 				  mSerialPort.purgePort (2);
 				  mSerialPort.closePort ();
-				 
 				}
 				
 			}
 			 mSerialPort = null;
-		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
-//			setState(BT_STATE.NONE);
+		} catch (SerialPortException ex) {
+			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			setState(BT_STATE.DISCONNECTED);
-			
 		}			
 	}
 
@@ -564,7 +566,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		}
 		
 //		System.out.println("SetState: " + mUniqueID + "\tState:" + mState + "\tisConnected:" + mIsConnected + "\tisInitialised:" + mIsInitialised + "\tisStreaming:" + mIsStreaming);
-		
+		consolePrintLn("State change: " + mState.toString());
+
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mComPort);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
@@ -701,18 +704,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	protected void sendProgressReport(ProgressReportPerCmd pRPC) {
 		if(progressReportPerDevice!=null){
-//			if(progressReportPerDevice.mCurrentOperationBtState!=BT_STATE.NONE){
-				progressReportPerDevice.updateProgress(pRPC);
-				
-				CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mComPort, progressReportPerDevice);
-				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
-				
-				System.out.println("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
-				if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
-					finishOperation(progressReportPerDevice.mCurrentOperationBtState);
-				}
-//			}
+			progressReportPerDevice.updateProgress(pRPC);
 			
+			CallbackObject callBackObject = new CallbackObject(mState, getBluetoothAddress(), mComPort, progressReportPerDevice);
+			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+			
+//			consolePrintLn("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
+			
+			if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
+				finishOperation(progressReportPerDevice.mCurrentOperationBtState);
+			}
 		}
 	}
 
@@ -733,6 +734,24 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
 		}		
 	}
+
+	private void consolePrintException(String message, StackTraceElement[] stackTrace) {
+		consolePrintLn("Exception!");
+		System.out.println(message);
+		
+		Exception e = new Exception();
+		e.setStackTrace(stackTrace);
+		//create new StringWriter object
+		StringWriter sWriter = new StringWriter();
+		//create PrintWriter for StringWriter
+		PrintWriter pWriter = new PrintWriter(sWriter);
+		//now print the stacktrace to PrintWriter we just created
+		e.printStackTrace(pWriter);
+		//use toString method to get stacktrace to String from StringWriter object
+		String strStackTrace = sWriter.toString();
+		System.out.println(strStackTrace);
+	}
+
 
 	@Override
 	public ShimmerPC deepClone() {

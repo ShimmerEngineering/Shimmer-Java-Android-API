@@ -57,6 +57,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public final static String DEFAULT_DOCKID = "Default.01";
 	public final static int DEFAULT_SLOTNUMBER = 1;
+	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
+	public final static String DEFAULT_EXPERIMENT_NAME = "DefaultTrial";
 	
 	public final static String DEVICE_ID = "Device_ID";
 
@@ -97,9 +99,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mShimmerRealTimeClockConFigTime = 0;
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
-	public InfoMemLayoutShimmer3 mInfoMemLayout = new InfoMemLayoutShimmer3();
+	public InfoMemLayout mInfoMemLayout = new InfoMemLayoutShimmer3(); //default
 	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
 	
+	protected String mTrialName = "";
+	protected long mConfigTime; //this is in milliseconds, utc
+
 	protected long mPacketLossCount=0;
 	protected double mPacketReceptionRate=100;
 	protected double mPacketReceptionRateCurrent=100;
@@ -124,7 +129,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract void sensorAndConfigMapsCreate();
 		
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
-	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
+	
 	public abstract byte[] refreshShimmerInfoMemBytes();
 	/**Hash Map: Key integer, is to indicate the communication type, e.g. interpreting data via sd or bt might be different
 	 * 
@@ -608,13 +613,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mInfoMemLayout==null){
 			create = true;
 		}
-		else if(mInfoMemLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
-			create = true;
+		else {
+			if(mInfoMemLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
+				create = true;
+			}
 		}
 		
 		if(create){
-			mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+			createInfoMemLayout();
 		}
+	}
+	
+	protected void createInfoMemLayout(){
+		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 	
 	protected void parseDockType(){
@@ -680,7 +691,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				mIndexToSensor.put(6,SENSOR_NAMES.ECG_TO_HR);
 				mMapOfPacketFormat.put(COMMUNICATION_TYPE.IEEE802154,mIndexToSensor);
 				mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
-				
 			}
 		} 
 		
@@ -690,6 +700,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public String getMacId() {
 		return mMacIdFromUart;
 	}
+	
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer){
+		return mInfoMemBytes;
+	}
+	
 
-
+	/**
+	 * @return the mTrialName
+	 */
+	public String getTrialName() {
+		return mTrialName;
+	}
+	
 }
