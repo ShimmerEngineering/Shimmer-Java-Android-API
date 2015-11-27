@@ -637,9 +637,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
 		
 		ObjectCluster ojc = new ObjectCluster();
-		for (int index:mMapOfPacketFormat.get(comType).keySet()){
-			AbstractSensor sensor = mMapOfSensors.get(mMapOfPacketFormat.get(comType).get(index));
-			sensor.processData(packetByteArray,comType,ojc);
+		int index=0;
+		for (AbstractSensor sensor:mMapOfSensors.values()){
+			int length = sensor.getExpectedPacketByteArray(comType);
+			if (length!=0){ //if length 0 means there are no channels to be processed
+				byte[] sensorByteArray = new byte[length];
+				System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
+				sensor.processData(packetByteArray,comType,ojc);
+			}
+			index = index+length;
 		}
 		return ojc;
 	}

@@ -89,7 +89,7 @@ public class ShimmerGQ_802154_SD extends ShimmerGQ_802154 {
 			} else {
 				interpretDataPacketFormat(timeSync,COMMUNICATION_TYPE.SD);
 			}
-			ObjectCluster ojc = buildMsg(newPacket, COMMUNICATION_TYPE.SD,timeSync, -1);
+			ObjectCluster ojc = super.buildMsg(newPacket, COMMUNICATION_TYPE.SD,timeSync, -1);
 			//add offset if sync is on and there are no offsets available
 			if(mSyncWhenLogging==1 && !ojc.mSensorNames[0].equals("Offset")){
 				// add offset to signal name

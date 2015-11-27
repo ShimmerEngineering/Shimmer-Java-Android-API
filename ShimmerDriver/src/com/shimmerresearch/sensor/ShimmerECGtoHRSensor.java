@@ -2,6 +2,7 @@ package com.shimmerresearch.sensor;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -61,7 +62,7 @@ public class ShimmerECGtoHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public HashMap<COMMUNICATION_TYPE, HashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
+	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
 			ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
@@ -73,5 +74,7 @@ public class ShimmerECGtoHRSensor extends AbstractSensor implements Serializable
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }
