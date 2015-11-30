@@ -701,4 +701,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mTrialName;
 	}
 	
+	public long getDriveTotalSpace() {
+		return mShimmerSDCardDetails.getDriveTotalSpace();
+	}
+	
 }

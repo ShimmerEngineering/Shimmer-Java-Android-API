@@ -58,5 +58,9 @@ public class ShimmerSDCardDetails implements Serializable {
 	    return String.format("%.2f", spaceTotal) + spaceTotalTxt; 
 	}
 
+	public long getDriveTotalSpace() {
+		return mDriveTotalSpace;
+	}
+
 
 }

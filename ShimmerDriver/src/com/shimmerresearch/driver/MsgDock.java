@@ -125,6 +125,10 @@ public class MsgDock {
 	
 	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
 
+	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_UPDATE = 137;
+	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_SUCCESS = 138;
+	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_FAILURE_IO_EXCEPTION = 139;	
+
 	//PlotManager
 //	public final static int MSG_ID_PLOT_UPDATE = 150;
 //	public final static int MSG_ID_PLOT_CLOSED = 151;
@@ -138,7 +142,6 @@ public class MsgDock {
 	public final static int MSG_ID_BT_TO_DB_FINISHED = 170;
 	public final static int MSG_ID_BT_TO_DB_BUFFER_FILLED = 171;
 	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
-	
 	
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
@@ -221,6 +224,10 @@ public class MsgDock {
         aMap.put(MSG_IDENTIFIER_DB_PARSER_FAILURE_IO_EXCEPTION, "MSG_IDENTIFIER_DB_PARSER_FAILURE_IO_EXCEPTION");
         
         aMap.put(MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION, "MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION");
+        
+        aMap.put(MSG_IDENTIFIER_DATA_PARSER_TO_FILE_UPDATE, "MSG_IDENTIFIER_DATA_PARSER_TO_FILE_UPDATE");
+        aMap.put(MSG_IDENTIFIER_DATA_PARSER_TO_FILE_SUCCESS, "MSG_IDENTIFIER_DATA_PARSER_TO_FILE_SUCCESS");
+        aMap.put(MSG_IDENTIFIER_DATA_PARSER_TO_FILE_FAILURE_IO_EXCEPTION, "MSG_IDENTIFIER_DATA_PARSER_TO_FILE_FAILURE_IO_EXCEPTION");
         
         aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_BT_STREAM");
 //        aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
