@@ -148,13 +148,12 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		if(radioConfigArray.length>=7){
 	        this.mRadioChannel = radioConfigArray[0] & 0x00FF;
 	        
-	        //LSB first
-	        this.mRadioGroupId = (((radioConfigArray[2]&0x00FF)<<8) + (radioConfigArray[1]&0x00FF)) & 0x00FFFF;
+	        //All MSB first
 	        
-	        //LSB first
-	        this.mRadioMyAddress = (((radioConfigArray[4]&0x00FF)<<8) + (radioConfigArray[3]&0x00FF)) & 0x00FFFF;
+	        this.mRadioGroupId = (((radioConfigArray[1]&0x00FF)<<8) + (radioConfigArray[2]&0x00FF)) & 0x00FFFF;
 	        
-	        //MSB first
+	        this.mRadioMyAddress = (((radioConfigArray[3]&0x00FF)<<8) + (radioConfigArray[4]&0x00FF)) & 0x00FFFF;
+	        
 //	        this.mRadioResponseWindow  = (radioConfigArray[5]<<24) + (radioConfigArray[6]<<16) + (radioConfigArray[7]<<8) + radioConfigArray[8];
 	        this.mRadioResponseWindow  = (((radioConfigArray[5]&0x00FF)<<8) + (radioConfigArray[6]&0x00FF)) & 0x00FFFF;
 		}
@@ -172,15 +171,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
         radioConfigArray[0] = (byte)((mRadioChannel >> 0) & 0x00FF);
         
-        //LSB first
-        radioConfigArray[1] = (byte)((mRadioGroupId >> 0) & 0x00FF);
-        radioConfigArray[2] = (byte)((mRadioGroupId >> 8) & 0x00FF);
+        //All MSB first
         
-        //LSB first
-        radioConfigArray[3] = (byte)((mRadioMyAddress >> 0) & 0x00FF);
-        radioConfigArray[4] = (byte)((mRadioMyAddress >> 8) & 0x00FF);
+        radioConfigArray[1] = (byte)((mRadioGroupId >> 8) & 0x00FF);
+        radioConfigArray[2] = (byte)((mRadioGroupId >> 0) & 0x00FF);
+        
+        radioConfigArray[3] = (byte)((mRadioMyAddress >> 8) & 0x00FF);
+        radioConfigArray[4] = (byte)((mRadioMyAddress >> 0) & 0x00FF);
 
-        //MSB first
 //        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 24) & 0xFF);
 //        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 16) & 0xFF);
         radioConfigArray[5] = (byte)((mRadioResponseWindow >> 8) & 0x00FF);
