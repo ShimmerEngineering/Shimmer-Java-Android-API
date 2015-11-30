@@ -31,7 +31,6 @@ import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.shimmer3dexample.R;
 /**

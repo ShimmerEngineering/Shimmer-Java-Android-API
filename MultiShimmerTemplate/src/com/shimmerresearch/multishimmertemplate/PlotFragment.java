@@ -55,9 +55,10 @@ import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.service.MultiShimmerTemplateService;
-import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
+
 
 
 public class PlotFragment extends Fragment {

@@ -51,9 +51,9 @@ import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.service.ShimmerService;
 
 import android.app.Activity;
@@ -302,7 +302,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 				} else if(optionSelected.equals(SHIMMER_CONFIGURATION)){
 					
 					Shimmer sm = mService.getShimmer(mBluetoothAddress);
-					if(sm.getFirmwareCode()<3)
+					if(sm.getFirmwareVersionCode()<3)
 						Toast.makeText(getApplicationContext(), "The FW is not compatible", Toast.LENGTH_LONG).show();
 					else{
 						Intent commandIntent=new Intent(getApplicationContext(), CommandsActivity.class);
@@ -332,7 +332,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 							shimmerVersion = "Shimmer SR30";
 						break;
 					};
-					String FWName = shimmerTemp.getFWVersionName();
+					String FWName = shimmerTemp.getFirmwareVersionParsed();
 					if(FWName.equals(""))
 						FWName = "Unknown";
 					

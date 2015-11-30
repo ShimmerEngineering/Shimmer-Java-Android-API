@@ -92,6 +92,11 @@ public class Configuration {
 		public static final String METER_PER_SECOND = "m/s";
 		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";
 		public static final String METER_SQUARE = "m^2";
+		public static final String MILLIMETER = "mm";
+		public static final String MILLIMETER_PER_SECOND = "mm/s";
+		public static final String MILLIMETER_PER_SECOND_SQUARE = "mm/(s^2)";
+		public static final String MILLIMETER_SQUARE = "mm^2";
+		public static final String MILLIMETER_SQUARE_PER_SECOND = "mm^2/s";
 		public static final String DEGREES_PER_SECOND = "deg/s";
 		public static final String LOCAL_FLUX = "local_flux";
 		public static final String KOHMS = "kOhms";
@@ -1909,9 +1914,9 @@ public class Configuration {
 					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
-					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL
+					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
 					); 
 			
 			
@@ -2230,7 +2235,7 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL), false, false));			
+							Arrays.asList(CHANNEL_TYPE.CAL), true, false));			
 			
 			// All Information required for parsing each of the channels
 			//TODO incorportate 3 byte timestamp change for newer firmware
@@ -4024,6 +4029,8 @@ public class Configuration {
 		Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT = "EMG CH2";
 		Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT = "ECG LL-RA";
 		Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT = "ECG LA-RA";
+		Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT = "ECG LL-LA";
+		Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT = "ECG LL-LA";
 		Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT = "ECG LL-RA";
 		Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT = "ECG LA-RA";
 		Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT = "EXG1 CH1";

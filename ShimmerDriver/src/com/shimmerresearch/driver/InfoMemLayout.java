@@ -39,6 +39,7 @@ public abstract class InfoMemLayout implements Serializable {
 //	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE;
 	
 	
+
 	public abstract int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease);
 //	public static int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
 //		
@@ -66,6 +67,7 @@ public abstract class InfoMemLayout implements Serializable {
 //		
 //		return 384;
 //	}
+
 	
 	public int calculateInfoMemByteLength(){
 		return calculateInfoMemByteLength(mFirmwareIdentifier, mFirmwareVersionMajor, mFirmwareVersionMinor, mFirmwareVersionInternal);

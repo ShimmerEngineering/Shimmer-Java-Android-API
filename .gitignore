@@ -3,6 +3,7 @@
 .gradle
 bin/
 tmp/
+out/
 *.tmp
 *.bak
 *.swp
@@ -28,3 +29,5 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+out/production/JavaShimmerConnect/com/shimmerresearch/ShimmerCapture/ShimmerCapture$1.class
+out/production/ShimmerPCInstrumentDriver/com/shimmerresearch/pcdriver/DockException.class

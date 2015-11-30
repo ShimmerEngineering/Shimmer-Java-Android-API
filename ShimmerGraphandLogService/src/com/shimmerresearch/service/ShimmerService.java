@@ -765,7 +765,7 @@ public class ShimmerService extends Service {
 		String version="";
 		Shimmer stemp=(Shimmer) mMultiShimmer.get(bluetoothAddress);
 		if (stemp!=null){
-			version=stemp.getFirmwareMajorVersion()+"."+stemp.getFirmwareMinorVersion();
+			version=stemp.getFirmwareVersionMajor()+"."+stemp.getFirmwareVersionMinor();
 		}
 		return version;
 	}

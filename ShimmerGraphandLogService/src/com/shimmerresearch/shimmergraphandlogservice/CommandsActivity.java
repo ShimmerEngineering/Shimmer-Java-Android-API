@@ -4,8 +4,8 @@ package com.shimmerresearch.shimmergraphandlogservice;
 
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.shimmergraphandlogservice.R;
 import com.shimmerresearch.service.ShimmerService;
 import com.shimmerresearch.service.ShimmerService.LocalBinder;

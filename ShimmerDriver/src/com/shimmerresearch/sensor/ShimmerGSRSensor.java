@@ -58,6 +58,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet,
 			COMMUNICATION_TYPE comType) {
+		
 		// TODO Auto-generated method stub
 		ActionSetting actionSetting = new ActionSetting(comType);
 		switch(componentName){
@@ -70,6 +71,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 			break;
 		}
 		return actionSetting;
+
 	}
 	
 	@Override
@@ -111,6 +113,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
 			ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
+
 		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM ||
 				svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG)
 				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 

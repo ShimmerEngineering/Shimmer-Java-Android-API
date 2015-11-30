@@ -39,7 +39,7 @@ import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.tools.Logging;
 

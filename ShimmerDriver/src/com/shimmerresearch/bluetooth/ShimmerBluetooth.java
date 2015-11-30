@@ -118,7 +118,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
 	
-	private int mNumberofTXRetriesCount=0;
+	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	
 	public enum BT_STATE{
@@ -190,6 +190,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void connectionLost();
 	protected abstract void setState(BT_STATE state);
 	protected abstract void startOperation(BT_STATE currentOperation);
+	protected abstract void finishOperation(BT_STATE currentOperation);
 	protected abstract void startOperation(BT_STATE currentOperation, int totalNumOfCmds);
 	protected abstract void logAndStreamStatusChanged();
 	protected abstract void batteryStatusChanged();
@@ -1614,6 +1615,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				else if(currentCommand==SET_SENSORS_COMMAND) {
 					mEnabledSensors=tempEnabledSensors;
+					if(getHardwareVersion()==HW_ID.SHIMMER_3){
+						checkExgResolutionFromEnabledSensorsVar();
+					}
 					byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
 				}
 				else if(currentCommand==SET_MAG_GAIN_COMMAND){

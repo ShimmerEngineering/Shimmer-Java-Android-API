@@ -10,8 +10,8 @@ import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.service.MultiShimmerTemplateService;
 
 import android.app.AlertDialog;
@@ -642,7 +642,7 @@ public class ConfigurationFragment extends Fragment{
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				if(mService.getShimmer(mBluetoothAddress).getFirmwareCode()>2){
+				if(mService.getShimmer(mBluetoothAddress).getFirmwareVersionCode()>2){
 					dialogExgGain.show();
 				}
 				else

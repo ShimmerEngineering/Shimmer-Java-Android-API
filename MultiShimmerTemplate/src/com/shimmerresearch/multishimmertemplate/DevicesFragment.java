@@ -12,7 +12,7 @@ import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.database.ShimmerConfiguration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.service.MultiShimmerTemplateService;
 
 import android.app.Activity;

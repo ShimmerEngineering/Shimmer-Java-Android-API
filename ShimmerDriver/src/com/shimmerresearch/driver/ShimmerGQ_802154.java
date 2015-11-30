@@ -26,7 +26,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.sensor.AbstractSensor.SENSOR_NAMES;
 import com.shimmerresearch.sensor.ShimmerClock;
-import com.shimmerresearch.sensor.ShimmerECGtoHRSensor;
+import com.shimmerresearch.sensor.ShimmerECGToHRSensor;
 import com.shimmerresearch.sensor.ShimmerGSRSensor;
 import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
@@ -412,12 +412,12 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
 			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
 			mMapOfSensors.put(SENSOR_NAMES.GSR,new ShimmerGSRSensor(mShimmerVerObject));
-			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGtoHRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGToHRSensor(mShimmerVerObject));
 			
 		} else {
 			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
 			mMapOfSensors.put(SENSOR_NAMES.GSR,new ShimmerGSRSensor(mShimmerVerObject));
-			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGtoHRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGToHRSensor(mShimmerVerObject));
 		}
 		
 	}

@@ -499,6 +499,11 @@ public class Shimmer extends ShimmerBluetooth{
 			mConnectThread = null;
 		}
 		if (mConnectedThread != null) {
+			try {
+				wait(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			mConnectedThread.cancel(); 
 			mConnectedThread = null;
 		}
@@ -516,7 +521,7 @@ public class Shimmer extends ShimmerBluetooth{
 		// Synchronize a copy of the ConnectedThread
 		synchronized (this) {
 			//if (mState != BT_STATE.CONNECTED && mState != BT_STATE.STREAMING) return;
-			if (mState != BT_STATE.CONNECTING && mState != BT_STATE.CONNECTED && mState != BT_STATE.STREAMING) return;
+			if (mState == BT_STATE.DISCONNECTED ) return;
 			r = mConnectedThread;
 		}
 		// Perform the write unsynchronized
@@ -724,7 +729,7 @@ public class Shimmer extends ShimmerBluetooth{
 			// Send the name of the connected device back to the UI Activity
 			while(!mIOThread.isAlive()){}; 
 			Log.d(mClassName, "alive!!");
-			shimmer.setState(BT_STATE.CONNECTED);
+			//shimmer.setState(BT_STATE.CONNECTED);
 			//startStreaming();
 			initialize();
 		}
@@ -846,7 +851,15 @@ public class Shimmer extends ShimmerBluetooth{
 			//only do this during the initialization process to indicate that it is fully initialized, dont do this for a normal inqiuiry
 			mIsInitialised = true;
 		}
-		setState(BT_STATE.CONNECTED);
+		if(mIsSDLogging){
+			if (mIsInitialised){
+				setState(BT_STATE.SDLOGGING);
+			} else {
+				setState(BT_STATE.CONNECTED);
+			}
+		} else {
+			setState(BT_STATE.CONNECTED);
+		}
 		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, -1, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),mState)).sendToTarget();
 		Log.d(mClassName,"Shimmer " + mMyBluetoothAddress +" Initialization completed and is ready for Streaming");
 	}
@@ -1053,12 +1066,16 @@ public class Shimmer extends ShimmerBluetooth{
 
 	@Override
 	protected void hasStopStreaming() {
-		// TODO Auto-generated method stub
+		startTimerReadStatus();
 		Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
 		bundle.putString(TOAST, "Device " + mMyBluetoothAddress +" stopped streaming");
 		msg.setData(bundle);
-		setState(BT_STATE.CONNECTED);
+		if (mIsSDLogging){
+			setState(BT_STATE.SDLOGGING);
+		} else {
+			setState(BT_STATE.CONNECTED);
+		}
 		mHandler.sendMessage(msg);
 		mHandler.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, MSG_STATE_STOP_STREAMING, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),mState)).sendToTarget();
 		
@@ -1101,7 +1118,7 @@ public class Shimmer extends ShimmerBluetooth{
 //				else if(getBTState() != BT_STATE.CONNECTED){
 //					setState(BT_STATE.CONNECTED);
 //				}
-				
+				setState(BT_STATE.CONNECTED);
 				mHandler.obtainMessage(MESSAGE_STATE_CHANGE, -1, -1, new ObjectCluster(mShimmerUserAssignedName,getBluetoothAddress(),getBTState())).sendToTarget();
 				
 			}
@@ -1156,6 +1173,9 @@ public class Shimmer extends ShimmerBluetooth{
 		if(mState==BT_STATE.CONNECTED){
 			mIsConnected = true;
 			mIsStreaming = false;
+		} else if(mState==BT_STATE.SDLOGGING){
+			mIsInitialised = true;
+			mIsStreaming = false;
 		}
 		else if(mState==BT_STATE.STREAMING){
 			mIsStreaming = true;
@@ -1195,6 +1215,7 @@ public class Shimmer extends ShimmerBluetooth{
 	}
 
 	@Override
+
 	public ShimmerDevice deepClone() {
 		// TODO Auto-generated method stub
 		return null;
@@ -1203,6 +1224,9 @@ public class Shimmer extends ShimmerBluetooth{
 	@Override
 	protected void interpretDataPacketFormat(Object object,
 			COMMUNICATION_TYPE comType) {
+	}
+	protected void finishOperation(BT_STATE currentOperation) {
+
 		// TODO Auto-generated method stub
 		
 	}

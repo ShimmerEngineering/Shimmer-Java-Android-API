@@ -50,9 +50,11 @@ import java.util.List;
 
 
 
+
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.*;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.tools.Logging;
 
@@ -929,7 +931,7 @@ public class ShimmerService extends Service {
 		String version="";
 		Shimmer stemp=(Shimmer) mMultiShimmer.get(bluetoothAddress);
 		if (stemp!=null){
-			version=stemp.getFirmwareMajorVersion()+"."+stemp.getFirmwareMinorVersion();
+			version=stemp.getFirmwareVersionMajor()+"."+stemp.getFirmwareVersionMinor();
 		}
 		return version;
 	}
