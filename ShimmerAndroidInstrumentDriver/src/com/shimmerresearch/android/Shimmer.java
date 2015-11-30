@@ -161,6 +161,7 @@ import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -1197,6 +1198,13 @@ public class Shimmer extends ShimmerBluetooth{
 	public ShimmerDevice deepClone() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected void interpretDataPacketFormat(Object object,
+			COMMUNICATION_TYPE comType) {
+		// TODO Auto-generated method stub
+		
 	}
 
 //	@Override
