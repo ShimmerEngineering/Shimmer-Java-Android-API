@@ -777,5 +777,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
 	}
 
+	@Override
+	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE comType) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 

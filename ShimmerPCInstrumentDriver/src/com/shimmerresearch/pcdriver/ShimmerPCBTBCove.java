@@ -61,6 +61,7 @@ import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Callable;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -465,6 +466,13 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	protected void interpretDataPacketFormat(Object object,
+			COMMUNICATION_TYPE comType) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
