@@ -122,4 +122,11 @@ public class ShimmerShell extends ShimmerDevice {
 		
 	}
 
+	@Override
+	protected void interpretDataPacketFormat(Object object,
+			COMMUNICATION_TYPE comType) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

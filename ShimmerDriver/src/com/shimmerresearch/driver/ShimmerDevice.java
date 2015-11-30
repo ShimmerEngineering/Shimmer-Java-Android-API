@@ -39,7 +39,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ
 	 * 
 	 */
-	protected HashMap<String,AbstractSensor> mMapOfSensors = new HashMap<String,AbstractSensor>();
+	protected LinkedHashMap<String,AbstractSensor> mMapOfSensors = new LinkedHashMap<String,AbstractSensor>();
 	
 	public ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	public ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
@@ -127,6 +127,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 	public abstract void checkConfigOptionValues(String stringKey);
 	public abstract void sensorAndConfigMapsCreate();
+	/**
+	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
+	 */
+	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE comType );
 		
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
 	
@@ -648,13 +652,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
 		
 		ObjectCluster ojc = new ObjectCluster();
+		ojc.createArrayData(getNumberOfEnabledChannels(comType));
+		ojc.mMyName = mUniqueID;
 		int index=0;
 		for (AbstractSensor sensor:mMapOfSensors.values()){
 			int length = sensor.getExpectedPacketByteArray(comType);
 			if (length!=0){ //if length 0 means there are no channels to be processed
 				byte[] sensorByteArray = new byte[length];
 				System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
-				sensor.processData(packetByteArray,comType,ojc);
+				sensor.processData(sensorByteArray,comType,ojc);
 			}
 			index = index+length;
 		}
@@ -670,32 +676,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//TODO: process common ShimmerDevice configs
 	}
 
-	/**
-	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
-	 */
-	protected void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE comType ){
-		if (mShimmerVerObject.mFirmwareIdentifier == FW_ID.GQ_802154){
-			if (object==null){
-				LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
-				//byte 0 is the enabled sensors and assuming no time stamps
-				mIndexToSensor.put(1,SENSOR_NAMES.GSR);
-				mIndexToSensor.put(3,SENSOR_NAMES.ECG_TO_HR);
-				mMapOfPacketFormat.put(COMMUNICATION_TYPE.IEEE802154,mIndexToSensor);
-				mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
-			} else {
-				//TODO: some bit tester to find enabled sensors
-				LinkedHashMap<Integer,String> mIndexToSensor = new LinkedHashMap<Integer,String>();
-				//byte 0 is the enabled sensors and assuming no time stamps
-				mIndexToSensor.put(1,SENSOR_NAMES.CLOCK); //assuming clock is 3 bytes
-				mIndexToSensor.put(4,SENSOR_NAMES.GSR); 
-				mIndexToSensor.put(6,SENSOR_NAMES.ECG_TO_HR);
-				mMapOfPacketFormat.put(COMMUNICATION_TYPE.IEEE802154,mIndexToSensor);
-				mMapOfPacketFormat.put(COMMUNICATION_TYPE.SD,mIndexToSensor); //assuming this is the same
-			}
-		} 
-		
+
+	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE comType){
+		int total = 0;
+		for (AbstractSensor sensor:mMapOfSensors.values()){
+			total = total + sensor.getNumberOfEnabledChannels(comType);
+		}
+		return total;
 	}
-	
 	
 	public String getMacId() {
 		return mMacIdFromUart;

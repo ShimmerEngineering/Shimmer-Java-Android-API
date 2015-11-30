@@ -1,13 +1,21 @@
 package com.shimmerresearch.sensor;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
+import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
 
 public class ShimmerClock extends AbstractSensor {
 
@@ -42,20 +50,42 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public Object processData(byte[] rawData, COMMUNICATION_TYPE comType,
+	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType,
 			Object object) {
+		int index = 0;
+		for (ChannelDetails channelDetails:mMapOfComTypetoChannel.get(comType).values()){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			object = processShimmerChannelData(sensorByteArray, channelDetails, object);
+			index=index+channelDetails.mDefaultNumBytes;
+		}
 		
-		
-		return null;
+		return object;
 	}
 
 	@Override
 	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
 			ShimmerVerObject svo) {
+		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
+		//COMMUNICATION_TYPE.IEEE802154
+		int count=1;
+		ChannelDetails channelDetails = new ChannelDetails(
+				Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
+				Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
+				DatabaseChannelHandles.TIMESTAMP,
+				ChannelDataType.UINT24, 3, ChannelDataEndian.LSB,
+				CHANNEL_UNITS.CLOCK_UNIT,
+				Arrays.asList(CHANNEL_TYPE.UNCAL), false, true);
+		channelDetails.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+		channelDetails.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
+		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+		channelDetails.mIsEnabled = true;
+		mapOfChannelDetails.put(count, channelDetails);
+		mMapOfComTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
 		
 		
-		
-		return null;
+		return mMapOfComTypetoChannel;
 	}
 
 	@Override

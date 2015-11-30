@@ -25,6 +25,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.sensor.AbstractSensor.SENSOR_NAMES;
+import com.shimmerresearch.sensor.ShimmerClock;
 import com.shimmerresearch.sensor.ShimmerECGtoHRSensor;
 import com.shimmerresearch.sensor.ShimmerGSRSensor;
 import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
@@ -35,6 +36,12 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	//Should be moved to Shimmer Device Eventually, or to an abstract class extending it if this conflicts with shimmerobject
 	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> mMapOfChannels = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>>(); 
 	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapofComtoSensorMaps = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
+	
+	
+	//JC: TEMP to test sensor enabled
+		public int SENSOR_GSR_802154_BIT = 0x01;
+		public int SENSOR_ECG_HEARTRATE_802154_BIT = 0x02;
+		public int SENSOR_CLOCK_802154_BIT = 0x04;
 	
 	
 	/** This is derived from all the sensors
@@ -405,9 +412,12 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		//in future should compare and build map
 		if( UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
-			
+			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
+			mMapOfSensors.put(SENSOR_NAMES.GSR,new ShimmerGSRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGtoHRSensor(mShimmerVerObject));
 			
 		} else {
+			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
 			mMapOfSensors.put(SENSOR_NAMES.GSR,new ShimmerGSRSensor(mShimmerVerObject));
 			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGtoHRSensor(mShimmerVerObject));
 		}
@@ -416,14 +426,46 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
-		ObjectCluster ojc = (ObjectCluster) super.buildMsg(packetByteArray, comType);
+		//if the packet byte has a starting byte indicating enabled channels
+		interpretDataPacketFormat(packetByteArray[0],comType);
+		byte[] newPBA = new byte[packetByteArray.length-1];
+		System.arraycopy(packetByteArray, 1, newPBA, 0, newPBA.length);
+		
+		ObjectCluster ojc = (ObjectCluster) super.buildMsg(newPBA, comType);
 		//sendCallBackMsg();
 		return ojc;
 	}
+
+	@Override
+	protected void interpretDataPacketFormat(Object object,
+			COMMUNICATION_TYPE comType) {
+		byte enabledSensors = (byte) object;
+		
+		if (comType == COMMUNICATION_TYPE.IEEE802154){
+			if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
+				mMapOfSensors.get(SENSOR_NAMES.GSR).enableSensorChannels(comType);
+			} else {
+				mMapOfSensors.get(SENSOR_NAMES.GSR).disableSensorChannels(comType);
+			}
+			
+			if ((enabledSensors & SENSOR_ECG_HEARTRATE_802154_BIT) >0){
+				mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).enableSensorChannels(comType);
+			} else {
+				mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).disableSensorChannels(comType);
+			}
+			
+			if ((enabledSensors & SENSOR_CLOCK_802154_BIT) >0){
+				mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(comType);
+			} else {
+				mMapOfSensors.get(SENSOR_NAMES.CLOCK).disableSensorChannels(comType);
+			}
+		}
+		
+	}
 	
+
 	
 	// ----------------- Overrides from ShimmerDevice end -------------
-
 
 
 	

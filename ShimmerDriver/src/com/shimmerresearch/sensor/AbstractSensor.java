@@ -7,9 +7,11 @@ import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
 import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -56,19 +58,20 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object processData(byte[] rawData, COMMUNICATION_TYPE comType,Object object);
 	
 	
+	
 	/** To process data originating from the Shimmer device
-	 * @param sensorByteArray The byte array packet, or byte array sd log
+	 * @param channelByteArray The byte array packet, or byte array sd log
 	 * @param comType The communication type
 	 * @param object The packet/objectCluster to append the data to
 	 * @return
 	 */
-	public Object processShimmerChannelData(byte[] sensorByteArray, ChannelDetails channelDetails, Object object){
+	public Object processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, Object object){
 
 		if (channelDetails.mIsEnabled){
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			//byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			long rawData = parsedData(channelByteArray,channelDetails.mDefaultChannelDataType,channelDetails.mDefaultChannelDataEndian);
 			ObjectCluster objectCluster = (ObjectCluster) object;
-			objectCluster.mPropertyCluster.put(channelDetails.mObjectClusterName,new FormatCluster(channelDetails.mDefaultChannelDataType,channelDetails.mDefaultUnit,(double)rawData));
+			objectCluster.mPropertyCluster.put(channelDetails.mObjectClusterName,new FormatCluster(channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString(),channelDetails.mDefaultUnit,(double)rawData));
 			objectCluster.mSensorNames[objectCluster.indexKeeper] = channelDetails.mObjectClusterName;
 			objectCluster.mUncalData[objectCluster.indexKeeper]=(double)rawData;
 			objectCluster.mUnitUncal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;
@@ -144,7 +147,7 @@ public abstract class AbstractSensor implements Serializable{
 	protected long parsedData(byte[] data,String dataType,String dataEndian){
 		
 		int iData=0;
-		long formattedData=(Long) null;
+		long formattedData=0;
 		
 		
 			if (dataType==ChannelDataType.UINT8) {
@@ -401,9 +404,33 @@ public abstract class AbstractSensor implements Serializable{
 		// TODO Auto-generated method stub
 		int count = 0; 
 		for (ChannelDetails channelDetails: mMapOfComTypetoChannel.get(comType).values()){
-			count = count+channelDetails.mDefaultNumBytes;
+			if (channelDetails.mIsEnabled){
+				count = count+channelDetails.mDefaultNumBytes;
+			}
 		}
 		return count;
 	}
 
+	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE comType){
+		int count = 0;
+		for (ChannelDetails channelDetails: mMapOfComTypetoChannel.get(comType).values()){
+			if (channelDetails.mIsEnabled){
+				count = count+1;
+			}
+		}
+		return count;
+	}
+	
+	public void disableSensorChannels(COMMUNICATION_TYPE comType){
+		for (ChannelDetails channelDetails :mMapOfComTypetoChannel.get(comType).values()){
+			channelDetails.mIsEnabled = false;
+		}
+	}
+	
+	public void enableSensorChannels(COMMUNICATION_TYPE comType){
+		for (ChannelDetails channelDetails :mMapOfComTypetoChannel.get(comType).values()){
+			channelDetails.mIsEnabled = true;
+		}
+	}
+	
 }

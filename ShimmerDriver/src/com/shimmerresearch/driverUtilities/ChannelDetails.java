@@ -94,7 +94,7 @@ public class ChannelDetails implements Serializable {
 	API
 	}
 	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
-	public CHANNEL_TYPE mChannelTypeDerivedFromShimmerDataPacket=null; //each channel if originates from a packetbytearray/sensorbytearray should have this variable definied, null indicates this channel is created within the API
+	public CHANNEL_TYPE mChannelFormatDerivedFromShimmerDataPacket=null; //each channel if originates from a packetbytearray/sensorbytearray should have this variable definied, null indicates this channel is created within the API
 	
 
 	/**

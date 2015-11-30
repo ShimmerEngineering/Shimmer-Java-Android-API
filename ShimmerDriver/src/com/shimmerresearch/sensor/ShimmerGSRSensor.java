@@ -89,7 +89,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 		channelDetails.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelDetails.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
-		channelDetails.mChannelTypeDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 		mapOfChannelDetails.put(count, channelDetails);
 		mMapOfComTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
 		
@@ -128,12 +128,14 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		int index = 0;
 		for (ChannelDetails channelDetails:mMapOfComTypetoChannel.get(comType).values()){
 			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			object = processShimmerChannelData(sensorByteArray, channelDetails, object);
 			
 			//next process other data
 			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
 				ObjectCluster objectCluster = (ObjectCluster) object;
-				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mDefaultUnit)).mData;
+				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 				double p1=0,p2=0;
 				if (mGSRRange==4){
@@ -190,7 +192,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
 					objectCluster.indexKeeper++;
 				}
-				
+			index = index + channelDetails.mDefaultNumBytes;
 			}
 		return object;
 		}

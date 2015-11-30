@@ -201,4 +201,13 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		}
 		return uniqueString;
 	}
+	
+	public void createArrayData(int length){
+		mUncalData = new double[length];
+		mCalData = new double[length];
+		mSensorNames = new String[length];
+		mUnitCal = new String[length];
+		mUnitUncal = new String[length];
+	
+	}
 }
