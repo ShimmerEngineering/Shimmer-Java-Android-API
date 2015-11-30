@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/JavaShimmerConnect/JavaShimmerConnect.iml" filepath="$PROJECT_DIR$/JavaShimmerConnect/JavaShimmerConnect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MultiShimmerExampleActivity/MultiShimmerExampleActivity.iml" filepath="$PROJECT_DIR$/MultiShimmerExampleActivity/MultiShimmerExampleActivity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MultiShimmerPlay/MultiShimmerPlay.iml" filepath="$PROJECT_DIR$/MultiShimmerPlay/MultiShimmerPlay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MultiShimmerTemplate/MultiShimmerTemplate.iml" filepath="$PROJECT_DIR$/MultiShimmerTemplate/MultiShimmerTemplate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Shimmer3DOrientationExample/Shimmer3DOrientationExample.iml" filepath="$PROJECT_DIR$/Shimmer3DOrientationExample/Shimmer3DOrientationExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerAdvancedExGExample/ShimmerAdvancedExGExample.iml" filepath="$PROJECT_DIR$/ShimmerAdvancedExGExample/ShimmerAdvancedExGExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerAndroidInstrumentDriver/ShimmerAndroidInstrumentDriver.iml" filepath="$PROJECT_DIR$/ShimmerAndroidInstrumentDriver/ShimmerAndroidInstrumentDriver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerBroadcastReceiverExampleActivity/ShimmerBroadcastReceiverExampleActivity.iml" filepath="$PROJECT_DIR$/ShimmerBroadcastReceiverExampleActivity/ShimmerBroadcastReceiverExampleActivity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerBroadcastServiceExampleActivity/ShimmerBroadcastServiceExampleActivity.iml" filepath="$PROJECT_DIR$/ShimmerBroadcastServiceExampleActivity/ShimmerBroadcastServiceExampleActivity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerDriver/ShimmerDriver.iml" filepath="$PROJECT_DIR$/ShimmerDriver/ShimmerDriver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerExample/ShimmerExample.iml" filepath="$PROJECT_DIR$/ShimmerExample/ShimmerExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerGestureRecog/ShimmerGestureRecog.iml" filepath="$PROJECT_DIR$/ShimmerGestureRecog/ShimmerGestureRecog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerGraphandLogService/ShimmerGraphandLogService.iml" filepath="$PROJECT_DIR$/ShimmerGraphandLogService/ShimmerGraphandLogService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerLogAndStreamExample/ShimmerLogAndStreamExample.iml" filepath="$PROJECT_DIR$/ShimmerLogAndStreamExample/ShimmerLogAndStreamExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerLogExampleActivity/ShimmerLogExampleActivity.iml" filepath="$PROJECT_DIR$/ShimmerLogExampleActivity/ShimmerLogExampleActivity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerPCInstrumentDriver/ShimmerPCInstrumentDriver.iml" filepath="$PROJECT_DIR$/ShimmerPCInstrumentDriver/ShimmerPCInstrumentDriver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerPCTCP/ShimmerPCTCP.iml" filepath="$PROJECT_DIR$/ShimmerPCTCP/ShimmerPCTCP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerTCPExample/ShimmerTCPExample.iml" filepath="$PROJECT_DIR$/ShimmerTCPExample/ShimmerTCPExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShimmerTCPReceiver/ShimmerTCPReceiver.iml" filepath="$PROJECT_DIR$/ShimmerTCPReceiver/ShimmerTCPReceiver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/testtcp/testtcp.iml" filepath="$PROJECT_DIR$/testtcp/testtcp.iml" />
+    </modules>
+  </component>
+</project>

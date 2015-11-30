@@ -44,6 +44,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,33 +55,41 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
+import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 
 
-public class ShimmerPCBTBCove extends ShimmerBluetooth{
-			// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
+public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
+			/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7067087273053149229L;
+	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
 	StreamConnection conn=null;
 	ObjectCluster objectClusterTemp = null;
 	//InputStream mIN;
 	DataInputStream mIN;
 	OutputStream mOUT;
-	Callable myUIThread;
-
-
-	public final static int MSG_IDENTIFIER_STATE_CHANGE = 0;
-	public final static int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
-	public final static int MSG_IDENTIFIER_DATA_PACKET = 2;
-	public final static int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
-	public final static int MSG_IDENTIFIER_PROGRESS_REPORT = 4;
 	
-	public final static int NOTIFICATION_STOP_STREAMING = 0;
-	public final static int NOTIFICATION_START_STREAMING = 1;
-	public final static int NOTIFICATION_FULLY_INITIALIZED = 2;
-	public final static int NOTIFICATION_STATE_CHANGE = 3;
+
+
+	public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
+	public static final int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
+	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
+	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
+	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
+	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
+	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
+	
+	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0;
+	public static final int NOTIFICATION_SHIMMER_START_STREAMING = 1;
+	public static final int NOTIFICATION_SHIMMER_FULLY_INITIALIZED = 2;
+	public final static int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
 
 	/**
 	 * Constructor. Prepares a new Bluetooth session.
@@ -263,12 +272,18 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 	
 	@Override
 	protected void isNowStreaming() {
-		// TODO Auto-generated method stub
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 		// Do something here
-
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_START_STREAMING, getBluetoothAddress(), mUniqueID);
-		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_START_STREAMING, getBluetoothAddress(), mUniqueID);
+		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		
+		if (mIsSDLogging){
+			setState(BT_STATE.STREAMING_AND_SDLOGGING);
+		} else {
+			setState(BT_STATE.STREAMING);
+		}
+		
 	}
 
 	@Override
@@ -279,28 +294,43 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 
 	@Override
 	protected void inquiryDone() {
-		// TODO Auto-generated method stub
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
-		myUIThread.callBackMethod(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 		isReadyForStreaming();
 	}
 
 	@Override
 	protected void isReadyForStreaming() {
-		// TODO Auto-generated method stub
 		// Send msg fully initialized, send notification message,  
-		// DO Something here
+		// Do something here
         mIsInitialised = true;
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
-		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+        sensorAndConfigMapsCreate();
+        sensorMapUpdateFromEnabledSensorsVars();
+
+        if (mSendProgressReport){
+        	finishOperation(BT_STATE.CONNECTING);
+        }
+        
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_FULLY_INITIALIZED, getBluetoothAddress(), mUniqueID);
+		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		if (mTimerCheckAlive==null && mTimerReadStatus==null && mTimerReadBattStatus==null){
+        	//super.operationFinished();
+			startTimerCheckIfAlive();
+			startTimerReadStatus();
+			startTimerReadBattStatus();
+			
+        }
+		setState(BT_STATE.CONNECTED);
 	}
 
 	@Override
 	protected void dataHandler(ObjectCluster ojc) {
-		// TODO Auto-generated method stub
-		myUIThread.callBackMethod(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getPacketReceptionRate());
-		myUIThread.callBackMethod(MSG_IDENTIFIER_DATA_PACKET, ojc);
-	}
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress(), mUniqueID, getPacketReceptionRate());
+		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, callBackObject);
+		
+//		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress());
+		sendCallBackMsg(MSG_IDENTIFIER_DATA_PACKET, ojc);
+		}
 
 	public byte[] returnRawData(){
 		if (objectClusterTemp!=null){
@@ -311,11 +341,6 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		}
 		else 
 			return null;
-	}
-
-	public void passCallback(Callable c) {
-		// TODO Auto-generated method stub
-		myUIThread = c;
 	}
 	
 	public synchronized void disconnect(){
@@ -341,8 +366,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
-		myUIThread.callBackMethod(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		
 	}
 
 	@Override
@@ -365,10 +389,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 			mIsInitialised = false;
 			conn.close();
 			conn = null;
-			setState(BT_STATE.DISCONNECTED);
+			setState(BT_STATE.CONNECTION_LOST);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			setState(BT_STATE.DISCONNECTED);
+			setState(BT_STATE.CONNECTION_LOST);
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}	
@@ -391,25 +415,95 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 
 	@Override
 	protected void setState(BT_STATE state) {
-		// TODO Auto-generated method stub
+
+		
+		//TODO: below not needed any more?
+//		if (state==STATE.NONE && mIsStreaming==true){
+//			disconnect();
+//		}
 		mState = state;
-		// Give the new state to the UI through a callback (use a msg identifier state change)
-		// Do something here
+		
+//		if(mState==BT_STATE.CONNECTED){
+//			mIsConnected = true;
+//			mIsStreaming = false;
+//		}
+		if(mState==BT_STATE.CONNECTED){
+			mIsInitialised = true;
+			mIsStreaming = false;
+		}
+		else if(mState==BT_STATE.STREAMING){
+			mIsStreaming = true;
+		}		
+		else if((mState==BT_STATE.DISCONNECTED)
+				||(mState==BT_STATE.CONNECTION_LOST)
+//				||(mState==BT_STATE.NONE)
+				||(mState==BT_STATE.CONNECTION_FAILED)){
+			mIsConnected = false;
+			mIsStreaming = false;
+			mIsInitialised = false;
+		}
+		
+//		System.out.println("SetState: " + mUniqueID + "\tState:" + mState + "\tisConnected:" + mIsConnected + "\tisInitialised:" + mIsInitialised + "\tisStreaming:" + mIsStreaming);
+		
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+	
 	}
 	
 	@Override
 	protected void hasStopStreaming() {
-		// TODO Auto-generated method stub
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
-				// Do something here
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
-		myUIThread.callBackMethod(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-
+		// Do something here
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
+		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		startTimerReadStatus();
+		setState(BT_STATE.CONNECTED);
 	}
 
 	@Override
 	protected void logAndStreamStatusChanged() {
-		// TODO Auto-generated method stub
+		
+//		if(mCurrentCommand==START_LOGGING_ONLY_COMMAND){
+//			TODO this causing a problem Shimmer Bluetooth disconnects
+//			setState(BT_STATE.SDLOGGING);
+//		}
+		if(mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
+			//TODO need to query the Bluetooth connection here!
+			if(mIsStreaming){
+				setState(BT_STATE.STREAMING);
+			}
+			else if(mIsConnected){
+				setState(BT_STATE.CONNECTED);
+			}
+			else{
+				setState(BT_STATE.DISCONNECTED);
+			}
+		}
+		else{
+			if(mIsStreaming && mIsSDLogging){
+				setState(BT_STATE.STREAMING_AND_SDLOGGING);
+			}
+			else if(mIsStreaming){
+				setState(BT_STATE.STREAMING);
+			}
+			else if(mIsSDLogging){
+				setState(BT_STATE.SDLOGGING);
+			}
+			else{
+				if(!mIsStreaming && !mIsSDLogging && mIsConnected){
+					setState(BT_STATE.CONNECTED);	
+				}
+//				if(getBTState() == BT_STATE.INITIALISED){
+//					
+//				}
+//				else if(getBTState() != BT_STATE.CONNECTED){
+//					setState(BT_STATE.CONNECTED);
+//				}
+				
+				CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+				sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+			}
+		}
 		
 	}
 
@@ -421,8 +515,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 
 	@Override
 	protected void sendProgressReport(ProgressReportPerCmd pr) {
-		// TODO Auto-generated method stub
-		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT, pr);
+		
 	}
 
 	@Override
@@ -443,7 +536,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth{
 		
 	}
 
-
+	public void finishOperation(BT_STATE btState){
+		
+	}
+	
 	
 	
 }

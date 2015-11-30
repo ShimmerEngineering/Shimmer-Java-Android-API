@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8f54813a-5deb-4870-9c80-9ebf3b18ea97" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
+    <ignored path="Shimmer-Java-Android-API3.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path="$PROJECT_DIR$/out/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="Shimmer-Java-Android-API3" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="ShimmerCapture.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="100" column="13" selection-start-line="100" selection-start-column="13" selection-end-line="100" selection-end-column="13" />
+              <folding>
+                <element signature="e#0#93144#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#10488#11398#0" expanded="false" />
+                <element signature="e#11397#11398#0" expanded="false" />
+                <element signature="e#11468#11469#0" expanded="false" />
+                <element signature="e#11487#11488#0" expanded="false" />
+                <element signature="e#12334#12509#0" expanded="false" />
+                <element signature="e#12508#12509#0" expanded="false" />
+                <element signature="e#12712#12876#0" expanded="false" />
+                <element signature="e#12875#12876#0" expanded="false" />
+                <element signature="e#13052#14881#0" expanded="false" />
+                <element signature="e#14880#14881#0" expanded="false" />
+                <element signature="e#15104#15213#0" expanded="false" />
+                <element signature="e#15212#15213#0" expanded="false" />
+                <element signature="e#16991#17121#0" expanded="false" />
+                <element signature="e#17120#17121#0" expanded="false" />
+                <element signature="e#17358#17461#0" expanded="false" />
+                <element signature="e#17460#17461#0" expanded="false" />
+                <element signature="e#17641#17777#0" expanded="false" />
+                <element signature="e#17776#17777#0" expanded="false" />
+                <element signature="e#17967#18090#0" expanded="false" />
+                <element signature="e#18089#18090#0" expanded="false" />
+                <element signature="e#18306#18427#0" expanded="false" />
+                <element signature="e#18426#18427#0" expanded="false" />
+                <element signature="e#18646#18762#0" expanded="false" />
+                <element signature="e#18761#18762#0" expanded="false" />
+                <element signature="e#18936#19176#0" expanded="false" />
+                <element signature="e#19175#19176#0" expanded="false" />
+                <element signature="e#21004#21111#0" expanded="false" />
+                <element signature="e#21110#21111#0" expanded="false" />
+                <element signature="e#21265#21382#0" expanded="false" />
+                <element signature="e#21381#21382#0" expanded="false" />
+                <element signature="e#21553#21660#0" expanded="false" />
+                <element signature="e#21659#21660#0" expanded="false" />
+                <element signature="e#30127#30237#0" expanded="false" />
+                <element signature="e#30236#30237#0" expanded="false" />
+                <element signature="e#30400#30514#0" expanded="false" />
+                <element signature="e#30513#30514#0" expanded="false" />
+                <element signature="e#34570#34754#0" expanded="false" />
+                <element signature="e#34753#34754#0" expanded="false" />
+                <element signature="e#34804#35013#0" expanded="false" />
+                <element signature="e#35012#35013#0" expanded="false" />
+                <element signature="e#44422#44664#0" expanded="false" />
+                <element signature="e#44663#44664#0" expanded="false" />
+                <element signature="e#44713#44953#0" expanded="false" />
+                <element signature="e#44952#44953#0" expanded="false" />
+                <element signature="e#45002#45325#0" expanded="false" />
+                <element signature="e#45324#45325#0" expanded="false" />
+                <element signature="e#45375#45823#0" expanded="false" />
+                <element signature="e#45822#45823#0" expanded="false" />
+                <element signature="e#45873#46132#0" expanded="false" />
+                <element signature="e#46131#46132#0" expanded="false" />
+                <element signature="e#46182#46902#0" expanded="false" />
+                <element signature="e#46901#46902#0" expanded="false" />
+                <element signature="e#46952#47344#0" expanded="false" />
+                <element signature="e#47343#47344#0" expanded="false" />
+                <element signature="e#47394#47785#0" expanded="false" />
+                <element signature="e#47784#47785#0" expanded="false" />
+                <element signature="e#47835#48227#0" expanded="false" />
+                <element signature="e#48226#48227#0" expanded="false" />
+                <element signature="e#48277#48669#0" expanded="false" />
+                <element signature="e#48668#48669#0" expanded="false" />
+                <element signature="e#48716#49164#0" expanded="false" />
+                <element signature="e#49163#49164#0" expanded="false" />
+                <element signature="e#49208#49746#0" expanded="false" />
+                <element signature="e#49745#49746#0" expanded="false" />
+                <element signature="e#49794#50375#0" expanded="false" />
+                <element signature="e#50374#50375#0" expanded="false" />
+                <element signature="e#50652#50894#0" expanded="false" />
+                <element signature="e#50893#50894#0" expanded="false" />
+                <element signature="e#50943#51189#0" expanded="false" />
+                <element signature="e#51188#51189#0" expanded="false" />
+                <element signature="e#51238#51482#0" expanded="false" />
+                <element signature="e#51481#51482#0" expanded="false" />
+                <element signature="e#51531#51772#0" expanded="false" />
+                <element signature="e#51771#51772#0" expanded="false" />
+                <element signature="e#51821#52062#0" expanded="false" />
+                <element signature="e#52061#52062#0" expanded="false" />
+                <element signature="e#61000#61008#0" expanded="false" />
+                <element signature="e#61472#61666#0" expanded="false" />
+                <element signature="e#61665#61666#0" expanded="false" />
+                <element signature="e#61715#62023#0" expanded="false" />
+                <element signature="e#62022#62023#0" expanded="false" />
+                <element signature="e#66087#66286#0" expanded="false" />
+                <element signature="e#66285#66286#0" expanded="false" />
+                <element signature="e#66322#66521#0" expanded="false" />
+                <element signature="e#66520#66521#0" expanded="false" />
+                <element signature="e#66555#66754#0" expanded="false" />
+                <element signature="e#66753#66754#0" expanded="false" />
+                <element signature="e#66790#66952#0" expanded="false" />
+                <element signature="e#66951#66952#0" expanded="false" />
+                <element signature="e#66988#67150#0" expanded="false" />
+                <element signature="e#67149#67150#0" expanded="false" />
+                <element signature="e#67583#68212#0" expanded="false" />
+                <element signature="e#68211#68212#0" expanded="false" />
+                <element signature="e#68251#69099#0" expanded="false" />
+                <element signature="e#69098#69099#0" expanded="false" />
+                <element signature="e#69139#69765#0" expanded="false" />
+                <element signature="e#69764#69765#0" expanded="false" />
+                <element signature="e#69817#71093#0" expanded="false" />
+                <element signature="e#71092#71093#0" expanded="false" />
+                <element signature="e#71142#72418#0" expanded="false" />
+                <element signature="e#72417#72418#0" expanded="false" />
+                <element signature="e#72467#73743#0" expanded="false" />
+                <element signature="e#73742#73743#0" expanded="false" />
+                <element signature="e#73792#75068#0" expanded="false" />
+                <element signature="e#75067#75068#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ExGConfigBytesDetails.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/exgConfig/ExGConfigBytesDetails.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="588" column="66" selection-start-line="588" selection-start-column="66" selection-end-line="588" selection-end-column="66" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#678#695#0" expanded="false" />
+                <element signature="e#779#796#0" expanded="false" />
+                <element signature="e#32343#32375#0" expanded="false" />
+                <element signature="e#48418#48435#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="workspace.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/.idea/workspace.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="NamedScopeManager">
+    <order />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="AndroidView" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="ProjectPane" />
+      <pane id="PackagesPane" />
+      <pane id="AndroidView">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Shimmer-Java-Android-API3" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Shimmer-Java-Android-API3" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="JavaShimmerConnect" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shimmerresearch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Shimmer-Java-Android-API3" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="JavaShimmerConnect" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shimmerresearch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ShimmerCapture" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="GoToClass.includeLibraries" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../AndroidStudio" />
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/sdk" />
+    <property name="recentsLimit" value="5" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="dynamic.classpath" value="false" />
+  </component>
+  <component name="RunManager" selected="Application.ShimmerCapture">
+    <configuration default="false" name="ShimmerCapture" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.shimmerresearch.ShimmerCapture.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="com.shimmerresearch.ShimmerCapture.ShimmerCapture" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="JavaShimmerConnect" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+      <module name="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="0" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="SELECTED_CLOUD_DEVICE_CONFIGURATION_ID" value="0" />
+      <option name="SELECTED_CLOUD_DEVICE_PROJECT_ID" value="" />
+      <option name="IS_VALID_CLOUD_MATRIX_SELECTION" value="false" />
+      <option name="INVALID_CLOUD_MATRIX_SELECTION_ERROR" value="" />
+      <option name="IS_VALID_CLOUD_DEVICE_SELECTION" value="false" />
+      <option name="INVALID_CLOUD_DEVICE_SELECTION_ERROR" value="" />
+      <option name="CLOUD_DEVICE_SERIAL_NUMBER" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
+      <module name="" />
+      <option name="TESTING_TYPE" value="0" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="0" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="SELECTED_CLOUD_DEVICE_CONFIGURATION_ID" value="0" />
+      <option name="SELECTED_CLOUD_DEVICE_PROJECT_ID" value="" />
+      <option name="IS_VALID_CLOUD_MATRIX_SELECTION" value="false" />
+      <option name="INVALID_CLOUD_MATRIX_SELECTION_ERROR" value="" />
+      <option name="IS_VALID_CLOUD_DEVICE_SELECTION" value="false" />
+      <option name="INVALID_CLOUD_DEVICE_SELECTION_ERROR" value="" />
+      <option name="CLOUD_DEVICE_SERIAL_NUMBER" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="JarApplication" factoryName="JAR Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Application.ShimmerCapture" />
+    </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Application.ShimmerCapture" />
+      </list>
+    </recent_temporary>
+    <configuration name="&lt;template&gt;" type="Applet" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8f54813a-5deb-4870-9c80-9ebf3b18ea97" name="Default" comment="" />
+      <created>1447397965606</created>
+      <option name="number" value="Default" />
+      <updated>1447397965606</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="false" />
+    <layout>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32925472" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/JavaShimmerConnect/src/com/shimmerresearch/ShimmerCapture/ShimmerCapture.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="100" column="13" selection-start-line="100" selection-start-column="13" selection-end-line="100" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#93144#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#10488#11398#0" expanded="false" />
+            <element signature="e#11397#11398#0" expanded="false" />
+            <element signature="e#11468#11469#0" expanded="false" />
+            <element signature="e#11487#11488#0" expanded="false" />
+            <element signature="e#12334#12509#0" expanded="false" />
+            <element signature="e#12508#12509#0" expanded="false" />
+            <element signature="e#12712#12876#0" expanded="false" />
+            <element signature="e#12875#12876#0" expanded="false" />
+            <element signature="e#13052#14881#0" expanded="false" />
+            <element signature="e#14880#14881#0" expanded="false" />
+            <element signature="e#15104#15213#0" expanded="false" />
+            <element signature="e#15212#15213#0" expanded="false" />
+            <element signature="e#16991#17121#0" expanded="false" />
+            <element signature="e#17120#17121#0" expanded="false" />
+            <element signature="e#17358#17461#0" expanded="false" />
+            <element signature="e#17460#17461#0" expanded="false" />
+            <element signature="e#17641#17777#0" expanded="false" />
+            <element signature="e#17776#17777#0" expanded="false" />
+            <element signature="e#17967#18090#0" expanded="false" />
+            <element signature="e#18089#18090#0" expanded="false" />
+            <element signature="e#18306#18427#0" expanded="false" />
+            <element signature="e#18426#18427#0" expanded="false" />
+            <element signature="e#18646#18762#0" expanded="false" />
+            <element signature="e#18761#18762#0" expanded="false" />
+            <element signature="e#18936#19176#0" expanded="false" />
+            <element signature="e#19175#19176#0" expanded="false" />
+            <element signature="e#21004#21111#0" expanded="false" />
+            <element signature="e#21110#21111#0" expanded="false" />
+            <element signature="e#21265#21382#0" expanded="false" />
+            <element signature="e#21381#21382#0" expanded="false" />
+            <element signature="e#21553#21660#0" expanded="false" />
+            <element signature="e#21659#21660#0" expanded="false" />
+            <element signature="e#30127#30237#0" expanded="false" />
+            <element signature="e#30236#30237#0" expanded="false" />
+            <element signature="e#30400#30514#0" expanded="false" />
+            <element signature="e#30513#30514#0" expanded="false" />
+            <element signature="e#34570#34754#0" expanded="false" />
+            <element signature="e#34753#34754#0" expanded="false" />
+            <element signature="e#34804#35013#0" expanded="false" />
+            <element signature="e#35012#35013#0" expanded="false" />
+            <element signature="e#44422#44664#0" expanded="false" />
+            <element signature="e#44663#44664#0" expanded="false" />
+            <element signature="e#44713#44953#0" expanded="false" />
+            <element signature="e#44952#44953#0" expanded="false" />
+            <element signature="e#45002#45325#0" expanded="false" />
+            <element signature="e#45324#45325#0" expanded="false" />
+            <element signature="e#45375#45823#0" expanded="false" />
+            <element signature="e#45822#45823#0" expanded="false" />
+            <element signature="e#45873#46132#0" expanded="false" />
+            <element signature="e#46131#46132#0" expanded="false" />
+            <element signature="e#46182#46902#0" expanded="false" />
+            <element signature="e#46901#46902#0" expanded="false" />
+            <element signature="e#46952#47344#0" expanded="false" />
+            <element signature="e#47343#47344#0" expanded="false" />
+            <element signature="e#47394#47785#0" expanded="false" />
+            <element signature="e#47784#47785#0" expanded="false" />
+            <element signature="e#47835#48227#0" expanded="false" />
+            <element signature="e#48226#48227#0" expanded="false" />
+            <element signature="e#48277#48669#0" expanded="false" />
+            <element signature="e#48668#48669#0" expanded="false" />
+            <element signature="e#48716#49164#0" expanded="false" />
+            <element signature="e#49163#49164#0" expanded="false" />
+            <element signature="e#49208#49746#0" expanded="false" />
+            <element signature="e#49745#49746#0" expanded="false" />
+            <element signature="e#49794#50375#0" expanded="false" />
+            <element signature="e#50374#50375#0" expanded="false" />
+            <element signature="e#50652#50894#0" expanded="false" />
+            <element signature="e#50893#50894#0" expanded="false" />
+            <element signature="e#50943#51189#0" expanded="false" />
+            <element signature="e#51188#51189#0" expanded="false" />
+            <element signature="e#51238#51482#0" expanded="false" />
+            <element signature="e#51481#51482#0" expanded="false" />
+            <element signature="e#51531#51772#0" expanded="false" />
+            <element signature="e#51771#51772#0" expanded="false" />
+            <element signature="e#51821#52062#0" expanded="false" />
+            <element signature="e#52061#52062#0" expanded="false" />
+            <element signature="e#61000#61008#0" expanded="false" />
+            <element signature="e#61472#61666#0" expanded="false" />
+            <element signature="e#61665#61666#0" expanded="false" />
+            <element signature="e#61715#62023#0" expanded="false" />
+            <element signature="e#62022#62023#0" expanded="false" />
+            <element signature="e#66087#66286#0" expanded="false" />
+            <element signature="e#66285#66286#0" expanded="false" />
+            <element signature="e#66322#66521#0" expanded="false" />
+            <element signature="e#66520#66521#0" expanded="false" />
+            <element signature="e#66555#66754#0" expanded="false" />
+            <element signature="e#66753#66754#0" expanded="false" />
+            <element signature="e#66790#66952#0" expanded="false" />
+            <element signature="e#66951#66952#0" expanded="false" />
+            <element signature="e#66988#67150#0" expanded="false" />
+            <element signature="e#67149#67150#0" expanded="false" />
+            <element signature="e#67583#68212#0" expanded="false" />
+            <element signature="e#68211#68212#0" expanded="false" />
+            <element signature="e#68251#69099#0" expanded="false" />
+            <element signature="e#69098#69099#0" expanded="false" />
+            <element signature="e#69139#69765#0" expanded="false" />
+            <element signature="e#69764#69765#0" expanded="false" />
+            <element signature="e#69817#71093#0" expanded="false" />
+            <element signature="e#71092#71093#0" expanded="false" />
+            <element signature="e#71142#72418#0" expanded="false" />
+            <element signature="e#72417#72418#0" expanded="false" />
+            <element signature="e#72467#73743#0" expanded="false" />
+            <element signature="e#73742#73743#0" expanded="false" />
+            <element signature="e#73792#75068#0" expanded="false" />
+            <element signature="e#75067#75068#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ShimmerDriver/src/com/shimmerresearch/exgConfig/ExGConfigBytesDetails.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="588" column="66" selection-start-line="588" selection-start-column="66" selection-end-line="588" selection-end-column="66" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#678#695#0" expanded="false" />
+            <element signature="e#779#796#0" expanded="false" />
+            <element signature="e#32343#32375#0" expanded="false" />
+            <element signature="e#48418#48435#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Android</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>JavaShimmerConnect</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>forms-1.3.0</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

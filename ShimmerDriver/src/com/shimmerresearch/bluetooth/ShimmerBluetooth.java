@@ -194,6 +194,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void connectionLost();
 	protected abstract void setState(BT_STATE state);
 	protected abstract void startOperation(BT_STATE currentOperation);
+	protected abstract void finishOperation(BT_STATE currentOperation);
 	protected abstract void startOperation(BT_STATE currentOperation, int totalNumOfCmds);
 	protected abstract void logAndStreamStatusChanged();
 	protected abstract void batteryStatusChanged();
@@ -1618,6 +1619,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				else if(currentCommand==SET_SENSORS_COMMAND) {
 					mEnabledSensors=tempEnabledSensors;
+					if(mHardwareVersion==HW_ID.SHIMMER_3){
+						checkExgResolutionFromEnabledSensorsVar();
+					}
 					byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
 				}
 				else if(currentCommand==SET_MAG_GAIN_COMMAND){
