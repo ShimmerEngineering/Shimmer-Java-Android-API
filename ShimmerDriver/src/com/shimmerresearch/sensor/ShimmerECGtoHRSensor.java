@@ -64,6 +64,7 @@ public class ShimmerECGtoHRSensor extends AbstractSensor implements Serializable
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			object = processShimmerChannelData(sensorByteArray, channelDetails, object);
+			((ObjectCluster)object).indexKeeper++;
 			index=index+channelDetails.mDefaultNumBytes;
 		}
 		

@@ -1,6 +1,7 @@
 package com.shimmerresearch.sensor;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerGQ_802154;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
@@ -14,10 +15,10 @@ public class TestSensorParsing {
 		
 		byte[] packetByteArray = {7,1,2,3,4,5,6};//1descip+3timestamp+2gsr+1hr;
 		
-		shimmer.buildMsg(packetByteArray, COMMUNICATION_TYPE.IEEE802154);
+		ObjectCluster ojc = (ObjectCluster) shimmer.buildMsg(packetByteArray, COMMUNICATION_TYPE.IEEE802154);
 		
-		
-		
+		byte[] packetByteArray2 = {3,4,5,6};//1descip+2gsr+1hr;
+		ojc = (ObjectCluster) shimmer.buildMsg(packetByteArray2, COMMUNICATION_TYPE.IEEE802154);
 	}
 
 }

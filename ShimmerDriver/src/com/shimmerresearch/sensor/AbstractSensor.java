@@ -73,8 +73,14 @@ public abstract class AbstractSensor implements Serializable{
 			ObjectCluster objectCluster = (ObjectCluster) object;
 			objectCluster.mPropertyCluster.put(channelDetails.mObjectClusterName,new FormatCluster(channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString(),channelDetails.mDefaultUnit,(double)rawData));
 			objectCluster.mSensorNames[objectCluster.indexKeeper] = channelDetails.mObjectClusterName;
-			objectCluster.mUncalData[objectCluster.indexKeeper]=(double)rawData;
-			objectCluster.mUnitUncal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;
+			if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.UNCAL){
+				objectCluster.mUncalData[objectCluster.indexKeeper]=(double)rawData;
+				objectCluster.mUnitUncal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;	
+			} else if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.CAL){
+				objectCluster.mCalData[objectCluster.indexKeeper]=(double)rawData;
+				objectCluster.mUnitCal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;
+			}
+			
 		}
 		
 		return object;
