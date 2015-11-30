@@ -497,6 +497,11 @@ public class Shimmer extends ShimmerBluetooth{
 			mConnectThread = null;
 		}
 		if (mConnectedThread != null) {
+			try {
+				wait(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			mConnectedThread.cancel(); 
 			mConnectedThread = null;
 		}
