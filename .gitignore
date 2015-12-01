@@ -28,3 +28,7 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+
+ShimmerCapture/gen/com/shimmerresearch/androidinstrumentdriver/R.java
+ShimmerCapture/gen/com/shimmersensing/shimmerconnect/BuildConfig.java
+ShimmerCapture/gen/com/shimmersensing/shimmerconnect/R.java
