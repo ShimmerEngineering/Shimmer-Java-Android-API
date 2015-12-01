@@ -113,9 +113,9 @@ import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerVerDetails;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.service.ShimmerService;
 import com.shimmerresearch.service.ShimmerService.LocalBinder;
 import com.shimmerresearch.tools.Logging;
@@ -1089,10 +1089,10 @@ public class ShimmerCapture extends ServiceActivity {
             		if (mSensorView.equals("ExG Test Signal")){
             			sensorName = new String[4]; 
             			calibratedDataArray = new double[4];
-            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT;
-            			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT;
-            			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
-            			sensorName[3] = Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT;
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT;
+            			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT;
+            			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT;
+            			sensorName[3] = Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT;
             		}
             		if (mSensorView.equals("ECG 16Bit")){
             			sensorName = new String[4]; 
@@ -1143,10 +1143,10 @@ public class ShimmerCapture extends ServiceActivity {
             		if (mSensorView.equals("ExG Test Signal 16Bit")){
             			sensorName = new String[4]; 
             			calibratedDataArray = new double[4];
-            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT;
-            			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT;
-            			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
-            			sensorName[3] = Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT;
+            			sensorName[0] = Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT;
+            			sensorName[1] = Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT;
+            			sensorName[2] = Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT;
+            			sensorName[3] = Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT;
             		}
             		if (mSensorView.equals(Configuration.Shimmer3.GuiLabelSensors.PPG_TO_HR)){
             			sensorName = new String[1]; 
@@ -1619,7 +1619,7 @@ public class ShimmerCapture extends ServiceActivity {
 						shimmerVersion = "Shimmer SR30";
 					break;
 				};
-				String FWName = shimmerTemp.getFWVersionName();
+				String FWName = shimmerTemp.getFirmwareVersionParsed();
 				if(FWName.equals(""))
 					FWName = "Unknown";
 				

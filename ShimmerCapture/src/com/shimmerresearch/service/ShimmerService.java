@@ -58,6 +58,7 @@ import java.util.List;
 
 
 
+
 import com.shimmerresearch.algorithms.Filter;
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.biophysicalprocessing.ECGtoHRAdaptive;
@@ -65,7 +66,7 @@ import com.shimmerresearch.biophysicalprocessing.ECGtoHRAlgorithm;
 import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.*;
-import com.shimmerresearch.driver.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.tools.Logging;
 
 import android.app.Service;
@@ -1100,7 +1101,7 @@ public class ShimmerService extends Service {
 		String version="";
 		Shimmer stemp=(Shimmer) mMultiShimmer.get(bluetoothAddress);
 		if (stemp!=null){
-			version=stemp.getFirmwareMajorVersion()+"."+stemp.getFirmwareMinorVersion();
+			version=stemp.getFirmwareVersionMajor()+"."+stemp.getFirmwareVersionMinor();
 		}
 		return version;
 	}
