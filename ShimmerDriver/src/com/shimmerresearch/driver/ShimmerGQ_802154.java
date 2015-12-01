@@ -129,13 +129,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		setMacIdFromUart(macId);
 	}
 
-	public ShimmerGQ_802154(String dockID, int slotNumber, COMMUNICATION_TYPE connectionType) {
-		mDockID = dockID;
-		parseDockType();
-		
-		mSlotNumber = slotNumber;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-		
+	public ShimmerGQ_802154(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType) {
+		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(connectionType);
 	}
 

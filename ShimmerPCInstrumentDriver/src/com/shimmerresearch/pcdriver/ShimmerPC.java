@@ -219,17 +219,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param slotNumber
 	 */
 	public ShimmerPC(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType) {
-		mDockID = dockId;
-		parseDockType();
-		
-		mSlotNumber = slotNumber;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-		
+		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(connectionType);
-		
-		//TODO: remove??
-//		initialise(HW_ID.SHIMMER_3);
-//		setDefaultShimmerConfiguration();
 	}
 
 	/**
@@ -243,7 +234,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		Thread thread = new Thread(){
 			public void run(){
 				setState(BT_STATE.CONNECTING);
-//				setState(BT_STATE.CONNECTING);
 				mIamAlive = false;
 				if (mSerialPort==null){
 					mComPort = address;

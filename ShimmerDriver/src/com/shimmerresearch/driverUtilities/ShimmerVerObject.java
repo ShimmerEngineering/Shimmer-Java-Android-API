@@ -148,7 +148,7 @@ public class ShimmerVerObject implements Serializable {
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
 				}
 			}
-			else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_802154)&&(mFirmwareIdentifier==FW_ID.GQ_802154)){
+			else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)&&(mFirmwareIdentifier==FW_ID.GQ_802154)){
 //				mFirmwareIdentifierParsed = FW_LABEL.GQ_802154;
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);

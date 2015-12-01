@@ -46,7 +46,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails(); 
 	public ShimmerSDCardDetails mShimmerSDCardDetails = new ShimmerSDCardDetails(); 
 
-	private List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
+	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
 	
 	//Temp here from ShimmerDocked - start
 	
@@ -56,7 +56,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected String mShimmerUserAssignedName = ""; // This stores the user assigned name
 
 	public final static String DEFAULT_DOCKID = "Default.01";
-	public final static int DEFAULT_SLOTNUMBER = 1;
+	public final static int DEFAULT_SLOTNUMBER = -1;
 	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
 	public final static String DEFAULT_EXPERIMENT_NAME = "DefaultTrial";
 	
@@ -67,7 +67,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean mFirstSdAccess = true;
 	public String mDockID;
 	public DEVICE_TYPE mDockType = DEVICE_TYPE.UNKOWN;
-	public int mSlotNumber = -1;
+	public int mSlotNumber = DEFAULT_SLOTNUMBER;
 	public static final int ANY_VERSION = -1;
 
 	public boolean mReadHwFwSuccess = false;
@@ -163,13 +163,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param slotNumber
 	 */
 	public void addDOCKCoummnicationRoute(String dockId, int slotNumber) {
+		setDockInfo(dockId, slotNumber);
+		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
+	}
+	
+	
+	public void clearDockInfo(){
+		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
+	}
+	
+	public void setDockInfo(String dockId, int slotNumber){
 		mDockID = dockId;
 		parseDockType();
-		
 		mSlotNumber = slotNumber;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-		
-		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
 	}
 	
 	
@@ -217,13 +224,26 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void addCommunicationRoute(COMMUNICATION_TYPE communicationType) {
-		mListOfAvailableCommunicationTypes.add(communicationType);
+		if(!mListOfAvailableCommunicationTypes.contains(communicationType)){
+			mListOfAvailableCommunicationTypes.add(communicationType);
+		}
 		Collections.sort(mListOfAvailableCommunicationTypes);
+		
+		if(communicationType==COMMUNICATION_TYPE.DOCK){
+			setDocked(true);
+		}
 	}
 
 	public void removeCommunicationRoute(COMMUNICATION_TYPE communicationType) {
-		mListOfAvailableCommunicationTypes.remove(communicationType);
+		if(mListOfAvailableCommunicationTypes.contains(communicationType)){
+			mListOfAvailableCommunicationTypes.remove(communicationType);
+		}
 		Collections.sort(mListOfAvailableCommunicationTypes);
+		
+		if(communicationType==COMMUNICATION_TYPE.DOCK){
+			setDocked(false);
+			clearDockInfo();
+		}
 	}
 
 	// --------------- Set Methods End --------------------------
@@ -642,6 +662,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		else if(mDockID.contains(HwDriverShimmerDeviceDetails.DOCK_LABEL[HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASE6.ordinal()])){
 			mDockType = DEVICE_TYPE.BASE6;
 		}
+		else {
+			mDockType = DEVICE_TYPE.UNKOWN;
+		}
 	}
 	
 	/** The packet format can be changed by calling interpretpacketformat
@@ -703,6 +726,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public long getDriveTotalSpace() {
 		return mShimmerSDCardDetails.getDriveTotalSpace();
+	}
+	
+	public void setFirstDockRead() {
+		mFirstSdAccess = true;
+		mConfigurationReadSuccess = false;
+		mReadHwFwSuccess = false;
+		mReadDaughterIDSuccess = false;
+		writeRealWorldClockFromPcTimeSuccess = false;
 	}
 	
 }

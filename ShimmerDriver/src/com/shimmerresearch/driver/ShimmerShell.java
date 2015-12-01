@@ -15,21 +15,15 @@ public class ShimmerShell extends ShimmerDevice {
 	 */
 	private static final long serialVersionUID = 3505947289367382624L;
 
-	public ShimmerShell(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType){
-
-		mDockID = dockId;
-		parseDockType();
-		
-		mSlotNumber = slotNumber;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-		
-		addCommunicationRoute(connectionType);
-		
-		//TODO: remove??
-//		initialise(HW_ID.SHIMMER_3);
-//		setDefaultShimmerConfiguration();
-	
+	public ShimmerShell(String dockId, int slotNumber){
+		setDockInfo(dockId, slotNumber);
 	}
+
+	public ShimmerShell(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType){
+		this(dockId, slotNumber);
+		addCommunicationRoute(connectionType);
+	}
+
 	
 	@Override
 	protected void checkBattery() {

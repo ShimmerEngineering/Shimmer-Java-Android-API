@@ -11128,14 +11128,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCenter = value;
 	}
 
-//	public ExpansionBoardDetails getExpansionBoardDetails() {
-//		return mExpansionBoardDetails;
-//	}
-
-//	public ShimmerVerObject getShimmerVerDetails() {
-//		return mShimmerVerObject;
-//	}
-
 	@Override
 	public void setShimmerVersionObject(ShimmerVerObject hwfw) {
 		super.setShimmerVersionObject(hwfw);
@@ -11153,25 +11145,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-//	public void setLastReadRealTimeClockValue(long time) {
-//		mShimmerLastReadRealTimeClockValue = time;
-//		mShimmerLastReadRtcValueParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(time), false);
-//	}
-
-
-//	@Override
-//	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	protected void checkBattery() {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
-	
 	// --------------- Set Methods Start --------------------------
 
 	public void setUniqueID(String uniqueID){
@@ -11187,73 +11160,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	public void setIDs(String dockID, int slotNumber){
-		mDockID = dockID;
-		mSlotNumber = slotNumber;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-	}
-
 	public void initialise(int hardwareVersion) {
 		this.setHardwareVersion(hardwareVersion);
 		sensorAndConfigMapsCreate();
 	}
 
-//	public void setDefaultShimmerConfiguration() {
-//		super.setDefaultShimmerConfiguration();
-//	}
-
-//	public void setDefaultCalibrationShimmer3StandardImus() {
-//		super.setDefaultCalibrationShimmer3StandardImus();
-//	}
-	
 	public void updateShimmerDriveInfo(ShimmerSDCardDetails shimmerSDCardDetails) {
 		this.mShimmerSDCardDetails = shimmerSDCardDetails;
 	}
 	
-//	public void updateShimmerDriveInfo(File drivePath) {
-//		mDriveTotalSpace = drivePath.getTotalSpace(); //total disk space in bytes.
-//		mDriveUsableSpace = drivePath.getUsableSpace(); ///unallocated / free disk space in bytes.
-//		mDriveFreeSpace = drivePath.getFreeSpace(); //unallocated / free disk space in bytes.
-//		mDriveUsedSpace = mDriveTotalSpace - mDriveFreeSpace;
-//		
-//	    double spaceTotal = (double)mDriveTotalSpace / 1024 / 1024 / 1024;
-//	    double spaceUsed = (double)(mDriveUsedSpace) / 1024 / 1024 / 1024;
-//	    //double spacePercentage = (spaceUsed / spaceTotal) * 100;
-//	    String spaceUsedTxt = " GB";
-//	    String spaceTotalTxt = " GB";
-//	    if (spaceUsed < 1.0) {
-//	        spaceUsed = spaceUsed * 1024;
-//	        spaceUsedTxt = " MB";
-//	    }
-//	    if (spaceTotal < 1.0) {
-//	        spaceTotal = spaceTotal * 1024;
-//	        spaceTotalTxt = " MB";
-//	    }
-//	    mDriveUsedSpaceParsed = String.format("%.2f", spaceUsed) + spaceUsedTxt;
-//	    mDriveTotalSpaceParsed = String.format("%.2f", spaceTotal) + spaceTotalTxt; 
-//	}
-
-
-//	/**
-//	 * @return the mShimmerInfoMemBytes generated from an empty byte array. This
-//	 *         is called to generate the InfoMem bytes for writing to the
-//	 *         Shimmer.
-//	 */
-//	public byte[] generateShimmerInfoMemBytes() {
-//		setConfigFileCreationFlag(true);
-//		return infoMemByteArrayGenerate(true);
-//	}
-
 	/** setShimmerVerionObject should be used instead
 	 * @param hardwareVersion the mHardwareVersion to set
 	 */
 	public void setHardwareVersion(int hardwareVersion) {
-//		mShimmerVerObject.mHardwareVersion = hardwareVersion;
-		
 		ShimmerVerObject sVOHw = new ShimmerVerObject(hardwareVersion, getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		setShimmerVersionObject(sVOHw);
-
-//		this.sensorAndConfigMapsCreate();
 	}
 
 	/** setShimmerVerionObject should be used instead
@@ -11272,148 +11193,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setShimmerVersionObject(sVOFwId);
 	}
 
-	
-//	/**
-//	 * @param mExperimentId the mExperimentId to set
-//	 */
-//	public void setExperimentId(int mExperimentId) {
-//		super.setExperimentId(mExperimentId);
-//	}
-//	
-//	/**
-//	 * @param mExperimentNumberOfShimmers the mExperimentNumberOfShimmers to set
-//	 */
-//	public void setExperimentNumberOfShimmers(int mExperimentNumberOfShimmers) {
-//		super.setExperimentNumberOfShimmers(mExperimentNumberOfShimmers);
-//	}
-//	
-//	/**
-//	 * @param syncNodesList the syncNodesList to set
-//	 */
-//	public void setSyncNodesList(List<String> syncNodesList) {
-//		super.setSyncNodesList(syncNodesList);
-//	}
-//	
-//	/**
-//	 * @param state the mSyncWhenLogging state to set
-//	 */
-//	public void setSyncWhenLogging(boolean state) {
-//		super.setSyncWhenLogging(state);
-//	}
-//	
-//	/**
-//	 * @param state the mBluetoothBaudRate state to set
-//	 */
-//	public void setBluetoothBaudRate(int bluetoothBaudRate) {
-//		super.mBluetoothBaudRate = bluetoothBaudRate;
-//	}
-//	
-//	/**
-//	 * @param mConfigTime the mConfigTime to set
-//	 */
-//	public void setConfigTime(long mConfigTime) {
-//		super.setConfigTime(mConfigTime);
-//	}
-//	
-//	/**
-//	 * @param mExperimentDurationEstimated the mExperimentDurationEstimated to set.  Min value is 1.
-//	 */
-//	public void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
-//		super.setExperimentDurationEstimated(mExperimentDurationEstimated);
-//	}
-//	
-//	/**
-//	 * @param mExperimentDurationMaximum the mExperimentDurationMaximum to set. Min value is 0.
-//	 */
-//	public void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
-//		super.setExperimentDurationMaximum(mExperimentDurationMaximum);
-//	}
-//	
-//	/**
-//	 * @param state the mSingleTouch state to set
-//	 */
-//	public void setSingleTouch(boolean state) {
-//		super.setSingleTouch(state);
-//	}
-//	
-//	/**
-//	 * @param mExperimentName the mExperimentName to set
-//	 */
-//	public void setExperimentName(String mExperimentName) {
-//		super.setExperimentName(mExperimentName);
-//	}
-//	
-//	/**
-//	 * @param state the mButtonStart state to set
-//	 */
-//	public void setButtonStart(boolean state) {
-//		super.setButtonStart(state);
-//	}
-//	
-//	/**
-//	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
-//	 */
-//	public void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
-//		super.setShimmerUserAssignedName(mShimmerUserAssignedName);
-//	}
-//	
-//	/**
-//	 * @param state the mMasterShimmer state to set
-//	 */
-//	public void setMasterShimmer(boolean state) {
-//		super.setMasterShimmer(state);
-//	}
-//	
-//	/**
-//	 * Computes the closest compatible sampling rate for the Shimmer based on
-//	 * the passed in 'rate' variable. Also computes the next highest available
-//	 * sampling rate for the Shimmer's sensors (dependent on pre-set low-power
-//	 * modes).
-//	 * 
-//	 * @param rate
-//	 */
-//	public void setShimmerSamplingRate(double rate){
-//		super.setShimmerSamplingRate(rate);
-//	}
-//	
-//	/**
-//	 * @param mShimmerInfoMemBytes the mShimmerInfoMemBytes to set
-//	 */
-//	public void setShimmerInfoMemBytes(byte[] mShimmerInfoMemBytes) {
-//		super.setShimmerInfoMemBytes(mShimmerInfoMemBytes);
-//	}
-//	
-//	/**
-//	 * @param macIdFromUart the mMacIdFromUart to set
-//	 */
-//	public void setMacIdFromUart(String macIdFromUart) {
-//		super.setMacIdFromUart(macIdFromUart);
-//	}
-//
-//	/**
-//	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
-//	 */
-//	public void setLSM303DigitalAccelRate(int mLSM303DigitalAccelRate) {
-//		super.setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
-//	}
-//	
-//	public void setDigitalAccelRange(int i){
-//		super.setDigitalAccelRange(i);
-//	}
-//	
-//	/**
-//	 * This enables the low power accel option. When not enabled the sampling
-//	 * rate of the accel is set to the closest value to the actual sampling rate
-//	 * that it can achieve. In low power mode it defaults to 10Hz. Also and
-//	 * additional low power mode is used for the LSM303DLHC. This command will
-//	 * only supports the following Accel range +4g, +8g , +16g
-//	 * 
-//	 * @param enable
-//	 */
-//	public void setLowPowerAccelWR(boolean enable){
-//		super.setLowPowerAccelWR(enable);
-//	}
-	
 	/**
 	 * @param mHighResAccelWR the mHighResAccelWR to set
 	 */
@@ -11421,80 +11200,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mHighResAccelWR = mHighResAccelWR;
 	}
 
-//	public void setGSRRange(int i){
-//		super.mGSRRange = i;
-//	}
-//
-//	public Object setValueUsingGuiComponent(String componentName, Object valueToSet) {
-//		return super.setValueUsingGuiComponent(componentName, valueToSet);
-//	}
-//	
-//	public void clearExpansionBoardDetails(){
-//		super.clearExpansionBoardDetails();
-//	}
-//
 	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
 		setShimmerVersionObject(hwfw);
 		sensorAndConfigMapsCreate();
 	}
-//
-//	@Override
-//	public void setShimmerVersionInfo(ShimmerVerObject sVO) {
-//		super.setShimmerVersionInfo(sVO);
-//		
-//		if(sVO.mHardwareVersion==HW_ID.SHIMMER_GQ_802154){
-//			mShimmerDevice = new ShimmerGQ(sVO);
-//		}
-//	}
 
-	//TODO
 	public void clearShimmerVersionInfo() {
 		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
 	}
 	
-//	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
-//		mExpansionBoardDetails  = eBD;
-//		mExpansionBoardId = eBD.mExpBoardId;
-//		mExpansionBoardRev = eBD.mExpBoardRev;
-//		mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
-//		mExpansionBoardParsed = eBD.mExpBoardParsed;
-//		mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
-//		mExpBoardArray = eBD.mExpBoardArray;
-//	}
 
-//	public void setBattStatusDetails(ShimmerBattStatusDetails s) {
-//		super.mShimmerBattStatusDetails = s;
-//		
-//		if(mShimmerDevice!=null){
-//			mShimmerDevice.setBattStatusDetails(s);
-//		}
-//	}
 
-	public void clearBattStatusDetails() {
-		setBattStatusDetails(new ShimmerBattStatusDetails());
-	}
-
-	/**
-	 * @param haveAttemptedToRead the mHaveAttemptedToRead to set
-	 */
-	public void setHaveAttemptedToRead(boolean haveAttemptedToRead) {
-		mHaveAttemptedToReadConfig = haveAttemptedToRead;
-	}
-	
-	/**
-	 * @param docked the mDocked to set
-	 */
-	public void setDocked(boolean docked) {
-		mIsDocked = docked;
-	}
-
-	/**
-	 * @param isInitialized the mSuccessfullyInitialized to set
-	 */
-	public void setInitialised(boolean isInitialized) {
-		mIsInitialised = isInitialized;
-	}
-	
 	// --------------- Set Methods End --------------------------
 
 	
