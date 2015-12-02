@@ -440,22 +440,28 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		byte enabledSensors = (byte) object;
 		
 		if (comType == COMMUNICATION_TYPE.IEEE802154){
-			if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
+			if (enabledSensors ==0){
 				mMapOfSensors.get(SENSOR_NAMES.GSR).enableSensorChannels(comType);
-			} else {
-				mMapOfSensors.get(SENSOR_NAMES.GSR).disableSensorChannels(comType);
-			}
-			
-			if ((enabledSensors & SENSOR_ECG_HEARTRATE_802154_BIT) >0){
 				mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).enableSensorChannels(comType);
-			} else {
-				mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).disableSensorChannels(comType);
-			}
-			
-			if ((enabledSensors & SENSOR_CLOCK_802154_BIT) >0){
 				mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(comType);
 			} else {
-				mMapOfSensors.get(SENSOR_NAMES.CLOCK).disableSensorChannels(comType);
+				if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
+					mMapOfSensors.get(SENSOR_NAMES.GSR).enableSensorChannels(comType);
+				} else {
+					mMapOfSensors.get(SENSOR_NAMES.GSR).disableSensorChannels(comType);
+				}
+				
+				if ((enabledSensors & SENSOR_ECG_HEARTRATE_802154_BIT) >0){
+					mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).enableSensorChannels(comType);
+				} else {
+					mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).disableSensorChannels(comType);
+				}
+				
+				if ((enabledSensors & SENSOR_CLOCK_802154_BIT) >0){
+					mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(comType);
+				} else {
+					mMapOfSensors.get(SENSOR_NAMES.CLOCK).disableSensorChannels(comType);
+				}
 			}
 		}
 		
