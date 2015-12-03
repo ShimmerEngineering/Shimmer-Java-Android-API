@@ -4284,6 +4284,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				else if (isEXGUsingDefaultEMGConfiguration()){
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT);
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT);
+				} else if (isEXGUsingDefaultTestSignalConfiguration()){
+					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT);
+					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT);
 				} else {
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT);
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT);
@@ -4298,7 +4301,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				else if (isEXGUsingDefaultEMGConfiguration()){
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT);
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT);
-				} else {
+				} 
+				else if (isEXGUsingDefaultTestSignalConfiguration()){
+					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT);
+					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT);
+				}
+				else {
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT);
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT);
 				}
@@ -4311,6 +4319,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				else if (isEXGUsingDefaultEMGConfiguration()){
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT);
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT);
+				} else if (isEXGUsingDefaultTestSignalConfiguration()){
+					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT);
+					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT);
 				} else {
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT);
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT);
@@ -4324,7 +4335,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				else if (isEXGUsingDefaultEMGConfiguration()){
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT);
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT);
-				} else {
+				} else if (isEXGUsingDefaultTestSignalConfiguration()){
+					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT);
+					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT);
+				}  else {
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT);
 					listofSignals.add(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT);
 				}

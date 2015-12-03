@@ -2992,6 +2992,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				writeMagSamplingRate(mLSM303MagRate);
 				writeAccelSamplingRate(mLSM303DigitalAccelRate);
 				writeGyroSamplingRate(mMPU9150GyroAccelRate);
+				if (rate<=125){
+					writeEXGRateSetting(0);
+				} else if (rate<=250){
+					writeEXGRateSetting(1);
+				} else if (rate<=500){
+					writeEXGRateSetting(2);
+				} else if (rate<=1000){
+					writeEXGRateSetting(3);
+				} else {
+					writeEXGRateSetting(4);
+				}
 				
 				int samplingByteValue = (int) (32768/mShimmerSamplingRate);
 				getListofInstructions().add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});

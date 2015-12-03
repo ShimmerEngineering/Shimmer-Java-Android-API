@@ -8,7 +8,7 @@ import java.util.List;
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driver.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.service.ShimmerService;
 import com.shimmerresearch.service.ShimmerService.LocalBinder;
 import com.shimmersensing.shimmerconnect.R;
