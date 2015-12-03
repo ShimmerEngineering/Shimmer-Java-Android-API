@@ -72,7 +72,7 @@ public class UartPacketDetails {
 			public final static ComponentPropertyDetails VER              = new ComponentPropertyDetails(COMPONENT.SHIMMER, 0x03, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGqBle, "VER");
 			public final static ComponentPropertyDetails RTC_CFG_TIME     = new ComponentPropertyDetails(COMPONENT.SHIMMER, 0x04, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGqBle, "RTC_CFG_TIME");
 			public final static ComponentPropertyDetails CURR_LOCAL_TIME  = new ComponentPropertyDetails(COMPONENT.SHIMMER, 0x05, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "CURR_LOCAL_TIME");
-			public final static ComponentPropertyDetails INFOMEM          = new ComponentPropertyDetails(COMPONENT.SHIMMER, 0x06, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGqBle, "INFOMEM");
+			public final static ComponentPropertyDetails INFOMEM          = new ComponentPropertyDetails(COMPONENT.SHIMMER, 0x06, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "INFOMEM");
 		}
 		public static class BAT {
 			public final static ComponentPropertyDetails ENABLE           = new ComponentPropertyDetails(COMPONENT.BAT, 0x00, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "ENABLE");
