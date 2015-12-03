@@ -266,6 +266,28 @@ public class UtilShimmer implements Serializable {
 	    return data;
 	}
 
+	public static int hexStringToInt(String s){
+		int len = s.length();
+		int data = 0;
+		int radix = 16;
+
+		if(len == 0){
+			data = 0;	
+		}
+		else if(len <= 8){	
+
+			//max value fitting in int: "7FFFFFFF" (= 2^31-1)
+			if(len == 8 && Integer.parseInt(s.substring(0,1), radix) > 7){
+				data = 0;	
+			}
+			else{
+				data = Integer.parseInt(s, radix);
+			}
+		}
+		return data;
+
+	}
+	
 	public static String convertByteToUnsignedIntegerString(byte b) {
 		return Integer.toString(b&0x00FF);
 	}
