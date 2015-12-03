@@ -573,6 +573,12 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	public void finishOperation(BT_STATE btState){
 		
 	}
+
+	@Override
+	protected void dockedStateChange() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	

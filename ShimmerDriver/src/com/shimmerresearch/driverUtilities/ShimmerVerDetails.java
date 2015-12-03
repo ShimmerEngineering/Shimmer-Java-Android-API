@@ -33,8 +33,8 @@ public class ShimmerVerDetails implements Serializable {
 //		public final static int DCU_SWEATSENSOR = 4;
 		public final static int SHIMMER_GQ_BLE = 5;
 //		public final static int BIOSENSICS = 6;
-		public final static int SHIMMER_GQ_802154_LR = 56;
-		public final static int SHIMMER_GQ_802154_SR = 57;
+		public final static int SHIMMER_GQ_802154_LR = 56; // Long Range
+		public final static int SHIMMER_GQ_802154_NR = 57; // Normal Range
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;
@@ -49,7 +49,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_GQ_BLE, "ShimmerGQBle");
 //        aMap.put(HW_ID.DCU_SWEATSENSOR, "DCU_SWEATSENSOR");
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
-        aMap.put(HW_ID.SHIMMER_GQ_802154_SR, "ShimmerGQ");
+        aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
     
@@ -67,7 +67,7 @@ public class ShimmerVerDetails implements Serializable {
 		public final static int EXP_BRD_GPS = 46;
 		
 		public final static int SHIMMER_GQ_802154_LR = 56;
-		public final static int SHIMMER_GQ_802154_SR = 57;
+		public final static int SHIMMER_GQ_802154_NR = 57;
 		
 		public final static int SHIMMER3 = 31;
 		public final static int BASE15U = 41;
@@ -89,7 +89,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.EXP_BRD_GPS, "GPS");
         
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_LR, "ShimmerGQ 802.15.4");
-        aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_SR, "ShimmerGQ 802.15.4");
+        aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_NR, "ShimmerGQ 802.15.4");
         
         aMap.put(HW_ID_SR_CODES.BASE15U, "Base15U");
         aMap.put(HW_ID_SR_CODES.BASE6U, "Base6U");

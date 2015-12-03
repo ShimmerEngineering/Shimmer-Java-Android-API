@@ -51,12 +51,13 @@ public class UartPacketDetails {
 	}
 	
 	static ShimmerVerObject baseGqBle = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_BLE,FW_ID.GQ_BLE,0,0,5,ShimmerObject.ANY_VERSION);
-	static ShimmerVerObject baseGq802154 = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_LR,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION);
+	static ShimmerVerObject baseGq802154NR = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_NR,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION);
+	static ShimmerVerObject baseGq802154LR = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_LR,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION);
 	
 	//TODO improve
 	static List<ShimmerVerObject> listOfCompatibleVersionInfoGqBle = Arrays.asList(baseGqBle);
-	static List<ShimmerVerObject> listOfCompatibleVersionInfoGq802154 = Arrays.asList(baseGq802154);
-	static List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(baseGqBle, baseGq802154);
+	static List<ShimmerVerObject> listOfCompatibleVersionInfoGq802154 = Arrays.asList(baseGq802154NR, baseGq802154LR);
+	static List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(baseGqBle, baseGq802154NR, baseGq802154LR);
 	
 
 	
@@ -88,8 +89,8 @@ public class UartPacketDetails {
 			public final static ComponentPropertyDetails FREQ_DIVIDER     = new ComponentPropertyDetails(COMPONENT.PPG, 0x06, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "DIVIDER");
 		}
 		public static class DAUGHTER_CARD {
-			public final static ComponentPropertyDetails CARD_ID          = new ComponentPropertyDetails(COMPONENT.DAUGHTER_CARD, 0x02, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGqBle, "CARD_ID");
-			public final static ComponentPropertyDetails CARD_MEM         = new ComponentPropertyDetails(COMPONENT.DAUGHTER_CARD, 0x03, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "CARD_MEM");
+			public final static ComponentPropertyDetails CARD_ID          = new ComponentPropertyDetails(COMPONENT.DAUGHTER_CARD, 0x02, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGq, "CARD_ID");
+			public final static ComponentPropertyDetails CARD_MEM         = new ComponentPropertyDetails(COMPONENT.DAUGHTER_CARD, 0x03, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGq, "CARD_MEM");
 		}
 		public static class LSM303DLHC_ACCEL {
 			public final static ComponentPropertyDetails ENABLE           = new ComponentPropertyDetails(COMPONENT.LSM303DLHC_ACCEL, 0x00, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "ENABLE");

@@ -100,6 +100,10 @@ public class MsgDock {
 
 	// --------------- DockManager End -------------------------
 
+	// --------------- SpanManager Start -------------------------
+	public final static int MSG_ID_SPANMANAGER_INITIALIZED_SUCCESS = 95;
+	// --------------- SpanManager end -------------------------
+
 	
 	//ImportManager and DataprocessingManager
 	public final static int MSG_ID_DATA_SYNC_UPDATE = 109;
@@ -125,6 +129,7 @@ public class MsgDock {
 	
 	public final static int MSG_IDENTIFIER_DB_SYNC_FAILURE_SQLITE_EXCEPTION = 134;
 
+	//this three are used for clearsky
 	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_UPDATE = 137;
 	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_SUCCESS = 138;
 	public final static int MSG_IDENTIFIER_DATA_PARSER_TO_FILE_FAILURE_IO_EXCEPTION = 139;	
@@ -349,7 +354,7 @@ public class MsgDock {
 		mMsgID = msgID;
 		mSlotNumber = slotIdentifier;
 		mDockID = dockID;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+		mUniqueID = convertDockIdAndSlotNumberToUniqueId(mDockID, mSlotNumber);
 	}
 
 	

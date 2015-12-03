@@ -338,7 +338,6 @@ public abstract class ShimmerUartViaDock {
 		return shimmerUartExpansionBoardDetails;
 	}
 	
-	// Untested
 	/** Writes the daughter card ID via the Shimmer's Dock UART
 	 * @param address the new daughter card memory address to start writing at
 	 * @param buf the byte array to be written to the daughter card ID (< 16 bytes)

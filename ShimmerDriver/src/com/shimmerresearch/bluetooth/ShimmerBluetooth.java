@@ -196,6 +196,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void batteryStatusChanged();
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
+	protected abstract void dockedStateChange();
 	private boolean mFirstPacketParsed=true;
 	private double mOffsetFirstTime=-1;
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
@@ -1856,6 +1857,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param statusByte
 	 */
 	private void parseStatusByte(byte statusByte){
+		Boolean savedDockedState = mIsDocked;
+		
 		mIsDocked = ((statusByte & 0x01) > 0)? true:false;
 		mIsSensing = ((statusByte & 0x02) > 0)? true:false;
 //		reserved = ((statusByte & 0x03) > 0)? true:false;
@@ -1868,6 +1871,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				+ "\t" + "IsSDLogging = "+ mIsSDLogging
 				+ "\t" + "IsStreaming = " + mIsStreaming
 				);
+		
+		if(savedDockedState!=mIsDocked){
+			dockedStateChange();
+		}
+		
 	}
 	
 	private byte[] convertStackToByteArray(Stack<Byte> b,int packetSize) {

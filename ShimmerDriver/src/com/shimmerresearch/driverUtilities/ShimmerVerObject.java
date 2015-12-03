@@ -116,40 +116,19 @@ public class ShimmerVerObject implements Serializable {
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
 				}
-//				mFirmwareIdentifierParsed = FW_LABEL.BOILERPLATE;
-//				if (mFirmwareIdentifier==FW_ID.BTSTREAM){
-//					mFirmwareIdentifierParsed = FW_LABEL.BTSTREAM;
-//				}
 			}
 			else if (mHardwareVersion==HW_ID.SHIMMER_3){
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
 				}
-
-//				if (mFirmwareIdentifier==FW_ID.BTSTREAM){
-//					mFirmwareIdentifierParsed = FW_LABEL.BTSTREAM;
-//				}
-//				else if (mFirmwareIdentifier==FW_ID.LOGANDSTREAM){
-//					mFirmwareIdentifierParsed = FW_LABEL.LOGANDSTREAM;
-//				}
-//				else if (mFirmwareIdentifier==FW_ID.SDLOG){
-//					mFirmwareIdentifierParsed = FW_LABEL.SDLOG;
-//				}
-//				else if (mFirmwareIdentifier==FW_ID.DCU_SWEATSENSOR){
-//					mFirmwareIdentifierParsed = FW_LABEL.DCU_SWEATSENSOR;
-//				}
-//				else if (mFirmwareIdentifier==FW_ID.GPIO_TEST){
-//					mFirmwareIdentifierParsed = FW_LABEL.GPIO_TEST;
-//				}
 			}
 			else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_BLE)&&(mFirmwareIdentifier==FW_ID.GQ_BLE)){
-//				mFirmwareIdentifierParsed = FW_LABEL.GQ_BLE;
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
 				}
 			}
-			else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)&&(mFirmwareIdentifier==FW_ID.GQ_802154)){
-//				mFirmwareIdentifierParsed = FW_LABEL.GQ_802154;
+			else if (((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)||(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR))
+					&&(mFirmwareIdentifier==FW_ID.GQ_802154)){
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
 				}
@@ -190,57 +169,6 @@ public class ShimmerVerObject implements Serializable {
 			else if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_2R,0,0,0)){
 				mFirmwareVersionCode = 0;
 			}
-	
-			//Old code
-	//		if (mFirmwareIdentifier == FW_ID.BOILER_PLATE) {
-	//			mFirmwareIdentifierParsed = "Boilerplate";
-	//		} else if (mFirmwareIdentifier == FW_ID.BTSTREAM) {
-	//			mFirmwareIdentifierParsed = "BtStream";
-	//
-	//			if ((mFirmwareVersionMajor == 0 && mFirmwareVersionMinor == 1)
-	//					|| (mFirmwareVersionMajor == 1 && mFirmwareVersionMinor == 2 && mHardwareVersion == HW_ID.SHIMMER_2R))
-	//				mFirmwareVersionCode = 1;
-	//			else if (mFirmwareVersionMajor == 0 && mFirmwareVersionMinor == 2)
-	//				mFirmwareVersionCode = 2;
-	//			else if (mFirmwareVersionMajor == 0 && mFirmwareVersionMinor == 3)
-	//				mFirmwareVersionCode = 3;
-	//			else if (mFirmwareVersionMajor == 0 && mFirmwareVersionMinor == 4)
-	//				mFirmwareVersionCode = 4;
-	//			else
-	//				// if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==5)
-	//				mFirmwareVersionCode = 5;
-	//
-	//		} else if (mFirmwareIdentifier == FW_ID.SDLOG) {
-	//			mFirmwareIdentifierParsed = "SDLog";
-	//
-	//			// TODO
-	//			mFirmwareVersionCode = 6;
-	//
-	//			// if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==1)
-	//			// mFirmwareVersionCode = 3;
-	//			// else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==2)
-	//			// mFirmwareVersionCode = 4;
-	//			// else if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==3)
-	//			// mFirmwareVersionCode = 5;
-	//
-	//		} else if (mFirmwareIdentifier == FW_ID.LOGANDSTREAM) {
-	//			mFirmwareIdentifierParsed = "LogAndStream";
-	//
-	//			if (mFirmwareVersionMajor == 0 && mFirmwareVersionMinor == 1)
-	//				mFirmwareVersionCode = 3;
-	//			else if (mFirmwareVersionMajor == 0 && mFirmwareVersionMinor == 2)
-	//				mFirmwareVersionCode = 4;
-	//			else
-	//				// if(mFirmwareVersionMajor==0 && mFirmwareVersionMinor==3)
-	//				mFirmwareVersionCode = 5;
-	//		} else if (mFirmwareIdentifier == FW_ID.GQ_GSR) {
-	//			mFirmwareIdentifierParsed = "GQ GSR";
-	//
-	//			// TODO
-	//			mFirmwareVersionCode = 7;
-	//		} else {
-	//			mFirmwareIdentifierParsed = "Unknown";
-	//		}
 	
 			mFirmwareVersionParsedJustVersionNumber = "v" + mFirmwareVersionMajor + "." + mFirmwareVersionMinor + "." + mFirmwareVersionInternal;
 			mFirmwareVersionParsed = mFirmwareIdentifierParsed + " " + mFirmwareVersionParsedJustVersionNumber;		

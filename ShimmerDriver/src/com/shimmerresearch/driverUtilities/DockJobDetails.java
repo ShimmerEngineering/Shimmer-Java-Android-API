@@ -52,6 +52,7 @@ public class DockJobDetails {
 		
 		// Start of individual Shimmer communication operations
 		SHIMMER_WRITE_EXP_BRD_MEMORY,
+		SHIMMER_WRITE_DAUGHTER_CARD_ID,
 
 //		READ_SHIMMERS,
 //		FW_SHIMMERS,

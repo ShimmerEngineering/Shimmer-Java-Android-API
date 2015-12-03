@@ -65,7 +65,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public List<ShimmerLogDetails> mListofLogs = new ArrayList<ShimmerLogDetails>();
 	
 	public boolean mFirstSdAccess = true;
-	public String mDockID;
+	public String mDockID = DEFAULT_DOCKID;
 	public DEVICE_TYPE mDockType = DEVICE_TYPE.UNKOWN;
 	public int mSlotNumber = DEFAULT_SLOTNUMBER;
 	public static final int ANY_VERSION = -1;
@@ -389,17 +389,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	
 	/**
-	 * @param docked the mDocked to set
-	 */
-	public void setDocked(boolean docked) {
-		mIsDocked = docked;
-	}
-
-	/**
 	 * @return the mHaveAttemptedToRead
 	 */
 	public boolean isHaveAttemptedToRead() {
 		return haveAttemptedToRead();
+	}
+
+	/**
+	 * @param docked the mDocked to set
+	 */
+	public void setDocked(boolean docked) {
+		mIsDocked = docked;
 	}
 
 	/**
@@ -408,7 +408,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isDocked() {
 		return mIsDocked;
 	}
-	
+
+	public void setConnected(boolean state) {
+		mIsConnected = state;
+	}
+
 	/**
 	 * @return the mIsConnected
 	 */
@@ -416,9 +420,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mIsConnected;
 	}
 
-	public void setConnected(boolean state) {
-		mIsConnected = state;
-	}
 
     /** Returns true if device is streaming (Bluetooth)
      * @return

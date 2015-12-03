@@ -73,6 +73,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -102,11 +103,14 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
 	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
-	
+	public static final int MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE = 7;
+
 	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0;
 	public static final int NOTIFICATION_SHIMMER_START_STREAMING = 1;
 	public static final int NOTIFICATION_SHIMMER_FULLY_INITIALIZED = 2;
-	public final static int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
+	public static final int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
+	
+	
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	public ProgressReportPerDevice progressReportPerDevice;
@@ -771,6 +775,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void dockedStateChange() {
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, getBluetoothAddress(), mComPort);
+		sendCallBackMsg(MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, callBackObject);
 	}
 
 }
