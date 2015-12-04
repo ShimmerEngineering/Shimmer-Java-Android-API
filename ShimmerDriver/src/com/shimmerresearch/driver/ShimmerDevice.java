@@ -673,7 +673,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param comType
 	 * @return
 	 */
-	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
+	public Object buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE comType){
 		
 		ObjectCluster ojc = new ObjectCluster();
 		ojc.createArrayData(getNumberOfEnabledChannels(comType));
