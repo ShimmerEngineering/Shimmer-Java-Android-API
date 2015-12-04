@@ -28,7 +28,6 @@ public class ShimmerShell extends ShimmerDevice {
 	@Override
 	protected void checkBattery() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -44,12 +43,6 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public Map<Integer, SensorEnabledDetails> getSensorMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
 		// TODO Auto-generated method stub
 		return false;
@@ -57,12 +50,6 @@ public class ShimmerShell extends ShimmerDevice {
 
 	@Override
 	public List<Integer> sensorMapConflictCheck(Integer key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -121,6 +108,18 @@ public class ShimmerShell extends ShimmerDevice {
 			COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

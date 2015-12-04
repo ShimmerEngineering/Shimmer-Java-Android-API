@@ -3,8 +3,6 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-import com.shimmerresearch.driver.SensorParsingDetails;
-
 public class ShimmerLogDetails implements Serializable{
 
 	public String mAbsolutePath;

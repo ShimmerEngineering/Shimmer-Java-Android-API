@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -40,6 +41,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * 
 	 */
 	protected LinkedHashMap<String,AbstractSensor> mMapOfSensors = new LinkedHashMap<String,AbstractSensor>();
+//	protected HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapOfCommTypeToSensorMaps = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
+
 	
 	public ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	public ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
@@ -108,7 +111,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected long mPacketLossCount=0;
 	protected double mPacketReceptionRate=100;
 	protected double mPacketReceptionRateCurrent=100;
-
+	
 	// --------------- Abstract Methods Start --------------------------
 	
 	protected abstract void checkBattery();
@@ -117,10 +120,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract void setDefaultShimmerConfiguration();
 
 	// Device sensor map related
-	public abstract Map<Integer, SensorEnabledDetails> getSensorMap();
+	public abstract Map<Integer, SensorEnabledDetails> getSensorEnabledMap();
+	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
 	public abstract boolean setSensorEnabledState(int sensorMapKey, boolean state);
 	public abstract List<Integer> sensorMapConflictCheck(Integer key);
-	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
 	// Device Config related
 	public abstract Map<String, SensorConfigOptionDetails> getConfigOptionsMap();
 	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object configValue);
@@ -147,7 +150,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	// --------------- Abstract Methods End --------------------------
 
 	
-	// --------------- Set Methods Start --------------------------
+	// --------------- Get/Set Methods Start --------------------------
 	
 	public void setShimmerVersionObject(ShimmerVerObject sVO) {
 		mShimmerVerObject = sVO;
@@ -246,13 +249,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	// --------------- Set Methods End --------------------------
-
-	
-	
-	// --------------- Get Methods Start --------------------------
-	
-	
 	public String getDriveUsedSpaceParsed() {
 		return mShimmerSDCardDetails.getDriveUsedSpaceParsed();
 	}
@@ -502,8 +498,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public double getPacketReceptionRateCurrent(){
 		return mPacketReceptionRateCurrent;
 	}
+	
 
-	// --------------- Get Methods End --------------------------
+	// --------------- Get/Set Methods End --------------------------
 
 	
 	//TODO improve this method - was changed at the last minute and is not fully operational
@@ -737,4 +734,66 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		writeRealWorldClockFromPcTimeSuccess = false;
 	}
 	
+//	/** MN: Test code
+//	 * @param commType 
+//	 * @return the mMapOfCommTypeToSensorMaps
+//	 */
+//	public LinkedHashMap<Integer, SensorEnabledDetails> getMapOfCommTypeToSensorMaps(COMMUNICATION_TYPE commType) {
+//		LinkedHashMap<Integer, SensorEnabledDetails> mapOfCommTypeToSensorMaps = new LinkedHashMap<Integer, SensorEnabledDetails>();
+//		
+//		if(mMapOfSensors.keySet().size()>0){
+//			for(AbstractSensor sensor:mMapOfSensors.values()){
+//				LinkedHashMap<Integer, SensorEnabledDetails> mapOfSensorEnabledDetails = sensor.mMapOfCommTypeToSensorMap.get(commType);
+//				if(mapOfSensorEnabledDetails!=null){
+//					for(Integer key:mapOfSensorEnabledDetails.keySet()){
+//						mapOfCommTypeToSensorMaps.put(key, mapOfSensorEnabledDetails.get(key));
+//					}
+//				}
+//			}
+//		}
+//			
+//		return mapOfCommTypeToSensorMaps;
+//	}
+	
+
+//	/** MN: Test code
+//	 * @param commType 
+//	 * @return the mMapOfCommTypeToSensorMaps
+//	 */
+//	public LinkedHashMap<Integer, SensorEnabledDetails> getMapOfCommTypeToChannelDetails(COMMUNICATION_TYPE commType) {
+//		LinkedHashMap<Integer, ChannelDetails> mapOfCommTypeToSensorMaps = new LinkedHashMap<Integer, SensorEnabledDetails>();
+//		
+//		if(mMapOfSensors.keySet().size()>0){
+//			for(AbstractSensor sensor:mMapOfSensors.values()){
+//				LinkedHashMap<Integer, ChannelDetails> mapOfEnabledChannelDetails = sensor.mMapOfComTypetoChannel.get(commType);
+//				if(mMapOfComTypetoChannel!=null){
+//					for(Integer key:mapOfSensorEnabledDetails.keySet()){
+//						mapOfCommTypeToSensorMaps.put(key, mapOfSensorEnabledDetails.get(key));
+//					}
+//				}
+//			}
+//		}
+//			
+//		return mapOfCommTypeToSensorMaps;
+//	}
+	
+
+	public LinkedHashMap<String, AbstractSensor> getMapOfSensors() {
+		return mMapOfSensors;
+	}
+	
+	public LinkedHashMap<String, AbstractSensor> getMapOfSensorsForCommType(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<String, AbstractSensor> mapOfSensorsForCommType = new LinkedHashMap<String, AbstractSensor>(); 
+		for(String abstractSensorKey:mMapOfSensors.keySet()){
+			AbstractSensor abstractSensor = mMapOfSensors.get(abstractSensorKey);
+			if(abstractSensor.mMapOfCommTypeToSensorMap.containsKey(commType)){
+				mapOfSensorsForCommType.put(abstractSensorKey, abstractSensor);
+			}
+		}
+		return mapOfSensorsForCommType;
+	}
+	
+
+	// ----------------- Overrides from ShimmerDevice end -------------
+
 }

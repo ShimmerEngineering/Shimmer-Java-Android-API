@@ -46,7 +46,7 @@ public abstract class AbstractSensor implements Serializable{
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
 	
-	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapofComtoSensorMap = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
+	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapOfCommTypeToSensorMap = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
 	
 	/** Each communication type might have a different Integer key representing the channel, e.g. BT Stream inquiry response (holds the channel sequence of the packet)
 	 * 

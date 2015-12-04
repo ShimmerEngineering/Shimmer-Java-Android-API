@@ -1,10 +1,8 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.shimmerresearch.driverUtilities.ChannelDetails;
 
 //A work in progress - not complete
 public class SensorParsingDetails implements Serializable{

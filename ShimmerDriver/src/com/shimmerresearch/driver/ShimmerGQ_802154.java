@@ -10,14 +10,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -34,15 +37,14 @@ import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
 public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
 	//Should be moved to Shimmer Device Eventually, or to an abstract class extending it if this conflicts with shimmerobject
-	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> mMapOfChannels = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>>(); 
-	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapofComtoSensorMaps = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
+//	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> mMapOfChannels = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>>(); 
+//	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapofComtoSensorMaps = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
 	
 	
 	//JC: TEMP to test sensor enabled
-		public int SENSOR_GSR_802154_BIT = 0x01;
-		public int SENSOR_ECG_HEARTRATE_802154_BIT = 0x02;
-		public int SENSOR_CLOCK_802154_BIT = 0x04;
-	
+	public int SENSOR_GSR_802154_BIT = 0x01;
+	public int SENSOR_ECG_HEARTRATE_802154_BIT = 0x02;
+	public int SENSOR_CLOCK_802154_BIT = 0x04;	
 	
 	/** This is derived from all the sensors
 	 * 
@@ -234,21 +236,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 
 	@Override
-	public Map<Integer, SensorEnabledDetails> getSensorMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -461,10 +451,19 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 		
 	}
-	
 
-	
-	// ----------------- Overrides from ShimmerDevice end -------------
+	@Override
+	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 	

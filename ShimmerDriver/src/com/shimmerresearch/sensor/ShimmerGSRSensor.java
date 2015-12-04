@@ -56,8 +56,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
 		
 		// TODO Auto-generated method stub
 		ActionSetting actionSetting = new ActionSetting(comType);
@@ -75,9 +74,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	}
 	
 	@Override
-
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
-			ShimmerVerObject svo) {
+	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
 		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
 		//COMMUNICATION_TYPE.IEEE802154
 		int count=1;
@@ -101,7 +98,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		long logHeaderByteIndex = 0;
 		SensorDetails sensorDetails = new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GSR);
 		sensorMap.put(Configuration.Shimmer3.SensorMapKey.GSR, new SensorEnabledDetails(false, 0, sensorDetails));
-		mMapofComtoSensorMap.put(COMMUNICATION_TYPE.IEEE802154, sensorMap);
+		mMapOfCommTypeToSensorMap.put(COMMUNICATION_TYPE.IEEE802154, sensorMap);
 		/////JC: Not sure if we need this for GUI leaving this in first
 		
 		
