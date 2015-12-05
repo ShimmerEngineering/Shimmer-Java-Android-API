@@ -1,6 +1,5 @@
 package com.shimmerresearch.sensor;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -9,36 +8,32 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
 import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
 
-public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable{
+public class SensorSystemTimeStamp extends AbstractSensor {
 
-
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4160314338085066414L;
+	private static final long serialVersionUID = 8452084854436139765L;
 
-	public ShimmerECGToHRSensor(ShimmerVerObject svo) {
+	public SensorSystemTimeStamp(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSOR_NAMES.ECG_TO_HR;
+		mSensorName = SENSOR_NAMES.SYSTEM_TIMESTAMP;
+	}
 
-	}
 	
-	{
-	mSensorName ="STMICROLSM303DLHC";
-	}
 	
 	@Override
 	public String getSensorName() {
-		// TODO Auto-generated method stub
 		return mSensorName;
 	}
 
@@ -49,15 +44,13 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, Object object) {
-
 		int index = 0;
 		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			//first process the data originating from the Shimmer sensor
@@ -69,38 +62,39 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 		}
 		
 		return object;
-	
 	}
 
 	@Override
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
-			ShimmerVerObject svo) {
+	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
 		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
 		//COMMUNICATION_TYPE.IEEE802154
 		int count=1;
-		ChannelDetails channelDetails  = new ChannelDetails(
-				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
-				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
-				DatabaseChannelHandles.ECG_TO_HR,
-				ChannelDataType.UINT8, 1, ChannelDataEndian.LSB,
-				CHANNEL_UNITS.BEATS_PER_MINUTE,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		mapOfChannelDetails.put(count,channelDetails);
-		channelDetails.mIsEnabled = true;
-		channelDetails.mDefaultUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
+		
+		ChannelDetails channelDetails = new ChannelDetails(
+						Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT,
+						Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT,
+						DatabaseChannelHandles.TIMESTAMP_SYSTEM,
+						ChannelDataType.UINT64, 8, ChannelDataEndian.MSB,
+						CHANNEL_UNITS.MILLISECONDS,
+						Arrays.asList(CHANNEL_TYPE.CAL), false, true);
+
+		channelDetails.mChannelSource = CHANNEL_SOURCE.API;
+		channelDetails.mDefaultUnit = CHANNEL_UNITS.MILLISECONDS;
+		channelDetails.mDefaultCalibratedUnits = CHANNEL_UNITS.MILLISECONDS;
 		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+		channelDetails.mIsEnabled = true;
+		
+		mapOfChannelDetails.put(count, channelDetails);
 		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
 		
-		return mMapOfCommTypetoChannel; 
+		
+		return mMapOfCommTypetoChannel;
 	}
 
 	@Override
-	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
-			ShimmerVerObject svo) {
+	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 
 }

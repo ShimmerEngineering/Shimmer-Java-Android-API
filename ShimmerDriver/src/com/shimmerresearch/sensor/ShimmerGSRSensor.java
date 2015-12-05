@@ -78,6 +78,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
 		//COMMUNICATION_TYPE.IEEE802154
 		int count=1;
+		//TODO MN: better to be a static final global like in Configuration.Shimmer3?
 		ChannelDetails channelDetails = new ChannelDetails(
 				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
 				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
@@ -90,7 +91,10 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		channelDetails.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
 		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 		mapOfChannelDetails.put(count, channelDetails);
-		mMapOfComTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
+		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
+
+		
+		//TODO MN: with the new AbstractSensor class the each of these properties () can be just stored as individual variables inside the class (no need for SensoreDetails?) 
 		
 		//JC: Not sure if we need this for GUI leaving this in first
 		LinkedHashMap<Integer, SensorEnabledDetails> sensorMap = new  LinkedHashMap<Integer, SensorEnabledDetails>(); 
@@ -102,7 +106,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		/////JC: Not sure if we need this for GUI leaving this in first
 		
 		
-		return mMapOfComTypetoChannel;
+		return mMapOfCommTypetoChannel;
 
 	}
 
@@ -126,7 +130,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	@Override
 	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, Object object) {
 		int index = 0;
-		for (ChannelDetails channelDetails:mMapOfComTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);

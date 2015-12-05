@@ -8,6 +8,7 @@ import java.util.Map;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -25,6 +26,7 @@ public abstract class AbstractSensor implements Serializable{
 		public static final String GSR = "GSR";
 		public static final String ECG_TO_HR = "ECG to Heart Rate";
 		public static final String CLOCK = "Clock";
+		public static final String SYSTEM_TIMESTAMP = Configuration.Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT;
 	}
 	
 	public SensorEnabledDetails mSensorEnabledDetails;
@@ -51,7 +53,8 @@ public abstract class AbstractSensor implements Serializable{
 	/** Each communication type might have a different Integer key representing the channel, e.g. BT Stream inquiry response (holds the channel sequence of the packet)
 	 * 
 	 */
-	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> mMapOfComTypetoChannel = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>>(); 
+	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> mMapOfCommTypetoChannel = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>>(); 
+	
 	public abstract String getSensorName();
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE comType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE comType);
@@ -112,7 +115,7 @@ public abstract class AbstractSensor implements Serializable{
 	public AbstractSensor(ShimmerVerObject svo){
 		mShimmerVerObject = svo;
 		mConfigOptionsMap = generateConfigOptionsMap(svo);
-		mMapOfComTypetoChannel = generateChannelDetailsMap(svo);
+		mMapOfCommTypetoChannel = generateChannelDetailsMap(svo);
 	}
 	
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
@@ -243,6 +246,19 @@ public abstract class AbstractSensor implements Serializable{
 				long lsb =((long)(data[iData+3] & 0xFF) << 0);
 				formattedData=calculatetwoscomplement((long)(xxmsb + xmsb + msb + lsb),32);
 				iData=iData+4;
+				
+			} else if (dataType==ChannelDataType.UINT64 && dataEndian==ChannelDataEndian.MSB) {
+				long eigthmsb =(((long)data[iData+0] & 0x0FL) << 56);
+				long seventhmsb =(((long)data[iData+1] & 0xFFL) << 48);
+				long sixthmsb =(((long)data[iData+2] & 0xFFL) << 40);
+				long fifthmsb =(((long)data[iData+3] & 0xFFL) << 32);
+				long forthmsb =(((long)data[iData+4] & 0xFFL) << 24);
+				long thirdmsb =(((long)data[iData+5] & 0xFFL) << 16);
+				long msb =(((long)data[iData+6] & 0xFF) << 8);
+				long lsb =(((long)data[iData+7] & 0xFF));
+				formattedData=(eigthmsb + seventhmsb + sixthmsb + fifthmsb+ forthmsb+ thirdmsb + msb + lsb);
+				iData=iData+8;
+				
 			} else if (dataType==ChannelDataType.UINT72_SIGNED){
 				// do something to parse the 9 byte data
 				long offset = (((long)data[iData] & 0xFF));
@@ -407,9 +423,8 @@ public abstract class AbstractSensor implements Serializable{
 	 * @return
 	 */
 	public int getExpectedPacketByteArray(COMMUNICATION_TYPE comType) {
-		// TODO Auto-generated method stub
 		int count = 0; 
-		for (ChannelDetails channelDetails: mMapOfComTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails: mMapOfCommTypetoChannel.get(comType).values()){
 			if (channelDetails.mIsEnabled){
 				count = count+channelDetails.mDefaultNumBytes;
 			}
@@ -419,7 +434,7 @@ public abstract class AbstractSensor implements Serializable{
 
 	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE comType){
 		int count = 0;
-		for (ChannelDetails channelDetails: mMapOfComTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails: mMapOfCommTypetoChannel.get(comType).values()){
 			if (channelDetails.mIsEnabled){
 				count = count+1;
 			}
@@ -428,13 +443,13 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public void disableSensorChannels(COMMUNICATION_TYPE comType){
-		for (ChannelDetails channelDetails :mMapOfComTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails :mMapOfCommTypetoChannel.get(comType).values()){
 			channelDetails.mIsEnabled = false;
 		}
 	}
 	
 	public void enableSensorChannels(COMMUNICATION_TYPE comType){
-		for (ChannelDetails channelDetails :mMapOfComTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails :mMapOfCommTypetoChannel.get(comType).values()){
 			channelDetails.mIsEnabled = true;
 		}
 	}

@@ -53,7 +53,7 @@ public class ShimmerClock extends AbstractSensor {
 	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType,
 			Object object) {
 		int index = 0;
-		for (ChannelDetails channelDetails:mMapOfComTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
@@ -83,10 +83,10 @@ public class ShimmerClock extends AbstractSensor {
 		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 		channelDetails.mIsEnabled = true;
 		mapOfChannelDetails.put(count, channelDetails);
-		mMapOfComTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
+		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
 		
 		
-		return mMapOfComTypetoChannel;
+		return mMapOfCommTypetoChannel;
 	}
 
 	@Override

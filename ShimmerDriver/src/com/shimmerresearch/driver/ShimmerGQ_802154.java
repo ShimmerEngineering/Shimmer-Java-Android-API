@@ -28,6 +28,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.sensor.AbstractSensor.SENSOR_NAMES;
+import com.shimmerresearch.sensor.SensorSystemTimeStamp;
 import com.shimmerresearch.sensor.ShimmerClock;
 import com.shimmerresearch.sensor.ShimmerECGToHRSensor;
 import com.shimmerresearch.sensor.ShimmerGSRSensor;
@@ -395,57 +396,71 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		//in future should compare and build map
 		if( UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
-			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
+//			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
+			mMapOfSensors.put(SENSOR_NAMES.SYSTEM_TIMESTAMP,new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensors.put(SENSOR_NAMES.GSR,new ShimmerGSRSensor(mShimmerVerObject));
 			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGToHRSensor(mShimmerVerObject));
 			
 		} else {
-			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
+//			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
+			mMapOfSensors.put(SENSOR_NAMES.SYSTEM_TIMESTAMP,new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensors.put(SENSOR_NAMES.GSR,new ShimmerGSRSensor(mShimmerVerObject));
 			mMapOfSensors.put(SENSOR_NAMES.ECG_TO_HR,new ShimmerECGToHRSensor(mShimmerVerObject));
 		}
 		
 	}
 
+	
 	@Override
-	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE comType){
-		//if the packet byte has a starting byte indicating enabled channels
-		interpretDataPacketFormat(packetByteArray[0],comType);
-		byte[] newPBA = new byte[packetByteArray.length-1];
-		System.arraycopy(packetByteArray, 1, newPBA, 0, newPBA.length);
+	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE commType){
+//		//if the packet byte has a starting byte indicating enabled channels
+//		interpretDataPacketFormat(packetByteArray[0],commType);
+//		byte[] newPBA = new byte[packetByteArray.length-1];
+//		System.arraycopy(packetByteArray, 1, newPBA, 0, newPBA.length);
+//		
+//		ObjectCluster ojc = (ObjectCluster) super.buildMsg(newPBA, commType);
+//		//sendCallBackMsg();
 		
-		ObjectCluster ojc = (ObjectCluster) super.buildMsg(newPBA, comType);
-		//sendCallBackMsg();
+		
+		ObjectCluster ojc = (ObjectCluster) super.buildMsg(packetByteArray, commType);
+
 		return ojc;
 	}
 
 	@Override
-	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE comType) {
-		byte enabledSensors = (byte) object;
+	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
+//		byte enabledSensors = (byte) object;
+		byte[] enabledSensorsByteArray = (byte[]) object;
+		long enabledSensors = 0;
 		
-		if (comType == COMMUNICATION_TYPE.IEEE802154){
-			if (enabledSensors ==0){
-				mMapOfSensors.get(SENSOR_NAMES.GSR).enableSensorChannels(comType);
-				mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).enableSensorChannels(comType);
-				mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(comType);
+		for(int i=0;i<enabledSensorsByteArray.length;i++){
+			enabledSensors += enabledSensorsByteArray[i] << (i*8);
+		}
+		
+		//TODO MN: change to for loop looping through the mMapOfSensors -> bit index should be copied out of SensorDetails and placed in the AbstractSensor class 
+		if (commType == COMMUNICATION_TYPE.IEEE802154){
+			if (enabledSensors == 0){
+//				mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSOR_NAMES.SYSTEM_TIMESTAMP).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSOR_NAMES.GSR).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).enableSensorChannels(commType);
 			} else {
 				if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
-					mMapOfSensors.get(SENSOR_NAMES.GSR).enableSensorChannels(comType);
+					mMapOfSensors.get(SENSOR_NAMES.GSR).enableSensorChannels(commType);
 				} else {
-					mMapOfSensors.get(SENSOR_NAMES.GSR).disableSensorChannels(comType);
+					mMapOfSensors.get(SENSOR_NAMES.GSR).disableSensorChannels(commType);
 				}
 				
 				if ((enabledSensors & SENSOR_ECG_HEARTRATE_802154_BIT) >0){
-					mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).enableSensorChannels(comType);
+					mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).enableSensorChannels(commType);
 				} else {
-					mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).disableSensorChannels(comType);
+					mMapOfSensors.get(SENSOR_NAMES.ECG_TO_HR).disableSensorChannels(commType);
 				}
 				
 				if ((enabledSensors & SENSOR_CLOCK_802154_BIT) >0){
-					mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(comType);
+					mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(commType);
 				} else {
-					mMapOfSensors.get(SENSOR_NAMES.CLOCK).disableSensorChannels(comType);
+					mMapOfSensors.get(SENSOR_NAMES.CLOCK).disableSensorChannels(commType);
 				}
 			}
 		}

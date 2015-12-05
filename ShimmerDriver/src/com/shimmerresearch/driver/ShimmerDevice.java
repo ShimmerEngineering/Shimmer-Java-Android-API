@@ -133,7 +133,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
 	 */
-	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE comType );
+	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE commType);
 		
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
 	
@@ -665,25 +665,37 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	public Object buildMsg(byte[] dataPacketFormat, byte[] packetByteArray,COMMUNICATION_TYPE commType){
+		interpretDataPacketFormat(dataPacketFormat,commType);
+		return buildMsg(packetByteArray, commType);
+	}
+	
 	/** The packet format can be changed by calling interpretpacketformat
 	 * @param packetByteArray
-	 * @param comType
+	 * @param commType
 	 * @return
 	 */
-	public Object buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE comType){
+	public Object buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType){
 		
 		ObjectCluster ojc = new ObjectCluster();
-		ojc.createArrayData(getNumberOfEnabledChannels(comType));
-		ojc.mMyName = mUniqueID;
+		ojc.createArrayData(getNumberOfEnabledChannels(commType));
+//		ojc.mMyName = mUniqueID;
+		ojc.mMyName = mShimmerUserAssignedName;
 		int index=0;
 		for (AbstractSensor sensor:mMapOfSensors.values()){
-			int length = sensor.getExpectedPacketByteArray(comType);
+			int length = sensor.getExpectedPacketByteArray(commType);
 			if (length!=0){ //if length 0 means there are no channels to be processed
 				byte[] sensorByteArray = new byte[length];
-				System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
-				sensor.processData(sensorByteArray,comType,ojc);
+				if((index+sensorByteArray.length)<=packetByteArray.length){
+					System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
+					sensor.processData(sensorByteArray,commType,ojc);
+				}
+				else{
+					//TODO replace with consolePrintSystem
+					System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.getSensorName());
+				}
 			}
-			index = index+length;
+			index += length;
 		}
 		return ojc;
 	}
@@ -698,10 +710,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 
-	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE comType){
+	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE commType){
 		int total = 0;
 		for (AbstractSensor sensor:mMapOfSensors.values()){
-			total = total + sensor.getNumberOfEnabledChannels(comType);
+			total = total + sensor.getNumberOfEnabledChannels(commType);
 		}
 		return total;
 	}
@@ -778,6 +790,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	}
 	
 
+	// ----------------- Overrides from ShimmerDevice end -------------
+
 	public LinkedHashMap<String, AbstractSensor> getMapOfSensors() {
 		return mMapOfSensors;
 	}
@@ -793,7 +807,29 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfSensorsForCommType;
 	}
 	
+	/** not working because channels don't have a unique integer value so values in output map are just being replaced*/
+	public LinkedHashMap<Integer, ChannelDetails> getMapOfChannelsForCommType(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<Integer,ChannelDetails> mapOfCommTypetoAllChannels = new LinkedHashMap<Integer,ChannelDetails>(); 
+		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+			LinkedHashMap<Integer, ChannelDetails> mapOfCommTypetoChannel = abstractSensor.mMapOfCommTypetoChannel.get(commType);
+			if(mapOfCommTypetoChannel!=null){
+				mapOfCommTypetoAllChannels.putAll(mapOfCommTypetoChannel);
+			}
+		}
+		return mapOfCommTypetoAllChannels;
+	}
 
-	// ----------------- Overrides from ShimmerDevice end -------------
 
+	public LinkedHashMap<String, LinkedHashMap<Integer, ChannelDetails>> getMapOfChannelsPerSensorForCommType(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<String,LinkedHashMap<Integer,ChannelDetails>> mapOfChannelsPerSensorForCommType = new LinkedHashMap<String,LinkedHashMap<Integer,ChannelDetails>>();
+		for(String abstractSensorKey:mMapOfSensors.keySet()){
+			AbstractSensor abstractSensor = mMapOfSensors.get(abstractSensorKey);
+			LinkedHashMap<Integer, ChannelDetails> mapOfCommTypetoChannel = abstractSensor.mMapOfCommTypetoChannel.get(commType);
+			if(mapOfCommTypetoChannel!=null){
+				mapOfChannelsPerSensorForCommType.put(abstractSensorKey, mapOfCommTypetoChannel);
+			}
+		}
+		return mapOfChannelsPerSensorForCommType;
+	}
+	
 }
