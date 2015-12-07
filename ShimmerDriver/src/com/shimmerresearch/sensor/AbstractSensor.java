@@ -30,20 +30,16 @@ public abstract class AbstractSensor implements Serializable{
 	}*/
 	
 	public enum SENSORS{
-		GSR("GSR",1),
-		ECG_TO_HR("ECG to Heart Rate",2),
-		CLOCK("Clock",3),
-		SYSTEM_TIMESTAMP("Clock",4);
+		GSR("GSR"),
+		ECG_TO_HR("ECG to Heart Rate"),
+		CLOCK("Clock"),
+		SYSTEM_TIMESTAMP("Clock");
 		
 	    private final String text;
-	    private final int sensornum;
 
-	    /**
-	     * @param text
-	     */
-	    private SENSORS(final String text,int sensornum) {
+	    /** @param text */
+	    private SENSORS(final String text) {
 	        this.text = text;
-	        this.sensornum = sensornum;
 	    }
 
 	    /* (non-Javadoc)
@@ -53,11 +49,6 @@ public abstract class AbstractSensor implements Serializable{
 	    public String toString() {
 	        return text;
 	    }
-	    
-	    public int toInt() {
-	        return sensornum;
-	    }
-	    
 	}
 	
 	public SensorEnabledDetails mSensorEnabledDetails;

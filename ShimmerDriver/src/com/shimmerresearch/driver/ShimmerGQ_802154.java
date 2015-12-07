@@ -398,15 +398,15 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		if( UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
 //			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.toInt(),new SensorSystemTimeStamp(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.GSR.toInt(),new ShimmerGSRSensor(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.ECG_TO_HR.toInt(),new ShimmerECGToHRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.ordinal(),new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.GSR.ordinal(),new ShimmerGSRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.ECG_TO_HR.ordinal(),new ShimmerECGToHRSensor(mShimmerVerObject));
 			
 		} else {
 //			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.toInt(),new SensorSystemTimeStamp(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.GSR.toInt(),new ShimmerGSRSensor(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.ECG_TO_HR.toInt(),new ShimmerECGToHRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.ordinal(),new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.GSR.ordinal(),new ShimmerGSRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.ECG_TO_HR.ordinal(),new ShimmerECGToHRSensor(mShimmerVerObject));
 		}
 		
 	}
@@ -442,26 +442,26 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		if (commType == COMMUNICATION_TYPE.IEEE802154){
 			if (enabledSensors == 0){
 //				mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(commType);
-				mMapOfSensors.get(SENSORS.SYSTEM_TIMESTAMP.toString()).enableSensorChannels(commType);
-				mMapOfSensors.get(SENSORS.GSR.toString()).enableSensorChannels(commType);
-				mMapOfSensors.get(SENSORS.ECG_TO_HR.toString()).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSORS.SYSTEM_TIMESTAMP.ordinal()).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSORS.GSR.ordinal()).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSORS.ECG_TO_HR.ordinal()).enableSensorChannels(commType);
 			} else {
 				if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
-					mMapOfSensors.get(SENSORS.GSR.toString()).enableSensorChannels(commType);
+					mMapOfSensors.get(SENSORS.GSR.ordinal()).enableSensorChannels(commType);
 				} else {
-					mMapOfSensors.get(SENSORS.GSR.toString()).disableSensorChannels(commType);
+					mMapOfSensors.get(SENSORS.GSR.ordinal()).disableSensorChannels(commType);
 				}
 				
 				if ((enabledSensors & SENSOR_ECG_HEARTRATE_802154_BIT) >0){
-					mMapOfSensors.get(SENSORS.ECG_TO_HR.toString()).enableSensorChannels(commType);
+					mMapOfSensors.get(SENSORS.ECG_TO_HR.ordinal()).enableSensorChannels(commType);
 				} else {
-					mMapOfSensors.get(SENSORS.ECG_TO_HR.toString()).disableSensorChannels(commType);
+					mMapOfSensors.get(SENSORS.ECG_TO_HR.ordinal()).disableSensorChannels(commType);
 				}
 				
 				if ((enabledSensors & SENSOR_CLOCK_802154_BIT) >0){
-					mMapOfSensors.get(SENSORS.CLOCK.toString()).enableSensorChannels(commType);
+					mMapOfSensors.get(SENSORS.CLOCK.ordinal()).enableSensorChannels(commType);
 				} else {
-					mMapOfSensors.get(SENSORS.CLOCK.toString()).disableSensorChannels(commType);
+					mMapOfSensors.get(SENSORS.CLOCK.ordinal()).disableSensorChannels(commType);
 				}
 			}
 		}

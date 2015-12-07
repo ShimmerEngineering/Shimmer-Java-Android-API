@@ -21,8 +21,8 @@ public class TestSensorParsing {
 		ojc = (ObjectCluster) shimmer.buildMsg(packetByteArray2, COMMUNICATION_TYPE.IEEE802154);
 		*/
 		
-		System.out.println(AbstractSensor.SENSORS.ECG_TO_HR.toInt() + AbstractSensor.SENSORS.ECG_TO_HR.toString());
-		System.out.println(AbstractSensor.SENSORS.GSR.toInt() + AbstractSensor.SENSORS.GSR.toString());
+		System.out.println(AbstractSensor.SENSORS.ECG_TO_HR.ordinal() + AbstractSensor.SENSORS.ECG_TO_HR.toString());
+		System.out.println(AbstractSensor.SENSORS.GSR.ordinal() + AbstractSensor.SENSORS.GSR.toString());
 	}
 
 	
