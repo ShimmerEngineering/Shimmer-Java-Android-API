@@ -85,26 +85,26 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 ////	//public int SENSOR_BMP180_TEMPERATURE =        0x02;
 ////	//public int SENSOR_EXP_POWER =                 0x01;
 ////	//public int SENSOR_MPU9150_MPL_ROT_MAT =       0x;	
-//	
-//	public int idxShimmerSamplingRate =				0;
+	
+	public int idxShimmerSamplingRate =				0;
 //	public int idxBufferSize =                     	2;
-//	public int idxSensors0 =                        3;
-//	public int idxSensors1 =                        4;
-//	public int idxSensors2 =                        5;
-//	public int idxConfigSetupByte0 =              	6; //sensors setting bytes
-//	public int idxConfigSetupByte1 =              	7;
-//	public int idxConfigSetupByte2 =              	8;
-//	public int idxConfigSetupByte3 =              	9;
-//	public int idxEXGADS1292RChip1Config1 =         10;// exg bytes, not implemented yet
-//	public int idxEXGADS1292RChip1Config2 =         11;
-//	public int idxEXGADS1292RChip1LOff =            12;
-//	public int idxEXGADS1292RChip1Ch1Set =          13;
-//	public int idxEXGADS1292RChip1Ch2Set =          14;
-//	public int idxEXGADS1292RChip1RldSens =         15;
-//	public int idxEXGADS1292RChip1LOffSens =        16;
-//	public int idxEXGADS1292RChip1LOffStat =        17;
-//	public int idxEXGADS1292RChip1Resp1 =           18;
-//	public int idxEXGADS1292RChip1Resp2 =           19;
+	public int idxSensors0 =                        3;
+	public int idxSensors1 =                        4;
+	public int idxSensors2 =                        5;
+	public int idxConfigSetupByte0 =              	6; //sensors setting bytes
+	public int idxConfigSetupByte1 =              	7;
+	public int idxConfigSetupByte2 =              	8;
+	public int idxConfigSetupByte3 =              	9;
+	public int idxEXGADS1292RChip1Config1 =         10;// exg bytes
+	public int idxEXGADS1292RChip1Config2 =         11;
+	public int idxEXGADS1292RChip1LOff =            12;
+	public int idxEXGADS1292RChip1Ch1Set =          13;
+	public int idxEXGADS1292RChip1Ch2Set =          14;
+	public int idxEXGADS1292RChip1RldSens =         15;
+	public int idxEXGADS1292RChip1LOffSens =        16;
+	public int idxEXGADS1292RChip1LOffStat =        17;
+	public int idxEXGADS1292RChip1Resp1 =           18;
+	public int idxEXGADS1292RChip1Resp2 =           19;
 //	public int idxEXGADS1292RChip2Config1 =         20;
 //	public int idxEXGADS1292RChip2Config2 =         21;
 //	public int idxEXGADS1292RChip2LOff =            22;
@@ -155,17 +155,17 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 //	public int idxNode0 =                           128+128+0;
 //
 ////	public int idxMplCalibration =                  0;
-//	
-//	// Masks and Bitshift values
-//	public int maskShimmerSamplingRate =				0xFF;
-//	public int maskBufferSize =							0xFF;
-//
-//	// Sensors
-//	public int maskSensors = 							0xFF;
-//	public int byteShiftSensors0 = 						0;
-//	public int byteShiftSensors1 =						8;
-//	public int byteShiftSensors2 =						16;
-//	
+	
+	// Masks and Bitshift values
+	public int maskShimmerSamplingRate =				0xFF;
+	public int maskBufferSize =							0xFF;
+
+	// Sensors
+	public int maskSensors = 							0xFF;
+	public int byteShiftSensors0 = 						0;
+	public int byteShiftSensors1 =						8;
+	public int byteShiftSensors2 =						16;
+	
 //	//Config Byte0
 //	public int bitShiftLSM303DLHCAccelSamplingRate = 	4;
 //	public int maskLSM303DLHCAccelSamplingRate =    	0x0F;
@@ -194,10 +194,10 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 //	public int maskMPU9150AccelRange =                  0x03;
 //	public int bitShiftBMP180PressureResolution =       4;
 //	public int maskBMP180PressureResolution =           0x03;
-//	public int bitShiftGSRRange =                       1;
-//	public int maskGSRRange =                           0x07;
-//	public int bitShiftEXPPowerEnable =                 0;
-//	public int maskEXPPowerEnable =                     0x01;
+	public int bitShiftGSRRange =                       1;
+	public int maskGSRRange =                           0x07;
+	public int bitShiftEXPPowerEnable =                 0;
+	public int maskEXPPowerEnable =                     0x01;
 //	//Unused bits 3-0
 //	
 //	// Derived Channels - used by SW not FW

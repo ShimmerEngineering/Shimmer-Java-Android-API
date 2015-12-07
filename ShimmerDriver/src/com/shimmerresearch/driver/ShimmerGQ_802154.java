@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -58,6 +59,20 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	public String mSpanId = "N/A";
 	
+	private boolean mVerboseMode = true;
+	private String mParentClassName = "ShimmerGQ_802154";
+
+	
+	//TODO make global or move to ShimmerDevice
+	double mShimmerSamplingRate = 256;	// 256Hz is the default sampling rate
+	//TODO generate from Sensor classes
+	long mEnabledSensors = Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
+	//TODO move to Sensor classes
+	int mGSRRange = 4; 					// 4 = Auto
+	int mInternalExpPower = 1;			// Enable external power for EXG + GSR
+
+	
+
 	
 	 //just use fillers for now
 	public static final ShimmerVerObject SVO_RELEASE_REV_0_1 = new ShimmerVerObject(
@@ -77,8 +92,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
 	//priority of comm type to know whether it is dock and radio connected, if dock connected send uart priority
 	
-	//
-
 	public enum GQ_STATE{
 		IDLE("Idle"),
 		STREAMING("Streaming"),
@@ -86,16 +99,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 	    private final String text;
 
-	    /**
-	     * @param text
-	     */
+	    /** @param text */
 	    private GQ_STATE(final String text) {
 	        this.text = text;
 	    }
 
-	    /* (non-Javadoc)
-	     * @see java.lang.Enum#toString()
-	     */
 	    @Override
 	    public String toString() {
 	        return text;
@@ -147,12 +155,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	        this.mRadioChannel = radioConfigArray[0] & 0x00FF;
 	        
 	        //All MSB first
-	        
 	        this.mRadioGroupId = (((radioConfigArray[1]&0x00FF)<<8) + (radioConfigArray[2]&0x00FF)) & 0x00FFFF;
-	        
 	        this.mRadioMyAddress = (((radioConfigArray[3]&0x00FF)<<8) + (radioConfigArray[4]&0x00FF)) & 0x00FFFF;
-	        
-//	        this.mRadioResponseWindow  = (radioConfigArray[5]<<24) + (radioConfigArray[6]<<16) + (radioConfigArray[7]<<8) + radioConfigArray[8];
 	        this.mRadioResponseWindow  = (((radioConfigArray[5]&0x00FF)<<8) + (radioConfigArray[6]&0x00FF)) & 0x00FFFF;
 		}
 	}
@@ -170,21 +174,47 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
         radioConfigArray[0] = (byte)((mRadioChannel >> 0) & 0x00FF);
         
         //All MSB first
-        
         radioConfigArray[1] = (byte)((mRadioGroupId >> 8) & 0x00FF);
         radioConfigArray[2] = (byte)((mRadioGroupId >> 0) & 0x00FF);
-        
         radioConfigArray[3] = (byte)((mRadioMyAddress >> 8) & 0x00FF);
         radioConfigArray[4] = (byte)((mRadioMyAddress >> 0) & 0x00FF);
-
-//        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 24) & 0xFF);
-//        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 16) & 0xFF);
         radioConfigArray[5] = (byte)((mRadioResponseWindow >> 8) & 0x00FF);
         radioConfigArray[6] = (byte)((mRadioResponseWindow >> 0) & 0x00FF);
         
 		return radioConfigArray;
 	}
 
+	/**
+	 * @param statusByte
+	 */
+	public void parseStatusByte(byte statusByte){
+//		Boolean savedDockedState = mIsDocked;
+		
+		mIsDocked = ((statusByte & 0x01) > 0)? true:false;
+		mIsSensing = ((statusByte & 0x02) > 0)? true:false;
+//		reserved = ((statusByte & 0x03) > 0)? true:false;
+		mIsSDLogging = ((statusByte & 0x08) > 0)? true:false;
+		mIsStreaming = ((statusByte & 0x10) > 0)? true:false; 
+
+		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
+				+ "\t" + "IsDocked = " + mIsDocked
+				+ "\t" + "IsSensing = " + mIsSensing
+				+ "\t" + "IsSDLogging = "+ mIsSDLogging
+				+ "\t" + "IsStreaming = " + mIsStreaming
+				);
+		
+//		if(savedDockedState!=mIsDocked){
+//			dockedStateChange();
+//		}
+		
+	}
+	
+	public double calculatePacketLoss(long timeDifference, double samplingRate){
+		Long numberofExpectedPackets = (long) ((double)((timeDifference/1000)*samplingRate));
+		mPacketReceptionRateCurrent = (double)((mPacketReceivedCount)/(double)numberofExpectedPackets)*100;
+		return mPacketReceptionRateCurrent;
+	}
+	
 	@Override
 	protected void createInfoMemLayout(){
 		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
@@ -288,27 +318,60 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				getFirmwareVersionInternal());
 		
 //		byte[] infoMemBackup = mInfoMemBytes.clone();
-		mInfoMemBytes = createEmptyInfoMemByteArray(infoMemLayout.calculateInfoMemByteLength());
+		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
 		
-		//TODO: Trial name, shimmer name
+		// Sampling Rate
+		int samplingRate = (int)(32768 / mShimmerSamplingRate);
+		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
+		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
+
+		// Sensors
+//		refreshEnabledSensorsFromSensorMap();
+		mInfoMemBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
+		mInfoMemBytes[infoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors1) & infoMemLayout.maskSensors);
+		mInfoMemBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
+
+		// Configuration
+		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mGSRRange & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
 		
+		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
+
+		//EXG Configuration
+//		exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
+//		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config1, 10);
+
+		
+		// Shimmer Name
+		for (int i = 0; i < infoMemLayout.lengthShimmerName; i++) {
+			if (i < mShimmerUserAssignedName.length()) {
+				mInfoMemBytes[infoMemLayout.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
+			}
+			else {
+				mInfoMemBytes[infoMemLayout.idxSDShimmerName + i] = (byte) 0xFF;
+			}
+		}
+		
+		// Experiment Name
+		for (int i = 0; i < infoMemLayout.lengthExperimentName; i++) {
+			if (i < mTrialName.length()) {
+				mInfoMemBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) mTrialName.charAt(i);
+			}
+			else {
+				mInfoMemBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) 0xFF;
+			}
+		}
+
 		//Configuration Time
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime0) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime1) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 
+		
+		//802.15.4 Radio config
 		byte[] radioConfig = getRadioConfigByteArray();
 		System.arraycopy(radioConfig, 0, mInfoMemBytes, infoMemLayout.idxSrRadioConfigStart, radioConfig.length);
 
-//		mInfoMemBytes[infoMemLayout.idxSrRadioChannel] = (byte) mRadioChannel;
-//		mInfoMemBytes[infoMemLayout.idxSrRadioGroupId] = (byte) ((mRadioGroupId >> 8) & 0xFF);
-//		mInfoMemBytes[infoMemLayout.idxSrRadioGroupId+1] = (byte) (mRadioGroupId & 0xFF);
-//		mInfoMemBytes[infoMemLayout.idxSrRadioMyAddress] = (byte) ((mRadioMyAddress >> 8) & 0xFF);
-//		mInfoMemBytes[infoMemLayout.idxSrRadioMyAddress+1] = (byte) (mRadioMyAddress & 0xFF);
-//		mInfoMemBytes[infoMemLayout.idxSrRadioResponseWindow] = (byte) ((mRadioResponseWindow >> 8) & 0xFF);
-//		mInfoMemBytes[infoMemLayout.idxSrRadioResponseWindow+1] = (byte) (mRadioResponseWindow & 0xFF);
-		
 		return mInfoMemBytes;
 	}
 
@@ -481,6 +544,16 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 
 
+	private void consolePrintLn(String message) {
+		if(mVerboseMode) {
+			Calendar rightNow = Calendar.getInstance();
+			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+			System.out.println(rightNowString + " " + mParentClassName + ": " + getMacId() + " " + message);
+		}		
+	}
 	
 
 

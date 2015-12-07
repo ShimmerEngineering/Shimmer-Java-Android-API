@@ -103,12 +103,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
 	public InfoMemLayout mInfoMemLayout = new InfoMemLayoutShimmer3(); //default
-	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
+	protected byte[] mInfoMemBytes = mInfoMemLayout.createEmptyInfoMemByteArray(512);
 	
 	protected String mTrialName = "";
 	protected long mConfigTime; //this is in milliseconds, utc
 
-	protected long mPacketLossCount=0;
+	public long mPacketReceivedCount=0; 	//Used by ShimmerGQ
+	protected long mPacketLossCount=0;		//Used by ShimmerBluetooth
 	protected double mPacketReceptionRate=100;
 	protected double mPacketReceptionRateCurrent=100;
 	
@@ -605,21 +606,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		return false;
-	}
-	
-	/**
-	 * Creates an empty byte array for the purposes of generating the
-	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
-	 * 
-	 * @param size the size of the byte array to create.
-	 * @return byte array
-	 */
-	public byte[] createEmptyInfoMemByteArray(int size) {
-		byte[] newArray = new byte[size];
-		for(byte b:newArray) {
-			b = (byte)0xFF;
-		}
-		return newArray;
 	}
 	
 	 /**

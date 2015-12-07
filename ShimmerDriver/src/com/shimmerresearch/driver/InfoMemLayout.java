@@ -39,34 +39,7 @@ public abstract class InfoMemLayout implements Serializable {
 //	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE;
 	
 	
-
 	public abstract int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease);
-//	public static int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
-//		
-//		//TODO: should add full FW version checking here to support different size InfoMems in the future
-////		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,
-////				FW_ID.SDLOG, 0, 10, 1)) {
-////			return 512;
-////		}
-//		
-////		if(firmwareIdentifier == FW_ID.SDLOG) {
-////			return 384;
-////		}
-////		else if(firmwareIdentifier == FW_ID.BTSTREAM) {
-////			return 128;
-////		}
-////		else if(firmwareIdentifier == FW_ID.LOGANDSTREAM) {
-////			return 384;
-////		}
-////		else if(firmwareIdentifier == FW_ID.GQ_GSR) {
-////			return 128;
-////		}
-////		else {
-////			return 512; 
-////		}
-//		
-//		return 384;
-//	}
 
 	
 	public int calculateInfoMemByteLength(){
@@ -83,4 +56,28 @@ public abstract class InfoMemLayout implements Serializable {
 		return false;
 	}
 
+	/**
+	 * Creates an empty byte array for the purposes of generating the
+	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
+	 * 
+	 * @return byte array
+	 */
+	public byte[] createEmptyInfoMemByteArray() {
+		return createEmptyInfoMemByteArray(calculateInfoMemByteLength());
+	}
+	
+	/**
+	 * Creates an empty byte array for the purposes of generating the
+	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
+	 * 
+	 * @param size the size of the byte array to create.
+	 * @return byte array
+	 */
+	public byte[] createEmptyInfoMemByteArray(int size) {
+		byte[] newArray = new byte[size];
+		for(byte b:newArray) {
+			b = (byte)0xFF;
+		}
+		return newArray;
+	}
 }

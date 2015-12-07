@@ -128,6 +128,12 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	public int idxDerivedSensors1 =		    		0;
 	public int idxDerivedSensors2 =		    		0;
 	
+	//			mDerivedSensors = 1 (Resistance Amp - BAMP)
+	//			mDerivedSensors = 2 (Skin Temp - BAMP)
+	//			mDerivedSensors = 4 (PPG - GSR+)
+	//			mDerivedSensors = 8 (PPG1 - P3D)
+	//			mDerivedSensors = 16 (PPG2 - P3D)
+	
 	public int idxConfigSetupByte4 =              	128+0;
 	public int idxConfigSetupByte5 =              	128+1;
 	public int idxSensors3 =                        128+2;

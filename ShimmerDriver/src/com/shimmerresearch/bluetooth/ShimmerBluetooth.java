@@ -2197,6 +2197,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//region --------- TIMERS --------- 
 	
+	public void stopAllTimers(){
+		stopTimerReadStatus();
+		stopTimerCheckAlive();
+		stopTimerCheckForAckOrResp();
+		stopTimerReadBattStatus();
+	}
+	
 	public void stopTimerCheckForAckOrResp(){
 		//Terminate the timer thread
 		if(mTimerCheckForAckOrResp!=null){
@@ -2404,13 +2411,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mTimerCheckAlive.purge();
 			mTimerCheckAlive = null;
 		}
-	}
-	
-	public void stopAllTimers(){
-		stopTimerReadStatus();
-		stopTimerCheckAlive();
-		stopTimerCheckForAckOrResp();
-		stopTimerReadBattStatus();
 	}
 	
 	/**
