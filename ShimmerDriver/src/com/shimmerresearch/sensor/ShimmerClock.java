@@ -24,7 +24,7 @@ public class ShimmerClock extends AbstractSensor {
 	public ShimmerClock(ShimmerVerObject svo) {
 		super(svo);
 		// TODO Auto-generated constructor stub
-		mSensorName = SENSOR_NAMES.CLOCK;
+		mSensorName = SENSORS.CLOCK.toString();
 		
 	}
 

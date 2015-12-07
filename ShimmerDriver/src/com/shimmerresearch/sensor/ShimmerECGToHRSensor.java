@@ -28,7 +28,7 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 
 	public ShimmerECGToHRSensor(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSOR_NAMES.ECG_TO_HR;
+		mSensorName = SENSORS.ECG_TO_HR.toString();
 
 	}
 	
