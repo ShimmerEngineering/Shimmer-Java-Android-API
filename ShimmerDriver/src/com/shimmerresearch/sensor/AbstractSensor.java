@@ -22,11 +22,42 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractSensor implements Serializable{
 	
-	public static class SENSOR_NAMES{
+	/*public static class SENSOR_NAMES{
 		public static final String GSR = "GSR";
 		public static final String ECG_TO_HR = "ECG to Heart Rate";
 		public static final String CLOCK = "Clock";
 		public static final String SYSTEM_TIMESTAMP = Configuration.Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT;
+	}*/
+	
+	public enum SENSORS{
+		GSR("GSR",1),
+		ECG_TO_HR("ECG to Heart Rate",2),
+		CLOCK("Clock",3),
+		SYSTEM_TIMESTAMP("Clock",4);
+		
+	    private final String text;
+	    private final int sensornum;
+
+	    /**
+	     * @param text
+	     */
+	    private SENSORS(final String text,int sensornum) {
+	        this.text = text;
+	        this.sensornum = sensornum;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	    
+	    public int toInt() {
+	        return sensornum;
+	    }
+	    
 	}
 	
 	public SensorEnabledDetails mSensorEnabledDetails;

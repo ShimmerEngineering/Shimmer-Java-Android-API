@@ -22,7 +22,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
-import com.shimmerresearch.sensor.AbstractSensor.SENSOR_NAMES;
 import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
@@ -40,7 +39,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ
 	 * 
 	 */
-	protected LinkedHashMap<String,AbstractSensor> mMapOfSensors = new LinkedHashMap<String,AbstractSensor>();
+	protected LinkedHashMap<Integer,AbstractSensor> mMapOfSensors = new LinkedHashMap<Integer,AbstractSensor>();
 //	protected HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapOfCommTypeToSensorMaps = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
 
 	
@@ -792,13 +791,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	// ----------------- Overrides from ShimmerDevice end -------------
 
-	public LinkedHashMap<String, AbstractSensor> getMapOfSensors() {
+	public LinkedHashMap<Integer, AbstractSensor> getMapOfSensors() {
 		return mMapOfSensors;
 	}
 	
-	public LinkedHashMap<String, AbstractSensor> getMapOfSensorsForCommType(COMMUNICATION_TYPE commType) {
-		LinkedHashMap<String, AbstractSensor> mapOfSensorsForCommType = new LinkedHashMap<String, AbstractSensor>(); 
-		for(String abstractSensorKey:mMapOfSensors.keySet()){
+	public LinkedHashMap<Integer, AbstractSensor> getMapOfSensorsForCommType(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<Integer, AbstractSensor> mapOfSensorsForCommType = new LinkedHashMap<Integer, AbstractSensor>(); 
+		for(int abstractSensorKey:mMapOfSensors.keySet()){
 			AbstractSensor abstractSensor = mMapOfSensors.get(abstractSensorKey);
 			if(abstractSensor.mMapOfCommTypeToSensorMap.containsKey(commType)){
 				mapOfSensorsForCommType.put(abstractSensorKey, abstractSensor);
@@ -820,9 +819,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 
-	public LinkedHashMap<String, LinkedHashMap<Integer, ChannelDetails>> getMapOfChannelsPerSensorForCommType(COMMUNICATION_TYPE commType) {
-		LinkedHashMap<String,LinkedHashMap<Integer,ChannelDetails>> mapOfChannelsPerSensorForCommType = new LinkedHashMap<String,LinkedHashMap<Integer,ChannelDetails>>();
-		for(String abstractSensorKey:mMapOfSensors.keySet()){
+	public LinkedHashMap<Integer, LinkedHashMap<Integer, ChannelDetails>> getMapOfChannelsPerSensorForCommType(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<Integer,LinkedHashMap<Integer,ChannelDetails>> mapOfChannelsPerSensorForCommType = new LinkedHashMap<Integer,LinkedHashMap<Integer,ChannelDetails>>();
+		for(int abstractSensorKey:mMapOfSensors.keySet()){
 			AbstractSensor abstractSensor = mMapOfSensors.get(abstractSensorKey);
 			LinkedHashMap<Integer, ChannelDetails> mapOfCommTypetoChannel = abstractSensor.mMapOfCommTypetoChannel.get(commType);
 			if(mapOfCommTypetoChannel!=null){

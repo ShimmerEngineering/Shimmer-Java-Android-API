@@ -27,7 +27,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 	public SensorSystemTimeStamp(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSOR_NAMES.SYSTEM_TIMESTAMP;
+		mSensorName = SENSORS.SYSTEM_TIMESTAMP.toString();
 	}
 
 	

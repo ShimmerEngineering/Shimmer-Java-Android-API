@@ -9,7 +9,7 @@ public class TestSensorParsing {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
+		/*
 		ShimmerVerObject svo = new ShimmerVerObject();
 		ShimmerGQ_802154 shimmer = new ShimmerGQ_802154(svo);
 		
@@ -19,6 +19,14 @@ public class TestSensorParsing {
 		
 		byte[] packetByteArray2 = {3,4,5,6};//1descip+2gsr+1hr;
 		ojc = (ObjectCluster) shimmer.buildMsg(packetByteArray2, COMMUNICATION_TYPE.IEEE802154);
+		*/
+		
+		System.out.println(AbstractSensor.SENSORS.ECG_TO_HR.toInt() + AbstractSensor.SENSORS.ECG_TO_HR.toString());
+		System.out.println(AbstractSensor.SENSORS.GSR.toInt() + AbstractSensor.SENSORS.GSR.toString());
 	}
 
+	
+	
+	
+	
 }

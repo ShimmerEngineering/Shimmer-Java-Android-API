@@ -37,7 +37,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 	public ShimmerGSRSensor(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSOR_NAMES.GSR;
+		mSensorName = SENSORS.GSR.toString();
 	}
 
 	@Override
