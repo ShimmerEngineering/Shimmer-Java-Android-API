@@ -23,10 +23,5 @@ public class TestSensorParsing {
 		
 		System.out.println(AbstractSensor.SENSORS.ECG_TO_HR.ordinal() + AbstractSensor.SENSORS.ECG_TO_HR.toString());
 		System.out.println(AbstractSensor.SENSORS.GSR.ordinal() + AbstractSensor.SENSORS.GSR.toString());
-	}
-
-	
-	
-	
-	
+	}	
 }
