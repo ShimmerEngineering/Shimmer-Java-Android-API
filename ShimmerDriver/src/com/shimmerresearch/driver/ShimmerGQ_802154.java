@@ -29,7 +29,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
-
 import com.shimmerresearch.sensor.SensorSystemTimeStamp;
 import com.shimmerresearch.sensor.ShimmerClock;
 import com.shimmerresearch.sensor.ShimmerECGToHRSensor;
@@ -58,7 +57,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public int mRadioMyAddress = VARIABLE_NOT_SET;
 	public int mRadioResponseWindow = VARIABLE_NOT_SET; 
 
-	public String mSpanId = "N/A";
+	public String mSpanId = "";
 	
 	private boolean mVerboseMode = true;
 	private String mParentClassName = "ShimmerGQ_802154";
@@ -71,8 +70,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	//TODO move to Sensor classes
 	int mGSRRange = 4; 					// 4 = Auto
 	int mInternalExpPower = 1;			// Enable external power for EXG + GSR
-
-	
 
 	
 	 //just use fillers for now
@@ -554,6 +551,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
 			System.out.println(rightNowString + " " + mParentClassName + ": " + getMacId() + " " + message);
 		}		
+	}
+
+	public void pairToSpan(String spanId) {
+		setConnected(true);
+		mSpanId = spanId;
 	}
 	
 

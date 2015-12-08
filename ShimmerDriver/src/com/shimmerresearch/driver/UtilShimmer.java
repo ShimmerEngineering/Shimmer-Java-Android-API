@@ -222,7 +222,23 @@ public class UtilShimmer implements Serializable {
 	    returnString = "[" + returnString + "]";
 	    return returnString;
 	}
-	
+
+	public static byte[] intToByteArrayLsb(int intToUse, int numBytes) {
+		byte[] buffer = new byte[numBytes]; 
+		for(int i=0;i<numBytes;i++) {
+			buffer[i] = (byte) (intToUse >> (i*8));
+		}
+	    return buffer;
+	}
+
+	public static byte[] intToByteArrayMsb(int intToUse, int numBytes) {
+		byte[] buffer = new byte[numBytes]; 
+		for(int i=0;i<numBytes;i++) {
+			buffer[i] = (byte) (intToUse >> ((numBytes-1-i)*8));
+		}
+	    return buffer;
+	}
+
 	public static String bytesToHexStringWithSpacesFormatted(byte[] bytes) {
 		if(bytes!=null){
 			int charCntPerByte = 5;
