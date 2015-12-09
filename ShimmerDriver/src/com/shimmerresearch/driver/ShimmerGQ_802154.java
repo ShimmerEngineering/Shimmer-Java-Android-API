@@ -210,6 +210,15 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public double calculatePacketLoss(long timeDifference, double samplingRate){
 		Long numberofExpectedPackets = (long) ((double)((timeDifference/1000)*samplingRate));
 		mPacketReceptionRateCurrent = (double)((mPacketReceivedCount)/(double)numberofExpectedPackets)*100;
+		
+		//Nudge
+		if(mPacketReceptionRateCurrent>100.0) {
+			mPacketReceptionRateCurrent = 100.0;
+		}
+		else if(mPacketReceptionRateCurrent<0.0) {
+			mPacketReceptionRateCurrent = 0.0;
+		}
+		
 		return mPacketReceptionRateCurrent;
 	}
 	
@@ -557,7 +566,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		setConnected(true);
 		mSpanId = spanId;
 	}
+
+	public void setPacketReceivedCount(int i) {
+		mPacketReceivedCount = i;
+	}
 	
+	public void incremenetPacketReceivedCount() {
+		mPacketReceivedCount += 1;
+	}
 
 
 }

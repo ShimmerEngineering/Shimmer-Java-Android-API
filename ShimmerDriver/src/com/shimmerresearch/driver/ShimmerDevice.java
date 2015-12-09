@@ -430,6 +430,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isSensing(){
 		return (mIsSensing || mIsSDLogging || mIsStreaming);
 	}
+	
+	public void setSensing(boolean state) {
+		mIsSensing = state;
+	}
+	
+	public boolean isSDLogging(){
+		return mIsSDLogging;
+	}	
+
 
 	/**
 	 * @param isInitialized the mSuccessfullyInitialized to set
