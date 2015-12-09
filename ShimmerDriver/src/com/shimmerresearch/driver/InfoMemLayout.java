@@ -73,7 +73,7 @@ public abstract class InfoMemLayout implements Serializable {
 	 * @param size the size of the byte array to create.
 	 * @return byte array
 	 */
-	public byte[] createEmptyInfoMemByteArray(int size) {
+	public static byte[] createEmptyInfoMemByteArray(int size) {
 		byte[] newArray = new byte[size];
 		for(byte b:newArray) {
 			b = (byte)0xFF;

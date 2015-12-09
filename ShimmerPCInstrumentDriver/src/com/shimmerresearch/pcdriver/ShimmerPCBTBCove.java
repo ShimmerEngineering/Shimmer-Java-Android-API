@@ -72,7 +72,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 
 
 public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
-			/**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7067087273053149229L;
@@ -576,6 +576,12 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void dockedStateChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createInfoMemLayout() {
 		// TODO Auto-generated method stub
 		
 	}

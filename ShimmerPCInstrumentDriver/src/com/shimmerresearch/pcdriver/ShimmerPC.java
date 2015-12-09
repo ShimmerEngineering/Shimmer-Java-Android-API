@@ -73,6 +73,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -765,6 +766,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	protected void dockedStateChange() {
 		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, getBluetoothAddress(), mComPort);
 		sendCallBackMsg(MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, callBackObject);
+	}
+
+	@Override
+	public void createInfoMemLayout() {
+		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
 }

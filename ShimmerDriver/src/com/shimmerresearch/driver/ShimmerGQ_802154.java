@@ -222,10 +222,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return mPacketReceptionRateCurrent;
 	}
 	
-	@Override
-	protected void createInfoMemLayout(){
-		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-	}
+//	@Override
+//	protected void createInfoMemLayout(){
+//		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+//	}
 
 	// ----------------- Local Sets/Gets End ----------------------------
 
@@ -575,5 +575,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mPacketReceivedCount += 1;
 	}
 
+	@Override
+	public void createInfoMemLayout() {
+		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+	}
 
 }

@@ -122,4 +122,10 @@ public class ShimmerShell extends ShimmerDevice {
 		return null;
 	}
 
+	@Override
+	public void createInfoMemLayout() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

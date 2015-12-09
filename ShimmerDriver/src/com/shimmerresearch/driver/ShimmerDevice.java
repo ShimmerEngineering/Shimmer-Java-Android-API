@@ -101,8 +101,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mShimmerRealTimeClockConFigTime = 0;
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
-	public InfoMemLayout mInfoMemLayout = new InfoMemLayoutShimmer3(); //default
-	protected byte[] mInfoMemBytes = mInfoMemLayout.createEmptyInfoMemByteArray(512);
+	protected InfoMemLayout mInfoMemLayout;// = new InfoMemLayoutShimmer3(); //default
+	protected byte[] mInfoMemBytes = InfoMemLayout.createEmptyInfoMemByteArray(512);
 	
 	protected String mTrialName = "";
 	protected long mConfigTime; //this is in milliseconds, utc
@@ -138,6 +138,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
 	
 	public abstract byte[] refreshShimmerInfoMemBytes();
+	public abstract void createInfoMemLayout();
+
 	/**Hash Map: Key integer, is to indicate the communication type, e.g. interpreting data via sd or bt might be different
 	 * 
 	 * Linked Hash Map :Integer is the index of where the sensor data for a particular sensor starts, String is the name of that particular sensor
@@ -245,6 +247,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
 			setDocked(false);
+			setFirstDockRead();
 			clearDockInfo();
 		}
 	}
@@ -616,6 +619,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
+	public InfoMemLayout getInfoMemLayout(){
+		createInfoMemLayoutObjectIfNeeded();
+		return mInfoMemLayout;
+	}
+	
 	 /**
 	 * @return the InfoMem byte size. HW and FW version needs to be set first for this to operate correctly.
 	 */
@@ -638,10 +646,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(create){
 			createInfoMemLayout();
 		}
-	}
-	
-	protected void createInfoMemLayout(){
-		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 	
 	protected void parseDockType(){
