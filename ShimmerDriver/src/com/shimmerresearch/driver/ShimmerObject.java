@@ -7879,85 +7879,88 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			} 
 			else if (getHardwareVersion() == HW_ID.SHIMMER_3) {
-				createInfoMemLayoutObjectIfNeeded();
-				InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mInfoMemLayout;
+//				createInfoMemLayoutObjectIfNeeded();
+				InfoMemLayout infoMemLayout = getInfoMemLayout();
+				if(infoMemLayout!=null){
+					InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3) infoMemLayout;
 
-				Map<Integer,SensorDetails> sensorMapRef = Configuration.Shimmer3.mSensorMapRef;
-				for(Integer key:sensorMapRef.keySet()){
-					
-					int derivedChannelBitmapID = 0;
-					if(key==Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP){
-						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelResAmp;
-					}
-					else if(key==Configuration.Shimmer3.SensorMapKey.SKIN_TEMPERATURE_PROBE){
-						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelSkinTemp;
-					}
-					else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A12){
-						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg_ADC12ADC13;
-					}
-					else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A13){
-						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg_ADC12ADC13;
-					}
-					else if(key==Configuration.Shimmer3.SensorMapKey.PPG1_A12){
-						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg1_ADC12ADC13;
-					}
-					else if(key==Configuration.Shimmer3.SensorMapKey.PPG1_A13){
-						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg1_ADC12ADC13;
-					}
-					else if(key==Configuration.Shimmer3.SensorMapKey.PPG2_A1){
-						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
-					}
-					else if(key==Configuration.Shimmer3.SensorMapKey.PPG2_A14){
-						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
-					}
+					Map<Integer,SensorDetails> sensorMapRef = Configuration.Shimmer3.mSensorMapRef;
+					for(Integer key:sensorMapRef.keySet()){
 						
-					mSensorEnabledMap.put(key, new SensorEnabledDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
-					
-					
-    				//Special cases for ExG 24-bit vs. 16-bit
-					if((key==Configuration.Shimmer3.SensorMapKey.ECG)
-							||(key==Configuration.Shimmer3.SensorMapKey.EMG)
-							||(key==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
-							||(key==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)
-							||(key==Configuration.Shimmer3.SensorMapKey.EXG_TEST)){
+						int derivedChannelBitmapID = 0;
+						if(key==Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP){
+							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelResAmp;
+						}
+						else if(key==Configuration.Shimmer3.SensorMapKey.SKIN_TEMPERATURE_PROBE){
+							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelSkinTemp;
+						}
+						else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A12){
+							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg_ADC12ADC13;
+						}
+						else if(key==Configuration.Shimmer3.SensorMapKey.PPG_A13){
+							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg_ADC12ADC13;
+						}
+						else if(key==Configuration.Shimmer3.SensorMapKey.PPG1_A12){
+							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg1_ADC12ADC13;
+						}
+						else if(key==Configuration.Shimmer3.SensorMapKey.PPG1_A13){
+							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg1_ADC12ADC13;
+						}
+						else if(key==Configuration.Shimmer3.SensorMapKey.PPG2_A1){
+							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
+						}
+						else if(key==Configuration.Shimmer3.SensorMapKey.PPG2_A14){
+							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
+						}
+							
+						mSensorEnabledMap.put(key, new SensorEnabledDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
+						
+						
+	    				//Special cases for ExG 24-bit vs. 16-bit
+						if((key==Configuration.Shimmer3.SensorMapKey.ECG)
+								||(key==Configuration.Shimmer3.SensorMapKey.EMG)
+								||(key==Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)
+								||(key==Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM)
+								||(key==Configuration.Shimmer3.SensorMapKey.EXG_TEST)){
 
-//						List<Object> objs;
-						Iterator<String> i = mSensorEnabledMap.get(key).mListOfChannels.iterator();
-						while (i.hasNext()) {
-						   String channelName = i.next();
-						   
-						   		//System.out.println("getExGResolution(): " +getExGResolution());
-						   		
-			    				if((getExGResolution()==1)
-			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
-				    				||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
-			    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
+//							List<Object> objs;
+							Iterator<String> i = mSensorEnabledMap.get(key).mListOfChannels.iterator();
+							while (i.hasNext()) {
+							   String channelName = i.next();
+							   
+							   		//System.out.println("getExGResolution(): " +getExGResolution());
+							   		
+				    				if((getExGResolution()==1)
+				    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
+					    				||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
+				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
+										    i.remove();
+									}
+				    				else if((getExGResolution()==0)
+				    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
+					    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
 									    i.remove();
-								}
-			    				else if((getExGResolution()==0)
-			    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
-				    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
-								    i.remove();
-								}
+									}
 
-					   	}
+						   	}
+						}					
 					}
 					
 				}
@@ -11122,7 +11125,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void setShimmerVersionObject(ShimmerVerObject hwfw) {
 		super.setShimmerVersionObject(hwfw);
 		
-		createInfoMemLayoutObjectIfNeeded();
+//		createInfoMemLayoutObjectIfNeeded();
 		
 		//Once the version is known update settings accordingly 
 		if (getFirmwareVersionCode()>=6){
