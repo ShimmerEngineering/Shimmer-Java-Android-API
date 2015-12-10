@@ -120,12 +120,12 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 //	public int idxMPU9150GyroCalibration =        	52;
 //	public int idxLSM303DLHCMagCalibration =      	73;
 //	public int idxLSM303DLHCAccelCalibration =    	94; //94->114
-//
-//	// Derived Channels - used by SW not FW
-//	public int idxDerivedSensors0 =		    		0;
-//	public int idxDerivedSensors1 =		    		0;
-//	public int idxDerivedSensors2 =		    		0;
-//	
+
+	// Derived Channels - used by SW not FW
+	public int idxDerivedSensors0 =		    		31;
+	public int idxDerivedSensors1 =		    		32;
+	public int idxDerivedSensors2 =		    		33;
+	
 //	public int idxConfigSetupByte4 =              	128+0;
 //	public int idxConfigSetupByte5 =              	128+1;
 //	public int idxSensors3 =                        128+2;
@@ -199,13 +199,13 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 	public int bitShiftEXPPowerEnable =                 0;
 	public int maskEXPPowerEnable =                     0x01;
 //	//Unused bits 3-0
-//	
-//	// Derived Channels - used by SW not FW
-//	public int maskDerivedChannelsByte =				0xFF;
-//	public int byteShiftDerivedSensors0 =				0;
-//	public int byteShiftDerivedSensors1 =				8;
-//	public int byteShiftDerivedSensors2 =				16;
-//	
+	
+	// Derived Channels - used by SW not FW
+	public int maskDerivedChannelsByte =				0xFF;
+	public int byteShiftDerivedSensors0 =				0;
+	public int byteShiftDerivedSensors1 =				8;
+	public int byteShiftDerivedSensors2 =				16;
+	
 ////	public int maskDerivedChannel = 					0x01;
 ////	public int bitShiftDerivedChannelResAmp = 			0;
 ////	public int bitShiftDerivedChannelSkinTemp =			1;
