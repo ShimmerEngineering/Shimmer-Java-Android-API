@@ -66,6 +66,9 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 					
 				} else if (comType == COMMUNICATION_TYPE.DOCK){
 					
+				} else if (comType == COMMUNICATION_TYPE.CLASS){
+					//this generates the infomem
+					
 				}
 			break;
 		}
@@ -221,6 +224,12 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		//the following is the new linear method see user GSR user guide for further details
 		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
 		return gsrCalibratedData;  
+	}
+
+	@Override
+	public SensorInfoMem getInfoMem(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
