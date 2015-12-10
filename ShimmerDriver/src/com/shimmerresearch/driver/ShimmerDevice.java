@@ -20,7 +20,6 @@ import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 
@@ -107,10 +106,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected String mTrialName = "";
 	protected long mConfigTime; //this is in milliseconds, utc
 
-	public long mPacketReceivedCount=0; 	//Used by ShimmerGQ
-	protected long mPacketLossCount=0;		//Used by ShimmerBluetooth
-	protected double mPacketReceptionRate=100;
-	protected double mPacketReceptionRateCurrent=100;
+	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
+	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
+	protected double mPacketReceptionRate = 100;
+	protected double mPacketReceptionRateCurrent = 100;
 	
 	// --------------- Abstract Methods Start --------------------------
 	
