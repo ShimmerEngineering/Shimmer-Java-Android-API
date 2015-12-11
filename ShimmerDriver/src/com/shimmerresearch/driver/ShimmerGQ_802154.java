@@ -620,7 +620,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mConfigValues.add((double) 0);
 		mConfigValues.add((double) 0);
 		mConfigValues.add((double) 0);
-		mConfigValues.add((double) mGSRRange);
+		AbstractSensor sensorGsr = mMapOfSensors.get(SENSORS.GSR.ordinal()); 
+		if(sensorGsr!=null){
+			mConfigValues.add((double) ((ShimmerGSRSensor)sensorGsr).mGSRRange);
+		}
+		else {
+			mConfigValues.add((double) 0);
+		}
 		mConfigValues.add((double) mInternalExpPower);
 		mConfigValues.add((double) 0);
 		mConfigValues.add((double) 0);
