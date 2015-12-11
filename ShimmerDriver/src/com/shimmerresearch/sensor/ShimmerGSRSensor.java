@@ -29,6 +29,14 @@ import com.shimmerresearch.driver.ShimmerObject;
 public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	
 	private int mGSRRange;
+	/**
+	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
+	 */
+	public long mSensorBitmapIDStreaming = 0x04<<(0*8);
+	/**
+	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
+	 */
+	public long mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
 
 	/**
 	 * 

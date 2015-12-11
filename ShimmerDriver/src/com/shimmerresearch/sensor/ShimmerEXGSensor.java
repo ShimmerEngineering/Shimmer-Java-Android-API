@@ -56,6 +56,15 @@ public class ShimmerEXGSensor extends AbstractSensor{
 	protected int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
 	protected int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
 	
+	/**
+	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
+	 */
+	public long mSensorBitmapIDStreaming = 0;
+	/**
+	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
+	 */
+	public long mSensorBitmapIDSDLogHeader =  0;
+	
 	public ShimmerEXGSensor(ShimmerVerObject svo) {
 		super(svo);
 		// TODO Auto-generated constructor stub
