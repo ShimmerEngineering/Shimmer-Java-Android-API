@@ -1,8 +1,10 @@
 package com.shimmerresearch.sensor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -18,9 +20,38 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractSensor implements Serializable{
+	
+	/**
+	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
+	 */
+	public long mSensorBitmapIDStreaming = 0;
+	/**
+	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
+	 */
+	public long mSensorBitmapIDSDLogHeader = 0;
+	
+//	public long mDerivedSensorBitmapID = 0;
+	
+	public String mLabel = "";
+	public List<Integer> mListOfSensorMapKeysRequired = new ArrayList<Integer>();
+	public List<Integer> mListOfSensorMapKeysConflicting = new ArrayList<Integer>();
+	public boolean mIntExpBoardPowerRequired = false;
+	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
+	
+	//Testing for GQ
+	public String mHeaderFileLabel = "";
+	public int mHeaderByteMask = 0;
+	public int mNumChannels = 0;
+	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
+	public List<String> mListOfChannelsRef = new ArrayList<String>();
+	
+	public boolean mIsDummySensor = false;
+	
 	
 	/*public static class SENSOR_NAMES{
 		public static final String GSR = "GSR";
@@ -81,7 +112,11 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE comType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE comType);
 	public abstract Object processData(byte[] rawData, COMMUNICATION_TYPE comType,Object object);
-	
+	/** Different firmwares might have different infomem layouts
+	 * @param svo
+	 * @return
+	 */
+	public abstract SensorInfoMem getInfoMem(ShimmerVerObject svo);
 	
 	
 	/** To process data originating from the Shimmer device

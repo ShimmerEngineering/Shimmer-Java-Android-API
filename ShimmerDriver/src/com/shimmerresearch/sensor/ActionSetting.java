@@ -1,5 +1,7 @@
 package com.shimmerresearch.sensor;
 
+import java.util.List;
+
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_ACTION;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 
@@ -13,6 +15,7 @@ public class ActionSetting {
 	}
 	
 	public byte[] mActionByteArray;
-	
+	public List<byte[]> mActionListByteArray;
+	public int mIndex;
 	
 }

@@ -72,6 +72,13 @@ public class KionixKXRB52042 extends AbstractSensor{
 		return null;
 	}
 
+
+	@Override
+	public SensorInfoMem getInfoMem(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 

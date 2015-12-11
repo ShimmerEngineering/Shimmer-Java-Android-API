@@ -129,6 +129,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 	public abstract void checkConfigOptionValues(String stringKey);
 	public abstract void sensorAndConfigMapsCreate();
+	
 	/**
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
 	 */

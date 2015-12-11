@@ -29,6 +29,14 @@ import com.shimmerresearch.driver.ShimmerObject;
 public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	
 	public int mGSRRange = 4; 					// 4 = Auto
+	/**
+	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
+	 */
+	public long mSensorBitmapIDStreaming = 0x04<<(0*8);
+	/**
+	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
+	 */
+	public long mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
 
 	/**
 	 * 
@@ -65,6 +73,9 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				if (comType == COMMUNICATION_TYPE.BLUETOOTH){
 					
 				} else if (comType == COMMUNICATION_TYPE.DOCK){
+					
+				} else if (comType == COMMUNICATION_TYPE.CLASS){
+					//this generates the infomem
 					
 				}
 			break;
@@ -221,6 +232,12 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		//the following is the new linear method see user GSR user guide for further details
 		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
 		return gsrCalibratedData;  
+	}
+
+	@Override
+	public SensorInfoMem getInfoMem(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

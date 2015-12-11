@@ -133,6 +133,12 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 		return null;
 	}
 
+	@Override
+	public SensorInfoMem getInfoMem(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 	
