@@ -72,7 +72,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	long mDerivedSensors = SENSOR_ECG_TO_HR;
 	
 	//TODO move to Sensor classes
-	int mGSRRange = 4; 					// 4 = Auto
 	int mInternalExpPower = 1;			// Enable external power for EXG + GSR
 
 	
@@ -343,7 +342,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mInfoMemBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
 
 		// Configuration
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mGSRRange & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
+		AbstractSensor sensorGsr = mMapOfSensors.get(SENSORS.GSR.ordinal()); 
+		if(sensorGsr!=null){
+			mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((((ShimmerGSRSensor)sensorGsr).mGSRRange & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
+		}
 		
 		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
 

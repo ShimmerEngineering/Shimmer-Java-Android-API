@@ -28,7 +28,7 @@ import com.shimmerresearch.driver.ShimmerObject;
 
 public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	
-	private int mGSRRange;
+	public int mGSRRange = 4; 					// 4 = Auto
 
 	/**
 	 * 
