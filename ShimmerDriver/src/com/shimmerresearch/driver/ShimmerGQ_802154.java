@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -580,4 +581,258 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
+	
+	public List<Double> getShimmerConfigToInsertInDB(){
+		
+		List<Double> mConfigValues = new ArrayList<Double>();
+		//0-1 Byte = Sampling Rate
+		mConfigValues.add(mShimmerSamplingRate);
+		
+		//3-7 Byte = Sensors
+		mConfigValues.add((double) mEnabledSensors);
+		//40-71 Byte = Derived Sensors
+		mConfigValues.add((double) 0);
+		
+		//The Configuration byte index 8 - 19
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) mGSRRange);
+		mConfigValues.add((double) mInternalExpPower);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+//		mConfigValues[25] = mSyncWhenLogging; This is already inserted in the Trial table
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+//		mConfigValues[29] = mBroadcastInterval; This is already inserted in the Trial table
+		
+		//Firmware and Shimmer Parameters
+		mConfigValues.add((double) getHardwareVersion());
+//		mConfigValues[29] = mMyTrialID; 
+//		mConfigValues[30] = mNShimmer; This is already insrted in the Trial table
+		mConfigValues.add((double) getFirmwareIdentifier());
+		mConfigValues.add((double) getFirmwareVersionMajor());
+		mConfigValues.add((double) getFirmwareVersionMinor());
+		mConfigValues.add((double) getFirmwareVersionInternal());
+		
+		//Configuration Time
+		mConfigValues.add((double) 0);
+		
+		//RTC Difference
+		mConfigValues.add((double) 0);
+		
+		//EXG Configuration
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		
+//		mConfigValues[55] = sd.getEXG1RateSetting();
+//		mConfigValues[56] = getEXG1CH1GainSetting();
+//		mConfigValues[57] = getExg1CH1GainValue();
+//		mConfigValues[58] = getEXG1CH2GainSetting();
+//		mConfigValues[59] = getExg1CH2GainValue();
+//		mConfigValues[60] = getEXGReferenceElectrode();
+//		mConfigValues[61] = getEXG2RateSetting();
+//		mConfigValues[62] = getEXG2CH1GainSetting();
+//		mConfigValues[63] = getExg2CH1GainValue();
+//		mConfigValues[64] = getEXG2CH2GainSetting();
+//		mConfigValues[65] = getExg2CH2GainValue();
+
+		//Digital Accel Calibration Configuration
+		double[][] mOffsetVectorWRAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] mSensitivityMatrixWRAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] mAlignmentMatrixWRAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		mConfigValues.add(mOffsetVectorWRAccel[0][0]);
+		mConfigValues.add(mOffsetVectorWRAccel[1][0]);
+		mConfigValues.add(mOffsetVectorWRAccel[2][0]);
+		mConfigValues.add(mSensitivityMatrixWRAccel[0][0]);
+		mConfigValues.add(mSensitivityMatrixWRAccel[1][1]);
+		mConfigValues.add(mSensitivityMatrixWRAccel[2][2]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[0][0]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[0][1]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[0][2]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[1][0]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[1][1]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[1][2]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[2][0]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[2][1]);
+		mConfigValues.add(mAlignmentMatrixWRAccel[2][2]);
+
+		//Gyroscope Calibration Configuration
+		double[][] mOffsetVectorGyroscope = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] mSensitivityMatrixGyroscope = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] mAlignmentMatrixGyroscope = {{0,0,0},{0,0,0},{0,0,0}};
+		mConfigValues.add(mOffsetVectorGyroscope[0][0]);
+		mConfigValues.add(mOffsetVectorGyroscope[1][0]);
+		mConfigValues.add(mOffsetVectorGyroscope[2][0]);
+		mConfigValues.add(mSensitivityMatrixGyroscope[0][0]);
+		mConfigValues.add(mSensitivityMatrixGyroscope[1][1]);
+		mConfigValues.add(mSensitivityMatrixGyroscope[2][2]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[0][0]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[0][1]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[0][2]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[1][0]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[1][1]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[1][2]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[2][0]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[2][1]);
+		mConfigValues.add(mAlignmentMatrixGyroscope[2][2]);
+		
+		//Magnetometer Calibration Configuration
+		double[][] mOffsetVectorMagnetometer = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] mSensitivityMatrixMagnetometer = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] mAlignmentMatrixMagnetometer = {{0,0,0},{0,0,0},{0,0,0}};
+		mConfigValues.add(mOffsetVectorMagnetometer[0][0]);
+		mConfigValues.add(mOffsetVectorMagnetometer[1][0]);
+		mConfigValues.add(mOffsetVectorMagnetometer[2][0]);
+		mConfigValues.add(mSensitivityMatrixMagnetometer[0][0]);
+		mConfigValues.add(mSensitivityMatrixMagnetometer[1][1]);
+		mConfigValues.add(mSensitivityMatrixMagnetometer[2][2]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[0][0]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[0][1]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[0][2]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[1][0]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[1][1]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[1][2]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[2][0]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[2][1]);
+		mConfigValues.add(mAlignmentMatrixMagnetometer[2][2]);
+
+		//Analog Accel Calibration Configuration
+		double[][] mOffsetVectorAnalogAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] mSensitivityMatrixAnalogAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] mAlignmentMatrixAnalogAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		mConfigValues.add(mOffsetVectorAnalogAccel[0][0]);
+		mConfigValues.add(mOffsetVectorAnalogAccel[1][0]);
+		mConfigValues.add(mOffsetVectorAnalogAccel[2][0]);
+		mConfigValues.add(mSensitivityMatrixAnalogAccel[0][0]);
+		mConfigValues.add(mSensitivityMatrixAnalogAccel[1][1]);
+		mConfigValues.add(mSensitivityMatrixAnalogAccel[2][2]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[0][0]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[0][1]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[0][2]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[1][0]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[1][1]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[1][2]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[2][0]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[2][1]);
+		mConfigValues.add(mAlignmentMatrixAnalogAccel[2][2]);
+		
+		//PRESSURE (BMP180) CAL PARAMS
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+		mConfigValues.add((double) 0);
+
+		//MPL Accel Calibration Configuration
+		double[][] OffsetVectorMPLAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] SensitivityMatrixMPLAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] AlignmentMatrixMPLAccel = {{0,0,0},{0,0,0},{0,0,0}};
+		mConfigValues.add(OffsetVectorMPLAccel[0][0]);
+		mConfigValues.add(OffsetVectorMPLAccel[1][0]);
+		mConfigValues.add(OffsetVectorMPLAccel[2][0]);
+		mConfigValues.add(SensitivityMatrixMPLAccel[0][0]);
+		mConfigValues.add(SensitivityMatrixMPLAccel[1][1]);
+		mConfigValues.add(SensitivityMatrixMPLAccel[2][2]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[0][0]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[0][1]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[0][2]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[1][0]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[1][1]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[1][2]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[2][0]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[2][1]);
+		mConfigValues.add(AlignmentMatrixMPLAccel[2][2]);
+
+		//MPL Mag Calibration Configuration
+		double[][] OffsetVectorMPLMag = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] SensitivityMatrixMPLMag = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] AlignmentMatrixMPLMag = {{0,0,0},{0,0,0},{0,0,0}};
+		mConfigValues.add(OffsetVectorMPLMag[0][0]);
+		mConfigValues.add(OffsetVectorMPLMag[1][0]);
+		mConfigValues.add(OffsetVectorMPLMag[2][0]);
+		mConfigValues.add(SensitivityMatrixMPLMag[0][0]);
+		mConfigValues.add(SensitivityMatrixMPLMag[1][1]);
+		mConfigValues.add(SensitivityMatrixMPLMag[2][2]);
+		mConfigValues.add(AlignmentMatrixMPLMag[0][0]);
+		mConfigValues.add(AlignmentMatrixMPLMag[0][1]);
+		mConfigValues.add(AlignmentMatrixMPLMag[0][2]);
+		mConfigValues.add(AlignmentMatrixMPLMag[1][0]);
+		mConfigValues.add(AlignmentMatrixMPLMag[1][1]);
+		mConfigValues.add(AlignmentMatrixMPLMag[1][2]);
+		mConfigValues.add(AlignmentMatrixMPLMag[2][0]);
+		mConfigValues.add(AlignmentMatrixMPLMag[2][1]);
+		mConfigValues.add(AlignmentMatrixMPLMag[2][2]);
+		
+		//MPL Gyro Calibration Configuration
+		double[][] OffsetVectorMPLGyro = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] SensitivityMatrixMPLGyro = {{0,0,0},{0,0,0},{0,0,0}};
+		double[][] AlignmentMatrixMPLGyro = {{0,0,0},{0,0,0},{0,0,0}};
+		mConfigValues.add(OffsetVectorMPLGyro[0][0]);
+		mConfigValues.add(OffsetVectorMPLGyro[1][0]);
+		mConfigValues.add(OffsetVectorMPLGyro[2][0]);
+		mConfigValues.add(SensitivityMatrixMPLGyro[0][0]);
+		mConfigValues.add(SensitivityMatrixMPLGyro[1][1]);
+		mConfigValues.add(SensitivityMatrixMPLGyro[2][2]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[0][0]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[0][1]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[0][2]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[1][0]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[1][1]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[1][2]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[2][0]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[2][1]);
+		mConfigValues.add(AlignmentMatrixMPLGyro[2][2]);
+		
+		//Initial TimeStamp
+		mConfigValues.add((double) 0);
+		
+		//Bluetooth address
+//		mConfigValues[172] = getBluetoothAddress();
+		
+		return mConfigValues;
+
+	}
 }
