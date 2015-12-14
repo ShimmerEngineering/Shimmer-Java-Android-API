@@ -150,6 +150,7 @@ public class MsgDock {
 	
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
+
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
         aMap.put(MSG_ID_UNKNOWN, "MSG_ID_UNKNOWN");

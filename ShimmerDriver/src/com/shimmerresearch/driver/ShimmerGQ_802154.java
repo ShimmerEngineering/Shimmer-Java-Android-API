@@ -336,6 +336,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
 		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
 
+		//TODO loop through mapOfSensors
 		// Sensors
 //		refreshEnabledSensorsFromSensorMap();
 		mInfoMemBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
@@ -360,6 +361,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config1, 10);
 		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config2, 10);
 		
+		//TODO loop through mapOfSensors
 		// Derived Sensors
 		mInfoMemBytes[infoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors0) & infoMemLayout.maskDerivedChannelsByte);
 		mInfoMemBytes[infoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors1) & infoMemLayout.maskDerivedChannelsByte);
