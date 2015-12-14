@@ -680,6 +680,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		ojc.createArrayData(getNumberOfEnabledChannels(commType));
 //		ojc.mMyName = mUniqueID;
 		ojc.mMyName = mShimmerUserAssignedName;
+		ojc.mBluetoothAddress = mMacIdFromUart;
 		int index=0;
 		for (AbstractSensor sensor:mMapOfSensors.values()){
 			int length = sensor.getExpectedPacketByteArray(commType);

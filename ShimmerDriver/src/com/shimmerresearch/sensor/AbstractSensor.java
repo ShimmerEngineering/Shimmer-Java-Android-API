@@ -50,6 +50,7 @@ public abstract class AbstractSensor implements Serializable{
 	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
 	public List<String> mListOfChannelsRef = new ArrayList<String>();
 	
+	public boolean mIsEnabled = true;
 	public boolean mIsDummySensor = false;
 	
 	
