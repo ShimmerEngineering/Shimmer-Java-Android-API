@@ -65,7 +65,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public List<ShimmerLogDetails> mListofLogs = new ArrayList<ShimmerLogDetails>();
 	
-	public boolean mFirstSdAccess = true;
 	public String mDockID = DEFAULT_DOCKID;
 	public DEVICE_TYPE mDockType = DEVICE_TYPE.UNKOWN;
 	public int mSlotNumber = DEFAULT_SLOTNUMBER;
@@ -75,6 +74,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean mConfigurationReadSuccess = false;
 	public boolean mReadDaughterIDSuccess = false;
 	public boolean writeRealWorldClockFromPcTimeSuccess = false;
+	public boolean mFirstSdAccess = true;
+	public boolean mReadSdAccessFail = false;
 	
 	protected boolean mIsConnected = false;
 	protected boolean mIsSensing = false;
@@ -742,6 +743,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mReadHwFwSuccess = false;
 		mReadDaughterIDSuccess = false;
 		writeRealWorldClockFromPcTimeSuccess = false;
+		mReadSdAccessFail = false;
 	}
 	
 //	/** MN: Test code
