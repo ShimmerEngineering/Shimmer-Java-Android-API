@@ -512,4 +512,16 @@ public class UtilShimmer implements Serializable {
         }
         return new ArrayList<Double>(sortedMap.keySet());
     }
+
+	public static boolean isValidMac(String mac) {
+		if(mac==null){
+			return false;
+		}
+
+		if(mac.equals("FFFFFFFFFFFF") || mac.equals("000000000000")){
+			return false;
+		}
+		
+		return true;
+	}
 }

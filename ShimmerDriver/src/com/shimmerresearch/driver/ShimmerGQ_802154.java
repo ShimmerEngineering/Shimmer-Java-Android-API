@@ -581,6 +581,29 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/**
+	 * @return the MAC address from any source available
+	 */
+	@Override
+	public String getMacId() {
+//		if(!mMacIdFromUart.isEmpty()){
+			return mMacIdFromUart; 
+//		}
+//		else {
+//			if(!mMacIdFromInfoMem.isEmpty()){
+//				return mMacIdFromInfoMem; 
+//			}
+//			else {
+//				if(!mMacIdFromInfoMem.isEmpty()){
+//					return mMacIdFromInfoMem; 
+//				}
+//				else {
+//					return mMyBluetoothAddress; 
+//				}
+//			}
+//		}
+	}
 
 
 

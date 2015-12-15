@@ -3943,7 +3943,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	 public void enableDefaultECGConfiguration() {
 		 if(getHardwareVersion()==3){
-			setDefaultECGConfiguration();
+			setDefaultECGConfiguration(mShimmerSamplingRate);
 			writeEXGConfiguration();
 //			writeEXGConfiguration(mEXG1RegisterArray,1);
 //			writeEXGConfiguration(mEXG2RegisterArray,2);
@@ -3957,7 +3957,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enableDefaultEMGConfiguration(){
 		if(getHardwareVersion()==3){
-			setDefaultEMGConfiguration();
+			setDefaultEMGConfiguration(mShimmerSamplingRate);
 			writeEXGConfiguration();
 //			writeEXGConfiguration(mEXG1RegisterArray,1);
 //			writeEXGConfiguration(mEXG2RegisterArray,2);
@@ -3971,7 +3971,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enableEXGTestSignal(){
 		if(getHardwareVersion()==3){
-			setEXGTestSignal();
+			setEXGTestSignal(mShimmerSamplingRate);
 			writeEXGConfiguration();
 //			writeEXGConfiguration(mEXG1RegisterArray,1);
 //			writeEXGConfiguration(mEXG2RegisterArray,2);

@@ -717,6 +717,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return total;
 	}
 	
+	/**
+	 * @return the Parsed MAC address from any source available
+	 */
+	public String getMacIdParsed() {
+		String macToUse = getMacId();
+		if(macToUse.length()>=12) {
+			return macToUse.substring(8, 12);
+		}
+		return "";
+	}
+	
 	public String getMacId() {
 		return mMacIdFromUart;
 	}

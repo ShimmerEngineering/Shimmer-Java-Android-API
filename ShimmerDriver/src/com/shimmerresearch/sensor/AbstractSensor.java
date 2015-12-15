@@ -43,10 +43,11 @@ public abstract class AbstractSensor implements Serializable{
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
 	
-	//Testing for GQ
-	public String mHeaderFileLabel = "";
-	public int mHeaderByteMask = 0;
-	public int mNumChannels = 0;
+//	//Testing for GQ BLE
+//	public String mHeaderFileLabel = "";
+//	public int mHeaderByteMask = 0;
+//	public int mNumChannels = 0;
+	
 	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
 	public List<String> mListOfChannelsRef = new ArrayList<String>();
 	
