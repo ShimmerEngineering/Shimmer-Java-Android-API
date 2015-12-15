@@ -95,16 +95,15 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
-			ShimmerVerObject svo) {
+	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public SensorInfoMem getInfoMem(ShimmerVerObject svo) {
+	public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	

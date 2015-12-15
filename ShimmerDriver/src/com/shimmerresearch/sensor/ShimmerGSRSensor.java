@@ -38,6 +38,8 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	 */
 	public long mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
 
+	public long mDerivedSensorBitmapID = 0;
+
 	/**
 	 * 
 	 */
@@ -46,6 +48,8 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	public ShimmerGSRSensor(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.GSR.toString();
+		
+		mIntExpBoardPowerRequired = true;
 	}
 
 	@Override
@@ -235,9 +239,15 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public SensorInfoMem getInfoMem(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
+	//TODO: Not sure yet whether store sensors infomem layout in Sensor class or in InfoMemLayout class
+	public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject, byte[] mInfoMemBytes) {
+		
+		int idxConfigSetupByte3 =              	9;
+		int bitShiftGSRRange =                       1;
+		int maskGSRRange =                           0x07;
+
+		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
+		
 	}
 
 	

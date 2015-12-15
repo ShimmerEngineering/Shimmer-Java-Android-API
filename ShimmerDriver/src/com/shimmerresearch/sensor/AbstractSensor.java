@@ -112,12 +112,15 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE comType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE comType);
 	public abstract Object processData(byte[] rawData, COMMUNICATION_TYPE comType,Object object);
-	/** Different firmwares might have different infomem layouts
-	 * @param svo
-	 * @return
-	 */
-	public abstract SensorInfoMem getInfoMem(ShimmerVerObject svo);
 	
+//	/** Different firmwares might have different infomem layouts
+//	 * @param svo
+//	 * @return
+//	 */
+//	public abstract SensorInfoMem generateInfoMem(ShimmerVerObject svo);
+	
+	public abstract void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject, byte[] mInfoMemBytes);
+
 	
 	/** To process data originating from the Shimmer device
 	 * @param channelByteArray The byte array packet, or byte array sd log
@@ -210,7 +213,7 @@ public abstract class AbstractSensor implements Serializable{
 	 * @param Instructions an array string containing the commands to execute. It is currently not fully supported
 	 * @return
 	 */
-	protected long parsedData(byte[] data,String dataType,String dataEndian){
+	protected static long parsedData(byte[] data,String dataType,String dataEndian){
 		
 		int iData=0;
 		long formattedData=0;
@@ -457,7 +460,7 @@ public abstract class AbstractSensor implements Serializable{
 			}
 		return formattedData;
 	}
-	private int calculatetwoscomplement(int signedData, int bitLength){
+	private static int calculatetwoscomplement(int signedData, int bitLength){
 		int newData=signedData;
 		if (signedData>=(1<<(bitLength-1))) {
 			newData=-((signedData^(int)(Math.pow(2, bitLength)-1))+1);
@@ -466,7 +469,7 @@ public abstract class AbstractSensor implements Serializable{
 		return newData;
 	}
 
-	private long calculatetwoscomplement(long signedData, int bitLength){
+	private static long calculatetwoscomplement(long signedData, int bitLength){
 		long newData=signedData;
 		if (signedData>=(1L<<(bitLength-1))) {
 			newData=-((signedData^(long)(Math.pow(2, bitLength)-1))+1);
@@ -505,10 +508,20 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
+	public boolean isAnySensorChannelEnabled(COMMUNICATION_TYPE comType){
+		for(ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
+			if(channelDetails.mIsEnabled){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void enableSensorChannels(COMMUNICATION_TYPE comType){
 		for (ChannelDetails channelDetails :mMapOfCommTypetoChannel.get(comType).values()){
 			channelDetails.mIsEnabled = true;
 		}
 	}
+	
 	
 }

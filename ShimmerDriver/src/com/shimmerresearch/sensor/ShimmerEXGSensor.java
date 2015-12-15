@@ -483,8 +483,18 @@ public class ShimmerEXGSensor extends AbstractSensor{
 		}
 
 		@Override
-		public SensorInfoMem getInfoMem(ShimmerVerObject svo) {
-			// TODO Auto-generated method stub
-			return null;
+		public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject, byte[] mInfoMemBytes) {
+			int idxEXGADS1292RChip1Config1 =         10;// exg bytes
+			int idxEXGADS1292RChip1Config2 =         11;
+
+			
+			//TODO temp here
+//			byte[] mEXG1RegisterArray = new byte[]{(byte) 0x00,(byte) 0xa3,(byte) 0x10,(byte) 0x05,(byte) 0x05,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x01}; //WP test array
+			byte[] mEXG1RegisterArray = new byte[]{(byte) 0x02,(byte) 0xa0,(byte) 0x10,(byte) 0x40,(byte) 0xc0,(byte) 0x20,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x03}; //WP ECG array
+			byte[] mEXG2RegisterArray = new byte[]{(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00};
+//			exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
+			System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip1Config1, 10);
+			System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip1Config2, 10);
+
 		}
 }

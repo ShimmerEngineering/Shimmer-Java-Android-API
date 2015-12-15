@@ -344,22 +344,22 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mInfoMemBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
 
 		// Configuration
-		AbstractSensor sensorGsr = mMapOfSensors.get(SENSORS.GSR.ordinal()); 
-		if(sensorGsr!=null){
-			mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((((ShimmerGSRSensor)sensorGsr).mGSRRange & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
-		}
-		
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
+//		AbstractSensor sensorGsr = mMapOfSensors.get(SENSORS.GSR.ordinal()); 
+//		if(sensorGsr!=null){
+//			mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((((ShimmerGSRSensor)sensorGsr).mGSRRange & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
+//		}
+//		
+//		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
 
 		//EXG Configuration
 
-		//TODO temp here
-//		byte[] mEXG1RegisterArray = new byte[]{(byte) 0x00,(byte) 0xa3,(byte) 0x10,(byte) 0x05,(byte) 0x05,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x01}; //WP test array
-		byte[] mEXG1RegisterArray = new byte[]{(byte) 0x02,(byte) 0xa0,(byte) 0x10,(byte) 0x40,(byte) 0xc0,(byte) 0x20,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x03}; //WP ECG array
-		byte[] mEXG2RegisterArray = new byte[]{(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00};
-//		exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
-		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config1, 10);
-		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config2, 10);
+//		//TODO temp here
+////		byte[] mEXG1RegisterArray = new byte[]{(byte) 0x00,(byte) 0xa3,(byte) 0x10,(byte) 0x05,(byte) 0x05,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x01}; //WP test array
+//		byte[] mEXG1RegisterArray = new byte[]{(byte) 0x02,(byte) 0xa0,(byte) 0x10,(byte) 0x40,(byte) 0xc0,(byte) 0x20,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x03}; //WP ECG array
+//		byte[] mEXG2RegisterArray = new byte[]{(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00};
+////		exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
+//		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config1, 10);
+//		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config2, 10);
 		
 		//TODO loop through mapOfSensors
 		// Derived Sensors
@@ -394,11 +394,24 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 
-		
 		//802.15.4 Radio config
 		byte[] radioConfig = getRadioConfigByteArray();
 		System.arraycopy(radioConfig, 0, mInfoMemBytes, infoMemLayout.idxSrRadioConfigStart, radioConfig.length);
 
+		//Modify InfoMem with Sensor settings
+		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+			abstractSensor.infoMemByteArrayGenerate(mShimmerVerObject, mInfoMemBytes);
+		}
+		
+		//Check if Expansion board power is required for any of the enabled sensors
+		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+			if(abstractSensor.mIntExpBoardPowerRequired && abstractSensor.isAnySensorChannelEnabled(COMMUNICATION_TYPE.IEEE802154)){
+				mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
+				break;
+			}
+		}
+
+		
 		return mInfoMemBytes;
 	}
 

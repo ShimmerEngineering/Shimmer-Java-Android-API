@@ -6570,6 +6570,87 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	
+
+	
+	/**
+	 * This enables the calculation of 3D orientation through the use of the
+	 * gradient descent algorithm, note that the user will have to ensure that
+	 * mEnableCalibration has been set to true (see enableCalibration), and that
+	 * the accel, gyro and mag has been enabled
+	 * 
+	 * @param enable
+	 */
+	protected void set3DOrientation(boolean enable){
+		//enable the sensors if they have not been enabled 
+		mOrientationEnabled = enable;
+	}	
+	
+	/**
+	 * This enables the low power accel option. When not enabled the sampling
+	 * rate of the accel is set to the closest value to the actual sampling rate
+	 * that it can achieve. In low power mode it defaults to 10Hz. Also and
+	 * additional low power mode is used for the LSM303DLHC. This command will
+	 * only supports the following Accel range +4g, +8g , +16g
+	 * 
+	 * @param enable
+	 */
+	public void setLowPowerAccelWR(boolean enable){
+		mLowPowerAccelWR = enable;
+		mHighResAccelWR = !enable;
+
+		setLSM303AccelRateFromFreq(mShimmerSamplingRate);
+	}
+	
+	/**
+	 * This enables the low-power gyro option. When not enabled the sampling
+	 * rate of the gyro is set to the closest supported value to the actual
+	 * sampling rate that it can achieve. For the Shimmer2, in low power mode it
+	 * defaults to 10Hz.
+	 * 
+	 * @param enable
+	 */
+	protected void setLowPowerGyro(boolean enable){
+		if(!checkIfAnyMplChannelEnabled()) {
+			mLowPowerGyro = enable;
+			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+		}
+		else{
+			mLowPowerGyro = false;
+			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+		}
+	}
+	
+	/**
+	 * This enables the low power mag option. When not enabled the sampling rate
+	 * of the mag is set to the closest supported value to the actual sampling
+	 * rate that it can achieve. In low power mode it defaults to 10Hz
+	 * 
+	 * @param enable
+	 */
+	protected void setLowPowerMag(boolean enable){
+		mLowPowerMag = enable;
+		if((getHardwareVersion()==HW_ID.SHIMMER_2)||(getHardwareVersion()==HW_ID.SHIMMER_2R)){
+			if (!mLowPowerMag){
+				if (mShimmerSamplingRate>=50){
+					mShimmer2MagRate = 6;
+				} else if (mShimmerSamplingRate>=20) {
+					mShimmer2MagRate = 5;
+				} else if (mShimmerSamplingRate>=10) {
+					mShimmer2MagRate = 4;
+				} else {
+					mShimmer2MagRate = 3;
+				}
+			} else {
+				mShimmer2MagRate = 4;
+			}
+		} else {
+			setLSM303MagRateFromFreq(mShimmerSamplingRate);
+		}
+	}
+	
+	
+	//-------------------- ExG Start -----------------------------------
+	
 	/**
 	 * Populates the individual ExG related variables in ShimmerObject per ExG
 	 * chip based on the ExG configuration byte arrays
@@ -6752,82 +6833,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		return using;
 	}	
-	
-	/**
-	 * This enables the calculation of 3D orientation through the use of the
-	 * gradient descent algorithm, note that the user will have to ensure that
-	 * mEnableCalibration has been set to true (see enableCalibration), and that
-	 * the accel, gyro and mag has been enabled
-	 * 
-	 * @param enable
-	 */
-	protected void set3DOrientation(boolean enable){
-		//enable the sensors if they have not been enabled 
-		mOrientationEnabled = enable;
-	}	
-	
-	/**
-	 * This enables the low power accel option. When not enabled the sampling
-	 * rate of the accel is set to the closest value to the actual sampling rate
-	 * that it can achieve. In low power mode it defaults to 10Hz. Also and
-	 * additional low power mode is used for the LSM303DLHC. This command will
-	 * only supports the following Accel range +4g, +8g , +16g
-	 * 
-	 * @param enable
-	 */
-	public void setLowPowerAccelWR(boolean enable){
-		mLowPowerAccelWR = enable;
-		mHighResAccelWR = !enable;
-
-		setLSM303AccelRateFromFreq(mShimmerSamplingRate);
-	}
-	
-	/**
-	 * This enables the low-power gyro option. When not enabled the sampling
-	 * rate of the gyro is set to the closest supported value to the actual
-	 * sampling rate that it can achieve. For the Shimmer2, in low power mode it
-	 * defaults to 10Hz.
-	 * 
-	 * @param enable
-	 */
-	protected void setLowPowerGyro(boolean enable){
-		if(!checkIfAnyMplChannelEnabled()) {
-			mLowPowerGyro = enable;
-			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-		}
-		else{
-			mLowPowerGyro = false;
-			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-		}
-	}
-	
-	/**
-	 * This enables the low power mag option. When not enabled the sampling rate
-	 * of the mag is set to the closest supported value to the actual sampling
-	 * rate that it can achieve. In low power mode it defaults to 10Hz
-	 * 
-	 * @param enable
-	 */
-	protected void setLowPowerMag(boolean enable){
-		mLowPowerMag = enable;
-		if((getHardwareVersion()==HW_ID.SHIMMER_2)||(getHardwareVersion()==HW_ID.SHIMMER_2R)){
-			if (!mLowPowerMag){
-				if (mShimmerSamplingRate>=50){
-					mShimmer2MagRate = 6;
-				} else if (mShimmerSamplingRate>=20) {
-					mShimmer2MagRate = 5;
-				} else if (mShimmerSamplingRate>=10) {
-					mShimmer2MagRate = 4;
-				} else {
-					mShimmer2MagRate = 3;
-				}
-			} else {
-				mShimmer2MagRate = 4;
-			}
-		} else {
-			setLSM303MagRateFromFreq(mShimmerSamplingRate);
-		}
-	}
 	
 	/**
 	 * This can only be used for Shimmer3 devices (EXG) When a enable
@@ -7078,6 +7083,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public HashMap<String, Integer> getMapOfExGSettingsChip2(){
 		return mExGConfigBytesDetails.mMapOfExGSettingsChip2ThisShimmer;
 	}
+	
+	//-------------------- ExG End -----------------------------------
+
 
 	/**Sets all default Shimmer settings in ShimmerObject.
 	 * 

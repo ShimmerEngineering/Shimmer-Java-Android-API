@@ -100,10 +100,12 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 
 	@Override
-	public SensorInfoMem getInfoMem(ShimmerVerObject svo) {
+	public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject,
+			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
+
 
 
 
