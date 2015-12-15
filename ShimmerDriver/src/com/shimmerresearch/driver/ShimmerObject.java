@@ -478,7 +478,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected String mClassName="Shimmer";
 	protected double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
-	protected double mShimmerSamplingRate; 	                                        	// 51.2Hz is the default sampling rate 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 	protected long mDerivedSensors = (long)0;												// This stores the sensors channels derived in SW
 	protected int mBluetoothBaudRate=9; //460800
@@ -6742,10 +6741,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.VREF_2_42V);
 
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.GAIN_PGA_CH1.GAIN_4);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.GAIN_PGA_CH2.GAIN_4);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CH1_PGA_GAIN.GAIN_4);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CH2_PGA_GAIN.GAIN_4);
 
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.RLD_BUFFER_POWER.ENABLED);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.RLD_NEG_INPUTS_CH2.RLD_CONNECTED_TO_IN2N);
@@ -6776,15 +6775,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.VREF_2_42V);
 			
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.GAIN_PGA_CH1.GAIN_12);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.GAIN_PGA_CH2.GAIN_12);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.INPUT_SELECTION_CH1.ROUTE_CH3_TO_CH1);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.NORMAL);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.CH1_PGA_GAIN.GAIN_12);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.CH2_PGA_GAIN.GAIN_12);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.CH1_INPUT_SELECTION.ROUTE_CH3_TO_CH1);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.CH2_INPUT_SELECTION.NORMAL);
 			
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.POWER_DOWN_CH1.POWER_DOWN);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.INPUT_SELECTION_CH1.SHORTED);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.POWER_DOWN_CH2.POWER_DOWN);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.SHORTED);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.CH1_POWER_DOWN.POWER_DOWN);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.CH1_INPUT_SELECTION.SHORTED);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.CH2_POWER_DOWN.POWER_DOWN);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.CH2_INPUT_SELECTION.SHORTED);
 			
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.RLD_BUFFER_POWER.ENABLED);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
@@ -6815,8 +6814,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.TEST_SIGNAL_SELECTION.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.TEST_SIGNAL_FREQUENCY.SQUARE_WAVE_1KHZ);
 
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH1.TEST_SIGNAL);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.TEST_SIGNAL);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CH1_INPUT_SELECTION.TEST_SIGNAL);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CH2_INPUT_SELECTION.TEST_SIGNAL);
 			
 			setExGRateFromFreq(shimmerSamplingRate);
 			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
@@ -6843,8 +6842,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.VOLTAGE_REFERENCE.VREF_2_42V);
 
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.GAIN_PGA_CH1.GAIN_4);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.GAIN_PGA_CH2.GAIN_4);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CH1_PGA_GAIN.GAIN_4);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CH2_PGA_GAIN.GAIN_4);
 
 //			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT); //TODO:2015-06 check!!
 			
@@ -6900,8 +6899,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.TEST_SIGNAL_SELECTION.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.TEST_SIGNAL_FREQUENCY.SQUARE_WAVE_1KHZ);
 
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH1.RLDIN_CONNECTED_TO_NEG_INPUT);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CH1_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
+			setExgPropertyBothChips(EXG_SETTING_OPTIONS.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			
 			setExGRateFromFreq(shimmerSamplingRate);
 			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
@@ -7318,7 +7317,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
 			if(isEXGUsingDefaultEMGConfiguration()){
-				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.POWER_DOWN);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.CH2_POWER_DOWN.POWER_DOWN);
 			}
 		}
 		else if(mode==1){//DC Current
@@ -7337,7 +7336,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
 
 			if(isEXGUsingDefaultEMGConfiguration()){
-				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.NORMAL_OPERATION);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.CH2_POWER_DOWN.NORMAL_OPERATION);
 			}
 		}
 		else if(mode==2){//AC Current
@@ -7356,7 +7355,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
 
 			if(isEXGUsingDefaultEMGConfiguration()){
-				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.POWER_DOWN_CH2.NORMAL_OPERATION);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.CH2_POWER_DOWN.NORMAL_OPERATION);
 			}
 		}
 	}
@@ -7756,7 +7755,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//EXG Configuration
 			System.arraycopy(infoMemContents, infoMemLayoutCast.idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
-			System.arraycopy(infoMemContents, infoMemLayoutCast.idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
+			System.arraycopy(infoMemContents, infoMemLayoutCast.idxEXGADS1292RChip2Config2, mEXG2RegisterArray, 0, 10);
 			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 			
 			mBluetoothBaudRate = infoMemContents[infoMemLayoutCast.idxBtCommBaudRate] & infoMemLayoutCast.maskBaudRate;
@@ -8072,7 +8071,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//EXG Configuration
 			exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
 			System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config1, 10);
-			System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip2Config1, 10);
+			System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip2Config2, 10);
 			
 			mInfoMemBytes[infoMemLayout.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & infoMemLayout.maskBaudRate);
 	
@@ -9764,13 +9763,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public List<String> getListOfSupportedAlgorithmGroups() {
 		return new ArrayList<String>();
 	}
-	
-	public double getShimmerSamplingRate(){
-		return mShimmerSamplingRate; 
-	}
-
-
-	
 	
 	public double getPressTempAC1(){
 		return AC1;

@@ -212,7 +212,7 @@ public class ExGConfigBytesDetails implements Serializable {
 	}
 	
 	public static final class EXG_SETTING_OPTIONS{
-//		public static final class REG0{
+//		public static final class REG1{
 		public static final class CONVERSION_MODES{
 			public static final ExGConfigOption CONTINUOUS = new ExGConfigOption(EXG_SETTINGS.REG1_CONVERSION_MODES, "Continuous Conversion Mode", 0);
 			public static final ExGConfigOption SINGLE_SHOT = new ExGConfigOption(EXG_SETTINGS.REG1_CONVERSION_MODES, "Single-shot mode", 1);
@@ -227,7 +227,7 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption RATE_8KSPS = new ExGConfigOption(EXG_SETTINGS.REG1_DATA_RATE, "8 kHz", 6);
 		}
 //		}
-//		public static final class REG1{
+//		public static final class REG2{
 		public static final class LEAD_OFF_COMPARATORS{
 			public static final ExGConfigOption OFF = new ExGConfigOption(EXG_SETTINGS.REG2_LEAD_OFF_COMPARATORS, "OFF", 0);
 			public static final ExGConfigOption ON = new ExGConfigOption(EXG_SETTINGS.REG2_LEAD_OFF_COMPARATORS, "ON", 1);
@@ -254,6 +254,7 @@ public class ExGConfigBytesDetails implements Serializable {
 		}
 //		}
 
+//		REG3
 		public static final class COMPARATOR_THRESHOLD{
 			public static final ExGConfigOption POS95NEG5 = new ExGConfigOption(EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, "Pos:95%-Neg:5%", 0);
 			public static final ExGConfigOption POS92_5NEG7_5 = new ExGConfigOption(EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD, "Pos:92.5%-Neg:7.5%", 1);
@@ -275,11 +276,12 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption AC = new ExGConfigOption(EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, "AC lead-off detect (fs / 4)", 1);
 		}
 		
-		public static final class POWER_DOWN_CH1{
+//		REG4
+		public static final class CH1_POWER_DOWN{
 			public static final ExGConfigOption NORMAL_OPERATION = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, "Normal operation", 0);
 			public static final ExGConfigOption POWER_DOWN = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, "Power-down", 1);
 		}
-		public static final class GAIN_PGA_CH1{
+		public static final class CH1_PGA_GAIN{
 			public static final ExGConfigOption GAIN_6 = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, "6", 0);
 			public static final ExGConfigOption GAIN_1 = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, "1", 1);
 			public static final ExGConfigOption GAIN_2 = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, "2", 2);
@@ -288,7 +290,7 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption GAIN_8 = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, "8", 5);
 			public static final ExGConfigOption GAIN_12 = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, "12", 6);
 		}
-		public static final class INPUT_SELECTION_CH1{
+		public static final class CH1_INPUT_SELECTION{
 			public static final ExGConfigOption NORMAL = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, "Normal electrode input", 0);
 			public static final ExGConfigOption SHORTED = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, "Input shorted", 1);
 			public static final ExGConfigOption RLD_MEASURE = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, "RLD_MEASURE", 2);
@@ -301,11 +303,12 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption ROUTE_CH3_TO_CH1 = new ExGConfigOption(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, "Route IN3P and IN3N to channel 1 inputs", 9);
 		}
 
-		public static final class POWER_DOWN_CH2{
+//		REG5
+		public static final class CH2_POWER_DOWN{
 			public static final ExGConfigOption NORMAL_OPERATION = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, "Normal operation", 0);
 			public static final ExGConfigOption POWER_DOWN = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, "Power-down", 1);
 		}
-		public static final class GAIN_PGA_CH2{
+		public static final class CH2_PGA_GAIN{
 			public static final ExGConfigOption GAIN_6 = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, "6", 0);
 			public static final ExGConfigOption GAIN_1 = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, "1", 1);
 			public static final ExGConfigOption GAIN_2 = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, "2", 2);
@@ -314,7 +317,7 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption GAIN_8 = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, "8", 5);
 			public static final ExGConfigOption GAIN_12 = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, "12", 6);
 		}
-		public static final class INPUT_SELECTION_CH2{
+		public static final class CH2_INPUT_SELECTION{
 			public static final ExGConfigOption NORMAL = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, "Normal electrode input", 0);
 			public static final ExGConfigOption SHORTED = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, "Input shorted", 1);
 			public static final ExGConfigOption RLD_MEASURE = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, "RLD_MEASURE", 2);
@@ -327,6 +330,7 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption ROUTE_CH3_TO_CH1 = new ExGConfigOption(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, "Route IN3P and IN3N to channel 1 inputs", 9);
 		}
 
+//		REG6
 		public static final class PGA_CHOP_FREQUENCY{
 			public static final ExGConfigOption FMOD_16 = new ExGConfigOption(EXG_SETTINGS.REG6_PGA_CHOP_FREQUENCY, "fMOD / 16", 0);
 			public static final ExGConfigOption FMOD_2 = new ExGConfigOption(EXG_SETTINGS.REG6_PGA_CHOP_FREQUENCY, "fMOD / 2", 2);
@@ -357,6 +361,7 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption RLD_CONNECTED_TO_IN1P = new ExGConfigOption(EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS, "Connected to IN1P", 1);
 		}
 
+//		REG7
 		public static final class FLIP_CURRENT_CH2{
 			public static final ExGConfigOption OFF = new ExGConfigOption(EXG_SETTINGS.REG7_CH2_FLIP_CURRENT, "OFF", 0);
 			public static final ExGConfigOption ON = new ExGConfigOption(EXG_SETTINGS.REG7_CH2_FLIP_CURRENT, "ON", 1);
@@ -382,11 +387,13 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption ON = new ExGConfigOption(EXG_SETTINGS.REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, "ON", 1);
 		}
 		
+//		REG8
 		public static final class CLOCK_DIVIDER_SELECTION{
 			public static final ExGConfigOption OFF = new ExGConfigOption(EXG_SETTINGS.REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, "fMOD = fCLK / 4", 0);
 			public static final ExGConfigOption ON = new ExGConfigOption(EXG_SETTINGS.REG7_CH1_LEAD_OFF_DETECT_POS_INPUTS, "fMOD = fCLK / 16", 1);
 		}
 
+//		REG9
 		public static final class RESPIRATION_DEMOD_CIRCUITRY{
 			public static final ExGConfigOption OFF = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_DEMOD_CIRCUITRY, "OFF", 0);
 			public static final ExGConfigOption ON = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_DEMOD_CIRCUITRY, "ON", 1);
@@ -395,8 +402,6 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption OFF = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, "OFF", 0);
 			public static final ExGConfigOption ON = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, "ON", 1);
 		}
-
-		//TODO:2015-06-16 handle both FREQ and PHASE together
 		public static final class RESPIRATION_PHASE_AT_32KHZ{
 			public static final ExGConfigOption PHASE_0 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "0°", 0);
 			public static final ExGConfigOption PHASE_11_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "11.25°", 1);
@@ -430,6 +435,7 @@ public class ExGConfigBytesDetails implements Serializable {
 			public static final ExGConfigOption EXTERNAL_CLOCK = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_CONTROL, "External Clock", 1);
 		}
 		
+//		REG10
 		public static final class RESPIRATION_CALIBRATION{
 			public static final ExGConfigOption OFF = new ExGConfigOption(EXG_SETTINGS.REG10_RESPIRATION_CALIBRATION, "OFF", 0);
 			public static final ExGConfigOption ON = new ExGConfigOption(EXG_SETTINGS.REG10_RESPIRATION_CALIBRATION, "ON", 1);
@@ -483,23 +489,23 @@ public class ExGConfigBytesDetails implements Serializable {
     aMap.put(EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, new ExGConfigOptionDetails(EXG_CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, exGConfigOptions, 0, 0x01));
 //    aMap.put(EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 2, EXG_SETTINGS.REG3_LEAD_OFF_FREQUENCY, ListOfLeadOffDetectionFreq, ListOfLeadOffDetectionFreqConfigValues, 0, 0x01));
 
-	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.POWER_DOWN_CH1.class);
+	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.CH1_POWER_DOWN.class);
     aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, new ExGConfigOptionDetails(EXG_CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, exGConfigOptions, 7, 0x01));
 //    aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_POWER_DOWN, ListOfChannelPowerDown, ListOfChannelPowerDownConfigValues, 7, 0x01));
-	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.GAIN_PGA_CH1.class);
+	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.CH1_PGA_GAIN.class);
     aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, new ExGConfigOptionDetails(EXG_CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, exGConfigOptions, 4, 0x07));
 //    aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN, ListOfExGGain, ListOfExGGainConfigValues, 4, 0x07));
-	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH1.class);
+	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.CH1_INPUT_SELECTION.class);
     aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, new ExGConfigOptionDetails(EXG_CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, exGConfigOptions, 0, 0x0F));
 //    aMap.put(EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 3, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION, ListOfCh1InputSelection, ListOfInputSelectionConfigValues, 0, 0x0F));
 
-	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.POWER_DOWN_CH2.class);
+	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.CH2_POWER_DOWN.class);
     aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, new ExGConfigOptionDetails(EXG_CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, exGConfigOptions, 7, 0x01));
 //    aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_POWER_DOWN, ListOfChannelPowerDown, ListOfChannelPowerDownConfigValues, 7, 0x01));
-	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.GAIN_PGA_CH2.class);
+	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.CH2_PGA_GAIN.class);
     aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, new ExGConfigOptionDetails(EXG_CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, exGConfigOptions, 4, 0x07));
 //    aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN, ListOfExGGain, ListOfExGGainConfigValues, 4, 0x07));
-	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.class);
+	exGConfigOptions = getExGConfigOptionFields(EXG_SETTING_OPTIONS.CH2_INPUT_SELECTION.class);
     aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, new ExGConfigOptionDetails(EXG_CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, exGConfigOptions, 0, 0x0F));
 //    aMap.put(EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, new ExGConfigOptionDetails(CHIP_INDEX.CHIP1, 4, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION, ListOfCh2InputSelection, ListOfInputSelectionConfigValues, 0, 0x0F));
 

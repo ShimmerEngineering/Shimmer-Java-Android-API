@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
@@ -99,7 +100,7 @@ public class ShimmerClock extends AbstractSensor {
 
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject,
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		

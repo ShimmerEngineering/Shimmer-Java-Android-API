@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -134,7 +135,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	}
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject,
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		

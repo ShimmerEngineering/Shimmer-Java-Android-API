@@ -55,6 +55,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected String mMacIdFromUart = "";
 	
 	protected String mShimmerUserAssignedName = ""; // This stores the user assigned name
+	protected double mShimmerSamplingRate; 	                                        	// 51.2Hz is the default sampling rate 
 
 	public final static String DEFAULT_DOCKID = "Default.01";
 	public final static int DEFAULT_SLOTNUMBER = -1;
@@ -618,6 +619,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		return false;
+	}
+	
+	public double getShimmerSamplingRate(){
+		return mShimmerSamplingRate; 
 	}
 	
 	public InfoMemLayout getInfoMemLayout(){

@@ -142,7 +142,7 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 	public int idxSDConfigTime3 =                  	128+86;
 //	public int idxSDMyTrialID =                   	128+87;   // 1 byte
 //	public int idxSDNumOfShimmers =                 128+88;   // 1 byte
-//	public int idxSDExperimentConfig0 =             128+89;
+	public int idxSDExperimentConfig0 =             128+89;
 //	public int idxSDExperimentConfig1 =             128+90;
 //	public int idxSDBTInterval =                  	128+91;
 //	public int idxEstimatedExpLengthMsb =           128+92; // 2bytes
@@ -299,10 +299,10 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 //
 //	public int bitShiftShowRwcErrorLeds = 		4;
 //	public int maskShowRwcErrorLeds =	 		0; // Only applicable for certain FW
-//
-//	public int bitShiftTimeSyncWhenLogging =	2;
-//	public int maskTimeSyncWhenLogging = 		0x01;
-//
+
+	public int bitShiftTimeSyncWhenLogging =	2;
+	public int maskTimeSyncWhenLogging = 		0x01;
+
 //	public int bitShiftMasterShimmer = 			1;
 //	public int maskTimeMasterShimmer = 			0x01;
 //	

@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
@@ -101,7 +102,8 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject, byte[] mInfoMemBytes) {
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
+			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
 	}

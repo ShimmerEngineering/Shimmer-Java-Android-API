@@ -13,6 +13,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
@@ -52,14 +53,6 @@ public abstract class AbstractSensor implements Serializable{
 	public List<String> mListOfChannelsRef = new ArrayList<String>();
 	
 	public boolean mIsDummySensor = false;
-	
-	
-	/*public static class SENSOR_NAMES{
-		public static final String GSR = "GSR";
-		public static final String ECG_TO_HR = "ECG to Heart Rate";
-		public static final String CLOCK = "Clock";
-		public static final String SYSTEM_TIMESTAMP = Configuration.Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT;
-	}*/
 	
 	public enum SENSORS{
 		GSR("GSR"),
@@ -120,7 +113,7 @@ public abstract class AbstractSensor implements Serializable{
 //	 */
 //	public abstract SensorInfoMem generateInfoMem(ShimmerVerObject svo);
 	
-	public abstract void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject, byte[] mInfoMemBytes);
+	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
 
 	
 	/** To process data originating from the Shimmer device

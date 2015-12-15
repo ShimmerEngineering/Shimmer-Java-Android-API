@@ -24,6 +24,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 
 public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
@@ -240,7 +241,8 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 	@Override
 	//TODO: Not sure yet whether store sensors infomem layout in Sensor class or in InfoMemLayout class
-	public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject, byte[] mInfoMemBytes) {
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
+			byte[] mInfoMemBytes) {
 		
 		int idxConfigSetupByte3 =              	9;
 		int bitShiftGSRRange =                       1;

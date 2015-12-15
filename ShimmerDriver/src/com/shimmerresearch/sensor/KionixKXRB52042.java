@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -72,9 +73,8 @@ public class KionixKXRB52042 extends AbstractSensor{
 		return null;
 	}
 
-
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerVerObject mShimmerVerObject,
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
