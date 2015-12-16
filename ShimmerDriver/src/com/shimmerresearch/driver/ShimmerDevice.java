@@ -684,13 +684,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param commType
 	 * @return
 	 */
-	public Object buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType){
+	public ObjectCluster buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType){
 		
 		ObjectCluster ojc = new ObjectCluster();
 		ojc.createArrayData(getNumberOfEnabledChannels(commType));
 //		ojc.mMyName = mUniqueID;
 		ojc.mMyName = mShimmerUserAssignedName;
-		ojc.mBluetoothAddress = mMacIdFromUart;
+		ojc.mBluetoothAddress = getMacId();
 		int index=0;
 		for (AbstractSensor sensor:mMapOfSensors.values()){
 			int length = sensor.getExpectedPacketByteArray(commType);

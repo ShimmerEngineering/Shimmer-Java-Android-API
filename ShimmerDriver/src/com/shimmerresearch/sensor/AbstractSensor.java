@@ -479,7 +479,7 @@ public abstract class AbstractSensor implements Serializable{
 	 */
 	public int getExpectedPacketByteArray(COMMUNICATION_TYPE comType) {
 		int count = 0; 
-		for (ChannelDetails channelDetails: mMapOfCommTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			if (channelDetails.mIsEnabled){
 				count = count+channelDetails.mDefaultNumBytes;
 			}
@@ -489,7 +489,7 @@ public abstract class AbstractSensor implements Serializable{
 
 	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE comType){
 		int count = 0;
-		for (ChannelDetails channelDetails: mMapOfCommTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			if (channelDetails.mIsEnabled){
 				count = count+1;
 			}
@@ -498,7 +498,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public void disableSensorChannels(COMMUNICATION_TYPE comType){
-		for (ChannelDetails channelDetails :mMapOfCommTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			channelDetails.mIsEnabled = false;
 		}
 	}
@@ -513,7 +513,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public void enableSensorChannels(COMMUNICATION_TYPE comType){
-		for (ChannelDetails channelDetails :mMapOfCommTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			channelDetails.mIsEnabled = true;
 		}
 	}

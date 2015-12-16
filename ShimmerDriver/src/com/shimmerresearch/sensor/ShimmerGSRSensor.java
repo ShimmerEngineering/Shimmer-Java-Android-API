@@ -240,6 +240,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 //				double calData = calibrateGsrDataToSiemens(rawData,p1,p2);
 //				objectCluster.addData(channelDetails, rawData, calData); // Uncal already added so no need
 				objectCluster.addCalData(channelDetails, calData);
+				objectCluster.indexKeeper++;
 //				}
 
 			}

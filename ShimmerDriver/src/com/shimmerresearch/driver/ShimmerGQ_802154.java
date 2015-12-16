@@ -580,7 +580,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	
 	@Override
-	public Object buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE commType){
+	public ObjectCluster buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE commType){
 //		//if the packet byte has a starting byte indicating enabled channels
 //		interpretDataPacketFormat(packetByteArray[0],commType);
 //		byte[] newPBA = new byte[packetByteArray.length-1];
@@ -590,9 +590,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		//sendCallBackMsg();
 		
 		
-		ObjectCluster ojc = (ObjectCluster) super.buildMsg(packetByteArray, commType);
+		ObjectCluster objectCluster = super.buildMsg(packetByteArray, commType);
 
-		return ojc;
+		return objectCluster;
 	}
 
 	@Override
