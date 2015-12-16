@@ -670,6 +670,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		}
 	}
 
+	public void setEnabledSensors(long mEnabledSensors) {
+		this.mEnabledSensors = mEnabledSensors;
+	}
+
+	public void setDerivedSensors(long mDerivedSensors) {
+		this.mDerivedSensors = mDerivedSensors;
+	}
 
 
 	private void consolePrintLn(String message) {
@@ -760,7 +767,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mConfigValues.add((double) getFirmwareVersionInternal());
 		
 		//Configuration Time
-		mConfigValues.add((double) 0);
+		mConfigValues.add((double) getConfigTime());
 		
 		//RTC Difference
 		mConfigValues.add((double) 0);
