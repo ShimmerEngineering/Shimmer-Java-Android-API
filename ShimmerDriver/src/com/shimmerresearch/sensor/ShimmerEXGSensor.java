@@ -9,6 +9,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -96,7 +97,7 @@ public class ShimmerEXGSensor extends AbstractSensor{
 
 
 	@Override
-	public Object processData(byte[] rawData, COMMUNICATION_TYPE comTYPE, Object obj) {
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE comTYPE, ObjectCluster objectCluster) {
 		// TODO Auto-generated method stub
 		return null;
 	}

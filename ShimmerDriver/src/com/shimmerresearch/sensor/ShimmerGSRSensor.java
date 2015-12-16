@@ -146,17 +146,17 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 
 	@Override
-	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, Object object) {
+	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
 		int index = 0;
 		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			object = processShimmerChannelData(sensorByteArray, channelDetails, object);
+			objectCluster = processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
 			
 			//next process other data
 			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
-				ObjectCluster objectCluster = (ObjectCluster) object;
+//				ObjectCluster objectCluster = (ObjectCluster) object;
 				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 				double p1=0,p2=0;
@@ -206,18 +206,47 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 						p2 = -0.3014;
 					}
 				}
-					objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
-					objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
-//					objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
-//					objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
-//					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
-					objectCluster.indexKeeper++;
-				}
-			index = index + channelDetails.mDefaultNumBytes;
+
+				// ---------- Method 1 - ShimmerObject Style -----------
+//				//kOhms
+//				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
+//				objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
+//					
+//				//uS
+//				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
+//				objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
+//					objectCluster.indexKeeper++;
+
+				
+				// ---------- Method 2 - Simplified ShimmerObject Style -----------
+				
+//				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.UNCAL, CHANNEL_UNITS.NO_UNITS, rawData);
+//				//kOhms
+//				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.KOHMS, calibrateGsrData(rawData,p1,p2));
+////				//uS
+////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.MICROSIEMENS, calibrateGsrDataToSiemens(rawData,p1,p2));
+//				objectCluster.indexKeeper++;
+
+				
+				// ----- Method 3 - Approaching dynamic object based approach  -----------
+				//TODO: Doesn't support having both units
+				
+//				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket!=CHANNEL_TYPE.CAL){
+				//kOhms
+				double calData = calibrateGsrData(rawData,p1,p2);
+//				//uS
+//				double calData = calibrateGsrDataToSiemens(rawData,p1,p2);
+//				objectCluster.addData(channelDetails, rawData, calData); // Uncal already added so no need
+				objectCluster.addCalData(channelDetails, calData);
+//				}
+
 			}
-		return object;
+			index = index + channelDetails.mDefaultNumBytes;
 		}
+		return objectCluster;
+	}
 		
 		
 		

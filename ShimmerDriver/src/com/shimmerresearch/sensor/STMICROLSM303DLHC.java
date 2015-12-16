@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -110,7 +111,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	
 	
 	@Override
-	public Object processData(byte[] rawData, COMMUNICATION_TYPE comTYPE, Object obj) {
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE comTYPE, ObjectCluster objectCluster) {
 		// TODO Auto-generated method stub
 		return null;
 	}

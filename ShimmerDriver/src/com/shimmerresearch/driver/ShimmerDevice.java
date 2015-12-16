@@ -698,7 +698,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				byte[] sensorByteArray = new byte[length];
 				if((index+sensorByteArray.length)<=packetByteArray.length){
 					System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
-					sensor.processData(sensorByteArray,commType,ojc);
+					sensor.processData(sensorByteArray, commType, ojc);
 				}
 				else{
 					//TODO replace with consolePrintSystem

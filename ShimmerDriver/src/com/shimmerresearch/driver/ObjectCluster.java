@@ -41,10 +41,8 @@
  */
 package com.shimmerresearch.driver;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,6 +53,8 @@ import java.util.List;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
 final public class ObjectCluster implements Cloneable,Serializable{
 	/**
@@ -209,5 +209,42 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mUnitCal = new String[length];
 		mUnitUncal = new String[length];
 	
+	}
+
+	public void addData(String signalKey, CHANNEL_TYPE channelType, String units, double data) {
+		if(channelType==CHANNEL_TYPE.CAL){
+			mCalData[indexKeeper] = data;
+			mUnitCal[indexKeeper] = units;
+		}
+		else if(channelType==CHANNEL_TYPE.UNCAL){
+			mUncalData[indexKeeper] = data;
+			mUnitUncal[indexKeeper] = units;
+		}
+		mSensorNames[indexKeeper] = signalKey;
+		mPropertyCluster.put(signalKey, new FormatCluster(channelType.toString(), units, data));
+	}
+
+	public void addData(ChannelDetails channelDetails, double uncalData, double calData) {
+		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.UNCAL)){
+			mSensorNames[indexKeeper] = channelDetails.mObjectClusterName;
+			mUncalData[indexKeeper] = uncalData;
+			mUnitUncal[indexKeeper] = channelDetails.mDefaultUnit;
+			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(), channelDetails.mDefaultUnit, uncalData));
+		}
+		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
+			mSensorNames[indexKeeper] = channelDetails.mObjectClusterName;
+			mCalData[indexKeeper] = calData;
+			mUnitCal[indexKeeper] = channelDetails.mDefaultCalibratedUnits;
+			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
+		}
+	}
+
+	public void addCalData(ChannelDetails channelDetails, double calData) {
+		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
+			mSensorNames[indexKeeper] = channelDetails.mObjectClusterName;
+			mCalData[indexKeeper] = calData;
+			mUnitCal[indexKeeper] = channelDetails.mDefaultCalibratedUnits;
+			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
+		}
 	}
 }

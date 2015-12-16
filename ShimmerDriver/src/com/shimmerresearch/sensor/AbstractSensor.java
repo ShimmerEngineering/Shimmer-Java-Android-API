@@ -5,23 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
-import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
 import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
-import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractSensor implements Serializable{
@@ -106,7 +98,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract String getSensorName();
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE comType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE comType);
-	public abstract Object processData(byte[] rawData, COMMUNICATION_TYPE comType,Object object);
+	public abstract Object processData(byte[] rawData, COMMUNICATION_TYPE comType, ObjectCluster object);
 	
 //	/** Different firmwares might have different infomem layouts
 //	 * @param svo
@@ -125,25 +117,31 @@ public abstract class AbstractSensor implements Serializable{
 	 * @param object The packet/objectCluster to append the data to
 	 * @return
 	 */
-	public Object processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, Object object){
+	public ObjectCluster processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, ObjectCluster objectCluster){
+
+//		if (channelDetails.mIsEnabled){
+//			//byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+//			long rawData = parsedData(channelByteArray,channelDetails.mDefaultChannelDataType,channelDetails.mDefaultChannelDataEndian);
+//			ObjectCluster objectCluster = (ObjectCluster) object;
+//			objectCluster.mPropertyCluster.put(channelDetails.mObjectClusterName,new FormatCluster(channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString(),channelDetails.mDefaultUnit,(double)rawData));
+//			objectCluster.mSensorNames[objectCluster.indexKeeper] = channelDetails.mObjectClusterName;
+//			if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.UNCAL){
+//				objectCluster.mUncalData[objectCluster.indexKeeper]=(double)rawData;
+//				objectCluster.mUnitUncal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;	
+//			} else if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.CAL){
+//				objectCluster.mCalData[objectCluster.indexKeeper]=(double)rawData;
+//				objectCluster.mUnitCal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;
+//			}
+//			
+//		}
 
 		if (channelDetails.mIsEnabled){
-			//byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			long rawData = parsedData(channelByteArray,channelDetails.mDefaultChannelDataType,channelDetails.mDefaultChannelDataEndian);
-			ObjectCluster objectCluster = (ObjectCluster) object;
-			objectCluster.mPropertyCluster.put(channelDetails.mObjectClusterName,new FormatCluster(channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString(),channelDetails.mDefaultUnit,(double)rawData));
-			objectCluster.mSensorNames[objectCluster.indexKeeper] = channelDetails.mObjectClusterName;
-			if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.UNCAL){
-				objectCluster.mUncalData[objectCluster.indexKeeper]=(double)rawData;
-				objectCluster.mUnitUncal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;	
-			} else if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.CAL){
-				objectCluster.mCalData[objectCluster.indexKeeper]=(double)rawData;
-				objectCluster.mUnitCal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;
-			}
-			
+			long chDataFromShimmer = parsedData(channelByteArray,channelDetails.mDefaultChannelDataType,channelDetails.mDefaultChannelDataEndian);
+			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)chDataFromShimmer);
 		}
-		
-		return object;
+
+		return objectCluster;
+//		return object;
 	
 	}
 	

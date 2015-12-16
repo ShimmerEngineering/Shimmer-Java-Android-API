@@ -30,12 +30,11 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 	public ShimmerECGToHRSensor(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.ECG_TO_HR.toString();
-
 	}
 	
-	{
-	mSensorName ="STMICROLSM303DLHC";
-	}
+//	{
+//	mSensorName ="STMICROLSM303DLHC";
+//	}
 	
 	@Override
 	public String getSensorName() {
@@ -57,19 +56,19 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, Object object) {
+	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
 
 		int index = 0;
 		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			object = processShimmerChannelData(sensorByteArray, channelDetails, object);
-			((ObjectCluster)object).indexKeeper++;
+			objectCluster = processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			objectCluster.indexKeeper++;
 			index=index+channelDetails.mDefaultNumBytes;
 		}
 		
-		return object;
+		return objectCluster;
 	
 	}
 

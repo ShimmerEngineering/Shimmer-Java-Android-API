@@ -51,72 +51,75 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	@Override
-	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, Object object) {
-		int index = 0;
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			object = processShimmerChannelData(sensorByteArray, channelDetails, object);
-			((ObjectCluster)object).indexKeeper++;
-			index=index+channelDetails.mDefaultNumBytes;
-		}
-		
-		return object;
-	}
-
-	@Override
 	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
 		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
 		//COMMUNICATION_TYPE.IEEE802154
 		int count=1;
+//		ChannelDetails cDSystemTimestop = new ChannelDetails(
+//						Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+//						Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+//						DatabaseChannelHandles.TIMESTAMP_SYSTEM,
+//						ChannelDataType.UINT64, 8, ChannelDataEndian.MSB,
+//						CHANNEL_UNITS.MILLISECONDS,
+//						Arrays.asList(CHANNEL_TYPE.CAL), false, true);
+//		cDSystemTimestop.mChannelSource = CHANNEL_SOURCE.API;
+//		cDSystemTimestop.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+//		cDSystemTimestop.mIsEnabled = true;
+//		mapOfChannelDetails.put(count, cDSystemTimestop);
+//		
+//		count=2;
+		ChannelDetails cDSystemTimestopPlot = new ChannelDetails(
+				Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+				Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+				DatabaseChannelHandles.TIMESTAMP_SYSTEM,
+				ChannelDataType.UINT64, 8, ChannelDataEndian.MSB,
+				CHANNEL_UNITS.MILLISECONDS,
+				Arrays.asList(CHANNEL_TYPE.CAL), false, false);
+		cDSystemTimestopPlot.mChannelSource = CHANNEL_SOURCE.API;
+		cDSystemTimestopPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+		cDSystemTimestopPlot.mIsEnabled = true;
+		mapOfChannelDetails.put(count, cDSystemTimestopPlot);
 		
-		ChannelDetails channelDetails = new ChannelDetails(
-						Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT,
-						Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT,
-						DatabaseChannelHandles.TIMESTAMP_SYSTEM,
-						ChannelDataType.UINT64, 8, ChannelDataEndian.MSB,
-						CHANNEL_UNITS.MILLISECONDS,
-						Arrays.asList(CHANNEL_TYPE.CAL), false, true);
-
-		channelDetails.mChannelSource = CHANNEL_SOURCE.API;
-		channelDetails.mDefaultUnit = CHANNEL_UNITS.MILLISECONDS;
-		channelDetails.mDefaultCalibratedUnits = CHANNEL_UNITS.MILLISECONDS;
-		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
-		channelDetails.mIsEnabled = true;
-		
-		mapOfChannelDetails.put(count, channelDetails);
 		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
 		
 		
 		return mMapOfCommTypetoChannel;
 	}
+	
+
+	@Override
+	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
+		int index = 0;
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
+			if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
+//			if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
+//			if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
+				//first process the data originating from the Shimmer sensor
+				byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+				System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+				objectCluster = processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+				objectCluster.indexKeeper++;
+				index=index+channelDetails.mDefaultNumBytes;
+			}
+			else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
+				//TODO: Hack -> just copying from 
+			}
+		}
+		
+		return objectCluster;
+	}
 
 	@Override
 	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-
-
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
-		// TODO Auto-generated method stub
-		
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 	}
 
-
-
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
-		// TODO Auto-generated method stub
-		
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 	}
-
-
-
 
 }

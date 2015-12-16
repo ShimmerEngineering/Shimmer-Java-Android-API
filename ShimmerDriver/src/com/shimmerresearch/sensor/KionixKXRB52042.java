@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -12,9 +13,13 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public class KionixKXRB52042 extends AbstractSensor{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5027305280613145453L;
+
 	public KionixKXRB52042(ShimmerVerObject svo) {
 		super(svo);
-		// TODO Auto-generated constructor stub
 	}
 
 	{
@@ -67,8 +72,7 @@ public class KionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public Object processData(byte[] rawData, COMMUNICATION_TYPE comType,
-			Object object) {
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
 		// TODO Auto-generated method stub
 		return null;
 	}

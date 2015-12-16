@@ -891,8 +891,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		ObjectCluster objectCluster = null;
 		try {
 			objectCluster = buildMsg(packet, fwID, timeSync, pcTimeStamp);
-			if(mFirstPacketParsed)
-			{
+			if(mFirstPacketParsed) {
 				mFirstPacketParsed=false;
 				FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
 				byte[] bSystemTS = objectCluster.mSystemTimeStamp;
@@ -903,7 +902,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mOffsetFirstTime = systemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
 			}
 			
-			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime));
+			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
