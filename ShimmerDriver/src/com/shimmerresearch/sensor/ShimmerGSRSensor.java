@@ -102,8 +102,8 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
 				DatabaseChannelHandles.GSR,
 				ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
-//				CHANNEL_UNITS.KOHMS,
-				CHANNEL_UNITS.MICROSIEMENS,
+				CHANNEL_UNITS.KOHMS,
+//				CHANNEL_UNITS.MICROSIEMENS,
 				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 		channelDetails.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelDetails.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
@@ -206,12 +206,12 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 						p2 = -0.3014;
 					}
 				}
-//					objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
-//					objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
-//					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
-					objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
-					objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
+					objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
+					objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
+//					objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
+//					objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
+//					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
 					objectCluster.indexKeeper++;
 				}
 			index = index + channelDetails.mDefaultNumBytes;
