@@ -195,7 +195,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 						p1 = 0.0015;
 						p2 = -1.0163;
 					}
-				} else if (mGSRRange==3  || newGSRRange==3) {
+				} else if (mGSRRange==3 || newGSRRange==3) {
 					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
 						p1 = 4.5580e-04;
 						p2 = -0.3014;
@@ -206,9 +206,9 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 						p2 = -0.3014;
 					}
 				}
-				/*objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawValue[0],p1,p2);
-					objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
-					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));*/
+//					objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
+//					objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
+//					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
 					objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
 					objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
