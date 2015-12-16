@@ -65,8 +65,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public static final int SENSOR_ECG_TO_HR			= 0x80;
 	long mDerivedSensors = SENSOR_ECG_TO_HR;
 	
-	//TODO move to Sensor classes
+	//TODO tidy: carried from ShimmerObject
 	int mInternalExpPower = 1;			// Enable external power for EXG + GSR
+	boolean mSyncWhenLogging = true;
+	/** Read from the InfoMem from UART command through the base/dock*/
+	protected String mMacIdFromInfoMem = "";
 
 	
 	 //just use fillers for now
@@ -372,7 +375,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 		
-		boolean mSyncWhenLogging = true;
 		mInfoMemBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) (((mSyncWhenLogging? infoMemLayout.maskTimeSyncWhenLogging:0)) << infoMemLayout.bitShiftTimeSyncWhenLogging);
 
 		//802.15.4 Radio config
@@ -414,46 +416,107 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	public void infoMemByteArrayParse(byte[] infoMemContents) {
-		mInfoMemBytes = infoMemContents;
 		
-		InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154) mInfoMemLayout;
-		
-		// Shimmer Name
 		String shimmerName = "";
-		byte[] shimmerNameBuffer = new byte[infoMemLayoutCast.lengthShimmerName];
-		System.arraycopy(infoMemContents, infoMemLayoutCast.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayoutCast.lengthShimmerName);
-		for(byte b : shimmerNameBuffer) {
-			if(!UtilShimmer.isAsciiPrintable((char)b)) {
-				break;
-			}
-			shimmerName += (char)b;
-		}
-		
-		// Experiment Name
-		byte[] experimentNameBuffer = new byte[infoMemLayoutCast.lengthExperimentName];
-		System.arraycopy(infoMemContents, infoMemLayoutCast.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemLayoutCast.lengthExperimentName);
-		String experimentName = "";
-		for(byte b : experimentNameBuffer) {
-			if(!UtilShimmer.isAsciiPrintable((char)b)) {
-				break;
-			}
-			experimentName += (char)b;
-		}
-		mTrialName = new String(experimentName);
 
-		//Configuration Time
-		int bitShift = (infoMemLayoutCast.lengthConfigTimeBytes-1) * 8;
-		mConfigTime = 0;
-		for(int x=0; x<infoMemLayoutCast.lengthConfigTimeBytes; x++ ) {
-			mConfigTime += (((long)(infoMemContents[infoMemLayoutCast.idxSDConfigTime0+x] & 0xFF)) << bitShift);
-			bitShift -= 8;
+		if(!InfoMemLayout.checkInfoMemValid(infoMemContents)){
+			// InfoMem not valid
+			setDefaultShimmerConfiguration();
+			//TODO
+//			mShimmerUsingConfigFromInfoMem = false;
+
+//			mShimmerInfoMemBytes = infoMemByteArrayGenerate();
+//			mShimmerInfoMemBytes = new byte[infoMemContents.length];
+			mInfoMemBytes = infoMemContents;
+		}
+		else {
+			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154) mInfoMemLayout;
+
+			//TODO
+//			mShimmerUsingConfigFromInfoMem = true;
+
+			mInfoMemBytes = infoMemContents;
+			createInfoMemLayoutObjectIfNeeded();
+			
+			// Sampling Rate
+			mShimmerSamplingRate = (32768/(double)((int)(infoMemContents[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) + ((int)(infoMemContents[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8)));
+
+			// Sensors
+			mEnabledSensors = ((long)infoMemContents[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
+			mEnabledSensors += ((long)infoMemContents[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
+			mEnabledSensors += ((long)infoMemContents[infoMemLayoutCast.idxSensors2] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors2;
+
+			//TODO
+//			checkExgResolutionFromEnabledSensorsVar();
+
+			// Configuration
+			mInternalExpPower = (infoMemContents[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
+			
+			// Configuration from each Sensor settings
+			for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
+			}
+
+			
+			mDerivedSensors = (long)0;
+			// Check if compatible and not equal to 0xFF
+			if((infoMemLayoutCast.idxDerivedSensors0>0) && (infoMemContents[infoMemLayoutCast.idxDerivedSensors0]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)
+					&& (infoMemLayoutCast.idxDerivedSensors1>0) && (infoMemContents[infoMemLayoutCast.idxDerivedSensors1]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)) { 
+				
+				mDerivedSensors |= ((long)infoMemContents[infoMemLayoutCast.idxDerivedSensors0] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors0;
+				mDerivedSensors |= ((long)infoMemContents[infoMemLayoutCast.idxDerivedSensors1] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors1;
+				
+				// Check if compatible and not equal to 0xFF
+				if((infoMemLayoutCast.idxDerivedSensors2>0) && (infoMemContents[infoMemLayoutCast.idxDerivedSensors2]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)){ 
+					mDerivedSensors |= ((long)infoMemContents[infoMemLayoutCast.idxDerivedSensors2] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors2;
+				}
+			}
+
+			
+			// Shimmer Name
+			byte[] shimmerNameBuffer = new byte[infoMemLayoutCast.lengthShimmerName];
+			System.arraycopy(infoMemContents, infoMemLayoutCast.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayoutCast.lengthShimmerName);
+			for(byte b : shimmerNameBuffer) {
+				if(!UtilShimmer.isAsciiPrintable((char)b)) {
+					break;
+				}
+				shimmerName += (char)b;
+			}
+			
+			// Experiment Name
+			byte[] experimentNameBuffer = new byte[infoMemLayoutCast.lengthExperimentName];
+			System.arraycopy(infoMemContents, infoMemLayoutCast.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemLayoutCast.lengthExperimentName);
+			String experimentName = "";
+			for(byte b : experimentNameBuffer) {
+				if(!UtilShimmer.isAsciiPrintable((char)b)) {
+					break;
+				}
+				experimentName += (char)b;
+			}
+			mTrialName = new String(experimentName);
+	
+			//Configuration Time
+			int bitShift = (infoMemLayoutCast.lengthConfigTimeBytes-1) * 8;
+			mConfigTime = 0;
+			for(int x=0; x<infoMemLayoutCast.lengthConfigTimeBytes; x++ ) {
+				mConfigTime += (((long)(infoMemContents[infoMemLayoutCast.idxSDConfigTime0+x] & 0xFF)) << bitShift);
+				bitShift -= 8;
+			}
+	
+			
+			mSyncWhenLogging = ((infoMemContents[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftTimeSyncWhenLogging) & infoMemLayoutCast.maskTimeSyncWhenLogging)==infoMemLayoutCast.maskTimeSyncWhenLogging? true:false;
+
+			byte[] macIdBytes = new byte[infoMemLayoutCast.lengthMacIdBytes];
+			System.arraycopy(infoMemContents, infoMemLayoutCast.idxMacAddress, macIdBytes, 0 , infoMemLayoutCast.lengthMacIdBytes);
+			mMacIdFromInfoMem = UtilShimmer.bytesToHexString(macIdBytes);
+
+			
+			byte[] radioConfig = new byte[infoMemLayoutCast.lengthRadioConfig];
+			System.arraycopy(infoMemContents, infoMemLayoutCast.idxSrRadioConfigStart, radioConfig, 0 , infoMemLayoutCast.lengthRadioConfig);
+			setRadioConfig(radioConfig);
+			
 		}
 
-		byte[] radioConfig = new byte[infoMemLayoutCast.lengthRadioConfig];
-		System.arraycopy(infoMemContents, infoMemLayoutCast.idxSrRadioConfigStart, radioConfig, 0 , infoMemLayoutCast.lengthRadioConfig);
-		setRadioConfig(radioConfig);
-		
-		
 		//TODO below copied from Shimmer Object -> make single shared class
 		// Set name if nothing was read from InfoMem
 		if(!shimmerName.isEmpty()) {

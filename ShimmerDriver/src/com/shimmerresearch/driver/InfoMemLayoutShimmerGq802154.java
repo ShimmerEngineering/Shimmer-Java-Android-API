@@ -149,7 +149,7 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 //	public int idxEstimatedExpLengthLsb =           128+93;
 //	public int idxMaxExpLengthMsb =                 128+94; // 2bytes
 //	public int idxMaxExpLengthLsb =                 128+95;
-//	public int idxMacAddress =                     	128+96; // 6bytes
+	public int idxMacAddress =                     	128+96; // 6bytes
 //	public int idxSDConfigDelayFlag =            	128+102;
 //
 //	public int idxNode0 =                           128+128+0;
@@ -311,8 +311,8 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 //	
 //	public int bitShiftTCX0 = 					4;
 //	public int maskTimeTCX0 = 					0x01;
-//
-//	public int lengthMacIdBytes = 				6;
+
+	public int lengthMacIdBytes = 				6;
 
 	public int bitShiftSDConfigTime0 = 			24;
 	public int bitShiftSDConfigTime1 = 			16;

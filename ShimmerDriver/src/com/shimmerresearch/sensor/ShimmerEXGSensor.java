@@ -108,8 +108,7 @@ public class ShimmerEXGSensor extends AbstractSensor{
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
 		
 		ActionSetting actionSetting = new ActionSetting(comType);
 		switch(componentName){
@@ -160,7 +159,7 @@ public class ShimmerEXGSensor extends AbstractSensor{
 		mSensorEnabledMap = shimmerDevice.getSensorEnabledMap();
 				
 		int idxEXGADS1292RChip1Config1 =         10;// exg bytes
-		int idxEXGADS1292RChip1Config2 =         11;
+		int idxEXGADS1292RChip2Config1 =         20;
 		
 		//TODO temp here
 //		byte[] mEXG1RegisterArray = new byte[]{(byte) 0x00,(byte) 0xa3,(byte) 0x10,(byte) 0x05,(byte) 0x05,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x01}; //WP test array
@@ -172,8 +171,20 @@ public class ShimmerEXGSensor extends AbstractSensor{
 		//EXG Configuration
 		exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
 		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip1Config1, 10);
-		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip1Config2, 10);
+		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip2Config1, 10);
 	}
+
+	@Override
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] infoMemBytes) {
+
+		int idxEXGADS1292RChip1Config1 =         10;// exg bytes
+		int idxEXGADS1292RChip2Config1 =         20;
+
+		System.arraycopy(infoMemBytes, idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
+		System.arraycopy(infoMemBytes, idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
+		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+	}
+	
 
 
 	//-------------------- ExG Start -----------------------------------
@@ -1269,6 +1280,6 @@ public class ShimmerEXGSensor extends AbstractSensor{
 //			}
 //		}
 	}
-	
+
 	//-------------------- ExG End -----------------------------------	
 }

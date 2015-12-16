@@ -28,8 +28,13 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 
 public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
-	
-	public int mGSRRange = 4; 					// 4 = Auto
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1773291747371088953L;
+
+
 	/**
 	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
 	 */
@@ -41,10 +46,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 	public long mDerivedSensorBitmapID = 0;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1773291747371088953L;
+	public int mGSRRange = 4; 					// 4 = Auto
 
 	public ShimmerGSRSensor(ShimmerVerObject svo) {
 		super(svo);
@@ -241,15 +243,27 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 	@Override
 	//TODO: Not sure yet whether store sensors infomem layout in Sensor class or in InfoMemLayout class
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		
+		//TODO: tidy
 		int idxConfigSetupByte3 =              	9;
 		int bitShiftGSRRange =                       1;
 		int maskGSRRange =                           0x07;
 
 		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
 		
+	}
+
+	@Override
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		
+		//TODO: tidy
+		int idxConfigSetupByte3 =              	9;
+		int bitShiftGSRRange =                       1;
+		int maskGSRRange =                           0x07;
+		
+		
+		mGSRRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftGSRRange) & maskGSRRange;
 	}
 
 	

@@ -1,6 +1,7 @@
 package com.shimmerresearch.driver;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 
@@ -79,5 +80,16 @@ public abstract class InfoMemLayout implements Serializable {
 			b = (byte)0xFF;
 		}
 		return newArray;
+	}
+	
+	public static boolean checkInfoMemValid(byte[] infoMemContents){
+		// Check first 6 bytes of InfoMem for 0xFF to determine if contents are valid 
+		byte[] comparisonBuffer = new byte[]{-1,-1,-1,-1,-1,-1};
+		byte[] detectionBuffer = new byte[comparisonBuffer.length];
+		System.arraycopy(infoMemContents, 0, detectionBuffer, 0, detectionBuffer.length);
+		if(Arrays.equals(comparisonBuffer, detectionBuffer)) {
+			return false;
+		}
+		return true;
 	}
 }

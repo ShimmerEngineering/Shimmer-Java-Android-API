@@ -80,6 +80,13 @@ public class KionixKXRB52042 extends AbstractSensor{
 		
 	}
 
+	@Override
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
+			byte[] mInfoMemBytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 
 

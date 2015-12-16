@@ -115,6 +115,8 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
 
+	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
+	
 	
 	/** To process data originating from the Shimmer device
 	 * @param channelByteArray The byte array packet, or byte array sd log
