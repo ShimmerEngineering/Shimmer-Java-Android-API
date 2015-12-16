@@ -626,6 +626,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerSamplingRate; 
 	}
 	
+	public void setShimmerSamplingRate(double samplingRate){
+		mShimmerSamplingRate = samplingRate;
+	}
+	
 	public InfoMemLayout getInfoMemLayout(){
 		createInfoMemLayoutObjectIfNeeded();
 		return mInfoMemLayout;
@@ -749,6 +753,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public String getTrialName() {
 		return mTrialName;
+	}
+	
+	public void setTrialName(String mTrialName) {
+		this.mTrialName = mTrialName;
+	}
+	
+	public long getConfigTime() {
+		return mConfigTime;
+	}
+	
+	public void setConfigTime(long mConfigTime) {
+		this.mConfigTime = mConfigTime;
 	}
 	
 	public long getDriveTotalSpace() {
