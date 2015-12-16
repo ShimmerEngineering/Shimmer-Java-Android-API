@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -685,6 +686,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		ojc.createArrayData(getNumberOfEnabledChannels(commType));
 //		ojc.mMyName = mUniqueID;
 		ojc.mMyName = mShimmerUserAssignedName;
+		ojc.mBluetoothAddress = mMacIdFromUart;
 		int index=0;
 		for (AbstractSensor sensor:mMapOfSensors.values()){
 			int length = sensor.getExpectedPacketByteArray(commType);
@@ -818,6 +820,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			AbstractSensor abstractSensor = mMapOfSensors.get(abstractSensorKey);
 			if(abstractSensor.mMapOfCommTypeToSensorMap.containsKey(commType)){
 				mapOfSensorsForCommType.put(abstractSensorKey, abstractSensor);
+			}
+		}
+		return mapOfSensorsForCommType;
+	}
+	
+	public Map<Integer, SensorEnabledDetails> getMapOfSensorEnabledForCommType(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<Integer, SensorEnabledDetails> mapOfSensorsForCommType = new LinkedHashMap<Integer, SensorEnabledDetails>(); 
+		for(int abstractSensorKey:mMapOfSensors.keySet()){
+			AbstractSensor abstractSensor = mMapOfSensors.get(abstractSensorKey);
+			if(abstractSensor.mMapOfCommTypeToSensorMap.containsKey(commType)){
+				LinkedHashMap<Integer, SensorEnabledDetails> temp = abstractSensor.mMapOfCommTypeToSensorMap.get(commType);
+				if(temp!=null){
+					mapOfSensorsForCommType.putAll(temp);
+				}
 			}
 		}
 		return mapOfSensorsForCommType;

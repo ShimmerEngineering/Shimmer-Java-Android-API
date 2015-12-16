@@ -38,10 +38,6 @@ public abstract class BasicProcessWithCallBack {
 	 */
 	protected abstract void processMsgFromCallback(ShimmerMsg shimmerMSG);
 	
-	
-	
-	
-	
 	public class ConsumerThread extends Thread {
 		public boolean stop = false;
 		public void run() {

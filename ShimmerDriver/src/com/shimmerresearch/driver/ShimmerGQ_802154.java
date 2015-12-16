@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -180,6 +181,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
         radioConfigArray[6] = (byte)((mRadioResponseWindow >> 0) & 0x00FF);
         
 		return radioConfigArray;
+	}
+	
+	public double getSamplingRate(){
+		return mShimmerSamplingRate;
 	}
 
 	/**
@@ -630,10 +635,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 	}
 
+	//TODO MN: DO AGAIN, AND BETTER
 	@Override
 	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
-		// TODO Auto-generated method stub
-		return null;
+		return getMapOfSensorEnabledForCommType(COMMUNICATION_TYPE.IEEE802154);
 	}
 
 	@Override
