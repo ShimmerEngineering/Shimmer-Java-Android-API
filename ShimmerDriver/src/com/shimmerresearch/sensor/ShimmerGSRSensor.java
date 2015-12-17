@@ -237,7 +237,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				objectCluster.addCalData(channelDetails, calData);
 				objectCluster.indexKeeper++;
 //				}
-				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0') + "\t" + calData + " " + channelDetails.mDefaultCalibratedUnits);
+//				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0') + "\t" + calData + " " + channelDetails.mDefaultCalibratedUnits);
 
 			}
 			index = index + channelDetails.mDefaultNumBytes;
