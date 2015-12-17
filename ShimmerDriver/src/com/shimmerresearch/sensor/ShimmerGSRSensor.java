@@ -1,9 +1,11 @@
 package com.shimmerresearch.sensor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -29,30 +31,24 @@ import com.shimmerresearch.driver.ShimmerObject;
 
 public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
-	/**
-	 * 
-	 */
+	/**	 */
 	private static final long serialVersionUID = 1773291747371088953L;
 
-
-	/**
-	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
-	 */
-	public long mSensorBitmapIDStreaming = 0x04<<(0*8);
-	/**
-	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
-	 */
-	public long mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
-
-	public long mDerivedSensorBitmapID = 0;
-
+	// --- Configuration variables specific to this Sensor - Start --- 
 	public int mGSRRange = 4; 					// 4 = Auto
-
+	
+//	private String calUnitToUse = Configuration.CHANNEL_UNITS.MICROSIEMENS;
+	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
+	// --- Configuration variables specific to this Sensor - End ---
+	
 	public ShimmerGSRSensor(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.GSR.toString();
-		
+		mGuiFriendlyLabel = Shimmer3.GuiLabelSensors.GSR;
 		mIntExpBoardPowerRequired = true;
+		
+		mSensorBitmapIDStreaming = 0x04<<(0*8);
+		mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
 	}
 
 	@Override
@@ -66,8 +62,6 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 
 	@Override
@@ -102,8 +96,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
 				DatabaseChannelHandles.GSR,
 				ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
-				CHANNEL_UNITS.KOHMS,
-//				CHANNEL_UNITS.MICROSIEMENS,
+				calUnitToUse,
 				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 		channelDetails.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelDetails.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
@@ -113,15 +106,14 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 		
 		//TODO MN: with the new AbstractSensor class the each of these properties () can be just stored as individual variables inside the class (no need for SensoreDetails?) 
-		
-		//JC: Not sure if we need this for GUI leaving this in first
-		LinkedHashMap<Integer, SensorEnabledDetails> sensorMap = new  LinkedHashMap<Integer, SensorEnabledDetails>(); 
-		long streamingByteIndex = 0;
-		long logHeaderByteIndex = 0;
-		SensorDetails sensorDetails = new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GSR);
-		sensorMap.put(Configuration.Shimmer3.SensorMapKey.GSR, new SensorEnabledDetails(false, 0, sensorDetails));
-		mMapOfCommTypeToSensorMap.put(COMMUNICATION_TYPE.IEEE802154, sensorMap);
-		/////JC: Not sure if we need this for GUI leaving this in first
+//		//JC: Not sure if we need this for GUI leaving this in first
+//		LinkedHashMap<Integer, SensorEnabledDetails> sensorMap = new  LinkedHashMap<Integer, SensorEnabledDetails>(); 
+//		long streamingByteIndex = 0;
+//		long logHeaderByteIndex = 0;
+//		SensorDetails sensorDetails = new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GSR);
+//		sensorMap.put(Configuration.Shimmer3.SensorMapKey.GSR, new SensorEnabledDetails(false, 0, sensorDetails));
+//		mMapOfCommTypeToSensorMap.put(COMMUNICATION_TYPE.IEEE802154, sensorMap);
+//		/////JC: Not sure if we need this for GUI leaving this in first
 		
 		
 		return mMapOfCommTypetoChannel;
@@ -234,11 +226,13 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				//TODO: Doesn't support having both units
 				
 //				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket!=CHANNEL_TYPE.CAL){
-				//kOhms
-				double calData = calibrateGsrData(rawData,p1,p2);
-//				//uS
-//				double calData = calibrateGsrDataToSiemens(rawData,p1,p2);
-//				objectCluster.addData(channelDetails, rawData, calData); // Uncal already added so no need
+				double calData = 0.0;
+				if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.KOHMS)){
+					calData = calibrateGsrData(rawData,p1,p2);
+				}
+				else if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.MICROSIEMENS)){
+					calData = calibrateGsrDataToSiemens(rawData,p1,p2);
+				}
 				objectCluster.addCalData(channelDetails, calData);
 				objectCluster.indexKeeper++;
 //				}

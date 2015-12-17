@@ -694,6 +694,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		int index=0;
 		for (AbstractSensor sensor:mMapOfSensors.values()){
 			int length = sensor.getExpectedPacketByteArray(commType);
+			//TODO process API sensors, not just bytes from Shimmer packet 
 			if (length!=0){ //if length 0 means there are no channels to be processed
 				byte[] sensorByteArray = new byte[length];
 				if((index+sensorByteArray.length)<=packetByteArray.length){
@@ -830,6 +831,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mMapOfSensors;
 	}
 	
+	@Deprecated
 	public LinkedHashMap<Integer, AbstractSensor> getMapOfSensorsForCommType(COMMUNICATION_TYPE commType) {
 		LinkedHashMap<Integer, AbstractSensor> mapOfSensorsForCommType = new LinkedHashMap<Integer, AbstractSensor>(); 
 		for(int abstractSensorKey:mMapOfSensors.keySet()){
@@ -841,6 +843,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfSensorsForCommType;
 	}
 	
+	@Deprecated
 	public Map<Integer, SensorEnabledDetails> getMapOfSensorEnabledForCommType(COMMUNICATION_TYPE commType) {
 		LinkedHashMap<Integer, SensorEnabledDetails> mapOfSensorsForCommType = new LinkedHashMap<Integer, SensorEnabledDetails>(); 
 		for(int abstractSensorKey:mMapOfSensors.keySet()){

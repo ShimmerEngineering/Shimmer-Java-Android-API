@@ -58,8 +58,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public String mSpanId = "";
 	
 	private boolean mVerboseMode = true;
-	private String mParentClassName = "ShimmerGQ_802154";
-
 	
 	//TODO generate from Sensor classes
 	long mEnabledSensors = Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
@@ -524,7 +522,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 		//TODO below copied from Shimmer Object -> make single shared class
 		// Set name if nothing was read from InfoMem
-		if(!shimmerName.isEmpty()) {
+		if((!shimmerName.isEmpty()) && (!shimmerName.equals("idffff"))){ //Don't allow the default InfoMem contents
 			mShimmerUserAssignedName = new String(shimmerName);
 		}
 		else {
@@ -580,7 +578,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	
 	@Override
-	public ObjectCluster buildMsg(byte[] packetByteArray,COMMUNICATION_TYPE commType){
+	public ObjectCluster buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType){
 //		//if the packet byte has a starting byte indicating enabled channels
 //		interpretDataPacketFormat(packetByteArray[0],commType);
 //		byte[] newPBA = new byte[packetByteArray.length-1];
@@ -686,7 +684,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
 					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
 					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString + " " + mParentClassName + ": " + getMacId() + " " + message);
+			System.out.println(rightNowString + " " + getClass().getSimpleName() + ": " + getMacId() + " " + message);
 		}		
 	}
 

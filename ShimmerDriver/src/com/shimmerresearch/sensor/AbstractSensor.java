@@ -27,9 +27,9 @@ public abstract class AbstractSensor implements Serializable{
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	
-//	public long mDerivedSensorBitmapID = 0;
+	public long mDerivedSensorBitmapID = 0;
 	
-	public String mLabel = "";
+	public String mGuiFriendlyLabel = "";
 	public List<Integer> mListOfSensorMapKeysRequired = new ArrayList<Integer>();
 	public List<Integer> mListOfSensorMapKeysConflicting = new ArrayList<Integer>();
 	public boolean mIntExpBoardPowerRequired = false;
@@ -42,7 +42,6 @@ public abstract class AbstractSensor implements Serializable{
 //	public int mNumChannels = 0;
 	
 	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
-	public List<String> mListOfChannelsRef = new ArrayList<String>();
 	
 	public boolean mIsEnabled = true;
 	public boolean mIsDummySensor = false;
@@ -69,6 +68,7 @@ public abstract class AbstractSensor implements Serializable{
 	    }
 	}
 	
+	@Deprecated
 	public SensorEnabledDetails mSensorEnabledDetails;
 	
 	
@@ -87,7 +87,7 @@ public abstract class AbstractSensor implements Serializable{
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
-	
+	@Deprecated
 	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapOfCommTypeToSensorMap = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
 	
 	/** Each communication type might have a different Integer key representing the channel, e.g. BT Stream inquiry response (holds the channel sequence of the packet)
@@ -135,9 +135,9 @@ public abstract class AbstractSensor implements Serializable{
 //			
 //		}
 
-		if (channelDetails.mIsEnabled){
-			long chDataFromShimmer = parsedData(channelByteArray,channelDetails.mDefaultChannelDataType,channelDetails.mDefaultChannelDataEndian);
-			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)chDataFromShimmer);
+		if(channelDetails.mIsEnabled){
+			long parsedChannelData = parsedData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
+			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
 		}
 
 		return objectCluster;
