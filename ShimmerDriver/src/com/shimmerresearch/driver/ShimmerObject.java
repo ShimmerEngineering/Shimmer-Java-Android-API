@@ -894,7 +894,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		Vector3d gyroscope = new Vector3d();
 		
 		
-		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3  
+				|| getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_LR || getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_NR){
 			
 			int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
 			if(mFirstTime && fwIdentifier == FW_TYPE_SD){
