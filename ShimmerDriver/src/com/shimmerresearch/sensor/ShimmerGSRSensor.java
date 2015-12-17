@@ -222,7 +222,6 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 //				objectCluster.indexKeeper++;
 
 
-//				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0'));
 
 				// ----- Method 3 - Approaching dynamic object based approach  -----------
 				//TODO: Doesn't support having both units
@@ -238,6 +237,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				objectCluster.addCalData(channelDetails, calData);
 				objectCluster.indexKeeper++;
 //				}
+				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0') + "\t" + calData + " " + channelDetails.mDefaultCalibratedUnits);
 
 			}
 			index = index + channelDetails.mDefaultNumBytes;
