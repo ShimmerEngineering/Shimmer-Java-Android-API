@@ -676,6 +676,22 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		this.mDerivedSensors = mDerivedSensors;
 	}
 
+	
+	public boolean hasSameConfiguration(ShimmerGQ_802154 shimmerGQToComapreWith){
+
+		if(shimmerGQToComapreWith.mRadioMyAddress == this.mRadioMyAddress &&
+			shimmerGQToComapreWith.mRadioChannel == this.mRadioChannel &&
+			shimmerGQToComapreWith.mRadioGroupId == this.mRadioGroupId &&
+			shimmerGQToComapreWith.getTrialName().equals(this.getTrialName()) &&
+			shimmerGQToComapreWith.getConfigTime() == this.getConfigTime() &&
+			shimmerGQToComapreWith.getShimmerUserAssignedName().equals(this.getShimmerUserAssignedName())){
+
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 
 	private void consolePrintLn(String message) {
 		if(mVerboseMode) {
