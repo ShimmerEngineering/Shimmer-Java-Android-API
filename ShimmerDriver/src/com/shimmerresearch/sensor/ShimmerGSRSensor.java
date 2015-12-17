@@ -221,7 +221,9 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 ////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.MICROSIEMENS, calibrateGsrDataToSiemens(rawData,p1,p2));
 //				objectCluster.indexKeeper++;
 
-				
+
+//				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0'));
+
 				// ----- Method 3 - Approaching dynamic object based approach  -----------
 				//TODO: Doesn't support having both units
 				
