@@ -156,6 +156,7 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 //
 ////	public int idxMplCalibration =                  0;
 	
+	
 	// Masks and Bitshift values
 	public int maskShimmerSamplingRate =				0xFF;
 	public int maskBufferSize =							0xFF;

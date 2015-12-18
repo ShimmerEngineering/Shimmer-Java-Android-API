@@ -60,9 +60,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	private boolean mVerboseMode = true;
 	
 	//TODO generate from Sensor classes
-	long mEnabledSensors = Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
-	public static final int SENSOR_ECG_TO_HR			= 0x80;
-	long mDerivedSensors = SENSOR_ECG_TO_HR;
+	public static final int SENSOR_ECG_TO_HR			= (0x40 << (8*1));
+	long mEnabledSensors = SENSOR_ECG_TO_HR + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
+	long mDerivedSensors = 0;
 	
 	//TODO tidy: carried from ShimmerObject
 	int mInternalExpPower = 1;			// Enable external power for EXG + GSR
@@ -108,6 +108,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	    }
 	}
 	public GQ_STATE mState = GQ_STATE.IDLE;
+	private int mCurrentSessionIdStreamingToDB = 0;
 	
 	
 	// ----------------- Constructors Start ---------------------------------
@@ -984,5 +985,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		return mConfigValues;
 
+	}
+
+	public void setTrialConfig(String currentTrialName, String configTimeGQ){//, int currentSessionIdStreamingToDB) {
+		mTrialName = currentTrialName;
+		mConfigTime = Long.parseLong(configTimeGQ);
+//		mCurrentSessionIdStreamingToDB = currentSessionIdStreamingToDB;
 	}
 }
