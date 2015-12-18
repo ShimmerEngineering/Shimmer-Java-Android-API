@@ -67,6 +67,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	//TODO tidy: carried from ShimmerObject
 	int mInternalExpPower = 1;			// Enable external power for EXG + GSR
 	boolean mSyncWhenLogging = true;
+	boolean mIsFwTestMode = false;
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
 
@@ -191,17 +192,19 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public void parseStatusByte(byte statusByte){
 //		Boolean savedDockedState = mIsDocked;
 		
-		mIsDocked = ((statusByte & 0x01) > 0)? true:false;
-		mIsSensing = ((statusByte & 0x02) > 0)? true:false;
-//		reserved = ((statusByte & 0x03) > 0)? true:false;
-		mIsSDLogging = ((statusByte & 0x08) > 0)? true:false;
-		mIsStreaming = ((statusByte & 0x10) > 0)? true:false; 
+		mIsDocked = ((statusByte & (0x01 << 0)) > 0)? true:false;
+		mIsSensing = ((statusByte & (0x01 << 1)) > 0)? true:false;
+//		reserved = ((statusByte & (0x01 << 2)) > 0)? true:false;
+		mIsSDLogging = ((statusByte & (0x01 << 3)) > 0)? true:false;
+		mIsStreaming = ((statusByte & (0x01 << 4)) > 0)? true:false; 
+		mIsFwTestMode = ((statusByte & (0x01 << 5)) > 0)? true:false;
 
 		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
 				+ "\t" + "IsDocked = " + mIsDocked
 				+ "\t" + "IsSensing = " + mIsSensing
 				+ "\t" + "IsSDLogging = "+ mIsSDLogging
 				+ "\t" + "IsStreaming = " + mIsStreaming
+				+ "\t" + "mIsFwTestMode = " + mIsFwTestMode
 				);
 		
 //		if(savedDockedState!=mIsDocked){
