@@ -359,6 +359,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		// Sensors
 //		checkExgResolutionFromEnabledSensorsVar();
 //		refreshEnabledSensorsFromSensorMap();
+		mEnabledSensors = SENSOR_ECG_TO_HR + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
 		mInfoMemBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
 		mInfoMemBytes[infoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors1) & infoMemLayout.maskSensors);
 		mInfoMemBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);

@@ -1746,16 +1746,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			
-			if ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR) > 0){
-				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR);
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_TO_HR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]));
-//				uncalibratedData[sigIndex]=(double)newPacketInt[sigIndex];
-//				uncalibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
-				calibratedData[sigIndex]=(double)newPacketInt[sigIndex];
-				calibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
-			}
-
-
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.GSR) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GSR) > 0)
 					) {
@@ -2033,6 +2023,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
 			}
 			
+			if ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR) > 0){
+				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR);
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_TO_HR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]));
+//				uncalibratedData[sigIndex]=(double)newPacketInt[sigIndex];
+//				uncalibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
+				calibratedData[sigIndex]=(double)newPacketInt[sigIndex];
+				calibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
+			}
+
 			//Additional Channels Offset
 			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels+1; //+1 because timestamp channel appears at the start
 			
@@ -2125,7 +2124,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 			}
-			
 			
 			if(fwIdentifier == FW_TYPE_BT){
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
