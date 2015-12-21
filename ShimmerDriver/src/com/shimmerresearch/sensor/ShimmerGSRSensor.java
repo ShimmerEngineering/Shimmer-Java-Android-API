@@ -21,8 +21,8 @@ import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
-import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
@@ -37,8 +37,8 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	// --- Configuration variables specific to this Sensor - Start --- 
 	public int mGSRRange = 4; 					// 4 = Auto
 	
-//	private String calUnitToUse = Configuration.CHANNEL_UNITS.MICROSIEMENS;
-	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
+	private static String calUnitToUse = Configuration.CHANNEL_UNITS.MICROSIEMENS;
+//	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
 	// --- Configuration variables specific to this Sensor - End ---
 	
 	public ShimmerGSRSensor(ShimmerVerObject svo) {
@@ -95,7 +95,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
 				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
 				DatabaseChannelHandles.GSR,
-				ChannelDataType.UINT16, 2, ChannelDataEndian.LSB,
+				CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 				calUnitToUse,
 				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 		channelDetails.mChannelSource = CHANNEL_SOURCE.SHIMMER;

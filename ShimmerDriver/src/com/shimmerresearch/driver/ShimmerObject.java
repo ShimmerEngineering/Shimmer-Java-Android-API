@@ -178,42 +178,46 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public BiMap<String, String> mSensorBitmaptoName;  
 	
 	public class SDLogHeader {
-		public final static int ACCEL_LN = 1<<7;
-		public final static int GYRO = 1<<6;
-		public final static int MAG = 1<<5;
-		public final static int EXG1_24BIT = 1<<4;
-		public final static int EXG2_24BIT = 1<<3;
-		public final static int GSR = 1<<2;
-		public final static int EXT_EXP_A7 = 1<<1;
-		public final static int EXT_EXP_A6 = 1<<0;
-		public final static int BRIDGE_AMP = 1<<15;
-		// 1<<9 NONE 
-		public final static int BATTERY = 1<<13;
-		public final static int ACCEL_WR = 1<<12;
-		public final static int EXT_EXP_A15 = 1<<11;
-		public final static int INT_EXP_A1 = 1<<10;
-		public final static int INT_EXP_A12 = 1<<9;
-		public final static int INT_EXP_A13 = 1<<8;
-		public final static int INT_EXP_A14 = 1<<23;
-		public final static int ACCEL_MPU = 1<<22;
-		public final static int MAG_MPU = 1<<21;
-		public final static int EXG1_16BIT = 1<<20;
-		public final static int EXG2_16BIT = 1<<19;
-		public final static int BMP180 = 1<<18;
+		public final static int ACCEL_LN 		= 1<<7;
+		public final static int GYRO 			= 1<<6;
+		public final static int MAG 			= 1<<5;
+		public final static int EXG1_24BIT 		= 1<<4;
+		public final static int EXG2_24BIT 		= 1<<3;
+		public final static int GSR 			= 1<<2;
+		public final static int EXT_EXP_A7 		= 1<<1;
+		public final static int EXT_EXP_A6 		= 1<<0;
+		public final static int BRIDGE_AMP 		= 1<<15;
+		public final static int ECG_TO_HR 		= 1<<14;
+		public final static int BATTERY 		= 1<<13;
+		public final static int ACCEL_WR 		= 1<<12;
+		public final static int EXT_EXP_A15 	= 1<<11;
+		public final static int INT_EXP_A1 		= 1<<10;
+		public final static int INT_EXP_A12 	= 1<<9;
+		public final static int INT_EXP_A13 	= 1<<8;
+		public final static int INT_EXP_A14 	= 1<<23;
+		public final static int ACCEL_MPU 		= 1<<22;
+		public final static int MAG_MPU 		= 1<<21;
+		public final static int EXG1_16BIT 		= 1<<20;
+		public final static int EXG2_16BIT 		= 1<<19;
+		public final static int BMP180 			= 1<<18;
 		public final static int MPL_TEMPERATURE = 1<<17;
-		// 1<<23
-		public final static int MPL_QUAT_6DOF = 1<<31;
-		public final static int MPL_QUAT_9DOF = 1<<30;
-		public final static int MPL_EULER_6DOF = 1<<29;
-		public final static int MPL_EULER_9DOF = 1<<28;
-		public final static int MPL_HEADING = 1<<27;
-		public final static int MPL_PEDOMETER = 1<<26;
-		public final static int MPL_TAP = 1<<25;
+		// 1<<16
+		public final static int MPL_QUAT_6DOF 	= 1<<31;
+		public final static int MPL_QUAT_9DOF 	= 1<<30;
+		public final static int MPL_EULER_6DOF 	= 1<<29;
+		public final static int MPL_EULER_9DOF 	= 1<<28;
+		public final static int MPL_HEADING 	= 1<<27;
+		public final static int MPL_PEDOMETER 	= 1<<26;
+		public final static int MPL_TAP 		= 1<<25;
 		public final static int MPL_MOTION_ORIENT = 1<<24;
-		public final static long GYRO_MPU_MPL = (long)1<<39;
-		public final static long ACCEL_MPU_MPL = (long)1<<38;
-		public final static long MAG_MPU_MPL = (long)1<<37;
+		public final static long GYRO_MPU_MPL 	= (long)1<<39;
+		public final static long ACCEL_MPU_MPL 	= (long)1<<38;
+		public final static long MAG_MPU_MPL 	= (long)1<<37;
 		public final static long SD_SENSOR_MPL_QUAT_6DOF_RAW = (long)1<<36;
+		// 1<<35
+		// 1<<34
+		// 1<<33
+		// 1<<32
 	}
 	
 	public class SDLogHeaderDerivedSensors{
@@ -1741,6 +1745,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBALow]));	
 				}
 			}
+			
+			if ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR) > 0){
+				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR);
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_TO_HR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]));
+//				uncalibratedData[sigIndex]=(double)newPacketInt[sigIndex];
+//				uncalibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
+				calibratedData[sigIndex]=(double)newPacketInt[sigIndex];
+				calibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
+			}
+
 
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.GSR) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GSR) > 0)
@@ -3501,7 +3515,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int iSignal=-1; //better to fail //used to be -1, putting to zero ensure it works eventhough it might be wrong SR30
 		for (int i=0;i<mSignalNameArray.length;i++) {
 			if (signalName==mSignalNameArray[i]) {
-				iSignal=i;
+//				iSignal=i;
+				return i;
 			}
 		}
 
@@ -9331,20 +9346,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		}
 		return false;
-	}
-	
-	 /**
-	 * @return the mConfigTime
-	 */
-	public long getConfigTime() {
-		return mConfigTime;
-	}
-
-	 /**
-	 * @return the mConfigTime in a parsed String format (yyyy-MM-dd hh:MM:ss)
-	 */
-	public String getConfigTimeParsed() {
-		return UtilShimmer.convertSecondsToDateString(mConfigTime);
 	}
 	
 	/**

@@ -15,8 +15,8 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
-import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public class ShimmerClock extends AbstractSensor {
 
@@ -75,7 +75,7 @@ public class ShimmerClock extends AbstractSensor {
 				Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 				Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 				DatabaseChannelHandles.TIMESTAMP,
-				ChannelDataType.UINT24, 3, ChannelDataEndian.LSB,
+				CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.LSB,
 				CHANNEL_UNITS.CLOCK_UNIT,
 				Arrays.asList(CHANNEL_TYPE.UNCAL), false, true);
 		channelDetails.mChannelSource = CHANNEL_SOURCE.SHIMMER;

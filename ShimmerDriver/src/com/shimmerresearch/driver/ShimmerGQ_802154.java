@@ -93,7 +93,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public enum GQ_STATE{
 		IDLE("Idle"),
 		STREAMING("Streaming"),
-		STREAMING_AND_SDLOGGING("Streaming and SD Logging");
+		STREAMING_AND_SDLOGGING("Streaming and SD Logging"),
+		FW_TEST_MODE("FW Test Mode");
 		
 	    private final String text;
 
@@ -211,6 +212,19 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		if(savedDockedState!=mIsDocked){
 //			dockedStateChange();
 //		}
+		
+		if(mIsFwTestMode){
+			mState = GQ_STATE.FW_TEST_MODE;
+		}
+		else if(mIsStreaming&&mIsSDLogging){
+			mState = GQ_STATE.STREAMING_AND_SDLOGGING;
+		}
+		else if(mIsStreaming){
+			mState = GQ_STATE.STREAMING;
+		}
+		else {
+			mState = GQ_STATE.IDLE;
+		}
 		
 	}
 	
@@ -984,12 +998,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		mConfigValues[172] = getBluetoothAddress();
 		
 		return mConfigValues;
-
 	}
 
-	public void setTrialConfig(String currentTrialName, String configTimeGQ){//, int currentSessionIdStreamingToDB) {
-		mTrialName = currentTrialName;
-		mConfigTime = Long.parseLong(configTimeGQ);
-//		mCurrentSessionIdStreamingToDB = currentSessionIdStreamingToDB;
-	}
 }

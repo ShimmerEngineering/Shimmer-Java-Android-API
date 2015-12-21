@@ -18,8 +18,8 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
-import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public class SensorSystemTimeStamp extends AbstractSensor {
 
@@ -61,7 +61,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 						Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 						Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 						DatabaseChannelHandles.TIMESTAMP_SYSTEM,
-						ChannelDataType.UINT64, 8, ChannelDataEndian.MSB,
+						CHANNEL_DATA_TYPE.UINT64, 8, CHANNEL_DATA_ENDIAN.MSB,
 						CHANNEL_UNITS.MILLISECONDS,
 						Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 		cDSystemTimestop.mChannelSource = CHANNEL_SOURCE.API;

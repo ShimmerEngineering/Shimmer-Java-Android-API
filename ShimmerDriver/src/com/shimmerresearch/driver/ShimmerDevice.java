@@ -514,6 +514,27 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mPacketReceptionRateCurrent;
 	}
 	
+	 /**
+	 * @return the mConfigTime
+	 */
+	public long getConfigTime() {
+		return mConfigTime;
+	}
+
+	 /**
+	 * @return the mConfigTime in a parsed String format (yyyy-MM-dd hh:MM:ss)
+	 */
+	public String getConfigTimeParsed() {
+		return UtilShimmer.convertSecondsToDateString(mConfigTime);
+	}
+
+	public String getConfigTimeExcelCompatible() {
+		return UtilShimmer.fromMilToDateExcelCompatible(Long.toString(mConfigTime*1000), false);
+	}
+
+	
+	
+
 
 	// --------------- Get/Set Methods End --------------------------
 
@@ -756,18 +777,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mTrialName;
 	}
 	
-	public void setTrialName(String mTrialName) {
-		this.mTrialName = mTrialName;
+	public void setTrialName(String trialName) {
+		mTrialName = trialName;
 	}
 	
-	public long getConfigTime() {
-		return mConfigTime;
+	public void setConfigTime(long trialConfigTime) {
+		mConfigTime = trialConfigTime;
 	}
 	
-	public void setConfigTime(long mConfigTime) {
-		this.mConfigTime = mConfigTime;
+	public void setTrialConfig(String trialName, long trialConfigTime) {
+		mTrialName = trialName;
+		mConfigTime = trialConfigTime;
 	}
-	
+
 	public long getDriveTotalSpace() {
 		return mShimmerSDCardDetails.getDriveTotalSpace();
 	}

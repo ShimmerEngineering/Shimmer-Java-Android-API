@@ -15,8 +15,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataEndian;
-import com.shimmerresearch.driverUtilities.ChannelDetails.ChannelDataType;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable{
 
@@ -82,7 +82,7 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
 				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
 				DatabaseChannelHandles.ECG_TO_HR,
-				ChannelDataType.UINT8, 1, ChannelDataEndian.LSB,
+				CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 				CHANNEL_UNITS.BEATS_PER_MINUTE,
 				Arrays.asList(CHANNEL_TYPE.CAL));
 		mapOfChannelDetails.put(count,channelDetails);

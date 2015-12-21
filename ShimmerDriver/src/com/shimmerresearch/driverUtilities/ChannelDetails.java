@@ -21,7 +21,7 @@ public class ChannelDetails implements Serializable {
 	 */
 	private static final long serialVersionUID = -2662151922286820989L;
 
-	public static class ChannelDataType {
+	public static class CHANNEL_DATA_TYPE {
 		public static final String UNKOWN = "";
 		public static final String UINT8 = "uint8";
 		public static final String UINT12 = "uint12";
@@ -40,7 +40,7 @@ public class ChannelDetails implements Serializable {
 		public static final String UINT48 = "uint48";
 	}
 	
-	public static class ChannelDataEndian {
+	public static class CHANNEL_DATA_ENDIAN {
 		public static final String UNKOWN = "";
 		public static final String LSB = "LSB";
 		public static final String MSB = "MSB";
@@ -74,11 +74,11 @@ public class ChannelDetails implements Serializable {
 	public String mObjectClusterName = "";
 	public String mDatabaseChannelHandle = "";
 	public int mChannelId = -1;
-	public String mDefaultChannelDataType = ChannelDataType.UNKOWN;
+	public String mDefaultChannelDataType = CHANNEL_DATA_TYPE.UNKOWN;
 	public int mDefaultNumBytes = 0;
 	
 	//JC: default means the original signal this channel is derived form, it can be derived from a calibrated/noncalibrated/algorithm source.
-	public String mDefaultChannelDataEndian = ChannelDataEndian.UNKOWN;
+	public String mDefaultChannelDataEndian = CHANNEL_DATA_ENDIAN.UNKOWN;
 	public String mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
 	public String mDefaultCalibratedUnits = CHANNEL_UNITS.NO_UNITS; //deprecate this?
 	public List<CHANNEL_TYPE> mListOfChannelTypes = new ArrayList<CHANNEL_TYPE>();
