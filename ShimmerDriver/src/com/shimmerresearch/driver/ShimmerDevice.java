@@ -56,8 +56,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected String mMacIdFromUart = "";
 	
 	protected String mShimmerUserAssignedName = ""; // This stores the user assigned name
-	protected double mShimmerSamplingRate; 	                                        	// 51.2Hz is the default sampling rate 
+	protected HashMap<COMMUNICATION_TYPE, Double> mMapOfSamplingRatesShimmer = new HashMap<COMMUNICATION_TYPE, Double>(); // 51.2Hz is the default sampling rate 
+//	protected double mSamplingRateShimmer; 	                                        	// 51.2Hz is the default sampling rate 
 
+	{
+		mMapOfSamplingRatesShimmer.put(COMMUNICATION_TYPE.SD, 51.2);
+	}
+	
 	public final static String DEFAULT_DOCKID = "Default.01";
 	public final static int DEFAULT_SLOTNUMBER = -1;
 	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
@@ -643,14 +648,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
-	public double getShimmerSamplingRate(){
-		return mShimmerSamplingRate; 
+	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
+		return mMapOfSamplingRatesShimmer.get(communicationType); 
 	}
 	
-	public void setShimmerSamplingRate(double samplingRate){
-		mShimmerSamplingRate = samplingRate;
+	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double samplingRate){
+		mMapOfSamplingRatesShimmer.put(communicationType, samplingRate);
 	}
-	
+
+//	public void setShimmerSamplingRate(double samplingRate){
+//		mSamplingRateShimmer = samplingRate;
+//	}
+
 	public InfoMemLayout getInfoMemLayout(){
 		createInfoMemLayoutObjectIfNeeded();
 		return mInfoMemLayout;
@@ -903,6 +912,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		return mapOfChannelsPerSensorForCommType;
+	}
+	
+	public boolean isSyncWhenLogging() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

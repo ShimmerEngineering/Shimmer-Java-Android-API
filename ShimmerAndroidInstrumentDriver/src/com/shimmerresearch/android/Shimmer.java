@@ -912,7 +912,7 @@ public class Shimmer extends ShimmerBluetooth{
 		return instructionStatus;
 	}
 
-	public double getSamplingRate(){
+	public double getSamplingRateShimmer(){
 		return mShimmerSamplingRate;
 	}
 

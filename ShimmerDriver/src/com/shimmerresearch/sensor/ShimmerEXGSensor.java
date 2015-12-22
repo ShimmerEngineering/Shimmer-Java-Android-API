@@ -153,7 +153,7 @@ public class ShimmerEXGSensor extends AbstractSensor{
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		mShimmerVerObject = shimmerDevice.mShimmerVerObject;
-		mSensorEnabledMap = shimmerDevice.getSensorEnabledMap();
+//		mSensorEnabledMap = shimmerDevice.getSensorEnabledMap();
 				
 		int idxEXGADS1292RChip1Config1 =         10;// exg bytes
 		int idxEXGADS1292RChip2Config1 =         20;

@@ -110,6 +110,7 @@ import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -1429,7 +1430,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					||((fwIdentifier == FW_TYPE_SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && mOrientationEnabled )){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/mShimmerSamplingRate, 1, 0, 0,0);
+						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
 					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);					double theta, Rx, Ry, Rz, rho;
 					rho = Math.acos(q.q1);
@@ -2308,7 +2309,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if ((mEnabledSensors & SENSOR_ACCEL) > 0 && (mEnabledSensors & SENSOR_GYRO) > 0 && (mEnabledSensors & SENSOR_MAG) > 0 && mOrientationEnabled ){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/mShimmerSamplingRate, 1, 0, 0,0);
+						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
 					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
 					double theta, Rx, Ry, Rz, rho;
@@ -2780,7 +2781,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((mEnabledSensors & SENSOR_ACCEL) > 0 || (mEnabledSensors & SENSOR_DACCEL) > 0) && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled ){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/mShimmerSamplingRate, 1, 0, 0,0);
+						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
 					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);					double theta, Rx, Ry, Rz, rho;
 					rho = Math.acos(q.q1);
@@ -3138,7 +3139,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if ((mEnabledSensors & SENSOR_ACCEL) > 0 && (mEnabledSensors & SENSOR_GYRO) > 0 && (mEnabledSensors & SENSOR_MAG) > 0 && mOrientationEnabled ){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/mShimmerSamplingRate, 1, 0, 0,0);
+						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
 					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
 					double theta, Rx, Ry, Rz, rho;
@@ -4828,13 +4829,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
-			double expectedTimeDifference = (1/mShimmerSamplingRate)*1000;
+			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
 			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
 			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
 			if (timeDifference>expectedTimeDifferenceLimit){
 //				mPacketLossCount=mPacketLossCount+1;
 				mPacketLossCount+= (long) (timeDifference/expectedTimeDifferenceLimit);
-				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/mShimmerSamplingRate*1000));
+				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
 
 				mPacketReceptionRate = (double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100;
 				sendStatusMsgPacketLossDetected();
@@ -4949,8 +4950,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return gsrCalibratedData;  
 	}
 
-	public double getSamplingRate(){
-		return mShimmerSamplingRate;
+	public double getSamplingRateShimmer(){
+		return super.getSamplingRateShimmer(COMMUNICATION_TYPE.SD);
+	}
+	
+	public void setSamplingRateShimmer(double samplingRate){
+		super.setSamplingRateShimmer(COMMUNICATION_TYPE.SD, samplingRate);
 	}
 
 	/** 0 = +/-2g, 1 = +/-4g, 2 = +/-8g, 3 = +/- 16g */
@@ -4996,8 +5001,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			
 			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
-			mShimmerSamplingRate = (double)1024/bufferInquiry[0];
-			if (mLSM303MagRate==3 && mShimmerSamplingRate>10){
+			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
+			if (mLSM303MagRate==3 && getSamplingRateShimmer()>10){
 				mLowPowerMag = true;
 			}
 			mAccelRange = bufferInquiry[1];
@@ -5013,7 +5018,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} 
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
-			mShimmerSamplingRate = (32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8)));
+			setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
 			mNChannels = bufferInquiry[6];
 			mBufferSize = bufferInquiry[7];
 			mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
@@ -5028,13 +5033,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
 			mInquiryResponseBytes = new byte[8+mNChannels];
 			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-			if ((mLSM303DigitalAccelRate==2 && mShimmerSamplingRate>10)){
+			if ((mLSM303DigitalAccelRate==2 && getSamplingRateShimmer()>10)){
 				mLowPowerAccelWR = true;
 			}
-			if ((mMPU9150GyroAccelRate==0xFF && mShimmerSamplingRate>10)){
+			if ((mMPU9150GyroAccelRate==0xFF && getSamplingRateShimmer()>10)){
 				mLowPowerGyro = true;
 			}
-			if ((mLSM303MagRate==4 && mShimmerSamplingRate>10)){
+			if ((mLSM303MagRate==4 && getSamplingRateShimmer()>10)){
 				mLowPowerMag = true;
 			}
 			byte[] signalIdArray = new byte[mNChannels];
@@ -5045,7 +5050,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} 
 		else if (getHardwareVersion()==HW_ID.SHIMMER_SR30) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
-			mShimmerSamplingRate = (double)1024/bufferInquiry[0];
+			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
 			mAccelRange = bufferInquiry[1];
 			mNChannels = bufferInquiry[2];
 			mBufferSize = bufferInquiry[3];
@@ -6202,7 +6207,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     	Double actualSamplingRate = maxShimmerSamplingRate/Math.floor(maxShimmerSamplingRate/rate);
     	 // round sampling rate to two decimal places
     	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
-		mShimmerSamplingRate = actualSamplingRate;
+		setSamplingRateShimmer(actualSamplingRate);
 		
 		if(getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R) {
 			if(!mLowPowerMag){
@@ -6221,14 +6226,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		} 
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
-			setLSM303MagRateFromFreq(mShimmerSamplingRate);
-			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
-			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
-			setExGRateFromFreq(mShimmerSamplingRate);
+			setLSM303MagRateFromFreq(getSamplingRateShimmer());
+			setLSM303AccelRateFromFreq(getSamplingRateShimmer());
+			setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
+			setExGRateFromFreq(getSamplingRateShimmer());
 			
 			if(getFirmwareIdentifier()==FW_ID.SDLOG){
-				setMPU9150MagRateFromFreq(mShimmerSamplingRate);
-				setMPU9150MplRateFromFreq(mShimmerSamplingRate);
+				setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+				setMPU9150MplRateFromFreq(getSamplingRateShimmer());
 			}
 
 		}
@@ -6497,7 +6502,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mLowPowerAccelWR = enable;
 		mHighResAccelWR = !enable;
 
-		setLSM303AccelRateFromFreq(mShimmerSamplingRate);
+		setLSM303AccelRateFromFreq(getSamplingRateShimmer());
 	}
 	
 	/**
@@ -6511,11 +6516,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void setLowPowerGyro(boolean enable){
 		if(!checkIfAnyMplChannelEnabled()) {
 			mLowPowerGyro = enable;
-			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+			setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
 		}
 		else{
 			mLowPowerGyro = false;
-			setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+			setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
 		}
 	}
 	
@@ -6530,11 +6535,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mLowPowerMag = enable;
 		if((getHardwareVersion()==HW_ID.SHIMMER_2)||(getHardwareVersion()==HW_ID.SHIMMER_2R)){
 			if (!mLowPowerMag){
-				if (mShimmerSamplingRate>=50){
+				if (getSamplingRateShimmer()>=50){
 					mShimmer2MagRate = 6;
-				} else if (mShimmerSamplingRate>=20) {
+				} else if (getSamplingRateShimmer()>=20) {
 					mShimmer2MagRate = 5;
-				} else if (mShimmerSamplingRate>=10) {
+				} else if (getSamplingRateShimmer()>=10) {
 					mShimmer2MagRate = 4;
 				} else {
 					mShimmer2MagRate = 3;
@@ -6543,7 +6548,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mShimmer2MagRate = 4;
 			}
 		} else {
-			setLSM303MagRateFromFreq(mShimmerSamplingRate);
+			setLSM303MagRateFromFreq(getSamplingRateShimmer());
 		}
 	}
 	
@@ -7263,7 +7268,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	 protected void enableDefaultECGConfiguration() {
 		 if (getHardwareVersion()==HW_ID.SHIMMER_3){
-			setDefaultECGConfiguration(mShimmerSamplingRate);
+			setDefaultECGConfiguration(getSamplingRateShimmer());
 		 }
 	}
 
@@ -7273,7 +7278,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected void enableDefaultEMGConfiguration(){
 		if (getHardwareVersion()==HW_ID.SHIMMER_3){
-			setDefaultEMGConfiguration(mShimmerSamplingRate);
+			setDefaultEMGConfiguration(getSamplingRateShimmer());
 		}
 	}
 
@@ -7282,7 +7287,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected void enableEXGTestSignal(){
 		if (getHardwareVersion()==HW_ID.SHIMMER_3){
-			setEXGTestSignal(mShimmerSamplingRate);
+			setEXGTestSignal(getSamplingRateShimmer());
 		}
 	}
 
@@ -7648,7 +7653,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mInitialTimeStamp = 0;
 			
 			setShimmerSamplingRate(51.2);
-			setDefaultECGConfiguration(mShimmerSamplingRate); 
+			setDefaultECGConfiguration(getSamplingRateShimmer()); 
 			
 			syncNodesList.clear();
 			
@@ -7710,7 +7715,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			mShimmerSamplingRate = (32768/(double)((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) + ((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8)));
+			setSamplingRateShimmer((32768/(double)((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
+					+ ((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8))));
 	
 			mBufferSize = (int)(infoMemBytes[infoMemLayoutCast.idxBufferSize] & infoMemLayoutCast.maskBufferSize);
 			
@@ -8026,7 +8032,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			int samplingRate = (int)(32768 / mShimmerSamplingRate);
+			int samplingRate = (int)(32768 / getSamplingRateShimmer());
 			mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
 			mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
 	
@@ -8904,7 +8910,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setDefaultMpu9150AccelSensorConfig(false);
 			}
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG)){
-				setMPU9150MagRateFromFreq(mShimmerSamplingRate);
+				setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 			}
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)) {
 				setDefaultBmp180PressureSensorConfig(false);
@@ -8922,7 +8928,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
 //					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
 //				if(!checkIfOtherExgChannelEnabled()) {
-					setDefaultECGConfiguration(mShimmerSamplingRate);
+					setDefaultECGConfiguration(getSamplingRateShimmer());
 //				}
 			}
 			if(!checkIfAnyMplChannelEnabled()) {
@@ -9108,7 +9114,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setDefaultMpu9150AccelSensorConfig(state);
 		}
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.MPU9150_MAG){
-			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
+			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 		}
 		
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE) {
@@ -9127,20 +9133,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			// sensor. Otherwise set the default ECG configuration.
 			if(state) { 
 				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION) {
-					setDefaultRespirationConfiguration(mShimmerSamplingRate);
+					setDefaultRespirationConfiguration(getSamplingRateShimmer());
 				}
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.ECG) {
 //					System.err.println("SET ECG CHANNEL");
-					setDefaultECGConfiguration(mShimmerSamplingRate);
+					setDefaultECGConfiguration(getSamplingRateShimmer());
 				}
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EMG) {
-					setDefaultEMGConfiguration(mShimmerSamplingRate);
+					setDefaultEMGConfiguration(getSamplingRateShimmer());
 				}
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_TEST) {
-					setEXGTestSignal(mShimmerSamplingRate);
+					setEXGTestSignal(getSamplingRateShimmer());
 				}
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM) {
-					setEXGCustom(mShimmerSamplingRate);
+					setEXGCustom(getSamplingRateShimmer());
 				}
 			}
 			else {
@@ -9271,8 +9277,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mMPU9150AccelRange= 0; // 2g
 			
 			setLowPowerGyro(false);
-			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
-			setMPU9150MplRateFromFreq(mShimmerSamplingRate);
+			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+			setMPU9150MplRateFromFreq(getSamplingRateShimmer());
 		}
 		else {
 			mMPU9150DMP = 0;
@@ -9285,14 +9291,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mMPLSensorFusion = 0;
 			
 			if(checkIfAMpuGyroOrAccelEnabled()){
-				setMPU9150GyroAccelRateFromFreq(mShimmerSamplingRate);
+				setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
 			}
 			else {
 				setLowPowerGyro(true);
 			}
 			
-			setMPU9150MagRateFromFreq(mShimmerSamplingRate);
-			setMPU9150MplRateFromFreq(mShimmerSamplingRate);
+			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+			setMPU9150MplRateFromFreq(getSamplingRateShimmer());
 		}
 	}
 	
@@ -9673,7 +9679,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mSensorMap
 	 */
-	@Override
 	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
 		return mSensorEnabledMap;
 	}
@@ -10211,6 +10216,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mSyncWhenLogging
 	 */
+	@Override
 	public boolean isSyncWhenLogging() {
 		if(mSyncWhenLogging > 0)
 			return true;
@@ -10687,7 +10693,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = getTrialName();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
-		        Double readSamplingRate = getShimmerSamplingRate();
+		        Double readSamplingRate = getSamplingRateShimmer();
 		    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
 		    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100; // round sampling rate to two decimal places
 //			    	consolePrintLn("GET SAMPLING RATE: " + componentName);
@@ -10928,7 +10934,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	          	}
 	      		setShimmerSamplingRate(enteredSamplingRate);
 	      		
-	      		returnValue = Double.toString(getShimmerSamplingRate());
+	      		returnValue = Double.toString(getSamplingRateShimmer());
 	        	break;
 //			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
 //	        	break;

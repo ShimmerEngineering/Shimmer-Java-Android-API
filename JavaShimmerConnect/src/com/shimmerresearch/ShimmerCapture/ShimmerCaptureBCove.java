@@ -372,29 +372,29 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 				//Create HPFs for EXG	
 				try {
 				double [] cutoff = {5.0};
-				lpf = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRate(), cutoff);
+				lpf = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRateShimmer(), cutoff);
 				cutoff[0] = 0.5;
-				hpf = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpf = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRateShimmer(), cutoff);
 				
 				cutoff[0] = 51.2;
-				lpfECG = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRate(), cutoff);
+				lpfECG = new Filter(Filter.LOW_PASS,mShimmer.getSamplingRateShimmer(), cutoff);
 				cutoff[0] = 0.5;
-				hpfECG = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpfECG = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRateShimmer(), cutoff);
 				
 				
 				cutoff[0] = cornerFrequencyHPF;
-				hpfexg1ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
-				hpfexg1ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
-				hpfexg2ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
-				hpfexg2ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRate(), cutoff);
+				hpfexg1ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRateShimmer(), cutoff);
+				hpfexg1ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRateShimmer(), cutoff);
+				hpfexg2ch1 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRateShimmer(), cutoff);
+				hpfexg2ch2 = new Filter(Filter.HIGH_PASS,mShimmer.getSamplingRateShimmer(), cutoff);
 				//Create BSF for EXG
 				cutoff = new double[2];
 				cutoff[0]= cornerFrequencyBSF1;
 				cutoff[1]= cornerFrequencyBSF2;
-				bsfexg1ch1 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
-				bsfexg1ch2 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
-				bsfexg2ch1 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
-				bsfexg2ch2 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRate(), cutoff);
+				bsfexg1ch1 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRateShimmer(), cutoff);
+				bsfexg1ch2 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRateShimmer(), cutoff);
+				bsfexg2ch1 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRateShimmer(), cutoff);
+				bsfexg2ch2 = new Filter(Filter.BAND_STOP,mShimmer.getSamplingRateShimmer(), cutoff);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -402,8 +402,8 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 				if ((Integer)spinnerNumberOfBeatsToAve.getValue() <= 0){
 					spinnerNumberOfBeatsToAve.setValue(1);
 				}
-				heartRateCalculation = new PPGtoHRAlgorithm(mShimmer.getSamplingRate(), (Integer)spinnerNumberOfBeatsToAve.getValue(),10); //10 second training period
-				heartRateCalculationECG = new ECGtoHRAdaptive(mShimmer.getSamplingRate());
+				heartRateCalculation = new PPGtoHRAlgorithm(mShimmer.getSamplingRateShimmer(), (Integer)spinnerNumberOfBeatsToAve.getValue(),10); //10 second training period
+				heartRateCalculationECG = new ECGtoHRAdaptive(mShimmer.getSamplingRateShimmer());
 				
 				mShimmer.startStreaming();
 			}
@@ -1044,7 +1044,7 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 		menuItemConfigure.setEnabled(true);
 		lblSignals.setVisible(true);
 			
-		samplingRate = mShimmer.getSamplingRate();
+		samplingRate = mShimmer.getSamplingRateShimmer();
 		DecimalFormat df = new DecimalFormat("#.#");
 		String rate = df.format(samplingRate);
 		String SamplingRate = rate + "Hz";

@@ -163,7 +163,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
 //		mState = BT_STATE.NONE;
 		mState = BT_STATE.DISCONNECTED;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -193,7 +193,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
 //		mState = BT_STATE.NONE;
 		mState = BT_STATE.DISCONNECTED;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
@@ -210,7 +210,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
      */
     @Deprecated
 	public ShimmerPC( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
-    	mShimmerSamplingRate = samplingRate;
+    	setSamplingRateShimmer(samplingRate);
     	mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -430,11 +430,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 		
-		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * mShimmerSamplingRate;
+		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
 		
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
-			double numPacketsReceived= ((timeDifference/1000) * mShimmerSamplingRate);
+			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
 			mPacketReceptionRateCurrent = (numPacketsReceived/numPacketsShouldHaveReceived)*100.0;
 		}	
 

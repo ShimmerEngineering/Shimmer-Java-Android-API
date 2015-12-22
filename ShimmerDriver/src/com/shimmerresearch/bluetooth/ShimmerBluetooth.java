@@ -1032,16 +1032,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] bufferSR = readBytes(1);
 					if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
 						double val=(double)(bufferSR[0] & (byte) ACK_COMMAND_PROCESSED);
-						mShimmerSamplingRate=1024/val;
+						setSamplingRateShimmer(1024/val);
 					}
 				} 
 				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					byte[] bufferSR = readBytes(2); //read the sampling rate
-					mShimmerSamplingRate = 32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8));
+					setSamplingRateShimmer(32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
 				}
 			}
 
-			printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(mShimmerSamplingRate));
+			printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(getSamplingRateShimmer()));
 		} 
 		else if(responseCommand==FW_VERSION_RESPONSE){
 			delayForBtResponse(200); // Wait to ensure the packet has been fully received
@@ -1430,7 +1430,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					// TODO: MN Change to new method in ShimmerObject? It will
 					// automatically update the individual IMU + ExG sensor rate
 					// so you can then write the new values to the Shimmer3
-					mShimmerSamplingRate = tempdouble;
+					setSamplingRateShimmer(tempdouble);
 					
 					if(getHardwareVersion()==HW_ID.SHIMMER_3){ // has to be here because to ensure the current exgregister settings have been read back
 						//check sampling rate and adjust accordingly;
@@ -1939,7 +1939,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(mSetupDevice && getHardwareVersion()!=4){
 			writeAccelRange(mAccelRange);
 			writeGSRRange(mGSRRange);
-			writeSamplingRate(mShimmerSamplingRate);	
+			writeSamplingRate(getSamplingRateShimmer());	
 			writeEnabledSensors(mSetEnabledSensors);
 			setContinuousSync(mContinousSync);
 		} 
@@ -1962,7 +1962,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			writeMagRange(mMagRange); //set to default Shimmer mag gain
 			writeAccelRange(mAccelRange);
 			writeGSRRange(mGSRRange);
-			writeSamplingRate(mShimmerSamplingRate);	
+			writeSamplingRate(getSamplingRateShimmer());	
 			writeEnabledSensors(mSetEnabledSensors);
 			setContinuousSync(mContinousSync);
 		} 
@@ -2031,7 +2031,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			writeAccelRange(mAccelRange);
 			writeGyroRange(mGyroRange);
 			writeMagRange(mMagRange);
-			writeSamplingRate(mShimmerSamplingRate);	
+			writeSamplingRate(getSamplingRateShimmer());	
 			writeInternalExpPower(1);
 //			setContinuousSync(mContinousSync);
 			writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
@@ -2983,7 +2983,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 				writeMagSamplingRate(mShimmer2MagRate);
 				
-				int samplingByteValue = (int) (1024/mShimmerSamplingRate); //the equivalent hex setting
+				int samplingByteValue = (int) (1024/getSamplingRateShimmer()); //the equivalent hex setting
 				getListofInstructions().add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(samplingByteValue), 0x00});
 			} 
 			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
@@ -3003,7 +3003,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					writeEXGRateSetting(4);
 				}
 				
-				int samplingByteValue = (int) (32768/mShimmerSamplingRate);
+				int samplingByteValue = (int) (32768/getSamplingRateShimmer());
 				getListofInstructions().add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
 			}
 		}
@@ -3942,7 +3942,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	 public void enableDefaultECGConfiguration() {
 		 if(getHardwareVersion()==3){
-			setDefaultECGConfiguration(mShimmerSamplingRate);
+			setDefaultECGConfiguration(getSamplingRateShimmer());
 			writeEXGConfiguration();
 //			writeEXGConfiguration(mEXG1RegisterArray,1);
 //			writeEXGConfiguration(mEXG2RegisterArray,2);
@@ -3956,7 +3956,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enableDefaultEMGConfiguration(){
 		if(getHardwareVersion()==3){
-			setDefaultEMGConfiguration(mShimmerSamplingRate);
+			setDefaultEMGConfiguration(getSamplingRateShimmer());
 			writeEXGConfiguration();
 //			writeEXGConfiguration(mEXG1RegisterArray,1);
 //			writeEXGConfiguration(mEXG2RegisterArray,2);
@@ -3970,7 +3970,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enableEXGTestSignal(){
 		if(getHardwareVersion()==3){
-			setEXGTestSignal(mShimmerSamplingRate);
+			setEXGTestSignal(getSamplingRateShimmer());
 			writeEXGConfiguration();
 //			writeEXGConfiguration(mEXG1RegisterArray,1);
 //			writeEXGConfiguration(mEXG2RegisterArray,2);

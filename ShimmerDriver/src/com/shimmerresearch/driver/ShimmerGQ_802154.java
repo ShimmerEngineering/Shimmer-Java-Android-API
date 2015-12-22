@@ -175,9 +175,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return radioConfigArray;
 	}
 	
-	public double getSamplingRate(){
-		return mShimmerSamplingRate;
-	}
+//	public double getSamplingRate(){
+//		return mSamplingRateShimmer;
+//	}
 
 	/**
 	 * @param statusByte
@@ -339,10 +339,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		byte[] infoMemBackup = mInfoMemBytes.clone();
 		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
 		
-		mShimmerSamplingRate = 256;	// 256Hz is the default sampling rate
+		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, 256);	// 256Hz is the default sampling rate
 
 		// Sampling Rate
-		int samplingRate = (int)(32768 / mShimmerSamplingRate);
+		int samplingRate = (int)(32768 / getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
 		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
 
@@ -403,7 +403,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		//EXG Configuration
 		//TODO Temp here to get some ExGBytes
 		ShimmerEXGSensor shimmerExgSensor = new ShimmerEXGSensor(mShimmerVerObject);
-		shimmerExgSensor.setExgGq(getShimmerSamplingRate());
+		shimmerExgSensor.setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 		shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
 		
 		
@@ -447,7 +447,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			createInfoMemLayoutObjectIfNeeded();
 			
 			// Sampling Rate
-			mShimmerSamplingRate = (32768/(double)((int)(infoMemContents[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) + ((int)(infoMemContents[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8)));
+			setSamplingRateShimmer(COMMUNICATION_TYPE.SD, (32768/(double)((int)(infoMemContents[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
+					+ ((int)(infoMemContents[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8))));
 
 			// Sensors
 			mEnabledSensors = ((long)infoMemContents[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
@@ -649,11 +650,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		Map<String, SensorGroupingDetails> sensorGroupingMap = new HashMap<String, SensorGroupingDetails>(); 
+		Map<String, SensorGroupingDetails> sensorGroupingMapAll = new HashMap<String, SensorGroupingDetails>(); 
 		for(AbstractSensor sensor:mMapOfSensors.values()){
-			sensorGroupingMap.putAll(sensor.getSensorGroupingMap());
+			Map<String, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
+			if(sensorGroupingMap!=null){
+				sensorGroupingMapAll.putAll(sensorGroupingMap);
+			}
 		}
-		return sensorGroupingMap;
+		return sensorGroupingMapAll;
 	}
 	
 	/**
@@ -738,7 +742,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		List<Double> mConfigValues = new ArrayList<Double>();
 		//0-1 Byte = Sampling Rate
-		mConfigValues.add(mShimmerSamplingRate);
+		mConfigValues.add(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 		
 		//3-7 Byte = Sensors
 		mConfigValues.add((double) mEnabledSensors);
@@ -991,6 +995,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		mConfigValues[172] = getBluetoothAddress();
 		
 		return mConfigValues;
+	}
+
+	public boolean isSensorEnabled(int sensorMapKey) {
+		AbstractSensor sensor = mMapOfSensors.get(sensorMapKey);
+		if(sensor!=null){
+			return sensor.mIsEnabled;
+		}
+		return false;
 	}
 
 }
