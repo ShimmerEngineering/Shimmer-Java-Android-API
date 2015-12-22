@@ -2,28 +2,17 @@ package com.shimmerresearch.driver;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
-import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
-import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -32,7 +21,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensor.SensorSystemTimeStamp;
-import com.shimmerresearch.sensor.ShimmerClock;
 import com.shimmerresearch.sensor.ShimmerECGToHRSensor;
 import com.shimmerresearch.sensor.ShimmerEXGSensor;
 import com.shimmerresearch.sensor.ShimmerGSRSensor;
@@ -40,6 +28,9 @@ import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
 
 public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
+	
+	/** * */
+	private static final long serialVersionUID = 76977946997596234L;
 	
 	//JC: TEMP to test sensor enabled
 	public int SENSOR_GSR_802154_BIT = 0x01;
@@ -60,9 +51,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	private boolean mVerboseMode = true;
 	
 	//TODO generate from Sensor classes
-	public static final int SENSOR_ECG_TO_HR			= (0x40 << (8*1));
-	long mEnabledSensors = SENSOR_ECG_TO_HR + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
-	long mDerivedSensors = 0;
+	public static final int SENSOR_ECG_TO_HR_FW				= (0x40 << (8*1));
+	long mEnabledSensors = SENSOR_ECG_TO_HR_FW + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
+	public static final int ALGORITHM_ECG_TO_HR_CHP1_CH1	= (0x80 << (8*1));
+	long mDerivedSensors = ALGORITHM_ECG_TO_HR_CHP1_CH1;
 	
 	//TODO tidy: carried from ShimmerObject
 	int mInternalExpPower = 1;			// Enable external power for EXG + GSR
@@ -70,7 +62,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	boolean mIsFwTestMode = false;
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
-
 	
 	 //just use fillers for now
 	public static final ShimmerVerObject SVO_RELEASE_REV_0_1 = new ShimmerVerObject(
@@ -80,7 +71,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			FW_ID.UNKNOWN, 
 			FW_ID.UNKNOWN,
 			FW_ID.UNKNOWN);
-	
 	
 	
 	//This maps the channel ID to sensor
@@ -359,17 +349,17 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		// Sensors
 //		checkExgResolutionFromEnabledSensorsVar();
 //		refreshEnabledSensorsFromSensorMap();
-		mEnabledSensors = SENSOR_ECG_TO_HR + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
+		mEnabledSensors = SENSOR_ECG_TO_HR_FW + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
 		mInfoMemBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
 		mInfoMemBytes[infoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors1) & infoMemLayout.maskSensors);
 		mInfoMemBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
 
-		//TODO loop through mapOfSensors
+		//TODO loop through mapOfAlgorithms
 		// Derived Sensors
+		mDerivedSensors = ALGORITHM_ECG_TO_HR_CHP1_CH1;
 		mInfoMemBytes[infoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors0) & infoMemLayout.maskDerivedChannelsByte);
 		mInfoMemBytes[infoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors1) & infoMemLayout.maskDerivedChannelsByte);
 		mInfoMemBytes[infoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors2) & infoMemLayout.maskDerivedChannelsByte);
-
 		
 		// Shimmer Name
 		for (int i = 0; i < infoMemLayout.lengthShimmerName; i++) {
@@ -409,13 +399,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			abstractSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
 		}
 		
-		//TODO Temp here to get some ExGBytes
 		//EXG Configuration
-//		byte[] mEXG1RegisterArray = new byte[]{(byte) 0x00,(byte) 0xa3,(byte) 0x10,(byte) 0x05,(byte) 0x05,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x01}; //WP test array
-//		byte[] mEXG1RegisterArray = new byte[]{(byte) 0x02,(byte) 0xa0,(byte) 0x10,(byte) 0x40,(byte) 0xc0,(byte) 0x20,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x03}; //WP ECG array
-//		byte[] mEXG2RegisterArray = new byte[]{(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00,(byte) 0x00};
-//		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config1, 10);
-//		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, infoMemLayout.idxEXGADS1292RChip1Config2, 10);
+		//TODO Temp here to get some ExGBytes
 		ShimmerEXGSensor shimmerExgSensor = new ShimmerEXGSensor(mShimmerVerObject);
 		shimmerExgSensor.setExgGq(getShimmerSamplingRate());
 		shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
@@ -632,19 +617,22 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			} else {
 				if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
 					mMapOfSensors.get(SENSORS.GSR.ordinal()).enableSensorChannels(commType);
-				} else {
+				} 
+				else {
 					mMapOfSensors.get(SENSORS.GSR.ordinal()).disableSensorChannels(commType);
 				}
 				
 				if ((enabledSensors & SENSOR_ECG_HEARTRATE_802154_BIT) >0){
 					mMapOfSensors.get(SENSORS.ECG_TO_HR.ordinal()).enableSensorChannels(commType);
-				} else {
+				} 
+				else {
 					mMapOfSensors.get(SENSORS.ECG_TO_HR.ordinal()).disableSensorChannels(commType);
 				}
 				
 				if ((enabledSensors & SENSOR_CLOCK_802154_BIT) >0){
 					mMapOfSensors.get(SENSORS.CLOCK.ordinal()).enableSensorChannels(commType);
-				} else {
+				} 
+				else {
 					mMapOfSensors.get(SENSORS.CLOCK.ordinal()).disableSensorChannels(commType);
 				}
 			}

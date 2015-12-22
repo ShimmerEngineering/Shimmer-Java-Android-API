@@ -117,7 +117,6 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -133,13 +132,10 @@ import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
-import com.sun.xml.internal.messaging.saaj.soap.Envelope;
 
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = -1364568867018921219L;
 	
 	protected boolean mFirstTime = true;
@@ -187,7 +183,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int EXT_EXP_A7 		= 1<<1;
 		public final static int EXT_EXP_A6 		= 1<<0;
 		public final static int BRIDGE_AMP 		= 1<<15;
-		public final static int ECG_TO_HR 		= 1<<14;
+		public final static int ECG_TO_HR_FW	= 1<<14;
 		public final static int BATTERY 		= 1<<13;
 		public final static int ACCEL_WR 		= 1<<12;
 		public final static int EXT_EXP_A15 	= 1<<11;
@@ -2023,7 +2019,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
 			}
 			
-			if ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR) > 0){
+			if ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR_FW) > 0){
 				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR);
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_TO_HR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]));
 //				uncalibratedData[sigIndex]=(double)newPacketInt[sigIndex];
