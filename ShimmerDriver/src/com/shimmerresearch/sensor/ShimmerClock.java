@@ -3,6 +3,7 @@ package com.shimmerresearch.sensor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -12,6 +13,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -20,8 +22,11 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public class ShimmerClock extends AbstractSensor {
 
-	
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4841055784366989272L;
+
 	public ShimmerClock(ShimmerVerObject svo) {
 		super(svo);
 		// TODO Auto-generated constructor stub
@@ -112,6 +117,14 @@ public class ShimmerClock extends AbstractSensor {
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

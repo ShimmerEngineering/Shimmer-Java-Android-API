@@ -2,6 +2,7 @@ package com.shimmerresearch.sensor;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -10,6 +11,7 @@ import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 
@@ -23,12 +25,18 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	
 	//map infomem to fw, index, value
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2119834127313796684L;
+
+	// --- Configuration variables specific to this Sensor - Start --- 
+	int mAccelRange;
+	// --- Configuration variables specific to this Sensor - End --- 
+
+	
 	public STMICROLSM303DLHC(ShimmerVerObject svo) {
 		super(svo);
-		
-		// TODO Auto-generated constructor stub
-		//build map here, 
-		
 	}
 
 
@@ -59,15 +67,11 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 		
 		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);
 		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
-
 	}
-	
-	int mAccelRange;
 	
 	@Override
 	public String getSensorName() {
-		// TODO Auto-generated method stub
-		return null;
+		return mSensorName;
 	}
 
 	@Override
@@ -147,6 +151,12 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

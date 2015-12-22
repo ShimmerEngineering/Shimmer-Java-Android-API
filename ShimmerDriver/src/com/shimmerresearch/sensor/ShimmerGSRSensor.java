@@ -3,9 +3,11 @@ package com.shimmerresearch.sensor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -18,6 +20,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -40,6 +43,20 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	private static String calUnitToUse = Configuration.CHANNEL_UNITS.MICROSIEMENS;
 //	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
 	// --- Configuration variables specific to this Sensor - End ---
+
+    public static final Map<String, SensorGroupingDetails> mSensorGroupingMap;
+    static {
+        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+				Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
+							Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
+//							Configuration.Shimmer3.SensorMapKey.PPG_A12,
+//							Configuration.Shimmer3.SensorMapKey.PPG_A13)));
+
+		aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+        mSensorGroupingMap = Collections.unmodifiableMap(aMap);
+    }
+
 	
 	public ShimmerGSRSensor(ShimmerVerObject svo) {
 		super(svo);
@@ -53,7 +70,6 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 	@Override
 	public String getSensorName() {
-		// TODO Auto-generated method stub
 		return mSensorName;
 	}
 
@@ -290,6 +306,11 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		
 		
 		mGSRRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftGSRRange) & maskGSRRange;
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		return mSensorGroupingMap;
 	}
 
 	

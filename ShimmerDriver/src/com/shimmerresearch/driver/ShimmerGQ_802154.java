@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -648,8 +649,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, SensorGroupingDetails> sensorGroupingMap = new HashMap<String, SensorGroupingDetails>(); 
+		for(AbstractSensor sensor:mMapOfSensors.values()){
+			sensorGroupingMap.putAll(sensor.getSensorGroupingMap());
+		}
+		return sensorGroupingMap;
 	}
 	
 	/**

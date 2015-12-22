@@ -14,6 +14,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -22,6 +23,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
 
 public class ShimmerEXGSensor extends AbstractSensor{
 
@@ -81,12 +83,12 @@ public class ShimmerEXGSensor extends AbstractSensor{
 	
 	public ShimmerEXGSensor(ShimmerVerObject svo) {
 		super(svo);
+//		mSensorName = SENSORS.GSR.toString();
 	}
 
 	@Override
 	public String getSensorName() {
-		// TODO Auto-generated method stub
-		return null;
+		return mSensorName;
 	}
 
 	@Override
@@ -1282,6 +1284,12 @@ public class ShimmerEXGSensor extends AbstractSensor{
 				}
 //			}
 //		}
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	//-------------------- ExG End -----------------------------------	

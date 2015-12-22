@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -14,10 +15,14 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractSensor implements Serializable{
 	
+	/** * */
+	private static final long serialVersionUID = 3465427544416038676L;
+
 	/**
 	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
 	 */
@@ -71,12 +76,7 @@ public abstract class AbstractSensor implements Serializable{
 	@Deprecated
 	public SensorEnabledDetails mSensorEnabledDetails;
 	
-	
-	/**
-	 * 
-	 */
 	protected boolean mEnableCalibration = true;
-	private static final long serialVersionUID = 3465427544416038676L;
 	protected String mSensorName;
 	protected String[] mSignalOutputNameArray;
 	protected String[] mSignalOutputFormatArray;
@@ -109,7 +109,9 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
 
 	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
-	
+
+	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
+
 	
 	/** To process data originating from the Shimmer device
 	 * @param channelByteArray The byte array packet, or byte array sd log

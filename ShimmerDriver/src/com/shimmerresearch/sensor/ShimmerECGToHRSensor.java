@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -13,6 +14,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
@@ -20,8 +22,6 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable{
 
-
-	
 	/**
 	 * 
 	 */
@@ -32,13 +32,8 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 		mSensorName = SENSORS.ECG_TO_HR.toString();
 	}
 	
-//	{
-//	mSensorName ="STMICROLSM303DLHC";
-//	}
-	
 	@Override
 	public String getSensorName() {
-		// TODO Auto-generated method stub
 		return mSensorName;
 	}
 
@@ -112,6 +107,12 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
