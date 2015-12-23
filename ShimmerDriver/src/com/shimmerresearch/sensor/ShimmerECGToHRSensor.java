@@ -51,7 +51,6 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 
 	@Override
 	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
-
 		int index = 0;
 		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
 			//first process the data originating from the Shimmer sensor
@@ -61,9 +60,7 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 			objectCluster.indexKeeper++;
 			index=index+channelDetails.mDefaultNumBytes;
 		}
-		
 		return objectCluster;
-	
 	}
 
 	@Override

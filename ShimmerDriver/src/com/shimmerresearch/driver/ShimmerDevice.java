@@ -130,8 +130,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract List<Integer> sensorMapConflictCheck(Integer key);
 	// Device Config related
 	public abstract Map<String, SensorConfigOptionDetails> getConfigOptionsMap();
-	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object configValue);
-	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 	public abstract void checkConfigOptionValues(String stringKey);
 	public abstract void sensorAndConfigMapsCreate();
 	
@@ -210,14 +208,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	/**
-	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
+	 * @param shimmerUserAssignedName the mShimmerUserAssignedName to set
 	 */
-	public void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
-		if(mShimmerUserAssignedName.length()>12) {
-			this.mShimmerUserAssignedName = mShimmerUserAssignedName.substring(0, 12);
+	public void setShimmerUserAssignedName(String shimmerUserAssignedName) {
+		if(shimmerUserAssignedName.length()>12) {
+			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, 12);
 		}
 		else { 
-			this.mShimmerUserAssignedName = mShimmerUserAssignedName;
+			this.mShimmerUserAssignedName = shimmerUserAssignedName;
+		}
+	}
+	
+	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
+		String addition = "_" + getMacIdParsed();
+		if((shimmerUserAssignedName.length()+addition.length())>12) {
+			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, (12-addition.length())) + addition;
+		}
+		else { 
+			this.mShimmerUserAssignedName = shimmerUserAssignedName + addition;
 		}
 	}
 	
@@ -783,8 +791,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mTrialName;
 	}
 	
+	/**
+	 * @param trialName the trialName to set
+	 */
 	public void setTrialName(String trialName) {
-		mTrialName = trialName;
+		if(trialName.length()>12)
+			this.mTrialName = trialName.substring(0, 11);
+		else
+			this.mTrialName = trialName;
 	}
 	
 	public void setConfigTime(long trialConfigTime) {
@@ -911,12 +925,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfChannelsPerSensorForCommType;
 	}
 	
-	public boolean isSyncWhenLogging() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	
     public abstract boolean doesSensorKeyExist(int sensorKey);
 
     public abstract boolean isChannelEnabled(int sensorKey);
@@ -978,4 +986,52 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public abstract Set<Integer> getSensorMapKeySet();
 
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet){
+		Object returnValue = null;
+		int buf = 0;
+
+		switch(componentName){
+//Booleans
+//Integers
+
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+        		setShimmerUserAssignedName((String)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+        		setTrialName((String)valueToSet);
+	        	break;
+	        default:
+	        	break;
+		}
+		
+		return returnValue;		
+	}
+	
+	public Object getConfigValueUsingConfigLabel(String componentName){
+		Object returnValue = null;
+		
+		switch(componentName){
+//Booleans
+
+//Integers
+	    		
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+				returnValue = getShimmerUserAssignedName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+				returnValue = getTrialName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+	        	returnValue = getConfigTimeParsed();
+	        	break;
+	        default:
+	        	break;
+		}
+		
+		return returnValue;		
+	}
+
+	
 }

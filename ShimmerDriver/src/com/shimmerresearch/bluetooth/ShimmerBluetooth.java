@@ -1269,7 +1269,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			byte[] length = readBytes(1);
 			byte[] data = readBytes(length[0]);
 			String name = new String(data);
-			setExperimentName(name);
+			setTrialName(name);
 		}
 		else if(responseCommand==CONFIGTIME_RESPONSE) {
 			byte[] length = readBytes(1);
@@ -1682,7 +1682,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] nameArray = new byte[instruction[1]];
 					System.arraycopy(instruction, 2, nameArray, 0, instruction[1]);
 					String name = new String(nameArray);
-					setExperimentName(name);
+					setTrialName(name);
 				}
 				else if(currentCommand==SET_RWC_COMMAND){
 					byte[] instruction = getListofInstructions().get(0);

@@ -44,20 +44,8 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 //	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
 	// --- Configuration variables specific to this Sensor - End ---
 
-    public static final Map<String, SensorGroupingDetails> mSensorGroupingMap;
-    static {
-        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
-		aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR)));
-//							Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
-////							Configuration.Shimmer3.SensorMapKey.PPG_A12,
-////							Configuration.Shimmer3.SensorMapKey.PPG_A13)));
+    public Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 
-		aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
-        mSensorGroupingMap = Collections.unmodifiableMap(aMap);
-    }
-
-	
 	public ShimmerGSRSensor(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.GSR.toString();
@@ -66,6 +54,21 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		
 		mSensorBitmapIDStreaming = 0x04<<(0*8);
 		mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
+		
+		
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
+								Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+		}
+		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
+				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+		}
+		
 	}
 
 	@Override

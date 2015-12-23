@@ -112,15 +112,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		super.setShimmerVersionObject(sVO);
 	}
 
-	/**
-	 * @param uniqueID unique id of the shimmer
-	 * @param shimmerVersionObject the FW and HW details of the devices
-	 */
-	@Deprecated
-	public ShimmerGQ_802154(ShimmerGQInitSettings settings){
-		mUniqueID = settings.mShimmerGQID;
-	}
-	
 	/** 
 	 * @param dockId
 	 * @param slotNumber
@@ -292,22 +283,52 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object configValue) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+
+		Object returnValue = null;
+		int buf = 0;
+
+		switch(componentName){
+//Booleans
+
+//Integers
+	        
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+	    		setShimmerUserAssignedNameWithMac((String)valueToSet);
+	        	break;
+		
+	        default:
+	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+	        	break;
+		}
+			
+		return returnValue;
+	}	
+	
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName) {
+		Object returnValue = null;
+		
+		switch(componentName){
+//Booleans
+
+//Integers
+	    		
+//Strings
+	        	
+	        default:
+	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
+	        	break;
+		}
+		
+		return returnValue;	}
 
 	@Override
 	public void setDefaultShimmerConfiguration() {
