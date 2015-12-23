@@ -95,6 +95,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
@@ -4756,4 +4757,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void setComPort(String comport){
 		mComPort = comport;
 	}
+	
+	@Override
+	public double getSamplingRateShimmer(){
+		return super.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
+	}
+	@Override
+	public void setSamplingRateShimmer(double samplingRate){
+		super.setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
+	}
+	
 }

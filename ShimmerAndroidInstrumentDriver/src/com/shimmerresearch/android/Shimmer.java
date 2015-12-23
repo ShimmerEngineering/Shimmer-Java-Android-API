@@ -265,7 +265,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = BT_STATE.DISCONNECTED;
 		mHandler = handler;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -289,7 +289,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = BT_STATE.DISCONNECTED;
 		mHandler = handler;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
@@ -315,7 +315,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = BT_STATE.DISCONNECTED;
 		mHandler = handler;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -345,7 +345,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = BT_STATE.DISCONNECTED;
 		mHandler = handler;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -912,10 +912,6 @@ public class Shimmer extends ShimmerBluetooth{
 		return instructionStatus;
 	}
 
-	public double getSamplingRateShimmer(){
-		return mShimmerSamplingRate;
-	}
-
 	/**
 	 * Purpose of disabling calibration are for logging applications, to reduce the amount of computations needed to compute the data thus reducing risk of a performance bottleneck occuring and maximizing logging performance
 	 * @param enable enables or disables calibration, note that this need to be enabled when using the ID as to calculate 3D orientation, see enable3DOrientation 
@@ -1233,6 +1229,12 @@ public class Shimmer extends ShimmerBluetooth{
 
 	@Override
 	protected void dockedStateChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createInfoMemLayout() {
 		// TODO Auto-generated method stub
 		
 	}
