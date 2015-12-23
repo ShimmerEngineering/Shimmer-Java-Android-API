@@ -137,15 +137,13 @@ public class ShimmerEXGSensor extends AbstractSensor{
 	}
 
 	@Override
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
-			ShimmerVerObject svo) {
+	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
-			ShimmerVerObject svo) {
+	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
 	}

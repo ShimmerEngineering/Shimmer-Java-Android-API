@@ -28,7 +28,7 @@ public class SensorDetails implements Serializable {
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	
-	public String mLabel = "";
+	public String mGuiFriendlyLabel = "";
 	public List<Integer> mListOfSensorMapKeysRequired = new ArrayList<Integer>();
 	public List<Integer> mListOfSensorMapKeysConflicting = new ArrayList<Integer>();
 	public boolean mIntExpBoardPowerRequired = false;
@@ -56,29 +56,29 @@ public class SensorDetails implements Serializable {
 	 * @param isChannelEnabled
 	 * @param sensorBitmapIDStreaming
 	 * @param sensorBitmapIDSDLogHeader
-	 * @param label
+	 * @param guiFriendlyLabel
 	 */
-	public SensorDetails(long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String label) {
+	public SensorDetails(long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String guiFriendlyLabel) {
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
-		mLabel = label;
+		mGuiFriendlyLabel = guiFriendlyLabel;
 		mIntExpBoardPowerRequired = false;
 		mListOfCompatibleVersionInfo = null;
 	}
 
-	/**
-	 * Holds all information related individual sensor channels for dynamic GUI
-	 * and configuration purposes. Currently used in Consensys only.
-	 * 
-	 * This constructor is used for Shimmer3 GQ firmware
-	 * 
-	 * @param isChannelEnabled
-	 * @param label
-	 */
-	public SensorDetails(String label) {
-		mLabel = label;
-		mIntExpBoardPowerRequired = false;
-		mListOfCompatibleVersionInfo = null;
-	}
+//	/**
+//	 * Holds all information related individual sensor channels for dynamic GUI
+//	 * and configuration purposes. Currently used in Consensys only.
+//	 * 
+//	 * This constructor is used for Shimmer3 GQ BLE firmware
+//	 * 
+//	 * @param isChannelEnabled
+//	 * @param label
+//	 */
+//	public SensorDetails(String label) {
+//		mLabel = label;
+//		mIntExpBoardPowerRequired = false;
+//		mListOfCompatibleVersionInfo = null;
+//	}
 
 }

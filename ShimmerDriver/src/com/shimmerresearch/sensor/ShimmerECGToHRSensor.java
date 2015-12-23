@@ -44,8 +44,7 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -48,10 +48,10 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
     static {
         Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
-							Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
-//							Configuration.Shimmer3.SensorMapKey.PPG_A12,
-//							Configuration.Shimmer3.SensorMapKey.PPG_A13)));
+				Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR)));
+//							Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
+////							Configuration.Shimmer3.SensorMapKey.PPG_A12,
+////							Configuration.Shimmer3.SensorMapKey.PPG_A13)));
 
 		aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
         mSensorGroupingMap = Collections.unmodifiableMap(aMap);

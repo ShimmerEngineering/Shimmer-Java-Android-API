@@ -11,10 +11,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
-import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -33,7 +33,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	/** * */
 	private static final long serialVersionUID = 76977946997596234L;
 	
-	//JC: TEMP to test sensor enabled
+	//TODO JC: TEMP to test sensor enabled
 	public int SENSOR_GSR_802154_BIT = 0x01;
 	public int SENSOR_ECG_HEARTRATE_802154_BIT = 0x02;
 	public int SENSOR_CLOCK_802154_BIT = 0x04;	
@@ -402,10 +402,15 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		//EXG Configuration
 		//TODO Temp here to get some ExGBytes
-		ShimmerEXGSensor shimmerExgSensor = new ShimmerEXGSensor(mShimmerVerObject);
-		shimmerExgSensor.setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
-		shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
+//		ShimmerEXGSensor shimmerExgSensor = new ShimmerEXGSensor(mShimmerVerObject);
+//		shimmerExgSensor.setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
+//		shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
 		
+		AbstractSensor shimmerExgSensor = mMapOfSensors.get(AbstractSensor.SENSORS.EXG);
+		if(shimmerExgSensor!=null){
+			((ShimmerEXGSensor)shimmerExgSensor).setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
+			shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
+		}
 		
 		//Check if Expansion board power is required for any of the enabled sensors
 		//TODO replace with checkIfInternalExpBrdPowerIsNeeded from ShimmerObject
@@ -578,6 +583,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.ordinal(),new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.GSR.ordinal(),new ShimmerGSRSensor(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.ECG_TO_HR.ordinal(),new ShimmerECGToHRSensor(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.EXG.ordinal(),new ShimmerEXGSensor(mShimmerVerObject));
 		}
 		
 	}
@@ -642,11 +648,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 	}
 
-	//TODO MN: DO AGAIN, AND BETTER
-	@Override
-	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
-		return getMapOfSensorEnabledForCommType(COMMUNICATION_TYPE.IEEE802154);
-	}
+//	//TODO MN: DO AGAIN, AND BETTER
+//	@Override
+//	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
+//		return getMapOfSensorEnabledForCommType(COMMUNICATION_TYPE.IEEE802154);
+//	}
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
@@ -722,6 +728,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public void pairToSpan(String spanId) {
 		setConnected(true);
 		mSpanId = spanId;
+		addCommunicationRoute(COMMUNICATION_TYPE.IEEE802154);
 	}
 
 	public void setPacketReceivedCount(int i) {
@@ -997,12 +1004,49 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return mConfigValues;
 	}
 
-	public boolean isSensorEnabled(int sensorMapKey) {
-		AbstractSensor sensor = mMapOfSensors.get(sensorMapKey);
-		if(sensor!=null){
-			return sensor.mIsEnabled;
-		}
-		return false;
+//	public boolean isSensorEnabled(int sensorMapKey) {
+//		AbstractSensor sensor = mMapOfSensors.get(sensorMapKey);
+//		if(sensor!=null){
+//			return sensor.mIsEnabled;
+//		}
+//		return false;
+//	}
+
+	@Override
+	public boolean isChannelEnabled(int sensorKey) {
+	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mIsEnabled;
+	    }
+	    return false;
+	}
+
+	@Override
+	public String getChannelLabel(int sensorKey) {
+	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mGuiFriendlyLabel;
+	    }
+		return null;
+	}
+
+	@Override
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mListOfCompatibleVersionInfo;
+	    }
+	    return null;
+	}
+
+	@Override
+	public boolean doesSensorKeyExist(int sensorKey) {
+		return (mMapOfSensors.containsKey(sensorKey));
+	}
+
+	@Override
+	public Set<Integer> getSensorMapKeySet() {
+		return mMapOfSensors.keySet();
 	}
 
 }

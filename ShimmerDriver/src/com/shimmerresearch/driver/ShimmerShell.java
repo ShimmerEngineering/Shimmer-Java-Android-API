@@ -2,11 +2,13 @@ package com.shimmerresearch.driver;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public class ShimmerShell extends ShimmerDevice {
 
@@ -110,11 +112,11 @@ public class ShimmerShell extends ShimmerDevice {
 		
 	}
 
-	@Override
-	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
@@ -126,6 +128,36 @@ public class ShimmerShell extends ShimmerDevice {
 	public void createInfoMemLayout() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isChannelEnabled(int sensorKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getChannelLabel(int sensorKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean doesSensorKeyExist(int sensorKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Set<Integer> getSensorMapKeySet() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
