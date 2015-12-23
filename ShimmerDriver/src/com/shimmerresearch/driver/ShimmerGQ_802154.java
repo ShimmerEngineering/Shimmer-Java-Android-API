@@ -44,7 +44,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public static final int VARIABLE_NOT_SET = -1;
 	public int mRadioChannel = VARIABLE_NOT_SET;
 	public int mRadioGroupId = VARIABLE_NOT_SET;
-	public int mRadioMyAddress = VARIABLE_NOT_SET;
+	public int mRadioId = VARIABLE_NOT_SET;
 	public int mRadioResponseWindow = VARIABLE_NOT_SET; 
 
 	public String mSpanId = "";
@@ -138,7 +138,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	        
 	        //All MSB first
 	        this.mRadioGroupId = (((radioConfigArray[1]&0x00FF)<<8) + (radioConfigArray[2]&0x00FF)) & 0x00FFFF;
-	        this.mRadioMyAddress = (((radioConfigArray[3]&0x00FF)<<8) + (radioConfigArray[4]&0x00FF)) & 0x00FFFF;
+	        this.mRadioId = (((radioConfigArray[3]&0x00FF)<<8) + (radioConfigArray[4]&0x00FF)) & 0x00FFFF;
 	        this.mRadioResponseWindow  = (((radioConfigArray[5]&0x00FF)<<8) + (radioConfigArray[6]&0x00FF)) & 0x00FFFF;
 		}
 	}
@@ -146,7 +146,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public void setRadioConfig(int radioChannel, int radioGroupId, int radioAddr, int radioResponseWindow) {
         this.mRadioChannel = radioChannel;
         this.mRadioGroupId = radioGroupId;
-        this.mRadioMyAddress = radioAddr;
+        this.mRadioId = radioAddr;
         this.mRadioResponseWindow = radioResponseWindow;
 	}
 	
@@ -158,8 +158,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
         //All MSB first
         radioConfigArray[1] = (byte)((mRadioGroupId >> 8) & 0x00FF);
         radioConfigArray[2] = (byte)((mRadioGroupId >> 0) & 0x00FF);
-        radioConfigArray[3] = (byte)((mRadioMyAddress >> 8) & 0x00FF);
-        radioConfigArray[4] = (byte)((mRadioMyAddress >> 0) & 0x00FF);
+        radioConfigArray[3] = (byte)((mRadioId >> 8) & 0x00FF);
+        radioConfigArray[4] = (byte)((mRadioId >> 0) & 0x00FF);
         radioConfigArray[5] = (byte)((mRadioResponseWindow >> 8) & 0x00FF);
         radioConfigArray[6] = (byte)((mRadioResponseWindow >> 0) & 0x00FF);
         
@@ -459,6 +459,18 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			sensor.updateStateFromEnabledSensorsVars(mEnabledSensors, mDerivedSensors);
 		}		
 	}
+	
+	//TODO update sensor map with enabledSensors
+	public void setEnabledSensors(long mEnabledSensors) {
+		this.mEnabledSensors = mEnabledSensors;
+		sensorMapUpdateFromEnabledSensorsVars();
+	}
+
+	//TODO update sensor map with derivedSensors
+	public void setDerivedSensors(long mDerivedSensors) {
+		this.mDerivedSensors = mDerivedSensors;
+		sensorMapUpdateFromEnabledSensorsVars();
+	}
 
 	@Override
 	public void infoMemByteArrayParse(byte[] infoMemContents) {
@@ -720,19 +732,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //			}
 //		}
 	}
-
-	public void setEnabledSensors(long mEnabledSensors) {
-		this.mEnabledSensors = mEnabledSensors;
-	}
-
-	public void setDerivedSensors(long mDerivedSensors) {
-		this.mDerivedSensors = mDerivedSensors;
-	}
-
 	
 	public boolean hasSameConfiguration(ShimmerGQ_802154 shimmerGQToComapreWith){
 
-		if(shimmerGQToComapreWith.mRadioMyAddress == this.mRadioMyAddress &&
+		if(shimmerGQToComapreWith.mRadioId == this.mRadioId &&
 			shimmerGQToComapreWith.mRadioChannel == this.mRadioChannel &&
 			shimmerGQToComapreWith.mRadioGroupId == this.mRadioGroupId &&
 			shimmerGQToComapreWith.getTrialName().equals(this.getTrialName()) &&

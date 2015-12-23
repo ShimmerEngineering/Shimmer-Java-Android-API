@@ -95,7 +95,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		int index = 0;
 		
 		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
-			if(channelDetails.mIsEnabled){
+//			if(channelDetails.mIsEnabled){
 				if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
 //					if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
 					//first process the data originating from the Shimmer sensor
@@ -118,7 +118,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 					objectCluster.addCalData(channelDetails, systemTime);
 					objectCluster.indexKeeper++;
 				}
-			}
+//			}
 
 		}
 		
