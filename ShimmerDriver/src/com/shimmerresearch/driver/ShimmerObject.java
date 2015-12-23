@@ -5920,12 +5920,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public void removeExtraSignalProperty(String [] property){
-		for (int i=mExtraSignalProperties.size()-1;i>-1;i--){
-			String[]p = mExtraSignalProperties.get(i);
-			if (p[0].equals(property[0]) && p[1].equals(property[1]) && p[2].equals(property[2]) && p[3].equals(property[3])){
-				mExtraSignalProperties.remove(i);
+		if(mExtraSignalProperties!=null){//JC: fix for consensys 4.3
+			for (int i=mExtraSignalProperties.size()-1;i>-1;i--){
+				String[]p = mExtraSignalProperties.get(i);
+				if (p[0].equals(property[0]) && p[1].equals(property[1]) && p[2].equals(property[2]) && p[3].equals(property[3])){
+					mExtraSignalProperties.remove(i);
+				}
+
 			}
-			
 		}
 	}
 	
