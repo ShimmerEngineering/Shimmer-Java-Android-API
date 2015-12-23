@@ -448,6 +448,18 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return mInfoMemBytes;
 	}
 
+//	private void refreshEnabledSensorsFromSensorMap(COMMUNICATION_TYPE commType) {
+//		for(AbstractSensor sensor:mMapOfSensors.values()){
+//			sensor.isAnySensorChannelEnabled(commType)
+//		}
+//	}
+	
+	private void sensorMapUpdateFromEnabledSensorsVars() {
+		for(AbstractSensor sensor:mMapOfSensors.values()){
+			sensor.updateStateFromEnabledSensorsVars(mEnabledSensors, mDerivedSensors);
+		}		
+	}
+
 	@Override
 	public void infoMemByteArrayParse(byte[] infoMemContents) {
 		
@@ -551,6 +563,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			setRadioConfig(radioConfig);
 			
 		}
+		
+		sensorAndConfigMapsCreate();
+		sensorMapUpdateFromEnabledSensorsVars();
+
 
 		//TODO below copied from Shimmer Object -> make single shared class
 		// Set name if nothing was read from InfoMem
@@ -562,7 +578,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 
 	}
-	
+
+
 	@Override
 	public void parseUartConfigResponse(ComponentPropertyDetails cPD, byte[] response){
 		// Parse response string
@@ -668,12 +685,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 		
 	}
-
-//	//TODO MN: DO AGAIN, AND BETTER
-//	@Override
-//	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
-//		return getMapOfSensorEnabledForCommType(COMMUNICATION_TYPE.IEEE802154);
-//	}
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
@@ -1068,6 +1079,22 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	@Override
 	public Set<Integer> getSensorMapKeySet() {
 		return mMapOfSensors.keySet();
+	}
+
+	public void setConfigFromSpan(int radioChannel, 
+			int radioGroupId,
+			int radioAddress, 
+			int radioResponseWindow, 
+			String trialName,
+			long trialConfigTime, 
+			double samplingFreq) {
+		
+		//Radio Config
+		setRadioConfig(radioChannel, radioGroupId, radioAddress, radioResponseWindow);
+		//Trial Config
+		setTrialConfig(trialName, trialConfigTime);
+		
+		setSamplingRateShimmer(COMMUNICATION_TYPE.IEEE802154, samplingFreq);
 	}
 
 }

@@ -107,7 +107,7 @@ public class ShimmerShell extends ShimmerDevice {
 
 	@Override
 	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE comType) {
+			COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
 	}

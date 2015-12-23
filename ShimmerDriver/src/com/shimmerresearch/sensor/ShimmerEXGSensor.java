@@ -142,25 +142,25 @@ public class ShimmerEXGSensor extends AbstractSensor{
 	}
 
 	@Override
-	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public Object processData(byte[] rawData, COMMUNICATION_TYPE comTYPE, ObjectCluster objectCluster) {
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		
-		ActionSetting actionSetting = new ActionSetting(comType);
+		ActionSetting actionSetting = new ActionSetting(commType);
 		switch(componentName){
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
-				if (comType == COMMUNICATION_TYPE.BLUETOOTH){
+				if (commType == COMMUNICATION_TYPE.BLUETOOTH){
 					//consolePrintLn("before set " + getExGGain());
 					setExGGainSetting((int)valueToSet);
 					byte[] reg = mEXG1RegisterArray;
@@ -174,9 +174,9 @@ public class ShimmerEXGSensor extends AbstractSensor{
 					actionSetting.mActionListByteArray.add(command);
 					
 		        	break;
-				} else if (comType == COMMUNICATION_TYPE.DOCK){
+				} else if (commType == COMMUNICATION_TYPE.DOCK){
 					
-				} else if (comType == COMMUNICATION_TYPE.CLASS){
+				} else if (commType == COMMUNICATION_TYPE.CLASS){
 					//this generates the infomem
 					setExGGainSetting((int)valueToSet);
 				}

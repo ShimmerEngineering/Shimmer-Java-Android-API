@@ -823,50 +823,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mReadSdAccessFail = false;
 	}
 	
-//	/** MN: Test code
-//	 * @param commType 
-//	 * @return the mMapOfCommTypeToSensorMaps
-//	 */
-//	public LinkedHashMap<Integer, SensorEnabledDetails> getMapOfCommTypeToSensorMaps(COMMUNICATION_TYPE commType) {
-//		LinkedHashMap<Integer, SensorEnabledDetails> mapOfCommTypeToSensorMaps = new LinkedHashMap<Integer, SensorEnabledDetails>();
-//		
-//		if(mMapOfSensors.keySet().size()>0){
-//			for(AbstractSensor sensor:mMapOfSensors.values()){
-//				LinkedHashMap<Integer, SensorEnabledDetails> mapOfSensorEnabledDetails = sensor.mMapOfCommTypeToSensorMap.get(commType);
-//				if(mapOfSensorEnabledDetails!=null){
-//					for(Integer key:mapOfSensorEnabledDetails.keySet()){
-//						mapOfCommTypeToSensorMaps.put(key, mapOfSensorEnabledDetails.get(key));
-//					}
-//				}
-//			}
-//		}
-//			
-//		return mapOfCommTypeToSensorMaps;
-//	}
-	
-
-//	/** MN: Test code
-//	 * @param commType 
-//	 * @return the mMapOfCommTypeToSensorMaps
-//	 */
-//	public LinkedHashMap<Integer, SensorEnabledDetails> getMapOfCommTypeToChannelDetails(COMMUNICATION_TYPE commType) {
-//		LinkedHashMap<Integer, ChannelDetails> mapOfCommTypeToSensorMaps = new LinkedHashMap<Integer, SensorEnabledDetails>();
-//		
-//		if(mMapOfSensors.keySet().size()>0){
-//			for(AbstractSensor sensor:mMapOfSensors.values()){
-//				LinkedHashMap<Integer, ChannelDetails> mapOfEnabledChannelDetails = sensor.mMapOfComTypetoChannel.get(commType);
-//				if(mMapOfComTypetoChannel!=null){
-//					for(Integer key:mapOfSensorEnabledDetails.keySet()){
-//						mapOfCommTypeToSensorMaps.put(key, mapOfSensorEnabledDetails.get(key));
-//					}
-//				}
-//			}
-//		}
-//			
-//		return mapOfCommTypeToSensorMaps;
-//	}
-	
-
 	// ----------------- Overrides from ShimmerDevice end -------------
 
 	public LinkedHashMap<Integer, AbstractSensor> getMapOfSensors() {

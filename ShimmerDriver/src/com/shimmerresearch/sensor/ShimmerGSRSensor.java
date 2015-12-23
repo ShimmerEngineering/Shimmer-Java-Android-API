@@ -77,24 +77,24 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		
 		// TODO Auto-generated method stub
-		ActionSetting actionSetting = new ActionSetting(comType);
+		ActionSetting actionSetting = new ActionSetting(commType);
 		switch(componentName){
 			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
-				if (comType == COMMUNICATION_TYPE.BLUETOOTH){
+				if (commType == COMMUNICATION_TYPE.BLUETOOTH){
 					
-				} else if (comType == COMMUNICATION_TYPE.DOCK){
+				} else if (commType == COMMUNICATION_TYPE.DOCK){
 					
-				} else if (comType == COMMUNICATION_TYPE.CLASS){
+				} else if (commType == COMMUNICATION_TYPE.CLASS){
 					//this generates the infomem
 					
 				}
@@ -157,9 +157,9 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 
 	@Override
-	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
+	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);

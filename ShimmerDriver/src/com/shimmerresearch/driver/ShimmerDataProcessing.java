@@ -13,10 +13,10 @@ public interface ShimmerDataProcessing {
 	 * @param rawData
 	 * @param channelIdentifier
 	 * @param mapOfChannelToSensor
-	 * @param comType
+	 * @param commType
 	 * @return
 	 */
-	public ObjectCluster processData(byte[] rawData, int[] channelIdentifier,HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>> mapOfAllChannels, COMMUNICATION_TYPE comType);
+	public ObjectCluster processData(byte[] rawData, int[] channelIdentifier,HashMap<COMMUNICATION_TYPE,HashMap<String,ChannelDetails>> mapOfAllChannels, COMMUNICATION_TYPE commType);
 	
 
 }

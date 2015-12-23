@@ -760,7 +760,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE comType) {
+	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
 	}

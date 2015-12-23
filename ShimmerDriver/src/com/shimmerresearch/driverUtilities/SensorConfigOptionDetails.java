@@ -94,13 +94,13 @@ public class SensorConfigOptionDetails implements Serializable {
 	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
 	 * @param guiComponentType
 	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType,COMMUNICATION_TYPE comType) {
+	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType,COMMUNICATION_TYPE commType) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mGuiComponentType = guiComponentType;
 		
 		mCompatibleVersionInfo = null;
-		mCommunicationType = comType;
+		mCommunicationType = commType;
 	}
 	
 	/**
@@ -134,14 +134,14 @@ public class SensorConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE comType) {
+	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE commType) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		
 		mGuiComponentType = guiComponentType;
 		
 		mCompatibleVersionInfo = compatibleVersionInfo;
-		setmCommunicationType(comType);
+		setmCommunicationType(commType);
 	}
 	
 	

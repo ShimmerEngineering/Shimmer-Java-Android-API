@@ -567,7 +567,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE comType) {
+			COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
 	}

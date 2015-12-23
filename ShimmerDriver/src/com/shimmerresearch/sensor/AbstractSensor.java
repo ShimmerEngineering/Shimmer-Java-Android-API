@@ -185,9 +185,9 @@ public abstract class AbstractSensor implements Serializable{
 	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> mMapOfCommTypetoChannel = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>>(); 
 	
 	public abstract String getSensorName();
-	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE comType);
-	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE comType);
-	public abstract Object processData(byte[] rawData, COMMUNICATION_TYPE comType, ObjectCluster object);
+	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
+	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE commType);
+	public abstract Object processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object);
 	
 //	/** Different firmwares might have different infomem layouts
 //	 * @param svo
@@ -204,7 +204,7 @@ public abstract class AbstractSensor implements Serializable{
 	
 	/** To process data originating from the Shimmer device
 	 * @param channelByteArray The byte array packet, or byte array sd log
-	 * @param comType The communication type
+	 * @param commType The communication type
 	 * @param object The packet/objectCluster to append the data to
 	 * @return
 	 */
@@ -576,48 +576,80 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	/** This cycles through the channels finding which are enabled and summing up the number of bytes
-	 * @param comType
+	 * @param commType
 	 * @return
 	 */
-	public int getExpectedPacketByteArray(COMMUNICATION_TYPE comType) {
+	public int getExpectedPacketByteArray(COMMUNICATION_TYPE commType) {
 		int count = 0; 
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
-			if (channelDetails.mIsEnabled){
-				count = count+channelDetails.mDefaultNumBytes;
+		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
+		if(channelsPerCommType!=null){
+			for (ChannelDetails channelDetails:channelsPerCommType.values()){
+				if (channelDetails.mIsEnabled){
+					count = count+channelDetails.mDefaultNumBytes;
+				}
 			}
 		}
 		return count;
 	}
 
-	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE comType){
+	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE commType){
 		int count = 0;
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
-			if (channelDetails.mIsEnabled){
-				count = count+1;
+		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
+		if(channelsPerCommType!=null){
+			for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
+				if (channelDetails.mIsEnabled){
+					count = count+1;
+				}
 			}
 		}
 		return count;
 	}
 	
-	public void disableSensorChannels(COMMUNICATION_TYPE comType){
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
-			channelDetails.mIsEnabled = false;
+	public void disableSensorChannels(COMMUNICATION_TYPE commType){
+		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
+		if(channelsPerCommType!=null){
+			for (ChannelDetails channelDetails:channelsPerCommType.values()){
+				channelDetails.mIsEnabled = false;
+			}
 		}
 	}
 	
-	public boolean isAnySensorChannelEnabled(COMMUNICATION_TYPE comType){
-		for(ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
-			if(channelDetails.mIsEnabled){
-				return true;
+	public boolean isAnySensorChannelEnabled(COMMUNICATION_TYPE commType){
+		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
+		if(channelsPerCommType!=null){
+			for(ChannelDetails channelDetails:channelsPerCommType.values()){
+				if(channelDetails.mIsEnabled){
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 	
-	public void enableSensorChannels(COMMUNICATION_TYPE comType){
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
-			channelDetails.mIsEnabled = true;
+	public void enableSensorChannels(COMMUNICATION_TYPE commType){
+		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
+		if(channelsPerCommType!=null){
+			for(ChannelDetails channelDetails:channelsPerCommType.values()){
+				channelDetails.mIsEnabled = true;
+			}
 		}
+	}
+	
+	public void setSensorChannelsState(COMMUNICATION_TYPE commType, boolean state){
+		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
+		if(channelsPerCommType!=null){
+			for (ChannelDetails channelDetails:channelsPerCommType.values()){
+				channelDetails.mIsEnabled = state;
+			}
+		}
+	}
+	
+	//TODO MN: under devel
+	public void updateStateFromEnabledSensorsVars(long enabledSensors, long derivedSensors) {
+		mIsEnabled = false;
+		boolean state = (enabledSensors & mSensorBitmapIDStreaming)>0? true:false;
+		mIsEnabled = state;
+//		setSensorChannelsState()
 	}
 	
 	

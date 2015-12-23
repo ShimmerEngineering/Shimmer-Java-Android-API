@@ -7,11 +7,11 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 
 public class ActionSetting {
 	
-	public COMMUNICATION_TYPE mComType;
+	public COMMUNICATION_TYPE mCommType;
 	public COMMUNICATION_ACTION mAction;
 	
-	public ActionSetting(COMMUNICATION_TYPE comType){
-		mComType = comType;
+	public ActionSetting(COMMUNICATION_TYPE commType){
+		mCommType = commType;
 	}
 	
 	public byte[] mActionByteArray;
