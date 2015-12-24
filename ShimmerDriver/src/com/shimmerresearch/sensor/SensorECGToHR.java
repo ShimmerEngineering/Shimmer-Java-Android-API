@@ -20,14 +20,14 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
-public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable{
+public class SensorECGToHR extends AbstractSensor implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4160314338085066414L;
 
-	public ShimmerECGToHRSensor(ShimmerVerObject svo) {
+	public SensorECGToHR(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.ECG_TO_HR.toString();
 	}
@@ -64,10 +64,9 @@ public class ShimmerECGToHRSensor extends AbstractSensor implements Serializable
 	}
 
 	@Override
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
-			ShimmerVerObject svo) {
+	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
 		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
-		//COMMUNICATION_TYPE.IEEE802154
+
 		int count=1;
 		ChannelDetails channelDetails  = new ChannelDetails(
 				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,

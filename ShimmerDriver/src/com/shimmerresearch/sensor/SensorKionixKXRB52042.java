@@ -13,14 +13,14 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class KionixKXRB52042 extends AbstractSensor{
+public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5027305280613145453L;
 
-	public KionixKXRB52042(ShimmerVerObject svo) {
+	public SensorKionixKXRB52042(ShimmerVerObject svo) {
 		super(svo);
 	}
 

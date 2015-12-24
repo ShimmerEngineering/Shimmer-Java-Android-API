@@ -28,7 +28,7 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
 
-public class ShimmerEXGSensor extends AbstractSensor{
+public class SensorEXG extends AbstractSensor{
 
 	/**
 	 * 
@@ -112,7 +112,7 @@ public class ShimmerEXGSensor extends AbstractSensor{
 	public Map<Integer, SensorEnabledDetails> mSensorEnabledMap;
 
 	
-	public ShimmerEXGSensor(ShimmerVerObject svo) {
+	public SensorEXG(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.EXG.toString();
 //		mGuiFriendlyLabel = Shimmer3.GuiLabelSensors.GSR;

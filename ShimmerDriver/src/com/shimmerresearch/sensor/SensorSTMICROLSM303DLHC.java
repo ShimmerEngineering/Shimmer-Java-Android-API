@@ -15,7 +15,7 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 
-public class STMICROLSM303DLHC extends AbstractSensor{
+public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 
 	// list of compatible shimmer hw/fw for sensor not sensor options (see ShimmerVerObject claass)
 	
@@ -35,7 +35,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	// --- Configuration variables specific to this Sensor - End --- 
 
 	
-	public STMICROLSM303DLHC(ShimmerVerObject svo) {
+	public SensorSTMICROLSM303DLHC(ShimmerVerObject svo) {
 		super(svo);
 	}
 

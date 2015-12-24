@@ -32,7 +32,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 
-public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
+public class SensorGSR extends AbstractSensor implements Serializable{
 
 	/**	 */
 	private static final long serialVersionUID = 1773291747371088953L;
@@ -46,7 +46,7 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
     public Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 
-	public ShimmerGSRSensor(ShimmerVerObject svo) {
+	public SensorGSR(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.GSR.toString();
 		mGuiFriendlyLabel = Shimmer3.GuiLabelSensors.GSR;

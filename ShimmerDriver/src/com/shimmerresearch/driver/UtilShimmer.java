@@ -14,8 +14,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -115,6 +117,15 @@ public class UtilShimmer implements Serializable {
     	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
     	String timeString = dfLocal.format(new Date(milliSeconds));
     	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
+		return timeString;
+	}
+	
+	public static String convertMilliSecondsToHrMinSecString(long milliSeconds) {
+		DateFormat dfLocal = new SimpleDateFormat("HH:mm:ss");
+		dfLocal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		// int style = DateFormat.MEDIUM;
+		// dfLocal = DateFormat.getDateInstance("HH:mm:ss", Locale.UK);
+		String timeString = dfLocal.format(new Date(milliSeconds));
 		return timeString;
 	}
 	

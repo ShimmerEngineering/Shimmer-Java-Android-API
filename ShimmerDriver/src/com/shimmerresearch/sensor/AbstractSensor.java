@@ -13,6 +13,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -604,7 +605,11 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		return count;
 	}
-	
+
+	public boolean isAnySensorChannelEnabled(COMMUNICATION_TYPE commType){
+		return (getNumberOfEnabledChannels(commType)>0? true:false);
+	}
+
 	public void disableSensorChannels(COMMUNICATION_TYPE commType){
 		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
 		if(channelsPerCommType!=null){
@@ -614,23 +619,13 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
-	public boolean isAnySensorChannelEnabled(COMMUNICATION_TYPE commType){
-		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
-		if(channelsPerCommType!=null){
-			for(ChannelDetails channelDetails:channelsPerCommType.values()){
-				if(channelDetails.mIsEnabled){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 	public void enableSensorChannels(COMMUNICATION_TYPE commType){
 		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
 		if(channelsPerCommType!=null){
 			for(ChannelDetails channelDetails:channelsPerCommType.values()){
-				channelDetails.mIsEnabled = true;
+//				if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
+					channelDetails.mIsEnabled = true;
+//				}
 			}
 		}
 	}
@@ -639,17 +634,21 @@ public abstract class AbstractSensor implements Serializable{
 		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfCommTypetoChannel.get(commType);
 		if(channelsPerCommType!=null){
 			for (ChannelDetails channelDetails:channelsPerCommType.values()){
-				channelDetails.mIsEnabled = state;
+//				if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
+					channelDetails.mIsEnabled = state;
+//				}
 			}
 		}
 	}
 	
 	//TODO MN: under devel
-	public void updateStateFromEnabledSensorsVars(long enabledSensors, long derivedSensors) {
+	public void updateStateFromEnabledSensorsVars(COMMUNICATION_TYPE commType, long enabledSensors, long derivedSensors) {
+		//TODO: enabledSensors should be directed at channels coming from the Shimmer, derivedSensors at channels from the API 
+		//TODO move to abstact or override in the extended sensor classes so complexities like EXG can be handled
 		mIsEnabled = false;
 		boolean state = (enabledSensors & mSensorBitmapIDStreaming)>0? true:false;
 		mIsEnabled = state;
-//		setSensorChannelsState()
+		setSensorChannelsState(commType, state);
 	}
 	
 	
