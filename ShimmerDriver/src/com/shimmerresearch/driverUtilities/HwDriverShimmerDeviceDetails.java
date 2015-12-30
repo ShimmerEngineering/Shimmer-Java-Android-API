@@ -156,6 +156,10 @@ public class HwDriverShimmerDeviceDetails {
 	        public static final String[] FTDI_FT4232H = new String[] {
 	    		"VID_0403&PID_6011&MI",
 	        };
+	        
+	        public static final String FTDI_VEND_ID = "0403";
+	        public static final String FTDI_FT2232H_PROD_ID = "6010";
+	        public static final String FTDI_FT4232H_PROD_ID = "6011";
         }
 
         public static final class BT {
