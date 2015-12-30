@@ -151,6 +151,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -168,6 +169,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -1237,6 +1239,36 @@ public class Shimmer extends ShimmerBluetooth{
 	public void createInfoMemLayout() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean doesSensorKeyExist(int sensorKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isChannelEnabled(int sensorKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getChannelLabel(int sensorKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Integer> getSensorMapKeySet() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 //	@Override
