@@ -10075,16 +10075,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	/**
-	 * @param mExperimentName the mExperimentName to set
-	 */
-	public void setExperimentName(String mExperimentName) {
-		if(mExperimentName.length()>12)
-			this.mTrialName = mExperimentName.substring(0, 11);
-		else
-			this.mTrialName = mExperimentName;
-	}
-
-	/**
 	 * @param mExperimentNumberOfShimmers the mExperimentNumberOfShimmers to set
 	 */
 	public void setExperimentNumberOfShimmers(int mExperimentNumberOfShimmers) {
@@ -10218,7 +10208,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mSyncWhenLogging
 	 */
-	@Override
 	public boolean isSyncWhenLogging() {
 		if(mSyncWhenLogging > 0)
 			return true;
@@ -10501,6 +10490,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mMyBluetoothAddress = myBluetoothAddress;
 	}
 	
+	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
 		
@@ -10688,12 +10678,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	    		
 	    		
 //Strings
-			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
-				returnValue = getShimmerUserAssignedName();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
-				returnValue = getTrialName();
-	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+//				returnValue = getShimmerUserAssignedName();
+//	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+//				returnValue = getTrialName();
+//	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 		        Double readSamplingRate = getSamplingRateShimmer();
 		    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
@@ -10704,9 +10694,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
 				returnValue = Integer.toString(getBufferSize());
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
-	        	returnValue = getConfigTimeParsed();
-	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+//	        	returnValue = getConfigTimeParsed();
+//	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
 	        	returnValue = getMacIdFromInfoMem();
 	        	break;
@@ -10739,6 +10729,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //	        	break;
 	        	
 	        default:
+	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
 	        	break;
 		}
 		
@@ -10919,12 +10910,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	    		break;
 	
 //Strings
-			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
-        		setShimmerUserAssignedName((String)valueToSet);
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
-        		setExperimentName((String)valueToSet);
-	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+//        		setShimmerUserAssignedName((String)valueToSet);
+//	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+//				setTrialName((String)valueToSet);
+//	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 	          	// don't let sampling rate be empty
 	          	Double enteredSamplingRate;
@@ -11023,6 +11014,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	        	
 	        default:
+	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
 	        	break;
 		}
 		

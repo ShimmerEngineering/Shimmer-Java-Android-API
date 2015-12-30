@@ -43,13 +43,13 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	@Override
-	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -91,11 +91,11 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	
 
 	@Override
-	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
+	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
 		
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
-			if(channelDetails.mIsEnabled){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
+//			if(channelDetails.mIsEnabled){
 				if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
 //					if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
 					//first process the data originating from the Shimmer sensor
@@ -118,7 +118,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 					objectCluster.addCalData(channelDetails, systemTime);
 					objectCluster.indexKeeper++;
 				}
-			}
+//			}
 
 		}
 		

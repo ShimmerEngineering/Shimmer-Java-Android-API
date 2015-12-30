@@ -43,22 +43,22 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE comType) {
+			COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
+	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);

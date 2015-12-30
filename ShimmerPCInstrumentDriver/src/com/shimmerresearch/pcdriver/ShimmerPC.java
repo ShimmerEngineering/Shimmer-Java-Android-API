@@ -66,11 +66,14 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
@@ -757,7 +760,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE comType) {
+	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -771,6 +774,43 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public void createInfoMemLayout() {
 		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+	}
+
+	@Override
+	public boolean isChannelEnabled(int sensorKey) {
+		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mIsEnabled;
+	    }
+	    return false;
+	}
+
+	@Override
+	public String getChannelLabel(int sensorKey) {
+		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mSensorDetails.mGuiFriendlyLabel;
+	    }
+		return null;
+	}
+
+	@Override
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mSensorDetails.mListOfCompatibleVersionInfo;
+	    }
+		return null;
+	}
+
+	@Override
+	public boolean doesSensorKeyExist(int sensorKey) {
+		return (mSensorEnabledMap.containsKey(sensorKey));
+	}
+
+	@Override
+	public Set<Integer> getSensorMapKeySet() {
+		return mSensorEnabledMap.keySet();
 	}
 
 }

@@ -32,7 +32,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 
-public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
+public class SensorGSR extends AbstractSensor implements Serializable{
 
 	/**	 */
 	private static final long serialVersionUID = 1773291747371088953L;
@@ -44,21 +44,9 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 //	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
 	// --- Configuration variables specific to this Sensor - End ---
 
-    public static final Map<String, SensorGroupingDetails> mSensorGroupingMap;
-    static {
-        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
-		aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
-							Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
-//							Configuration.Shimmer3.SensorMapKey.PPG_A12,
-//							Configuration.Shimmer3.SensorMapKey.PPG_A13)));
+    public Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 
-		aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
-        mSensorGroupingMap = Collections.unmodifiableMap(aMap);
-    }
-
-	
-	public ShimmerGSRSensor(ShimmerVerObject svo) {
+	public SensorGSR(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.GSR.toString();
 		mGuiFriendlyLabel = Shimmer3.GuiLabelSensors.GSR;
@@ -66,6 +54,21 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 		
 		mSensorBitmapIDStreaming = 0x04<<(0*8);
 		mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
+		
+		
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
+								Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+		}
+		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
+				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+		}
+		
 	}
 
 	@Override
@@ -74,24 +77,24 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		
 		// TODO Auto-generated method stub
-		ActionSetting actionSetting = new ActionSetting(comType);
+		ActionSetting actionSetting = new ActionSetting(commType);
 		switch(componentName){
 			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
-				if (comType == COMMUNICATION_TYPE.BLUETOOTH){
+				if (commType == COMMUNICATION_TYPE.BLUETOOTH){
 					
-				} else if (comType == COMMUNICATION_TYPE.DOCK){
+				} else if (commType == COMMUNICATION_TYPE.DOCK){
 					
-				} else if (comType == COMMUNICATION_TYPE.CLASS){
+				} else if (commType == COMMUNICATION_TYPE.CLASS){
 					//this generates the infomem
 					
 				}
@@ -154,9 +157,9 @@ public class ShimmerGSRSensor extends AbstractSensor implements Serializable{
 
 
 	@Override
-	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
+	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(comType).values()){
+		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);

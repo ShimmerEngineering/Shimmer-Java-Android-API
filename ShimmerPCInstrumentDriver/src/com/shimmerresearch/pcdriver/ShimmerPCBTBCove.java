@@ -52,6 +52,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -68,6 +69,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 
 
@@ -565,7 +567,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE comType) {
+			COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -584,6 +586,36 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	public void createInfoMemLayout() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean doesSensorKeyExist(int sensorKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isChannelEnabled(int sensorKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getChannelLabel(int sensorKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Integer> getSensorMapKeySet() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

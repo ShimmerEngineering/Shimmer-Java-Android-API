@@ -1219,7 +1219,7 @@ public class Shimmer extends ShimmerBluetooth{
 
 	@Override
 	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE comType) {
+			COMMUNICATION_TYPE commType) {
 	}
 	protected void finishOperation(BT_STATE currentOperation) {
 

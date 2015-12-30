@@ -15,7 +15,7 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 
-public class STMICROLSM303DLHC extends AbstractSensor{
+public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 
 	// list of compatible shimmer hw/fw for sensor not sensor options (see ShimmerVerObject claass)
 	
@@ -35,7 +35,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	// --- Configuration variables specific to this Sensor - End --- 
 
 	
-	public STMICROLSM303DLHC(ShimmerVerObject svo) {
+	public SensorSTMICROLSM303DLHC(ShimmerVerObject svo) {
 		super(svo);
 	}
 
@@ -75,15 +75,15 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	}
 
 	@Override
-	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE comType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// 		Object returnValue = null;
-		ActionSetting actionsetting = new ActionSetting(comType);
+		ActionSetting actionsetting = new ActionSetting(commType);
 		/*
 		 switch(componentName){
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
@@ -115,7 +115,7 @@ public class STMICROLSM303DLHC extends AbstractSensor{
 	
 	
 	@Override
-	public Object processData(byte[] rawData, COMMUNICATION_TYPE comTYPE, ObjectCluster objectCluster) {
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		// TODO Auto-generated method stub
 		return null;
 	}

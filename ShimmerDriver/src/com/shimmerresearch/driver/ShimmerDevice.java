@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -26,9 +26,7 @@ import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = 5087199076353402591L;
 
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
@@ -42,7 +40,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected LinkedHashMap<Integer,AbstractSensor> mMapOfSensors = new LinkedHashMap<Integer,AbstractSensor>();
 //	protected HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapOfCommTypeToSensorMaps = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
 
-	
 	public ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	public ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
 	public ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails(); 
@@ -127,14 +124,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract void setDefaultShimmerConfiguration();
 
 	// Device sensor map related
-	public abstract Map<Integer, SensorEnabledDetails> getSensorEnabledMap();
+//	public abstract Map<Integer, SensorEnabledDetails> getSensorEnabledMap();
 	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
 	public abstract boolean setSensorEnabledState(int sensorMapKey, boolean state);
 	public abstract List<Integer> sensorMapConflictCheck(Integer key);
 	// Device Config related
 	public abstract Map<String, SensorConfigOptionDetails> getConfigOptionsMap();
-	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object configValue);
-	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 	public abstract void checkConfigOptionValues(String stringKey);
 	public abstract void sensorAndConfigMapsCreate();
 	
@@ -213,14 +208,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	/**
-	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
+	 * @param shimmerUserAssignedName the mShimmerUserAssignedName to set
 	 */
-	public void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
-		if(mShimmerUserAssignedName.length()>12) {
-			this.mShimmerUserAssignedName = mShimmerUserAssignedName.substring(0, 12);
+	public void setShimmerUserAssignedName(String shimmerUserAssignedName) {
+		if(shimmerUserAssignedName.length()>12) {
+			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, 12);
 		}
 		else { 
-			this.mShimmerUserAssignedName = mShimmerUserAssignedName;
+			this.mShimmerUserAssignedName = shimmerUserAssignedName;
+		}
+	}
+	
+	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
+		String addition = "_" + getMacIdParsed();
+		if((shimmerUserAssignedName.length()+addition.length())>12) {
+			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, (12-addition.length())) + addition;
+		}
+		else { 
+			this.mShimmerUserAssignedName = shimmerUserAssignedName + addition;
 		}
 	}
 	
@@ -786,8 +791,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mTrialName;
 	}
 	
+	/**
+	 * @param trialName the trialName to set
+	 */
 	public void setTrialName(String trialName) {
-		mTrialName = trialName;
+		if(trialName.length()>12)
+			this.mTrialName = trialName.substring(0, 11);
+		else
+			this.mTrialName = trialName;
 	}
 	
 	public void setConfigTime(long trialConfigTime) {
@@ -812,50 +823,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mReadSdAccessFail = false;
 	}
 	
-//	/** MN: Test code
-//	 * @param commType 
-//	 * @return the mMapOfCommTypeToSensorMaps
-//	 */
-//	public LinkedHashMap<Integer, SensorEnabledDetails> getMapOfCommTypeToSensorMaps(COMMUNICATION_TYPE commType) {
-//		LinkedHashMap<Integer, SensorEnabledDetails> mapOfCommTypeToSensorMaps = new LinkedHashMap<Integer, SensorEnabledDetails>();
-//		
-//		if(mMapOfSensors.keySet().size()>0){
-//			for(AbstractSensor sensor:mMapOfSensors.values()){
-//				LinkedHashMap<Integer, SensorEnabledDetails> mapOfSensorEnabledDetails = sensor.mMapOfCommTypeToSensorMap.get(commType);
-//				if(mapOfSensorEnabledDetails!=null){
-//					for(Integer key:mapOfSensorEnabledDetails.keySet()){
-//						mapOfCommTypeToSensorMaps.put(key, mapOfSensorEnabledDetails.get(key));
-//					}
-//				}
-//			}
-//		}
-//			
-//		return mapOfCommTypeToSensorMaps;
-//	}
-	
-
-//	/** MN: Test code
-//	 * @param commType 
-//	 * @return the mMapOfCommTypeToSensorMaps
-//	 */
-//	public LinkedHashMap<Integer, SensorEnabledDetails> getMapOfCommTypeToChannelDetails(COMMUNICATION_TYPE commType) {
-//		LinkedHashMap<Integer, ChannelDetails> mapOfCommTypeToSensorMaps = new LinkedHashMap<Integer, SensorEnabledDetails>();
-//		
-//		if(mMapOfSensors.keySet().size()>0){
-//			for(AbstractSensor sensor:mMapOfSensors.values()){
-//				LinkedHashMap<Integer, ChannelDetails> mapOfEnabledChannelDetails = sensor.mMapOfComTypetoChannel.get(commType);
-//				if(mMapOfComTypetoChannel!=null){
-//					for(Integer key:mapOfSensorEnabledDetails.keySet()){
-//						mapOfCommTypeToSensorMaps.put(key, mapOfSensorEnabledDetails.get(key));
-//					}
-//				}
-//			}
-//		}
-//			
-//		return mapOfCommTypeToSensorMaps;
-//	}
-	
-
 	// ----------------- Overrides from ShimmerDevice end -------------
 
 	public LinkedHashMap<Integer, AbstractSensor> getMapOfSensors() {
@@ -914,9 +881,113 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfChannelsPerSensorForCommType;
 	}
 	
-	public boolean isSyncWhenLogging() {
-		// TODO Auto-generated method stub
-		return false;
+    public abstract boolean doesSensorKeyExist(int sensorKey);
+
+    public abstract boolean isChannelEnabled(int sensorKey);
+//    private boolean isChannelEnabled(int sensorKey) {
+//		if(selectedDockedShimmer instanceof ShimmerPCMSS){
+//		    Map<Integer, SensorEnabledDetails> sensorMap = ((ShimmerPCMSS)selectedDockedShimmer).getSensorEnabledMap();
+//			SensorEnabledDetails sensor = sensorMap.get(sensorKey);
+//		    if(sensor!=null){
+//			    return sensor.mIsEnabled;
+//		    }
+//		}
+//		else if(selectedDockedShimmer instanceof ShimmerGQ_802154){
+//		    Map<Integer, AbstractSensor> sensorMap = ((ShimmerGQ_802154)selectedDockedShimmer).getMapOfSensors();
+//		    AbstractSensor sensor = sensorMap.get(sensorKey);
+//		    if(sensor!=null){
+//			    return sensor.mIsEnabled;
+//		    }
+//		}
+//		return false;
+//	}
+
+    public abstract String getChannelLabel(int sensorKey);
+//    private String getChannelLabel(int sensorKey) {
+//		if(selectedDockedShimmer instanceof ShimmerPCMSS){
+//		    Map<Integer, SensorEnabledDetails> sensorMap = ((ShimmerPCMSS)selectedDockedShimmer).getSensorEnabledMap();
+//			SensorEnabledDetails sensor = sensorMap.get(sensorKey);
+//		    if(sensor!=null){
+//			    return sensor.mSensorDetails.mLabel;
+//		    }
+//		}
+//		else if(selectedDockedShimmer instanceof ShimmerGQ_802154){
+//		    Map<Integer, AbstractSensor> sensorMap = ((ShimmerGQ_802154)selectedDockedShimmer).getMapOfSensors();
+//		    AbstractSensor sensor = sensorMap.get(sensorKey);
+//		    if(sensor!=null){
+//			    return sensor.mGuiFriendlyLabel;
+//		    }
+//		}
+//		return "";
+//	}
+
+    public abstract List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey);
+//    private List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+//		if(this instanceof ShimmerPCMSS){
+//		    Map<Integer, SensorEnabledDetails> sensorMap = ((ShimmerPCMSS)selectedDockedShimmer).getSensorEnabledMap();
+//			SensorEnabledDetails sensor = sensorMap.get(sensorKey);
+//		    if(sensor!=null){
+//			    return sensor.mSensorDetails.mListOfCompatibleVersionInfo;
+//		    }
+//		}
+//		else if(selectedDockedShimmer instanceof ShimmerGQ_802154){
+//		    Map<Integer, AbstractSensor> sensorMap = ((ShimmerGQ_802154)selectedDockedShimmer).getMapOfSensors();
+//		    AbstractSensor sensor = sensorMap.get(sensorKey);
+//		    if(sensor!=null){
+//			    return sensor.mListOfCompatibleVersionInfo;
+//		    }
+//		}
+//		return null;
+//	}
+
+	public abstract Set<Integer> getSensorMapKeySet();
+
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet){
+		Object returnValue = null;
+		int buf = 0;
+
+		switch(componentName){
+//Booleans
+//Integers
+
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+        		setShimmerUserAssignedName((String)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+        		setTrialName((String)valueToSet);
+	        	break;
+	        default:
+	        	break;
+		}
+		
+		return returnValue;		
 	}
+	
+	public Object getConfigValueUsingConfigLabel(String componentName){
+		Object returnValue = null;
+		
+		switch(componentName){
+//Booleans
+
+//Integers
+	    		
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+				returnValue = getShimmerUserAssignedName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+				returnValue = getTrialName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+	        	returnValue = getConfigTimeParsed();
+	        	break;
+	        default:
+	        	break;
+		}
+		
+		return returnValue;		
+	}
+
 	
 }

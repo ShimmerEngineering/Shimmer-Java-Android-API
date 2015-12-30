@@ -563,17 +563,11 @@ public class Configuration {
 		public static final Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
 		public class SensorMapKey{
-			/**
-			 * Shimmer3 Low-noise analog accelerometer
-			 */
+			/** Shimmer3 Low-noise analog accelerometer */
 			public static final int A_ACCEL = 0;
-			/**
-			 * Shimmer3 Gyroscope
-			 */
+			/** Shimmer3 Gyroscope */
 			public static final int MPU9150_GYRO = 1;
-			/**
-			 * Shimmer3 Primary magnetometer
-			 */
+			/** Shimmer3 Primary magnetometer */
 			public static final int LSM303DLHC_MAG = 2;
 //			public static final int EXG1_24BIT = 3;
 //			public static final int EXG2_24BIT = 4;
@@ -584,22 +578,16 @@ public class Configuration {
 			public static final int RESISTANCE_AMP = 9;
 			//public static final int HR = 9;
 			public static final int VBATT = 10;
-			/**
-			 * Shimmer3 Wide-range digital accelerometer
-			 */
+			/** Shimmer3 Wide-range digital accelerometer */
 			public static final int LSM303DLHC_ACCEL = 11;
 			public static final int EXT_EXP_ADC_A15 = 12;
 			public static final int INT_EXP_ADC_A1 = 13;
 			public static final int INT_EXP_ADC_A12 = 14;
 			public static final int INT_EXP_ADC_A13 = 15;
 			public static final int INT_EXP_ADC_A14 = 16;
-			/**
-			 * Shimmer3 Alternative accelerometer
-			 */
+			/** Shimmer3 Alternative accelerometer */
 			public static final int MPU9150_ACCEL = 17;
-			/**
-			 * Shimmer3 Alternative magnetometer
-			 */
+			/** Shimmer3 Alternative magnetometer */
 			public static final int MPU9150_MAG = 18;
 //			public static final int EXG1_16BIT = 19;
 //			public static final int EXG2_16BIT = 21;
@@ -636,11 +624,11 @@ public class Configuration {
 			public static final int PPG_A13 = 107;
 			
 			// Derived Channels - Proto3 Deluxe Board
-			
 			public static final int PPG1_A12 = 111;
 			public static final int PPG1_A13 = 112;
 			public static final int PPG2_A1 = 114;
 			public static final int PPG2_A14 = 115;
+			
 			public static final int EXG_CUSTOM = 116;
 			
 			public static final int TIMESTAMP = 150;
@@ -653,7 +641,6 @@ public class Configuration {
 			public static final int PPG2_DUMMY = 113;
 			
 			public static final int SHIMMER_STREAMING_PROPERTIES = 200;
-
 		}
 
 		// Sensor Options Map
@@ -1187,9 +1174,10 @@ public class Configuration {
 			private static final ShimmerVerObject baseHighGAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 			private static final ShimmerVerObject baseHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 					baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
-					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
+					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream,
+					baseShimmerGq802154Lr, baseShimmerGq802154Nr);
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);

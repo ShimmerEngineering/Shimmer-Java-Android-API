@@ -13,14 +13,14 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class KionixKXRB52042 extends AbstractSensor{
+public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5027305280613145453L;
 
-	public KionixKXRB52042(ShimmerVerObject svo) {
+	public SensorKionixKXRB52042(ShimmerVerObject svo) {
 		super(svo);
 	}
 
@@ -35,7 +35,7 @@ public class KionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public Object getSettings(String componentName, COMMUNICATION_TYPE comType) {
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -54,7 +54,7 @@ public class KionixKXRB52042 extends AbstractSensor{
 
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE comType) {
+			COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -74,7 +74,7 @@ public class KionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public Object processData(byte[] rawData, COMMUNICATION_TYPE comType, ObjectCluster objectCluster) {
+	public Object processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		// TODO Auto-generated method stub
 		return null;
 	}
