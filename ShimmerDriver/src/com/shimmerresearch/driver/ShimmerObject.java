@@ -218,6 +218,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public class SDLogHeaderDerivedSensors{
+		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
+		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
+		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
 		public final static int PPG_12_13 = 1<<2;
@@ -7471,9 +7474,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public boolean isEXGUsingDefaultECGConfiguration(){
-		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
-			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
+		if (getFirmwareIdentifier() == FW_ID.GQ_802154){
+			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)){
 				return true;
+			}
+		}else {
+			if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
+				if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
+					return true;
+				}
 			}
 		}
 		return false;
