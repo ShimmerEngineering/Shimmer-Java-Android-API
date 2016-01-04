@@ -151,6 +151,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -168,6 +169,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -265,7 +267,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = BT_STATE.DISCONNECTED;
 		mHandler = handler;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -289,7 +291,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = BT_STATE.DISCONNECTED;
 		mHandler = handler;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
@@ -315,7 +317,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = BT_STATE.DISCONNECTED;
 		mHandler = handler;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -345,7 +347,7 @@ public class Shimmer extends ShimmerBluetooth{
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = BT_STATE.DISCONNECTED;
 		mHandler = handler;
-		mShimmerSamplingRate = samplingRate;
+		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -912,10 +914,6 @@ public class Shimmer extends ShimmerBluetooth{
 		return instructionStatus;
 	}
 
-	public double getSamplingRateShimmer(){
-		return mShimmerSamplingRate;
-	}
-
 	/**
 	 * Purpose of disabling calibration are for logging applications, to reduce the amount of computations needed to compute the data thus reducing risk of a performance bottleneck occuring and maximizing logging performance
 	 * @param enable enables or disables calibration, note that this need to be enabled when using the ID as to calculate 3D orientation, see enable3DOrientation 
@@ -1235,6 +1233,42 @@ public class Shimmer extends ShimmerBluetooth{
 	protected void dockedStateChange() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void createInfoMemLayout() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean doesSensorKeyExist(int sensorKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isChannelEnabled(int sensorKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getChannelLabel(int sensorKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Integer> getSensorMapKeySet() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 //	@Override
