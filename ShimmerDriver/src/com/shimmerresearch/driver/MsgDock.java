@@ -39,6 +39,8 @@ public class MsgDock {
 	public final static int MSG_ID_SMARTDOCK_ACTIVE_SLOT_CHANGE = 44;
 //	public final static int MSG_ID_SMARTDOCK_ERROR = 49; //USED TO INDICATE CASES WHERE THE SHIMMER SHOULD BE REDOCKED
 	
+	public final static int MSG_ID_SHIMMER_DETAILS_CLEARED = 45;
+	
 	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_SUCCESS = 50;
 	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_ERROR = 58;
 	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL = 59;
