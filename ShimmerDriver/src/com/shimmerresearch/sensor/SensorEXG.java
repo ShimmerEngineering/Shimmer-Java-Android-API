@@ -844,20 +844,20 @@ public class SensorEXG extends AbstractSensor{
 //	public int getEXG2RespirationDetectPhase() {
 //		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE);
 //	}
-//	
-//	/**
-//	 * @return the mEXG1RegisterArray
-//	 */
-//	public byte[] getEXG1RegisterArray() {
-//		return mEXG1RegisterArray;
-//	}
-//
-//	/**
-//	 * @return the mEXG2RegisterArray
-//	 */
-//	public byte[] getEXG2RegisterArray() {
-//		return mEXG2RegisterArray;
-//	}
+	
+	/**
+	 * @return the mEXG1RegisterArray
+	 */
+	public byte[] getEXG1RegisterArray() {
+		return mEXG1RegisterArray;
+	}
+
+	/**
+	 * @return the mEXG2RegisterArray
+	 */
+	public byte[] getEXG2RegisterArray() {
+		return mEXG2RegisterArray;
+	}
 
 	protected void setExGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int value){
 		if(chipID==EXG_CHIP_INDEX.CHIP1){
