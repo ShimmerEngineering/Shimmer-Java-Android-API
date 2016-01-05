@@ -851,38 +851,18 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mConfigValues.add((double) 0);
 		
 		//EXG Configuration
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
-		mConfigValues.add((double) 0);
+		SensorEXG exgSensonr = (SensorEXG) mMapOfSensors.get(SENSORS.EXG.ordinal());
+		byte[] exg1Array = exgSensonr.getEXG1RegisterArray();
+		byte[] exg2Array = exgSensonr.getEXG2RegisterArray();
 		
-//		mConfigValues[55] = sd.getEXG1RateSetting();
-//		mConfigValues[56] = getEXG1CH1GainSetting();
-//		mConfigValues[57] = getExg1CH1GainValue();
-//		mConfigValues[58] = getEXG1CH2GainSetting();
-//		mConfigValues[59] = getExg1CH2GainValue();
-//		mConfigValues[60] = getEXGReferenceElectrode();
-//		mConfigValues[61] = getEXG2RateSetting();
-//		mConfigValues[62] = getEXG2CH1GainSetting();
-//		mConfigValues[63] = getExg2CH1GainValue();
-//		mConfigValues[64] = getEXG2CH2GainSetting();
-//		mConfigValues[65] = getExg2CH2GainValue();
+		for(int i=0; i<exg1Array.length; i++){
+			mConfigValues.add((double) exg1Array[i]);
+		}
+		
+		for(int i=0; i<exg2Array.length; i++){
+			mConfigValues.add((double) exg2Array[i]);
+		}
+		
 
 		//Digital Accel Calibration Configuration
 		double[][] mOffsetVectorWRAccel = {{0,0,0},{0,0,0},{0,0,0}};
@@ -1039,9 +1019,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		//Initial TimeStamp
 		mConfigValues.add((double) 0);
-		
-		//Bluetooth address
-//		mConfigValues[172] = getBluetoothAddress();
+
+		//Expansion board
+		mConfigValues.add((double) getExpansionBoardId());
+		mConfigValues.add((double) getExpansionBoardRev());
+		mConfigValues.add((double) getExpansionBoardRevSpecial());
 		
 		return mConfigValues;
 	}

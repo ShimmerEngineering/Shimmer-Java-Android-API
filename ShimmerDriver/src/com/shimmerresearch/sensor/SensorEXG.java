@@ -844,6 +844,7 @@ public class SensorEXG extends AbstractSensor{
 	public int getEXG2RespirationDetectPhase() {
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE);
 	}
+
 	
 	/**
 	 * @return the mEXG1RegisterArray
