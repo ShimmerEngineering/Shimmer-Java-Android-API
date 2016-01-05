@@ -801,63 +801,63 @@ public class SensorEXG extends AbstractSensor{
 //		}
 //		return false;
 //	}
-//	
-//	/**
-//	 * @return the mEXG1RateSetting
-//	 */
-//	public int getEXG1RateSetting() {
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG1_DATA_RATE);
-//	}
-//
-//	/**
-//	 * @return the mEXGReferenceElectrode
-//	 */
-//	public int getEXGReferenceElectrode() {
-//		return mExGConfigBytesDetails.getEXGReferenceElectrode();
-//	}
-//	
-//	/**
-//	 * @return the mEXGLeadOffDetectionCurrent
-//	 */
-//	public int getEXGLeadOffDetectionCurrent() {
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT);
-//	}
-//
-//
-//	/**
-//	 * @return the mEXGLeadOffComparatorTreshold
-//	 */
-//	public int getEXGLeadOffComparatorTreshold() {
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD);
-//	}
-//
-//	/**
-//	 * @return the mEXG2RespirationDetectFreq
-//	 */
-//	public int getEXG2RespirationDetectFreq() {
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY);
-//	}
-//
-//	/**
-//	 * @return the mEXG2RespirationDetectPhase
-//	 */
-//	public int getEXG2RespirationDetectPhase() {
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE);
-//	}
-//	
-//	/**
-//	 * @return the mEXG1RegisterArray
-//	 */
-//	public byte[] getEXG1RegisterArray() {
-//		return mEXG1RegisterArray;
-//	}
-//
-//	/**
-//	 * @return the mEXG2RegisterArray
-//	 */
-//	public byte[] getEXG2RegisterArray() {
-//		return mEXG2RegisterArray;
-//	}
+	
+	/**
+	 * @return the mEXG1RateSetting
+	 */
+	public int getEXG1RateSetting() {
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG1_DATA_RATE);
+	}
+
+	/**
+	 * @return the mEXGReferenceElectrode
+	 */
+	public int getEXGReferenceElectrode() {
+		return mExGConfigBytesDetails.getEXGReferenceElectrode();
+	}
+	
+	/**
+	 * @return the mEXGLeadOffDetectionCurrent
+	 */
+	public int getEXGLeadOffDetectionCurrent() {
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_LEAD_OFF_CURRENT);
+	}
+
+
+	/**
+	 * @return the mEXGLeadOffComparatorTreshold
+	 */
+	public int getEXGLeadOffComparatorTreshold() {
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG3_COMPARATOR_THRESHOLD);
+	}
+
+	/**
+	 * @return the mEXG2RespirationDetectFreq
+	 */
+	public int getEXG2RespirationDetectFreq() {
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG10_RESPIRATION_CONTROL_FREQUENCY);
+	}
+
+	/**
+	 * @return the mEXG2RespirationDetectPhase
+	 */
+	public int getEXG2RespirationDetectPhase() {
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE);
+	}
+	
+	/**
+	 * @return the mEXG1RegisterArray
+	 */
+	public byte[] getEXG1RegisterArray() {
+		return mEXG1RegisterArray;
+	}
+
+	/**
+	 * @return the mEXG2RegisterArray
+	 */
+	public byte[] getEXG2RegisterArray() {
+		return mEXG2RegisterArray;
+	}
 
 	protected void setExGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int value){
 		if(chipID==EXG_CHIP_INDEX.CHIP1){
@@ -1224,16 +1224,16 @@ public class SensorEXG extends AbstractSensor{
 		return false;
 	}
 	
-//	/**
-//	 * @return true if ExG respiration detection frequency is 32kHz and false if 64kHz
-//	 */
-//	public boolean isExgRespirationDetectFreq32kHz() {
-//		if(getEXG2RespirationDetectFreq()==0)
-////		if(mEXG2RespirationDetectFreq==0)
-//			return true;
-//		else
-//			return false;
-//	}
+	/**
+	 * @return true if ExG respiration detection frequency is 32kHz and false if 64kHz
+	 */
+	public boolean isExgRespirationDetectFreq32kHz() {
+		if(getEXG2RespirationDetectFreq()==0)
+//		if(mEXG2RespirationDetectFreq==0)
+			return true;
+		else
+			return false;
+	}
 
 	
 	/**
