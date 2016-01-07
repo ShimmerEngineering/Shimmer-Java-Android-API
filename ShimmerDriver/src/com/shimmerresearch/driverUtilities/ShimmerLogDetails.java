@@ -12,6 +12,7 @@ public class ShimmerLogDetails implements Serializable{
 	public String mFullTrialName;
 	public long mRTCDifference;
 	public String mSessionName;
+	public int mSessionNumber;
 	public long mFileSize;
 	public long mConfigTimeStamp;
 	public long mInitialTimeStamp;
