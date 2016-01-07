@@ -335,11 +335,27 @@ public class UtilShimmer implements Serializable {
 			int compFwIdent, int compMajor, int compMinor, int compInternal) {
 
 		if (thisFwIdent==compFwIdent){
-			if ((thisMajor>compMajor)
-					||(thisMajor==compMajor && thisMinor>compMinor)
-					||(thisMajor==compMajor && thisMinor==compMinor && thisInternal>=compInternal)){
-				return true; // if FW ID is the same and version is greater or equal 
-			}
+			return compareVersions(thisMajor, thisMinor, thisInternal, compMajor, compMinor, compInternal);
+		}
+		return false; // if less or not the same FW ID
+	}
+	
+	/**Returns true if FW ID is the same and "this" version is greater or equal then comparison version
+	 * @param thisMajor
+	 * @param thisMinor
+	 * @param thisInternal
+	 * @param compMajor
+	 * @param compMinor
+	 * @param compInternal
+	 * @return
+	 */
+	public static boolean compareVersions(int thisMajor, int thisMinor, int thisInternal,
+			int compMajor, int compMinor, int compInternal) {
+
+		if ((thisMajor>compMajor)
+				||(thisMajor==compMajor && thisMinor>compMinor)
+				||(thisMajor==compMajor && thisMinor==compMinor && thisInternal>=compInternal)){
+			return true; // if FW ID is the same and version is greater or equal 
 		}
 		return false; // if less or not the same FW ID
 	}
