@@ -106,6 +106,7 @@ public class Configuration {
 		public static final String DEGREES_CELSUIS = "Degrees Celsius";
 		public static final String DEGREES = "Degrees";
 		public static final String U_TESLA = "uT";
+		public static final String U_SIEMENS = "uS";
 		public static final String DATE_FORMAT = "yyyy/mm/dd hh:mm:ss.000";
 		public static final String GRAVITY = "g";
 		public static final String CLOCK_UNIT = "Ticks";
