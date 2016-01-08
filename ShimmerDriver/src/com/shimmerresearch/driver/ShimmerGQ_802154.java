@@ -432,6 +432,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			((SensorEXG)shimmerExgSensor).setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 			shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
 		}
+		else {
+			System.err.println("ERROR: SHIMMERGQ, not EXG sensor present in map");
+		}
 		
 		//Check if Expansion board power is required for any of the enabled sensors
 		//TODO replace with checkIfInternalExpBrdPowerIsNeeded from ShimmerObject

@@ -697,6 +697,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void parseDockType(){
 		if(mDockID.contains(HwDriverShimmerDeviceDetails.DOCK_LABEL[HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASICDOCK.ordinal()])){
 			mDockType = DEVICE_TYPE.BASICDOCK;
+			//Below to ensure Shimmer shows as unknown in BasicDock rather then pending
+			mHaveAttemptedToReadConfig = true;
 		}
 		else if(mDockID.contains(HwDriverShimmerDeviceDetails.DOCK_LABEL[HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASE15.ordinal()])){
 			mDockType = DEVICE_TYPE.BASE15;
