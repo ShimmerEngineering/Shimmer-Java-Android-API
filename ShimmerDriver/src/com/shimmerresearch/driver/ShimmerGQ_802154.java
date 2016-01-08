@@ -427,7 +427,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		shimmerExgSensor.setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 //		shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
 		
-		AbstractSensor shimmerExgSensor = mMapOfSensors.get(AbstractSensor.SENSORS.EXG);
+		AbstractSensor shimmerExgSensor = mMapOfSensors.get(SENSORS.EXG.ordinal());
 		if(shimmerExgSensor!=null){
 			((SensorEXG)shimmerExgSensor).setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 			shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);

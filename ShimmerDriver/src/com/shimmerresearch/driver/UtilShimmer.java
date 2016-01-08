@@ -71,49 +71,8 @@ public class UtilShimmer implements Serializable {
 		String dayString = getDayOfMonthSuffix(dayIndex);
 
 		int monthIndex = cal.get(Calendar.MONTH);
-		String monthString = "";
-
-    	switch(monthIndex){
+		String monthString = getMonthString(monthIndex);
 		
-			case(0):
-				monthString = "Jan";
-            	break;
-			case(1):
-				monthString = "Feb";
-            	break;
-			case(2):
-				monthString = "Mar";
-            	break;
-			case(3):
-				monthString = "Apr";
-            	break;
-			case(4):
-				monthString = "May";
-            	break;
-			case(5):
-				monthString = "June";
-            	break;
-			case(6):
-				monthString = "July";
-            	break;
-			case(7):
-				monthString = "Aug";
-            	break;
-			case(8):
-				monthString = "Sept";
-            	break;
-			case(9):
-				monthString = "Oct";
-            	break;
-			case(10):
-				monthString = "Nov";
-            	break;
-			case(11):
-				monthString = "Dec";
-            	break;
-            default:
-            	break;
-    	}
     	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
     	String timeString = dfLocal.format(new Date(milliSeconds));
     	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
@@ -551,4 +510,57 @@ public class UtilShimmer implements Serializable {
 		
 		return true;
 	}
+
+	public static String getDayString(int dayIndex) {
+		switch (dayIndex) {
+		    case Calendar.SUNDAY:
+		    	return "Sun";
+		    case Calendar.MONDAY:
+		    	return "Mon";
+		    case Calendar.TUESDAY:
+		    	return "Tue";
+		    case Calendar.WEDNESDAY:
+		    	return "Wed";
+		    case Calendar.THURSDAY:
+		    	return "Thur";
+		    case Calendar.FRIDAY:
+		    	return "Fri";
+		    case Calendar.SATURDAY:
+		    	return "Sat";
+		    default:
+		    	return "";
+		}
+	}
+	
+	private static String getMonthString(int monthIndex) {
+    	switch(monthIndex){
+			case(Calendar.JANUARY):
+				return "Jan";
+			case(Calendar.FEBRUARY):
+				return "Feb";
+			case(Calendar.MARCH):
+				return "Mar";
+			case(Calendar.APRIL):
+				return "Apr";
+			case(Calendar.MAY):
+				return "May";
+			case(Calendar.JUNE):
+				return "June";
+			case(Calendar.JULY):
+				return "July";
+			case(Calendar.AUGUST):
+				return "Aug";
+			case(Calendar.SEPTEMBER):
+				return "Sept";
+			case(Calendar.OCTOBER):
+				return "Oct";
+			case(Calendar.NOVEMBER):
+				return "Nov";
+			case(Calendar.DECEMBER):
+				return "Dec";
+            default:
+            	return "";
+    	}
+	}
+
 }
