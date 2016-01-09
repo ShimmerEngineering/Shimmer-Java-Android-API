@@ -217,7 +217,9 @@ public class SensorEXG extends AbstractSensor{
 		//EXG Configuration
 		exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
 		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip1Config1, 10);
-		System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip2Config1, 10);
+		if(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_3){
+			System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip2Config1, 10);
+		}
 	}
 
 	@Override
@@ -227,7 +229,9 @@ public class SensorEXG extends AbstractSensor{
 		int idxEXGADS1292RChip2Config1 =         20;
 
 		System.arraycopy(infoMemBytes, idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
-		System.arraycopy(infoMemBytes, idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
+		if(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_3){
+			System.arraycopy(infoMemBytes, idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
+		}
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
 	
