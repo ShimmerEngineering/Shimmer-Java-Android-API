@@ -359,7 +359,7 @@ public class UtilShimmer implements Serializable {
 		
 		long mili = (long) miliseconds;
 		Date date = new Date(mili);		
-		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		return formatter.format(date);
 	}
 	
@@ -369,7 +369,7 @@ public class UtilShimmer implements Serializable {
 		double miliseconds = 1000*Double.valueOf(seconds);
 		long mili = (long) miliseconds;
 		Date date = new Date(mili);		
-		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		return formatter.format(date);
 	}
 	
