@@ -377,67 +377,45 @@ public class ShimmerService extends Service {
 	                	 Intent intent = new Intent("com.shimmerresearch.service.ShimmerService");
 	                	 Log.d("ShimmerGraph","Sending");
 	            		   mHandlerGraph.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, msg.arg1, -1, msg.obj).sendToTarget();
+	            		   if(msg.arg1==Shimmer.MSG_STATE_STOP_STREAMING){
+	            			     closeAndRemoveFile(((ObjectCluster)msg.obj).mBluetoothAddress);
+	            		   } else {
+	            			   switch (((ObjectCluster)msg.obj).mState) {
+	            			   case CONNECTED:
+	            				   Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
 
-	                       switch (((ObjectCluster)msg.obj).mState) {
-	                       case CONNECTED:
-	                    	   Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
-		                    	 
-		                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-		                    	 intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
-		                    	 sendBroadcast(intent);
-		                    	 break;
-	                       case CONNECTING:
-	                    	   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-		                    	 intent.putExtra("ShimmerState",BT_STATE.CONNECTING);	
-	                           break;
-	                       case STREAMING:
-	                       	break;
-	                       case STREAMING_AND_SDLOGGING:
-	                       	break;
-	                       case SDLOGGING:
-	                    	   Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
-		                    	 
-		                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-		                    	 intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
-		                    	 sendBroadcast(intent);
-	                      	 break;
-	                       case DISCONNECTED:
-		                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-		                    	 intent.putExtra("ShimmerState",BT_STATE.DISCONNECTED);
-		                    	 sendBroadcast(intent);
-	                           break;
-	                       }
-	                  	 
-	            		   /*
-	            		   switch (msg.arg1) {
-	                     case Shimmer.STATE_CONNECTED:
-	                    	 Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
-	                    	 
-	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-	                    	 intent.putExtra("ShimmerState",Shimmer.STATE_CONNECTED);
-	                    	 sendBroadcast(intent);
+	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
+	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	            				   intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
+	            				   sendBroadcast(intent);
+	            				   break;
+	            			   case CONNECTING:
+	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
+	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	            				   intent.putExtra("ShimmerState",BT_STATE.CONNECTING);	
+	            				   break;
+	            			   case STREAMING:
+	            				   break;
+	            			   case STREAMING_AND_SDLOGGING:
+	            				   break;
+	            			   case SDLOGGING:
+	            				   Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
 
-	                         break;
-	                     case Shimmer.STATE_CONNECTING:
-	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-	                    	 intent.putExtra("ShimmerState",Shimmer.STATE_CONNECTING);	                        
-	                         break;
-	                     case Shimmer.STATE_NONE:
-	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
-	                    	 intent.putExtra("ShimmerState",Shimmer.STATE_NONE);
-	                    	 sendBroadcast(intent);
-	                         break;
-	                     }
-	                	 */
-	                break;
+	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
+	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	            				   intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
+	            				   sendBroadcast(intent);
+	            				   break;
+	            			   case DISCONNECTED:
+	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
+	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	            				   intent.putExtra("ShimmerState",BT_STATE.DISCONNECTED);
+	            				   sendBroadcast(intent);
+	            				   break;
+	            			   }
 
+	            			   break;
+	            		   }
                  case Shimmer.MESSAGE_STOP_STREAMING_COMPLETE:
                 	 String address =  msg.getData().getString("Bluetooth Address");
                 	 boolean stop  =  msg.getData().getBoolean("Stop Streaming");
