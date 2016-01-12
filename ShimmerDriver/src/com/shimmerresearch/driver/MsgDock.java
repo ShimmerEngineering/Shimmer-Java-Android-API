@@ -120,6 +120,8 @@ public class MsgDock {
 	//DataprocessingManager
 	public final static int MSG_ID_PROCESS_DATA_OPERATION_PROGRESS = 400;
 	public final static int MSG_ID_PROCESS_DATA_OPERATION_FINISHED = 401;
+	
+	public final static int MSG_ID_APPLY_EVENTS_UPDATE = 410;
 
 	
 
