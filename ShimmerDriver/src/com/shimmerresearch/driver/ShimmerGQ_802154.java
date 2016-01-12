@@ -781,6 +781,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mSpanId = "";
 	}
 	
+	public String getSpanIDAndRadioDeviceID(){
+		return mSpanId + "." + mRadioDeviceId;
+	}
+	
 	public void setPacketReceivedCount(int i) {
 		mPacketReceivedCount = i;
 	}
