@@ -12,7 +12,11 @@ public class ShimmerLogDetails implements Serializable{
 	public String mFullTrialName;
 	public long mRTCDifference;
 	public String mSessionName;
+/*<<<<<<< HEAD
 	public int mSessionNumber;
+=======*/
+	public int mDbSessionNumber = -1;
+//>>>>>>> refs/remotes/origin/MN
 	public long mFileSize;
 	public long mConfigTimeStamp;
 	public long mInitialTimeStamp;

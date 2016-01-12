@@ -631,21 +631,21 @@ public class ExGConfigBytesDetails implements Serializable {
      * @param byteArray
      */
     public void setExgByteArrayConstants(byte[] byteArray){
-    	//CONFIG1:
+    	//CONFIG1:								//0x00
     	byteArray[0] &= ~(BIT6+BIT5+BIT4+BIT3);
-    	//CONFIG2:
+    	//CONFIG2:								//0x80
     	byteArray[1] |= BIT7;
     	byteArray[1] &= ~(BIT2);
-    	//LOFF:
+    	//LOFF:									//0x10
     	byteArray[2] |= BIT4;
     	byteArray[2] &= ~(BIT1);
-    	//LOFF_SENS:
+    	//LOFF_SENS:							//0x00
     	byteArray[6] &= ~(BIT7+BIT6);
-    	//LOFF_STAT:
+    	//LOFF_STAT:							//0x00
     	byteArray[7] &= ~(BIT7+BIT5+BIT4+BIT3+BIT2+BIT1+BIT0);
-    	//RESP1:
+    	//RESP1:								//0x02
     	byteArray[8] |= BIT1;
-    	//RESP2:
+    	//RESP2:								//0x01
     	byteArray[9] &= ~(BIT6+BIT5+BIT4+BIT3);
     	byteArray[9] |= BIT0;    	
     }

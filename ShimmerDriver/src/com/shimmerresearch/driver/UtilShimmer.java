@@ -71,49 +71,8 @@ public class UtilShimmer implements Serializable {
 		String dayString = getDayOfMonthSuffix(dayIndex);
 
 		int monthIndex = cal.get(Calendar.MONTH);
-		String monthString = "";
-
-    	switch(monthIndex){
+		String monthString = getMonthString(monthIndex);
 		
-			case(0):
-				monthString = "Jan";
-            	break;
-			case(1):
-				monthString = "Feb";
-            	break;
-			case(2):
-				monthString = "Mar";
-            	break;
-			case(3):
-				monthString = "Apr";
-            	break;
-			case(4):
-				monthString = "May";
-            	break;
-			case(5):
-				monthString = "June";
-            	break;
-			case(6):
-				monthString = "July";
-            	break;
-			case(7):
-				monthString = "Aug";
-            	break;
-			case(8):
-				monthString = "Sept";
-            	break;
-			case(9):
-				monthString = "Oct";
-            	break;
-			case(10):
-				monthString = "Nov";
-            	break;
-			case(11):
-				monthString = "Dec";
-            	break;
-            default:
-            	break;
-    	}
     	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
     	String timeString = dfLocal.format(new Date(milliSeconds));
     	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
@@ -335,11 +294,27 @@ public class UtilShimmer implements Serializable {
 			int compFwIdent, int compMajor, int compMinor, int compInternal) {
 
 		if (thisFwIdent==compFwIdent){
-			if ((thisMajor>compMajor)
-					||(thisMajor==compMajor && thisMinor>compMinor)
-					||(thisMajor==compMajor && thisMinor==compMinor && thisInternal>=compInternal)){
-				return true; // if FW ID is the same and version is greater or equal 
-			}
+			return compareVersions(thisMajor, thisMinor, thisInternal, compMajor, compMinor, compInternal);
+		}
+		return false; // if less or not the same FW ID
+	}
+	
+	/**Returns true if FW ID is the same and "this" version is greater or equal then comparison version
+	 * @param thisMajor
+	 * @param thisMinor
+	 * @param thisInternal
+	 * @param compMajor
+	 * @param compMinor
+	 * @param compInternal
+	 * @return
+	 */
+	public static boolean compareVersions(int thisMajor, int thisMinor, int thisInternal,
+			int compMajor, int compMinor, int compInternal) {
+
+		if ((thisMajor>compMajor)
+				||(thisMajor==compMajor && thisMinor>compMinor)
+				||(thisMajor==compMajor && thisMinor==compMinor && thisInternal>=compInternal)){
+			return true; // if FW ID is the same and version is greater or equal 
 		}
 		return false; // if less or not the same FW ID
 	}
@@ -384,7 +359,7 @@ public class UtilShimmer implements Serializable {
 		
 		long mili = (long) miliseconds;
 		Date date = new Date(mili);		
-		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		return formatter.format(date);
 	}
 	
@@ -394,7 +369,7 @@ public class UtilShimmer implements Serializable {
 		double miliseconds = 1000*Double.valueOf(seconds);
 		long mili = (long) miliseconds;
 		Date date = new Date(mili);		
-		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		return formatter.format(date);
 	}
 	
@@ -535,4 +510,57 @@ public class UtilShimmer implements Serializable {
 		
 		return true;
 	}
+
+	public static String getDayString(int dayIndex) {
+		switch (dayIndex) {
+		    case Calendar.SUNDAY:
+		    	return "Sun";
+		    case Calendar.MONDAY:
+		    	return "Mon";
+		    case Calendar.TUESDAY:
+		    	return "Tue";
+		    case Calendar.WEDNESDAY:
+		    	return "Wed";
+		    case Calendar.THURSDAY:
+		    	return "Thur";
+		    case Calendar.FRIDAY:
+		    	return "Fri";
+		    case Calendar.SATURDAY:
+		    	return "Sat";
+		    default:
+		    	return "";
+		}
+	}
+	
+	private static String getMonthString(int monthIndex) {
+    	switch(monthIndex){
+			case(Calendar.JANUARY):
+				return "Jan";
+			case(Calendar.FEBRUARY):
+				return "Feb";
+			case(Calendar.MARCH):
+				return "Mar";
+			case(Calendar.APRIL):
+				return "Apr";
+			case(Calendar.MAY):
+				return "May";
+			case(Calendar.JUNE):
+				return "June";
+			case(Calendar.JULY):
+				return "July";
+			case(Calendar.AUGUST):
+				return "Aug";
+			case(Calendar.SEPTEMBER):
+				return "Sept";
+			case(Calendar.OCTOBER):
+				return "Oct";
+			case(Calendar.NOVEMBER):
+				return "Nov";
+			case(Calendar.DECEMBER):
+				return "Dec";
+            default:
+            	return "";
+    	}
+	}
+
 }

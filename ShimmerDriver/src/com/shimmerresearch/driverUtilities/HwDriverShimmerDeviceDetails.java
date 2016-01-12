@@ -35,7 +35,7 @@ public class HwDriverShimmerDeviceDetails {
 		public final static int STATE_BUSY = 2;
 	}
 	
-	public final static class CALLABLE_ID {
+	public final static class CALLABLE_ID_DOCK {
 		public final static String READ_SHIMMER_DETAILS = "0";
 		public final static String FIRMWARE_WRITE = "1";
 		public final static String SD_CARD_SCAN = "2";

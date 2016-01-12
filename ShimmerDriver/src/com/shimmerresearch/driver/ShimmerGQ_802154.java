@@ -427,10 +427,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		shimmerExgSensor.setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 //		shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
 		
-		AbstractSensor shimmerExgSensor = mMapOfSensors.get(AbstractSensor.SENSORS.EXG);
+		AbstractSensor shimmerExgSensor = mMapOfSensors.get(SENSORS.EXG.ordinal());
 		if(shimmerExgSensor!=null){
 			((SensorEXG)shimmerExgSensor).setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 			shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
+		}
+		else {
+			System.err.println("ERROR: SHIMMERGQ, not EXG sensor present in map");
 		}
 		
 		//Check if Expansion board power is required for any of the enabled sensors
@@ -773,11 +776,16 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		addCommunicationRoute(COMMUNICATION_TYPE.IEEE802154);
 	}
 
+	public void unpairFromSpan() {
+		setConnected(false);
+		mSpanId = "";
+	}
+	
 	public void setPacketReceivedCount(int i) {
 		mPacketReceivedCount = i;
 	}
 	
-	public void incremenetPacketReceivedCount() {
+	public void incrementPacketReceivedCount() {
 		mPacketReceivedCount += 1;
 	}
 
