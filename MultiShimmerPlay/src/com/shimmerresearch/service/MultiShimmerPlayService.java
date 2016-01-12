@@ -677,7 +677,7 @@ public class MultiShimmerPlayService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBluetoothAddress().equals(bluetoothAddress)){
-				SRate= stemp.getSamplingRate();
+				SRate= stemp.getSamplingRateShimmer();
 			}
 		}
 		return SRate;

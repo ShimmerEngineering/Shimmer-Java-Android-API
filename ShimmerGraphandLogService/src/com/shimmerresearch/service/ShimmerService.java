@@ -474,7 +474,7 @@ public class ShimmerService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
-				SRate= stemp.getSamplingRate();
+				SRate= stemp.getSamplingRateShimmer();
 			}
 		}
 		return SRate;

@@ -334,7 +334,7 @@ public class ShimmerService extends Service {
             			}
 	            		
 	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE);
-	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PC_TIMESTAMP_PLOT);
+	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT);
 	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL);
 	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT);
 	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP);
@@ -729,7 +729,7 @@ public class ShimmerService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBluetoothAddress().equals(bluetoothAddress)){
-				SRate= stemp.getSamplingRate();
+				SRate= stemp.getSamplingRateShimmer();
 			}
 		}
 		return SRate;

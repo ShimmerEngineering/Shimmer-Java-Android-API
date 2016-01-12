@@ -276,7 +276,7 @@ public class MultiShimmerTemplateService extends Service {
 		shimmerConfiguration.setLowPowerMagEnabled(shimmerDevice.getLowPowerMagEnabled());
 		shimmerConfiguration.setMagRange(shimmerDevice.getMagRange());
 		shimmerConfiguration.setPressureResolution(shimmerDevice.getPressureResolution());
-		shimmerConfiguration.setSamplingRate(shimmerDevice.getSamplingRate());
+		shimmerConfiguration.setSamplingRate(shimmerDevice.getSamplingRateShimmer());
 //		shimmerConfiguration.setShimmerRowNumber();
 		
 		mShimmerConfigurationList.set(position, shimmerConfiguration);
@@ -424,7 +424,7 @@ public class MultiShimmerTemplateService extends Service {
 							}
 		            		
 		            		double heartRate = Double.NaN;
-		            		if (mCountPPGInitial< mShimmerHeartRate.getSamplingRate()*2){ //skip first 2 seconds
+		            		if (mCountPPGInitial< mShimmerHeartRate.getSamplingRateShimmer()*2){ //skip first 2 seconds
 		            			mCountPPGInitial++;
 		            		} else {
 		            			heartRate = mHeartRateCalculation.ppgToHrConversion(lpFilteredDataPPG, timeStampPPG);		            			
@@ -949,7 +949,7 @@ public class MultiShimmerTemplateService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBluetoothAddress().equals(bluetoothAddress)){
-				SRate= stemp.getSamplingRate();
+				SRate= stemp.getSamplingRateShimmer();
 			}
 		}
 		return SRate;
@@ -1162,7 +1162,7 @@ public class MultiShimmerTemplateService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getStreamingStatus()==true){
-				mShimmerConfigurationList.add(new ShimmerConfiguration(stemp.getDeviceName(), stemp.getBluetoothAddress(), -1, stemp.getEnabledSensors(), stemp.getSamplingRate(), stemp.getAccelRange(), stemp.getGSRRange(), stemp.getShimmerVersion(),stemp.getLowPowerAccelEnabled(),stemp.getLowPowerGyroEnabled(),stemp.getLowPowerMagEnabled(),stemp.getGyroRange(),stemp.getMagRange(),stemp.getPressureResolution(),stemp.getInternalExpPower()));
+				mShimmerConfigurationList.add(new ShimmerConfiguration(stemp.getDeviceName(), stemp.getBluetoothAddress(), -1, stemp.getEnabledSensors(), stemp.getSamplingRateShimmer(), stemp.getAccelRange(), stemp.getGSRRange(), stemp.getShimmerVersion(),stemp.getLowPowerAccelEnabled(),stemp.getLowPowerGyroEnabled(),stemp.getLowPowerMagEnabled(),stemp.getGyroRange(),stemp.getMagRange(),stemp.getPressureResolution(),stemp.getInternalExpPower()));
 			}
 		}
 		return mShimmerConfigurationList;
@@ -1176,7 +1176,7 @@ public class MultiShimmerTemplateService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBTState()==BT_STATE.CONNECTED||stemp.getBTState()==BT_STATE.STREAMING||stemp.getBTState()==BT_STATE.STREAMING_AND_SDLOGGING){
-				mShimmerConfigurationList.add(new ShimmerConfiguration(stemp.getDeviceName(), stemp.getBluetoothAddress(), -1, stemp.getEnabledSensors(), stemp.getSamplingRate(), stemp.getAccelRange(), stemp.getGSRRange(), stemp.getShimmerVersion(),stemp.getLowPowerAccelEnabled(),stemp.getLowPowerGyroEnabled(),stemp.getLowPowerMagEnabled(),stemp.getGyroRange(),stemp.getMagRange(),stemp.getPressureResolution(),stemp.getInternalExpPower()));
+				mShimmerConfigurationList.add(new ShimmerConfiguration(stemp.getDeviceName(), stemp.getBluetoothAddress(), -1, stemp.getEnabledSensors(), stemp.getSamplingRateShimmer(), stemp.getAccelRange(), stemp.getGSRRange(), stemp.getShimmerVersion(),stemp.getLowPowerAccelEnabled(),stemp.getLowPowerGyroEnabled(),stemp.getLowPowerMagEnabled(),stemp.getGyroRange(),stemp.getMagRange(),stemp.getPressureResolution(),stemp.getInternalExpPower()));
 			}
 		}
 		return mShimmerConfigurationList;
@@ -1754,18 +1754,18 @@ public class MultiShimmerTemplateService extends Service {
 			mBluetoothAddressToHeartRate = bluetoothAddress;
 			mShimmerHeartRate = (Shimmer) mMultiShimmer.get(mBluetoothAddressToHeartRate);
 			mSensortoHR = sensorToHeartRate;
-			mHeartRateCalculation = new PPGtoHRAlgorithm(mShimmerHeartRate.getSamplingRate(), mNumberOfBeatsToAverage,10); //10 second training period
+			mHeartRateCalculation = new PPGtoHRAlgorithm(mShimmerHeartRate.getSamplingRateShimmer(), mNumberOfBeatsToAverage,10); //10 second training period
 	
 			
 	    	try {
-				mLPFilter = new Filter(Filter.LOW_PASS, mShimmerHeartRate.getSamplingRate(), mLPFc);
+				mLPFilter = new Filter(Filter.LOW_PASS, mShimmerHeartRate.getSamplingRateShimmer(), mLPFc);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    	
 	    	try {
-				mHPFilter = new Filter(Filter.HIGH_PASS, mShimmerHeartRate.getSamplingRate(), mHPFc);
+				mHPFilter = new Filter(Filter.HIGH_PASS, mShimmerHeartRate.getSamplingRateShimmer(), mHPFc);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1788,18 +1788,18 @@ public void enableHeartRateECG(String bluetoothAddress, boolean enabled, String 
 			mBluetoothAddressToHeartRate = bluetoothAddress;
 			mShimmerHeartRate = (Shimmer) mMultiShimmer.get(mBluetoothAddressToHeartRate);
 			mSensortoHR = sensorToHeartRate;
-			mHeartRateCalculationECG = new ECGtoHRAlgorithm(mShimmerHeartRate.getSamplingRate(), 10 ,mNumberOfBeatsToAverage); //10 second training period
+			mHeartRateCalculationECG = new ECGtoHRAlgorithm(mShimmerHeartRate.getSamplingRateShimmer(), 10 ,mNumberOfBeatsToAverage); //10 second training period
 	
 			
 	    	try {
-				mLPFilterECG = new Filter(Filter.LOW_PASS, mShimmerHeartRate.getSamplingRate(), mLPFcECG);
+				mLPFilterECG = new Filter(Filter.LOW_PASS, mShimmerHeartRate.getSamplingRateShimmer(), mLPFcECG);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    	
 	    	try {
-				mHPFilterECG = new Filter(Filter.HIGH_PASS, mShimmerHeartRate.getSamplingRate(), mHPFcECG);
+				mHPFilterECG = new Filter(Filter.HIGH_PASS, mShimmerHeartRate.getSamplingRateShimmer(), mHPFcECG);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1817,18 +1817,18 @@ public void enableHeartRateECG(String bluetoothAddress, boolean enabled, String 
 		
 			mCountPPGInitial=0;	
 			mNewPPGSignalProcessing = true;
-			mHeartRateCalculation = new PPGtoHRAlgorithm(mShimmerHeartRate.getSamplingRate(), mNumberOfBeatsToAverage,10); //10 second training period
+			mHeartRateCalculation = new PPGtoHRAlgorithm(mShimmerHeartRate.getSamplingRateShimmer(), mNumberOfBeatsToAverage,10); //10 second training period
 	    	try {
-				mLPFilter = new Filter(Filter.LOW_PASS, mShimmerHeartRate.getSamplingRate(), mLPFc);
-				Log.d("Service", "Filter LP created with "+mShimmerHeartRate.getSamplingRate()+" sample rate");
+				mLPFilter = new Filter(Filter.LOW_PASS, mShimmerHeartRate.getSamplingRateShimmer(), mLPFc);
+				Log.d("Service", "Filter LP created with "+mShimmerHeartRate.getSamplingRateShimmer()+" sample rate");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    	
 	    	try {
-				mHPFilter = new Filter(Filter.HIGH_PASS, mShimmerHeartRate.getSamplingRate(), mHPFc);
-				Log.d("Service", "Filter HP created with "+mShimmerHeartRate.getSamplingRate()+" sample rate");
+				mHPFilter = new Filter(Filter.HIGH_PASS, mShimmerHeartRate.getSamplingRateShimmer(), mHPFc);
+				Log.d("Service", "Filter HP created with "+mShimmerHeartRate.getSamplingRateShimmer()+" sample rate");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
