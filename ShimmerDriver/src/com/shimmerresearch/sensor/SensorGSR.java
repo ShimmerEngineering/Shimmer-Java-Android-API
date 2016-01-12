@@ -40,11 +40,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	// --- Configuration variables specific to this Sensor - Start --- 
 	public int mGSRRange = 4; 					// 4 = Auto
 	
-	private static String calUnitToUse = Configuration.CHANNEL_UNITS.MICROSIEMENS;
+	private static String calUnitToUse = Configuration.CHANNEL_UNITS.U_SIEMENS;
 //	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
 	// --- Configuration variables specific to this Sensor - End ---
-
-    public Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 
 	public SensorGSR(ShimmerVerObject svo) {
 		super(svo);
@@ -54,6 +52,27 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		
 		mSensorBitmapIDStreaming = 0x04<<(0*8);
 		mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
+		
+		mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+				Configuration.Shimmer3.SensorMapKey.ECG,
+				Configuration.Shimmer3.SensorMapKey.EMG,
+				Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+				Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+				Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+//				Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+//				Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+//				Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+//				Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+				Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+				Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+
+		mListOfConfigOptionKeysAssociated = Arrays.asList(
+				Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
+		
+//		mListOfChannels = Arrays.asList(
+//				Configuration.Shimmer3.ObjectClusterSensorName.GSR);
 		
 		
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3){
@@ -67,6 +86,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR)));
 			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			
+//			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
 		}
 		
 	}
@@ -140,17 +161,19 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
-			ShimmerVerObject svo) {
+	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 
-		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM ||
-				svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG)
-				mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
-						new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
-												Configuration.Shimmer3.ListofGSRRangeConfigValues, 
-												SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-												CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
+				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
+				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154) {
+			
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
+											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+		}
 				
 		return mConfigOptionsMap;
 	}
@@ -250,7 +273,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 				if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.KOHMS)){
 					calData = calibrateGsrData(rawData,p1,p2);
 				}
-				else if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.MICROSIEMENS)){
+				else if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
 					calData = calibrateGsrDataToSiemens(rawData,p1,p2);
 				}
 				objectCluster.addCalData(channelDetails, calData);
@@ -291,9 +314,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		
 		//TODO: tidy
-		int idxConfigSetupByte3 =              	9;
-		int bitShiftGSRRange =                       1;
-		int maskGSRRange =                           0x07;
+		int idxConfigSetupByte3 =	9;
+		int bitShiftGSRRange =		1;
+		int maskGSRRange =			0x07;
 
 		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
 		
@@ -303,9 +326,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		
 		//TODO: tidy
-		int idxConfigSetupByte3 =              	9;
-		int bitShiftGSRRange =                       1;
-		int maskGSRRange =                           0x07;
+		int idxConfigSetupByte3 =	9;
+		int bitShiftGSRRange =		1;
+		int maskGSRRange =			0x07;
 		
 		
 		mGSRRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftGSRRange) & maskGSRRange;
@@ -313,6 +336,12 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		
+//		generateConfigOptionsMap(svo);
+//		sss
+//		super.updateSensorGroupingMap();
+		
+		
 		return mSensorGroupingMap;
 	}
 

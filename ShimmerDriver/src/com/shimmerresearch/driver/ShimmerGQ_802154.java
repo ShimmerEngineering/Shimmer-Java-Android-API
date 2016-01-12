@@ -272,8 +272,18 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		HashMap<String, SensorConfigOptionDetails> configOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
+		
+		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+			HashMap<String, SensorConfigOptionDetails> configOptionsMapPerSensor = abstractSensor.generateConfigOptionsMap(mShimmerVerObject);
+			if(configOptionsMapPerSensor!=null){
+				if(configOptionsMapPerSensor.keySet().size()>0){
+					configOptionsMap.putAll(configOptionsMapPerSensor);
+				}
+			}
+		}
+		return configOptionsMap;
 	}
 
 	@Override

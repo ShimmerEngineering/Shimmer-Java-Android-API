@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -42,6 +43,8 @@ public abstract class AbstractSensor implements Serializable{
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
 	
+    public Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+
 //	//Testing for GQ BLE
 //	public String mHeaderFileLabel = "";
 //	public int mHeaderByteMask = 0;
@@ -649,6 +652,28 @@ public abstract class AbstractSensor implements Serializable{
 		boolean state = (enabledSensors & mSensorBitmapIDStreaming)>0? true:false;
 		mIsEnabled = state;
 		setSensorChannelsState(commType, state);
+	}
+	
+	
+	public void updateSensorGroupingMap() {
+//		for (String sensorGroup:mSensorGroupingMap.keySet()) {
+//			// Ok to clear here because variable is initiated in the class
+//			mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.clear();
+//			for (Integer sensor:mSensorGroupingMap.get(sensorGroup).mListOfSensorMapKeysAssociated) {
+//				if(Configuration.Shimmer3.mSensorMapRef.containsKey(sensor)){
+//					List<String> associatedConfigOptions = Configuration.Shimmer3.mSensorMapRef.get(sensor).mListOfConfigOptionKeysAssociated;
+//					if (associatedConfigOptions != null) {
+//						for (String configOption:associatedConfigOptions) {
+//							// do not add duplicates
+//							if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+//								mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+		
 	}
 	
 	

@@ -1883,8 +1883,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					if(getFirmwareIdentifier()==FW_ID.GQ_802154){
 						calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
-						calibratedDataUnits[iGSR]=CHANNEL_UNITS.MICROSIEMENS;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,calibratedData[iGSR]));
+						calibratedDataUnits[iGSR]=CHANNEL_UNITS.U_SIEMENS;
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,calibratedData[iGSR]));
 					}
 					else {
 						calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);

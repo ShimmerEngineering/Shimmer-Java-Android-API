@@ -107,6 +107,7 @@ public class Configuration {
 		public static final String DEGREES = "Degrees";
 		public static final String U_TESLA = "uT";
 		public static final String U_SIEMENS = "uS";
+		//TODO: should be .SSS rather then .000? .000 might be required for viewing files in Microsoft Office
 		public static final String DATE_FORMAT = "yyyy/mm/dd hh:mm:ss.000";
 		public static final String GRAVITY = "g";
 		public static final String CLOCK_UNIT = "Ticks";
@@ -123,7 +124,6 @@ public class Configuration {
 //		public static final String MAG_DEFAULT_CAL_UNIT = LOCAL_FLUX+"*";
 
 		public static final String LOCAL = "local"; //used for axis-angle and madgewick quaternions
-		public static final String MICROSIEMENS = "uS";
 		public static final String PERCENT = "%";
 	}	
 	
@@ -1743,7 +1743,7 @@ public class Configuration {
 					Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO);
-			
+
 			//The A12 and A13 based PPG channels have the same channel exceptions as GSR with the addition of their counterpart channel 
 			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfSensorMapKeysConflicting = new ArrayList<Integer>(aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfSensorMapKeysConflicting);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.PPG_A12).mListOfSensorMapKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.PPG_A13);
