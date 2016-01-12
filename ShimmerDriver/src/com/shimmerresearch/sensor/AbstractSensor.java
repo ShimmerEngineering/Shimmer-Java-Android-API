@@ -18,6 +18,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractSensor implements Serializable{
@@ -656,23 +658,38 @@ public abstract class AbstractSensor implements Serializable{
 	
 	
 	public void updateSensorGroupingMap() {
-//		for (String sensorGroup:mSensorGroupingMap.keySet()) {
-//			// Ok to clear here because variable is initiated in the class
-//			mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.clear();
-//			for (Integer sensor:mSensorGroupingMap.get(sensorGroup).mListOfSensorMapKeysAssociated) {
-//				if(Configuration.Shimmer3.mSensorMapRef.containsKey(sensor)){
-//					List<String> associatedConfigOptions = Configuration.Shimmer3.mSensorMapRef.get(sensor).mListOfConfigOptionKeysAssociated;
-//					if (associatedConfigOptions != null) {
-//						for (String configOption:associatedConfigOptions) {
-//							// do not add duplicates
-//							if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-//								mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
+		for (String sensorGroup:mSensorGroupingMap.keySet()) {
+			// Ok to clear here because variable is initiated in the class
+			mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.clear();
+			for (Integer sensor:mSensorGroupingMap.get(sensorGroup).mListOfSensorMapKeysAssociated) {
+				
+				if(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_3){
+					if(Configuration.Shimmer3.mSensorMapRef.containsKey(sensor)){
+						List<String> associatedConfigOptions = Configuration.Shimmer3.mSensorMapRef.get(sensor).mListOfConfigOptionKeysAssociated;
+						if (associatedConfigOptions != null) {
+							for (String configOption:associatedConfigOptions) {
+								// do not add duplicates
+								if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+									mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+								}
+							}
+						}
+					}
+				}
+				
+				else if((mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
+						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)){
+					for (String configOption:mListOfConfigOptionKeysAssociated) {
+						// do not add duplicates
+						if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
+							mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+						}
+					}
+				}
+				
+				
+			}
+		}
 		
 	}
 	

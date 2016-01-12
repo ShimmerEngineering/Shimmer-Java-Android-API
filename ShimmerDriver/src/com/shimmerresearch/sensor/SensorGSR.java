@@ -338,9 +338,11 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
 		
 //		generateConfigOptionsMap(svo);
-//		sss
-//		super.updateSensorGroupingMap();
 		
+		super.updateSensorGroupingMap();
+		
+//		mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
+
 		
 		return mSensorGroupingMap;
 	}
