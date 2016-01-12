@@ -304,6 +304,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		Object returnValue = null;
 		int buf = 0;
 
+		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+			returnValue = abstractSensor.setConfigValueUsingConfigLabel(componentName, valueToSet);
+			if(returnValue!=null){
+				return returnValue;
+			}
+		}
+		
 		switch(componentName){
 //Booleans
 
@@ -325,6 +332,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
+		
+		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+			returnValue = abstractSensor.getConfigValueUsingConfigLabel(componentName);
+			if(returnValue!=null){
+				return returnValue;
+			}
+		}
 		
 		switch(componentName){
 //Booleans
@@ -437,7 +451,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		shimmerExgSensor.setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 //		shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
 		
-		AbstractSensor shimmerExgSensor = mMapOfSensors.get(SENSORS.EXG.ordinal());
+		AbstractSensor shimmerExgSensor = mMapOfSensors.get(SENSORS.EXG.sensorIndex());
 		if(shimmerExgSensor!=null){
 			((SensorEXG)shimmerExgSensor).setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
 			shimmerExgSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
@@ -638,16 +652,16 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		if( UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
 //			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.ordinal(),new SensorSystemTimeStamp(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.GSR.ordinal(),new SensorGSR(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.ECG_TO_HR.ordinal(),new SensorECGToHR(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.ECG_TO_HR.sensorIndex(),new SensorECGToHR(mShimmerVerObject));
 			
 		} else {
 //			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.ordinal(),new SensorSystemTimeStamp(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.GSR.ordinal(),new SensorGSR(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.ECG_TO_HR.ordinal(),new SensorECGToHR(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.EXG.ordinal(),new SensorEXG(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.ECG_TO_HR.sensorIndex(),new SensorECGToHR(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.EXG.sensorIndex(),new SensorEXG(mShimmerVerObject));
 		}
 		
 	}
@@ -683,9 +697,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		if (commType == COMMUNICATION_TYPE.IEEE802154){
 			if (enabledSensors == 0){
 //				mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(commType);
-				mMapOfSensors.get(SENSORS.SYSTEM_TIMESTAMP.ordinal()).enableSensorChannels(commType);
-				mMapOfSensors.get(SENSORS.GSR.ordinal()).enableSensorChannels(commType);
-				mMapOfSensors.get(SENSORS.ECG_TO_HR.ordinal()).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSORS.SYSTEM_TIMESTAMP.sensorIndex()).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSORS.GSR.sensorIndex()).enableSensorChannels(commType);
+				mMapOfSensors.get(SENSORS.ECG_TO_HR.sensorIndex()).enableSensorChannels(commType);
 			} 
 			else {
 				//TODO: needs a lot of work
@@ -694,24 +708,24 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				}
 				
 //				if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
-//					mMapOfSensors.get(SENSORS.GSR.ordinal()).enableSensorChannels(commType);
+//					mMapOfSensors.get(SENSORS.GSR.sensorIndex()).enableSensorChannels(commType);
 //				} 
 //				else {
-//					mMapOfSensors.get(SENSORS.GSR.ordinal()).disableSensorChannels(commType);
+//					mMapOfSensors.get(SENSORS.GSR.sensorIndex()).disableSensorChannels(commType);
 //				}
 //				
 //				if ((enabledSensors & SENSOR_ECG_HEARTRATE_802154_BIT) >0){
-//					mMapOfSensors.get(SENSORS.ECG_TO_HR.ordinal()).enableSensorChannels(commType);
+//					mMapOfSensors.get(SENSORS.ECG_TO_HR.sensorIndex()).enableSensorChannels(commType);
 //				} 
 //				else {
-//					mMapOfSensors.get(SENSORS.ECG_TO_HR.ordinal()).disableSensorChannels(commType);
+//					mMapOfSensors.get(SENSORS.ECG_TO_HR.sensorIndex()).disableSensorChannels(commType);
 //				}
 //				
 //				if ((enabledSensors & SENSOR_CLOCK_802154_BIT) >0){
-//					mMapOfSensors.get(SENSORS.CLOCK.ordinal()).enableSensorChannels(commType);
+//					mMapOfSensors.get(SENSORS.CLOCK.sensorIndex()).enableSensorChannels(commType);
 //				} 
 //				else {
-//					mMapOfSensors.get(SENSORS.CLOCK.ordinal()).disableSensorChannels(commType);
+//					mMapOfSensors.get(SENSORS.CLOCK.sensorIndex()).disableSensorChannels(commType);
 //				}
 			}
 		}
@@ -827,7 +841,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mConfigValues.add((double) 0);
 		mConfigValues.add((double) 0);
 		mConfigValues.add((double) 0);
-		AbstractSensor sensorGsr = mMapOfSensors.get(SENSORS.GSR.ordinal()); 
+		AbstractSensor sensorGsr = mMapOfSensors.get(SENSORS.GSR.sensorIndex()); 
 		if(sensorGsr!=null){
 			mConfigValues.add((double) ((SensorGSR)sensorGsr).mGSRRange);
 		}
@@ -869,7 +883,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mConfigValues.add((double) 0);
 		
 		//EXG Configuration
-		SensorEXG exgSensonr = (SensorEXG) mMapOfSensors.get(SENSORS.EXG.ordinal());
+		SensorEXG exgSensonr = (SensorEXG) mMapOfSensors.get(SENSORS.EXG.sensorIndex());
 		byte[] exg1Array = exgSensonr.getEXG1RegisterArray();
 		byte[] exg2Array = exgSensonr.getEXG2RegisterArray();
 		

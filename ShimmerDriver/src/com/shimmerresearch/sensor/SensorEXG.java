@@ -127,12 +127,57 @@ public class SensorEXG extends AbstractSensor{
 								Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
 								Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)));
 			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);		
 		}
 		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG)));
 			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			
+			mListOfConfigOptionKeysAssociated = Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+	
 		}
 		
 	}
@@ -889,49 +934,50 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
 	}
 	
-//	protected void setExGResolution(int i, long enabledSensors){
-//		mExGResolution = i;
-//		
-//		if(i==0) { // 16-bit
-//			//this is needed so the BT can write the correct sensor
-//			/*if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0){
-//				mEnabledSensors=mEnabledSensors^SENSOR_EXG1_16BIT;
-//			}
-//			if ((mEnabledSensors & SENSOR_EXG2_16BIT)>0){
-//				mEnabledSensors=mEnabledSensors^SENSOR_EXG2_16BIT;
-//			}
-//			mEnabledSensors = SENSOR_EXG1_16BIT|SENSOR_EXG2_16BIT;
-//			*/
-//			//
-//			
-//			if(mIsExg1_24bitEnabled){
-//				mIsExg1_24bitEnabled = false;
-//				mIsExg1_16bitEnabled = true;
-//			}
-//			if(mIsExg2_24bitEnabled){
-//				mIsExg2_24bitEnabled = false;
-//				mIsExg2_16bitEnabled = true;
-//			}
-//		}
-//		else if(i==1) { // 24-bit
-//			/*if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0){
-//				mEnabledSensors=mEnabledSensors^SENSOR_EXG1_24BIT;
-//			}
-//			if ((mEnabledSensors & SENSOR_EXG2_24BIT)>0){
-//				mEnabledSensors=mEnabledSensors^SENSOR_EXG2_24BIT;
-//			}
-//			mEnabledSensors = SENSOR_EXG1_24BIT|SENSOR_EXG2_24BIT;
-//			*/
-//			if(mIsExg1_16bitEnabled){
-//				mIsExg1_24bitEnabled = true;
-//				mIsExg1_16bitEnabled = false;
-//			}
-//			if(mIsExg2_16bitEnabled){
-//				mIsExg2_24bitEnabled = true;
-//				mIsExg2_16bitEnabled = false;
-//			}
-//		}
-//		
+	protected void setExGResolution(int i){
+		mExGResolution = i;
+		
+		if(i==0) { // 16-bit
+			//this is needed so the BT can write the correct sensor
+			/*if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG1_16BIT;
+			}
+			if ((mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG2_16BIT;
+			}
+			mEnabledSensors = SENSOR_EXG1_16BIT|SENSOR_EXG2_16BIT;
+			*/
+			//
+			
+			if(mIsExg1_24bitEnabled){
+				mIsExg1_24bitEnabled = false;
+				mIsExg1_16bitEnabled = true;
+			}
+			if(mIsExg2_24bitEnabled){
+				mIsExg2_24bitEnabled = false;
+				mIsExg2_16bitEnabled = true;
+			}
+		}
+		else if(i==1) { // 24-bit
+			/*if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG1_24BIT;
+			}
+			if ((mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+				mEnabledSensors=mEnabledSensors^SENSOR_EXG2_24BIT;
+			}
+			mEnabledSensors = SENSOR_EXG1_24BIT|SENSOR_EXG2_24BIT;
+			*/
+			if(mIsExg1_16bitEnabled){
+				mIsExg1_24bitEnabled = true;
+				mIsExg1_16bitEnabled = false;
+			}
+			if(mIsExg2_16bitEnabled){
+				mIsExg2_24bitEnabled = true;
+				mIsExg2_16bitEnabled = false;
+			}
+		}
+		
+		//TODO - needs updating from ShimmerObject
 //		updateEnabledSensorsFromExgResolution(enabledSensors);
 //		
 ////		if(mSensorMap != null) {
@@ -956,7 +1002,7 @@ public class SensorEXG extends AbstractSensor{
 ////				}
 ////			}
 ////		}
-//	}
+	}
 	
 	public int getExGGainSetting(){
 //		mEXG1CH1GainSetting = i;
@@ -1337,10 +1383,124 @@ public class SensorEXG extends AbstractSensor{
 //			}
 //		}
 	}
+	
+	/**
+	 * @return the mExGResolution
+	 */
+	public int getExGResolution() {
+		//System.out.println("mExGResolution: " +mExGResolution);
+		return mExGResolution;
+	}
+
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		super.updateSensorGroupingMap();
+		
 		return mSensorGroupingMap;
+	}
+
+	@Override
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+		Object returnValue = null;
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+				setExGResolution((int)valueToSet);
+				returnValue = valueToSet;
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+				//consolePrintLn("before set " + getExGGain());
+				setExGGainSetting((int)valueToSet);
+				returnValue = valueToSet;
+				//consolePrintLn("after set " + getExGGain());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+				returnValue = getEXG1RateSetting();
+				//returnValue = getEXG2RateSetting();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+				returnValue = getEXGReferenceElectrode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+				returnValue = getEXGLeadOffCurrentMode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+				returnValue = getEXGLeadOffDetectionCurrent();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+				returnValue = getEXGLeadOffComparatorTreshold();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+				returnValue = getEXG2RespirationDetectFreq();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+				returnValue = getEXG2RespirationDetectPhase();
+            	break;
+
+	        default:
+	        	//TODO not needed here - only a ShimmerObject thing or do we want to set properties in AbstractSensor?
+//	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+	        	break;
+		}
+		
+        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	//TODO
+//        	checkConfigOptionValues(componentName);
+        }
+			
+		return returnValue;
+	}
+
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName) {
+		
+        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	//TODO
+//        	checkConfigOptionValues(componentName);
+        }
+		
+		Object returnValue = null;
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+				returnValue = getExGGainSetting();
+				//consolePrintLn("Get " + configValue);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+				returnValue = getExGResolution();
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+				returnValue = getEXG1RateSetting();
+				//returnValue = getEXG2RateSetting();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+				returnValue = getEXGReferenceElectrode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+				returnValue = getEXGLeadOffCurrentMode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+				returnValue = getEXGLeadOffDetectionCurrent();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+				returnValue = getEXGLeadOffComparatorTreshold();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+				returnValue = getEXG2RespirationDetectFreq();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+				returnValue = getEXG2RespirationDetectPhase();
+            	break;
+	        default:
+	        	//TODO not needed here - only a ShimmerObject thing or do we want to set properties in AbstractSensor?
+//	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
+	        	break;
+		}
+	        	
+	        	
+		return returnValue;
 	}
 
 	//-------------------- ExG End -----------------------------------	

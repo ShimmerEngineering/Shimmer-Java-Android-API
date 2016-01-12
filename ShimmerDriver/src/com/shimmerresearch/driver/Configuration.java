@@ -642,6 +642,8 @@ public class Configuration {
 			public static final int PPG2_DUMMY = 113;
 			
 			public static final int SHIMMER_STREAMING_PROPERTIES = 200;
+			
+			public static final int ECG_TO_HR_FW = 150;
 		}
 
 		// Sensor Options Map

@@ -128,4 +128,21 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 
+
+	@Override
+	public Object setConfigValueUsingConfigLabel(String componentName,
+			Object valueToSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

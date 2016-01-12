@@ -7149,6 +7149,38 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public byte[] getEXG2RegisterArray() {
 		return mEXG2RegisterArray;
 	}
+	
+	/**
+	 * @return the mExGResolution
+	 */
+	public int getExGResolution() {
+		//System.out.println("mExGResolution: " +mExGResolution);
+		return mExGResolution;
+	}
+
+	public int getReferenceElectrode(){
+		return mEXGReferenceElectrode;
+	}
+	
+	public int getLeadOffDetectionMode(){
+		return mLeadOffDetectionMode;
+	}
+	
+	public int getLeadOffDetectionCurrent(){
+		return mEXGLeadOffDetectionCurrent;
+	}
+	
+	public int getLeadOffComparatorTreshold(){
+		return mEXGLeadOffComparatorTreshold;
+	}
+	
+	public int getExGComparatorsChip1(){
+		return mEXG1Comparators;
+	}
+	
+	public int getExGComparatorsChip2(){
+		return mEXG2Comparators;
+	}
 
 	protected void setExGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int value){
 		if(chipID==EXG_CHIP_INDEX.CHIP1){
@@ -9531,16 +9563,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 
-	/**
-	 * @return the mExGResolution
-	 */
-	public int getExGResolution() {
-		//System.out.println("mExGResolution: " +mExGResolution);
-		return mExGResolution;
-	}
-
-
-	
 	//TODO: MN -> move gets to ShimmerObject (could be duplicated there already)
 
 	public int getLowPowerAccelEnabled(){
@@ -9595,30 +9617,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public int getBaudRate(){
 		return mBluetoothBaudRate;
-	}
-	
-	public int getReferenceElectrode(){
-		return mEXGReferenceElectrode;
-	}
-	
-	public int getLeadOffDetectionMode(){
-		return mLeadOffDetectionMode;
-	}
-	
-	public int getLeadOffDetectionCurrent(){
-		return mEXGLeadOffDetectionCurrent;
-	}
-	
-	public int getLeadOffComparatorTreshold(){
-		return mEXGLeadOffComparatorTreshold;
-	}
-	
-	public int getExGComparatorsChip1(){
-		return mEXG1Comparators;
-	}
-	
-	public int getExGComparatorsChip2(){
-		return mEXG2Comparators;
 	}
 	
 	public int getShimmerVersion(){

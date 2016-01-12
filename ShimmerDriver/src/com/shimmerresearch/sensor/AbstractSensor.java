@@ -146,17 +146,19 @@ public abstract class AbstractSensor implements Serializable{
 //		UNUSED1("UNUSED1"),//EXG1_24BIT(""),
 //		UNUSED2("UNUSED2"),//EXG2_24BIT(""),
 
-		GSR("GSR"),
-		ECG_TO_HR("ECG to Heart Rate"),
-		EXG("EXG"),
-		CLOCK("Clock"),
-		SYSTEM_TIMESTAMP("Clock");
+		GSR("GSR", Configuration.Shimmer3.SensorMapKey.GSR),
+		ECG_TO_HR("ECG to Heart Rate", Configuration.Shimmer3.SensorMapKey.ECG_TO_HR_FW),
+		EXG("EXG", Configuration.Shimmer3.SensorMapKey.ECG),
+		CLOCK("Clock", Configuration.Shimmer3.SensorMapKey.TIMESTAMP),
+		SYSTEM_TIMESTAMP("PC time", Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC);
 		
 	    private final String text;
+	    private final int index;
 
 	    /** @param text */
-	    private SENSORS(final String text) {
+	    private SENSORS(final String text, final int index) {
 	        this.text = text;
+	        this.index = index;
 	    }
 
 	    /* (non-Javadoc)
@@ -166,6 +168,11 @@ public abstract class AbstractSensor implements Serializable{
 	    public String toString() {
 	        return text;
 	    }
+	    
+	    public int sensorIndex() {
+	        return index;
+	    }
+
 	}
 	
 	@Deprecated
@@ -206,6 +213,9 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
 
 	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
+
+	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
+	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 
 	
 	/** To process data originating from the Shimmer device
@@ -692,6 +702,8 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		
 	}
+	
+	
 	
 	
 }

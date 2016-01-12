@@ -99,6 +99,19 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		return null;
 	}
 
+	@Override
+	public Object setConfigValueUsingConfigLabel(String componentName,
+			Object valueToSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 

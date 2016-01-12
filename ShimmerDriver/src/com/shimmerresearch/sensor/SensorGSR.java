@@ -347,7 +347,47 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return mSensorGroupingMap;
 	}
 
-	
-	
+	@Override
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+		
+		Object returnValue = null;
+		int buf = 0;
+
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+	    		setGSRRange((int)valueToSet);
+				returnValue = valueToSet;
+	        	break;
+	        default:
+	        	break;
+		}
+
+		
+		// TODO Auto-generated method stub
+		return returnValue;
+	}
+
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName) {
+		Object returnValue = null;
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
+		    	break;
+	        default:
+	        	break;
+		}
+
+		return returnValue;
+	}
+
+	public int getGSRRange(){
+		return mGSRRange;
+	}
+
+	public void setGSRRange(int i){
+		mGSRRange = i;
+	}
+
 	
 }
