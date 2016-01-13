@@ -1234,7 +1234,7 @@ public class Configuration {
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoLogging = Arrays.asList(
 					baseSdLog, baseLogAndStream);
 			
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoRespiration = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoRespiration = Arrays.asList(
 					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
 
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(

@@ -162,8 +162,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	@Override
 	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
 
+		mConfigOptionsMap.clear();
+		
 		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
 				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
 				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154) {

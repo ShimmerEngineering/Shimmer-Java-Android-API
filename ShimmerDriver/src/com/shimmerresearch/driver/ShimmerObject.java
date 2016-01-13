@@ -6075,114 +6075,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mPressureCalRawParams;
 	}
 	
-	public int getExg1CH1GainValue(){
-		return mEXG1CH1GainValue;
-	}
-	
-	public int getExg1CH2GainValue(){
-		return mEXG1CH2GainValue;
-	}
-	
-	public int getExg2CH1GainValue(){
-		return mEXG2CH1GainValue;
-	}
-	
-	public int getExg2CH2GainValue(){
-		return mEXG2CH2GainValue;
-	}
-	
-	public String parseReferenceElectrodeTotring(int referenceElectrode){
-		String refElectrode = "Unknown";
-		
-		if(referenceElectrode==0 && (isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultEMGConfiguration()))
-			refElectrode = "Fixed Potential";
-		else if(referenceElectrode==13 && isEXGUsingDefaultECGConfiguration())
-			refElectrode = "Inverse Wilson CT";
-		else if(referenceElectrode==3 && isEXGUsingDefaultEMGConfiguration())
-			refElectrode = "Inverse of Ch1";
-		
-		return refElectrode;
-	}
-	
-	public String parseLeadOffComparatorTresholdToString(int treshold){
-		
-		String tresholdString="";
-		switch(treshold){
-			case 0:
-				tresholdString = "Pos:95% - Neg:5%";
-			break;
-			case 1:
-				tresholdString = "Pos:92.5% - Neg:7.5%";
-			break;
-			case 2:
-				tresholdString = "Pos:90% - Neg:10%";
-			break;
-			case 3:
-				tresholdString = "Pos:87.5% - Neg:12.5%";
-			break;
-			case 4:
-				tresholdString = "Pos:85% - Neg:15%";
-			break;
-			case 5:
-				tresholdString = "Pos:80% - Neg:20%";
-			break;
-			case 6:
-				tresholdString = "Pos:75% - Neg:25%";
-				break;
-			case 7:
-				tresholdString = "Pos:70% - Neg:30%";
-			break;
-			default:
-				tresholdString = "Treshold unread";
-			break;
-		}
-		
-		return tresholdString;
-	}
-	
-	public String parseLeadOffModeToString(int leadOffMode){
-		
-		String modeString="";
-		switch(leadOffMode){
-			case 0:
-				modeString +="Off";
-			break;
-			case 1:
-				modeString +="DC Current";
-			break;
-			case 2:
-				modeString +="AC Current";
-			break;
-			default:
-				modeString +="No mode selected";
-			break;
-		}
-		
-		return modeString;
-	}
-	
-	public String parseLeadOffDetectionCurrentToString(int current){
-		
-		String currentString="";
-		switch(current){
-			case 0:
-				currentString +="6 nA";
-			break;
-			case 1:
-				currentString +="22 nA";
-			break;
-			case 2:
-				currentString +="6 uA";
-			break;
-			default:
-				currentString +="22 uA";
-			break;
-		}
-		
-		return currentString;
-	}
-	
-	
 	/**
 	 * Computes the closest compatible sampling rate for the Shimmer based on
 	 * the passed in 'rate' variable. Also computes the next highest available
@@ -7660,6 +7552,143 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 //			}
 		}
+	}
+	
+	public int getExg1CH1GainValue(){
+//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
+		return mEXG1CH1GainValue;
+	}
+	
+	public int getExg1CH2GainValue(){
+//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
+		return mEXG1CH2GainValue;
+	}
+	
+	public int getExg2CH1GainValue(){
+//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
+		return mEXG2CH1GainValue;
+	}
+	
+	public int getExg2CH2GainValue(){
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
+//		return mEXG2CH2GainValue;
+	}
+	
+	public boolean areExgChannelGainsEqual(List<EXG_CHIP_INDEX> listOfChipsToCheck){
+		boolean areEqual = true;
+		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1)){
+			if(getExg1CH1GainValue() != getExg1CH2GainValue()) {
+				areEqual = false;
+			}
+		}
+
+		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP2)){
+			if(getExg2CH1GainValue() != getExg2CH2GainValue()) {
+				areEqual = false;
+			}
+		}
+
+		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1) && listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP2)){
+			if(getExg1CH1GainValue() != getExg2CH1GainValue()) {
+				areEqual = false;
+			}
+		}
+		return areEqual;
+	}
+
+	@Deprecated
+	public String parseReferenceElectrodeTotring(int referenceElectrode){
+		String refElectrode = "Unknown";
+		
+		if(referenceElectrode==0 && (isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultEMGConfiguration()))
+			refElectrode = "Fixed Potential";
+		else if(referenceElectrode==13 && isEXGUsingDefaultECGConfiguration())
+			refElectrode = "Inverse Wilson CT";
+		else if(referenceElectrode==3 && isEXGUsingDefaultEMGConfiguration())
+			refElectrode = "Inverse of Ch1";
+		
+		return refElectrode;
+	}
+	
+	@Deprecated
+	public String parseLeadOffComparatorTresholdToString(int treshold){
+		
+		String tresholdString="";
+		switch(treshold){
+			case 0:
+				tresholdString = "Pos:95% - Neg:5%";
+			break;
+			case 1:
+				tresholdString = "Pos:92.5% - Neg:7.5%";
+			break;
+			case 2:
+				tresholdString = "Pos:90% - Neg:10%";
+			break;
+			case 3:
+				tresholdString = "Pos:87.5% - Neg:12.5%";
+			break;
+			case 4:
+				tresholdString = "Pos:85% - Neg:15%";
+			break;
+			case 5:
+				tresholdString = "Pos:80% - Neg:20%";
+			break;
+			case 6:
+				tresholdString = "Pos:75% - Neg:25%";
+				break;
+			case 7:
+				tresholdString = "Pos:70% - Neg:30%";
+			break;
+			default:
+				tresholdString = "Treshold unread";
+			break;
+		}
+		
+		return tresholdString;
+	}
+	
+	@Deprecated
+	public String parseLeadOffModeToString(int leadOffMode){
+		
+		String modeString="";
+		switch(leadOffMode){
+			case 0:
+				modeString +="Off";
+			break;
+			case 1:
+				modeString +="DC Current";
+			break;
+			case 2:
+				modeString +="AC Current";
+			break;
+			default:
+				modeString +="No mode selected";
+			break;
+		}
+		
+		return modeString;
+	}
+	
+	@Deprecated
+	public String parseLeadOffDetectionCurrentToString(int current){
+		
+		String currentString="";
+		switch(current){
+			case 0:
+				currentString +="6 nA";
+			break;
+			case 1:
+				currentString +="22 nA";
+			break;
+			case 2:
+				currentString +="6 uA";
+			break;
+			default:
+				currentString +="22 uA";
+			break;
+		}
+		
+		return currentString;
 	}
 	
 	//-------------------- ExG End -----------------------------------
