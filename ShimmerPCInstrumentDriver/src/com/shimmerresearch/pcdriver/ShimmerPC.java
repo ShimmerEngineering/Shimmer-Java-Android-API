@@ -131,6 +131,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
 		mSetupDevice=false;
+		
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+    	setSamplingRateShimmer(128);
 	}
 	
 	/**
@@ -169,7 +172,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
 //		mState = BT_STATE.NONE;
 		mState = BT_STATE.DISCONNECTED;
-		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
@@ -184,6 +186,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mSetupEXG = true;
 		mEXG1RegisterArray = exg1;
 		mEXG2RegisterArray = exg2;
+		
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+    	setSamplingRateShimmer(samplingRate);
 	}
 	
 	/**
@@ -199,7 +204,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
 //		mState = BT_STATE.NONE;
 		mState = BT_STATE.DISCONNECTED;
-		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mMagRange = magGain;
 		mGSRRange = gsrRange;
@@ -207,6 +211,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
+		
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+    	setSamplingRateShimmer(samplingRate);
 	}
 	
 	// Javadoc comment follows
@@ -216,13 +223,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
      */
     @Deprecated
 	public ShimmerPC( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
-    	setSamplingRateShimmer(samplingRate);
     	mAccelRange = accelRange;
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
 		mSetupDevice = true;
 		mContinousSync = continousSync;
+		
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+    	setSamplingRateShimmer(samplingRate);
 	}
     
 	/** Replaces ShimmerDocked
@@ -232,7 +241,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType) {
 		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(connectionType);
-		
     	setSamplingRateShimmer(128);
 	}
 
