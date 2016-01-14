@@ -698,10 +698,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mLowPowerAccelWR = false;
 	protected boolean mLowPowerGyro = false;
 	
-
-	protected int mCodeLasteEvent = 0;
-	protected boolean mIsPulseEvent = false;
-	protected int mEvents=0;
+	protected int mEventMarkersCodeLast = 0;
+	protected boolean mEventMarkersIsPulse = false;
+	protected int mEventMarkers=0;
 
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	protected boolean mFirstTimeCalTime=true;
@@ -2162,10 +2161,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				additionalChannelsOffset+=1;
 				
 				//event
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,mEvents));
-				if(mIsPulseEvent){
-					mIsPulseEvent = false;
-					setEventUntrigger(mCodeLasteEvent);
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,mEventMarkers));
+				if(mEventMarkersIsPulse){
+					mEventMarkersIsPulse = false;
+					setEventUntrigger(mEventMarkersCodeLast);
 				}
 //				calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRate;
 //				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
@@ -2499,19 +2498,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public void setEventTriggered(int eventCode, int eventType){
 		
-		mCodeLasteEvent = eventCode;
-		mEvents += eventCode;
+		mEventMarkersCodeLast = eventCode;
+		mEventMarkers += eventCode;
 		
 		//TOGGLE(1),
 		//PULSE(2);
 		//event type is defined in UtilDb, defined it here too
 		if(eventType == 2){ 
-			mIsPulseEvent = true;
+			mEventMarkersIsPulse = true;
 		}
 	}
 	
 	public void setEventUntrigger(int eventCode){
-		mEvents -= eventCode;
+		mEventMarkers -= eventCode;
 	}
 	
 	private boolean isDerivedSensorsSupported(){
