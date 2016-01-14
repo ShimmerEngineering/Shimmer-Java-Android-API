@@ -146,6 +146,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mShimmerUserAssignedName=myName;
 		mContinousSync=continousSync;
 		mSetupDevice=false;
+		
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+    	setSamplingRateShimmer(128);
 	}
 
 	/**Shimmer 3 Constructor
@@ -229,6 +232,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType) {
 		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(connectionType);
+		
+    	setSamplingRateShimmer(128);
 	}
 
 	/**

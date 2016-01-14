@@ -4958,11 +4958,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public double getSamplingRateShimmer(){
-		return super.getSamplingRateShimmer(COMMUNICATION_TYPE.SD);
+		return mMapOfSamplingRatesShimmer.get(COMMUNICATION_TYPE.SD); 
 	}
 	
 	public void setSamplingRateShimmer(double samplingRate){
-		super.setSamplingRateShimmer(COMMUNICATION_TYPE.SD, samplingRate);
+		//In Shimmer3 the SD and BT have the same sampling rate 
+		mMapOfSamplingRatesShimmer.put(COMMUNICATION_TYPE.SD, samplingRate);
+		mMapOfSamplingRatesShimmer.put(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
 	}
 
 	/** 0 = +/-2g, 1 = +/-4g, 2 = +/-8g, 3 = +/- 16g */

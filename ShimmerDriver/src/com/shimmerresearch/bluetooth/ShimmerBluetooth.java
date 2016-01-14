@@ -4758,13 +4758,4 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mComPort = comport;
 	}
 	
-	@Override
-	public double getSamplingRateShimmer(){
-		return super.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
-	}
-	@Override
-	public void setSamplingRateShimmer(double samplingRate){
-		super.setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
-	}
-	
 }
