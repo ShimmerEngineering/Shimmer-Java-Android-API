@@ -698,10 +698,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mLowPowerAccelWR = false;
 	protected boolean mLowPowerGyro = false;
 	
-	protected int mEventMarkersCodeLast = 0;
-	protected boolean mEventMarkersIsPulse = false;
-	protected int mEventMarkers=0;
-
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	protected boolean mFirstTimeCalTime=true;
 	protected double mCalTimeStart;
@@ -2162,10 +2158,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				//event
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,mEventMarkers));
-				if(mEventMarkersIsPulse){
-					mEventMarkersIsPulse = false;
-					setEventUntrigger(mEventMarkersCodeLast);
-				}
+				untriggerEventIfLastOneWasPulse();
+//				if(mEventMarkersIsPulse){
+//					mEventMarkersIsPulse = false;
+//					setEventUntrigger(mEventMarkersCodeLast);
+//				}
+				
 //				calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRate;
 //				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
 //				uncalibratedData[additionalChannelsOffset] = Double.NaN;
@@ -2494,23 +2492,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		
 		return objectCluster;
-	}
-	
-	public void setEventTriggered(int eventCode, int eventType){
-		
-		mEventMarkersCodeLast = eventCode;
-		mEventMarkers += eventCode;
-		
-		//TOGGLE(1),
-		//PULSE(2);
-		//event type is defined in UtilDb, defined it here too
-		if(eventType == 2){ 
-			mEventMarkersIsPulse = true;
-		}
-	}
-	
-	public void setEventUntrigger(int eventCode){
-		mEventMarkers -= eventCode;
 	}
 	
 	private boolean isDerivedSensorsSupported(){

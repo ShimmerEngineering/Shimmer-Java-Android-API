@@ -116,6 +116,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected double mPacketReceptionRate = 100;
 	protected double mPacketReceptionRateCurrent = 100;
 	
+	//Events markers
+	protected int mEventMarkersCodeLast = 0;
+	protected boolean mEventMarkersIsPulse = false;
+	protected int mEventMarkers=0;
+	
 	// --------------- Abstract Methods Start --------------------------
 	
 	protected abstract void checkBattery();
@@ -239,6 +244,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public void setShimmerInfoMemBytes(byte[] shimmerInfoMemBytes) {
 		infoMemByteArrayParse(shimmerInfoMemBytes);
+	}
+	
+	public void setEventTriggered(int eventCode, int eventType){
+		
+		mEventMarkersCodeLast = eventCode;
+		mEventMarkers += eventCode;
+		
+		//TOGGLE(1),
+		//PULSE(2);
+		//event type is defined in UtilDb, defined it here too
+		if(eventType == 2){ 
+			mEventMarkersIsPulse = true;
+		}
+	}
+	
+	public void setEventUntrigger(int eventCode){
+		mEventMarkers -= eventCode;
+	}
+	
+	public void untriggerEventIfLastOneWasPulse(){
+		if(mEventMarkersIsPulse){
+			mEventMarkersIsPulse = false;
+			setEventUntrigger(mEventMarkersCodeLast);
+		}
 	}
 	
 	public void addCommunicationRoute(COMMUNICATION_TYPE communicationType) {
