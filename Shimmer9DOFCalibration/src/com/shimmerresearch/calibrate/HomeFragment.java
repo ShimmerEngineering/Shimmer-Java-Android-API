@@ -692,8 +692,8 @@ public class HomeFragment extends Fragment{
 	        			//in order to prevent LAG the number of data points plotted is REDUCED
 	        			int maxNumberofSamplesPerSecond=50; //Change this to increase/decrease the number of samples which are graphed
 	        			int subSamplingCount=0;
-	        			if (MainActivity.mShimmerDevice.getSamplingRate()>maxNumberofSamplesPerSecond){
-	        				subSamplingCount=(int) (MainActivity.mShimmerDevice.getSamplingRate()/maxNumberofSamplesPerSecond);
+	        			if (MainActivity.mShimmerDevice.getSamplingRateShimmer()>maxNumberofSamplesPerSecond){
+	        				subSamplingCount=(int) (MainActivity.mShimmerDevice.getSamplingRateShimmer()/maxNumberofSamplesPerSecond);
 	        				mGraphSubSamplingCount++;
 	        			}
 	        			if (mGraphSubSamplingCount==subSamplingCount){
