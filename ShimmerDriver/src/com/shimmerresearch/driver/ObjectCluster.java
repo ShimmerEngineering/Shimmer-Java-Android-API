@@ -208,7 +208,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mSensorNames = new String[length];
 		mUnitCal = new String[length];
 		mUnitUncal = new String[length];
-	
 	}
 
 	public void addData(String signalKey, CHANNEL_TYPE channelType, String units, double data) {
