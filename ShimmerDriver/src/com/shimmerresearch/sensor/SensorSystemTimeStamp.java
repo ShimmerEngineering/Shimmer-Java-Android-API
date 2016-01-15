@@ -91,7 +91,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	
 
 	@Override
-	public Object processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
 		
 		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
