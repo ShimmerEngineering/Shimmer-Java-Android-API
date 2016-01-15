@@ -740,7 +740,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public Object buildMsg(byte[] dataPacketFormat, byte[] packetByteArray,COMMUNICATION_TYPE commType){
+	public ObjectCluster buildMsg(byte[] dataPacketFormat, byte[] packetByteArray,COMMUNICATION_TYPE commType){
 		interpretDataPacketFormat(dataPacketFormat,commType);
 		return buildMsg(packetByteArray, commType);
 	}
