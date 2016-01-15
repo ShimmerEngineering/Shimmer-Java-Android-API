@@ -996,6 +996,9 @@ public class Configuration {
 			public static  String MAG_MPU_Z = "Mag_MPU_Z";
 			public static  String TEMPERATURE_BMP180 = "Temperature_BMP180";
 			public static  String PRESSURE_BMP180 = "Pressure_BMP180";
+			public static  String ECG_GQ = "ECG";
+			public static  String ECG_TO_HR_FW_GQ = "ECGToHR_FW";
+			public static  String ECG_TO_HR_SW_GQ = "ECGToHR_SW";
 			public static  String EXG1_STATUS = "ECG_EMG_Status1";
 			public static  String EXG2_STATUS = "ECG_EMG_Status2";
 			public static  String EXG1_CH1_24BIT = "ExG1_CH1_24BIT";
