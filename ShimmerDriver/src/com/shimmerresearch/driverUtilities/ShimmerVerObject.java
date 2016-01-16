@@ -35,6 +35,23 @@ public class ShimmerVerObject implements Serializable {
 
 	public int mShimmerExpansionBoardId = 0;
 	
+    /** byte order of the Version Response Data Packet
+    *
+    */
+   private enum VerReponsePacketOrder {
+       hwVer,
+       fwVerLSB,
+       fwVerMSB,
+       fwMajorLSB,
+       fwMajorMSB,
+       fwMinor,
+       fwRevision
+   }
+   
+	public ShimmerVerObject() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Used specifically when finding the current information from a docked
 	 * Shimmer through the dock's UART communication channel.
@@ -92,13 +109,20 @@ public class ShimmerVerObject implements Serializable {
 	/**
 	 * Empty constructor used when finding the current information from a docked
 	 * Shimmer through the dock's UART communication channel.
+	 * @param rxBuf 
 	 * 
 	 */
-	public ShimmerVerObject() {
-		// TODO Auto-generated constructor stub
+	public ShimmerVerObject(byte[] rxBuf) {
+		if(rxBuf.length >= 7) {
+			mHardwareVersion = rxBuf[VerReponsePacketOrder.hwVer.ordinal()];
+			mFirmwareIdentifier = (rxBuf[VerReponsePacketOrder.fwVerLSB.ordinal()]) | (rxBuf[VerReponsePacketOrder.fwVerMSB.ordinal()]<<8);
+			mFirmwareVersionMajor = (rxBuf[VerReponsePacketOrder.fwMajorLSB.ordinal()]) | (rxBuf[(int)VerReponsePacketOrder.fwMajorMSB.ordinal()]<<8);
+			mFirmwareVersionMinor = rxBuf[VerReponsePacketOrder.fwMinor.ordinal()];
+			mFirmwareVersionInternal = rxBuf[VerReponsePacketOrder.fwRevision.ordinal()];
+			parseVerDetails();
+		}
 	}
 	
-
 	private void parseVerDetails() {
 		if(mHardwareVersion!=HW_ID.UNKNOWN){
 			if (ShimmerVerDetails.mMapOfShimmerRevisions.containsKey(mHardwareVersion)) {

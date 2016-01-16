@@ -1,4 +1,4 @@
-package com.shimmerresearch.dockDriver;
+package com.shimmerresearch.uartViaDock;
 
 import java.util.Collections;
 import java.util.Map;

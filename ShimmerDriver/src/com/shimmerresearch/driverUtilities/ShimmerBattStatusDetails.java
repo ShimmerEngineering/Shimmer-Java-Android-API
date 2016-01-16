@@ -55,8 +55,21 @@ public class ShimmerBattStatusDetails implements Serializable {
 	
 	public ShimmerBattStatusDetails() {
 	}
+	
+	public ShimmerBattStatusDetails(byte[] rxBuf) {
+		if(rxBuf.length >= 3) {
+			// Parse response string
+            int battAdcValue = (((rxBuf[1]&0xFF) << 8) + (rxBuf[0]&0xFF));
+            int chargingStatus = rxBuf[2] & 0xC0;
+            update(battAdcValue, chargingStatus);
+		}
+	}
 
 	public ShimmerBattStatusDetails(int battAdcValue, int chargingStatus) {
+		update(battAdcValue, chargingStatus);
+	}
+	
+	private void update(int battAdcValue, int chargingStatus) {
         boolean adcVoltageError = false;
         
         mBattAdcValue = battAdcValue;
