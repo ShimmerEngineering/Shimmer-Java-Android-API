@@ -25,8 +25,8 @@ import com.shimmerresearch.sensor.SensorSystemTimeStamp;
 import com.shimmerresearch.sensor.SensorECGToHR;
 import com.shimmerresearch.sensor.SensorEXG;
 import com.shimmerresearch.sensor.SensorGSR;
-import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
-import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
+import com.shimmerresearch.shimmerUartProtocol.ComponentPropertyDetails;
+import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.COMPONENT_PROPERTY;
 
 public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	

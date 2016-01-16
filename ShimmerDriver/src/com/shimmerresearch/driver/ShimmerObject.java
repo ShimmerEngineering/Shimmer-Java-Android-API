@@ -129,8 +129,8 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
-import com.shimmerresearch.uartViaDock.UartPacketDetails.COMPONENT_PROPERTY;
+import com.shimmerresearch.shimmerUartProtocol.ComponentPropertyDetails;
+import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.COMPONENT_PROPERTY;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 

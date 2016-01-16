@@ -22,7 +22,7 @@ import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.sensor.AbstractSensor;
-import com.shimmerresearch.uartViaDock.ComponentPropertyDetails;
+import com.shimmerresearch.shimmerUartProtocol.ComponentPropertyDetails;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 

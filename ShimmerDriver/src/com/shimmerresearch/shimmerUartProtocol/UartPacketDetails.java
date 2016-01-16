@@ -1,16 +1,17 @@
-package com.shimmerresearch.uartViaDock;
+package com.shimmerresearch.shimmerUartProtocol;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.uartViaDock.ComponentPropertyDetails.PERMISSION;
+import com.shimmerresearch.shimmerUartProtocol.ComponentPropertyDetails.PERMISSION;
 
 /**
  * Contains the packet contents for communication via the Shimmer's UART.
@@ -22,32 +23,54 @@ public class UartPacketDetails {
 	
 	public static String PACKET_HEADER = "$"; 
 	
-	/** Class listing all of the Shimmer UART data packet commands
+	/** Enum listing all of the Shimmer UART data packet commands
 	 *
 	 */
-	public static class PACKET_CMD {
-		final static int SET                   = 0x01;
-		final static int DATA_RESPONSE         = 0x02;
-		final static int GET                   = 0x03;
-		final static int BAD_CMD_RESPONSE      = 0xfc; //252
-		final static int BAD_ARG_RESPONSE      = 0xfd; //253
-		final static int BAD_CRC_RESPONSE      = 0xfe; //254
-		final static int ACK_RESPONSE          = 0xff; //255
+	public enum PACKET_CMD {
+		SET					((byte)0x01),
+		DATA_RESPONSE		((byte)0x02),
+		GET					((byte)0x03),
+		BAD_CMD_RESPONSE	((byte)0xfc),	//252
+		BAD_ARG_RESPONSE	((byte)0xfd),	//253
+		BAD_CRC_RESPONSE	((byte)0xfe),	//254
+		ACK_RESPONSE		((byte)0xff);	//255
+		
+	    private final byte command;
+
+	    /** @param command */
+	    private PACKET_CMD(final byte command) {
+	        this.command = command;
+	    }
+	    
+	    public byte toCmdByte() {
+	        return command;
+	    }
 	}
-	
-	/** Class listing all of the components that can be configured using the Shimmer UART commands
+
+	/** Enum listing all of the components that can be configured using the Shimmer UART commands
 	 *
 	 */
-	private static class COMPONENT {
-		final static int SHIMMER          = 0x01;
-		final static int BAT              = 0x02; // this is seen as a sensor
-		final static int DAUGHTER_CARD    = 0x03;
-		final static int PPG              = 0x04;
-		final static int GSR              = 0x05;
-		final static int LSM303DLHC_ACCEL = 0x06;
-		final static int MPU9X50_ACCEL	  = 0x07;
-		final static int BEACON			  = 0x08;
-		final static int RADIO_802154     = 0x09;
+	public enum COMPONENT {
+		SHIMMER				((byte)0x01),
+		BAT					((byte)0x02), // this is treated as a sensor
+		DAUGHTER_CARD		((byte)0x03),
+		PPG					((byte)0x04),
+		GSR					((byte)0x05),
+		LSM303DLHC_ACCEL	((byte)0x06),
+		MPU9X50_ACCEL		((byte)0x07),
+		BEACON				((byte)0x08),
+		RADIO_802154		((byte)0x09);
+		
+	    private final byte command;
+
+	    /** @param command */
+	    private COMPONENT(final byte command) {
+	        this.command = command;
+	    }
+	    
+	    public byte toCmdByte() {
+	        return command;
+	    }
 	}
 	
 	static ShimmerVerObject baseGqBle = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_BLE,FW_ID.GQ_BLE,0,0,5,ShimmerObject.ANY_VERSION);
@@ -137,61 +160,6 @@ public class UartPacketDetails {
         aMap.add(COMPONENT_PROPERTY.RADIO_802154.SETTINGS);
 
         mListOfUartCommandsConfig = Collections.unmodifiableList(aMap);
-    }
-
-    
-    
-    public static String parseCmd(int cmd){
-    	if(cmd == PACKET_CMD.SET){
-    		return "SET";
-    	}
-    	else if(cmd == PACKET_CMD.DATA_RESPONSE){
-    		return "DATA_RESPONSE";
-    	}
-    	else if(cmd == PACKET_CMD.GET){
-    		return "GET";
-    	}
-    	else if(cmd == PACKET_CMD.BAD_CMD_RESPONSE){
-    		return "BAD_CMD_RESPONSE";
-    	}
-    	else if(cmd == PACKET_CMD.BAD_ARG_RESPONSE){
-    		return "BAD_ARG_RESPONSE";
-    	}
-    	else if(cmd == PACKET_CMD.BAD_CRC_RESPONSE){
-    		return "BAD_CRC_RESPONSE";
-    	}
-    	else if(cmd == PACKET_CMD.ACK_RESPONSE){
-    		return "ACK_RESPONSE";
-    	}
-    	return Integer.toString(cmd);
-    }
-    
-    public static String parseComponent(int component){
-    	if(component == COMPONENT.SHIMMER){
-    		return "SHIMMER";
-    	}
-    	else if(component == COMPONENT.BAT){
-    		return "BAT";
-    	}
-    	else if(component == COMPONENT.DAUGHTER_CARD){
-    		return "DAUGHTER_CARD";
-    	}
-    	else if(component == COMPONENT.LSM303DLHC_ACCEL){
-    		return "LSM303DLHC_ACCEL";
-    	}
-    	else if(component == COMPONENT.GSR){
-    		return "GSR";
-    	}
-    	else if(component == COMPONENT.MPU9X50_ACCEL){
-    		return "MPU9X50_ACCEL";
-    	}
-    	else if(component == COMPONENT.BEACON){
-    		return "BEACON";
-    	}
-    	else if(component == COMPONENT.RADIO_802154){
-    		return "RADIO_802154";
-    	}
-    	return Integer.toString(component);
     }
 
 }    

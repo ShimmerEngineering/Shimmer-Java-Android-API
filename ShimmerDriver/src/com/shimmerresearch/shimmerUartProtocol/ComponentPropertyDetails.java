@@ -1,4 +1,4 @@
-package com.shimmerresearch.uartViaDock;
+package com.shimmerresearch.shimmerUartProtocol;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  *
  */
 public class ComponentPropertyDetails {
-	public int component = 0;
+	public UartPacketDetails.COMPONENT component;
 	public byte componentByte = 0;
 	public int property = 0;
 	public byte propertyByte = 0;
@@ -37,9 +37,9 @@ public class ComponentPropertyDetails {
 	 * @param listOfCompatibleVersionInfo 
 	 * @param descrpition 
 	 */
-	public ComponentPropertyDetails(int component, int property, PERMISSION readWrite, List<ShimmerVerObject> listOfCompatibleVersionInfo, String propertyName){
+	public ComponentPropertyDetails(UartPacketDetails.COMPONENT component, int property, PERMISSION readWrite, List<ShimmerVerObject> listOfCompatibleVersionInfo, String propertyName){
 		this.component = component;
-		this.componentByte = (byte)component;
+		this.componentByte = component.toCmdByte();
 		this.property = property;
 		this.propertyByte = (byte)property;
 		this.propertyName = propertyName;

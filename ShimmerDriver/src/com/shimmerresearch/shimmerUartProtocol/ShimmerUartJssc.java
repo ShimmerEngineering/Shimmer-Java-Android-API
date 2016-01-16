@@ -1,4 +1,4 @@
-package com.shimmerresearch.uartViaDock;
+package com.shimmerresearch.shimmerUartProtocol;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
