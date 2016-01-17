@@ -20,21 +20,21 @@ public class ShimmerVerDetails implements Serializable {
 	 */
 	private static final long serialVersionUID = -7940733886215010795L;
 	
-	public final static int EXP_BRD_NONE_ID = 255;
+	public static final int EXP_BRD_NONE_ID = 255;
 	public static final String EXP_BRD_NONE = "None";
 	
-	public final static class HW_ID {
-		public final static int UNKNOWN = -1;
-		public final static int SHIMMER_1 = 0;
-		public final static int SHIMMER_2 = 1;
-		public final static int SHIMMER_2R = 2;
-		public final static int SHIMMER_3 = 3;
-		public final static int SHIMMER_SR30 = 4;
-//		public final static int DCU_SWEATSENSOR = 4;
-		public final static int SHIMMER_GQ_BLE = 5;
-//		public final static int BIOSENSICS = 6;
-		public final static int SHIMMER_GQ_802154_LR = 56; // Long Range
-		public final static int SHIMMER_GQ_802154_NR = 57; // Normal Range
+	public static final class HW_ID {
+		public static final int UNKNOWN = -1;
+		public static final int SHIMMER_1 = 0;
+		public static final int SHIMMER_2 = 1;
+		public static final int SHIMMER_2R = 2;
+		public static final int SHIMMER_3 = 3;
+		public static final int SHIMMER_SR30 = 4;
+//		public static final int DCU_SWEATSENSOR = 4;
+		public static final int SHIMMER_GQ_BLE = 5;
+//		public static final int BIOSENSICS = 6;
+		public static final int SHIMMER_GQ_802154_LR = 56; // Long Range
+		public static final int SHIMMER_GQ_802154_NR = 57; // Normal Range
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;
@@ -54,24 +54,25 @@ public class ShimmerVerDetails implements Serializable {
     }
     
 	public static final class HW_ID_SR_CODES {
-		public final static int UNKNOWN = -1;
-		public final static int EXP_BRD_BR_AMP = 8;
-		public final static int EXP_BRD_BR_AMP_UNIFIED = 49;
-		public final static int EXP_BRD_GSR = 14;
-		public final static int EXP_BRD_GSR_UNIFIED = 48;
-		public final static int EXP_BRD_PROTO3_MINI = 36;
-		public final static int EXP_BRD_EXG = 37;
-		public final static int EXP_BRD_EXG_UNIFIED = 47;
-		public final static int EXP_BRD_PROTO3_DELUXE = 38;
-		public final static int EXP_BRD_HIGH_G_ACCEL = 44;
-		public final static int EXP_BRD_GPS = 46;
+		public static final int UNKNOWN = -1;
+		public static final int EXP_BRD_BR_AMP = 8;
+		public static final int EXP_BRD_BR_AMP_UNIFIED = 49;
+		public static final int EXP_BRD_GSR = 14;
+		public static final int EXP_BRD_GSR_UNIFIED = 48;
+		public static final int EXP_BRD_PROTO3_MINI = 36;
+		public static final int EXP_BRD_EXG = 37;
+		public static final int EXP_BRD_EXG_UNIFIED = 47;
+		public static final int EXP_BRD_PROTO3_DELUXE = 38;
+		public static final int EXP_BRD_HIGH_G_ACCEL = 44;
+		public static final int EXP_BRD_GPS = 46;
 		
-		public final static int SHIMMER_GQ_802154_LR = 56;
-		public final static int SHIMMER_GQ_802154_NR = 57;
+		public static final int SHIMMER_GQ_802154_LR = 56;
+		public static final int SHIMMER_GQ_802154_NR = 57;
 		
-		public final static int SHIMMER3 = 31;
-		public final static int BASE15U = 41;
-		public final static int BASE6U = 42;
+		public static final int SHIMMER3 = 31;
+		public static final int BASE15U = 41;
+		public static final int BASE6U = 42;
+		public static final int SPAN = 9;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerHardware;
@@ -96,20 +97,22 @@ public class ShimmerVerDetails implements Serializable {
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }
 
-	public final static class FW_ID {
+	public static final class FW_ID {
 		/**
 		 * FW_ID is hardware generation dependent, not hardware version
 		 * dependent (e.g., Shimmer3 covers a range of custom hardware all based
 		 * on the same microcontroller in the Shimmmer3)
 		 */
-		public final static int BOILER_PLATE = 0;
-		public final static int BTSTREAM = 1;
-		public final static int SDLOG = 2;
-		public final static int LOGANDSTREAM = 3;
-		public final static int DCU_SWEATSENSOR = 4;
-		public final static int GQ_BLE = 5;
-		public final static int GPIO_TEST = 6;
-		public final static int GQ_802154 = 9;
+		public static final int UNKNOWN = -1;
+		public static final int BOILER_PLATE = 0;
+		public static final int BTSTREAM = 1;
+		public static final int SDLOG = 2;
+		public static final int LOGANDSTREAM = 3;
+		public static final int DCU_SWEATSENSOR = 4;
+		public static final int GQ_BLE = 5;
+		public static final int GPIO_TEST = 6;
+		public static final int GQ_802154 = 9;
+		public static final int SPAN = 11;
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
@@ -121,28 +124,27 @@ public class ShimmerVerDetails implements Serializable {
 	        aMap.put(GQ_BLE, "GQ_BLE");
 	        aMap.put(GPIO_TEST, "GPIO_TEST");
 	        aMap.put(GQ_802154, "GQ_802154");
+	        aMap.put(SPAN, "SPAN");
 	        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
 	    }
 
-		public final static class BASES {
-			public final static int BASE15U_REV2 = 0;
-			public final static int BASE15U_REV4 = 1;
-			public final static int BASE6U = 2;
+		public static final class BASES {
+			public static final int BASE15U_REV2 = 0;
+			public static final int BASE15U_REV4 = 1;
+			public static final int BASE6U = 2;
 		}
-		
-		public static final int UNKNOWN = -1;
 	}
 	
-	public final static class FW_LABEL {
-		public final static String UNKNOWN = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
-//		public final static String BOILERPLATE = "BoilerPlate";
-//		public final static String BTSTREAM = "BtStream";
-//		public final static String SDLOG = "SDLog";
-//		public final static String LOGANDSTREAM = "LogAndStream";
-//		public final static String DCU_SWEATSENSOR = "Swatch";
-//		public final static String GQ_BLE = "GQ_BLE";
-//		public final static String GPIO_TEST = "GPIO_TEST";
-//		public final static String GQ_802154 = "GQ_802154";
+	public static final class FW_LABEL {
+		public static final String UNKNOWN = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
+//		public static final String BOILERPLATE = "BoilerPlate";
+//		public static final String BTSTREAM = "BtStream";
+//		public static final String SDLOG = "SDLog";
+//		public static final String LOGANDSTREAM = "LogAndStream";
+//		public static final String DCU_SWEATSENSOR = "Swatch";
+//		public static final String GQ_BLE = "GQ_BLE";
+//		public static final String GPIO_TEST = "GPIO_TEST";
+//		public static final String GQ_802154 = "GQ_802154";
 	}
 
 

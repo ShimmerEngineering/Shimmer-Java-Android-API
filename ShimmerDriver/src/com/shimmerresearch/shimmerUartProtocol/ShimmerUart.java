@@ -236,29 +236,18 @@ public abstract class ShimmerUart {
      * @throws ExecutionException
      */
 	protected byte[] shimmerUartCommandTxRx(PACKET_CMD packetCmd, ComponentPropertyDetails msgArg, byte[] valueBuffer) throws ExecutionException {
-    	
-		String consoleString = "UART cmd: " + packetCmd.toString()
-				+ "\t comp:" + msgArg.component.toString()
-				+ "\t prop:" + msgArg.propertyName
-//				+ " ByteArray:" + msgArg.byteArray.length
-				;
-		if(packetCmd!=UartPacketDetails.PACKET_CMD.GET){
-			String txBytes = UtilShimmer.bytesToHexStringWithSpaces(valueBuffer);
-			if(txBytes == null){
-				txBytes = "";
-			}
-			else {
-				txBytes = "txbytes: " + txBytes;
-			}
-			consoleString += "\t - " + txBytes;
-		}
-//		System.out.print(consoleString);
-
-    	
+//		consolePrintTxPacketInfo(packetCmd, msgArg, valueBuffer);
+		txPacket(packetCmd, msgArg, valueBuffer);
+		return rxPacket(packetCmd, msgArg);
+    }
+    
+	private void txPacket(PACKET_CMD packetCmd, ComponentPropertyDetails msgArg, byte[] valueBuffer) throws DockException {
     	byte[] txPacket = assembleTxPacket(packetCmd.toCmdByte(),msgArg,valueBuffer);
 //    	System.out.println(Util.bytesToHexStringWithSpaces(txPacket));
     	shimmerUartOs.shimmerUartTxBytes(txPacket); 
-		
+	}
+
+    private byte[] rxPacket(PACKET_CMD packetCmd, ComponentPropertyDetails msgArg) throws DockException {
 		// Receive header and type of response
 		byte[] rxBuf = shimmerUartOs.shimmerUartRxBytes(2);
 		
@@ -336,9 +325,9 @@ public abstract class ShimmerUart {
 		}
 
 		return rxBuf;
-    }
+	}
     
-    /**
+	/**
      * @param command
      * @param msgArg a two-byte array of containing the Component and respective Property to get
      * @param value
@@ -379,13 +368,13 @@ public abstract class ShimmerUart {
 	
 	/**
 	 * @param rxBuf
-	 * @param ackResponse
+	 * @param expectedResponse
 	 * @throws DockException
 	 */
-	protected void checkForExpectedResponse(byte[] rxBuf, PACKET_CMD ackResponse) throws DockException {
+	protected void checkForExpectedResponse(byte[] rxBuf, PACKET_CMD expectedResponse) throws DockException {
 		byte[] crcBuf;
 		// Check for expected response
-		if(rxBuf[1] != ackResponse.toCmdByte()) {
+		if(rxBuf[1] != expectedResponse.toCmdByte()) {
 			// Response is not the expected response type
 			if(rxBuf[1] == UartPacketDetails.PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()) {
 				crcBuf = shimmerUartOs.shimmerUartRxBytes(2);
@@ -405,6 +394,25 @@ public abstract class ShimmerUart {
 			}
 //			clearSerialPortRxBuffer();
 		}
+	}
+	
+	private void consolePrintTxPacketInfo(PACKET_CMD packetCmd, ComponentPropertyDetails msgArg, byte[] valueBuffer) {
+		String consoleString = "UART cmd: " + packetCmd.toString()
+				+ "\t comp:" + msgArg.component.toString()
+				+ "\t prop:" + msgArg.propertyName
+//				+ " ByteArray:" + msgArg.byteArray.length
+				;
+		if(packetCmd!=UartPacketDetails.PACKET_CMD.GET){
+			String txBytes = UtilShimmer.bytesToHexStringWithSpaces(valueBuffer);
+			if(txBytes == null){
+				txBytes = "";
+			}
+			else {
+				txBytes = "txbytes: " + txBytes;
+			}
+			consoleString += "\t - " + txBytes;
+		}
+		System.out.print(consoleString);
 	}
 	
 }
