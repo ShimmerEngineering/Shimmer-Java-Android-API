@@ -210,7 +210,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mUnitUncal = new String[length];
 	}
 
-	public void addData(String signalKey, CHANNEL_TYPE channelType, String units, double data) {
+	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data) {
 		if(channelType==CHANNEL_TYPE.CAL){
 			mCalData[indexKeeper] = data;
 			mUnitCal[indexKeeper] = units;
@@ -219,8 +219,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			mUncalData[indexKeeper] = data;
 			mUnitUncal[indexKeeper] = units;
 		}
-		mSensorNames[indexKeeper] = signalKey;
-		mPropertyCluster.put(signalKey, new FormatCluster(channelType.toString(), units, data));
+		mSensorNames[indexKeeper] = objectClusterName;
+		mPropertyCluster.put(objectClusterName, new FormatCluster(channelType.toString(), units, data));
 	}
 
 	public void addData(ChannelDetails channelDetails, double uncalData, double calData) {

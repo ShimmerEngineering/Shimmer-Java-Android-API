@@ -40,7 +40,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	// --- Configuration variables specific to this Sensor - Start --- 
 	public int mGSRRange = 4; 					// 4 = Auto
 	
-	private static String calUnitToUse = Configuration.CHANNEL_UNITS.U_SIEMENS;
+	public static String calUnitToUse = Configuration.CHANNEL_UNITS.U_SIEMENS;
 //	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
 	// --- Configuration variables specific to this Sensor - End ---
 
