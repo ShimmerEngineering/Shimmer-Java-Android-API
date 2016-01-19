@@ -39,7 +39,7 @@ public abstract class ShimmerUart {
 	
 	public byte[] processShimmerGetCommand(ComponentPropertyDetails compPropDetails, int errorCode) throws ExecutionException{
 		byte[] rxBuf;
-//		openSafely();
+		openSafely();
 		try {
 			rxBuf = shimmerUartGetCommand(compPropDetails);
 		} catch(ExecutionException e) {
@@ -47,13 +47,13 @@ public abstract class ShimmerUart {
 			de.mErrorCode = errorCode;
 			throw(e);
 		} finally{
-//			closeSafely();
+			closeSafely();
 		}
 		return rxBuf;
 	}
 
 	public void processShimmerSetCommand(ComponentPropertyDetails compPropDetails, byte[] txBuf, int errorCode) throws ExecutionException{
-//		openSafely();
+		openSafely();
 		try {
 			shimmerUartSetCommand(compPropDetails, txBuf);
 		} catch(ExecutionException e) {
@@ -61,13 +61,13 @@ public abstract class ShimmerUart {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
-//			closeSafely();
+			closeSafely();
 		}
 	}
     
 	public byte[] processShimmerMemGetCommand(ComponentPropertyDetails compPropDetails, int address, int size, int errorCode) throws ExecutionException{
 		byte[] rxBuf;
-//		openSafely();
+		openSafely();
 		try {
 			rxBuf = shimmerUartGetMemCommand(compPropDetails, address, size);
 		} catch(ExecutionException e) {
@@ -75,13 +75,13 @@ public abstract class ShimmerUart {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
-//			closeSafely();
+			closeSafely();
 		}
 		return rxBuf;
 	}	
 	
 	public void processShimmerMemSetCommand(ComponentPropertyDetails compPropDetails, int address, byte[] buf, int errorCode) throws ExecutionException{
-//		openSafely();
+		openSafely();
 		try {
 			shimmerUartSetMemCommand(compPropDetails, address, buf);
 		} catch(ExecutionException e) {
@@ -89,7 +89,7 @@ public abstract class ShimmerUart {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
-//			closeSafely();
+			closeSafely();
 		}
 	}	
 	
@@ -102,10 +102,10 @@ public abstract class ShimmerUart {
 			shimmerUartOs.shimmerUartConnect();
 		} catch (DockException e) {
 			closeSafely();
-//			mIsUARTInUse = false;
+			mIsUARTInUse = false;
 			throw(e);
 		}
-//		mIsUARTInUse = true;
+		mIsUARTInUse = true;
 	}
 	
 	/**Closes the Shimmer UART Serial and throws a DockException if there is a 
@@ -116,10 +116,10 @@ public abstract class ShimmerUart {
 		try {
 			shimmerUartOs.shimmerUartDisconnect();
 		} catch (DockException e) {
-//			mIsUARTInUse = false;
+			mIsUARTInUse = false;
 			throw(e);
 		}
-//		mIsUARTInUse = false;
+		mIsUARTInUse = false;
 	}
 
 	/** 
