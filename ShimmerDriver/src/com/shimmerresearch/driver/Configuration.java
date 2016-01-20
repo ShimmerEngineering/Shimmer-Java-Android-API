@@ -85,7 +85,7 @@ public class Configuration {
 	
 	public static class CHANNEL_UNITS{
 		//Sensors units
-		public static final String NO_UNITS = "no units";
+		public static final String NO_UNITS = "no_units";
 		public static final String MILLISECONDS = "ms";
 		public static final String SECONDS = "s";
 		public static final String METER = "m";
