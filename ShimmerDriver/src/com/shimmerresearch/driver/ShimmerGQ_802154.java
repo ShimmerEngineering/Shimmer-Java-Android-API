@@ -53,14 +53,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
 	//TODO generate from Sensor classes
 	public static final int SENSOR_ECG_TO_HR_FW				= (0x40 << (8*1));
-	long mEnabledSensors = SENSOR_ECG_TO_HR_FW + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
+	public long mEnabledSensors = SENSOR_ECG_TO_HR_FW + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
 	public static final int ALGORITHM_ECG_TO_HR_CHP1_CH1	= (0x80 << (8*1));
-	long mDerivedSensors = ALGORITHM_ECG_TO_HR_CHP1_CH1;
+	public long mDerivedSensors = ALGORITHM_ECG_TO_HR_CHP1_CH1;
 	
 	//TODO tidy: carried from ShimmerObject
-	int mInternalExpPower = 1;			// Enable external power for EXG + GSR
-	boolean mSyncWhenLogging = true;
-	boolean mIsFwTestMode = false;
+	public int mInternalExpPower = 1;			// Enable external power for EXG + GSR
+	public boolean mSyncWhenLogging = true;
+	public boolean mIsFwTestMode = false;
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
 	
@@ -101,6 +101,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 	public GQ_STATE mState = GQ_STATE.IDLE;
 	private int mCurrentSessionIdStreamingToDB = 0;
+
+	private int mSyncSuccessCount = 0;
 	
 	
 	// ----------------- Constructors Start ---------------------------------
@@ -1123,4 +1125,26 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		setSamplingRateShimmer(COMMUNICATION_TYPE.IEEE802154, samplingFreq);
 	}
 
+	/**
+	 * @return the mIsFwTestMode
+	 */
+	public boolean isFwTestMode() {
+		return mIsFwTestMode;
+	}
+
+	public int getSyncSuccessCount() {
+		return this.mSyncSuccessCount ;
+	}
+
+	/**
+	* @param mSyncSuccessCount the mSyncSuccessCount to set
+	*/
+	public void setSyncSuccessCount(int mSyncSuccessCount) {
+		this.mSyncSuccessCount = mSyncSuccessCount;
+	}
+
+	public void incrementSyncSuccessCount(){
+		this.mSyncSuccessCount += 1;
+	}
+	
 }

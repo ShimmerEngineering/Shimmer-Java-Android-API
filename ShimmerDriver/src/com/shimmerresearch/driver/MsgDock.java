@@ -17,8 +17,9 @@ public class MsgDock {
 
 	public final static int MSG_ID_SOURCE_SPAN_MANAGER = 1000;
 	public final static int MSG_ID_SOURCE_PLOT_MANAGER = 1001;
-	public final static int MSG_ID_SOURCE_BLUETOOTH_MANAGER = 140;
-	
+	public final static int MSG_ID_SOURCE_BLUETOOTH_MANAGER = 1002;
+	public static final int MSG_ID_SOURCE_DOCK_MANAGER = 1003;
+	 
 	//Device Info
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
 
@@ -239,7 +240,6 @@ public class MsgDock {
         aMap.put(MSG_IDENTIFIER_DATA_PARSER_TO_FILE_SUCCESS, "MSG_IDENTIFIER_DATA_PARSER_TO_FILE_SUCCESS");
         aMap.put(MSG_IDENTIFIER_DATA_PARSER_TO_FILE_FAILURE_IO_EXCEPTION, "MSG_IDENTIFIER_DATA_PARSER_TO_FILE_FAILURE_IO_EXCEPTION");
         
-        aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_BT_STREAM");
 //        aMap.put(MSG_ID_PLOT_UPDATE, "MSG_ID_PLOT_UPDATE");
 //        aMap.put(MSG_ID_PLOT_CLOSED, "MSG_ID_PLOT_CLOSED");
 //        aMap.put(MSG_ID_PLOT_OUT_OF_BOUNDS, "MSG_ID_PLOT_OUT_OF_BOUNDS");
@@ -248,9 +248,10 @@ public class MsgDock {
         aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");
         aMap.put(MSG_ID_BT_TO_DB_FAIL, "MSG_ID_BT_TO_DB_FAIL");
         
-        aMap.put(MSG_ID_SOURCE_SPAN_MANAGER, "MSG_ID_SOURCE_SPANMANAGER");
-        aMap.put(MSG_ID_SOURCE_PLOT_MANAGER, "MSG_ID_SOURCE_PLOTMANAGER");
-        
+        aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_SOURCE_BLUETOOTH_MANAGER");
+        aMap.put(MSG_ID_SOURCE_DOCK_MANAGER, "MSG_ID_SOURCE_DOCK_MANAGER");
+        aMap.put(MSG_ID_SOURCE_SPAN_MANAGER, "MSG_ID_SOURCE_SPAN_MANAGER");
+        aMap.put(MSG_ID_SOURCE_PLOT_MANAGER, "MSG_ID_SOURCE_PLOT_MANAGER");        
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }
