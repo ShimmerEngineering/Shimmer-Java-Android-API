@@ -220,6 +220,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 	}
 	
+
 	public double calculatePacketLoss(long timeDifference, double samplingRate){
 		Long numberofExpectedPackets = (long) ((double)((timeDifference/1000)*samplingRate));
 		mPacketReceptionRateCurrent = (double)((mPacketReceivedCount)/(double)numberofExpectedPackets)*100;
@@ -1079,6 +1080,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		}
 //		return false;
 //	}
+	
+	public boolean ismIsSdError() {
+		return mIsSdError;
+	}
 
 	@Override
 	public boolean isChannelEnabled(int sensorKey) {
