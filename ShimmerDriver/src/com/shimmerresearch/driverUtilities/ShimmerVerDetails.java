@@ -33,6 +33,7 @@ public class ShimmerVerDetails implements Serializable {
 //		public static final int DCU_SWEATSENSOR = 4;
 		public static final int SHIMMER_GQ_BLE = 5;
 //		public static final int BIOSENSICS = 6;
+//		public static final int SHIMMER_2R_GQ = 9; // Used for testing GQ
 		public static final int SHIMMER_GQ_802154_LR = 56; // Long Range
 		public static final int SHIMMER_GQ_802154_NR = 57; // Normal Range
 	}
@@ -48,6 +49,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_SR30, "Shimmer SR30");
         aMap.put(HW_ID.SHIMMER_GQ_BLE, "ShimmerGQBle");
 //        aMap.put(HW_ID.DCU_SWEATSENSOR, "DCU_SWEATSENSOR");
+//        aMap.put(HW_ID.SHIMMER_2R_GQ, "Shimmer2rGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);

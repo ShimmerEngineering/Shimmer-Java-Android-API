@@ -131,6 +131,15 @@ public class ShimmerVerObject implements Serializable {
 				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.UNKNOWN);
 			}
 			
+//			//Temp substitution to support a fake ShimmerGQ using a Shimmer2r
+//			if (mHardwareVersion==HW_ID.SHIMMER_2R_GQ){
+//				mHardwareVersion=HW_ID.SHIMMER_GQ_802154_NR;
+//				mFirmwareIdentifier=FW_ID.GQ_802154;
+//				mFirmwareVersionMajor=0;
+//				mFirmwareVersionMinor=0;
+//				mFirmwareVersionInternal=24;
+//			}
+			
 			//TODO change to static map approach rather then if statements
 			// Handle parsed FW description. Keep first entry as a separate IF
 			// statement

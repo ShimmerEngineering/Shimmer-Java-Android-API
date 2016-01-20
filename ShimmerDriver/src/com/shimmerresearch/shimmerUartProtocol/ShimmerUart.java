@@ -4,8 +4,14 @@ import java.util.Arrays;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
 
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.driver.BasicProcessWithCallBack;
+import com.shimmerresearch.driver.MsgDock;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
@@ -416,5 +422,50 @@ public abstract class ShimmerUart {
 		}
 		System.out.print(consoleString);
 	}
+	
+	//Copied from SmartDockUartListener
+//	public class ShimmerUartListener implements SerialPortEventListener {
+//	    StringBuilder stringBuilder = new StringBuilder(128);
+//
+//		@Override
+//		public void serialEvent(SerialPortEvent event) {
+//	        if (event.isRXCHAR()) {//If data is available
+//	            if (event.getEventValue() > 0) {//Check bytes count in the input buffer
+//	                try {
+//	                    byte[] data = shimmerUartOs.shimmerUartRxBytes(event.getEventValue());
+//
+//	                    for (int i = 0; i < data.length; i++) {
+//	                        stringBuilder.append((char) data[i]);
+//	                    }
+//
+//	                    
+////	                    //split entire message by "\r\n"
+////	            		int lineTerminationIndex = stringBuilder.indexOf("\r\n");
+//////	            		System.out.println(stringBuilder);
+////	            		if(lineTerminationIndex>=1) {
+////	            			String message = stringBuilder.substring(0, lineTerminationIndex+2).toString();  
+////	            			stringBuilder.replace(0, lineTerminationIndex+2, "");
+////	            			
+////	                    	if(message.length() == 3) {
+////	                            // SmartDock error response - Expected message = "E\r\n"
+////	                        	if ((message.charAt(0)) == 'E') {
+////	                                consolePrintLn("Error = " + message);
+////	                    			//notify the SmartDockUart layer
+////	        						MsgDock msg = new MsgDock(MsgDock.MSG_ID_SMARTDOCK_UART_ERROR,mDockID);
+////	                    			msg.mMessage = message;
+////	        						sendCallBackMsg(msg.mMsgID,msg);
+////	                            }
+////	                    	}
+////
+////	            		}
+//	            		
+//	            		
+//	                } catch (Exception ex) {
+//	                    System.out.println(ex);
+//	                }
+//	            }
+//	        }
+//		}
+//	}
 	
 }
