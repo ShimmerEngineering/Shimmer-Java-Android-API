@@ -61,7 +61,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public int mInternalExpPower = 1;			// Enable external power for EXG + GSR
 	public boolean mSyncWhenLogging = true;
 	public boolean mIsFwTestMode = false;
-	public boolean mIsSdError = false;
+	public boolean mIsSDError = false;
 	
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
@@ -187,7 +187,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mIsSDLogging = ((statusByte & (0x01 << 3)) > 0)? true:false;
 		mIsStreaming = ((statusByte & (0x01 << 4)) > 0)? true:false; 
 		mIsFwTestMode = ((statusByte & (0x01 << 5)) > 0)? true:false;
-		mIsSdError = ((statusByte & (0x01 << 6)) > 0)? true:false;
+		mIsSDError = ((statusByte & (0x01 << 6)) > 0)? true:false;
 
 		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
 				+ "\t" + "IsDocked = " + mIsDocked
@@ -195,14 +195,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				+ "\t" + "IsSDLogging = "+ mIsSDLogging
 				+ "\t" + "IsStreaming = " + mIsStreaming
 				+ "\t" + "mIsFwTestMode = " + mIsFwTestMode
-				+ "\t" + "mIsSdError = " + mIsSdError
+				+ "\t" + "mIsSdError = " + mIsSDError
 				);
 		
 //		if(savedDockedState!=mIsDocked){
 //			dockedStateChange();
 //		}
 		
-		if(mIsSdError){
+		if(mIsSDError){
 			mState = GQ_STATE.SD_ERROR;
 		}
 		else if(mIsFwTestMode){
@@ -1081,8 +1081,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		return false;
 //	}
 	
-	public boolean ismIsSdError() {
-		return mIsSdError;
+	public boolean isSDError() {
+		return mIsSDError;
 	}
 
 	@Override
