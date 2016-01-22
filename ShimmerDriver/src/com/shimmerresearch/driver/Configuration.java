@@ -1014,11 +1014,13 @@ public class Configuration {
 			public static  String EMG_CH1_16BIT = "EMG_CH1_16BIT";
 			public static  String EMG_CH2_16BIT = "EMG_CH2_16BIT";
 			public static  String ECG_LA_RA_24BIT = "ECG_LA-RA_24BIT";
+			public static  String ECG_LA_RL_24BIT = "ECG_LA-RL_24BIT";
 			public static  String ECG_LL_RA_24BIT = "ECG_LL-RA_24BIT";
 			public static  String ECG_LL_LA_24BIT = "ECG_LL-LA_24BIT"; //derived
 			public static  String ECG_RESP_24BIT = "ECG_RESP_24BIT";
 			public static  String ECG_VX_RL_24BIT = "ECG_Vx-RL_24BIT";
 			public static  String ECG_LA_RA_16BIT = "ECG_LA-RA_16BIT";
+			public static  String ECG_LA_RL_16BIT = "ECG_LA-RL_16BIT";
 			public static  String ECG_LL_RA_16BIT = "ECG_LL-RA_16BIT";
 			public static  String ECG_LL_LA_16BIT = "ECG_LL-LA_16BIT"; //derived
 			public static  String ECG_RESP_16BIT = "ECG_RESP_16BIT";
