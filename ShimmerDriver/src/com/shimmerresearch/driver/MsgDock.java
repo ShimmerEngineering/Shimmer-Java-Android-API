@@ -152,6 +152,7 @@ public class MsgDock {
 	public final static int MSG_ID_BT_TO_DB_FINISHED = 170;
 	public final static int MSG_ID_BT_TO_DB_BUFFER_FILLED = 171;
 	public final static int MSG_ID_BT_TO_DB_FAIL = 172;
+	public final static int MSG_ID_BT_TO_DB_STARTED = 173;
 	public final static int MSG_ID_NUM_DB = 180;
 	public final static int MSG_ID_READING_DB_START = 181;
 	public final static int MSG_ID_READING_DB_END = 182;
