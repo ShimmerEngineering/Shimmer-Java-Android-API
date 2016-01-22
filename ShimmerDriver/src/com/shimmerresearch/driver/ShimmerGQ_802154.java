@@ -1085,6 +1085,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return mIsSDError;
 	}
 
+	public void setSDError(boolean state) {
+		mIsSDError = state;
+	}
+
 	@Override
 	public boolean isChannelEnabled(int sensorKey) {
 	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);

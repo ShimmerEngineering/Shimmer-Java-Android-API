@@ -469,6 +469,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
     	return mIsStreaming;
     }
 
+	public void setStreaming(boolean state) {
+		mIsStreaming = state;
+	}
+
 	/**Only used for LogAndStream
 	 * @return
 	 */
