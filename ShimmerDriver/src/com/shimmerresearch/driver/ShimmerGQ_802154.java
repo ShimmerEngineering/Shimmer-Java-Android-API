@@ -841,7 +841,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		//3-7 Byte = Sensors
 		mConfigValues.add((double) mEnabledSensors);
 		//40-71 Byte = Derived Sensors
-		mConfigValues.add((double) 0);
+		mConfigValues.add((double) mDerivedSensors);
 		
 		//The Configuration byte index 8 - 19
 		mConfigValues.add((double) 0);
