@@ -50,7 +50,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//Temp here from ShimmerDocked - start
 	
 	/** Used in UART command through the base/dock*/
-	protected String mMacIdFromUart = "";
+	protected String mMacIdFromUart = DEFAULT_MAC_ID;
 	
 	protected String mShimmerUserAssignedName = ""; // This stores the user assigned name
 	protected HashMap<COMMUNICATION_TYPE, Double> mMapOfSamplingRatesShimmer = new HashMap<COMMUNICATION_TYPE, Double>(); // 51.2Hz is the default sampling rate 
@@ -64,6 +64,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public final static int DEFAULT_SLOTNUMBER = -1;
 	public final static String DEFAULT_SHIMMER_NAME = "Shimmer";
 	public final static String DEFAULT_EXPERIMENT_NAME = "DefaultTrial";
+	public final static String DEFAULT_MAC_ID = "";
 	
 	public final static String DEVICE_ID = "Device_ID";
 
