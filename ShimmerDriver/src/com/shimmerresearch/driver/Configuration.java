@@ -215,7 +215,6 @@ public class Configuration {
 			public static final String SHIMMER_SAMPLING_RATE = "Sampling Rate";
 			public static final String CONFIG_TIME = "Config Time";
 			public static final String SHIMMER_MAC_FROM_INFOMEM = "InfoMem MAC";
-
 		}
 		
 		public static final String[] ListofSamplingRateDividers={"0.75Hz","1.5Hz","3Hz","7.5Hz","15Hz","30Hz","75Hz","220Hz"};
@@ -1146,6 +1145,7 @@ public class Configuration {
 
 			private static final ShimmerVerObject baseShimmerGq802154Lr = 		new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_LR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
 			private static final ShimmerVerObject baseShimmerGq802154Nr = 		new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_NR,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+			private static final ShimmerVerObject baseShimmer2rGq = 		new ShimmerVerObject(HW_ID.SHIMMER_2R_GQ,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
 
 			private static final ShimmerVerObject baseExgSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_EXG); 
 			private static final ShimmerVerObject baseExgUnifiedSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED);
@@ -1185,7 +1185,7 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 					baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
 					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream,
-					baseShimmerGq802154Lr, baseShimmerGq802154Nr);
+					baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq);
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
@@ -1195,7 +1195,7 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGqBle,
 					baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
-					baseGsrUnifiedGqBle, baseShimmerGq802154Lr, baseShimmerGq802154Nr);
+					baseGsrUnifiedGqBle, baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq);
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  

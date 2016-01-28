@@ -76,11 +76,12 @@ public class UartPacketDetails {
 	static ShimmerVerObject baseGqBle = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_BLE,FW_ID.GQ_BLE,0,0,5,ShimmerObject.ANY_VERSION);
 	static ShimmerVerObject baseGq802154NR = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_NR,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION);
 	static ShimmerVerObject baseGq802154LR = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_LR,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION);
+	static ShimmerVerObject baseGq802154Shimmer2r  = 	new ShimmerVerObject(HW_ID.SHIMMER_2R_GQ,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION,ShimmerObject.ANY_VERSION);
 	
 	//TODO improve
 	static List<ShimmerVerObject> listOfCompatibleVersionInfoGqBle = Arrays.asList(baseGqBle);
-	static List<ShimmerVerObject> listOfCompatibleVersionInfoGq802154 = Arrays.asList(baseGq802154NR, baseGq802154LR);
-	static List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(baseGqBle, baseGq802154NR, baseGq802154LR);
+	static List<ShimmerVerObject> listOfCompatibleVersionInfoGq802154 = Arrays.asList(baseGq802154NR, baseGq802154LR, baseGq802154Shimmer2r);
+	static List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(baseGqBle, baseGq802154NR, baseGq802154LR, baseGq802154Shimmer2r);
 	
 
 	

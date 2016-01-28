@@ -688,7 +688,8 @@ public abstract class AbstractSensor implements Serializable{
 				}
 				
 				else if((mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)){
+						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
+						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
 					for (String configOption:mListOfConfigOptionKeysAssociated) {
 						// do not add duplicates
 						if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {

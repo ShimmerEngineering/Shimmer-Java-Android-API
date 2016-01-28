@@ -177,7 +177,8 @@ public class SensorEXG extends AbstractSensor{
 //					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);		
 		}
 		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)){
+				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
+				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG)));
 			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
