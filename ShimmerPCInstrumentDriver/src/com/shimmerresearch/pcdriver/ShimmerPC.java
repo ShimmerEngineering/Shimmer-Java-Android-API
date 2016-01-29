@@ -303,6 +303,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	    };
 	    
+	    thread.setName("ShimmerPC-"+getMacId()+"-"+mShimmerUserAssignedName);
+	    
 	    if (!mIsConnected){
 	    	thread.start();
 	    }
