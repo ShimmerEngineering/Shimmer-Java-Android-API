@@ -1,6 +1,10 @@
 package com.shimmerresearch.shimmerUartProtocol;
 
+import java.util.concurrent.ExecutionException;
+
 import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
@@ -11,9 +15,15 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	public String mUniqueId = "";
 	public String mComPort = "";
 
+	private ShimmerUartListener mShimmerUartListener;
+	private boolean mIsSerialPortReaderStarted = false;
+	private UartRxCallback mUartRxCallback;
+
 	public ShimmerUartJssc(String comPort, String uniqueId) {
 		mUniqueId = uniqueId;
 		mComPort = comPort;
+		
+        serialPort = new SerialPort(mComPort);
 	}
 
 	/** Opens and configures the Shimmer UART COM port
@@ -21,7 +31,6 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	 */
 	@Override
 	public void shimmerUartConnect() throws DockException {
-        serialPort = new SerialPort(mComPort);
         try {
 //        	serialPort.setRTS(true);
 //        	serialPort.setDTR(false);
@@ -45,6 +54,11 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
         	de.updateDockException(e.getMessage(), e.getStackTrace());
 			throw(de);
         }
+        
+		if(!isSerialPortReaderStarted()){
+			startSerialPortReader();
+		}
+        
 	}
 	
 	
@@ -127,5 +141,109 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 			throw(de);
 		}
     }
+	
+	
+    public void startSerialPortReader() throws DockException {
+    	try {
+    		// Open COM port
+    		mIsSerialPortReaderStarted = true;
+    		shimmerUartConnect();
+		} catch (ExecutionException e) {
+    		mIsSerialPortReaderStarted = false;
+		}
+    	
+        int mask = SerialPort.MASK_RXCHAR;//Prepare mask
+        try {
+        	mShimmerUartListener = new ShimmerUartListener(mUniqueId);
+//        	mShimmerUartListener.setVerbose(mVerboseModeUart);
+        	serialPort.setEventsMask(mask);//Set mask
+        	serialPort.addEventListener(mShimmerUartListener);//Add SerialPortEventListener
+//    		setWaitForData(mShimmerUartListener);
+        } catch (SerialPortException e) {
+//			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_START);
+//			de.updateDockException(e.getMessage(), e.getStackTrace());
+//			throw(de);
+        }
+
+    }
+
+    public void stopSerialPortReader() throws DockException {
+        try {
+        	serialPort.removeEventListener();
+        } catch (SerialPortException e) {
+//			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_STOP);
+//			de.updateDockException(e.getMessage(), e.getStackTrace());
+        }
+        
+    	try {
+    		// Finish up
+    		shimmerUartDisconnect();
+    		mIsSerialPortReaderStarted = false;
+		} catch (ExecutionException e) {
+//			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_STOP);
+//			de.updateDockException(e.getMessage(), e.getStackTrace());
+		}
+
+    }
+    
+	public boolean isSerialPortReaderStarted(){
+		return mIsSerialPortReaderStarted;
+	}
+	
+	public class ShimmerUartListener implements SerialPortEventListener {
+	    StringBuilder stringBuilder = new StringBuilder(128);
+	    
+	    String mUniqueId = "";
+
+	    ShimmerUartListener(String uniqueID) {
+	    	mUniqueId = uniqueID;
+	    }
+
+		@Override
+		public void serialEvent(SerialPortEvent event) {
+	        if (event.isRXCHAR()) {//If data is available
+	            if (event.getEventValue() > 0) {//Check bytes count in the input buffer
+	                try {
+	                	byte[] data = serialPort.readBytes(event.getEventValue(), ShimmerUart.SERIAL_PORT_TIMEOUT);
+	                	mUartRxCallback.newMsg(data);
+	                	
+//	                    for (int i = 0; i < data.length; i++) {
+//	                        stringBuilder.append((char) data[i]);
+//	                    }
+
+	                    
+//	                    //split entire message by "\r\n"
+//	            		int lineTerminationIndex = stringBuilder.indexOf("\r\n");
+////	            		System.out.println(stringBuilder);
+//	            		if(lineTerminationIndex>=1) {
+//	            			String message = stringBuilder.substring(0, lineTerminationIndex+2).toString();  
+//	            			stringBuilder.replace(0, lineTerminationIndex+2, "");
+//	            			
+//	                    	if(message.length() == 3) {
+//	                            // SmartDock error response - Expected message = "E\r\n"
+//	                        	if ((message.charAt(0)) == 'E') {
+//	                                consolePrintLn("Error = " + message);
+//	                    			//notify the SmartDockUart layer
+//	        						MsgDock msg = new MsgDock(MsgDock.MSG_ID_SMARTDOCK_UART_ERROR,mDockID);
+//	                    			msg.mMessage = message;
+//	        						sendCallBackMsg(msg.mMsgID,msg);
+//	                            }
+//	                    	}
+//
+//	            		}
+	            		
+	            		
+	                } catch (Exception ex) {
+	                    System.out.println(ex);
+	                }
+	            }
+	        }
+		}
+	}
+
+	@Override
+	public void registerRxCallback(UartRxCallback uartRxCallback) {
+		mUartRxCallback = uartRxCallback;
+	}
 
 }
