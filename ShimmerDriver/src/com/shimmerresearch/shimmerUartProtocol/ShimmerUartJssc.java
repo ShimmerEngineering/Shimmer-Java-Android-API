@@ -2,6 +2,8 @@ package com.shimmerresearch.shimmerUartProtocol;
 
 import java.util.concurrent.ExecutionException;
 
+import com.shimmerresearch.driver.UtilShimmer;
+
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -18,6 +20,8 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	private ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
 	private UartRxCallback mUartRxCallback;
+	
+	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), false);
 
 	public ShimmerUartJssc(String comPort, String uniqueId) {
 		mUniqueId = uniqueId;
@@ -204,8 +208,37 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	        if (event.isRXCHAR()) {//If data is available
 	            if (event.getEventValue() > 0) {//Check bytes count in the input buffer
 	                try {
-	                	byte[] data = serialPort.readBytes(event.getEventValue(), ShimmerUart.SERIAL_PORT_TIMEOUT);
-	                	mUartRxCallback.newMsg(data);
+	                	byte[] rxBuf = serialPort.readBytes(event.getEventValue(), ShimmerUart.SERIAL_PORT_TIMEOUT);
+
+//	                	byte[] header = serialPort.readBytes(3, ShimmerUart.SERIAL_PORT_TIMEOUT);
+
+	                	consolePrintLn("serialEvent Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+	            		
+	            		if(rxBuf.length>=3){
+	            			byte headerByte = rxBuf[0]; 
+		                	if(headerByte==0x24){
+		            			byte cmdByte = rxBuf[1]; 
+		            			int payloadLength = rxBuf[2]&0xFF;
+		            			
+//		            			if(payloadLength<0){
+//		            				System.err.println("ERR\t" + payloadLength);
+//		            			}
+
+		                		if(cmdByte == UartPacketDetails.PACKET_CMD.DATA_RESPONSE.toCmdByte()){
+		                			int remainingByteCount = payloadLength - (rxBuf.length - 5);
+		                			readRemainingBytes(rxBuf, remainingByteCount);
+		                		}
+		                		else if(cmdByte == UartPacketDetails.PACKET_CMD.ACK_RESPONSE.toCmdByte()
+		                				|| cmdByte == UartPacketDetails.PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()
+		                				|| cmdByte == UartPacketDetails.PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()
+		                				|| cmdByte == UartPacketDetails.PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()){
+		                			int remainingByteCount = 4 - rxBuf.length;
+		                			readRemainingBytes(rxBuf, remainingByteCount);
+		                		}
+		                	}
+	            		}
+
+
 	                	
 //	                    for (int i = 0; i < data.length; i++) {
 //	                        stringBuilder.append((char) data[i]);
@@ -232,18 +265,47 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 //
 //	            		}
 	            		
-	            		
 	                } catch (Exception ex) {
 	                    System.out.println(ex);
 	                }
 	            }
 	        }
 		}
+
+		private void readRemainingBytes(byte[] rxBuf, int remainingByteCount) throws SerialPortException, SerialPortTimeoutException {
+			if(remainingByteCount>0){
+    			byte[] data = serialPort.readBytes(remainingByteCount, ShimmerUart.SERIAL_PORT_TIMEOUT);
+    			sendRxCallBack(rxBuf, data);
+			}
+			else {
+//				if(remainingByteCount!=0){
+//					System.err.println("WTF\t" + remainingByteCount);
+//				}
+				consolePrintLn("Complete RX Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+		    	mUartRxCallback.newMsg(rxBuf);
+			}
+		}
+	}
+
+	private void sendRxCallBack(byte[] header, byte[] data) {
+		if(header.length>0 && data.length>0){
+			byte[] packet = new byte[header.length + data.length];
+			
+			System.arraycopy(header, 0, packet, 0, header.length);
+			System.arraycopy(data, 0, packet, header.length, data.length);
+			
+    		consolePrintLn("Complete RX Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
+	    	mUartRxCallback.newMsg(packet);
+		}
 	}
 
 	@Override
 	public void registerRxCallback(UartRxCallback uartRxCallback) {
 		mUartRxCallback = uartRxCallback;
+	}
+
+	private void consolePrintLn(String string) {
+		utilShimmer.consolePrintLn(mUniqueId + "\t" + string);
 	}
 
 }
