@@ -33,6 +33,7 @@ public class ShimmerVerDetails implements Serializable {
 //		public static final int DCU_SWEATSENSOR = 4;
 		public static final int SHIMMER_GQ_BLE = 5;
 //		public static final int BIOSENSICS = 6;
+		public static final int SPAN = 7;
 		public static final int SHIMMER_2R_GQ = 9; // Used for testing GQ
 		public static final int SHIMMER_GQ_802154_LR = 56; // Long Range
 		public static final int SHIMMER_GQ_802154_NR = 57; // Normal Range

@@ -75,7 +75,7 @@ public class ShimmerVerObject implements Serializable {
 		mFirmwareVersionMinor = firmwareVersionMinor;
 		mFirmwareVersionInternal = firmwareVersionInternal;
 
-		parseVerDetails();
+		parseShimmerVerDetails();
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class ShimmerVerObject implements Serializable {
 		mFirmwareVersionInternal = firmwareVersionInternal;
 		mShimmerExpansionBoardId = shimmerExpansionBoardId;
 		
-		parseVerDetails();
+		parseShimmerVerDetails();
 	}
 	
 	/**
@@ -119,11 +119,11 @@ public class ShimmerVerObject implements Serializable {
 			mFirmwareVersionMajor = (rxBuf[VerReponsePacketOrder.fwMajorLSB.ordinal()]) | (rxBuf[(int)VerReponsePacketOrder.fwMajorMSB.ordinal()]<<8);
 			mFirmwareVersionMinor = rxBuf[VerReponsePacketOrder.fwMinor.ordinal()];
 			mFirmwareVersionInternal = rxBuf[VerReponsePacketOrder.fwRevision.ordinal()];
-			parseVerDetails();
+			parseShimmerVerDetails();
 		}
 	}
 	
-	private void parseVerDetails() {
+	private void parseShimmerVerDetails() {
 		if(mHardwareVersion!=HW_ID.UNKNOWN){
 			if (ShimmerVerDetails.mMapOfShimmerRevisions.containsKey(mHardwareVersion)) {
 				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(mHardwareVersion);

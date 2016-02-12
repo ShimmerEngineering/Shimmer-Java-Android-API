@@ -27,9 +27,12 @@ public class ErrorCodesShimmerUart {
 	public final static int SHIMMERUART_CMD_ERR_INFOMEM_SET = 			(ERROR_CODES_ID*1000) + 32;
 	public final static int SHIMMERUART_CMD_ERR_INFOMEM_GET = 			(ERROR_CODES_ID*1000) + 31;
 
-	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_SET = 			(ERROR_CODES_ID*1000) + 33;
-	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_GET = 			(ERROR_CODES_ID*1000) + 34;
+	//SR7 (802.15.4 radio) related errors
+	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_SET_SETTINGS = 			(ERROR_CODES_ID*1000) + 33;
+	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_GET_SETTINGS = 			(ERROR_CODES_ID*1000) + 34;
+//	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_GET_CHANNEL = 			(ERROR_CODES_ID*1000) + 35;
 
+	
 	// Errors related to specific commands
 	public final static int SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE = (ERROR_CODES_ID*1000) + 1;
 	public final static int SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE = (ERROR_CODES_ID*1000) + 2;

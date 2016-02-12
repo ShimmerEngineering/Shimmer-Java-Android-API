@@ -46,22 +46,22 @@ public abstract class ShimmerUart {
 		return mIsUARTInUse;
 	}
 	
-	public byte[] processShimmerGetCommand(ComponentPropertyDetails compPropDetails, int errorCode) throws ExecutionException{
+	public byte[] processShimmerGetCommand(ComponentPropertyDetails compPropDetails, int errorCode) throws DockException{
 		byte[] rxBuf;
 		if(!mLeavePortOpen) openSafely();
 		try {
 			rxBuf = shimmerUartGetCommand(compPropDetails);
-		} catch(ExecutionException e) {
+		} catch(DockException e) {
 			DockException de = (DockException) e;
 			de.mErrorCode = errorCode;
-			throw(e);
+			throw(de);
 		} finally{
 			if(!mLeavePortOpen) closeSafely();
 		}
 		return rxBuf;
 	}
 
-	public void processShimmerSetCommand(ComponentPropertyDetails compPropDetails, byte[] txBuf, int errorCode) throws ExecutionException{
+	public void processShimmerSetCommand(ComponentPropertyDetails compPropDetails, byte[] txBuf, int errorCode) throws DockException{
 		if(!mLeavePortOpen) openSafely();
 		try {
 			shimmerUartSetCommand(compPropDetails, txBuf);
@@ -74,7 +74,7 @@ public abstract class ShimmerUart {
 		}
 	}
     
-	public byte[] processShimmerMemGetCommand(ComponentPropertyDetails compPropDetails, int address, int size, int errorCode) throws ExecutionException{
+	public byte[] processShimmerMemGetCommand(ComponentPropertyDetails compPropDetails, int address, int size, int errorCode) throws DockException{
 		byte[] rxBuf;
 		if(!mLeavePortOpen) openSafely();
 		try {
@@ -89,7 +89,7 @@ public abstract class ShimmerUart {
 		return rxBuf;
 	}	
 	
-	public void processShimmerMemSetCommand(ComponentPropertyDetails compPropDetails, int address, byte[] buf, int errorCode) throws ExecutionException{
+	public void processShimmerMemSetCommand(ComponentPropertyDetails compPropDetails, int address, byte[] buf, int errorCode) throws DockException{
 		if(!mLeavePortOpen) openSafely();
 		try {
 			shimmerUartSetMemCommand(compPropDetails, address, buf);
@@ -170,7 +170,7 @@ public abstract class ShimmerUart {
      * @return byte array containing data response from Shimmer
      * @throws ExecutionException
      */
-	protected byte[] shimmerUartGetCommand(ComponentPropertyDetails msgArg) throws ExecutionException {
+	protected byte[] shimmerUartGetCommand(ComponentPropertyDetails msgArg) throws DockException {
 		return shimmerUartCommandTxRx(UartPacketDetails.PACKET_CMD.GET, msgArg, null);
     }
     
@@ -256,7 +256,7 @@ public abstract class ShimmerUart {
      * @return
      * @throws ExecutionException
      */
-	protected byte[] shimmerUartCommandTxRx(PACKET_CMD packetCmd, ComponentPropertyDetails msgArg, byte[] valueBuffer) throws ExecutionException {
+	protected byte[] shimmerUartCommandTxRx(PACKET_CMD packetCmd, ComponentPropertyDetails msgArg, byte[] valueBuffer) throws DockException {
 		consolePrintTxPacketInfo(packetCmd, msgArg, valueBuffer);
 		txPacket(packetCmd, msgArg, valueBuffer);
 //		return rxPacket(packetCmd, msgArg);
@@ -337,7 +337,8 @@ public abstract class ShimmerUart {
 
 		consolePrintLn("TIMEOUT_FAIL" + "\tComponent:" + msgArg.component.toString() + "\tProperty:" + msgArg.property);
 //		DockException de = new DockException(mComPort, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT, mUniqueId);
-////		DockException de = new DockException(mUniqueId, dJD.slotNumber, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT);
+//////		DockException de = new DockException(mUniqueId, dJD.slotNumber, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT);
+//		DockException de = new DockException(mComPort, 0, ErrorCodesDock.DOCK_TIMEOUT, mUniqueId);
 		DockException de = new DockException(mComPort, 0, 0, mUniqueId);
 		throw(de);
 	}
