@@ -51,7 +51,7 @@ public class UartPacketDetails {
 	 *
 	 */
 	public static enum COMPONENT {
-		MAIN_PROCESSOR				((byte)0x01),
+		MAIN_PROCESSOR		((byte)0x01),
 		BAT					((byte)0x02), // this is treated as a sensor
 		DAUGHTER_CARD		((byte)0x03),
 		PPG					((byte)0x04),

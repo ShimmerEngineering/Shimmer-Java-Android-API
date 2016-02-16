@@ -12,10 +12,10 @@ import jssc.SerialPortTimeoutException;
 
 public class ShimmerUartJssc implements ShimmerUartOsInterface {
 
-	private final static int SHIMMER_UART_BAUD_RATE = SerialPort.BAUDRATE_115200;
 	private SerialPort serialPort = null;
 	public String mUniqueId = "";
 	public String mComPort = "";
+	private int mBaudToUse = SerialPort.BAUDRATE_115200;
 
 	private ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
@@ -23,9 +23,10 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	
 	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), false);
 
-	public ShimmerUartJssc(String comPort, String uniqueId) {
+	public ShimmerUartJssc(String comPort, String uniqueId, int baudToUse) {
 		mUniqueId = uniqueId;
 		mComPort = comPort;
+		mBaudToUse = baudToUse;
 		
         serialPort = new SerialPort(mComPort);
 	}
@@ -40,7 +41,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 //        	serialPort.setDTR(false);
             serialPort.openPort();//Open serial port
             serialPort.setParams(
-			            		SHIMMER_UART_BAUD_RATE, 
+			            		mBaudToUse, 
 			            		SerialPort.DATABITS_8, 
 			            		SerialPort.STOPBITS_1, 
 			            		SerialPort.PARITY_NONE, 
@@ -101,28 +102,25 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	public void shimmerUartTxBytes(byte[] buf) throws DockException {
     	//TODO: pass rxSpeed from root method
     	int rxSpeed = 0;
-    	if(rxSpeed == 0) { // normal speed
-        	try {
+    	try {
+        	if(rxSpeed == 0) { // normal speed
         		for(int i = 0; i<buf.length;i++) {
         			serialPort.writeByte(buf[i]);
         			serialPort.purgePort(SerialPort.PURGE_TXCLEAR);
         		}
-    		} catch (SerialPortException e) {
-            	DockException de = new DockException(mUniqueId, mComPort,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_WRITING_DATA); 
-            	de.updateDockException(e.getMessage(), e.getStackTrace());
-    			throw(de);
-    		}
-    	}
-    	else { // fast speed
-        	try {
+        	}
+        	else {  // fast speed
     			serialPort.writeBytes(buf);
-    		} catch (SerialPortException e) {
-//    			e.printStackTrace();
-            	DockException de = new DockException(mUniqueId, mComPort,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_WRITING_DATA); 
-            	de.updateDockException(e.getMessage(), e.getStackTrace());
-    			throw(de);
-    		}
-    	}
+        	}
+		} catch (SerialPortException e) {
+        	DockException de = new DockException(
+        			mUniqueId, 
+        			mComPort,
+        			ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,
+        			ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_WRITING_DATA); 
+        	de.updateDockException(e.getMessage(), e.getStackTrace());
+			throw(de);
+		}
     }    
 
     /** Receives a byte array from the Shimmer UART COM port

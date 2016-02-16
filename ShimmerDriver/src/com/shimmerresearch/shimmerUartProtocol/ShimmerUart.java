@@ -7,6 +7,8 @@ import java.util.List;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
 
+import jssc.SerialPort;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.driver.UtilShimmer;
@@ -23,7 +25,13 @@ public abstract class ShimmerUart {
 	public boolean mIsUARTInUse = false;
 	public String mUniqueId = "";
 	public String mComPort = "";
+	private int mBaudToUse = SerialPort.BAUDRATE_115200;
 
+	public final static class SHIMMER_UART_BAUD_RATES{
+		public final static int SHIMMER3_DOCKED = SerialPort.BAUDRATE_115200;
+		public final static int SPAN = 230800;
+	}
+	
 	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), true);
 	
 	public static boolean mLeavePortOpen = false;
@@ -33,13 +41,17 @@ public abstract class ShimmerUart {
     //the timeout value for connecting with the port
     protected final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
 
-	public ShimmerUart(String comPort, String uniqueId){
-		shimmerUartOs = new ShimmerUartJssc(comPort, uniqueId);
-		
-		shimmerUartOs.registerRxCallback(new CallbackUartRx());
-		
+	public ShimmerUart(String comPort, String uniqueId, int baudToUse){
 		mUniqueId = uniqueId;
 		mComPort = comPort;
+		mBaudToUse = baudToUse;
+		
+		shimmerUartOs = new ShimmerUartJssc(mComPort, mUniqueId, mBaudToUse);
+		shimmerUartOs.registerRxCallback(new CallbackUartRx());
+	}
+
+	public ShimmerUart(String comPort, String uniqueId){
+		this(uniqueId, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED);
 	}
 	
 	public boolean isUARTinUse(){
@@ -339,7 +351,7 @@ public abstract class ShimmerUart {
 //		DockException de = new DockException(mComPort, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT, mUniqueId);
 //////		DockException de = new DockException(mUniqueId, dJD.slotNumber, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT);
 //		DockException de = new DockException(mComPort, 0, ErrorCodesDock.DOCK_TIMEOUT, mUniqueId);
-		DockException de = new DockException(mComPort, 0, 0, mUniqueId);
+		DockException de = new DockException(mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT, mUniqueId);
 		throw(de);
 	}
 	
