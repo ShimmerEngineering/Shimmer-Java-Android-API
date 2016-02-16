@@ -563,4 +563,20 @@ public class UtilShimmer implements Serializable {
     	}
 	}
 
+	public static byte[] generateRadioConfigByteArray(int radioChannel, int radioGroupId, int radioDeviceId, int radioResponseWindow) {
+		byte[] radioConfigArray = new byte[7];
+		
+        radioConfigArray[0] = (byte)((radioChannel >> 0) & 0x00FF);
+        
+        //All MSB first
+        radioConfigArray[1] = (byte)((radioGroupId >> 8) & 0x00FF);
+        radioConfigArray[2] = (byte)((radioGroupId >> 0) & 0x00FF);
+        radioConfigArray[3] = (byte)((radioDeviceId >> 8) & 0x00FF);
+        radioConfigArray[4] = (byte)((radioDeviceId >> 0) & 0x00FF);
+        radioConfigArray[5] = (byte)((radioResponseWindow >> 8) & 0x00FF);
+        radioConfigArray[6] = (byte)((radioResponseWindow >> 0) & 0x00FF);
+        
+		return radioConfigArray;
+	}
+
 }

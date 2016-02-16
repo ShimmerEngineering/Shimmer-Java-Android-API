@@ -156,24 +156,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 	
 	public byte[] getRadioConfigByteArray() {
-		byte[] radioConfigArray = new byte[7];
-		
-        radioConfigArray[0] = (byte)((mRadioChannel >> 0) & 0x00FF);
-        
-        //All MSB first
-        radioConfigArray[1] = (byte)((mRadioGroupId >> 8) & 0x00FF);
-        radioConfigArray[2] = (byte)((mRadioGroupId >> 0) & 0x00FF);
-        radioConfigArray[3] = (byte)((mRadioDeviceId >> 8) & 0x00FF);
-        radioConfigArray[4] = (byte)((mRadioDeviceId >> 0) & 0x00FF);
-        radioConfigArray[5] = (byte)((mRadioResponseWindow >> 8) & 0x00FF);
-        radioConfigArray[6] = (byte)((mRadioResponseWindow >> 0) & 0x00FF);
-        
-		return radioConfigArray;
+		return UtilShimmer.generateRadioConfigByteArray(mRadioChannel, mRadioGroupId, mRadioDeviceId, mRadioResponseWindow);
 	}
-	
-//	public double getSamplingRate(){
-//		return mSamplingRateShimmer;
-//	}
 
 	/**
 	 * @param statusByte

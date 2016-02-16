@@ -76,7 +76,10 @@ public class ErrorCodesShimmerUart {
     	aMap.put(SHIMMERUART_CMD_ERR_DAUGHTER_MEM_GET, "Error reading expansion board memory");
     	aMap.put(SHIMMERUART_CMD_ERR_INFOMEM_SET, "Error writing InfoMem");
     	aMap.put(SHIMMERUART_CMD_ERR_INFOMEM_GET, "Error reading InfoMem");
-    	
+
+    	aMap.put(SHIMMERUART_CMD_ERR_RADIO_802154_GET_SETTINGS, "Error reading 802.15.4 radio settings");
+    	aMap.put(SHIMMERUART_CMD_ERR_RADIO_802154_SET_SETTINGS, "Error writing 802.15.4 radio settings");
+
     	// Errors related to specific commands
         aMap.put(SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE, "InfoMem write buffer exceeds InfoMem range");
         aMap.put(SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE, "InfoMem read request exceeds InfoMem range");

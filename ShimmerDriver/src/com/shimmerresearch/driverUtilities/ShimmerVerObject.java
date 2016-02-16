@@ -150,6 +150,7 @@ public class ShimmerVerObject implements Serializable {
 			|| ((mHardwareVersion==HW_ID.SHIMMER_GQ_BLE)&&(mFirmwareIdentifier==FW_ID.GQ_BLE))
 			|| (((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)||(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)) && (mFirmwareIdentifier==FW_ID.GQ_802154))
 			|| ((mHardwareVersion==HW_ID.SHIMMER_2R_GQ)&&(mFirmwareIdentifier==FW_ID.GQ_802154))
+			|| (mHardwareVersion==HW_ID.SPAN)
 			){
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
@@ -221,6 +222,10 @@ public class ShimmerVerObject implements Serializable {
 			mFirmwareVersionParsedJustVersionNumber = "v" + mFirmwareVersionMajor + "." + mFirmwareVersionMinor + "." + mFirmwareVersionInternal;
 			mFirmwareVersionParsed = mFirmwareIdentifierParsed + " " + mFirmwareVersionParsedJustVersionNumber;		
 		}
+	}
+
+	public String getFirmwareVersionParsed() {
+		return mFirmwareVersionParsedJustVersionNumber;
 	}
 
 }
