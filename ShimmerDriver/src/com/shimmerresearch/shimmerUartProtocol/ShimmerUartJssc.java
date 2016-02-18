@@ -50,12 +50,12 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
         }
         catch (SerialPortException e) {
-        	DockException de = new DockException(mUniqueId, mComPort,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING); 
+        	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING); 
         	de.updateDockException(e.getMessage(), e.getStackTrace());
 			throw(de);
         }
         catch (Exception e) {
-        	DockException de = new DockException(mUniqueId, mComPort,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING); 
+        	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING); 
         	de.updateDockException(e.getMessage(), e.getStackTrace());
 			throw(de);
         }
@@ -76,7 +76,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	        try {
 	        	serialPort.closePort();
 			} catch (SerialPortException e) {
-	        	DockException de = new DockException(mUniqueId, mComPort,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_CLOSING); 
+	        	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_CLOSING); 
 	        	de.updateDockException(e.getMessage(), e.getStackTrace());
 				throw(de);
 			}
@@ -88,7 +88,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
     	try {
 			serialPort.purgePort(SerialPort.PURGE_RXCLEAR);
 		} catch (SerialPortException e) {
-        	DockException de = new DockException(mUniqueId, mComPort,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION); 
+        	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION); 
         	de.updateDockException(e.getMessage(), e.getStackTrace());
 			throw(de);
 		}
@@ -113,11 +113,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
     			serialPort.writeBytes(buf);
         	}
 		} catch (SerialPortException e) {
-        	DockException de = new DockException(
-        			mUniqueId, 
-        			mComPort,
-        			ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,
-        			ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_WRITING_DATA); 
+        	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_WRITING_DATA); 
         	de.updateDockException(e.getMessage(), e.getStackTrace());
 			throw(de);
 		}
@@ -134,15 +130,24 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 		try {
 			return serialPort.readBytes(numBytes, ShimmerUart.SERIAL_PORT_TIMEOUT);
 		} catch (SerialPortException e) {
-        	DockException de = new DockException(mUniqueId, mComPort,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_READING_DATA); 
+        	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_READING_DATA); 
         	de.updateDockException(e.getMessage(), e.getStackTrace());
 			throw(de);
 		} catch (SerialPortTimeoutException e) {
-        	DockException de = new DockException(mUniqueId, mComPort,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT); 
+        	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT); 
         	de.updateDockException(e.getMessage(), e.getStackTrace());
 			throw(de);
 		}
     }
+	
+	private DockException generateException(int lowLevelError){
+    	DockException de = new DockException(
+    			mUniqueId, 
+    			mComPort,
+    			ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_EXCEPTION,
+    			lowLevelError); 
+    	return de;
+	}
 	
 	
     public void startSerialPortReader() throws DockException {

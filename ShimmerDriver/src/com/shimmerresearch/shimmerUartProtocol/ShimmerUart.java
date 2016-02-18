@@ -42,8 +42,8 @@ public abstract class ShimmerUart {
     protected final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
 
 	public ShimmerUart(String comPort, String uniqueId, int baudToUse){
-		mUniqueId = uniqueId;
 		mComPort = comPort;
+		mUniqueId = uniqueId;
 		mBaudToUse = baudToUse;
 		
 		shimmerUartOs = new ShimmerUartJssc(mComPort, mUniqueId, mBaudToUse);
@@ -51,7 +51,7 @@ public abstract class ShimmerUart {
 	}
 
 	public ShimmerUart(String comPort, String uniqueId){
-		this(uniqueId, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED);
+		this(comPort, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED);
 	}
 	
 	public boolean isUARTinUse(){
