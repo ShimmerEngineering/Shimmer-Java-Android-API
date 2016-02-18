@@ -228,6 +228,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int RES_AMP = 1<<0;
 	}
 	
+	public class BTStreamDerivedSensors{
+		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
+		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
+		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
+		public final static int PPG2_1_14 = 1<<4;
+		public final static int PPG1_12_13 = 1<<3;
+		public final static int PPG_12_13 = 1<<2;
+		public final static int SKIN_TEMP = 1<<1;
+		public final static int RES_AMP = 1<<0;
+	}
+	
 	public class BTStream {
 		public final static int ACCEL_LN = 0x80; 
 		public final static int GYRO = 0x40;
@@ -5677,16 +5688,31 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A12) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS};
+				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12;
+				if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
+					sensorName = Shimmer3.ObjectClusterSensorName.PPG_A12;
+				} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG1_12_13)>0){
+					sensorName = Shimmer3.ObjectClusterSensorName.PPG1_A12;
+				}
+				channel = new String[]{mShimmerUserAssignedName,sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,sensorName,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A13) > 0) {
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS};
+				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
+				if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
+					sensorName = Shimmer3.ObjectClusterSensorName.PPG_A13;
+				} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG1_12_13)>0){
+					sensorName = Shimmer3.ObjectClusterSensorName.PPG1_A13;
+				}
+				
+				channel = new String[]{mShimmerUserAssignedName,sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS};
 				listofSignals.add(channel);
-				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
+				channel = new String[]{mShimmerUserAssignedName,sensorName,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
+				
+				
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A14) > 0) {
 				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS};
@@ -5916,6 +5942,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mExtraSignalProperties = new ArrayList<String[]>();
 		}
 		mExtraSignalProperties.add(property);
+	}
+	
+	public void clearExtraSignalProperties(){
+		if (mExtraSignalProperties!=null){
+			mExtraSignalProperties.clear();
+		}
 	}
 	
 	public void removeExtraSignalProperty(String [] property){

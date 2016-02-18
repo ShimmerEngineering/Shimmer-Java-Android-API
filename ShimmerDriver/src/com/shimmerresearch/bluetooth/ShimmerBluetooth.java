@@ -198,6 +198,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
 	protected abstract void dockedStateChange();
+	
 	private boolean mFirstPacketParsed=true;
 	private double mOffsetFirstTime=-1;
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
@@ -1024,6 +1025,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			printLogDataForDebugging("Inquiry Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferInquiry));
 			
 			interpretInqResponse(bufferInquiry);
+			initializeDerivedSensors();
 			inquiryDone();
 		} 
 
@@ -1106,6 +1108,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==DERIVED_CHANNEL_BYTES_RESPONSE) {
 			byte[] byteArray = readBytes(3);
 			mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
+			if (mEnabledSensors!=0){
+				initializeDerivedSensors();
+				inquiryDone();
+			}
 		}
 		else if(responseCommand==GET_SHIMMER_VERSION_RESPONSE) {
 			delayForBtResponse(100); // Wait to ensure the packet has been fully received
@@ -1670,6 +1676,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(currentCommand==SET_DERIVED_CHANNEL_BYTES){
 					byte[] instruction = getListofInstructions().get(0);
 					mDerivedSensors = (long)(((instruction[3]&0xFF)<<16) + ((instruction[2]&0xFF)<<8) + (instruction[1]&0xFF));
+					if (mEnabledSensors!=0){
+						initializeDerivedSensors();
+						inquiryDone();
+					}
 				}
 				else if(currentCommand==SET_SHIMMERNAME_COMMAND){
 					byte[] instruction =getListofInstructions().get(0);
@@ -4758,4 +4768,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mComPort = comport;
 	}
 	
+	protected void initializeDerivedSensors(){
+		
+	
+	}
 }
