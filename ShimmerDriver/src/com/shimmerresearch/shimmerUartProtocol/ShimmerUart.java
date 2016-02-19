@@ -568,6 +568,7 @@ public abstract class ShimmerUart {
 
 		mListOfUartRxPacketObjects.add(uRPO);
 	} 
+	
 	public class UartRxPacketObject{
 		public byte[] mRxBuf = null;
 		public byte mCommand = 0;
