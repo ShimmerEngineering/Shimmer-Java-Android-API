@@ -11,8 +11,8 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  * @author Mark Nolan
  *
  */
-public class ComponentPropertyDetails {
-	public UartPacketDetails.COMPONENT component;
+public class UartComponentPropertyDetails {
+	public UartPacketDetails.UART_COMPONENT component;
 	public byte componentByte = 0;
 	public int property = 0;
 	public byte propertyByte = 0;
@@ -37,7 +37,7 @@ public class ComponentPropertyDetails {
 	 * @param listOfCompatibleVersionInfo 
 	 * @param descrpition 
 	 */
-	public ComponentPropertyDetails(UartPacketDetails.COMPONENT component, int property, PERMISSION readWrite, List<ShimmerVerObject> listOfCompatibleVersionInfo, String propertyName){
+	public UartComponentPropertyDetails(UartPacketDetails.UART_COMPONENT component, int property, PERMISSION readWrite, List<ShimmerVerObject> listOfCompatibleVersionInfo, String propertyName){
 		this.component = component;
 		this.componentByte = component.toCmdByte();
 		this.property = property;

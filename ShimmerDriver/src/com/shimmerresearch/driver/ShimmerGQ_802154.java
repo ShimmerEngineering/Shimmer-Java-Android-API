@@ -25,8 +25,8 @@ import com.shimmerresearch.sensor.SensorSystemTimeStamp;
 import com.shimmerresearch.sensor.SensorECGToHR;
 import com.shimmerresearch.sensor.SensorEXG;
 import com.shimmerresearch.sensor.SensorGSR;
-import com.shimmerresearch.shimmerUartProtocol.ComponentPropertyDetails;
-import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.COMPONENT_PROPERTY;
+import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails;
+import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 
 public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
@@ -616,9 +616,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 
 	@Override
-	public void parseUartConfigResponse(ComponentPropertyDetails cPD, byte[] response){
+	public void parseUartConfigResponse(UartComponentPropertyDetails cPD, byte[] response){
 		// Parse response string
-		if(cPD==COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
+		if(cPD==UART_COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
 			setRadioConfig(response);
 		}
 		else {
@@ -627,11 +627,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 	
 	@Override
-	public byte[] generateUartConfigMessage(ComponentPropertyDetails cPD){
+	public byte[] generateUartConfigMessage(UartComponentPropertyDetails cPD){
 		
 //		System.out.println("Component:" + cPD.component + " Property:" + cPD.property + " ByteArray:" + cPD.byteArray.length);
 		
-		if(cPD==COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
+		if(cPD==UART_COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
 			return getRadioConfigByteArray();
 		}
 		else {

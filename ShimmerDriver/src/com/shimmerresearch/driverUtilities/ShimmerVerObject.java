@@ -108,17 +108,17 @@ public class ShimmerVerObject implements Serializable {
 	
 	/**
 	 * Empty constructor used when finding the current information from a docked
-	 * Shimmer through the dock's UART communication channel.
-	 * @param rxBuf 
+	 * Shimmer/SPAN through the dock's UART communication channel.
+	 * @param byteArray 
 	 * 
 	 */
-	public ShimmerVerObject(byte[] rxBuf) {
-		if(rxBuf.length >= 7) {
-			mHardwareVersion = rxBuf[VerReponsePacketOrder.hwVer.ordinal()];
-			mFirmwareIdentifier = (rxBuf[VerReponsePacketOrder.fwVerLSB.ordinal()]) | (rxBuf[VerReponsePacketOrder.fwVerMSB.ordinal()]<<8);
-			mFirmwareVersionMajor = (rxBuf[VerReponsePacketOrder.fwMajorLSB.ordinal()]) | (rxBuf[(int)VerReponsePacketOrder.fwMajorMSB.ordinal()]<<8);
-			mFirmwareVersionMinor = rxBuf[VerReponsePacketOrder.fwMinor.ordinal()];
-			mFirmwareVersionInternal = rxBuf[VerReponsePacketOrder.fwRevision.ordinal()];
+	public ShimmerVerObject(byte[] byteArray) {
+		if(byteArray.length >= 7) {
+			mHardwareVersion = byteArray[VerReponsePacketOrder.hwVer.ordinal()];
+			mFirmwareIdentifier = (byteArray[VerReponsePacketOrder.fwVerLSB.ordinal()]) | (byteArray[VerReponsePacketOrder.fwVerMSB.ordinal()]<<8);
+			mFirmwareVersionMajor = (byteArray[VerReponsePacketOrder.fwMajorLSB.ordinal()]) | (byteArray[(int)VerReponsePacketOrder.fwMajorMSB.ordinal()]<<8);
+			mFirmwareVersionMinor = byteArray[VerReponsePacketOrder.fwMinor.ordinal()];
+			mFirmwareVersionInternal = byteArray[VerReponsePacketOrder.fwRevision.ordinal()];
 			parseShimmerVerDetails();
 		}
 	}

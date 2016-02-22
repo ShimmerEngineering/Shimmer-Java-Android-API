@@ -227,14 +227,14 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 //		            				System.err.println("ERR\t" + payloadLength);
 //		            			}
 
-		                		if(cmdByte == UartPacketDetails.PACKET_CMD.DATA_RESPONSE.toCmdByte()){
+		                		if(cmdByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
 		                			int remainingByteCount = payloadLength - (rxBuf.length - 5);
 		                			readRemainingBytes(rxBuf, remainingByteCount);
 		                		}
-		                		else if(cmdByte == UartPacketDetails.PACKET_CMD.ACK_RESPONSE.toCmdByte()
-		                				|| cmdByte == UartPacketDetails.PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()
-		                				|| cmdByte == UartPacketDetails.PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()
-		                				|| cmdByte == UartPacketDetails.PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()){
+		                		else if(cmdByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()
+		                				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()
+		                				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()
+		                				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()){
 		                			int remainingByteCount = 4 - rxBuf.length;
 		                			readRemainingBytes(rxBuf, remainingByteCount);
 		                		}
@@ -285,7 +285,9 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 //					System.err.println("WTF\t" + remainingByteCount);
 //				}
 				consolePrintLn("Complete RX Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-		    	mUartRxCallback.newMsg(rxBuf);
+				if(mUartRxCallback!=null){
+			    	mUartRxCallback.newMsg(rxBuf);
+				}
 			}
 		}
 	}
@@ -298,7 +300,9 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 			System.arraycopy(data, 0, packet, header.length, data.length);
 			
     		consolePrintLn("Complete RX Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
-	    	mUartRxCallback.newMsg(packet);
+			if(mUartRxCallback!=null){
+				mUartRxCallback.newMsg(packet);
+			}
 		}
 	}
 

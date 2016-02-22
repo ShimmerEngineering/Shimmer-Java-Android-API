@@ -129,8 +129,8 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.shimmerUartProtocol.ComponentPropertyDetails;
-import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.COMPONENT_PROPERTY;
+import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails;
+import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
@@ -11207,9 +11207,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 	@Override
-	public void parseUartConfigResponse(ComponentPropertyDetails cPD, byte[] response){
+	public void parseUartConfigResponse(UartComponentPropertyDetails cPD, byte[] response){
 		// Parse response string
-		if(cPD==COMPONENT_PROPERTY.BAT.ENABLE){
+		if(cPD==UART_COMPONENT_PROPERTY.BAT.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
 			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 				getSensorEnabledMap().get(Configuration.Shimmer3.SensorMapKey.VBATT).mIsEnabled = (response[0]==0)? false:true;
@@ -11218,11 +11218,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				getSensorEnabledMap().get(Configuration.ShimmerGqBle.SensorMapKey.VBATT).mIsEnabled = (response[0]==0)? false:true;
 			}
 		}
-		else if(cPD==COMPONENT_PROPERTY.BAT.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_PROPERTY.BAT.FREQ_DIVIDER){
 			setSamplingDividerVBatt(response[0]);
 		}
 
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
 			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 				getSensorEnabledMap().get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mIsEnabled = (response[0]==0)? false:true;
@@ -11231,26 +11231,26 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				getSensorEnabledMap().get(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL).mIsEnabled = (response[0]==0)? false:true;
 			}
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
 			setLSM303DigitalAccelRate(response[0]);
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE){
 			setDigitalAccelRange(response[0]);
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
 			setLowPowerAccelWR((response[0]==0)? false:true);
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
 			setHighResAccelWR((response[0]==0)? false:true);
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
 			setSamplingDividerLsm303dlhcAccel(response[0]);
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
 //			parseCalParamLSM303DLHCAccel(response);
 			retrieveKinematicCalibrationParametersFromPacket(response, ShimmerObject.LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
 		}
-		else if(cPD==COMPONENT_PROPERTY.GSR.ENABLE){
+		else if(cPD==UART_COMPONENT_PROPERTY.GSR.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
 			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 				getSensorEnabledMap().get(Configuration.Shimmer3.SensorMapKey.GSR).mIsEnabled = (response[0]==0)? false:true;
@@ -11259,13 +11259,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				getSensorEnabledMap().get(Configuration.ShimmerGqBle.SensorMapKey.GSR).mIsEnabled = (response[0]==0)? false:true;
 			}
 		}
-		else if(cPD==COMPONENT_PROPERTY.GSR.RANGE){
+		else if(cPD==UART_COMPONENT_PROPERTY.GSR.RANGE){
 			setGSRRange(response[0]);
 		}
-		else if(cPD==COMPONENT_PROPERTY.GSR.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_PROPERTY.GSR.FREQ_DIVIDER){
 			setSamplingDividerGsr(response[0]);
 		}
-		else if(cPD==COMPONENT_PROPERTY.BEACON.ENABLE){
+		else if(cPD==UART_COMPONENT_PROPERTY.BEACON.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
 			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 				getSensorEnabledMap().get(Configuration.ShimmerGqBle.SensorMapKey.BEACON).mIsEnabled = (response[0]==0)? false:true;
@@ -11274,7 +11274,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				getSensorEnabledMap().get(Configuration.ShimmerGqBle.SensorMapKey.BEACON).mIsEnabled = (response[0]==0)? false:true;
 			}
 		}
-		else if(cPD==COMPONENT_PROPERTY.BEACON.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_PROPERTY.BEACON.FREQ_DIVIDER){
 			setSamplingDividerBeacon(response[0]);
 		}
 		else {
@@ -11283,41 +11283,41 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	@Override
-	public byte[] generateUartConfigMessage(ComponentPropertyDetails cPD){
+	public byte[] generateUartConfigMessage(UartComponentPropertyDetails cPD){
 		
 //		System.out.println("Component:" + cPD.component + " Property:" + cPD.property + " ByteArray:" + cPD.byteArray.length);
 		
-		if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
+		if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)(getSensorEnabledMap().get(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL).mIsEnabled? 1:0);
 			return response;
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)getLSM303DigitalAccelRate();
 			return response;
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)getAccelRange();
 			return response;
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)(isLowPowerAccelWR()? 1:0);
 			return response;
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)(isHighResAccelWR()? 1:0);
 			return response;
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)(getSamplingDividerLsm303dlhcAccel());
 			return response;
 		}
-		else if(cPD==COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
+		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
 			byte[] response = generateCalParamLSM303DLHCAccel();
 			return response;
 		}
