@@ -562,5 +562,22 @@ public class UtilShimmer implements Serializable {
             	return "";
     	}
 	}
+	
+	
+	public static File createFileAndDeleteIfExists(String filePath){
+		
+		File fileOld = new File(filePath);
+		File fileNew = null;
+		
+		if(fileOld.exists()){
+			fileOld.delete();
+			fileNew = new File(filePath);
+		}
+		else{
+			fileNew = fileOld;
+		}
+		
+		return fileNew;
+	}
 
 }
