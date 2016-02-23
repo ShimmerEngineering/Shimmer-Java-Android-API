@@ -32,8 +32,8 @@ public abstract class ShimmerUart {
 		public final static int SPAN = 230800;
 	}
 	
-	public boolean mVerboseMode = true;
-	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), false);
+	public boolean mVerboseMode = false;
+	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
 	public boolean mLeavePortOpen = false;
 	private List<UartRxPacketObject> mListOfUartRxPacketObjects = new ArrayList<UartRxPacketObject>();
@@ -55,7 +55,6 @@ public abstract class ShimmerUart {
 	public ShimmerUart(String comPort, String uniqueId){
 		this(comPort, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED);
 	}
-	
 	public boolean isUARTinUse(){
 		return mIsUARTInUse;
 	}
@@ -64,6 +63,19 @@ public abstract class ShimmerUart {
 		if(!mLeavePortOpen) openSafely();
 		try {
 			shimmerUartGetCommandNoWait(compPropDetails, payload);
+		} catch(DockException e) {
+			DockException de = (DockException) e;
+			de.mErrorCode = errorCode;
+			throw(de);
+		} finally{
+			if(!mLeavePortOpen) closeSafely();
+		}
+	}
+	
+	public void processShimmerSetCommandNoWait(UartComponentPropertyDetails compPropDetails, int errorCode, byte[] payload) throws DockException{
+		if(!mLeavePortOpen) openSafely();
+		try {
+			shimmerUartSetCommandNoWait(compPropDetails, payload);
 		} catch(DockException e) {
 			DockException de = (DockException) e;
 			de.mErrorCode = errorCode;
@@ -202,6 +214,10 @@ public abstract class ShimmerUart {
 
 	protected void shimmerUartGetCommandNoWait(UartComponentPropertyDetails msgArg, byte[] payload) throws DockException {
 		txPacket(UartPacketDetails.UART_PACKET_CMD.READ, msgArg, payload);
+	}
+	
+	protected void shimmerUartSetCommandNoWait(UartComponentPropertyDetails msgArg, byte[] payload) throws DockException {
+		txPacket(UartPacketDetails.UART_PACKET_CMD.WRITE, msgArg, payload);
 	}
 	
     /**Get information from the Shimmer based on passed in message argument
@@ -543,8 +559,8 @@ public abstract class ShimmerUart {
 		String consoleString = "TX\tCommand:" + packetCmd.toString()
 				+ "\tComponent:" + msgArg.component.toString()
 				+ "\tProperty:" + msgArg.propertyName
-//				+ " ByteArray:" + msgArg.byteArray.length
-				;
+				+ (valueBuffer==null? "":("\tPayload:" + UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer)));
+		
 		if(packetCmd!=UartPacketDetails.UART_PACKET_CMD.READ){
 			String txBytes = UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer);
 			if(txBytes != null){
@@ -581,7 +597,7 @@ public abstract class ShimmerUart {
 		//TODO handle bad CRC
 		if(!ShimmerCrc.shimmerUartCrcCheck(rxBuf)) {
 			// CRC fail
-			consolePrintLn("ERR_CRC");
+			consolePrintLn("RX\tERR_CRC");
 			mThrownException = new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC);
 			return;
 		}
@@ -591,53 +607,25 @@ public abstract class ShimmerUart {
 				"RX\tCommand:" 		+ UtilShimmer.byteToHexStringFormatted(uRPO.mUartCommand) 
 				+ "\tComponent:" 	+ UtilShimmer.byteToHexStringFormatted(uRPO.mUartComponentByte)
 				+ "\tProperty:" 	+ UtilShimmer.byteToHexStringFormatted(uRPO.mUartPropertyByte)  
-				+ "\tPayload:" 		+ UtilShimmer.bytesToHexStringWithSpacesFormatted(uRPO.payload) 
+				+ "\tPayload:" 		+ UtilShimmer.bytesToHexStringWithSpacesFormatted(uRPO.mPayload) 
 //				+ "\n" 				+ UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf)
 				);
 
-		mListOfUartRxPacketObjects.add(uRPO);
-		
 		if(mUartRxCallback!=null){
 			mUartRxCallback.newParsedMsg(uRPO);
 		}
+		else {
+			mListOfUartRxPacketObjects.add(uRPO);
+		}
 	} 
 	
-	public class UartRxPacketObject{
-		public byte[] mRxBuf = null;
-		public byte mUartCommand = 0;
-		public byte mUartComponentByte = 0;
-		public byte mUartPropertyByte = 0;
-		public int mPayloadLength = 0;
-
-		private byte[] payload = null;
-		public byte[] mCrc = null;
-
-		public UartRxPacketObject(byte[] rxBuf) {
-			mRxBuf = rxBuf;
-			mUartCommand = mRxBuf[1];
-			
-			if(mUartCommand == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
-				mPayloadLength = mRxBuf[2]&0xFF;
-				mUartComponentByte = mRxBuf[3];
-				mUartPropertyByte = mRxBuf[4];
-				
-				payload = Arrays.copyOfRange(rxBuf, 5, 5+mPayloadLength-2);
-			}
-			
-			mCrc = Arrays.copyOfRange(rxBuf, rxBuf.length-2, rxBuf.length);
-		}
-
-		public byte[] getRxBufWithoutCrc() {
-			return Arrays.copyOfRange(mRxBuf, 0, mRxBuf.length-2);
-		}
-		
-		public byte[] getPayload() {
-			return payload;
-		}
-	}
-
 	public void registerRxCallback(UartRxCallback uartRxCallback) {
 		this.mUartRxCallback = uartRxCallback;
+	}
+
+	public void setVerbose(boolean verboseMode) {
+		mVerboseMode = verboseMode;
+		utilShimmer.setVerboseMode(verboseMode);
 	}
 	
 }

@@ -133,8 +133,8 @@ public class UartPacketDetails {
 		
 		public static class RADIO_802154 {
 			public static final UartComponentPropertyDetails SETTINGS			= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x00, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGq802154, "SETTINGS");
-			public static final UartComponentPropertyDetails SEND_CMD_TO_SHIMMER		= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x05, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "SEND_RAW_CMD");
-			public static final UartComponentPropertyDetails DATA_RECEIVED		= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x06, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "DATA_RECEIVED");
+			public static final UartComponentPropertyDetails TX_TO_SHIMMER		= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x05, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "TX_TO_SHIMMER");
+			public static final UartComponentPropertyDetails RX_FROM_SHIMMER	= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x06, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "RX_FROM_SHIMMER");
 			public static final UartComponentPropertyDetails SPECTRUM_SCAN		= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x07, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "SPECTRUM_SCAN");
 		}
 
