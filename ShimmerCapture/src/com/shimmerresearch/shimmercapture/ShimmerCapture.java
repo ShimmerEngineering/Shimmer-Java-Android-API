@@ -2509,15 +2509,20 @@ public class ShimmerCapture extends ServiceActivity {
 				else if(mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3 && sensorNames[clickIndex].equals("EMG")){
 					int iDBMValue1 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1"));
 					int iDBMValue3 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2"));
-					if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_24BIT)>0 && (dialogEnabledSensors & Shimmer.SENSOR_EXG2_24BIT)>0)){
-						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue1);
+					
+					//disable chip 2
+					if((dialogEnabledSensors & Shimmer.SENSOR_EXG2_24BIT)>0){
 						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue3);
+					}
+					
+					//enable chip 1
+					if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_24BIT)>0)){
+						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue1);
 					}
 					
 					if(!listView.isItemChecked(clickIndex)){
 						listView.setItemChecked(clickIndex, false); //EMG
 						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue1);
-						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue3);
 					}
 					else
 						listView.setItemChecked(clickIndex, true); //EMG
@@ -2533,15 +2538,19 @@ public class ShimmerCapture extends ServiceActivity {
 				else if(mService.getShimmerVersion(mBluetoothAddress)==ShimmerVerDetails.HW_ID.SHIMMER_3 && sensorNames[clickIndex].equals("EMG 16Bit")){
 					int iDBMValue1 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG1 16Bit"));
 					int iDBMValue3 = Integer.parseInt(sensorBitmaptoName.inverse().get("EXG2 16Bit"));
-					if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_16BIT)>0 && (dialogEnabledSensors & Shimmer.SENSOR_EXG2_16BIT)>0)){
-						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue1);
+					
+					//disable chip 2
+					if((dialogEnabledSensors & Shimmer.SENSOR_EXG2_16BIT)>0){
 						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue3);
+					}
+					
+					if (!((dialogEnabledSensors & Shimmer.SENSOR_EXG1_16BIT)>0)){
+						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue1);
 					}
 					
 					if(!listView.isItemChecked(clickIndex)){
 						listView.setItemChecked(clickIndex, false); //EMG 16Bit
 						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue1);
-						dialogEnabledSensors = mService.sensorConflictCheckandCorrection(mBluetoothAddress, dialogEnabledSensors,iDBMValue3);
 					}
 					else
 						listView.setItemChecked(clickIndex, true); //EMG 16Bit

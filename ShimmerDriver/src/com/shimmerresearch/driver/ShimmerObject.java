@@ -6696,7 +6696,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public boolean isEXGUsingEMG16Configuration(){
 		boolean using = false;
-		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0){
 			if(isEXGUsingDefaultEMGConfiguration()){
 				using = true;
 			}
@@ -6714,7 +6714,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public boolean isEXGUsingEMG24Configuration(){
 		boolean using = false;
-		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0){// && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
 			if(isEXGUsingDefaultEMGConfiguration()){
 				using = true;
 			}
@@ -6732,7 +6732,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public boolean isEXGUsingTestSignal16Configuration(){
 		boolean using = false;
-		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0){// && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
 			if(isEXGUsingDefaultTestSignalConfiguration()){
 				using = true;
 			}
