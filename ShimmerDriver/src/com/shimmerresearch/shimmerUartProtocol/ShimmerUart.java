@@ -37,7 +37,7 @@ public abstract class ShimmerUart {
 	
 	public boolean mLeavePortOpen = false;
 	private List<UartRxPacketObject> mListOfUartRxPacketObjects = new ArrayList<UartRxPacketObject>();
-	private DockException mThrownException = null;
+	public DockException mThrownException = null;
 	private UartRxCallback mUartRxCallback = null;
 
     //the timeout value for connecting with the port
@@ -63,8 +63,7 @@ public abstract class ShimmerUart {
 		if(!mLeavePortOpen) openSafely();
 		try {
 			shimmerUartGetCommandNoWait(compPropDetails, payload);
-		} catch(DockException e) {
-			DockException de = (DockException) e;
+		} catch(DockException de) {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
@@ -76,8 +75,7 @@ public abstract class ShimmerUart {
 		if(!mLeavePortOpen) openSafely();
 		try {
 			shimmerUartSetCommandNoWait(compPropDetails, payload);
-		} catch(DockException e) {
-			DockException de = (DockException) e;
+		} catch(DockException de) {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
@@ -94,8 +92,7 @@ public abstract class ShimmerUart {
 		if(!mLeavePortOpen) openSafely();
 		try {
 			rxBuf = shimmerUartGetCommand(compPropDetails, payload);
-		} catch(DockException e) {
-			DockException de = (DockException) e;
+		} catch(DockException de) {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
@@ -108,8 +105,7 @@ public abstract class ShimmerUart {
 		if(!mLeavePortOpen) openSafely();
 		try {
 			shimmerUartSetCommand(compPropDetails, txBuf);
-		} catch(ExecutionException e) {
-			DockException de = (DockException) e;
+		} catch(DockException de) {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
@@ -122,8 +118,7 @@ public abstract class ShimmerUart {
 		if(!mLeavePortOpen) openSafely();
 		try {
 			rxBuf = shimmerUartGetMemCommand(compPropDetails, address, size);
-		} catch(ExecutionException e) {
-			DockException de = (DockException) e;
+		} catch(DockException de) {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
@@ -136,8 +131,7 @@ public abstract class ShimmerUart {
 		if(!mLeavePortOpen) openSafely();
 		try {
 			shimmerUartSetMemCommand(compPropDetails, address, buf);
-		} catch(ExecutionException e) {
-			DockException de = (DockException) e;
+		} catch(DockException de) {
 			de.mErrorCode = errorCode;
 			throw(de);
 		} finally{
@@ -152,10 +146,10 @@ public abstract class ShimmerUart {
 	public void openSafely() throws DockException {
 		try {
 			shimmerUartOs.shimmerUartConnect();
-		} catch (DockException e) {
+		} catch (DockException de) {
 			closeSafely();
 			mIsUARTInUse = false;
-			throw(e);
+			throw(de);
 		}
 		if(!mLeavePortOpen) mIsUARTInUse = true;
 	}
@@ -167,14 +161,14 @@ public abstract class ShimmerUart {
 	public void closeSafely() throws DockException {
 		try {
 			shimmerUartOs.shimmerUartDisconnect();
-		} catch (DockException e) {
-			throw(e);
+		} catch (DockException de) {
+			throw(de);
 		} finally{
 			mIsUARTInUse = false;
 		}
 	}
 
-	public byte[] uartGetCommand(UartComponentPropertyDetails cPD) throws ExecutionException {
+	public byte[] uartGetCommand(UartComponentPropertyDetails cPD) throws DockException {
 		return uartGetCommand(cPD, null);
 	}
 
@@ -182,13 +176,13 @@ public abstract class ShimmerUart {
 	 * @return 
 	 * @throws ExecutionException
 	 */
-	public byte[] uartGetCommand(UartComponentPropertyDetails cPD, byte[] payload) throws ExecutionException {
+	public byte[] uartGetCommand(UartComponentPropertyDetails cPD, byte[] payload) throws DockException {
 		byte[] rxBuf;
 		
 		openSafely();
 		try {
 			rxBuf = shimmerUartGetCommand(cPD, payload);
-		} catch(ExecutionException e) {
+		} catch(DockException e) {
 			closeSafely();
 			throw(e);
 		}
@@ -213,10 +207,12 @@ public abstract class ShimmerUart {
 	}
 
 	protected void shimmerUartGetCommandNoWait(UartComponentPropertyDetails msgArg, byte[] payload) throws DockException {
+		mThrownException = null;
 		txPacket(UartPacketDetails.UART_PACKET_CMD.READ, msgArg, payload);
 	}
 	
 	protected void shimmerUartSetCommandNoWait(UartComponentPropertyDetails msgArg, byte[] payload) throws DockException {
+		mThrownException = null;
 		txPacket(UartPacketDetails.UART_PACKET_CMD.WRITE, msgArg, payload);
 	}
 	
@@ -236,7 +232,7 @@ public abstract class ShimmerUart {
      * @return a byte array with the received memory bytes
      * @throws ExecutionException
      */
-	protected byte[] shimmerUartGetMemCommand(UartComponentPropertyDetails msgArg, int address, int size) throws ExecutionException {
+	protected byte[] shimmerUartGetMemCommand(UartComponentPropertyDetails msgArg, int address, int size) throws DockException {
     	
     	byte[] memLengthToRead = new byte[]{(byte) size};
 
@@ -260,7 +256,7 @@ public abstract class ShimmerUart {
      * @return
      * @throws ExecutionException
      */
-	protected byte[] shimmerUartSetCommand(UartComponentPropertyDetails msgArg, byte[] valueBuffer) throws ExecutionException {
+	protected byte[] shimmerUartSetCommand(UartComponentPropertyDetails msgArg, byte[] valueBuffer) throws DockException {
 		clearAllAcks();
 		return shimmerUartCommandTxRx(UartPacketDetails.UART_PACKET_CMD.WRITE, msgArg, valueBuffer);
     }
@@ -268,7 +264,7 @@ public abstract class ShimmerUart {
     private void clearAllAcks() {
 		for (Iterator<UartRxPacketObject> flavoursIter = mListOfUartRxPacketObjects.iterator(); flavoursIter.hasNext();) {
 			UartRxPacketObject uRPO = flavoursIter.next();
-			if(uRPO.mUartCommand==UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
+			if(uRPO.mUartCommandByte==UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
 				flavoursIter.remove();
 			}
 		}
@@ -282,7 +278,7 @@ public abstract class ShimmerUart {
      * @return
      * @throws ExecutionException
      */
-	protected byte[] shimmerUartSetMemCommand(UartComponentPropertyDetails msgArg, int address, byte[] valueBuffer) throws ExecutionException {
+	protected byte[] shimmerUartSetMemCommand(UartComponentPropertyDetails msgArg, int address, byte[] valueBuffer) throws DockException {
     	
 		byte[] memLengthToWrite = new byte[]{(byte) valueBuffer.length};
 		
@@ -339,18 +335,18 @@ public abstract class ShimmerUart {
 		
 		byte[] txBufPreCrc;
 		if(value!=null) {
-			txBufPreCrc = new byte[header.length + cmd.length + msgArg.compPropByteArray.length + msgLength.length + value.length];
+			txBufPreCrc = new byte[header.length + cmd.length + msgArg.mCompPropByteArray.length + msgLength.length + value.length];
 		}
 		else {
-			txBufPreCrc = new byte[header.length + cmd.length + msgArg.compPropByteArray.length + msgLength.length];
+			txBufPreCrc = new byte[header.length + cmd.length + msgArg.mCompPropByteArray.length + msgLength.length];
 		}
 		
 		System.arraycopy(header, 0, txBufPreCrc, 0, header.length);
 		System.arraycopy(cmd, 0, txBufPreCrc, header.length, cmd.length);
 		System.arraycopy(msgLength, 0, txBufPreCrc, header.length + cmd.length, msgLength.length);
-		System.arraycopy(msgArg.compPropByteArray, 0, txBufPreCrc, header.length + cmd.length + msgLength.length, msgArg.compPropByteArray.length);
+		System.arraycopy(msgArg.mCompPropByteArray, 0, txBufPreCrc, header.length + cmd.length + msgLength.length, msgArg.mCompPropByteArray.length);
 		if(value!=null) {
-			System.arraycopy(value, 0, txBufPreCrc, header.length + cmd.length + msgLength.length + msgArg.compPropByteArray.length, value.length);
+			System.arraycopy(value, 0, txBufPreCrc, header.length + cmd.length + msgLength.length + msgArg.mCompPropByteArray.length, value.length);
 		}
 
 		byte[] calculatedCrc = ShimmerCrc.shimmerUartCrcCalc(txBufPreCrc, txBufPreCrc.length);
@@ -387,7 +383,7 @@ public abstract class ShimmerUart {
 			utilShimmer.millisecondDelay(waitIntervalMs);
 		}
 
-		consolePrintLn("TIMEOUT_FAIL" + "\tComponent:" + msgArg.component.toString() + "\tProperty:" + msgArg.property);
+		consolePrintLn("TIMEOUT_FAIL" + "\tComponent:" + msgArg.mComponent.toString() + "\tProperty:" + msgArg.mProperty);
 //		DockException de = new DockException(mComPort, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT, mUniqueId);
 //////		DockException de = new DockException(mUniqueId, dJD.slotNumber, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT);
 //		DockException de = new DockException(mComPort, 0, ErrorCodesDock.DOCK_TIMEOUT, mUniqueId);
@@ -403,14 +399,14 @@ public abstract class ShimmerUart {
 		for (Iterator<UartRxPacketObject> uRPOIter = mListOfUartRxPacketObjects.iterator(); uRPOIter.hasNext();) {
 			UartRxPacketObject uRPO = uRPOIter.next();
 			if(packetCmd==UartPacketDetails.UART_PACKET_CMD.WRITE
-					&& uRPO.mUartCommand == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
+					&& uRPO.mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
 				uRPOIter.remove();
 				return uRPO;
 			}
 			else if((packetCmd==UartPacketDetails.UART_PACKET_CMD.READ)
-					&& uRPO.mUartCommand == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()
-					&& msgArg.componentByte==uRPO.mUartComponentByte
-					&& msgArg.propertyByte==uRPO.mUartPropertyByte){
+					&& uRPO.mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()
+					&& msgArg.mComponentByte==uRPO.mUartComponentByte
+					&& msgArg.mPropertyByte==uRPO.mUartPropertyByte){
 				uRPOIter.remove();
 				return uRPO;
 			}
@@ -535,31 +531,33 @@ public abstract class ShimmerUart {
 
 	
 	
-	private DockException processUnexpectedResponse(byte rxBuf) {
+	private void processUnexpectedResponse(UartRxPacketObject uRPO) throws DockException {
 		// Response is not the expected response type
-		if(rxBuf!=UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte() 
-				&& rxBuf!=UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
-			if(rxBuf == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()) {
-				return new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD);
+		byte commandByte = uRPO.mUartCommandByte;
+		
+		if(commandByte!=UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte() 
+				&& commandByte!=UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
+			if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()) {
+				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD);
 			}
-			else if(rxBuf == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()) {
-				return new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG);
+			else if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()) {
+				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG);
 			}
-			else if(rxBuf == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()) {
-				return new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC);
+			else if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()) {
+				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC);
 			}
 			else {
-				return new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED);
+				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED);
 			}
 		}
-		return null;
 	}
 
 	private void consolePrintTxPacketInfo(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg, byte[] valueBuffer) {
 		String consoleString = "TX\tCommand:" + packetCmd.toString()
-				+ "\tComponent:" + msgArg.component.toString()
-				+ "\tProperty:" + msgArg.propertyName
-				+ (valueBuffer==null? "":("\tPayload:" + UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer)));
+				+ "\tComponent:" + msgArg.mComponent.toString()
+				+ "\tProperty:" + msgArg.mPropertyName
+//				+ (valueBuffer==null? "":("\tPayload:" + UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer)))
+				;
 		
 		if(packetCmd!=UartPacketDetails.UART_PACKET_CMD.READ){
 			String txBytes = UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer);
@@ -578,7 +576,13 @@ public abstract class ShimmerUart {
 	private class CallbackUartRx implements UartRxCallback{
 		@Override
 		public void newMsg(byte[] rxBuf) {
-			parseRxPacket(rxBuf);
+			//TODO handle
+			try {
+				parseRxPacket(rxBuf);
+			} catch (DockException e) {
+				mThrownException = e;
+//				e.printStackTrace();
+			}
 		}
 
 		@Override
@@ -587,29 +591,30 @@ public abstract class ShimmerUart {
 		}
 	}
 	
-	private void parseRxPacket(byte[] rxBuf) {
-		//TODO handle 'bad' responses
-		mThrownException = processUnexpectedResponse(rxBuf[1]);
-		if(mThrownException!=null){
-			return;
-		}
-
+	private void parseRxPacket(byte[] rxBuf) throws DockException {
 		//TODO handle bad CRC
 		if(!ShimmerCrc.shimmerUartCrcCheck(rxBuf)) {
 			// CRC fail
 			consolePrintLn("RX\tERR_CRC");
-			mThrownException = new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC);
-			return;
+			throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC);
 		}
-
+		
 		UartRxPacketObject uRPO = new UartRxPacketObject(rxBuf);
+		
 		consolePrintLn(
-				"RX\tCommand:" 		+ UtilShimmer.byteToHexStringFormatted(uRPO.mUartCommand) 
-				+ "\tComponent:" 	+ UtilShimmer.byteToHexStringFormatted(uRPO.mUartComponentByte)
-				+ "\tProperty:" 	+ UtilShimmer.byteToHexStringFormatted(uRPO.mUartPropertyByte)  
-				+ "\tPayload:" 		+ UtilShimmer.bytesToHexStringWithSpacesFormatted(uRPO.mPayload) 
+				"RX\tCommand:" 		+ uRPO.getUartCommandParsed() 
+				+ (uRPO.mUartComponentByte==UartRxPacketObject.UNKNOWN? "":"\tComponent:" 		+ uRPO.getUartComponentParsed()) 
+				+ (uRPO.mUartPropertyByte==UartRxPacketObject.UNKNOWN? 	"":"\tProperty:" 		+ uRPO.getUartPropertyParsed()) 
+				+ (uRPO.mPayload==null? 								"":"\tPayload:" 		+ UtilShimmer.bytesToHexStringWithSpacesFormatted(uRPO.mPayload)) 
 //				+ "\n" 				+ UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf)
 				);
+
+		//TODO handle 'bad' responses
+		try{
+			processUnexpectedResponse(uRPO);
+		} catch(DockException de){
+			throw de;
+		}
 
 		if(mUartRxCallback!=null){
 			mUartRxCallback.newParsedMsg(uRPO);

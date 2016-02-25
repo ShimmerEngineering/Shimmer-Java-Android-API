@@ -5,13 +5,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails.PERMISSION;
+
+import java.lang.reflect.*;
 
 /**
  * Contains the packet contents for communication via the Shimmer's UART.
@@ -132,7 +133,7 @@ public class UartPacketDetails {
 		}
 		
 		public static class RADIO_802154 {
-			public static final UartComponentPropertyDetails SETTINGS			= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x00, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGq802154, "SETTINGS");
+			public static final UartComponentPropertyDetails SETTINGS			= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x00, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGq802154, "SETTINGS", true);
 			public static final UartComponentPropertyDetails TX_TO_SHIMMER		= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x05, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "TX_TO_SHIMMER");
 			public static final UartComponentPropertyDetails RX_FROM_SHIMMER	= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x06, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "RX_FROM_SHIMMER");
 			public static final UartComponentPropertyDetails SPECTRUM_SCAN		= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x07, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "SPECTRUM_SCAN");
@@ -166,5 +167,45 @@ public class UartPacketDetails {
 
         mListOfUartCommandsConfig = Collections.unmodifiableList(aMap);
     }
+    
+    
+	public static UART_PACKET_CMD getUartCommandParsed(byte comparisonByte) {
+		for(UART_PACKET_CMD command:UART_PACKET_CMD.values()){
+			if(command.toCmdByte()==comparisonByte){
+				return command;
+			}
+		}
+		return null;
+	}
+    
+	public static UART_COMPONENT getUartComponentParsed(byte comparisonByte) {
+		for(UART_COMPONENT component:UART_COMPONENT.values()){
+			if(component.toCmdByte()==comparisonByte){
+				return component;
+			}
+		}
+		return null;
+	}
+
+	public static UartComponentPropertyDetails getUartPropertyParsed(byte uartComponentByte, byte uartPropertyByte) {
+	    Class<?>[] myClasses = UART_COMPONENT_PROPERTY.class.getDeclaredClasses();
+	    for (Class myClass: myClasses) {
+		    Field[] f = myClass.getDeclaredFields();
+		    for (Field field : f) {
+		        int modifier = field.getModifiers();
+		        if (Modifier.isStatic(modifier)){
+					try {
+						UartComponentPropertyDetails uCPD = (UartComponentPropertyDetails) field.get( null );
+						if(uCPD.mComponentByte==uartComponentByte && uCPD.mPropertyByte==uartPropertyByte){
+							return uCPD;
+						}
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+//						e.printStackTrace();
+					}
+		        }
+		    }
+	    }
+		return null;
+	}
 
 }    

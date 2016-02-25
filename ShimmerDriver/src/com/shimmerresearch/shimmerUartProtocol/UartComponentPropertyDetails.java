@@ -12,15 +12,16 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  *
  */
 public class UartComponentPropertyDetails {
-	public UartPacketDetails.UART_COMPONENT component;
-	public byte componentByte = 0;
-	public int property = 0;
-	public byte propertyByte = 0;
-	public String propertyName = "";
-	public List<ShimmerVerObject> listOfCompatibleVersionInfo;
-	public PERMISSION permission = PERMISSION.UNKNOWN; 
+	public UartPacketDetails.UART_COMPONENT mComponent;
+	public byte mComponentByte = 0;
+	public int mProperty = 0;
+	public byte mPropertyByte = 0;
+	public String mPropertyName = "";
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo;
+	public PERMISSION mPermission = PERMISSION.UNKNOWN; 
+	public boolean mIsWriteExpectedResponseAck = false;
 	
-	public byte[] compPropByteArray = null;
+	public byte[] mCompPropByteArray = null;
 	
 	public enum PERMISSION{
 		UNKNOWN,
@@ -38,13 +39,22 @@ public class UartComponentPropertyDetails {
 	 * @param descrpition 
 	 */
 	public UartComponentPropertyDetails(UartPacketDetails.UART_COMPONENT component, int property, PERMISSION readWrite, List<ShimmerVerObject> listOfCompatibleVersionInfo, String propertyName){
-		this.component = component;
-		this.componentByte = component.toCmdByte();
-		this.property = property;
-		this.propertyByte = (byte)property;
-		this.propertyName = propertyName;
-		this.listOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
+		mComponent = component;
+		mComponentByte = component.toCmdByte();
+		mProperty = property;
+		mPropertyByte = (byte)property;
+		mPropertyName = propertyName;
+		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 		
-		this.compPropByteArray = new byte[]{(byte)this.componentByte,(byte)this.propertyByte};
+		mCompPropByteArray = new byte[]{(byte)this.mComponentByte,(byte)this.mPropertyByte};
+	}
+
+	public UartComponentPropertyDetails(UartPacketDetails.UART_COMPONENT component, int property, PERMISSION readWrite, List<ShimmerVerObject> listOfCompatibleVersionInfo, String propertyName, boolean isWriteExpectedResponseAck){
+		this(component, property, readWrite, listOfCompatibleVersionInfo, propertyName);
+		mIsWriteExpectedResponseAck = isWriteExpectedResponseAck;
+	}
+
+	public boolean isWriteExpectedResponseAck() {
+		return mIsWriteExpectedResponseAck;
 	}
 }
