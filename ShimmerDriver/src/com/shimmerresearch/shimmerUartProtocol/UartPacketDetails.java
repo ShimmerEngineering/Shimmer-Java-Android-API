@@ -9,7 +9,6 @@ import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails.PERMISSION;
 
 import java.lang.reflect.*;

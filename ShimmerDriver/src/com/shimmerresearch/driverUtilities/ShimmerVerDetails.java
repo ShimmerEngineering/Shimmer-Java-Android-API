@@ -15,6 +15,8 @@ import com.shimmerresearch.driver.UtilShimmer;
  */
 public class ShimmerVerDetails implements Serializable {
 
+	//TODO change all to ENUMs with ints and Strings passed in
+	
 	/**
 	 * 
 	 */
