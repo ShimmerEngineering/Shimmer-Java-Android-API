@@ -75,7 +75,7 @@ public class ShimmerVerObject implements Serializable {
 		mFirmwareVersionMinor = firmwareVersionMinor;
 		mFirmwareVersionInternal = firmwareVersionInternal;
 
-		parseVerDetails();
+		parseShimmerVerDetails();
 	}
 
 	/**
@@ -103,27 +103,27 @@ public class ShimmerVerObject implements Serializable {
 		mFirmwareVersionInternal = firmwareVersionInternal;
 		mShimmerExpansionBoardId = shimmerExpansionBoardId;
 		
-		parseVerDetails();
+		parseShimmerVerDetails();
 	}
 	
 	/**
 	 * Empty constructor used when finding the current information from a docked
-	 * Shimmer through the dock's UART communication channel.
-	 * @param rxBuf 
+	 * Shimmer/SPAN through the dock's UART communication channel.
+	 * @param byteArray 
 	 * 
 	 */
-	public ShimmerVerObject(byte[] rxBuf) {
-		if(rxBuf.length >= 7) {
-			mHardwareVersion = rxBuf[VerReponsePacketOrder.hwVer.ordinal()];
-			mFirmwareIdentifier = (rxBuf[VerReponsePacketOrder.fwVerLSB.ordinal()]) | (rxBuf[VerReponsePacketOrder.fwVerMSB.ordinal()]<<8);
-			mFirmwareVersionMajor = (rxBuf[VerReponsePacketOrder.fwMajorLSB.ordinal()]) | (rxBuf[(int)VerReponsePacketOrder.fwMajorMSB.ordinal()]<<8);
-			mFirmwareVersionMinor = rxBuf[VerReponsePacketOrder.fwMinor.ordinal()];
-			mFirmwareVersionInternal = rxBuf[VerReponsePacketOrder.fwRevision.ordinal()];
-			parseVerDetails();
+	public ShimmerVerObject(byte[] byteArray) {
+		if(byteArray.length >= 7) {
+			mHardwareVersion = byteArray[VerReponsePacketOrder.hwVer.ordinal()];
+			mFirmwareIdentifier = (byteArray[VerReponsePacketOrder.fwVerLSB.ordinal()]) | (byteArray[VerReponsePacketOrder.fwVerMSB.ordinal()]<<8);
+			mFirmwareVersionMajor = (byteArray[VerReponsePacketOrder.fwMajorLSB.ordinal()]) | (byteArray[(int)VerReponsePacketOrder.fwMajorMSB.ordinal()]<<8);
+			mFirmwareVersionMinor = byteArray[VerReponsePacketOrder.fwMinor.ordinal()];
+			mFirmwareVersionInternal = byteArray[VerReponsePacketOrder.fwRevision.ordinal()];
+			parseShimmerVerDetails();
 		}
 	}
 	
-	private void parseVerDetails() {
+	private void parseShimmerVerDetails() {
 		if(mHardwareVersion!=HW_ID.UNKNOWN){
 			if (ShimmerVerDetails.mMapOfShimmerRevisions.containsKey(mHardwareVersion)) {
 				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(mHardwareVersion);
@@ -150,6 +150,7 @@ public class ShimmerVerObject implements Serializable {
 			|| ((mHardwareVersion==HW_ID.SHIMMER_GQ_BLE)&&(mFirmwareIdentifier==FW_ID.GQ_BLE))
 			|| (((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)||(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)) && (mFirmwareIdentifier==FW_ID.GQ_802154))
 			|| ((mHardwareVersion==HW_ID.SHIMMER_2R_GQ)&&(mFirmwareIdentifier==FW_ID.GQ_802154))
+			|| (mHardwareVersion==HW_ID.SPAN)
 			){
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
@@ -221,6 +222,10 @@ public class ShimmerVerObject implements Serializable {
 			mFirmwareVersionParsedJustVersionNumber = "v" + mFirmwareVersionMajor + "." + mFirmwareVersionMinor + "." + mFirmwareVersionInternal;
 			mFirmwareVersionParsed = mFirmwareIdentifierParsed + " " + mFirmwareVersionParsedJustVersionNumber;		
 		}
+	}
+
+	public String getFirmwareVersionParsed() {
+		return mFirmwareVersionParsedJustVersionNumber;
 	}
 
 }

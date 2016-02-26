@@ -192,8 +192,8 @@ public class HwDriverShimmerDeviceDetails {
 		public static final int BASE6U = 2;
 	}
 	
-    public DEVICE_TYPE dockType = DEVICE_TYPE.UNKOWN;
-    public String dockTypeParsed = DOCK_LABEL[dockType.ordinal()];
+    public DEVICE_TYPE deviceType = DEVICE_TYPE.UNKOWN;
+    public String dockTypeParsed = DOCK_LABEL[deviceType.ordinal()];
 	
     public HwDriverDeviceDetails usbHub = null;
 	public HwDriverDeviceDetails compositeDevice = null;
@@ -242,16 +242,16 @@ public class HwDriverShimmerDeviceDetails {
 	}
 	
 	public void setDeviceType(DEVICE_TYPE dockType) {
-	    this.dockType = dockType;
-	    dockTypeParsed = DOCK_LABEL[this.dockType.ordinal()];
+	    this.deviceType = dockType;
+	    dockTypeParsed = DOCK_LABEL[this.deviceType.ordinal()];
 	    
-	    if(this.dockType == DEVICE_TYPE.BASICDOCK) {
+	    if(this.deviceType == DEVICE_TYPE.BASICDOCK) {
 		    mNumberOfSlots = 1;
 	    }
-	    else if(this.dockType == DEVICE_TYPE.BASE15) {
+	    else if(this.deviceType == DEVICE_TYPE.BASE15) {
 		    mNumberOfSlots = 15;
 	    }
-	    else if(this.dockType == DEVICE_TYPE.BASE6) {
+	    else if(this.deviceType == DEVICE_TYPE.BASE6) {
 		    mNumberOfSlots = 6;
 	    }
 	}

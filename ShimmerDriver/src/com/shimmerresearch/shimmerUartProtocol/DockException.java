@@ -54,7 +54,7 @@ public class DockException extends ExecutionException{
 	 * @param errorType
 	 * @param lowLevelErrorCode
 	 */
-	public DockException(String dockID,int slotNumber,int errorType,int lowLevelErrorCode){
+	public DockException(String dockID, int slotNumber, int errorType, int lowLevelErrorCode){
 		mDockID = dockID;
 		mSlotNumber = slotNumber;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
@@ -68,7 +68,7 @@ public class DockException extends ExecutionException{
 	 * @param errorType
 	 * @param lowLevelErrorCode
 	 */
-	public DockException(String dockID,int slotNumber,int errorType,int lowLevelErrorCode, ExceptionLevel exceptionLevel){
+	public DockException(String dockID, int slotNumber, int errorType, int lowLevelErrorCode, ExceptionLevel exceptionLevel){
 		mDockID = dockID;
 		mSlotNumber = slotNumber;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
@@ -83,7 +83,7 @@ public class DockException extends ExecutionException{
 	 * @param errorCodeLowLevel
 	 * @param uniqueID
 	 */
-	public DockException(String comPort,int errorCode,int errorCodeLowLevel,String uniqueID){
+	public DockException(String comPort, int errorCode, int errorCodeLowLevel, String uniqueID){
 		mUniqueID = uniqueID;
 		String[] subString = uniqueID.split("\\.");
 		mDockID  = subString[0]+"."+subString[1];
@@ -105,7 +105,7 @@ public class DockException extends ExecutionException{
 	 * @param errorType
 	 * @param lowLevelErrorCode
 	 */
-	public DockException(String dockID,String comPort,int errorType,int lowLevelErrorCode){
+	public DockException(String dockID, String comPort, int errorType, int lowLevelErrorCode){
 		mDockID = dockID;
 		mComPort = comPort;
 		mErrorCode = errorType;
@@ -122,7 +122,7 @@ public class DockException extends ExecutionException{
 		mSlotNumber = Integer.parseInt(subString[2]);
 	}
 	
-	public void updateDockException(String dockID,int slotNumber) {
+	public void updateDockException(String dockID, int slotNumber) {
 		mDockID = dockID;
 		mSlotNumber = slotNumber;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
