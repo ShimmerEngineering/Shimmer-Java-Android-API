@@ -22,7 +22,7 @@ import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.sensor.AbstractSensor;
-import com.shimmerresearch.shimmerUartProtocol.ComponentPropertyDetails;
+import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -780,12 +780,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return ojc;
 	}
 	
-	public byte[] generateUartConfigMessage(ComponentPropertyDetails cPD){
+	public byte[] generateUartConfigMessage(UartComponentPropertyDetails cPD){
 		//TODO: process common ShimmerDevice configs
 		return null;
 	}
 	
-	public void parseUartConfigResponse(ComponentPropertyDetails cPD, byte[] response) {
+	public void parseUartConfigResponse(UartComponentPropertyDetails cPD, byte[] response) {
 		//TODO: process common ShimmerDevice configs
 	}
 

@@ -127,8 +127,10 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	 * @param propertyname Property name you want to delete
 	 * @param formatname Format you want to delete
 	 */
+	
 	public void removePropertyFormat(String propertyname, String formatname){
-		Collection<FormatCluster> colFormats = mPropertyCluster.get(propertyname);  // first retrieve all the possible formats for the current sensor device
+		Collection<FormatCluster> colFormats = mPropertyCluster.get(propertyname); 
+		// first retrieve all the possible formats for the current sensor device
 		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(colFormats,formatname)); // retrieve format;
 		mPropertyCluster.remove(propertyname, formatCluster);
 	}

@@ -562,5 +562,38 @@ public class UtilShimmer implements Serializable {
             	return "";
     	}
 	}
+	
+	
+	public static File createFileAndDeleteIfExists(String filePath){
+		
+		File fileOld = new File(filePath);
+		File fileNew = null;
+		
+		if(fileOld.exists()){
+			fileOld.delete();
+			fileNew = new File(filePath);
+		}
+		else{
+			fileNew = fileOld;
+		}
+		
+		return fileNew;
+	}
+
+	public static byte[] generateRadioConfigByteArray(int radioChannel, int radioGroupId, int radioDeviceId, int radioResponseWindow) {
+		byte[] radioConfigArray = new byte[7];
+		
+        radioConfigArray[0] = (byte)((radioChannel >> 0) & 0x00FF);
+        
+        //All MSB first
+        radioConfigArray[1] = (byte)((radioGroupId >> 8) & 0x00FF);
+        radioConfigArray[2] = (byte)((radioGroupId >> 0) & 0x00FF);
+        radioConfigArray[3] = (byte)((radioDeviceId >> 8) & 0x00FF);
+        radioConfigArray[4] = (byte)((radioDeviceId >> 0) & 0x00FF);
+        radioConfigArray[5] = (byte)((radioResponseWindow >> 8) & 0x00FF);
+        radioConfigArray[6] = (byte)((radioResponseWindow >> 0) & 0x00FF);
+        
+		return radioConfigArray;
+	}
 
 }

@@ -7,5 +7,6 @@ public interface ShimmerUartOsInterface {
   void clearSerialPortRxBuffer() throws DockException;
   void shimmerUartTxBytes(byte[] buf) throws DockException;
   byte[] shimmerUartRxBytes(int numBytes) throws DockException;
-
+  
+  void registerRxCallback(UartRxCallback uartRxCallback);
 }

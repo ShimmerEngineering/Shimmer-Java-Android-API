@@ -27,9 +27,13 @@ public class ErrorCodesShimmerUart {
 	public final static int SHIMMERUART_CMD_ERR_INFOMEM_SET = 			(ERROR_CODES_ID*1000) + 32;
 	public final static int SHIMMERUART_CMD_ERR_INFOMEM_GET = 			(ERROR_CODES_ID*1000) + 31;
 
-	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_SET = 			(ERROR_CODES_ID*1000) + 33;
-	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_GET = 			(ERROR_CODES_ID*1000) + 34;
+	//SR7 (802.15.4 radio) related errors
+	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_SET_SETTINGS = 			(ERROR_CODES_ID*1000) + 33;
+	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_GET_SETTINGS = 			(ERROR_CODES_ID*1000) + 34;
+	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_SPECTRUM_ANALYSER = 		(ERROR_CODES_ID*1000) + 35;
+	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_RAW = 		(ERROR_CODES_ID*1000) + 36;
 
+	
 	// Errors related to specific commands
 	public final static int SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE = (ERROR_CODES_ID*1000) + 1;
 	public final static int SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE = (ERROR_CODES_ID*1000) + 2;
@@ -73,6 +77,11 @@ public class ErrorCodesShimmerUart {
     	aMap.put(SHIMMERUART_CMD_ERR_DAUGHTER_MEM_GET, "Error reading expansion board memory");
     	aMap.put(SHIMMERUART_CMD_ERR_INFOMEM_SET, "Error writing InfoMem");
     	aMap.put(SHIMMERUART_CMD_ERR_INFOMEM_GET, "Error reading InfoMem");
+
+    	//SR7 (802.15.4 radio) related errors
+    	aMap.put(SHIMMERUART_CMD_ERR_RADIO_802154_GET_SETTINGS, "Error reading 802.15.4 radio settings");
+    	aMap.put(SHIMMERUART_CMD_ERR_RADIO_802154_SET_SETTINGS, "Error writing 802.15.4 radio settings");
+    	aMap.put(SHIMMERUART_CMD_ERR_RADIO_802154_SPECTRUM_ANALYSER, "Error reading spectrum analyser");
     	
     	// Errors related to specific commands
         aMap.put(SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE, "InfoMem write buffer exceeds InfoMem range");

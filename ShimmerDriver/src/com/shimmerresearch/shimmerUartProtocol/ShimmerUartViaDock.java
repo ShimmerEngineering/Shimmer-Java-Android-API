@@ -27,7 +27,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public String readMacId() throws ExecutionException {
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_MAC_ID_GET;
-		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.COMPONENT_PROPERTY.SHIMMER.MAC, errorCode);
+		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.MAC, errorCode);
 		
 		// Parse response string
 		if(rxBuf.length >= 6) {
@@ -47,7 +47,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public ShimmerBattStatusDetails readBattStatus() throws ExecutionException{
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_BATT_STATUS_GET;
-		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.COMPONENT_PROPERTY.BAT.VALUE, errorCode);
+		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.BAT.VALUE, errorCode);
 		
 		// Parse response string
 		if(rxBuf.length < 3) {
@@ -65,7 +65,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public ShimmerVerObject readHwFwVersion() throws ExecutionException {
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_VERSION_INFO_GET;
-		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.COMPONENT_PROPERTY.SHIMMER.VER, errorCode);
+		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.VER, errorCode);
 		
 		// Parse response string
 		if(rxBuf.length < 7) {
@@ -82,7 +82,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public long readRealWorldClockConfigTime() throws ExecutionException {
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_RTC_CONFIG_TIME_GET;
-		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.COMPONENT_PROPERTY.SHIMMER.RTC_CFG_TIME, errorCode);
+		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.RTC_CFG_TIME, errorCode);
 		
 		// Parse response string
 		long responseTime = 0;
@@ -103,7 +103,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public long readCurrentTime() throws ExecutionException {
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_RTC_CURRENT_TIME_GET;
-		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.COMPONENT_PROPERTY.SHIMMER.CURR_LOCAL_TIME, errorCode);
+		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.CURR_LOCAL_TIME, errorCode);
 		
 		// Parse response string
 		long responseTime = 0;
@@ -134,7 +134,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 		byte[] rwcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(miliseconds);
 		
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_RTC_CONFIG_TIME_SET;
-		processShimmerSetCommand(UartPacketDetails.COMPONENT_PROPERTY.SHIMMER.RTC_CFG_TIME, rwcTimeArray, errorCode);
+		processShimmerSetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.RTC_CFG_TIME, rwcTimeArray, errorCode);
 		
 		return miliseconds;
 	}
@@ -145,7 +145,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public byte[] readInfoMem(int address, int size) throws ExecutionException{
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET;
-		byte[] rxBuf = processShimmerMemGetCommand(UartPacketDetails.COMPONENT_PROPERTY.SHIMMER.INFOMEM, address, size, errorCode);
+		byte[] rxBuf = processShimmerMemGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.INFOMEM, address, size, errorCode);
 		
 		return rxBuf;
 	}
@@ -157,7 +157,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public void writeInfoMem(int address, byte[] buf) throws ExecutionException{
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_SET;
-		processShimmerMemSetCommand(UartPacketDetails.COMPONENT_PROPERTY.SHIMMER.INFOMEM, address, buf, errorCode);
+		processShimmerMemSetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.INFOMEM, address, buf, errorCode);
 	}
 	
 	/** Reads the daughter card ID via the Shimmer's Dock UART (the first 16 bytes of the daughter card memory)
@@ -167,7 +167,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public ExpansionBoardDetails readDaughterCardID() throws ExecutionException{
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_DAUGHTER_ID_GET;
-		byte[] rxBuf = processShimmerMemGetCommand(UartPacketDetails.COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_ID, 0, 16, errorCode);
+		byte[] rxBuf = processShimmerMemGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_ID, 0, 16, errorCode);
 		
 		//TODO: check rxBuf
 		ExpansionBoardDetails shimmerUartExpansionBoardDetails = new ExpansionBoardDetails(rxBuf);
@@ -181,7 +181,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 */
 	public void writeDaughterCardId(int address, byte[] buf) throws ExecutionException{
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_DAUGHTER_ID_SET;
-		processShimmerMemSetCommand(UartPacketDetails.COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_ID, address, buf, errorCode);
+		processShimmerMemSetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_ID, address, buf, errorCode);
 	}
 
 	
@@ -198,7 +198,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 //	    }		
 
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_DAUGHTER_MEM_GET;
-		byte[] rxBuf = processShimmerMemGetCommand(UartPacketDetails.COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_MEM, address, size, errorCode);
+		byte[] rxBuf = processShimmerMemGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_MEM, address, size, errorCode);
 		
 		return rxBuf;
 	}
@@ -215,7 +215,7 @@ public class ShimmerUartViaDock extends ShimmerUart {
 //	    }		
 
 		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_DAUGHTER_MEM_SET;
-		processShimmerMemSetCommand(UartPacketDetails.COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_MEM, address, buf, errorCode);
+		processShimmerMemSetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_MEM, address, buf, errorCode);
 	}
 	
 	
@@ -224,8 +224,8 @@ public class ShimmerUartViaDock extends ShimmerUart {
 	 * @throws ExecutionException 
 	 */
 	public byte[] read802154RadioSettings() throws ExecutionException {
-		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_RADIO_802154_GET;
-		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.COMPONENT_PROPERTY.RADIO_802154.SETTINGS, errorCode);
+		int errorCode = ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_RADIO_802154_GET_SETTINGS;
+		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.RADIO_802154.SETTINGS, errorCode);
 
 		// Parse response string
 		if(rxBuf.length >= 9) {

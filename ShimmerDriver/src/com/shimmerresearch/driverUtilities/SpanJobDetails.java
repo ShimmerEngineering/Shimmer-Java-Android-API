@@ -21,8 +21,8 @@ public class SpanJobDetails {
 		NONE,
 		SPAN_INITIALISE,
 		GET_VERSION_INFO,
-		SET_CHANNEL,
-		GET_CHANNEL,
+		SET_RADIO_CONFIG,
+		GET_RADIO_CONFIG,
 //		ASSIGN_BEST_CHANNELS_TO_SPANS,
 		SPECTRUM_ANALYSER_START,
 		SPECTRUM_ANALYSER_PROGRESS,
@@ -38,8 +38,8 @@ public class SpanJobDetails {
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.NONE), "none");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPAN_INITIALISE), "INITIALISE");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.GET_VERSION_INFO), "GET_VERSION_INFO");
-        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SET_CHANNEL), "SET_CHANNEL");
-        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.GET_CHANNEL), "GET_CHANNEL");
+        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SET_RADIO_CONFIG), "SET_RADIO_CONFIG");
+        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.GET_RADIO_CONFIG), "GET_RADIO_CONFIG");
 //        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.ASSIGN_BEST_CHANNELS_TO_SPANS), "ASSIGN_BEST_CHANNELS_TO_SPANS");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPECTRUM_ANALYSER_START), "SPECTRUM_ANALYSER_START");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPECTRUM_ANALYSER_PROGRESS), "SPECTRUM_ANALYSER_PROGRESS");
@@ -50,6 +50,7 @@ public class SpanJobDetails {
     	mMapOfErrorCodes = Collections.unmodifiableMap(aMap);
     }
     
+    //TODO add these error codes to the error codes in AbstractGUI
     public static int getJobErrorCode(SPAN_JOB_TYPE jT){
     	return ((ERROR_CODES_ID*1000) + jT.ordinal()); 
     }
