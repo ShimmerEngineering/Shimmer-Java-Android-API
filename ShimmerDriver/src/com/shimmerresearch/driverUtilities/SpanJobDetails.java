@@ -21,6 +21,7 @@ public class SpanJobDetails {
 		NONE,
 		SPAN_INITIALISE,
 		GET_VERSION_INFO,
+		WRITE_LED_STATE,
 		SET_RADIO_CONFIG,
 		GET_RADIO_CONFIG,
 //		ASSIGN_BEST_CHANNELS_TO_SPANS,
@@ -38,6 +39,7 @@ public class SpanJobDetails {
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.NONE), "none");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPAN_INITIALISE), "INITIALISE");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.GET_VERSION_INFO), "GET_VERSION_INFO");
+        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.WRITE_LED_STATE), "WRITE_LED_STATE");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SET_RADIO_CONFIG), "SET_RADIO_CONFIG");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.GET_RADIO_CONFIG), "GET_RADIO_CONFIG");
 //        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.ASSIGN_BEST_CHANNELS_TO_SPANS), "ASSIGN_BEST_CHANNELS_TO_SPANS");
@@ -65,22 +67,21 @@ public class SpanJobDetails {
 	public SPAN_JOB_TYPE currentJob = SPAN_JOB_TYPE.NONE;
 	
 	List<ShimmerDevice> listofDockedShimmersForJob = new ArrayList<ShimmerDevice>();
-	public boolean state = false;
-	
-	public int channelToSet = -1;
+	public boolean mStateToSet = false;
+	public int mChannelToSet = -1;
 
 	public SpanJobDetails(SPAN_JOB_TYPE jobType){
 		this.currentJob = jobType;
 	}
 
-	public SpanJobDetails(SPAN_JOB_TYPE jobType, boolean b) {
+	public SpanJobDetails(SPAN_JOB_TYPE jobType, boolean state) {
 		this(jobType);
-		state = b;
+		mStateToSet = state;
 	}
 
 	public SpanJobDetails(SPAN_JOB_TYPE jobType, int channel) {
 		this(jobType);
-		this.channelToSet = channel;
+		this.mChannelToSet = channel;
 	}
 
 	public Object deepClone() {
