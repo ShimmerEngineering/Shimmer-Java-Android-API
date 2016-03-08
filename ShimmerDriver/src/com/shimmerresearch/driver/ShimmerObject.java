@@ -7414,13 +7414,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	}
 
-	
+	@Deprecated //USE SENSOR MAPS and isEXGUsingDefaultECGConfiguration() instead
 	public boolean isEXGUsingDefaultECGConfigurationForSDFW(){
-//		if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
-			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
+		if (getFirmwareIdentifier() == FW_ID.GQ_802154){
+			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)){
 				return true;
 			}
-//		}
+		}
+		else {
+//			if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
+				if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
+					return true;
+				}
+//			}
+		}
 		return false;
 
 	}
@@ -7430,7 +7437,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)){
 				return true;
 			}
-		}else {
+		}
+		else {
 			if((mIsExg1_16bitEnabled&&mIsExg2_16bitEnabled)||(mIsExg1_24bitEnabled&&mIsExg2_24bitEnabled)){
 				if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)&& ((mEXG2RegisterArray[3] & 0x0F)==0)&&((mEXG2RegisterArray[4] & 0x0F)==7)){
 					return true;

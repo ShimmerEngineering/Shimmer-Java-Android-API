@@ -15,8 +15,6 @@ import com.shimmerresearch.driver.UtilShimmer;
  */
 public class ShimmerVerDetails implements Serializable {
 
-	//TODO change all to ENUMs with ints and Strings passed in
-	
 	/**
 	 * 
 	 */
@@ -25,6 +23,7 @@ public class ShimmerVerDetails implements Serializable {
 	public static final int EXP_BRD_NONE_ID = 255;
 	public static final String EXP_BRD_NONE = "None";
 	
+	//TODO change all to ENUMs with ints and Strings passed in
 	public static final class HW_ID {
 		public static final int UNKNOWN = -1;
 		public static final int SHIMMER_1 = 0;
@@ -58,6 +57,7 @@ public class ShimmerVerDetails implements Serializable {
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
     
+	//TODO change all to ENUMs with ints and Strings passed in
 	public static final class HW_ID_SR_CODES {
 		public static final int UNKNOWN = -1;
 		public static final int EXP_BRD_BR_AMP = 8;
@@ -102,6 +102,7 @@ public class ShimmerVerDetails implements Serializable {
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }
 
+	//TODO change all to ENUMs with ints and Strings passed in
 	public static final class FW_ID {
 		/**
 		 * FW_ID is hardware generation dependent, not hardware version
