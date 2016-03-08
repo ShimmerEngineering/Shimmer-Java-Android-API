@@ -596,4 +596,11 @@ public class UtilShimmer implements Serializable {
 		return radioConfigArray;
 	}
 
+	
+	public static String getConfigTimeFromFullTrialName(String trialName){
+		
+		String[] splittedTrialName = trialName.split("_");
+		String configTime = splittedTrialName[splittedTrialName.length-1];
+		return configTime;
+	}
 }
