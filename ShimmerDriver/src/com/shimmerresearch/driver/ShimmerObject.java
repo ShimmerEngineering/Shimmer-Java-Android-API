@@ -555,7 +555,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mMasterShimmer = 0;
 	protected int mSingleTouch = 0;
 	protected int mTCXO = 0;
-	protected long mRTCOffset; //this is in ticks
+	protected long mRTCOffset = 0; //this is in ticks
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
 //	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
