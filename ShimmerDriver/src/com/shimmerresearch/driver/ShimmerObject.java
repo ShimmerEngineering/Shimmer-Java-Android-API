@@ -945,8 +945,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//RAW RTC
-//			if ((fwIdentifier == FW_TYPE_SD) && mRTCOffset!=0) {
-			if (fwIdentifier == FW_TYPE_SD) {
+			if ((fwIdentifier == FW_TYPE_SD) && mRTCOffset!=0) {
+//			if (fwIdentifier == FW_TYPE_SD) {
 				double unwrappedrawtimestamp = calibratedTS*32768/1000;
 				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
 				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCOffset;
