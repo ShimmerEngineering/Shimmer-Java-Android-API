@@ -217,6 +217,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param shimmerUserAssignedName the mShimmerUserAssignedName to set
 	 */
 	public void setShimmerUserAssignedName(String shimmerUserAssignedName) {
+		//Don't allow the first char to be numeric - causes problems with MATLAB variable names
+		if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
+			shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
+		}
+			
+		//Limit the name to 12 Char
 		if(shimmerUserAssignedName.length()>12) {
 			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, 12);
 		}
@@ -226,6 +232,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
+		//Don't allow the first char to be numeric - causes problems with MATLAB variable names
+		if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
+			shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
+		}
+			
+		//Limit the name to 12 Char
 		String addition = "_" + getMacIdParsed();
 		if((shimmerUserAssignedName.length()+addition.length())>12) {
 			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, (12-addition.length())) + addition;
