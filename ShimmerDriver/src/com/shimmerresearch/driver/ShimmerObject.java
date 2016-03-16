@@ -919,10 +919,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (fwIdentifier == FW_TYPE_SD){
 				// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
 				double unwrappedrawtimestamp = calibratedTS*32768/1000;
-				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
+				if (getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==5){
+					
+				} else {
+					unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
+				}
 				long sdlograwtimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp;
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)sdlograwtimestamp));
+				
 				uncalibratedData[iTimeStamp] = (double)sdlograwtimestamp;
+				if (getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==5){
+					uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
+				}
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
 
 				if (mEnableCalibration){
