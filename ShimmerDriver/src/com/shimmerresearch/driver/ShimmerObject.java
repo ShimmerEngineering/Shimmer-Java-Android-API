@@ -563,7 +563,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mIsCrcEnabled = false;
 	protected String mCenter = "";
 	
-	protected long mInitialTimeStamp;
+	protected long mInitialTimeStamp = 0;
 
 	protected final static int FW_TYPE_BT=0;
 	protected final static int FW_TYPE_SD=1;
@@ -953,8 +953,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//RAW RTC
-			if ((fwIdentifier == FW_TYPE_SD) && mRTCOffset!=0)
-			{
+			if ((fwIdentifier == FW_TYPE_SD) && mRTCOffset!=0) {
+//			if (fwIdentifier == FW_TYPE_SD) {
 				double unwrappedrawtimestamp = calibratedTS*32768/1000;
 				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
 				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCOffset;
@@ -963,7 +963,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.CLOCK_UNIT;
 				sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
 				if (mEnableCalibration){
-					double rtctimestampcal = ((double)mInitialTimeStamp/32768.0*1000.0) + calibratedTS + ((double)mRTCOffset/32768.0*1000.0) - (mFirstRawTS/32768.0*1000.0);
+					double rtctimestampcal = calibratedTS;
+					if(mInitialTimeStamp!=0){
+						rtctimestampcal += ((double)mInitialTimeStamp/32768.0*1000.0);
+					}
+					if(mRTCOffset!=0){
+						rtctimestampcal += ((double)mRTCOffset/32768.0*1000.0);
+					}
+					if(mFirstRawTS!=0){
+						rtctimestampcal -= (mFirstRawTS/32768.0*1000.0);
+					}
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,rtctimestampcal));
 					calibratedData[sensorNames.length-1] = rtctimestampcal;
 					calibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.MILLISECONDS;
