@@ -19,6 +19,7 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_PLOT_MANAGER = 1001;
 	public final static int MSG_ID_SOURCE_BLUETOOTH_MANAGER = 1002;
 	public static final int MSG_ID_SOURCE_DOCK_MANAGER = 1003;
+	public static final int MSG_ID_SOURCE_PLATFORM_MANAGER = 1004;
 	 
 	//Device Info
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
@@ -260,7 +261,9 @@ public class MsgDock {
         aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_SOURCE_BLUETOOTH_MANAGER");
         aMap.put(MSG_ID_SOURCE_DOCK_MANAGER, "MSG_ID_SOURCE_DOCK_MANAGER");
         aMap.put(MSG_ID_SOURCE_SPAN_MANAGER, "MSG_ID_SOURCE_SPAN_MANAGER");
-        aMap.put(MSG_ID_SOURCE_PLOT_MANAGER, "MSG_ID_SOURCE_PLOT_MANAGER");        
+        aMap.put(MSG_ID_SOURCE_PLOT_MANAGER, "MSG_ID_SOURCE_PLOT_MANAGER");
+        aMap.put(MSG_ID_SOURCE_PLATFORM_MANAGER, "MSG_ID_SOURCE_PLATFORM_MANAGER");
+        
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }
