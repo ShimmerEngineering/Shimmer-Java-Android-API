@@ -19,6 +19,7 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_PLOT_MANAGER = 1001;
 	public final static int MSG_ID_SOURCE_BLUETOOTH_MANAGER = 1002;
 	public static final int MSG_ID_SOURCE_DOCK_MANAGER = 1003;
+	public static final int MSG_ID_SOURCE_ALGORITHM = 1004;
 	 
 	//Device Info
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
