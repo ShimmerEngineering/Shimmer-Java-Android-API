@@ -31,7 +31,7 @@ public abstract class ShimmerUart {
 		public final static int SPAN = 230400;
 	}
 	
-	public boolean mVerboseMode = false;
+	public boolean mVerboseMode = true;
 	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
 	public boolean mLeavePortOpen = false;

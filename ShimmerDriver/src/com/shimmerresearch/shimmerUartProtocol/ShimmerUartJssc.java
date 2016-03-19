@@ -21,6 +21,9 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	private boolean mIsSerialPortReaderStarted = false;
 	private UartRxCallback mUartRxCallback;
 	
+	/** 0 = normal speed, 1 = fast speed */
+	public int mTxSpeed = 1;
+	
 	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), false);
 
 	public ShimmerUartJssc(String comPort, String uniqueId, int baudToUse) {
@@ -92,6 +95,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
         	de.updateDockException(e.getMessage(), e.getStackTrace());
 			throw(de);
 		}
+    	
     }
 
 	/** Transmits a byte array to the Shimmer UART COM port
@@ -100,10 +104,8 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	 */
 	@Override
 	public void shimmerUartTxBytes(byte[] buf) throws DockException {
-    	//TODO: pass rxSpeed from root method
-    	int rxSpeed = 0;
     	try {
-        	if(rxSpeed == 0) { // normal speed
+        	if(mTxSpeed == 0) { // normal speed
         		for(int i = 0; i<buf.length;i++) {
         			serialPort.writeByte(buf[i]);
         			serialPort.purgePort(SerialPort.PURGE_TXCLEAR);
