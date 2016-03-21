@@ -28,6 +28,10 @@ import com.shimmerresearch.sensor.SensorGSR;
 import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 
+/**
+ * @author JC
+ * @author Mark Nolan
+ */
 public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
 	/** * */

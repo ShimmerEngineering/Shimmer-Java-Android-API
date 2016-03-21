@@ -3,6 +3,7 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 
 import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.SPAN_VERSION;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -34,6 +35,9 @@ public class ShimmerVerObject implements Serializable {
 	public String mFirmwareVersionParsedJustVersionNumber = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 
 	public int mShimmerExpansionBoardId = 0;
+	
+	//TODO handle SPAN_VERSION for SPANs? It is obtained from the PlatformHwManager
+	//public SPAN_VERSION hardwareVersion = SPAN_VERSION.UNKNOWN;
 	
     /** byte order of the Version Response Data Packet
     *
