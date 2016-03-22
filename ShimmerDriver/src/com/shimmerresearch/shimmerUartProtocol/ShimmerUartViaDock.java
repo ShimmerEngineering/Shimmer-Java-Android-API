@@ -1,9 +1,9 @@
 package com.shimmerresearch.shimmerUartProtocol;
 
 import java.util.Arrays;
-
 import java.util.concurrent.ExecutionException;
 
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
@@ -236,6 +236,12 @@ public class ShimmerUartViaDock extends ShimmerUart {
 		}
 		
 		return rxBuf;
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

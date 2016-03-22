@@ -10,6 +10,9 @@ import jssc.SerialPort;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.driver.BasicProcessWithCallBack;
+import com.shimmerresearch.driver.MsgDock;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_PACKET_CMD;
 
@@ -19,7 +22,7 @@ import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_PACKET_CMD
  * @author Mark Nolan
  *
  */
-public abstract class ShimmerUart {
+public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	public ShimmerUartOsInterface shimmerUartOs;
 	public boolean mIsUARTInUse = false;
 	public String mUniqueId = "";
@@ -37,7 +40,8 @@ public abstract class ShimmerUart {
 	public boolean mLeavePortOpen = false;
 	private List<UartRxPacketObject> mListOfUartRxPacketObjects = new ArrayList<UartRxPacketObject>();
 	public DockException mThrownException = null;
-	private UartRxCallback mUartRxCallback = null;
+//	private UartRxCallback mUartRxCallback = null;
+	public boolean mSendCallback = true;
 
     //the timeout value for connecting with the port
     protected final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
@@ -497,6 +501,9 @@ public abstract class ShimmerUart {
 	
 	private void parseRxPacket(byte[] rxBuf) throws DockException {
 		UartRxPacketObject uRPO = new UartRxPacketObject(rxBuf);
+		
+		uRPO.mSystemTimeMillis = System.currentTimeMillis();
+		
 		try {
 			// Check CRC
 			if(!ShimmerCrc.shimmerUartCrcCheck(uRPO.mRxPacket)) {
@@ -513,8 +520,10 @@ public abstract class ShimmerUart {
 				throw de;
 			}
 
-			if(mUartRxCallback!=null){
-				mUartRxCallback.newParsedMsg(uRPO);
+//			if(mUartRxCallback!=null){
+//				mUartRxCallback.newParsedMsg(uRPO);
+			if(mSendCallback){
+				wrapMsgSpanAndSend(MsgDock.MSG_ID_SHIMMERUART_PACKET_RX, uRPO);
 			}
 			else {
 				mListOfUartRxPacketObjects.add(uRPO);
@@ -528,13 +537,20 @@ public abstract class ShimmerUart {
 		}
 	} 
 	
-	public void registerRxCallback(UartRxCallback uartRxCallback) {
-		this.mUartRxCallback = uartRxCallback;
-	}
+//	public void registerRxCallback(UartRxCallback uartRxCallback) {
+//		this.mUartRxCallback = uartRxCallback;
+//	}
 
 	public void setVerbose(boolean verboseMode) {
 		mVerboseMode = verboseMode;
 		utilShimmer.setVerboseMode(verboseMode);
 	}
+	
+	
+	private void wrapMsgSpanAndSend(int msgId, Object object) {
+		ShimmerMsg msg = new ShimmerMsg(msgId, object);
+		sendCallBackMsg(msg);
+	}
+
 	
 }

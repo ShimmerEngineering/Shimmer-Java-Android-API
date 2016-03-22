@@ -19,6 +19,7 @@ public class UartRxPacketObject{
 	public byte[] mCrc = null;
 	
 	public byte[] mLeftOverBytes = null;
+	public long mSystemTimeMillis = UNKNOWN;
 
 	public UartRxPacketObject(byte[] rxBuf) {
 		int packetLength = UNKNOWN;
