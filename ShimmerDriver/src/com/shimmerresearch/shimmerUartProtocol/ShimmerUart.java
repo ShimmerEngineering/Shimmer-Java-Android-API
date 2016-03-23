@@ -1,6 +1,7 @@
 package com.shimmerresearch.shimmerUartProtocol;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.nio.ByteBuffer;
@@ -23,6 +24,7 @@ import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_PACKET_CMD
  *
  */
 public abstract class ShimmerUart extends BasicProcessWithCallBack {
+	
 	public ShimmerUartOsInterface shimmerUartOs;
 	public boolean mIsUARTInUse = false;
 	public String mUniqueId = "";
@@ -34,14 +36,16 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 		public final static int SPAN = 230400;
 	}
 	
-	public boolean mVerboseMode = true;
-	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
+	private boolean mIsDebugMode = false;
+	public boolean mVerboseMode = false;
+	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
-	public boolean mLeavePortOpen = false;
-	private List<UartRxPacketObject> mListOfUartRxPacketObjects = new ArrayList<UartRxPacketObject>();
+	public boolean mLeavePortOpen = true;
+//	private List<UartRxPacketObject> mListOfUartRxPacketObjects = new ArrayList<UartRxPacketObject>();
+	private List<UartRxPacketObject> mListOfUartRxPacketObjects = Collections.synchronizedList(new ArrayList<UartRxPacketObject>());
 	public DockException mThrownException = null;
 //	private UartRxCallback mUartRxCallback = null;
-	public boolean mSendCallback = true;
+	private boolean mSendCallbackRxOverride = false;
 
     //the timeout value for connecting with the port
     protected final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
@@ -265,11 +269,13 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
     }
     
     private void clearAllAcks() {
-		for (Iterator<UartRxPacketObject> flavoursIter = mListOfUartRxPacketObjects.iterator(); flavoursIter.hasNext();) {
-			UartRxPacketObject uRPO = flavoursIter.next();
-			if(uRPO.mUartCommandByte==UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
-				flavoursIter.remove();
-			}
+    	synchronized (mListOfUartRxPacketObjects) {
+    		for (Iterator<UartRxPacketObject> iterator = mListOfUartRxPacketObjects.iterator(); iterator.hasNext();) {
+    			UartRxPacketObject uRPO = iterator.next();
+    			if(uRPO.mUartCommandByte==UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
+    				iterator.remove();
+    			}
+    		}
 		}
 	}
 
@@ -311,6 +317,8 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
      * @throws ExecutionException
      */
 	protected byte[] shimmerUartCommandTxRx(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg, byte[] payload) throws DockException {
+		mListOfUartRxPacketObjects.clear();
+		
 		txPacket(packetCmd, msgArg, payload);
 		mThrownException = null;
 		return waitForResponse(packetCmd, msgArg);
@@ -377,6 +385,7 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 		int loopCountTotal = SERIAL_PORT_TIMEOUT/waitIntervalMs;
 
 		while(flag) {
+			mUtilShimmer.millisecondDelay(waitIntervalMs);
 			loopCount += 1;
 			if(loopCount >= loopCountTotal) {
 				break;
@@ -384,18 +393,26 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 			
 			UartRxPacketObject uRPO = checkIfListContainsResponse(packetCmd, msgArg);
 			if(uRPO!=null) {
+				if(this.mIsDebugMode){
+					consolePrintLn("RxObjectsSize=" + mListOfUartRxPacketObjects.size());
+				}
 				return uRPO.getPayload();
 			}
 			else if(mThrownException!=null){
 				throw mThrownException;
 			}
-			utilShimmer.millisecondDelay(waitIntervalMs);
 		}
 
-		consolePrintLn("TIMEOUT_FAIL" + "\tComponent:" + msgArg.mComponent.toString() + "\tProperty:" + msgArg.mProperty);
-//		DockException de = new DockException(mComPort, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT, mUniqueId);
-//////		DockException de = new DockException(mUniqueId, dJD.slotNumber, DockJobDetails.getJobErrorCode(dJD.currentJob), ErrorCodesDock.DOCK_TIMEOUT);
-//		DockException de = new DockException(mComPort, 0, ErrorCodesDock.DOCK_TIMEOUT, mUniqueId);
+		UartComponentPropertyDetails uCPD = UartPacketDetails.getUartPropertyParsed(msgArg.mComponent.toCmdByte(), msgArg.mPropertyByte);
+		String propertyString = Integer.toString(msgArg.mProperty);
+		if(uCPD!=null){
+			propertyString = uCPD.mPropertyName;
+		}
+		consolePrintLn("TIMEOUT_FAIL" + "\tComponent:" + msgArg.mComponent.toString() + "\tProperty:" + propertyString);
+		if(this.mIsDebugMode){
+			consolePrintLn("RxObjectsSize=" + mListOfUartRxPacketObjects.size());
+		}
+		
 		DockException de = new DockException(mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT, mUniqueId);
 		throw(de);
 	}
@@ -405,21 +422,41 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 			return null;
 		}
 		
-		for (Iterator<UartRxPacketObject> uRPOIter = mListOfUartRxPacketObjects.iterator(); uRPOIter.hasNext();) {
-			UartRxPacketObject uRPO = uRPOIter.next();
-			if(packetCmd==UartPacketDetails.UART_PACKET_CMD.WRITE
-					&& uRPO.mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
-				uRPOIter.remove();
-				return uRPO;
-			}
-			else if((packetCmd==UartPacketDetails.UART_PACKET_CMD.READ)
-					&& uRPO.mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()
-					&& msgArg.mComponentByte==uRPO.mUartComponentByte
-					&& msgArg.mPropertyByte==uRPO.mUartPropertyByte){
-				uRPOIter.remove();
-				return uRPO;
+		// when iterating over a synchronized list, we need to synchronize access to the synchronized list
+		synchronized (mListOfUartRxPacketObjects) {
+			Iterator<UartRxPacketObject> iterator = mListOfUartRxPacketObjects.iterator();
+			while (iterator.hasNext()) {
+				UartRxPacketObject uRPO = iterator.next();
+				if(packetCmd==UartPacketDetails.UART_PACKET_CMD.WRITE
+						&& uRPO.mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
+//					iterator.remove();
+					return uRPO;
+				}
+				else if((packetCmd==UartPacketDetails.UART_PACKET_CMD.READ)
+						&& uRPO.mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()
+						&& msgArg.mComponentByte==uRPO.mUartComponentByte
+						&& msgArg.mPropertyByte==uRPO.mUartPropertyByte){
+//					iterator.remove();
+					return uRPO;
+				}
 			}
 		}
+
+//		for (Iterator<UartRxPacketObject> uRPOIter = mListOfUartRxPacketObjects.iterator(); uRPOIter.hasNext();) {
+//			UartRxPacketObject uRPO = uRPOIter.next();
+//			if(packetCmd==UartPacketDetails.UART_PACKET_CMD.WRITE
+//					&& uRPO.mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()){
+//				uRPOIter.remove();
+//				return uRPO;
+//			}
+//			else if((packetCmd==UartPacketDetails.UART_PACKET_CMD.READ)
+//					&& uRPO.mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()
+//					&& msgArg.mComponentByte==uRPO.mUartComponentByte
+//					&& msgArg.mPropertyByte==uRPO.mUartPropertyByte){
+//				uRPOIter.remove();
+//				return uRPO;
+//			}
+//		}
 		return null;
 	}
 
@@ -459,9 +496,16 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 					;
 			
 			if(packetCmd!=UartPacketDetails.UART_PACKET_CMD.READ){
-				String txBytes = UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer);
-				if(txBytes != null){
-					consoleString += "\tPayload:" + txBytes;
+				consoleString += "\tPayload" ;
+				if(valueBuffer!=null){
+					consoleString += "(" + valueBuffer.length + "):";
+					String txBytes = UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer);
+					if(txBytes != null){
+						consoleString += txBytes;
+					}
+				}
+				else{
+					consoleString += ":none";
 				}
 			}
 			consolePrintLn(consoleString);
@@ -480,14 +524,14 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	}
 	
 	private void consolePrintLn(String string) {
-		utilShimmer.consolePrintLn(mUniqueId + "\t" + string);
+		mUtilShimmer.consolePrintLn(mUniqueId + "\t" + string);
 	}
 
 	private class CallbackUartRx implements UartRxCallback{
 		@Override
-		public void newMsg(byte[] rxBuf) {
+		public void newMsg(byte[] rxBuf, long timestampMs) {
 			try {
-				parseRxPacket(rxBuf);
+				parseRxPacket(rxBuf, timestampMs);
 			} catch (DockException e) {
 				mThrownException = e;
 			}
@@ -497,12 +541,11 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 		public void newParsedMsg(UartRxPacketObject uRPO) {
 			//NOT USED IN THIS CLASS
 		}
+
 	}
 	
-	private void parseRxPacket(byte[] rxBuf) throws DockException {
-		UartRxPacketObject uRPO = new UartRxPacketObject(rxBuf);
-		
-		uRPO.mSystemTimeMillis = System.currentTimeMillis();
+	private void parseRxPacket(byte[] rxBuf, long timestampMs) throws DockException {
+		UartRxPacketObject uRPO = new UartRxPacketObject(rxBuf, timestampMs);
 		
 		try {
 			// Check CRC
@@ -522,17 +565,19 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 
 //			if(mUartRxCallback!=null){
 //				mUartRxCallback.newParsedMsg(uRPO);
-			if(mSendCallback){
+			if(mSendCallbackRxOverride){
 				wrapMsgSpanAndSend(MsgDock.MSG_ID_SHIMMERUART_PACKET_RX, uRPO);
 			}
 			else {
-				mListOfUartRxPacketObjects.add(uRPO);
+		    	synchronized (mListOfUartRxPacketObjects) {
+		    		mListOfUartRxPacketObjects.add(uRPO);
+		    	}
 			}
 		} catch (DockException dE){
 			throw(dE);
 		} finally{
 			if(uRPO.mLeftOverBytes!=null){
-				parseRxPacket(uRPO.mLeftOverBytes);
+				parseRxPacket(uRPO.mLeftOverBytes, timestampMs);
 			}
 		}
 	} 
@@ -543,13 +588,27 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 
 	public void setVerbose(boolean verboseMode) {
 		mVerboseMode = verboseMode;
-		utilShimmer.setVerboseMode(verboseMode);
+		mUtilShimmer.setVerboseMode(verboseMode);
 	}
 	
 	
 	private void wrapMsgSpanAndSend(int msgId, Object object) {
 		ShimmerMsg msg = new ShimmerMsg(msgId, object);
 		sendCallBackMsg(msg);
+	}
+
+	/**
+	 * @return the mSendCallback
+	 */
+	public boolean isSendCallbackRxOverride() {
+		return mSendCallbackRxOverride;
+	}
+
+	/**
+	 * @param mSendCallbackRxOverride the mSendCallback to set
+	 */
+	public void setSendCallbackRxOverride(boolean state) {
+		this.mSendCallbackRxOverride = state;
 	}
 
 	

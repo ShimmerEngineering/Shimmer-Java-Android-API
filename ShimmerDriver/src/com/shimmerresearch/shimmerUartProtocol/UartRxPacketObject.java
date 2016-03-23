@@ -54,9 +54,10 @@ public class UartRxPacketObject{
 		}
 	}
 
-//	public byte[] getRxBufWithoutCrc() {
-//		return Arrays.copyOfRange(mRxBuf, 0, mRxBuf.length-2);
-//	}
+	public UartRxPacketObject(byte[] rxBuf, long timestampMs) {
+		this(rxBuf);
+		mSystemTimeMillis = timestampMs;
+	}
 	
 	public byte[] getPayload() {
 		return mPayload;
@@ -96,7 +97,7 @@ public class UartRxPacketObject{
 		return ("Command:" 		+ getUartCommandParsed() 
 				+ (mUartComponentByte==UartRxPacketObject.UNKNOWN? "":"\tComponent:" 		+ getUartComponentParsed()) 
 				+ (mUartPropertyByte==UartRxPacketObject.UNKNOWN? 	"":"\tProperty:" 		+ getUartPropertyParsed()) 
-				+ (mPayload==null? 								"":"\tPayload:" 		+ UtilShimmer.bytesToHexStringWithSpacesFormatted(mPayload)) 
+				+ (mPayload==null? 								"":"\tPayload" + "(" + mPayload.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mPayload)) 
 //				+ "\n" 				+ UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf)
 				);
 	}

@@ -2,6 +2,8 @@ package com.shimmerresearch.shimmerUartProtocol;
 
 import java.util.concurrent.ExecutionException;
 
+import org.omg.CORBA.REBIND;
+
 import com.shimmerresearch.driver.UtilShimmer;
 
 import jssc.SerialPort;
@@ -21,10 +23,12 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	private boolean mIsSerialPortReaderStarted = false;
 	private UartRxCallback mUartRxCallback;
 	
-	/** 0 = normal speed, 1 = fast speed */
+	/** 0 = normal speed (bad implementation), 1 = fast speed */
 	public int mTxSpeed = 1;
 	
-	private UtilShimmer utilShimmer = new UtilShimmer(getClass().getSimpleName(), false);
+	private boolean mVerboseMode = false;
+	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
+	private boolean mIsDebugMode = false;
 
 	public ShimmerUartJssc(String comPort, String uniqueId, int baudToUse) {
 		mUniqueId = uniqueId;
@@ -108,10 +112,10 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
         	if(mTxSpeed == 0) { // normal speed
         		for(int i = 0; i<buf.length;i++) {
         			serialPort.writeByte(buf[i]);
-        			serialPort.purgePort(SerialPort.PURGE_TXCLEAR);
+        			serialPort.purgePort(SerialPort.PURGE_TXCLEAR); // This doesn't make sense but was working for Consensys in Windows up to v0.4.0
         		}
         	}
-        	else {  // fast speed
+        	else {  // fast speed - was causing issues with Windows but needed for OSX - Windows might be fixed now (23/03/2016)
     			serialPort.writeBytes(buf);
         	}
 		} catch (SerialPortException e) {
@@ -130,7 +134,8 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	@Override
 	public byte[] shimmerUartRxBytes(int numBytes) throws DockException {
 		try {
-			return serialPort.readBytes(numBytes, ShimmerUart.SERIAL_PORT_TIMEOUT);
+//			return serialPort.readBytes(numBytes, ShimmerUart.SERIAL_PORT_TIMEOUT);
+			return internalShimmerUartRxBytes(numBytes);
 		} catch (SerialPortException e) {
         	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_READING_DATA); 
         	de.updateDockException(e.getMessage(), e.getStackTrace());
@@ -142,6 +147,14 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 		}
     }
 	
+	private byte[] internalShimmerUartRxBytes(int numBytes) throws SerialPortException, SerialPortTimeoutException{
+		byte[] rxBuf = serialPort.readBytes(numBytes, ShimmerUart.SERIAL_PORT_TIMEOUT);
+		if(this.mIsDebugMode ){
+			System.out.println(mUniqueId + "\tSerial Port RX(" + rxBuf.length + ")" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+		}
+		return rxBuf;
+	}
+
 	private DockException generateException(int lowLevelError){
     	DockException de = new DockException(
     			mUniqueId, 
@@ -211,100 +224,99 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 		@Override
 		public void serialEvent(SerialPortEvent event) {
 	        if (event.isRXCHAR()) {//If data is available
-	            if (event.getEventValue() > 0) {//Check bytes count in the input buffer
+	        	//New Shimmer UART messages must have a header, command and payload length
+//	            if (event.getEventValue() > 0) {//Check bytes count in the input buffer. 
+	            if (event.getEventValue() > 3) {//Check bytes count in the input buffer. 
 	                try {
-	                	byte[] rxBuf = serialPort.readBytes(event.getEventValue(), ShimmerUart.SERIAL_PORT_TIMEOUT);
+	                	byte[] rxBuf = internalShimmerUartRxBytes(event.getEventValue());
 
 //	                	byte[] header = serialPort.readBytes(3, ShimmerUart.SERIAL_PORT_TIMEOUT);
 
 	                	consolePrintLn("serialEvent Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
 	            		
-	            		if(rxBuf.length>=3){
-	            			byte headerByte = rxBuf[0]; 
-		                	if(headerByte==0x24){
-		            			byte cmdByte = rxBuf[1]; 
-		            			int payloadLength = rxBuf[2]&0xFF;
-		            			
-//		            			if(payloadLength<0){
-//		            				System.err.println("ERR\t" + payloadLength);
-//		            			}
-
-		                		if(cmdByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
-		                			int remainingByteCount = payloadLength - (rxBuf.length - 5);
-		                			readRemainingBytes(rxBuf, remainingByteCount);
-		                		}
-		                		else if(cmdByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()
-		                				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()
-		                				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()
-		                				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()){
-		                			int remainingByteCount = 4 - rxBuf.length;
-		                			readRemainingBytes(rxBuf, remainingByteCount);
-		                		}
-		                	}
-	            		}
-
-
+	                	processRxBuf(rxBuf);
 	                	
-//	                    for (int i = 0; i < data.length; i++) {
-//	                        stringBuilder.append((char) data[i]);
-//	                    }
-
-	                    
-//	                    //split entire message by "\r\n"
-//	            		int lineTerminationIndex = stringBuilder.indexOf("\r\n");
-////	            		System.out.println(stringBuilder);
-//	            		if(lineTerminationIndex>=1) {
-//	            			String message = stringBuilder.substring(0, lineTerminationIndex+2).toString();  
-//	            			stringBuilder.replace(0, lineTerminationIndex+2, "");
-//	            			
-//	                    	if(message.length() == 3) {
-//	                            // SmartDock error response - Expected message = "E\r\n"
-//	                        	if ((message.charAt(0)) == 'E') {
-//	                                consolePrintLn("Error = " + message);
-//	                    			//notify the SmartDockUart layer
-//	        						MsgDock msg = new MsgDock(MsgDock.MSG_ID_SMARTDOCK_UART_ERROR,mDockID);
-//	                    			msg.mMessage = message;
-//	        						sendCallBackMsg(msg.mMsgID,msg);
-//	                            }
-//	                    	}
-//
-//	            		}
-	            		
 	                } catch (Exception ex) {
+	                	consolePrintLn("Serial port ERROR");
 	                    System.out.println(ex);
 	                }
 	            }
 	        }
 		}
 
-		private void readRemainingBytes(byte[] rxBuf, int remainingByteCount) throws SerialPortException, SerialPortTimeoutException {
+		//TODO this does not handle if multiple messages are in rxBuf
+		private void processRxBuf(byte[] rxBuf) throws SerialPortException, SerialPortTimeoutException {
+			//Should be 3 anyway because of previous event.getEventValue() check 
+    		if(rxBuf.length>=3){
+    			byte headerByte = rxBuf[0]; 
+            	if(headerByte==0x24){
+            		long timestampMs = System.currentTimeMillis();
+            		
+        			byte cmdByte = rxBuf[1]; 
+        			int payloadLength = rxBuf[2]&0xFF;
+        			
+//        			if(payloadLength<0){
+//        				System.err.println("ERR\t" + payloadLength);
+//        			}
+
+        			int remainingByteCount = 0;
+            		if(cmdByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
+            			remainingByteCount = payloadLength - (rxBuf.length - UartPacketDetails.PACKET_OVERHEAD_RESPONSE_DATA);
+            		}
+            		else if(cmdByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()
+            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()
+            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()
+            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()){
+            			remainingByteCount = UartPacketDetails.PACKET_OVERHEAD_RESPONSE_OTHER - rxBuf.length;
+            		}
+            		else{
+            			consolePrintLn("Unknown command: " + cmdByte);
+            		}
+            		
+        			readRemainingBytes(rxBuf, remainingByteCount, timestampMs);
+        			
+            		//TODO add remaining bytes to start of next serial port read
+            	}
+            	else{ 
+            		//TODO remove byte 0 and add remaining bytes to start of next serial port read
+            	}
+    		}
+        	else{ 
+        		//TODO add remaining bytes to start of next serial port read
+        	}
+		}
+
+		private void readRemainingBytes(byte[] rxBuf, int remainingByteCount, long timestampMs) throws SerialPortException, SerialPortTimeoutException {
+			// More bytes remaining in buffer, read the remainder and then send callback
 			if(remainingByteCount>0){
-    			byte[] data = serialPort.readBytes(remainingByteCount, ShimmerUart.SERIAL_PORT_TIMEOUT);
-    			sendRxCallBack(rxBuf, data);
+				byte[] data = internalShimmerUartRxBytes(remainingByteCount);
+    			finishedRxRead(rxBuf, data, timestampMs);
 			}
 			else {
-//				if(remainingByteCount!=0){
-//					System.err.println("WTF\t" + remainingByteCount);
-//				}
-				consolePrintLn("Complete RX Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-				if(mUartRxCallback!=null){
-			    	mUartRxCallback.newMsg(rxBuf);
-				}
+				//Nothing left in buffer so send callback straight away
+				sendRxCallback(rxBuf, timestampMs);
 			}
 		}
 	}
 
-	private void sendRxCallBack(byte[] header, byte[] data) {
+	private void finishedRxRead(byte[] header, byte[] data, long timestampMs) {
 		if(header.length>0 && data.length>0){
 			byte[] packet = new byte[header.length + data.length];
 			
 			System.arraycopy(header, 0, packet, 0, header.length);
 			System.arraycopy(data, 0, packet, header.length, data.length);
 			
-    		consolePrintLn("Complete RX Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
-			if(mUartRxCallback!=null){
-				mUartRxCallback.newMsg(packet);
-			}
+			sendRxCallback(packet, timestampMs);
+		}
+		else{
+			System.err.print("ERROR\tHeader Length:" + header.length + "\tData Length:" + data.length);
+		}
+	}
+	
+	private void sendRxCallback(byte[] packet, long timestampMs){
+		consolePrintLn("Complete RX Received" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
+		if(mUartRxCallback!=null){
+			mUartRxCallback.newMsg(packet, timestampMs);
 		}
 	}
 
@@ -314,7 +326,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	}
 
 	private void consolePrintLn(String string) {
-		utilShimmer.consolePrintLn(mUniqueId + "\t" + string);
+		mUtilShimmer.consolePrintLn(mUniqueId + "\t" + string);
 	}
 
 }

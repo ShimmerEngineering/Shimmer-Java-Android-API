@@ -21,7 +21,11 @@ import java.lang.reflect.*;
  */
 public class UartPacketDetails {
 	
-	public static String PACKET_HEADER = "$"; 
+	public static String PACKET_HEADER = "$";
+	
+	public static final int PACKET_OVERHEAD_RESPONSE_DATA = 5; // Header + CMD + COMP + PROP + CRC MSB + CRC LSB 
+	public static final int PACKET_OVERHEAD_RESPONSE_OTHER = 4; // Header + CMD + CRC MSB + CRC LSB
+
 	
 	/** Enum listing all of the Shimmer UART data packet commands
 	 *
@@ -30,6 +34,7 @@ public class UartPacketDetails {
 		WRITE				((byte)0x01),
 		DATA_RESPONSE		((byte)0x02),
 		READ				((byte)0x03),
+		
 		BAD_CMD_RESPONSE	((byte)0xfc),	//252
 		BAD_ARG_RESPONSE	((byte)0xfd),	//253
 		BAD_CRC_RESPONSE	((byte)0xfe),	//254
@@ -141,7 +146,7 @@ public class UartPacketDetails {
 	}
 
 	public static final List<UartComponentPropertyDetails> mListOfUartCommandsConfig;
-    static {
+	static {
     	List<UartComponentPropertyDetails> aMap = new ArrayList<UartComponentPropertyDetails>();
         
         aMap.add(UART_COMPONENT_PROPERTY.BAT.ENABLE);
