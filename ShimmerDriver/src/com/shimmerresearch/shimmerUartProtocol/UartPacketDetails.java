@@ -23,13 +23,10 @@ public class UartPacketDetails {
 	
 	public static String PACKET_HEADER = "$";
 	
-	public static final int PACKET_OVERHEAD_RESPONSE_DATA = 5; // Header + CMD + COMP + PROP + CRC MSB + CRC LSB 
-	public static final int PACKET_OVERHEAD_RESPONSE_OTHER = 4; // Header + CMD + CRC MSB + CRC LSB
-
+	public static final int PACKET_OVERHEAD_RESPONSE_DATA 	= 5;			// Header + CMD + LENGTH + COMP + PROP 	------------- (+ CRC MSB + CRC LSB) -> CRC already included in length 
+	public static final int PACKET_OVERHEAD_RESPONSE_OTHER 	= 4; 			// Header + CMD	+ CRC MSB + CRC LSB
 	
-	/** Enum listing all of the Shimmer UART data packet commands
-	 *
-	 */
+	/** Enum listing all of the Shimmer UART data packet commands */
 	public static enum UART_PACKET_CMD {
 		WRITE				((byte)0x01),
 		DATA_RESPONSE		((byte)0x02),
@@ -52,9 +49,7 @@ public class UartPacketDetails {
 	    }
 	}
 
-	/** Enum listing all of the components that can be configured using the Shimmer UART commands
-	 *
-	 */
+	/** Enum listing all of the components that can be configured using the Shimmer UART commands */
 	public static enum UART_COMPONENT {
 		MAIN_PROCESSOR		((byte)0x01),
 		BAT					((byte)0x02), // this is treated as a sensor
@@ -89,9 +84,7 @@ public class UartPacketDetails {
 	public static List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(baseGqBle, baseGq802154NR, baseGq802154LR, baseGq802154Shimmer2r);
 
 	
-	/** Class listing all of the components and property combinations that can be used with the Shimmer UART commands
-	 *
-	 */
+	/** Class listing all of the components and property combinations that can be used with the Shimmer UART commands */
 	public static class UART_COMPONENT_PROPERTY {
 		/** AKA the Shimmer itself or a SPAN dongle */
 		public static class MAIN_PROCESSOR { 

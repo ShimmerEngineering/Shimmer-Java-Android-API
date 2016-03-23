@@ -36,10 +36,19 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 		public final static int SPAN = 230400;
 	}
 	
-	private boolean mIsDebugMode = false;
-	public boolean mVerboseMode = false;
+	private boolean mIsDebugMode = true;
+	public boolean mVerboseMode = true;
 	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
+	/**
+	 * This boolean determines whether to leave the COM port open from the start
+	 * or else open&close it for each and every read/write attempt. <br>
+	 * <br>
+	 * All Consensys versions up to v0.4.4 opened&closed the COM port for each
+	 * operation as sometimes Shimmers would randomly fail during auto-read on
+	 * the dock/bases. The open/close is time consuming. Driver improvements
+	 * since v0.4.4 have meant the COM port can now be left open.
+	 */
 	public boolean mLeavePortOpen = true;
 //	private List<UartRxPacketObject> mListOfUartRxPacketObjects = new ArrayList<UartRxPacketObject>();
 	private List<UartRxPacketObject> mListOfUartRxPacketObjects = Collections.synchronizedList(new ArrayList<UartRxPacketObject>());
@@ -481,6 +490,84 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 		}
 	}
 
+	private class CallbackUartRx implements UartRxCallback{
+		@Override
+		public void newMsg(byte[] rxBuf, long timestampMs) {
+			try {
+				parseRxPacket(rxBuf, timestampMs);
+			} catch (DockException e) {
+				mThrownException = e;
+			}
+		}
+
+		@Override
+		public void newParsedMsg(UartRxPacketObject uRPO) {
+			//NOT USED IN THIS CLASS
+		}
+
+	}
+	
+	private void parseRxPacket(byte[] rxBuf, long timestampMs) throws DockException {
+		UartRxPacketObject uRPO = new UartRxPacketObject(rxBuf, timestampMs);
+		
+		try {
+			// Check CRC
+			if(!ShimmerCrc.shimmerUartCrcCheck(uRPO.mRxPacket)) {
+				consolePrintLn("RX\tERR_CRC");
+				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC);
+			}
+			
+			consolePrintRxPacketInfo(uRPO);
+
+			//handle 'bad' responses
+			try{
+				processUnexpectedResponse(uRPO);
+			} catch(DockException de){
+				throw de;
+			}
+
+			if(mSendCallbackRxOverride){
+				wrapMsgSpanAndSend(MsgDock.MSG_ID_SHIMMERUART_PACKET_RX, uRPO);
+			}
+			else {
+		    	synchronized (mListOfUartRxPacketObjects) {
+		    		mListOfUartRxPacketObjects.add(uRPO);
+		    	}
+			}
+		} catch (DockException dE){
+			throw(dE);
+		} finally{
+			if(uRPO.mLeftOverBytes!=null){
+				parseRxPacket(uRPO.mLeftOverBytes, timestampMs);
+			}
+		}
+	} 
+	
+	private void wrapMsgSpanAndSend(int msgId, Object object) {
+		ShimmerMsg msg = new ShimmerMsg(msgId, object);
+		sendCallBackMsg(msg);
+	}
+
+	/**
+	 * @return the mSendCallback
+	 */
+	public boolean isSendCallbackRxOverride() {
+		return mSendCallbackRxOverride;
+	}
+
+	/**
+	 * @param mSendCallbackRxOverride the mSendCallback to set
+	 */
+	public void setSendCallbackRxOverride(boolean state) {
+		this.mSendCallbackRxOverride = state;
+	}
+
+	
+	public void setVerbose(boolean verboseMode) {
+		mVerboseMode = verboseMode;
+		mUtilShimmer.setVerboseMode(verboseMode);
+	}
+	
 	/**
 	 * @param packetCmd
 	 * @param msgArg
@@ -526,90 +613,5 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	private void consolePrintLn(String string) {
 		mUtilShimmer.consolePrintLn(mUniqueId + "\t" + string);
 	}
-
-	private class CallbackUartRx implements UartRxCallback{
-		@Override
-		public void newMsg(byte[] rxBuf, long timestampMs) {
-			try {
-				parseRxPacket(rxBuf, timestampMs);
-			} catch (DockException e) {
-				mThrownException = e;
-			}
-		}
-
-		@Override
-		public void newParsedMsg(UartRxPacketObject uRPO) {
-			//NOT USED IN THIS CLASS
-		}
-
-	}
-	
-	private void parseRxPacket(byte[] rxBuf, long timestampMs) throws DockException {
-		UartRxPacketObject uRPO = new UartRxPacketObject(rxBuf, timestampMs);
-		
-		try {
-			// Check CRC
-			if(!ShimmerCrc.shimmerUartCrcCheck(uRPO.mRxPacket)) {
-				consolePrintLn("RX\tERR_CRC");
-				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC);
-			}
-			
-			consolePrintRxPacketInfo(uRPO);
-
-			//handle 'bad' responses
-			try{
-				processUnexpectedResponse(uRPO);
-			} catch(DockException de){
-				throw de;
-			}
-
-//			if(mUartRxCallback!=null){
-//				mUartRxCallback.newParsedMsg(uRPO);
-			if(mSendCallbackRxOverride){
-				wrapMsgSpanAndSend(MsgDock.MSG_ID_SHIMMERUART_PACKET_RX, uRPO);
-			}
-			else {
-		    	synchronized (mListOfUartRxPacketObjects) {
-		    		mListOfUartRxPacketObjects.add(uRPO);
-		    	}
-			}
-		} catch (DockException dE){
-			throw(dE);
-		} finally{
-			if(uRPO.mLeftOverBytes!=null){
-				parseRxPacket(uRPO.mLeftOverBytes, timestampMs);
-			}
-		}
-	} 
-	
-//	public void registerRxCallback(UartRxCallback uartRxCallback) {
-//		this.mUartRxCallback = uartRxCallback;
-//	}
-
-	public void setVerbose(boolean verboseMode) {
-		mVerboseMode = verboseMode;
-		mUtilShimmer.setVerboseMode(verboseMode);
-	}
-	
-	
-	private void wrapMsgSpanAndSend(int msgId, Object object) {
-		ShimmerMsg msg = new ShimmerMsg(msgId, object);
-		sendCallBackMsg(msg);
-	}
-
-	/**
-	 * @return the mSendCallback
-	 */
-	public boolean isSendCallbackRxOverride() {
-		return mSendCallbackRxOverride;
-	}
-
-	/**
-	 * @param mSendCallbackRxOverride the mSendCallback to set
-	 */
-	public void setSendCallbackRxOverride(boolean state) {
-		this.mSendCallbackRxOverride = state;
-	}
-
 	
 }
