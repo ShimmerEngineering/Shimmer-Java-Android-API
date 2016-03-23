@@ -21,7 +21,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 
 	private ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
-	private UartRxCallback mUartRxCallback;
+//	private UartRxCallback mUartRxCallback;
 	
 	/** 0 = normal speed (bad implementation), 1 = fast speed */
 	public int mTxSpeed = 1;
@@ -30,9 +30,12 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	private boolean mVerboseMode = true;
 	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
-	byte[] carriedRxBuf = new byte[]{};
+//	byte[] carriedRxBuf = new byte[]{};
+	private ShimmerUart mShimmerUart;
 
-	public ShimmerUartJssc(String comPort, String uniqueId, int baudToUse) {
+	public ShimmerUartJssc(ShimmerUart shimmerUart, String comPort, String uniqueId, int baudToUse) {
+		this.mShimmerUart = shimmerUart;
+		
 		mUniqueId = uniqueId;
 		mComPort = comPort;
 		mBaudToUse = baudToUse;
@@ -134,8 +137,11 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	@Override
 	public byte[] shimmerUartRxBytes(int numBytes) throws DockException {
 		try {
-//			return serialPort.readBytes(numBytes, ShimmerUart.SERIAL_PORT_TIMEOUT);
-			return internalShimmerUartRxBytes(numBytes);
+			byte[] rxBuf = serialPort.readBytes(numBytes, ShimmerUart.SERIAL_PORT_TIMEOUT);
+			if(this.mIsDebugMode){
+				System.out.println(mUniqueId + "\tSerial Port RX(" + rxBuf.length + ")" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+			}
+			return rxBuf;
 		} catch (SerialPortException e) {
         	DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_READING_DATA); 
         	de.updateDockException(e.getMessage(), e.getStackTrace());
@@ -147,14 +153,6 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 		}
     }
 	
-	private byte[] internalShimmerUartRxBytes(int numBytes) throws SerialPortException, SerialPortTimeoutException{
-		byte[] rxBuf = serialPort.readBytes(numBytes, ShimmerUart.SERIAL_PORT_TIMEOUT);
-		if(this.mIsDebugMode ){
-			System.out.println(mUniqueId + "\tSerial Port RX(" + rxBuf.length + ")" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-		}
-		return rxBuf;
-	}
-
 	private DockException generateException(int lowLevelError){
     	DockException de = new DockException(
     			mUniqueId, 
@@ -227,162 +225,160 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	        	int eventLength = event.getEventValue();
 	        	//Check bytes count in the input buffer. 
 	            if (eventLength > 3) { // was 0 but at least 3 gives a little filter
-	            	serialPortRxEvent(eventLength);
+//	            	serialPortRxEvent(eventLength);
+	            	mShimmerUart.serialPortRxEvent(eventLength);
 	            }
 	        }
 		}
 		
-		private void serialPortRxEvent(int eventLength){
-            try {
-            	byte[] rxBuf = internalShimmerUartRxBytes(eventLength);
-            	consolePrintLn("serialEvent Received(" + rxBuf.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-            	processRxBuf(rxBuf);
-            	
-            } catch (Exception ex) {
-            	//TODO improve error handling here
-            	consolePrintLn("Serial port ERROR");
-                System.out.println(ex.getMessage());
-                ex.printStackTrace();
-            }
-		}
-
-		//TODO move up a level to ShimmerUART
-		private void processRxBuf(byte[] rxBuf) throws SerialPortException, SerialPortTimeoutException {
-			
-			byte headerByte = rxBuf[0];
-        	if(headerByte==UartPacketDetails.PACKET_HEADER.toCharArray()[0]){
-        		long timestampMs = System.currentTimeMillis();
-        		
-				// 1) check length before proceeding, need to have at least the
-				// command byte. 3rd byte is just useful for data response
-        		if(rxBuf.length<3){
-        			int lengthToRead = 3-rxBuf.length;
-        			byte[] tempBuf = internalShimmerUartRxBytes(lengthToRead);
-        			rxBuf = combineByteArrays(rxBuf, tempBuf);
-        		}
-        		
-    			byte cmdByte = rxBuf[1]; 
-    			boolean continueWithParsing = true;
-    			
-				// 2) Determine how many more bytes the current packet needs to
-				// proceed with parsing.
-    			int expectedResponseLength = 0;
-    			if(continueWithParsing){
-            		if(cmdByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
-            			int payloadLength = rxBuf[2]&0xFF;
-            			// handle invalid payload length
-            			if(payloadLength<0){
-                			consolePrintLn("Invalid payload length: " + payloadLength);
-                			removeFirstByteAndCarry(rxBuf);
-                			continueWithParsing = false;
-            			}
-            			else {
-                			expectedResponseLength = UartPacketDetails.PACKET_OVERHEAD_RESPONSE_DATA + payloadLength;
-            			}
-            		}
-            		else if(cmdByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()
-            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()
-            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()
-            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()){
-            			expectedResponseLength = UartPacketDetails.PACKET_OVERHEAD_RESPONSE_OTHER;
-            		}
-            		else{
-            			consolePrintLn("Unknown command: " + cmdByte);
-            			removeFirstByteAndCarry(rxBuf);
-            			continueWithParsing = false;
-            		}
-    			}
-        		
-				// 3) Make sure the current packet is complete - read any unread
-				// bytes for the current packet and carry over any extra bytes
-				// to the next packet
-    			byte[] packet = null;
-        		if(continueWithParsing){
-            		if(rxBuf.length==expectedResponseLength){
-            			packet = rxBuf;
-            		}
-            		else if(rxBuf.length>expectedResponseLength){
-            			packet = new byte[expectedResponseLength];
-            			System.arraycopy(rxBuf, 0, packet, 0, expectedResponseLength);
-            			
-                		// add remaining bytes to start of next serial port read
-            			int carriedOverLenth = rxBuf.length-expectedResponseLength;
-                		carriedRxBuf = new byte[carriedOverLenth];
-            			System.arraycopy(rxBuf, expectedResponseLength, carriedRxBuf, 0, carriedOverLenth);
-            			
-            			if(mIsDebugMode){
-                			consolePrintLn("Overflow: All bytes(" + rxBuf.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-                			consolePrintLn("Overflow: 1st packet(" + packet.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
-                			consolePrintLn("Overflow: 2nd packet(" + carriedRxBuf.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(carriedRxBuf));
-                			consolePrintLn("");
-            			}
-            		}
-            		else if(rxBuf.length<expectedResponseLength){
-        				byte[] data = internalShimmerUartRxBytes(expectedResponseLength-rxBuf.length);
-            			packet = combineByteArrays(rxBuf, data);
-            			if(mIsDebugMode && packet!=null){
-                			consolePrintLn("Underflow: 1st buf(" + rxBuf.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-                			consolePrintLn("Underflow: 2st buf(" + data.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(data));
-                			consolePrintLn("Underflow: Combined(" + packet.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
-                			consolePrintLn("");
-            			}
-            		}
-        		}
-
-        		// 4) TODO check CRC before sending callback. If fails then remove first byte and carry forward
-        		
-        		// 5) Current packet is good and ready to pass to upper levels
-        		if(continueWithParsing && packet!=null){
-        			sendRxCallback(packet, timestampMs);
-        		}
-        	}
-        	else{ 
-        		//remove first and add remaining bytes to start of next serial port read
-        		removeFirstByteAndCarry(rxBuf);
-        	}
-    		
-    		// Attempt to re-process any remaining bytes
-    		if(carriedRxBuf.length>0){
-    			byte[] tempBuf = carriedRxBuf; 
-    			carriedRxBuf = new byte[]{};
-    			processRxBuf(tempBuf);
-    		}
-
-		}
-
-		/** remove first and add remaining bytes to start of next serial port read */
-		private void removeFirstByteAndCarry(byte[] rxBuf){
-    		int lengthToCarry = rxBuf.length-1;
-    		carriedRxBuf = new byte[lengthToCarry];
-			System.arraycopy(rxBuf, 1, carriedRxBuf, 0, lengthToCarry);
-		}
+//		private void serialPortRxEvent(int eventLength){
+//            try {
+//            	byte[] rxBuf = internalShimmerUartRxBytes(eventLength);
+//            	consolePrintLn("serialEvent Received(" + rxBuf.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+//            	processRxBuf(rxBuf);
+//            	
+//            } catch (Exception ex) {
+//            	//TODO improve error handling here
+//            	consolePrintLn("Serial port ERROR");
+//                System.out.println(ex.getMessage());
+//                ex.printStackTrace();
+//            }
+//		}
+//
+//		//TODO move up a level to ShimmerUART
+//		private void processRxBuf(byte[] rxBuf) throws SerialPortException, SerialPortTimeoutException {
+//			
+//			byte headerByte = rxBuf[0];
+//        	if(headerByte==UartPacketDetails.PACKET_HEADER.toCharArray()[0]){
+//        		long timestampMs = System.currentTimeMillis();
+//        		
+//				// 1) check length before proceeding, need to have at least the
+//				// command byte. 3rd byte is just useful for data response
+//        		if(rxBuf.length<3){
+//        			int lengthToRead = 3-rxBuf.length;
+//        			byte[] tempBuf = internalShimmerUartRxBytes(lengthToRead);
+//        			rxBuf = combineByteArrays(rxBuf, tempBuf);
+//        		}
+//        		
+//    			byte cmdByte = rxBuf[1]; 
+//    			boolean continueWithParsing = true;
+//    			
+//				// 2) Determine how many more bytes the current packet needs to
+//				// proceed with parsing.
+//    			int expectedResponseLength = 0;
+//    			if(continueWithParsing){
+//            		if(cmdByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
+//            			int payloadLength = rxBuf[2]&0xFF;
+//            			// handle invalid payload length
+//            			if(payloadLength<0){
+//                			consolePrintLn("Invalid payload length: " + payloadLength);
+//                			removeFirstByteAndCarry(rxBuf);
+//                			continueWithParsing = false;
+//            			}
+//            			else {
+//                			expectedResponseLength = UartPacketDetails.PACKET_OVERHEAD_RESPONSE_DATA + payloadLength;
+//            			}
+//            		}
+//            		else if(cmdByte == UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte()
+//            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()
+//            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()
+//            				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()){
+//            			expectedResponseLength = UartPacketDetails.PACKET_OVERHEAD_RESPONSE_OTHER;
+//            		}
+//            		else{
+//            			consolePrintLn("Unknown command: " + cmdByte);
+//            			removeFirstByteAndCarry(rxBuf);
+//            			continueWithParsing = false;
+//            		}
+//    			}
+//        		
+//				// 3) Make sure the current packet is complete - read any unread
+//				// bytes for the current packet and carry over any extra bytes
+//				// to the next packet
+//    			byte[] packet = null;
+//        		if(continueWithParsing){
+//            		if(rxBuf.length==expectedResponseLength){
+//            			packet = rxBuf;
+//            		}
+//            		else if(rxBuf.length>expectedResponseLength){
+//            			packet = new byte[expectedResponseLength];
+//            			System.arraycopy(rxBuf, 0, packet, 0, expectedResponseLength);
+//            			
+//                		// add remaining bytes to start of next serial port read
+//            			int carriedOverLenth = rxBuf.length-expectedResponseLength;
+//                		carriedRxBuf = new byte[carriedOverLenth];
+//            			System.arraycopy(rxBuf, expectedResponseLength, carriedRxBuf, 0, carriedOverLenth);
+//            			
+//            			if(mIsDebugMode){
+//                			consolePrintLn("Overflow: All bytes(" + rxBuf.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+//                			consolePrintLn("Overflow: 1st packet(" + packet.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
+//                			consolePrintLn("Overflow: 2nd packet(" + carriedRxBuf.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(carriedRxBuf));
+//                			consolePrintLn("");
+//            			}
+//            		}
+//            		else if(rxBuf.length<expectedResponseLength){
+//        				byte[] data = internalShimmerUartRxBytes(expectedResponseLength-rxBuf.length);
+//            			packet = combineByteArrays(rxBuf, data);
+//            			if(mIsDebugMode && packet!=null){
+//                			consolePrintLn("Underflow: 1st buf(" + rxBuf.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+//                			consolePrintLn("Underflow: 2st buf(" + data.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(data));
+//                			consolePrintLn("Underflow: Combined(" + packet.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
+//                			consolePrintLn("");
+//            			}
+//            		}
+//        		}
+//
+//        		// 4) TODO check CRC before sending callback. If fails then remove first byte and carry forward
+//        		
+//        		// 5) Current packet is good and ready to pass to upper levels
+//        		if(continueWithParsing && packet!=null){
+//        			sendRxCallback(packet, timestampMs);
+//        		}
+//        	}
+//        	else{ 
+//        		//remove first and add remaining bytes to start of next serial port read
+//        		removeFirstByteAndCarry(rxBuf);
+//        	}
+//    		
+//    		// Attempt to re-process any remaining bytes
+//    		if(carriedRxBuf.length>0){
+//    			byte[] tempBuf = carriedRxBuf; 
+//    			carriedRxBuf = new byte[]{};
+//    			processRxBuf(tempBuf);
+//    		}
+//
+//		}
+//
+//		/** remove first and add remaining bytes to start of next serial port read */
+//		private void removeFirstByteAndCarry(byte[] rxBuf){
+//    		int lengthToCarry = rxBuf.length-1;
+//    		carriedRxBuf = new byte[lengthToCarry];
+//			System.arraycopy(rxBuf, 1, carriedRxBuf, 0, lengthToCarry);
+//		}
 	}
 
-	private byte[] combineByteArrays(byte[] buf1, byte[] buf2) {
-		if(buf1.length>0 && buf2.length>0){
-			byte[] packet = new byte[buf1.length + buf2.length];
-			System.arraycopy(buf1, 0, packet, 0, buf1.length);
-			System.arraycopy(buf2, 0, packet, buf1.length, buf2.length);
-			return packet;
-		}
-		consolePrintLn("ERROR\1st Buf Length:" + buf1.length + "\t2nd Buf Length:" + buf2.length);
-		return null;
-	}
-	
-	private void sendRxCallback(byte[] packet, long timestampMs){
-		consolePrintLn("Complete RX Received(" + packet.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
-		if(mUartRxCallback!=null){
-			mUartRxCallback.newMsg(packet, timestampMs);
-		}
-	}
-
-	@Override
-	public void registerRxCallback(UartRxCallback uartRxCallback) {
-		mUartRxCallback = uartRxCallback;
-	}
+//	@Override
+//	public void sendRxCallback(byte[] packet, long timestampMs){
+//		consolePrintLn("Complete RX Received(" + packet.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
+//		if(mUartRxCallback!=null){
+//			mUartRxCallback.newMsg(packet, timestampMs);
+//		}
+//	}
+//
+//	@Override
+//	public void registerRxCallback(UartRxCallback uartRxCallback) {
+//		mUartRxCallback = uartRxCallback;
+//	}
 
 	private void consolePrintLn(String string) {
 		mUtilShimmer.consolePrintLn(mUniqueId + "\t" + string);
+	}
+
+	@Override
+	public void setVerboseMode(boolean verboseMode, boolean isDebugMode) {
+		mVerboseMode = verboseMode;
+		mIsDebugMode = isDebugMode;
+		mUtilShimmer.setVerboseMode(verboseMode);
 	}
 
 }
