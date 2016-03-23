@@ -69,9 +69,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 			throw(de);
         }
         
-		if(!isSerialPortReaderStarted()){
-			startSerialPortReader();
-		}
+		startSerialPortReader();
         
 	}
 	
@@ -168,33 +166,31 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	
 	
     public void startSerialPortReader() throws DockException {
-    	try {
-    		// Open COM port
-    		mIsSerialPortReaderStarted = true;
-    		shimmerUartConnect();
-		} catch (ExecutionException e) {
-    		mIsSerialPortReaderStarted = false;
-		}
     	
-        int mask = SerialPort.MASK_RXCHAR;//Prepare mask
-        try {
-        	mShimmerUartListener = new ShimmerUartListener(mUniqueId);
-//        	mShimmerUartListener.setVerbose(mVerboseModeUart);
-        	serialPort.setEventsMask(mask);//Set mask
-        	serialPort.addEventListener(mShimmerUartListener);//Add SerialPortEventListener
-//    		setWaitForData(mShimmerUartListener);
-        } catch (SerialPortException e) {
-//			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_START);
-//			de.updateDockException(e.getMessage(), e.getStackTrace());
-//			throw(de);
-        }
-
+    	if(!mIsSerialPortReaderStarted){
+            int mask = SerialPort.MASK_RXCHAR;//Prepare mask
+            try {
+            	mShimmerUartListener = new ShimmerUartListener(mUniqueId);
+//            	mShimmerUartListener.setVerbose(mVerboseModeUart);
+            	serialPort.setEventsMask(mask);//Set mask
+            	serialPort.addEventListener(mShimmerUartListener);//Add SerialPortEventListener
+//        		setWaitForData(mShimmerUartListener);
+        		mIsSerialPortReaderStarted = true;
+            } catch (SerialPortException e) {
+        		mIsSerialPortReaderStarted = false;
+        		//TODO include below
+//    			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_START);
+//    			de.updateDockException(e.getMessage(), e.getStackTrace());
+//    			throw(de);
+            }
+    	}
     }
 
     public void stopSerialPortReader() throws DockException {
         try {
         	serialPort.removeEventListener();
         } catch (SerialPortException e) {
+    		//TODO include below
 //			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_STOP);
 //			de.updateDockException(e.getMessage(), e.getStackTrace());
         }
@@ -204,12 +200,14 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
     		shimmerUartDisconnect();
     		mIsSerialPortReaderStarted = false;
 		} catch (ExecutionException e) {
+    		//TODO include below
 //			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_STOP);
 //			de.updateDockException(e.getMessage(), e.getStackTrace());
 		}
 
     }
     
+    @Override
 	public boolean isSerialPortReaderStarted(){
 		return mIsSerialPortReaderStarted;
 	}

@@ -26,7 +26,8 @@ import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_PACKET_CMD
 public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	
 	public ShimmerUartOsInterface shimmerUartOs;
-	public boolean mIsUARTInUse = false;
+	/** Boolean only used if COM port is not left open */
+	private boolean mIsUARTInUse = false;
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
@@ -71,8 +72,13 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	public ShimmerUart(String comPort, String uniqueId){
 		this(comPort, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED);
 	}
+	
 	public boolean isUARTinUse(){
 		return mIsUARTInUse;
+	}
+	
+	public boolean isSerialPortReaderStarted(){
+		return shimmerUartOs.isSerialPortReaderStarted();
 	}
 
 	public void processShimmerGetCommandNoWait(UartComponentPropertyDetails compPropDetails, int errorCode, byte[] payload) throws DockException{
@@ -195,14 +201,14 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	public byte[] uartGetCommand(UartComponentPropertyDetails cPD, byte[] payload) throws DockException {
 		byte[] rxBuf;
 		
-		openSafely();
+		if(!mLeavePortOpen) openSafely();
 		try {
 			rxBuf = shimmerUartGetCommand(cPD, payload);
 		} catch(DockException e) {
 			closeSafely();
 			throw(e);
 		}
-		closeSafely();
+		if(!mLeavePortOpen) closeSafely();
 		
 		return rxBuf;
 	}
@@ -212,13 +218,13 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	 * @throws ExecutionException
 	 */
 	public void uartSetCommand(UartComponentPropertyDetails cPD, byte[] txBuf) throws ExecutionException {
-		openSafely();
+		if(!mLeavePortOpen) openSafely();
 		try {
 			shimmerUartSetCommand(cPD, txBuf);
 		} catch(ExecutionException e) {
 			throw(e);
 		} finally{
-			closeSafely();
+			if(!mLeavePortOpen) closeSafely();
 		}
 	}
 
