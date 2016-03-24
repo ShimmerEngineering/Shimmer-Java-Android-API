@@ -163,6 +163,8 @@ public class MsgDock {
 	public final static int MSG_ID_READING_DB_END = 182;
 	public final static int MSG_ID_DB_MANAGER_LOADED_SUCCESS = 183;
 	
+	//AlgorithmManager
+	public final static int MSG_ID_DATA_TO_ALGO = 190;
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
 
