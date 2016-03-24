@@ -95,7 +95,8 @@ public class UartPacketDetails {
 			public static final UartComponentPropertyDetails RTC_CFG_TIME     = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x04, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGqBle, "RTC_CFG_TIME");
 			public static final UartComponentPropertyDetails CURR_LOCAL_TIME  = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x05, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "CURR_LOCAL_TIME");
 			public static final UartComponentPropertyDetails INFOMEM          = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x06, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "INFOMEM");
-			public static final UartComponentPropertyDetails LED0_STATE		  = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x07, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoGq802154, "LED_TOGGLE");
+			public static final UartComponentPropertyDetails LED0_STATE		  = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x07, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGq802154, "LED_TOGGLE");
+			public static final UartComponentPropertyDetails DEVICE_BOOT	  = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x08, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "DEVICE_BOOT");
 		}
 		public static class BAT {
 			public static final UartComponentPropertyDetails ENABLE           = new UartComponentPropertyDetails(UART_COMPONENT.BAT, 0x00, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "ENABLE");

@@ -501,7 +501,9 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	protected void serialPortRxEvent(int eventLength){
         try {
         	byte[] rxBuf = shimmerUartOs.shimmerUartRxBytes(eventLength);
-        	consolePrintLn("serialEvent Received(" + rxBuf.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+        	if(mIsDebugMode){
+            	consolePrintLn("serialEvent Received(" + rxBuf.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+        	}
         	processRxBuf(rxBuf);
         } catch (Exception ex) {
         	//TODO improve error handling here
