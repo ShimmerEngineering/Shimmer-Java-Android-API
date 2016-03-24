@@ -214,6 +214,7 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	    StringBuilder stringBuilder = new StringBuilder(128);
 	    
 	    String mUniqueId = "";
+	    boolean mIsParserBusy = false;
 
 	    ShimmerUartListener(String uniqueID) {
 	    	mUniqueId = uniqueID;
@@ -224,9 +225,12 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	        if (event.isRXCHAR()) {//If data is available
 	        	int eventLength = event.getEventValue();
 	        	//Check bytes count in the input buffer. 
-	            if (eventLength > 3) { // was 0 but at least 3 gives a little filter
+//	            if (eventLength > 3) { // was 0 but at least 3 gives a little filter
+	            if (!mIsParserBusy && eventLength>0) { // was 0 but at least 3 gives a little filter
+	            	mIsParserBusy = true;
 //	            	serialPortRxEvent(eventLength);
 	            	mShimmerUart.serialPortRxEvent(eventLength);
+	            	mIsParserBusy = false;
 	            }
 	        }
 		}
