@@ -19,7 +19,9 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_PLOT_MANAGER = 1001;
 	public final static int MSG_ID_SOURCE_BLUETOOTH_MANAGER = 1002;
 	public static final int MSG_ID_SOURCE_DOCK_MANAGER = 1003;
-	public static final int MSG_ID_SOURCE_ALGORITHM = 1004;
+	public static final int MSG_ID_SOURCE_PLATFORM_MANAGER = 1004;
+	public static final int MSG_ID_SOURCE_ALGORITHM = 1005;
+	
 	 
 	//Device Info
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
@@ -43,14 +45,16 @@ public class MsgDock {
 	
 	public final static int MSG_ID_SHIMMER_DETAILS_CLEARED = 45;
 	
-	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_SUCCESS = 50;
-	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_ERROR = 58;
-	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL = 59;
-	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_SUCCESS = 51;
-	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_FAIL = 52;
-	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS = 53;
-	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 54;
-	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 55;
+	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_SUCCESS = 46;
+	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_ERROR = 47;
+	public final static int MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL = 48;
+	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_SUCCESS = 49;
+	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_FAIL = 50;
+	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS = 51;
+	public final static int MSG_ID_SHIMMERUART_PACKET_RX = 52;
+	
+	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 53;
+	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 54;
 	
 	public final static int MSG_ID_DOCK_JOB_STARTED_PER_DOCK = 56;
 	public final static int MSG_ID_DOCK_JOB_SUCCESS_PER_DOCK = 57;
@@ -58,6 +62,7 @@ public class MsgDock {
 	
 	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS = 91;
 	public final static int MSG_ID_DOCKMANAGER_INITIALIZED_FAIL = 92;
+	public final static int MSG_ID_DOCK_PLUGGED_UNPLUGGED = 93;
 	
 	public final static int MSG_ID_DOCK_STATE_CHANGE = 100;
 	public final static int MSG_ID_DOCK_SD_SCAN_UPDATE = 101;
@@ -168,6 +173,8 @@ public class MsgDock {
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
 
+	
+
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
         aMap.put(MSG_ID_UNKNOWN, "MSG_ID_UNKNOWN");
@@ -190,6 +197,8 @@ public class MsgDock {
         aMap.put(MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL, "MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL");
         aMap.put(MSG_ID_SHIMMERUART_INFOMEM_WRITE_SUCCESS, "MSG_ID_SHIMMERUART_INFOMEM_WRITE_SUCCESS");
         aMap.put(MSG_ID_SHIMMERUART_INFOMEM_WRITE_FAIL, "MSG_ID_SHIMMERUART_INFOMEM_WRITE_FAIL");
+        aMap.put(MSG_ID_SHIMMERUART_PACKET_RX, "MSG_ID_SHIMMERUART_PACKET_RX");
+        
         aMap.put(MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK, "MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK");
         aMap.put(MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL, "MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL");
         
@@ -200,6 +209,7 @@ public class MsgDock {
         aMap.put(MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED, "MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED");
         aMap.put(MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS, "MSG_ID_DOCKMANAGER_INITIALIZED_SUCCESS");
         aMap.put(MSG_ID_DOCKMANAGER_INITIALIZED_FAIL, "MSG_ID_DOCKMANAGER_INITIALIZED_FAIL");
+        aMap.put(MSG_ID_DOCK_PLUGGED_UNPLUGGED, "MSG_ID_DOCK_PLUGGED_UNPLUGGED");
         
         aMap.put(MSG_ID_DOCK_STATE_CHANGE, "MSG_ID_DOCK_STATE_CHANGE");
         aMap.put(MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS, "MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS");
@@ -263,7 +273,10 @@ public class MsgDock {
         aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_SOURCE_BLUETOOTH_MANAGER");
         aMap.put(MSG_ID_SOURCE_DOCK_MANAGER, "MSG_ID_SOURCE_DOCK_MANAGER");
         aMap.put(MSG_ID_SOURCE_SPAN_MANAGER, "MSG_ID_SOURCE_SPAN_MANAGER");
-        aMap.put(MSG_ID_SOURCE_PLOT_MANAGER, "MSG_ID_SOURCE_PLOT_MANAGER");        
+        aMap.put(MSG_ID_SOURCE_PLOT_MANAGER, "MSG_ID_SOURCE_PLOT_MANAGER");
+        aMap.put(MSG_ID_SOURCE_PLATFORM_MANAGER, "MSG_ID_SOURCE_PLATFORM_MANAGER");
+        aMap.put(MSG_ID_SOURCE_ALGORITHM, "MSG_ID_SOURCE_ALGORITHM");
+        
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }

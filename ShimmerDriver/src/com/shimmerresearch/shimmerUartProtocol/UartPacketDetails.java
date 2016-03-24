@@ -21,15 +21,17 @@ import java.lang.reflect.*;
  */
 public class UartPacketDetails {
 	
-	public static String PACKET_HEADER = "$"; 
+	public static String PACKET_HEADER = "$";
 	
-	/** Enum listing all of the Shimmer UART data packet commands
-	 *
-	 */
+	public static final int PACKET_OVERHEAD_RESPONSE_DATA 	= 5;			// Header + CMD + LENGTH + COMP + PROP 	------------- (+ CRC MSB + CRC LSB) -> CRC already included in length 
+	public static final int PACKET_OVERHEAD_RESPONSE_OTHER 	= 4; 			// Header + CMD	+ CRC MSB + CRC LSB
+	
+	/** Enum listing all of the Shimmer UART data packet commands */
 	public static enum UART_PACKET_CMD {
 		WRITE				((byte)0x01),
 		DATA_RESPONSE		((byte)0x02),
 		READ				((byte)0x03),
+		
 		BAD_CMD_RESPONSE	((byte)0xfc),	//252
 		BAD_ARG_RESPONSE	((byte)0xfd),	//253
 		BAD_CRC_RESPONSE	((byte)0xfe),	//254
@@ -47,9 +49,7 @@ public class UartPacketDetails {
 	    }
 	}
 
-	/** Enum listing all of the components that can be configured using the Shimmer UART commands
-	 *
-	 */
+	/** Enum listing all of the components that can be configured using the Shimmer UART commands */
 	public static enum UART_COMPONENT {
 		MAIN_PROCESSOR		((byte)0x01),
 		BAT					((byte)0x02), // this is treated as a sensor
@@ -84,9 +84,7 @@ public class UartPacketDetails {
 	public static List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(baseGqBle, baseGq802154NR, baseGq802154LR, baseGq802154Shimmer2r);
 
 	
-	/** Class listing all of the components and property combinations that can be used with the Shimmer UART commands
-	 *
-	 */
+	/** Class listing all of the components and property combinations that can be used with the Shimmer UART commands */
 	public static class UART_COMPONENT_PROPERTY {
 		/** AKA the Shimmer itself or a SPAN dongle */
 		public static class MAIN_PROCESSOR { 
@@ -97,7 +95,7 @@ public class UartPacketDetails {
 			public static final UartComponentPropertyDetails RTC_CFG_TIME     = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x04, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGqBle, "RTC_CFG_TIME");
 			public static final UartComponentPropertyDetails CURR_LOCAL_TIME  = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x05, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "CURR_LOCAL_TIME");
 			public static final UartComponentPropertyDetails INFOMEM          = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x06, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "INFOMEM");
-			public static final UartComponentPropertyDetails LED0_STATE		= new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x07, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoGq802154, "LED_TOGGLE");
+			public static final UartComponentPropertyDetails LED0_STATE		  = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x07, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoGq802154, "LED_TOGGLE");
 		}
 		public static class BAT {
 			public static final UartComponentPropertyDetails ENABLE           = new UartComponentPropertyDetails(UART_COMPONENT.BAT, 0x00, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "ENABLE");
@@ -141,7 +139,7 @@ public class UartPacketDetails {
 	}
 
 	public static final List<UartComponentPropertyDetails> mListOfUartCommandsConfig;
-    static {
+	static {
     	List<UartComponentPropertyDetails> aMap = new ArrayList<UartComponentPropertyDetails>();
         
         aMap.add(UART_COMPONENT_PROPERTY.BAT.ENABLE);

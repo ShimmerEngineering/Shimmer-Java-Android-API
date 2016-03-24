@@ -233,7 +233,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
 		//Don't allow the first char to be numeric - causes problems with MATLAB variable names
-		if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
+		if(shimmerUserAssignedName.length()==0 || UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
 			shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
 		}
 			
