@@ -21,6 +21,7 @@ public class MsgDock {
 	public static final int MSG_ID_SOURCE_DOCK_MANAGER = 1003;
 	public static final int MSG_ID_SOURCE_PLATFORM_MANAGER = 1004;
 	public static final int MSG_ID_SOURCE_ALGORITHM = 1005;
+	public static final int MSG_ID_SOURCE_ALGORITHM_MANAGER = 1006;
 	
 	 
 	//Device Info
