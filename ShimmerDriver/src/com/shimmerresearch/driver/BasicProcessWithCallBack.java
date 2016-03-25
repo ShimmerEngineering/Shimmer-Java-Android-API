@@ -16,6 +16,8 @@ public abstract class BasicProcessWithCallBack {
 	WaitForData mWaitForData = null;
 	List<Callable> mListOfThreads = new ArrayList<Callable>();
 	List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
+	String threadName = "";
+	
 	public BasicProcessWithCallBack(){
 		
 	}
@@ -64,6 +66,9 @@ public abstract class BasicProcessWithCallBack {
 	public void setWaitForData(BasicProcessWithCallBack b){
 		if (mGUIConsumerThread==null){
 			mGUIConsumerThread = new ConsumerThread();
+			if(!threadName.isEmpty()){
+				mGUIConsumerThread.setName(threadName);
+			}
 			mGUIConsumerThread.start();
 		}
 		if (mWaitForData!=null){
@@ -128,6 +133,13 @@ public abstract class BasicProcessWithCallBack {
 				e.printStackTrace();
 			}}		
 	
+	}
+	
+	public void setThreadName(String name){
+		threadName = name;
+		if(mGUIConsumerThread!=null){
+			mGUIConsumerThread.setName(name);
+		}
 	}
 
 	
