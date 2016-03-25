@@ -39,7 +39,7 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	
 	byte[] carriedRxBuf = new byte[]{};
 
-	public boolean mIsDebugMode = true;
+	public boolean mIsDebugMode = false;
 	public boolean mVerboseMode = true;
 	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
@@ -69,6 +69,8 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 		
 		shimmerUartOs = new ShimmerUartJssc(this, mComPort, mUniqueId, mBaudToUse);
 //		shimmerUartOs.registerRxCallback(new CallbackUartRx());
+		
+		setVerbose(mVerboseMode, mIsDebugMode);
 	}
 
 	public ShimmerUart(String comPort, String uniqueId){
