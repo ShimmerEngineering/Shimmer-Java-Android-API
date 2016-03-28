@@ -71,7 +71,7 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 //		shimmerUartOs.registerRxCallback(new CallbackUartRx());
 		
 		setVerbose(mVerboseMode, mIsDebugMode);
-		setThreadName(this.getClass().getSimpleName()+"-"+mUniqueId);
+		setThreadName(mUniqueId + "-" + this.getClass().getSimpleName());
 	}
 
 	public ShimmerUart(String comPort, String uniqueId){
