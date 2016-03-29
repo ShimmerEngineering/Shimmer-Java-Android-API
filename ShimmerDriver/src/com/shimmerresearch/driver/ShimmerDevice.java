@@ -157,6 +157,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,String>> mMapOfPacketFormat = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,String>>();
 	
 
+	public ShimmerDevice(){
+		setThreadName("ShimmerDevice");
+	}
+	
 	
 	// --------------- Abstract Methods End --------------------------
 

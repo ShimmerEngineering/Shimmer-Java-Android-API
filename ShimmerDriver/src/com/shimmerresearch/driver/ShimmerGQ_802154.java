@@ -37,11 +37,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	/** * */
 	private static final long serialVersionUID = 76977946997596234L;
 	
-//	//TODO JC: TEMP to test sensor enabled
-//	public int SENSOR_GSR_802154_BIT = 0x01;
-//	public int SENSOR_ECG_HEARTRATE_802154_BIT = 0x02;
-//	public int SENSOR_CLOCK_802154_BIT = 0x04;	
-	
 	/** This is derived from all the sensors
 	 * 
 	 */
@@ -131,6 +126,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		setMacIdFromUart(macId);
 	}
 
+	/**
+	 * @param dockId
+	 * @param slotNumber
+	 * @param connectionType
+	 */
 	public ShimmerGQ_802154(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType) {
 		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(connectionType);
@@ -141,6 +141,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
 	// ----------------- Local Sets/Gets Start ----------------------------
 
+	/**
+	 * @param radioConfigArray
+	 */
 	public void setRadioConfig(byte[] radioConfigArray) {
 		if(radioConfigArray.length>=7){
 	        this.mRadioChannel = radioConfigArray[0] & 0x00FF;
@@ -152,6 +155,12 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 	}
 	
+	/**
+	 * @param radioChannel
+	 * @param radioGroupId
+	 * @param radioDeviceId
+	 * @param radioResponseWindow
+	 */
 	public void setRadioConfig(int radioChannel, int radioGroupId, int radioDeviceId, int radioResponseWindow) {
         this.mRadioChannel = radioChannel;
         this.mRadioGroupId = radioGroupId;
