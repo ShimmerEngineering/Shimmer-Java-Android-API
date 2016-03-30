@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driverUtilities.DockJobDetails;
+import com.shimmerresearch.shimmerUartProtocol.DeviceException.ExceptionLevel;
 
 /**
  * @author JC, Mark Nolan
@@ -315,10 +316,7 @@ public class MsgDock {
 	
 	/** Indicates whether the Exception is critical to the operation underway. */
 	public ExceptionLevel mExceptionLevel = ExceptionLevel.HIGH;
-	public static enum ExceptionLevel {
-		LOW,
-		HIGH
-	}
+
 	
 	public byte[] mSlotMap = new byte[]{};
 	

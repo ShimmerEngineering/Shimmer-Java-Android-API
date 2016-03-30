@@ -1,43 +1,39 @@
 package com.shimmerresearch.shimmerUartProtocol;
 
-import java.util.concurrent.ExecutionException;
-
-import com.shimmerresearch.driver.MsgDock.ExceptionLevel;
-
 /**
  * @author Mark Nolan
  *
  */
-public class DockException extends ExecutionException{
+public class DockException extends DeviceException {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7922798090312830525L;
 	public int mSlotNumber;
-	public int mErrorCode;
-	public int mErrorCodeLowLevel; 
-	public String mComPort;
-	public String mClassName;
-	public String mDockID;
-	public String mUniqueID;
+//	public int mErrorCode;
+//	public int mErrorCodeLowLevel; 
+//	public String mComPort = "";
+//	public String mClassName = "";
+	public String mDockID = "";
+	public String mUniqueID = "";
 
-	/**Used to store additional error info (e.g. file path when copying data) 
-	 * 
-	 */
-	public String mMessage = ""; // Currently used for SD copy fail messages
-	/** Contains the error message as copied from a caught exception. 
-	 * 
-	 */
-	public String mExceptionMsg = "";
-	/** Contains the stracktrace as copied from a caught exception. 
-	 * 
-	 */
-	public StackTraceElement[] mExceptionStackTrace;
-	/**Indicates whether the Exception is critical to the operation underway.
-	 * 
-	 */
-	public ExceptionLevel mExceptionLevel = ExceptionLevel.HIGH;
+//	/**Used to store additional error info (e.g. file path when copying data) 
+//	 * 
+//	 */
+//	public String mMessage = ""; // Currently used for SD copy fail messages
+//	/** Contains the error message as copied from a caught exception. 
+//	 * 
+//	 */
+//	public String mExceptionMsg = "";
+//	/** Contains the stracktrace as copied from a caught exception. 
+//	 * 
+//	 */
+//	public StackTraceElement[] mExceptionStackTrace;
+//	/**Indicates whether the Exception is critical to the operation underway.
+//	 * 
+//	 */
+//	public ExceptionLevel mExceptionLevel = ExceptionLevel.HIGH;
 
 	
 
