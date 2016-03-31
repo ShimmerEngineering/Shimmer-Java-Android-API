@@ -92,6 +92,17 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 			}
     	}
     }
+	
+	@Override
+	public void closeSafely() throws DockException {
+		if(isSerialPortReaderStarted()){
+			stopSerialPortReader();
+		}
+		else {
+			shimmerUartDisconnect();
+		}
+	}
+
 
 	@Override
 	public void clearSerialPortRxBuffer() throws DockException {
@@ -211,8 +222,8 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
 	}
 	
 	public class ShimmerUartListener implements SerialPortEventListener {
-	    StringBuilder stringBuilder = new StringBuilder(128);
-	    
+//	    StringBuilder stringBuilder = new StringBuilder(128);
+//	    
 	    String mUniqueId = "";
 	    boolean mIsParserBusy = false;
 

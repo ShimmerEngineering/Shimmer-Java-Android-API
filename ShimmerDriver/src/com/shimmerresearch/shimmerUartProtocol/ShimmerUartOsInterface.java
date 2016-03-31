@@ -4,6 +4,7 @@ public interface ShimmerUartOsInterface {
 
 	public void shimmerUartConnect() throws DockException;
 	public void shimmerUartDisconnect() throws DockException;
+	public void closeSafely() throws DockException;
 	public void clearSerialPortRxBuffer() throws DockException;
 	public void shimmerUartTxBytes(byte[] buf) throws DockException;
 	public byte[] shimmerUartRxBytes(int numBytes) throws DockException;

@@ -187,7 +187,7 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	 */
 	public void closeSafely() throws DockException {
 		try {
-			shimmerUartOs.shimmerUartDisconnect();
+			shimmerUartOs.closeSafely();
 		} catch (DockException de) {
 			throw(de);
 		} finally{
@@ -210,10 +210,10 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 		try {
 			rxBuf = shimmerUartGetCommand(cPD, payload);
 		} catch(DockException e) {
-			closeSafely();
 			throw(e);
+		} finally{
+			if(!mLeavePortOpen) closeSafely();
 		}
-		if(!mLeavePortOpen) closeSafely();
 		
 		return rxBuf;
 	}
