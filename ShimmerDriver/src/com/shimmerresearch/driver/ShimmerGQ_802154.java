@@ -686,6 +686,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		//sendCallBackMsg();
 		
 		ObjectCluster objectCluster = super.buildMsg(packetByteArray, commType);
+		super.mLastProcessedObjectCluster = objectCluster;
 		return objectCluster;
 	}
 
