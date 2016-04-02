@@ -113,6 +113,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected long mConfigTime; //this is in milliseconds, utc
 
 	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
+	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
 	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
 	protected double mPacketReceptionRate = 100;
 	protected double mPacketReceptionRateCurrent = 100;
@@ -1040,6 +1041,23 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		return returnValue;		
 	}
-
 	
+	
+	public void incrementPacketExpectedCount() {
+		mPacketExpectedCount += 1;
+	}
+
+	public void incrementPacketReceivedCount() {
+		mPacketReceivedCount += 1;
+	}
+
+	public void clearPacketReceptionCounters(){
+		mPacketExpectedCount = 0;
+		mPacketReceivedCount = 0;
+	}
+	
+	public void setPacketReceivedCount(int i) {
+		mPacketReceivedCount = i;
+	}
+
 }

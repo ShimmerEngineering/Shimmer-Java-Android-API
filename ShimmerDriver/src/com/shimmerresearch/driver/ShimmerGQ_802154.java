@@ -216,21 +216,25 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 		
 	}
-	
 
+	
+	public double calculatePacketLoss(){
+		return calculatePacketLoss(mPacketExpectedCount, mPacketReceivedCount);
+	}
+	
 	public double calculatePacketLoss(long timeDifference, double samplingRate){
-		Long numberofExpectedPackets = (long) ((double)((timeDifference/1000)*samplingRate));
-		mPacketReceptionRateCurrent = (double)((mPacketReceivedCount)/(double)numberofExpectedPackets)*100;
-		
-		//Nudge
-		if(mPacketReceptionRateCurrent>100.0) {
-			mPacketReceptionRateCurrent = 100.0;
-		}
-		else if(mPacketReceptionRateCurrent<0.0) {
-			mPacketReceptionRateCurrent = 0.0;
-		}
-		
+		mPacketExpectedCount = (long) ((double)((timeDifference/1000)*samplingRate));
+		return calculatePacketLoss(mPacketExpectedCount, mPacketReceivedCount);
+	}
+	
+	private double calculatePacketLoss(long packetExpectedCount, long packetReceivedCount){
+		mPacketReceptionRateCurrent = (double)((packetReceivedCount)/(double)packetExpectedCount)*100;
+		mPacketReceptionRateCurrent = limitPercentRange(mPacketReceptionRateCurrent);
 		return mPacketReceptionRateCurrent;
+	}
+	
+	private double limitPercentRange(double value) {
+	    return Math.max(0.0, Math.min(value, 100.0));
 	}
 	
 //	@Override
@@ -816,14 +820,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return mSpanId + "." + mRadioDeviceId;
 	}
 	
-	public void setPacketReceivedCount(int i) {
-		mPacketReceivedCount = i;
-	}
-	
-	public void incrementPacketReceivedCount() {
-		mPacketReceivedCount += 1;
-	}
-
 	@Override
 	public void createInfoMemLayout() {
 		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
