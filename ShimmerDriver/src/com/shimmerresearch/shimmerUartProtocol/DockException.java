@@ -1,5 +1,11 @@
 package com.shimmerresearch.shimmerUartProtocol;
 
+import java.util.TreeMap;
+
+import com.shimmerresearch.driver.MsgDock;
+import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
+
 /**
  * @author Mark Nolan
  *
@@ -94,6 +100,18 @@ public class DockException extends DeviceException {
 		mErrorCodeLowLevel = errorCodeLowLevel;
 	}
 
+	/**Used by MspBsl
+	 * @param comPort
+	 * @param errorCode
+	 * @param errorCodeLowLevel
+	 * @param uniqueID
+	 */
+	public DockException(String comPort, int errorCode, int errorCodeLowLevel, String uniqueID, String exceptionMsg, StackTraceElement[] exceptionStackTrace) {
+		this(comPort, errorCode, errorCodeLowLevel, uniqueID);
+		mExceptionMsg = exceptionMsg;
+		mExceptionStackTrace = exceptionStackTrace;
+	}
+	
 	/** Used by SmartDockUart and ShimmerUart. If coming from ShimmerUart, need 
 	 * to set mSlotNumber and mUniqueID in next layer up where it is called from.
 	 * @param dockID
@@ -109,7 +127,6 @@ public class DockException extends DeviceException {
 		mSlotNumber = -1;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
 	}
-
 
 	public void updateDockException(String uniqueID) {
 		mUniqueID = uniqueID;
@@ -129,5 +146,49 @@ public class DockException extends DeviceException {
 		mExceptionStackTrace = exceptionStacktrace;
 	}
 
+	
+	public String getMsgDockErrString(TreeMap<Integer, String> mMapOfErrorCodes) {
+		String errorString = "";
+
+		String id = mUniqueID;
+		if(mSlotNumber == -1) {
+			id = mDockID;
+		}
+		String errorCode = "Unknown Error";
+		if(mMapOfErrorCodes.containsKey(mErrorCode)) {
+			errorCode = mMapOfErrorCodes.get(mErrorCode);
+		}
+		String lowLevelErrorCode = "Unknown Error";
+		if(mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
+			lowLevelErrorCode = mMapOfErrorCodes.get(mErrorCodeLowLevel);
+		}
+		String exceptionInfo = "";
+		if(!mExceptionMsg.isEmpty()) {
+			exceptionInfo = "Further info: " + mExceptionMsg;
+		}
+
+		errorString += ("CAUGHT MSGDOCK EXCEPTION\n");
+		errorString += ("\t" + "UniqueID: " + id
+				+ "\n\t" + "Action: " + "(" + mErrorCode + ") " + errorCode 
+				+ "\n\t" + "LowLevelError: " + "(" + mErrorCodeLowLevel + ") " + lowLevelErrorCode
+				+ "\n\t" + exceptionInfo
+				+ "\n");
+		
+		String stackTraceString = convertStackTraceToString();
+		if(!stackTraceString.isEmpty()) {
+			errorString += (stackTraceString);
+		}
+		
+		return errorString;
+	}
+
+	public String convertStackTraceToString(){
+		if(mExceptionStackTrace!=null){
+			return UtilShimmer.convertStackTraceToString(mExceptionStackTrace);
+		}
+		else {
+			return "";
+		}
+	}
 	
 }

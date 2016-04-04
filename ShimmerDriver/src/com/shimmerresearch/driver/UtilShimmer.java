@@ -2,7 +2,9 @@ package com.shimmerresearch.driver;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -603,4 +605,28 @@ public class UtilShimmer implements Serializable {
 		String configTime = splittedTrialName[splittedTrialName.length-1];
 		return configTime;
 	}
+
+	
+	public static String convertStackTraceToString(StackTraceElement[] exceptionStackTrace){
+		Exception e = new Exception();
+		e.setStackTrace(exceptionStackTrace);
+//		e.printStackTrace();
+		
+//		for(StackTraceElement element:msg.mExceptionStackTrace) {
+//			consolePrint("Exception thrown from " + element.getMethodName()
+//              + " in class " + element.getClassName() + " [on line number "
+//              + element.getLineNumber() + " of file " + element.getFileName() + "\n");
+//		}
+		
+		//create new StringWriter object
+		StringWriter sWriter = new StringWriter();
+		//create PrintWriter for StringWriter
+		PrintWriter pWriter = new PrintWriter(sWriter);
+		//now print the stacktrace to PrintWriter we just created
+		e.printStackTrace(pWriter);
+		//use toString method to get stacktrace to String from StringWriter object
+		String strStackTrace = sWriter.toString();
+		return strStackTrace;
+	}
+	
 }

@@ -1,11 +1,17 @@
 package com.shimmerresearch.driver;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driverUtilities.DockJobDetails;
+import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
 import com.shimmerresearch.shimmerUartProtocol.DeviceException.ExceptionLevel;
+import com.shimmerresearch.shimmerUartProtocol.DockException;
+import com.shimmerresearch.shimmerUartProtocol.ErrorCodesShimmerUart;
+import com.sun.xml.internal.ws.wsdl.parser.MexEntityResolver;
 
 /**
  * @author JC, Mark Nolan
@@ -328,6 +334,8 @@ public class MsgDock {
 	 */
 	public int mConnectionType = 0;
 	public int mIndicatorLEDsBitmap = 0;
+
+//	public DockException mDockException;
 	
 //	public MsgDock(){
 //	}
@@ -424,6 +432,63 @@ public class MsgDock {
 
 	public static String convertDockIdAndSlotNumberToUniqueId(String dockId, int slotNumber){
 		return (dockId + "." + String.format("%02d",slotNumber));
+	}
+	
+	public String getMsgDockErrString(TreeMap<Integer, String> mMapOfErrorCodes) {
+		String errorString = "";
+
+		String id = mUniqueID;
+		if(mSlotNumber == -1) {
+			id = mDockID;
+		}
+		String msgID = "Unknown Error";
+		if(mMapOfErrorCodes.containsKey(mMsgID)) {
+			msgID = mMapOfErrorCodes.get(mMsgID);
+		}
+		String errorCode = "Unknown Error";
+		if(mMapOfErrorCodes.containsKey(mErrorCode)) {
+			errorCode = mMapOfErrorCodes.get(mErrorCode);
+		}
+		String lowLevelErrorCode = "Unknown Error";
+		if(mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
+			lowLevelErrorCode = mMapOfErrorCodes.get(mErrorCodeLowLevel);
+		}
+		String exceptionInfo = "";
+		if(mExceptionMsg!=null && !mExceptionMsg.isEmpty()) {
+			exceptionInfo = "Further info: " + mExceptionMsg;
+		}
+
+		if((mMsgID==MsgDock.MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL) 
+			&&(mDockID.contains(HwDriverShimmerDeviceDetails.DOCK_LABEL[HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASICDOCK.ordinal()]))
+			&&(mErrorCodeLowLevel==ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT)){
+
+//		if(msg.mMsgID == MsgDock.MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL) {
+//			if((msg.mDockID.contains(HwDriverShimmerDeviceDetails.DOCK_LABEL[HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASICDOCK.ordinal()]))
+//					&&(msg.mErrorCodeLowLevel==ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT)){
+//				utilShimmer.consolePrintLn(id + " - unable to detect/read Shimmer - " + lowLevelErrorCode);
+//			}
+//			else {
+			errorString = ("CAUGHT MSGDOCK EXCEPTION - " + id + " - MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL " + errorCode + " " + lowLevelErrorCode);
+//			}
+		}
+		else {
+			errorString += ("CAUGHT MSGDOCK EXCEPTION\n");
+			errorString += ("\t" + "UniqueID: " + id
+					+ "\n\t" + "MsgID: " + "(" + mMsgID + ") " + msgID 
+					+ "\n\t" + "Action: " + "(" + mErrorCode + ") " + errorCode 
+					+ "\n\t" + "LowLevelError: " + "(" + mErrorCodeLowLevel + ") " + lowLevelErrorCode
+					+ "\n\t" + exceptionInfo
+					+ "\n");
+			
+			if(mExceptionStackTrace!=null){
+				String stackTraceString = UtilShimmer.convertStackTraceToString(mExceptionStackTrace);
+				if(!stackTraceString.isEmpty()) {
+					errorString += (stackTraceString);
+				}
+			}
+		}
+		
+		return errorString;
 	}
 	
 }
