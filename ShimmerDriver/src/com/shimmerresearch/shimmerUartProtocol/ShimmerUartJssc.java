@@ -177,9 +177,9 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
     	
     	if(!mIsSerialPortReaderStarted){
             int mask = SerialPort.MASK_RXCHAR;//Prepare mask
+        	mShimmerUartListener = new ShimmerUartListener(mUniqueId);
+//        	mShimmerUartListener.setVerbose(mVerboseModeUart);
             try {
-            	mShimmerUartListener = new ShimmerUartListener(mUniqueId);
-//            	mShimmerUartListener.setVerbose(mVerboseModeUart);
             	serialPort.setEventsMask(mask);//Set mask
             	serialPort.addEventListener(mShimmerUartListener);//Add SerialPortEventListener
 //        		setWaitForData(mShimmerUartListener);
