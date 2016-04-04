@@ -23,6 +23,7 @@ public class MsgDock {
 	public static final int MSG_ID_SOURCE_PLATFORM_MANAGER = 1004;
 	public static final int MSG_ID_SOURCE_ALGORITHM = 1005;
 	public static final int MSG_ID_SOURCE_ALGORITHM_MANAGER = 1006;
+	public static final int MSG_ID_SOURCE_EVENT_MARKERS = 1007;
 	
 	 
 	//Device Info
@@ -278,7 +279,7 @@ public class MsgDock {
         aMap.put(MSG_ID_SOURCE_PLOT_MANAGER, "MSG_ID_SOURCE_PLOT_MANAGER");
         aMap.put(MSG_ID_SOURCE_PLATFORM_MANAGER, "MSG_ID_SOURCE_PLATFORM_MANAGER");
         aMap.put(MSG_ID_SOURCE_ALGORITHM, "MSG_ID_SOURCE_ALGORITHM");
-        
+        aMap.put(MSG_ID_SOURCE_EVENT_MARKERS, "MSG_ID_SOURCE_EVENT_MARKERS");
         
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }

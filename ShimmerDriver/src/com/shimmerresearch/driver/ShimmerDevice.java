@@ -21,6 +21,8 @@ import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
 import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails;
 
@@ -122,6 +124,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected int mEventMarkersCodeLast = 0;
 	protected boolean mEventMarkersIsPulse = false;
 	protected int mEventMarkers=0;
+	
+	public static String STRING_CONSTANT_PENDING = "Pending";
+	public static String STRING_CONSTANT_UNKNOWN = "Unknown";
+	public static String STRING_CONSTANT_SD_ERROR = "SD Error";
+
 	
 	// --------------- Abstract Methods Start --------------------------
 	
@@ -1059,5 +1066,77 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setPacketReceivedCount(int i) {
 		mPacketReceivedCount = i;
 	}
+	
+	
+	public String getSdCapacityParsed() {
+		String strPending = STRING_CONSTANT_PENDING;
+		
+		if(!isSdCardAccessSupported(this)){
+			return "";
+		}
 
+		if(mReadSdAccessFail){
+			return STRING_CONSTANT_SD_ERROR;
+		}
+		else {
+			if (!getDriveUsedSpaceParsed().isEmpty()) {
+				return (getDriveUsedSpaceParsed() + " / " + getDriveTotalSpaceParsed());
+			}
+			else{
+				return (isHaveAttemptedToRead() ? STRING_CONSTANT_UNKNOWN : (mFirstSdAccess ? strPending: STRING_CONSTANT_UNKNOWN));
+			}
+		}
+	}
+
+	public boolean isRtcConfigViaUartSupported() {
+		return isRtcConfigViaUartSupported(this);
+	}
+	
+	public static boolean isRtcConfigViaUartSupported(ShimmerDevice shimmerDevice) {
+		int hwVer = shimmerDevice.getHardwareVersion(); 
+		int fwId = shimmerDevice.getFirmwareIdentifier();
+		if (((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.SDLOG))
+				|| ((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.LOGANDSTREAM))
+				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE)&&(fwId == FW_ID.GQ_BLE))
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				|| (hwVer==HW_ID.SHIMMER_2R_GQ)){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isConfigViaUartSupported() {
+		return isConfigViaUartSupported(this);
+	}
+
+	public static boolean isConfigViaUartSupported(ShimmerDevice shimmerDevice) {
+		int hwVer = shimmerDevice.getHardwareVersion(); 
+		if((hwVer==HW_ID.SHIMMER_3)
+				||(hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				||(hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				||(hwVer==HW_ID.SHIMMER_2R_GQ)){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isSdCardAccessSupported() {
+		return isSdCardAccessSupported(this);
+	}
+
+	public static boolean isSdCardAccessSupported(ShimmerDevice shimmerDevice) {
+		int hwVer = shimmerDevice.getHardwareVersion();
+		int fwId = shimmerDevice.getFirmwareIdentifier();
+		if (((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.SDLOG))
+				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.LOGANDSTREAM))
+				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE) && (fwId == FW_ID.GQ_BLE))
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				|| (hwVer==HW_ID.SHIMMER_2R_GQ)){
+			return true;
+		}
+		return false;
+	}
+	
 }

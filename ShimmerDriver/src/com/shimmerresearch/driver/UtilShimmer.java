@@ -299,7 +299,7 @@ public class UtilShimmer implements Serializable {
 		return false; // if less or not the same FW ID
 	}
 	
-	/**Returns true if FW ID is the same and "this" version is greater or equal then comparison version
+	/**Returns true if "this" version is greater or equal then comparison version
 	 * @param thisMajor
 	 * @param thisMinor
 	 * @param thisInternal
