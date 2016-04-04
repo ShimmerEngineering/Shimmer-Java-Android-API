@@ -175,7 +175,6 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 			shimmerUartOs.shimmerUartConnect();
 		} catch (DockException de) {
 			closeSafely();
-			mIsUARTInUse = false;
 			throw(de);
 		}
 		if(!mLeavePortOpen) mIsUARTInUse = true;

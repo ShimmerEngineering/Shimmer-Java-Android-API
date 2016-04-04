@@ -55,6 +55,11 @@ public class ErrorCodesShimmerUart {
 	public final static int SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING = 	(ERROR_CODES_ID*1000) + 15;
 	public final static int SHIMMERUART_COMM_ERR_PORT_EXCEPTON_CLOSING = 	(ERROR_CODES_ID*1000) + 16;
 	
+
+	public final static int SHIMMERUART_COMM_ERR_PORT_READER_START = 	(ERROR_CODES_ID*1000) + 65;
+	public final static int SHIMMERUART_COMM_ERR_PORT_READER_STOP = 	(ERROR_CODES_ID*1000) + 66;
+
+	
 	
 	public final static int SHIMMERUART_COMM_ERR_MAC_CHANGE = 			(ERROR_CODES_ID*1000) + 17;
 	
@@ -102,6 +107,9 @@ public class ErrorCodesShimmerUart {
 
     	aMap.put(SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING, "ShimmerUART_Comm_Err_Port_Exception_Opening");
     	aMap.put(SHIMMERUART_COMM_ERR_PORT_EXCEPTON_CLOSING, "ShimmerUART_Comm_Err_Port_Exception_Closing");
+    	
+    	aMap.put(SHIMMERUART_COMM_ERR_PORT_READER_START, "ShimmerUART_Comm_Err_Port_Starting_Reader");
+    	aMap.put(SHIMMERUART_COMM_ERR_PORT_READER_STOP, "ShimmerUART_Comm_Err_Port_Stopping_Reader");
     	
     	aMap.put(SHIMMERUART_COMM_ERR_MAC_CHANGE, "Change of Shimmer before an undock was detected");
     	

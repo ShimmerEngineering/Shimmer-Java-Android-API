@@ -173,7 +173,6 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
     	return de;
 	}
 	
-	
     public void startSerialPortReader() throws DockException {
     	
     	if(!mIsSerialPortReaderStarted){
@@ -187,10 +186,9 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
         		mIsSerialPortReaderStarted = true;
             } catch (SerialPortException e) {
         		mIsSerialPortReaderStarted = false;
-        		//TODO include below
-//    			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_START);
-//    			de.updateDockException(e.getMessage(), e.getStackTrace());
-//    			throw(de);
+    			DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_READER_START);
+    			de.updateDockException(e.getMessage(), e.getStackTrace());
+    			throw(de);
             }
     	}
     }
@@ -199,9 +197,9 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
         try {
         	serialPort.removeEventListener();
         } catch (SerialPortException e) {
-    		//TODO include below
-//			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_STOP);
-//			de.updateDockException(e.getMessage(), e.getStackTrace());
+			DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_READER_STOP);
+			de.updateDockException(e.getMessage(), e.getStackTrace());
+			throw(de);
         }
         
     	try {
@@ -209,9 +207,9 @@ public class ShimmerUartJssc implements ShimmerUartOsInterface {
     		shimmerUartDisconnect();
     		mIsSerialPortReaderStarted = false;
 		} catch (ExecutionException e) {
-    		//TODO include below
-//			DockException de = new DockException(mDockID,mSmartDockUARTComPort,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR,ErrorCodesDock.DOCKUART_PORT_EXCEPTON_ERR_PORT_READER_STOP);
-//			de.updateDockException(e.getMessage(), e.getStackTrace());
+			DockException de = generateException(ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_PORT_READER_STOP);
+			de.updateDockException(e.getMessage(), e.getStackTrace());
+			throw(de);
 		}
 
     }
