@@ -147,48 +147,4 @@ public class DockException extends DeviceException {
 	}
 
 	
-	public String getMsgDockErrString(TreeMap<Integer, String> mMapOfErrorCodes) {
-		String errorString = "";
-
-		String id = mUniqueID;
-		if(mSlotNumber == -1) {
-			id = mDockID;
-		}
-		String errorCode = "Unknown Error";
-		if(mMapOfErrorCodes.containsKey(mErrorCode)) {
-			errorCode = mMapOfErrorCodes.get(mErrorCode);
-		}
-		String lowLevelErrorCode = "Unknown Error";
-		if(mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
-			lowLevelErrorCode = mMapOfErrorCodes.get(mErrorCodeLowLevel);
-		}
-		String exceptionInfo = "";
-		if(!mExceptionMsg.isEmpty()) {
-			exceptionInfo = "Further info: " + mExceptionMsg;
-		}
-
-		errorString += ("CAUGHT MSGDOCK EXCEPTION\n");
-		errorString += ("\t" + "UniqueID: " + id
-				+ "\n\t" + "Action: " + "(" + mErrorCode + ") " + errorCode 
-				+ "\n\t" + "LowLevelError: " + "(" + mErrorCodeLowLevel + ") " + lowLevelErrorCode
-				+ "\n\t" + exceptionInfo
-				+ "\n");
-		
-		String stackTraceString = convertStackTraceToString();
-		if(!stackTraceString.isEmpty()) {
-			errorString += (stackTraceString);
-		}
-		
-		return errorString;
-	}
-
-	public String convertStackTraceToString(){
-		if(mExceptionStackTrace!=null){
-			return UtilShimmer.convertStackTraceToString(mExceptionStackTrace);
-		}
-		else {
-			return "";
-		}
-	}
-	
 }
