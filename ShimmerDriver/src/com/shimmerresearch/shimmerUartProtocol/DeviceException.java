@@ -67,7 +67,7 @@ public class DeviceException extends ExecutionException {
 			lowLevelErrorCode = mMapOfErrorCodes.get(mErrorCodeLowLevel);
 		}
 		String exceptionInfo = "";
-		if(!mExceptionMsg.isEmpty()) {
+		if(mExceptionMsg!=null && !mExceptionMsg.isEmpty()) {
 			exceptionInfo = "Further info: " + mExceptionMsg;
 		}
 

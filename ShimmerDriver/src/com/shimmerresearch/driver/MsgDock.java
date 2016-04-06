@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import com.shimmerresearch.driverUtilities.DockJobDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
+import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_STATE;
 import com.shimmerresearch.shimmerUartProtocol.DeviceException.ExceptionLevel;
 import com.shimmerresearch.shimmerUartProtocol.DockException;
 import com.shimmerresearch.shimmerUartProtocol.ErrorCodesShimmerUart;
@@ -298,7 +299,7 @@ public class MsgDock {
 	public String mBSLComPort = "";
 	public String mUARTComPort = "";
 	public String mDockID = "";
-	public int mDockState = 0;
+	public DEVICE_STATE mDockState = DEVICE_STATE.STATE_NONE;
 	
 	/**
 	 * Used for BSL progress reporting and lists SmartDock UART responses

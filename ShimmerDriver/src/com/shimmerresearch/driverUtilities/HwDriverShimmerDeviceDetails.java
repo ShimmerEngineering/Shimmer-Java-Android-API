@@ -28,36 +28,19 @@ public class HwDriverShimmerDeviceDetails {
 		SPAN_SR1_3_1, // 115200 baud
 		SPAN_SR1_3_0 // 230400 baud
 	}
-	
-	public class DOCK_STATE {
-		public final static int STATE_NONE = 0 ;
-		public final static int STATE_READY = 1;
-		public final static int STATE_BUSY = 2;
-	}
-	
-	public final static class CALLABLE_ID_DOCK {
-		public final static String READ_SHIMMER_DETAILS = "0";
-		public final static String FIRMWARE_WRITE = "1";
-		public final static String SD_CARD_SCAN = "2";
-		public final static String SD_CARD_COPY = "3";
-		public final static String CONFIG_WRITE = "4";
-		public final static String SD_CARD_CLEAR = "5";
-		public final static String JOB_QUEUE = "6";
-//		public static final String EXPANSION_MEMORY_WRITE = "7";
+
+	public enum DEVICE_STATE{
+		STATE_NONE,
+		STATE_READY,
+		STATE_BUSY
 	}
 
-	public enum DOCK_JOB {
-		NONE,
-		READ_SHIMMER_DETAILS,
-		FIRMWARE_WRITE,
-		CONFIG_WRITE,
-		EXPANSION_MEMORY_WRITE,
-		SD_CARD_SCAN,
-		SD_CARD_COPY,
-		SD_CARD_CLEAR,
-		JOB_QUEUE
-	}		
-    
+//	public class DOCK_STATE {
+//		public final static int STATE_NONE = 0 ;
+//		public final static int STATE_READY = 1;
+//		public final static int STATE_BUSY = 2;
+//	}
+	
     public static final class SH_SEARCH {
         public static final String[] DOCK = new String[] {
     		"Shimmer Dock",
