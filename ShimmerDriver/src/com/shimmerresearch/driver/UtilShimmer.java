@@ -30,6 +30,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class UtilShimmer implements Serializable {
 	
+	/** * */
+	private static final long serialVersionUID = -3892204042703820796L;
+	
 	public String mParentClassName = "UpdateCheck";
 	public Boolean mVerboseMode = true;
 	
