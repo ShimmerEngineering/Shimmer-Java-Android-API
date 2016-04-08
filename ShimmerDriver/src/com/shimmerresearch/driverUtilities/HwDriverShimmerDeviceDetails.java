@@ -12,7 +12,7 @@ public class HwDriverShimmerDeviceDetails {
 		BASICDOCK("Dock"),
 		BASE15("Base15U"),
 		BASE6("Base6U"),
-		SPAN("SPAN");
+		SPAN("Span");
 		
 		private String deviceLabel = "";
 		
@@ -28,16 +28,7 @@ public class HwDriverShimmerDeviceDetails {
 		public String toString() {
 			return deviceLabel;
 		}
-
 	}
-	
-//    public static final String[] DOCK_LABEL = new String[]{
-//		"Unknown",
-//		"Dock",
-//		"Base15U",
-//		"Base6U",
-//		"SPAN"
-//    };
     
 	public enum SPAN_VERSION{
 		UNKNOWN,
@@ -253,6 +244,15 @@ public class HwDriverShimmerDeviceDetails {
 	    else if(this.deviceType == DEVICE_TYPE.BASE6) {
 		    mNumberOfSlots = 6;
 	    }
+	}
+	
+	public static DEVICE_TYPE getDeviceTypeFromLabel(String label){
+		for (DEVICE_TYPE deviceType:DEVICE_TYPE.values()) {
+			if(deviceType.getLabel().equals(label)){
+				return deviceType;
+			}
+		}
+		return DEVICE_TYPE.UNKOWN;
 	}
 	
 }
