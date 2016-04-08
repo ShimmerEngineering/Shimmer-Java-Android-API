@@ -462,7 +462,7 @@ public class MsgDock {
 		}
 
 		if((mMsgID==MsgDock.MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL) 
-			&&(mDockID.contains(HwDriverShimmerDeviceDetails.DOCK_LABEL[HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASICDOCK.ordinal()]))
+			&&(mDockID.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASICDOCK.getLabel()))
 			&&(mErrorCodeLowLevel==ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT)){
 
 //		if(msg.mMsgID == MsgDock.MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL) {

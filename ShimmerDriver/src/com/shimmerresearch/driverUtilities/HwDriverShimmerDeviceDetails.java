@@ -8,20 +8,36 @@ package com.shimmerresearch.driverUtilities;
 public class HwDriverShimmerDeviceDetails {
 	
 	public static enum DEVICE_TYPE {
-		UNKOWN,
-		BASICDOCK,
-		BASE15,
-		BASE6,
-		SPAN
+		UNKOWN("Unknown"),
+		BASICDOCK("Dock"),
+		BASE15("Base15U"),
+		BASE6("Base6U"),
+		SPAN("SPAN");
+		
+		private String deviceLabel = "";
+		
+		DEVICE_TYPE(String deviceLabel){
+			this.deviceLabel = deviceLabel;
+		}
+		
+		public String getLabel() {
+			return deviceLabel;
+		}
+		
+		@Override
+		public String toString() {
+			return deviceLabel;
+		}
+
 	}
 	
-    public static final String[] DOCK_LABEL = new String[]{
-		"Unknown",
-		"Dock",
-		"Base15U",
-		"Base6U",
-		"SPAN"
-    };
+//    public static final String[] DOCK_LABEL = new String[]{
+//		"Unknown",
+//		"Dock",
+//		"Base15U",
+//		"Base6U",
+//		"SPAN"
+//    };
     
 	public enum SPAN_VERSION{
 		UNKNOWN,
@@ -176,7 +192,7 @@ public class HwDriverShimmerDeviceDetails {
 	}
 	
     public DEVICE_TYPE deviceType = DEVICE_TYPE.UNKOWN;
-    public String dockTypeParsed = DOCK_LABEL[deviceType.ordinal()];
+//    public String dockTypeParsed = deviceType.getString();
 	
     public HwDriverDeviceDetails usbHub = null;
 	public HwDriverDeviceDetails compositeDevice = null;
@@ -224,9 +240,9 @@ public class HwDriverShimmerDeviceDetails {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void setDeviceType(DEVICE_TYPE dockType) {
-	    this.deviceType = dockType;
-	    dockTypeParsed = DOCK_LABEL[this.deviceType.ordinal()];
+	public void setDeviceType(DEVICE_TYPE deviceType) {
+	    this.deviceType = deviceType;
+//	    dockTypeParsed = DOCK_LABEL[this.deviceType.ordinal()];
 	    
 	    if(this.deviceType == DEVICE_TYPE.BASICDOCK) {
 		    mNumberOfSlots = 1;
