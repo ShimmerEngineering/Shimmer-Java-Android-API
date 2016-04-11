@@ -60,7 +60,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public int mInternalExpPower = 1;			// Enable external power for EXG + GSR
 	public boolean mSyncWhenLogging = true;
 	public boolean mIsFwTestMode = false;
-	public boolean mIsSDError = false;
+//	public boolean mIsSDError = false;
 	
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
@@ -626,7 +626,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			mShimmerUserAssignedName = new String(shimmerName);
 		}
 		else {
-			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
+			setShimmerUserAssignedNameWithMac(DEFAULT_SHIMMER_NAME);
+//			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
 		}
 
 	}
@@ -778,15 +779,15 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //		}
 	}
 	
-	public boolean hasSameConfiguration(ShimmerGQ_802154 shimmerGQToComapreWith){
+	public boolean hasSameConfiguration(ShimmerGQ_802154 shimmerGQToCompareWith){
 
-		if(shimmerGQToComapreWith.mRadioDeviceId == this.mRadioDeviceId &&
-			shimmerGQToComapreWith.mRadioChannel == this.mRadioChannel &&
-			shimmerGQToComapreWith.mRadioGroupId == this.mRadioGroupId &&
-			shimmerGQToComapreWith.getTrialName().equals(this.getTrialName()) &&
-			shimmerGQToComapreWith.getConfigTime() == this.getConfigTime() &&
-			shimmerGQToComapreWith.getShimmerUserAssignedName().equals(this.getShimmerUserAssignedName())){
-
+		if(shimmerGQToCompareWith.mRadioDeviceId == this.mRadioDeviceId
+			&& shimmerGQToCompareWith.mRadioChannel == this.mRadioChannel
+			&& shimmerGQToCompareWith.mRadioGroupId == this.mRadioGroupId
+			&& shimmerGQToCompareWith.getTrialName().equals(this.getTrialName())
+			&& shimmerGQToCompareWith.getConfigTime() == this.getConfigTime()
+			&& shimmerGQToCompareWith.getShimmerUserAssignedName().equals(this.getShimmerUserAssignedName())
+			){
 			return true;
 		}
 		else{
