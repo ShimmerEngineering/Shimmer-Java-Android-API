@@ -225,6 +225,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public void setMacIdFromUart(String macIdFromUart) {
 		this.mMacIdFromUart = macIdFromUart;
+		this.setThreadName("Shimmer_" + mMacIdFromUart);
 	}
 	
 	/**
@@ -243,6 +244,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		else { 
 			this.mShimmerUserAssignedName = shimmerUserAssignedName;
 		}
+		this.setThreadName("mShimmerUserAssignedName" + getMacId());
 	}
 	
 	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
