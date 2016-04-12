@@ -303,7 +303,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(!mListOfAvailableCommunicationTypes.contains(communicationType)){
 			mListOfAvailableCommunicationTypes.add(communicationType);
 		}
-		Collections.sort(mListOfAvailableCommunicationTypes);
+//		Collections.sort(mListOfAvailableCommunicationTypes);
 		
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
 			setDocked(true);
@@ -314,7 +314,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mListOfAvailableCommunicationTypes.contains(communicationType)){
 			mListOfAvailableCommunicationTypes.remove(communicationType);
 		}
-		Collections.sort(mListOfAvailableCommunicationTypes);
+//		Collections.sort(mListOfAvailableCommunicationTypes);
 		
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
 			setDocked(false);

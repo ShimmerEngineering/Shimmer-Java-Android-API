@@ -603,7 +603,10 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
     				parseSinglePacket(packet, timestampMs);
 				} catch (DockException e) {
 					mThrownException = e;
+					mUtilShimmer.consolePrintLn("Problem parsing received packet");
 					e.printStackTrace();
+//					mUtilShimmer.consolePrintLn(e.getMsgDockErrString());
+					
 				}
     		}
     	}
