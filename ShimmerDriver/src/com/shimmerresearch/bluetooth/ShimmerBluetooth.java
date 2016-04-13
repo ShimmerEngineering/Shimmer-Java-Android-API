@@ -2231,7 +2231,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mTimerCheckForAckOrResp = null;
 		}
 		printLogDataForDebugging("Waiting for ack/response for command:\t" + btCommandToString(mCurrentCommand));
-		mTimerCheckForAckOrResp = new Timer();
+		mTimerCheckForAckOrResp = new Timer("Shimmer_" + getMacIdParsed() + "_TimerCheckForResp");
 		mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
 	}
 	
@@ -2368,7 +2368,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		// if shimmer is using LogAndStream FW, stop reading its status periodically
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ 
 			if(mTimerReadStatus==null){ 
-				mTimerReadStatus = new Timer();
+				mTimerReadStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerReadStatus");
 			} else {
 				mTimerReadStatus.cancel();
 				mTimerReadStatus.purge();
@@ -2404,7 +2404,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void startTimerCheckIfAlive(){
 		if(mCheckIfConnectionisAlive){
 			if(mTimerCheckAlive==null){ 
-				mTimerCheckAlive = new Timer();
+				mTimerCheckAlive = new Timer("Shimmer_" + getMacIdParsed() + "_TimerCheckAlive");
 			}
 			//dont really need this for log and stream since we already have the get status timer
 			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // check if Shimmer is using LogAndStream firmware
@@ -2468,7 +2468,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		//Instream response only supported in LogAndStream
 		if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)&&(getFirmwareVersionCode()>=6)){
 			if(mTimerReadBattStatus==null){ 
-				mTimerReadBattStatus = new Timer();
+				mTimerReadBattStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerBattStatus");
 			}
 			mTimerReadBattStatus.schedule(new readBattStatusTask(), mReadBattStatusPeriod, mReadBattStatusPeriod);
 		}
