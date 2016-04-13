@@ -34,6 +34,7 @@ public class UtilShimmer implements Serializable {
 	private static final long serialVersionUID = -3892204042703820796L;
 	
 	public String mParentClassName = "UpdateCheck";
+	public Boolean mDebugMode = true;
 	public Boolean mVerboseMode = true;
 	
 	public static final String STRING_CONSTANT_FOR_UNKNOWN = "Unknown";
@@ -43,6 +44,11 @@ public class UtilShimmer implements Serializable {
 		this.mVerboseMode = verboseMode;
 	}
 	
+	public UtilShimmer(String parentClassName, boolean verboseMode, boolean debugMode) {
+		this(parentClassName, verboseMode);
+		this.mDebugMode = debugMode;
+	}
+
 	public void consolePrintLn(String message) {
 		if(mVerboseMode) {
 			Calendar rightNow = Calendar.getInstance();
@@ -57,6 +63,12 @@ public class UtilShimmer implements Serializable {
 		if(mVerboseMode) {
 			System.out.print(message);
 		}		
+	}
+
+	public void consolePrintLnDebug(String message) {
+		if(mDebugMode){
+			consolePrintLn(message);
+		}
 	}
 
 	public void setVerboseMode(boolean verboseMode) {

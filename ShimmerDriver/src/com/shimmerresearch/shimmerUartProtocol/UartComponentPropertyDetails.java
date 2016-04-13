@@ -20,6 +20,7 @@ public class UartComponentPropertyDetails {
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo;
 	public PERMISSION mPermission = PERMISSION.UNKNOWN; 
 	public boolean mIsWriteExpectedResponseAck = false;
+	public boolean mIsWriteExpectedResponseStatus = false;
 	
 	public byte[] mCompPropByteArray = null;
 	
@@ -56,5 +57,9 @@ public class UartComponentPropertyDetails {
 
 	public boolean isWriteExpectedResponseAck() {
 		return mIsWriteExpectedResponseAck;
+	}
+	
+	public boolean isWriteExpectedResponseStatus() {
+		return mIsWriteExpectedResponseStatus;
 	}
 }
