@@ -105,7 +105,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	private int mCurrentSessionIdStreamingToDB = 0;
 
 	private int mSyncSuccessCount = 0;
-	
+	private long mLastSyncSuccessTime = 0;
 	
 	// ----------------- Constructors Start ---------------------------------
 	
@@ -1147,16 +1147,35 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public int getSyncSuccessCount() {
 		return this.mSyncSuccessCount ;
 	}
-
+	
 	/**
 	* @param mSyncSuccessCount the mSyncSuccessCount to set
 	*/
 	public void setSyncSuccessCount(int mSyncSuccessCount) {
 		this.mSyncSuccessCount = mSyncSuccessCount;
 	}
+	
+	public void clearSyncSuccessCount(){
+		setSyncSuccessCount(0);
+	}
 
 	public void incrementSyncSuccessCount(){
 		this.mSyncSuccessCount += 1;
+		this.mLastSyncSuccessTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * @return the mLastSyncSuccessTime
+	 */
+	public long getLastSyncSuccessTime() {
+		return mLastSyncSuccessTime;
+	}
+
+	/**
+	 * @param mLastSyncSuccessTime the mLastSyncSuccessTime to set
+	 */
+	public void setLastSyncSuccessTime(long mLastSyncSuccessTime) {
+		this.mLastSyncSuccessTime = mLastSyncSuccessTime;
 	}
 	
 }
