@@ -232,19 +232,26 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param shimmerUserAssignedName the mShimmerUserAssignedName to set
 	 */
 	public void setShimmerUserAssignedName(String shimmerUserAssignedName) {
-		//Don't allow the first char to be numeric - causes problems with MATLAB variable names
-		if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
-			shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
-		}
-			
-		//Limit the name to 12 Char
-		if(shimmerUserAssignedName.length()>12) {
-			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, 12);
-		}
-		else { 
-			this.mShimmerUserAssignedName = shimmerUserAssignedName;
-		}
-		this.setThreadName("mShimmerUserAssignedName" + getMacId());
+
+			if(!shimmerUserAssignedName.isEmpty()){
+				//Don't allow the first char to be numeric - causes problems with MATLAB variable names
+				if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
+					shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
+				}
+			}
+			else{
+				shimmerUserAssignedName = ShimmerObject.DEFAULT_SHIMMER_NAME + "_" + this.getMacIdFromUartParsed();
+			}
+
+			//Limit the name to 12 Char
+			if(shimmerUserAssignedName.length()>12) {
+				this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, 12);
+			}
+			else { 
+				this.mShimmerUserAssignedName = shimmerUserAssignedName;
+			}
+			this.setThreadName("mShimmerUserAssignedName" + getMacId());
+
 	}
 	
 	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
@@ -1074,7 +1081,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		String strPending = STRING_CONSTANT_PENDING;
 		
 		if(!isSdCardAccessSupported(this)){
-			return "";
+			return STRING_CONSTANT_UNKNOWN;
 		}
 
 		if(mIsSDError){
