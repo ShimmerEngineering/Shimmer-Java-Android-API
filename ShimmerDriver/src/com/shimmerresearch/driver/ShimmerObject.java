@@ -6147,8 +6147,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     		rate = maxGUISamplingRate;
     	}
     	
-    	 // get Shimmer compatible sampling rate
-    	Double actualSamplingRate = maxShimmerSamplingRate/Math.floor(maxShimmerSamplingRate/rate);
+    	// get Shimmer compatible sampling rate (use ceil or floor depending on which is appropriate to the user entered sampling rate)
+    	Double actualSamplingRate;
+    	if((Math.ceil(maxShimmerSamplingRate/rate) - maxShimmerSamplingRate/rate) < 0.05){
+           	actualSamplingRate = maxShimmerSamplingRate/Math.ceil(maxShimmerSamplingRate/rate);
+    	}
+    	else{
+        	actualSamplingRate = maxShimmerSamplingRate/Math.floor(maxShimmerSamplingRate/rate);
+    	}
+    	
     	 // round sampling rate to two decimal places
     	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
 		setSamplingRateShimmer(actualSamplingRate);
