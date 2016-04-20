@@ -2197,7 +2197,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				additionalChannelsOffset+=1;
 				
 				//event
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,mEventMarkers));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers));
 				untriggerEventIfLastOneWasPulse();
 //				if(mEventMarkersIsPulse){
 //					mEventMarkersIsPulse = false;

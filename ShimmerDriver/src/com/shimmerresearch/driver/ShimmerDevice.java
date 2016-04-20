@@ -123,7 +123,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//Events markers
 	protected int mEventMarkersCodeLast = 0;
 	protected boolean mEventMarkersIsPulse = false;
-	protected int mEventMarkers=0;
+	protected int mEventMarkers = 1;
 	
 	public static String STRING_CONSTANT_PENDING = "Pending";
 	public static String STRING_CONSTANT_UNKNOWN = "Unknown";
