@@ -109,6 +109,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
+import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
@@ -129,8 +131,6 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails;
-import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 

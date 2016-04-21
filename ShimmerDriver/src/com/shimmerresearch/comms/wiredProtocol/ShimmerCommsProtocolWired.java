@@ -1,4 +1,4 @@
-package com.shimmerresearch.shimmerUartProtocol;
+package com.shimmerresearch.comms.wiredProtocol;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,11 +11,15 @@ import jssc.SerialPort;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
+import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.UtilShimmer;
-import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_PACKET_CMD;
 
 /**Driver for managing and configuring the Shimmer through the Dock using the 
  * Shimmer's dock connected UART.
@@ -23,9 +27,9 @@ import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_PACKET_CMD
  * @author Mark Nolan
  *
  */
-public abstract class ShimmerUart extends BasicProcessWithCallBack {
+public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack implements ShimmerSerialEventCallback{
 	
-	public ShimmerUartOsInterface shimmerUartOs;
+	public ShimmerSerialPortInterface shimmerUartOs;
 	/** Boolean only used if COM port is not left open */
 	private boolean mIsUARTInUse = false;
 	public String mUniqueId = "";
@@ -62,19 +66,20 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
     //the timeout value for connecting with the port
     protected final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
 
-	public ShimmerUart(String comPort, String uniqueId, int baudToUse){
+	public ShimmerCommsProtocolWired(String comPort, String uniqueId, int baudToUse){
 		mComPort = comPort;
 		mUniqueId = uniqueId;
 		mBaudToUse = baudToUse;
-		
-		shimmerUartOs = new ShimmerUartJssc(this, mComPort, mUniqueId, mBaudToUse);
-//		shimmerUartOs.registerRxCallback(new CallbackUartRx());
+
+//		shimmerUartOs = new ShimmerComPortJssc(this, mComPort, mUniqueId, mBaudToUse);
+////		shimmerUartOs.registerRxCallback(new CallbackUartRx());
+		shimmerUartOs = new ShimmerSerialPortJssc(mComPort, mUniqueId, mBaudToUse, this);
 		
 		setVerbose(mVerboseMode, mIsDebugMode);
 		setThreadName(mUniqueId + "-" + this.getClass().getSimpleName());
 	}
 
-	public ShimmerUart(String comPort, String uniqueId){
+	public ShimmerCommsProtocolWired(String comPort, String uniqueId){
 		this(comPort, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED);
 	}
 	
@@ -173,7 +178,8 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	public void openSafely() throws DockException {
 		try {
 			shimmerUartOs.shimmerUartConnect();
-		} catch (DockException de) {
+		} catch (DeviceException devE) {
+			DockException de = new DockException(devE);
 			closeSafely();
 			throw(de);
 		}
@@ -187,7 +193,8 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	public void closeSafely() throws DockException {
 		try {
 			shimmerUartOs.closeSafely();
-		} catch (DockException de) {
+		} catch (DeviceException devE) {
+			DockException de = new DockException(devE);
 			throw(de);
 		} finally{
 			mIsUARTInUse = false;
@@ -352,7 +359,12 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 	private void txPacket(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg, byte[] valueBuffer) throws DockException {
 		consolePrintTxPacketInfo(packetCmd, msgArg, valueBuffer);
     	byte[] txPacket = assembleTxPacket(packetCmd.toCmdByte(), msgArg, valueBuffer);
-    	shimmerUartOs.shimmerUartTxBytes(txPacket); 
+    	try {
+			shimmerUartOs.shimmerUartTxBytes(txPacket);
+		} catch (DeviceException devE) {
+			DockException de = new DockException(devE);
+			throw(de);
+		} 
 	}
 
 	/**
@@ -432,7 +444,7 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 			consolePrintLn("RxObjectsSize=" + mListOfUartRxPacketObjects.size());
 		}
 		
-		DockException de = new DockException(mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT, mUniqueId);
+		DockException de = new DockException(mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_TIMEOUT, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_TIMEOUT, mUniqueId);
 		throw(de);
 	}
 	
@@ -486,21 +498,22 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 		if(commandByte!=UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte() 
 				&& commandByte!=UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
 			if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()) {
-				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD);
+				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD);
 			}
 			else if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()) {
-				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG);
+				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG);
 			}
 			else if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()) {
-				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC);
+				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC);
 			}
 			else {
-				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED);
+				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED);
 			}
 		}
 	}
 	
-	protected void serialPortRxEvent(int eventLength){
+	@Override
+	public void serialPortRxEvent(int eventLength){
         try {
         	byte[] rxBuf = shimmerUartOs.shimmerUartRxBytes(eventLength);
         	if(mIsDebugMode){
@@ -515,7 +528,7 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
         }
 	}
 
-	private void processRxBuf(byte[] rxBuf) throws DockException {
+	private void processRxBuf(byte[] rxBuf) throws DeviceException {
 		
 		byte headerByte = rxBuf[0];
     	if(headerByte==UartPacketDetails.PACKET_HEADER.toCharArray()[0]){
@@ -633,7 +646,7 @@ public abstract class ShimmerUart extends BasicProcessWithCallBack {
 			// Check CRC
 			if(!ShimmerCrc.shimmerUartCrcCheck(uRPO.mRxPacket)) {
 				consolePrintLn("RX\tERR_CRC");
-				throw new DockException(mUniqueId, mComPort, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC, ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_CRC);
+				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_CRC, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_CRC);
 			}
 			consolePrintRxPacketInfo(uRPO);
 		} catch (DockException dE){

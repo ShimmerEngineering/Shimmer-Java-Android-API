@@ -55,7 +55,7 @@
 
  */
 
-package com.shimmerresearch.pcdriver;
+package com.shimmerresearch.pcDriver;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

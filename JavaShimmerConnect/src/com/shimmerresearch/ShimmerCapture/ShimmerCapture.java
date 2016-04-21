@@ -91,8 +91,8 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.pcdriver.CallbackObject;
-import com.shimmerresearch.pcdriver.ShimmerPC;
+import com.shimmerresearch.pcDriver.CallbackObject;
+import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
 

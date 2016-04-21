@@ -1,11 +1,15 @@
-package com.shimmerresearch.shimmerUartProtocol;
+package com.shimmerresearch.comms.wiredProtocol;
 
 import java.util.Arrays;
 
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT;
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
 import com.shimmerresearch.driver.UtilShimmer;
-import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_COMPONENT;
-import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_PACKET_CMD;
 
+/**
+ * @author Mark Nolan
+ *
+ */
 public class UartRxPacketObject{
 	
 	public static final int UNKNOWN = -1;

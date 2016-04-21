@@ -1,10 +1,6 @@
-package com.shimmerresearch.shimmerUartProtocol;
+package com.shimmerresearch.comms.wiredProtocol;
 
-import java.util.TreeMap;
-
-import com.shimmerresearch.driver.MsgDock;
-import com.shimmerresearch.driver.UtilShimmer;
-import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
+import com.shimmerresearch.driver.DeviceException;
 
 /**
  * @author Mark Nolan
@@ -17,31 +13,7 @@ public class DockException extends DeviceException {
 	 */
 	private static final long serialVersionUID = -7922798090312830525L;
 	public int mSlotNumber;
-//	public int mErrorCode;
-//	public int mErrorCodeLowLevel; 
-//	public String mComPort = "";
-//	public String mClassName = "";
 	public String mDockID = "";
-	public String mUniqueID = "";
-
-//	/**Used to store additional error info (e.g. file path when copying data) 
-//	 * 
-//	 */
-//	public String mMessage = ""; // Currently used for SD copy fail messages
-//	/** Contains the error message as copied from a caught exception. 
-//	 * 
-//	 */
-//	public String mExceptionMsg = "";
-//	/** Contains the stracktrace as copied from a caught exception. 
-//	 * 
-//	 */
-//	public StackTraceElement[] mExceptionStackTrace;
-//	/**Indicates whether the Exception is critical to the operation underway.
-//	 * 
-//	 */
-//	public ExceptionLevel mExceptionLevel = ExceptionLevel.HIGH;
-
-	
 
 	/** Currently used by DeviceInfo - plan to change
 	 * @param message
@@ -120,16 +92,21 @@ public class DockException extends DeviceException {
 	 * @param lowLevelErrorCode
 	 */
 	public DockException(String dockID, String comPort, int errorType, int lowLevelErrorCode){
+		super(dockID, comPort, errorType, lowLevelErrorCode);
 		mDockID = dockID;
-		mComPort = comPort;
-		mErrorCode = errorType;
-		mErrorCodeLowLevel = lowLevelErrorCode;
 		mSlotNumber = -1;
 		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+	}
+	
+	
+	// TODO 2016-04-21 Mark currently working on
+	public DockException(DeviceException dE) {
+		this(dE.mComPort, dE.mErrorCode, dE.mErrorCodeLowLevel, dE.mUniqueID, dE.mExceptionMsg, dE.mExceptionStackTrace);
 	}
 
 	public void updateDockException(String uniqueID) {
 		mUniqueID = uniqueID;
+		
 		String[] subString = uniqueID.split("\\.");
 		mDockID  = subString[0]+"."+subString[1];
 		mSlotNumber = Integer.parseInt(subString[2]);
@@ -142,8 +119,7 @@ public class DockException extends DeviceException {
 	}
 	
 	public void updateDockException(String exceptionMsg, StackTraceElement[] exceptionStacktrace) {
-		mExceptionMsg = exceptionMsg;
-		mExceptionStackTrace = exceptionStacktrace;
+		super.updateDeviceException(exceptionMsg, exceptionStacktrace);
 	}
 
 	

@@ -6,12 +6,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.shimmerresearch.comms.wiredProtocol.DockException;
+import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
+import com.shimmerresearch.driver.DeviceException.ExceptionLevel;
 import com.shimmerresearch.driverUtilities.DockJobDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_STATE;
-import com.shimmerresearch.shimmerUartProtocol.DeviceException.ExceptionLevel;
-import com.shimmerresearch.shimmerUartProtocol.DockException;
-import com.shimmerresearch.shimmerUartProtocol.ErrorCodesShimmerUart;
 import com.sun.xml.internal.ws.wsdl.parser.MexEntityResolver;
 
 /**
@@ -463,7 +463,7 @@ public class MsgDock {
 
 		if((mMsgID==MsgDock.MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL) 
 			&&(mDockID.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASICDOCK.getLabel()))
-			&&(mErrorCodeLowLevel==ErrorCodesShimmerUart.SHIMMERUART_COMM_ERR_TIMEOUT)){
+			&&(mErrorCodeLowLevel==ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_TIMEOUT)){
 
 //		if(msg.mMsgID == MsgDock.MSG_ID_SHIMMERUART_READ_SHIMMER_DETAILS_FAIL) {
 //			if((msg.mDockID.contains(HwDriverShimmerDeviceDetails.DOCK_LABEL[HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASICDOCK.ordinal()]))

@@ -1,4 +1,4 @@
-package com.shimmerresearch.shimmerUartProtocol;
+package com.shimmerresearch.comms.wiredProtocol;
 
 import java.util.List;
 

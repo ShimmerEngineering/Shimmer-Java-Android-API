@@ -1,4 +1,4 @@
-package com.shimmerresearch.pcdriver;
+package com.shimmerresearch.pcDriver;
 
 import java.util.Collections;
 import java.util.Map;

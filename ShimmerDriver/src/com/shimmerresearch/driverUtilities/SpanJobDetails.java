@@ -13,9 +13,9 @@ import com.shimmerresearch.driver.ShimmerDevice;
  * @author Mark Nolan
  *
  */
-public class SpanJobDetails {
+public class SpanJobDetails extends AbstractErrorCodes {
 	
-	public final static int ERROR_CODES_ID = 9;
+	public final static int ERROR_CODES_ID = 8;
 
 	public enum SPAN_JOB_TYPE {
 		NONE,

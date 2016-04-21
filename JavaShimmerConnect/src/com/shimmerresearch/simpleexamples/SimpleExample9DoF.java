@@ -12,8 +12,8 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.pcdriver.CallbackObject;
-import com.shimmerresearch.pcdriver.ShimmerPC;
+import com.shimmerresearch.pcDriver.CallbackObject;
+import com.shimmerresearch.pcDriver.ShimmerPC;
 
 import javax.swing.JButton;
 import javax.vecmath.Matrix3d;

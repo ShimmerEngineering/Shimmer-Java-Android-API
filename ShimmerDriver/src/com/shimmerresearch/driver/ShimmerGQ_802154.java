@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -25,8 +27,6 @@ import com.shimmerresearch.sensor.SensorSystemTimeStamp;
 import com.shimmerresearch.sensor.SensorECGToHR;
 import com.shimmerresearch.sensor.SensorEXG;
 import com.shimmerresearch.sensor.SensorGSR;
-import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails;
-import com.shimmerresearch.shimmerUartProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 
 /**
  * @author JC

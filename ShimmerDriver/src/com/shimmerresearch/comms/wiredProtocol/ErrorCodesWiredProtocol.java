@@ -1,17 +1,19 @@
-package com.shimmerresearch.shimmerUartProtocol;
+package com.shimmerresearch.comms.wiredProtocol;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+
+import com.shimmerresearch.driverUtilities.AbstractErrorCodes;
 
 /**
  * 
  * @author Mark Nolan
  *
  */
-public class ErrorCodesShimmerUart {
+public class ErrorCodesWiredProtocol extends AbstractErrorCodes {
 
-	public final static int ERROR_CODES_ID = 2;
+	public final static int ERROR_CODES_ID = 7;
 	
 	// Error type/source/command
 	public final static int SHIMMERUART_CMD_ERR_MAC_ID_GET = 			(ERROR_CODES_ID*1000) + 21;
@@ -40,25 +42,13 @@ public class ErrorCodesShimmerUart {
 	
     // low level errors
 	public final static int ERR_NONE = 0;
-	public final static int SHIMMERUART_COMM_ERR_PORT_EXCEPTION = 		(ERROR_CODES_ID*1000) + 4;
 	public final static int SHIMMERUART_COMM_ERR_TIMEOUT = 				(ERROR_CODES_ID*1000) + 5;
 	public final static int SHIMMERUART_COMM_ERR_CRC = 					(ERROR_CODES_ID*1000) + 6;
-	public final static int SHIMMERUART_COMM_ERR_PACKAGE_FORMAT = 		(ERROR_CODES_ID*1000) + 7;
-	public final static int SHIMMERUART_COMM_ERR_WRITING_DATA = 		(ERROR_CODES_ID*1000) + 8;
-	public final static int SHIMMERUART_COMM_ERR_READING_DATA = 		(ERROR_CODES_ID*1000) + 9;
 	public final static int SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD = 	(ERROR_CODES_ID*1000) + 10;
 	public final static int SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG = 	(ERROR_CODES_ID*1000) + 11;
 	public final static int SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC = 	(ERROR_CODES_ID*1000) + 12;
 	public final static int SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED = 	(ERROR_CODES_ID*1000) + 13;
 	public final static int SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS = 	(ERROR_CODES_ID*1000) + 14;
-
-	public final static int SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING = 	(ERROR_CODES_ID*1000) + 15;
-	public final static int SHIMMERUART_COMM_ERR_PORT_EXCEPTON_CLOSING = 	(ERROR_CODES_ID*1000) + 16;
-	
-
-	public final static int SHIMMERUART_COMM_ERR_PORT_READER_START = 	(ERROR_CODES_ID*1000) + 65;
-	public final static int SHIMMERUART_COMM_ERR_PORT_READER_STOP = 	(ERROR_CODES_ID*1000) + 66;
-
 	
 	
 	public final static int SHIMMERUART_COMM_ERR_MAC_CHANGE = 			(ERROR_CODES_ID*1000) + 17;
@@ -93,31 +83,16 @@ public class ErrorCodesShimmerUart {
         aMap.put(SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE, "InfoMem read request exceeds InfoMem range");
         
         // low level errors
-    	aMap.put(SHIMMERUART_COMM_ERR_PORT_EXCEPTION, "ShimmerUART_Comm_Err_Port_Exception");
     	aMap.put(SHIMMERUART_COMM_ERR_TIMEOUT, "COM port timeout");
-    	aMap.put(SHIMMERUART_COMM_ERR_CRC, "ShimmerUART_Comm_Err_CRC");
-        aMap.put(SHIMMERUART_COMM_ERR_PACKAGE_FORMAT, "ShimmerUART_Comm_Err_Package_Format");
-        aMap.put(SHIMMERUART_COMM_ERR_WRITING_DATA, "ShimmerUART_Comm_Err_Writing_Data");
-    	aMap.put(SHIMMERUART_COMM_ERR_READING_DATA, "ShimmerUART_Comm_Err_Reading_Data");
     	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, "ShimmerUART_Comm_Err_Response_Bad_CMD");
     	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, "ShimmerUART_Comm_Err_Resonse_Bad_ARG");
     	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, "ShimmerUART_Comm_Err_Response_Bad_CRC");
     	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED, "ShimmerUART_Comm_Err_Response_Unexpected");
     	aMap.put(SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS, "ShimmerUART_Comm_Err_Message_Content");
-
-    	aMap.put(SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING, "ShimmerUART_Comm_Err_Port_Exception_Opening");
-    	aMap.put(SHIMMERUART_COMM_ERR_PORT_EXCEPTON_CLOSING, "ShimmerUART_Comm_Err_Port_Exception_Closing");
-    	
-    	aMap.put(SHIMMERUART_COMM_ERR_PORT_READER_START, "ShimmerUART_Comm_Err_Port_Starting_Reader");
-    	aMap.put(SHIMMERUART_COMM_ERR_PORT_READER_STOP, "ShimmerUART_Comm_Err_Port_Stopping_Reader");
     	
     	aMap.put(SHIMMERUART_COMM_ERR_MAC_CHANGE, "Change of Shimmer before an undock was detected");
     	
     	mMapOfErrorCodes = Collections.unmodifiableMap(aMap);
     }
    
-	public ErrorCodesShimmerUart() {
-	// TODO Auto-generated constructor stub
-	}
-
 }

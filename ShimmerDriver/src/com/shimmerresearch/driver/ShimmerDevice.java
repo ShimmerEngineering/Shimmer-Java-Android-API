@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
@@ -24,7 +25,6 @@ import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_T
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor;
-import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 

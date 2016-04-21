@@ -1,11 +1,12 @@
-package com.shimmerresearch.shimmerUartProtocol;
+package com.shimmerresearch.driver;
 
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
-import com.shimmerresearch.driver.UtilShimmer;
-
-
+/**
+ * @author Mark Nolan
+ *
+ */
 public class DeviceException extends ExecutionException {
 
 	/**
@@ -48,8 +49,15 @@ public class DeviceException extends ExecutionException {
 	public DeviceException(String message) {
 		super(message);
 	}
-
 	
+	
+	public DeviceException(String uniqueId, String comPort, int errorType, int lowLevelErrorCode) {
+		mUniqueID = uniqueId;
+		mComPort = comPort;
+		mErrorCode = errorType;
+		mErrorCodeLowLevel = lowLevelErrorCode;
+	}
+
 	
 	public String getMsgDockErrString(TreeMap<Integer, String> mMapOfErrorCodes) {
 		String errorString = "";
@@ -93,6 +101,11 @@ public class DeviceException extends ExecutionException {
 		else {
 			return "";
 		}
+	}
+
+	public void updateDeviceException(String exceptionMsg, StackTraceElement[] exceptionStacktrace) {
+		mExceptionMsg = exceptionMsg;
+		mExceptionStackTrace = exceptionStacktrace;
 	}
 
 }

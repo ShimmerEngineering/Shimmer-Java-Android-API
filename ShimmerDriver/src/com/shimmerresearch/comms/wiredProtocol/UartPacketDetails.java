@@ -1,15 +1,15 @@
-package com.shimmerresearch.shimmerUartProtocol;
+package com.shimmerresearch.comms.wiredProtocol;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails.PERMISSION;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.shimmerUartProtocol.UartComponentPropertyDetails.PERMISSION;
 
 import java.lang.reflect.*;
 

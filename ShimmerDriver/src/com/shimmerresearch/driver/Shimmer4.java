@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.shimmerresearch.comms.radioProtocol.ShimmerRadio;
+import com.shimmerresearch.comms.radioProtocol.ShimmerRadio.RadioListener;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.radiodriver.ShimmerRadio;
-import com.shimmerresearch.radiodriver.ShimmerRadio.RadioListener;
 import com.shimmerresearch.sensor.ActionSetting;
 
 public class Shimmer4 extends ShimmerDevice {

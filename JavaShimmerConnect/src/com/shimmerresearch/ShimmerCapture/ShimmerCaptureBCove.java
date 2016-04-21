@@ -91,9 +91,9 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.pcdriver.CallbackObject;
-import com.shimmerresearch.pcdriver.ShimmerPC;
-import com.shimmerresearch.pcdriver.ShimmerPCBTBCove;
+import com.shimmerresearch.pcDriver.CallbackObject;
+import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.pcDriver.ShimmerPCBTBCove;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
 
