@@ -84,7 +84,7 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// 		Object returnValue = null;
 		ActionSetting actionsetting = new ActionSetting(commType);
-		/*
+		
 		 switch(componentName){
 			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
 				mAccelRange = ((int)valueToSet);
@@ -97,7 +97,7 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 			}
         	break;
 		}
-		*/
+		
 		return actionsetting;
 		
 	}

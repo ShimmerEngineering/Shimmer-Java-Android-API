@@ -8,17 +8,55 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.radiodriver.ShimmerRadio;
+import com.shimmerresearch.radiodriver.ShimmerRadio.RadioListener;
+import com.shimmerresearch.sensor.ActionSetting;
 
 public class Shimmer4 extends ShimmerDevice {
 	
 	/** * */
 	private static final long serialVersionUID = 6916261534384275804L;
 	
+	protected ShimmerRadio mShimmerRadio;
 	
-	
-	
+	public void setSetting(long sensorID,String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
+		ActionSetting actionSetting = mMapOfSensors.get(sensorID).setSettings(componentName, valueToSet, commType);
+		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
+			mShimmerRadio.actionSettingResolver(actionSetting);
+		}
+	}
 	
 
+	public void initialize(){
+		if (mShimmerRadio!=null){ // the radio instance should be declared on a higher level and not in this class
+			mShimmerRadio.setRadioListener(new RadioListener(){
+
+			@Override
+			public void connected() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void disconnected() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void eventNewPacket() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void configurationResponse(byte[] responseBytes) {
+				// TODO Auto-generated method stub
+				
+			}});
+		}
+	}
+	
 
 	@Override
 	protected void checkBattery() {
