@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.shimmerresearch.comms.radioProtocol.ShimmerRadio;
-import com.shimmerresearch.comms.radioProtocol.ShimmerRadio.RadioListener;
+import com.shimmerresearch.comms.radioProtocol.RadioListener;
+import com.shimmerresearch.comms.radioProtocol.ShimmerRadioProtocol;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -17,7 +17,7 @@ public class Shimmer4 extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 6916261534384275804L;
 	
-	protected ShimmerRadio mShimmerRadio;
+	protected ShimmerRadioProtocol mShimmerRadio;
 
 
 	public Shimmer4() {
