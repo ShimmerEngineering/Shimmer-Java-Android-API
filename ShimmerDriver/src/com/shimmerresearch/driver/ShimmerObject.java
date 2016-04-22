@@ -131,6 +131,7 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensor.SensorMPU9X50;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
@@ -779,20 +780,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mDirectoryNameLength;
 	private List<String[]> mExtraSignalProperties = null;
 	
-	List<Integer> mListOfMplChannels = Arrays.asList(
-			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW);
+//	List<Integer> mListOfMplChannels = Arrays.asList(
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG,
+//			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW);
 
 	public static final double ACCELERATION_DUE_TO_GRAVITY = 9.81;
 	
@@ -825,7 +826,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
 	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
 	 *  
-	 *  Future hardware which WON'T be using this will start with ShimmerEmotionalGQ HW. 
+	 *  Future hardware which WON'T be using this will start with ShimmerGQ HW. 
 	 * 
 	 * @param newPacket
 	 * @param fwIdentifier
@@ -9284,7 +9285,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
-		else if(mListOfMplChannels.contains(sensorMapKey)){
+		else if(SensorMPU9X50.mListOfMplChannels.contains(sensorMapKey)){
+//		else if(mListOfMplChannels.contains(sensorMapKey)){
 			if(!checkIfAnyOtherMplChannelEnabled(sensorMapKey)) {
 				setDefaultMpu9150MplSensorConfig(state);
 			}
@@ -9449,7 +9451,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorEnabledMap.keySet().size()>0){
 				
-				for(int key:mListOfMplChannels){
+				for(int key:SensorMPU9X50.mListOfMplChannels){
+//				for(int key:mListOfMplChannels){
 					if(key==sensorMapKey){
 						continue;
 					}
@@ -9466,7 +9469,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorEnabledMap.keySet().size()>0){
 				
-				for(int key:mListOfMplChannels){
+				for(int key:SensorMPU9X50.mListOfMplChannels){
+//					for(int key:mListOfMplChannels){
 					if(isSensorEnabled(key)) {
 						return true;
 					}
