@@ -1,14 +1,21 @@
 package com.shimmerresearch.comms.radioProtocol;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
+import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.ActionSetting;
 
-public abstract class ShimmerRadio {
+public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack{
 
 	protected abstract void connect(String address);
 	
@@ -44,26 +51,44 @@ public abstract class ShimmerRadio {
 	public abstract void actionSettingResolver(ActionSetting ac);
 	
 	List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
+	RadioProtocol mRadioProtocol = new LiteProtocol(this); //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
+	
 	
 	public void setRadioListener(RadioListener radioListener){
 		mRadioListenerList.add(radioListener);
-	}
-	
-	public interface RadioListener{
-		public void connected();
-		
-		public void disconnected();
-		
-		public void eventNewPacket();
-		
-		public void configurationResponse(byte[] responseBytes);
 	}
 	
 	public void removeRadioListenerList(){
 		mRadioListenerList.clear();
 	}
 	
-	
+	public void initialize(){
+		mRadioProtocol = new LiteProtocol(this);
+		try {
+			mRadioProtocol.setProtocolListener(new ProtocolListener(){
+
+				@Override
+				public byte[] eventAckReceived() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public byte[] eventNewPacket() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public byte[] eventNewResponse() {
+					// TODO Auto-generated method stub
+					return null;
+				}});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 }

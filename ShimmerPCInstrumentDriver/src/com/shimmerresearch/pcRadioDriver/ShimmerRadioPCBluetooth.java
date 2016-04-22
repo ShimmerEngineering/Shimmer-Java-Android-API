@@ -1,10 +1,20 @@
-package com.shimmerresearch.androidradiodriver;
+package com.shimmerresearch.pcRadioDriver;
+
+import jssc.SerialPort;
+import jssc.SerialPortException;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.comms.radioProtocol.ShimmerRadio;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
+import com.shimmerresearch.comms.radioProtocol.ShimmerRadioProtocol;
+import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.sensor.ActionSetting;
 
-public class ShimmerRadioAndroid extends ShimmerRadio{
+public class ShimmerRadioPCBluetooth extends ShimmerRadioProtocol{
+
+	transient SerialPort mSerialPort=null;
 
 	@Override
 	protected void connect(String address) {
@@ -143,5 +153,19 @@ public class ShimmerRadioAndroid extends ShimmerRadio{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void actionSettingResolver(ActionSetting ac) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 }
