@@ -53,7 +53,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 	 * @throws DeviceException 
 	 */
 	@Override
-	public void shimmerUartConnect() throws DeviceException {
+	public void connect() throws DeviceException {
         try {
 //        	serialPort.setRTS(true);
 //        	serialPort.setDTR(false);
@@ -87,7 +87,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 	 * @throws DeviceException 
 	 */
 	@Override
-	public void shimmerUartDisconnect() throws DeviceException {
+	public void disconnect() throws DeviceException {
     	if(serialPort.isOpened()) {
 	        try {
 	        	serialPort.closePort();
@@ -105,7 +105,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 			stopSerialPortReader();
 		}
 		else {
-			shimmerUartDisconnect();
+			disconnect();
 		}
 	}
 
@@ -127,7 +127,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 	 * @throws DeviceException 
 	 */
 	@Override
-	public void shimmerUartTxBytes(byte[] buf) throws DeviceException {
+	public void txBytes(byte[] buf) throws DeviceException {
     	try {
         	if(mTxSpeed == 0) { // normal speed
         		for(int i = 0; i<buf.length;i++) {
@@ -152,7 +152,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 	 * @see ShimmerUartRxCmdDetails
 	 */
 	@Override
-	public byte[] shimmerUartRxBytes(int numBytes) throws DeviceException {
+	public byte[] rxBytes(int numBytes) throws DeviceException {
 		try {
 			byte[] rxBuf = serialPort.readBytes(numBytes, SERIAL_PORT_TIMEOUT);
 			if(this.mIsDebugMode){
@@ -210,7 +210,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
         
     	try {
     		// Finish up
-    		shimmerUartDisconnect();
+    		disconnect();
     		mIsSerialPortReaderStarted = false;
 		} catch (ExecutionException e) {
 			DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_READER_STOP);
@@ -261,6 +261,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 		}
 	}
 	
+	@Override
 	public void registerSerialPortRxEventCallback(ShimmerSerialEventCallback shimmerSerialEventCallback) {
 		mShimmerSerialEventCallback = shimmerSerialEventCallback;
 	}

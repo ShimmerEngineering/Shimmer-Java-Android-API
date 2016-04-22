@@ -1,6 +1,6 @@
 package com.shimmerresearch.pcRadioDriver;
 
-import jssc.SerialPort;
+//import jssc.SerialPort;
 import jssc.SerialPortException;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
@@ -8,18 +8,28 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.comms.radioProtocol.ShimmerRadioProtocol;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
+import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.sensor.ActionSetting;
 
-public class ShimmerRadioPCBluetooth extends ShimmerRadioProtocol{
+public class ShimmerRadioPCBluetooth extends ShimmerRadioProtocol implements ShimmerSerialEventCallback {
 
-	transient SerialPort mSerialPort=null;
+	public ShimmerSerialPortInterface shimmerSerialPortInterface;
+//	transient SerialPort mSerialPort=null;
 
 	@Override
 	protected void connect(String address) {
-		// TODO Auto-generated method stub
-		
+		try {
+			shimmerSerialPortInterface.registerSerialPortRxEventCallback(this);
+			shimmerSerialPortInterface.connect();
+//			shimmerSerialPortInterface.connect();
+		} catch (DeviceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -162,6 +172,15 @@ public class ShimmerRadioPCBluetooth extends ShimmerRadioProtocol{
 
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+
+	@Override
+	public void serialPortRxEvent(int byteLength) {
 		// TODO Auto-generated method stub
 		
 	}

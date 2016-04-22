@@ -8,6 +8,8 @@ import java.util.List;
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.UtilShimmer;
@@ -15,7 +17,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.ActionSetting;
 
-public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack{
+public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 
 	protected abstract void connect(String address);
 	

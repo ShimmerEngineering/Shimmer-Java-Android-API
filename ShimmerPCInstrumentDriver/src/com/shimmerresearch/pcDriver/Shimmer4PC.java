@@ -2,7 +2,7 @@ package com.shimmerresearch.pcDriver;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Shimmer4;
-import com.shimmerresearch.pcRadioDriver.ShimmerBTRadioPC;
+import com.shimmerresearch.pcRadioDriver.ShimmerRadioPCBluetooth;
 
 public class Shimmer4PC extends Shimmer4{
 	
@@ -18,7 +18,7 @@ public class Shimmer4PC extends Shimmer4{
 	}
 
 	public void initialize(){
-		mShimmerRadio = new ShimmerBTRadioPC();
+		mShimmerRadio = new ShimmerRadioPCBluetooth();
 		super.initialize();
 	}
 

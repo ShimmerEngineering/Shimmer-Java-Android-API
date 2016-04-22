@@ -135,53 +135,20 @@ public class ShimmerVerObject implements Serializable {
 				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.UNKNOWN);
 			}
 			
-//			//Temp substitution to support a fake ShimmerGQ using a Shimmer2r
-//			if (mHardwareVersion==HW_ID.SHIMMER_2R_GQ){
-//				mHardwareVersion=HW_ID.SHIMMER_GQ_802154_NR;
-//				mFirmwareIdentifier=FW_ID.GQ_802154;
-//				mFirmwareVersionMajor=0;
-//				mFirmwareVersionMinor=0;
-//				mFirmwareVersionInternal=24;
-//			}
-			
-			//TODO change to static map approach rather then if statements
-			// Handle parsed FW description. Keep first entry as a separate IF
-			// statement
 			mFirmwareIdentifierParsed = FW_LABEL.UNKNOWN;
 			// Set default on Shimmer2R
 			if ((mHardwareVersion==HW_ID.SHIMMER_2R)
-			|| (mHardwareVersion==HW_ID.SHIMMER_3)
-			|| ((mHardwareVersion==HW_ID.SHIMMER_GQ_BLE)&&(mFirmwareIdentifier==FW_ID.GQ_BLE))
-			|| (((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)||(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)) && (mFirmwareIdentifier==FW_ID.GQ_802154))
-			|| ((mHardwareVersion==HW_ID.SHIMMER_2R_GQ)&&(mFirmwareIdentifier==FW_ID.GQ_802154))
-			|| (mHardwareVersion==HW_ID.SPAN)
-			){
+				|| (mHardwareVersion==HW_ID.SHIMMER_3)
+				|| ((mHardwareVersion==HW_ID.SHIMMER_GQ_BLE)&&(mFirmwareIdentifier==FW_ID.GQ_BLE))
+				|| (((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)||(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)) && (mFirmwareIdentifier==FW_ID.GQ_802154))
+				|| ((mHardwareVersion==HW_ID.SHIMMER_2R_GQ)&&(mFirmwareIdentifier==FW_ID.GQ_802154))
+				|| (mHardwareVersion==HW_ID.SPAN)
+				|| (mHardwareVersion==HW_ID.SHIMMER_4)
+				){
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
 				}
 			}
-
-//			if (mHardwareVersion==HW_ID.SHIMMER_2R){
-//				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
-//					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
-//				}
-//			}
-//			else if (mHardwareVersion==HW_ID.SHIMMER_3){
-//				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
-//					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
-//				}
-//			}
-//			else if ((mHardwareVersion==HW_ID.SHIMMER_GQ_BLE)&&(mFirmwareIdentifier==FW_ID.GQ_BLE)){
-//				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
-//					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
-//				}
-//			}
-//			else if (((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)||(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR))
-//					&&(mFirmwareIdentifier==FW_ID.GQ_802154)){
-//				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
-//					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
-//				}
-//			}
 			
 			mFirmwareVersionParsed = mFirmwareIdentifierParsed;
 		}
@@ -192,7 +159,7 @@ public class ShimmerVerObject implements Serializable {
 			// Handle FW version code.
 			mFirmwareVersionCode = -1;
 			
-			if(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR || mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR){
+			if(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR || mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR || mHardwareVersion==HW_ID.SHIMMER_4){
 				mFirmwareVersionCode = 6;
 			}
 			else if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,7,3))
