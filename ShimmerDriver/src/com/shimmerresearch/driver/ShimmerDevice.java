@@ -1141,4 +1141,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
+
+//	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
+//		setShimmerVersionObject(hwfw);
+//		sensorAndConfigMapsCreate();
+//	}
+
 }

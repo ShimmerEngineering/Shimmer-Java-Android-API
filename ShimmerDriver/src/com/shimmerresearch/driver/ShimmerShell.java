@@ -15,22 +15,47 @@ import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
+/**
+ * @author Mark Nolan
+ *
+ */
 public class ShimmerShell extends ShimmerDevice {
 
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = 3505947289367382624L;
 
+	/** Initialisation via dock
+	 * @param dockId
+	 * @param slotNumber
+	 */
 	public ShimmerShell(String dockId, int slotNumber){
 		setDockInfo(dockId, slotNumber);
 	}
 
+	/** Initialisation via dock
+	 * @param dockId
+	 * @param slotNumber
+	 * @param connectionType
+	 */
 	public ShimmerShell(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType){
 		this(dockId, slotNumber);
 		addCommunicationRoute(connectionType);
 	}
 
+	
+	/** Initialisation via bluetooth manager
+	 * @param comPort
+	 * @param shimmerMacId
+	 * @param myName
+	 * @param timeSyncTrainingPeriod
+	 */
+	public ShimmerShell(String comPort, String shimmerMacId, String myName, int timeSyncTrainingPeriod) {
+		//TODO
+//		super(comPort, shimmerMacId, myName, true);
+//		mTimeSyncTrainingPeriod = timeSyncTrainingPeriod;
+	}
+
+	
 	
 	@Override
 	protected void checkBattery() {

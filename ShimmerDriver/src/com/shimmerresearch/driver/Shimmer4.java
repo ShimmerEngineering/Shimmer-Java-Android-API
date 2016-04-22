@@ -18,7 +18,24 @@ public class Shimmer4 extends ShimmerDevice {
 	private static final long serialVersionUID = 6916261534384275804L;
 	
 	protected ShimmerRadio mShimmerRadio;
+
+
+	public Shimmer4() {
+		// TODO Auto-generated constructor stub
+	}
 	
+//	public Shimmer4(String mDockID, int lclSlotNumber, String macIdFromUart, COMMUNICATION_TYPE dock) {
+//		// TODO Auto-generated constructor stub
+//	}
+
+
+	public Shimmer4(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE communicationType) {
+		setDockInfo(dockId, slotNumber);
+		addCommunicationRoute(communicationType);
+    	setSamplingRateShimmer(communicationType, 128);
+    	setMacIdFromUart(macId);
+	}
+
 	public void setSetting(long sensorID,String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
 		ActionSetting actionSetting = mMapOfSensors.get(sensorID).setSettings(componentName, valueToSet, commType);
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
@@ -171,5 +188,11 @@ public class Shimmer4 extends ShimmerDevice {
 		// TODO Auto-generated method stub
 		
 	}
+
+//
+//	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 }

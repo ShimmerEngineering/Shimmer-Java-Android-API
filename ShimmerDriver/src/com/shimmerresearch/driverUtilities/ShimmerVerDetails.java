@@ -38,6 +38,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_2R_GQ = 9; // Used for testing GQ
 		public static final int SHIMMER_GQ_802154_LR = 56; // Long Range
 		public static final int SHIMMER_GQ_802154_NR = 57; // Normal Range
+		public static final int SHIMMER_4 = 58;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;

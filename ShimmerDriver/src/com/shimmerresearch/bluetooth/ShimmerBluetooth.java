@@ -4720,8 +4720,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return this.mUseInfoMemConfigMethod;
 	}
 
+	@Override
 	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
 		super.setShimmerVersionObject(hwfw);
+		//TODO, done twice here?? below and included in above?
 		super.sensorAndConfigMapsCreate();
 	}
 	
