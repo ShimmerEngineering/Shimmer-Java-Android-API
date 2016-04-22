@@ -123,7 +123,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//Events markers
 	protected int mEventMarkersCodeLast = 0;
 	protected boolean mEventMarkersIsPulse = false;
-	protected int mEventMarkers = 1;
+	protected int mEventMarkerDefault = -1; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
+	protected int mEventMarkers = mEventMarkerDefault;
 	
 	public static String STRING_CONSTANT_PENDING = "Pending";
 	public static String STRING_CONSTANT_UNKNOWN = "Unknown";
@@ -285,7 +286,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setEventTriggered(int eventCode, int eventType){
 		
 		mEventMarkersCodeLast = eventCode;
-		mEventMarkers += eventCode;
+		mEventMarkers = mEventMarkers + eventCode + (-mEventMarkerDefault);
 		
 		//TOGGLE(1),
 		//PULSE(2);
@@ -296,7 +297,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void setEventUntrigger(int eventCode){
-		mEventMarkers -= eventCode;
+		mEventMarkers = mEventMarkers - eventCode;
+		if(mEventMarkers == 0){
+			mEventMarkers = mEventMarkerDefault;
+		}
 	}
 	
 	public void untriggerEventIfLastOneWasPulse(){
