@@ -1102,7 +1102,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE)&&(fwId == FW_ID.GQ_BLE))
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
-				|| (hwVer==HW_ID.SHIMMER_2R_GQ)){
+				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4)){
 			return true;
 		}
 		return false;
@@ -1117,7 +1118,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if((hwVer==HW_ID.SHIMMER_3)
 				||(hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				||(hwVer==HW_ID.SHIMMER_GQ_802154_LR)
-				||(hwVer==HW_ID.SHIMMER_2R_GQ)){
+				||(hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4)){
 			return true;
 		}
 		return false;
@@ -1135,7 +1137,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE) && (fwId == FW_ID.GQ_BLE))
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
-				|| (hwVer==HW_ID.SHIMMER_2R_GQ)){
+				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4)){
 			return true;
 		}
 		return false;
