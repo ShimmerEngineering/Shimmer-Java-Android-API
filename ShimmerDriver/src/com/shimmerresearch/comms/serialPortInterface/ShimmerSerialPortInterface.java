@@ -24,5 +24,9 @@ public interface ShimmerSerialPortInterface {
 	public boolean isSerialPortReaderStarted();
 //	public void sendRxCallback(byte[] packet, long timestampMs);
 	public void setVerboseMode(boolean verboseMode, boolean isDebugMode);
+	
+	public boolean bytesAvailableToBeRead();
+	
+	public int availableBytes();
   
 }

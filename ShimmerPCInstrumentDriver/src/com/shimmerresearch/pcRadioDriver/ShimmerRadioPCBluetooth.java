@@ -176,9 +176,6 @@ public class ShimmerRadioPCBluetooth extends ShimmerRadioProtocol implements Shi
 		
 	}
 	
-	
-	
-
 	@Override
 	public void serialPortRxEvent(int byteLength) {
 		// TODO Auto-generated method stub

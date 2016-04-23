@@ -10,6 +10,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.UtilShimmer;
@@ -53,8 +54,8 @@ public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	public abstract void actionSettingResolver(ActionSetting ac);
 	
 	List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
-	RadioProtocol mRadioProtocol = new LiteProtocol(this); //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
-	
+	RadioProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
+	ShimmerSerialPortInterface mSerialPort;
 	
 	public void setRadioListener(RadioListener radioListener){
 		mRadioListenerList.add(radioListener);
@@ -65,26 +66,65 @@ public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	}
 	
 	public void initialize(){
-		mRadioProtocol = new LiteProtocol(this);
+		int OS = 1;
+		if (OS==1){
+			mSerialPort = new ShimmerSerialPortJssc("", "", 0); 
+			mRadioProtocol = new LiteProtocol(mSerialPort);	
+		} else {
+			//mSerialPort = new ShimmerSerialPortAndroid();
+			mRadioProtocol = new LiteProtocol(mSerialPort);
+		}
+		
 		try {
 			mRadioProtocol.setProtocolListener(new ProtocolListener(){
 
 				@Override
-				public byte[] eventAckReceived() {
+				public void eventAckReceived() {
 					// TODO Auto-generated method stub
-					return null;
+				
 				}
 
 				@Override
-				public byte[] eventNewPacket() {
+				public void eventNewPacket(byte[] packet) {
 					// TODO Auto-generated method stub
-					return null;
+				
 				}
 
 				@Override
-				public byte[] eventNewResponse() {
+				public void eventNewResponse(byte[] respB) {
 					// TODO Auto-generated method stub
-					return null;
+					
+				}
+
+				@Override
+				public void hasStopStreaming() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void eventLogAndStreamStatusChanged() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void sendProgressReport(
+						ProgressReportPerCmd progressReportPerCmd) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void eventAckInstruction(byte[] bs) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void eventByteResponseWhileStreaming(byte[] b) {
+					// TODO Auto-generated method stub
+					
 				}});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

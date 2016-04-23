@@ -288,4 +288,16 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 		mUtilShimmer.setVerboseMode(verboseMode);
 	}
 
+	@Override
+	public boolean bytesAvailableToBeRead() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int availableBytes() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
