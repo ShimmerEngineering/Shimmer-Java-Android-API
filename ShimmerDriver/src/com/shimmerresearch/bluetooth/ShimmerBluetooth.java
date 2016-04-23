@@ -1381,6 +1381,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//Update configuration when all bytes received.
 			if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 				setShimmerInfoMemBytes(mInfoMemBuffer);
+				//Hack because infomem is getting updated but enabledsensors aren't getting updated
+				writeEnabledSensors(mEnabledSensors);
 			}
 		}
 		else {
@@ -1754,13 +1756,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(currentCommand==SET_INFOMEM_COMMAND){
 					//SET InfoMem is automatically followed by a GET so no need to handle here
 					
-					//Sleep for 1s to allow Shimmer to process new configuration
+					//Sleep for Xsecs to allow Shimmer to process new configuration
 					mNumOfInfoMemSetCmds -= 1;
 					if(mNumOfInfoMemSetCmds==0){
-						delayForBtResponse(2000);
+						delayForBtResponse(100);
 					}
 					else {
-						delayForBtResponse(5000);
+						delayForBtResponse(500);
 					}
 				}
 				else if(currentCommand==SET_CRC_COMMAND){
@@ -2591,27 +2593,29 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void writeEnabledSensors(long enabledSensors) {
 		
-		if(!sensorConflictCheck(enabledSensors)){ //sensor conflict check
-		
-		} 
-		else {
-			enabledSensors=generateSensorBitmapForHardwareControl(enabledSensors);
-			tempEnabledSensors=enabledSensors;
-
-			byte secondByte=(byte)((enabledSensors & 65280)>>8);
-			byte firstByte=(byte)(enabledSensors & 0xFF);
-
-			//write(new byte[]{SET_SENSORS_COMMAND,(byte) lowByte, highByte});
-			if(getHardwareVersion()==HW_ID.SHIMMER_3){
-				byte thirdByte=(byte)((enabledSensors & 16711680)>>16);
-
-				getListofInstructions().add(new byte[]{SET_SENSORS_COMMAND,(byte) firstByte,(byte) secondByte,(byte) thirdByte});
+		if(getFirmwareVersionCode()<=1){
+			if(!sensorConflictCheck(enabledSensors)){ //sensor conflict check - not needed with new SensorMap
+				return;
 			} 
 			else {
-				getListofInstructions().add(new byte[]{SET_SENSORS_COMMAND,(byte) firstByte,(byte) secondByte});
+				enabledSensors=generateSensorBitmapForHardwareControl(enabledSensors);
 			}
-			inquiry();
 		}
+			
+		tempEnabledSensors=enabledSensors;
+
+		byte secondByte=(byte)((enabledSensors & 0xFF00)>>8);
+		byte firstByte=(byte)(enabledSensors & 0xFF);
+
+		//write(new byte[]{SET_SENSORS_COMMAND,(byte) lowByte, highByte});
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			byte thirdByte=(byte)((enabledSensors & 0xFF0000)>>16);
+			getListofInstructions().add(new byte[]{SET_SENSORS_COMMAND,(byte) firstByte,(byte) secondByte,(byte) thirdByte});
+		} 
+		else {
+			getListofInstructions().add(new byte[]{SET_SENSORS_COMMAND,(byte) firstByte,(byte) secondByte});
+		}
+		inquiry();
 	}
 	
 	/**
@@ -3566,8 +3570,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		// Thread sleeps for 1s when ACK from SET_INFOMEM_COMMAND is received so
 		// it is safe to cue the below here to allow Shimmer time to process
 		// configuration
-		readInfoMem(startAddress, buf.length);
-		inquiry();
+//		readInfoMem(startAddress, buf.length);
+		readConfigurationFromInfoMem();
+		
+//		writeEnabledSensors(mEnabledSensors);
+//		inquiry();
 	}
     
 	//TODO: MN
@@ -3608,7 +3615,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			System.arraycopy(infoMemBytes, 0, instructionBuffer, 1 + memLengthToWrite.length + memAddressToWrite.length, infoMemBytes.length);
 			
 			getListofInstructions().add(instructionBuffer);
-
 		}
 	}
 
@@ -4771,7 +4777,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	protected void initializeDerivedSensors(){
-		
-	
+		sensorMapUpdateFromEnabledSensorsVars();
 	}
 }

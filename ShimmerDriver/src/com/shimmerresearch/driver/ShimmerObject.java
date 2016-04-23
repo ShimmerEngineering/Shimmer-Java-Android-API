@@ -897,13 +897,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		System.arraycopy(mSignalNameArray, 0, sensorNames, 0, sensorNames.length);
 		
 		//PARSE DATA
-		long[] newPacketInt=parsedData(newPacket,mSignalDataTypeArray);
+		long[] newPacketInt = parsedData(newPacket, mSignalDataTypeArray);
 		
 		double[] tempData=new double[3];
 		Vector3d accelerometer = new Vector3d();
 		Vector3d magnetometer = new Vector3d();
 		Vector3d gyroscope = new Vector3d();
-		
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3  
 				|| getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_LR || getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_NR || getHardwareVersion()==HW_ID.SHIMMER_2R_GQ){
@@ -3546,13 +3545,47 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return iSignal;
 	}
 
+	//TODO get below working
+	/** Based on the SensorMap approach rather then legacy inquiry command */
+	protected void interpretDataPacketFormat(){
+		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
+		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
+		
+		int packetSize=0;//mTimeStampPacketByteSize; // Time stamp
+
+		int index = 0;
+		for(SensorEnabledDetails sED:mSensorEnabledMap.values()) {
+			if(sED.mIsEnabled && !sED.isDerivedChannel()) {
+				for(String channelDetailsName:sED.mListOfChannels){
+					ChannelDetails channelDetails = mChannelMap.get(channelDetailsName);
+					if(channelDetails.mDefaultNumBytes>0){
+						signalNameArray[index] = channelDetails.mObjectClusterName;
+						signalDataTypeArray[index] = channelDetails.mDefaultChannelDataType;
+						packetSize += channelDetails.mDefaultNumBytes;
+						
+						System.out.println(channelDetails.mObjectClusterName + "\t" + channelDetails.mDefaultChannelDataType + "\t" + channelDetails.mDefaultNumBytes);
+						index++;
+					}
+				}
+			}
+		}
+		
+		//Handle 3-byte timestamp for new Shimmer firmware
+		if (getFirmwareVersionCode()>=6){
+			packetSize += 1;
+		}
+		
+		mSignalNameArray=signalNameArray;
+		mSignalDataTypeArray=signalDataTypeArray;
+		mPacketSize=packetSize;
+	}
+
 	
 	/** Only for Bluetooth
-	 * @param nC
+	 * @param numChannels
 	 * @param signalid
 	 */
-	protected void interpretDataPacketFormat(int nC, byte[] signalid)
-	{
+	protected void interpretDataPacketFormat(int numChannels, byte[] signalid){
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
 		
@@ -3571,7 +3604,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		
 		int enabledSensors= 0x00;
-		for (int i=0;i<nC;i++) {
+		for (int i=0;i<numChannels;i++) {
 			if ((byte)signalid[i]==(byte)0x00){
 				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
@@ -5028,8 +5061,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected void interpretInqResponse(byte[] bufferInquiry){
 		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
-
-			
 			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
 			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
 			if (mLSM303MagRate==3 && getSamplingRateShimmer()>10){
@@ -8394,6 +8425,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				updateEnabledSensorsFromExgResolution();
 			}
+//			interpretDataPacketFormat();
 		}
 	}
 	
@@ -8660,6 +8692,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 			}
+			
 		}
 	}
 	
@@ -8886,8 +8919,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
 			}
-			
+//			interpretDataPacketFormat();
 		}
+		
+		
+		//Debugging
+//		for(SensorEnabledDetails sED:mSensorEnabledMap.values()){
+//			if(sED.mIsEnabled){
+//				System.out.println("SENSOR enabled:\t"+ sED.mSensorDetails.mGuiFriendlyLabel);
+//			}
+//		}
 		
 	}
 	
@@ -11145,16 +11186,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 //		createInfoMemLayoutObjectIfNeeded();
 		
+		updateTimestampByteLength();
+	}
+	
+	public void updateTimestampByteLength(){
 		//Once the version is known update settings accordingly 
 		if (getFirmwareVersionCode()>=6){
-			mTimeStampPacketByteSize =3;
+			mTimeStampPacketByteSize = 3;
 			mTimeStampPacketRawMaxValue = 16777216;
 		} 
-		else if (getFirmwareVersionCode()<6){
-			mTimeStampPacketByteSize =2;
+		else {//if (getFirmwareVersionCode()<6){
+			mTimeStampPacketByteSize = 2;
 			mTimeStampPacketRawMaxValue = 65536;
 		}
 	}
+	
 
 	// --------------- Set Methods Start --------------------------
 
