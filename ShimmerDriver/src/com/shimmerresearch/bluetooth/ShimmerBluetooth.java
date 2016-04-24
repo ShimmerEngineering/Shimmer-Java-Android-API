@@ -122,6 +122,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	
+	/**
+	 * LogAndStream will try to recreate the SD config. file for each block of
+	 * InfoMem that is written - need to give it time to do so.
+	 */
+	private static final int DELAY_BETWEEN_INFOMEM_WRITES = 100;
+	/** Delay to allow LogAndStream to create SD config. file and reinitialise */
+	private static final int DELAY_AFTER_INFOMEM_WRITE = 500;
+	
 	public enum BT_STATE{
 		DISCONNECTED("Disconnected"),
 		CONNECTING("Connecting"), // The class is now initiating an outgoing connection
@@ -1381,8 +1389,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//Update configuration when all bytes received.
 			if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 				setShimmerInfoMemBytes(mInfoMemBuffer);
-				//Hack because infomem is getting updated but enabledsensors aren't getting updated
-				writeEnabledSensors(mEnabledSensors);
 			}
 		}
 		else {
@@ -1759,10 +1765,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					//Sleep for Xsecs to allow Shimmer to process new configuration
 					mNumOfInfoMemSetCmds -= 1;
 					if(mNumOfInfoMemSetCmds==0){
-						delayForBtResponse(100);
+						delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
 					}
 					else {
-						delayForBtResponse(500);
+						delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
 					}
 				}
 				else if(currentCommand==SET_CRC_COMMAND){
@@ -1952,7 +1958,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(mSetupDevice && getHardwareVersion()!=4){
 			writeAccelRange(mAccelRange);
 			writeGSRRange(mGSRRange);
-			writeSamplingRate(getSamplingRateShimmer());	
+			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeEnabledSensors(mSetEnabledSensors);
 			setContinuousSync(mContinousSync);
 		} 
@@ -1975,7 +1981,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			writeMagRange(mMagRange); //set to default Shimmer mag gain
 			writeAccelRange(mAccelRange);
 			writeGSRRange(mGSRRange);
-			writeSamplingRate(getSamplingRateShimmer());	
+			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeEnabledSensors(mSetEnabledSensors);
 			setContinuousSync(mContinousSync);
 		} 
@@ -2044,7 +2050,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			writeAccelRange(mAccelRange);
 			writeGyroRange(mGyroRange);
 			writeMagRange(mMagRange);
-			writeSamplingRate(getSamplingRateShimmer());	
+			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeInternalExpPower(1);
 //			setContinuousSync(mContinousSync);
 			writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
@@ -2991,9 +2997,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
 	 */
-	public void writeSamplingRate(double rate) {
+	public void writeShimmerAndSensorsSamplingRate(double rate) {
 		if(mIsInitialised) {
-			setShimmerSamplingRate(rate);
+			setShimmerAndSensorsSamplingRate(rate);
 			if(getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 
 				writeMagSamplingRate(mShimmer2MagRate);
@@ -3006,17 +3012,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				writeMagSamplingRate(mLSM303MagRate);
 				writeAccelSamplingRate(mLSM303DigitalAccelRate);
 				writeGyroSamplingRate(mMPU9150GyroAccelRate);
-				if (rate<=125){
-					writeEXGRateSetting(0);
-				} else if (rate<=250){
-					writeEXGRateSetting(1);
-				} else if (rate<=500){
-					writeEXGRateSetting(2);
-				} else if (rate<=1000){
-					writeEXGRateSetting(3);
-				} else {
-					writeEXGRateSetting(4);
-				}
+				writeExgSamplingRate(rate);
 				
 				int samplingByteValue = (int) (32768/getSamplingRateShimmer());
 				getListofInstructions().add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
@@ -3025,11 +3021,25 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	
+	private void writeExgSamplingRate(double rate) {
+		if (rate<=125){
+			writeEXGRateSetting(0);
+		} else if (rate<=250){
+			writeEXGRateSetting(1);
+		} else if (rate<=500){
+			writeEXGRateSetting(2);
+		} else if (rate<=1000){
+			writeEXGRateSetting(3);
+		} else {
+			writeEXGRateSetting(4);
+		}
+	}
+	
 	/**
 	 * This reads the configuration of both chips from the EXG board
 	 */
 	public void readEXGConfigurations(){
-		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==FW_ID.SDLOG) || getFirmwareVersionCode()>2){
+		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==2) || getFirmwareVersionCode()>2){
 			readEXGConfigurations(EXG_CHIP_INDEX.CHIP1);
 			readEXGConfigurations(EXG_CHIP_INDEX.CHIP2);
 		}
@@ -3040,7 +3050,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @see EXG_CHIP_INDEX
 	 */
 	public void readEXGConfigurations(EXG_CHIP_INDEX chipID){
-		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==FW_ID.SDLOG) || getFirmwareVersionCode()>2){
+		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==2) || getFirmwareVersionCode()>2){
 			getListofInstructions().add(new byte[]{GET_EXG_REGS_COMMAND,(byte)(chipID.ordinal()),0,10});
 		}
 	}
@@ -3141,7 +3151,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *            , where 0=125SPS ; 1=250SPS; 2=500SPS; 3=1000SPS; 4=2000SPS
 	 */
 	public void writeEXGRateSetting(int rateSetting){
-		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==FW_ID.SDLOG) || getFirmwareVersionCode()>2){
+		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==2) || getFirmwareVersionCode()>2){
 			if(rateSetting>=0 && rateSetting<=4){
 				setEXGRateSetting(rateSetting);
 				writeEXGConfiguration();
@@ -3162,7 +3172,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *            , where 0=125SPS ; 1=250SPS; 2=500SPS; 3=1000SPS; 4=2000SPS
 	 */
 	public void writeEXGRateSetting(EXG_CHIP_INDEX chipID, int rateSetting){
-		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==FW_ID.SDLOG) || getFirmwareVersionCode()>2){
+		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==2) || getFirmwareVersionCode()>2){
 			if(rateSetting>=0 && rateSetting<=4){
 				setEXGRateSetting(chipID, rateSetting);
 				if(chipID==EXG_CHIP_INDEX.CHIP1){
@@ -3181,7 +3191,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *            6 = 12x
 	 */
 	public void writeEXGGainSetting(int gainSetting){
-		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==FW_ID.SDLOG) || getFirmwareVersionCode()>2){
+		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==2) || getFirmwareVersionCode()>2){
 			if(gainSetting>=0 && gainSetting<=6){
 				setExGGainSetting(gainSetting);
 				writeEXGConfiguration();
@@ -3205,7 +3215,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *            Either a 1 or 2 value
 	 */
 	public void writeEXGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int gainSetting){
-		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==FW_ID.SDLOG) || getFirmwareVersionCode()>2){
+		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==2) || getFirmwareVersionCode()>2){
 			if(gainSetting>=0 && gainSetting<=6){
 				setExGGainSetting(chipID, channel, gainSetting);
 				if(chipID==EXG_CHIP_INDEX.CHIP1){
@@ -3219,20 +3229,25 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void writeEXGConfiguration(){
-		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==FW_ID.SDLOG) || getFirmwareVersionCode()>2){
+		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==2) || getFirmwareVersionCode()>2){
 			writeEXGConfiguration(getEXG1RegisterArray(),EXG_CHIP_INDEX.CHIP1);
 			writeEXGConfiguration(getEXG2RegisterArray(),EXG_CHIP_INDEX.CHIP2);
 		}
 	}
 	
 	/**
-	 * Only supported on Shimmer3, note that unlike previous write commands where the values are only set within the instrument driver after the ACK is received, this is set immediately. Fail safe should the settings not be actually set successfully is a timeout will occur, and the ID will disconnect from the device
-	 * @param reg A 10 byte value
-	 * @param chipID enum for the Chip number
+	 * Only supported on Shimmer3, note that unlike previous write commands
+	 * where the values are only set within the instrument driver after the ACK
+	 * is received, this is set immediately. Fail safe should the settings not
+	 * be actually set successfully is a timeout will occur, and the ID will
+	 * disconnect from the device
+	 * 
+	 * @param reg	A 10 byte value
+	 * @param chipID	enum for the Chip number
 	 * @see EXG_CHIP_INDEX
 	 */
 	public void writeEXGConfiguration(byte[] reg, EXG_CHIP_INDEX chipID){
-		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==FW_ID.SDLOG) || getFirmwareVersionCode()>2){
+		if((getFirmwareVersionInternal() >=8 && getFirmwareVersionCode()==2) || getFirmwareVersionCode()>2){
 			getListofInstructions().add(new byte[]{SET_EXG_REGS_COMMAND,(byte)(chipID.ordinal()),0,10,reg[0],reg[1],reg[2],reg[3],reg[4],reg[5],reg[6],reg[7],reg[8],reg[9]});
 		}
 	}

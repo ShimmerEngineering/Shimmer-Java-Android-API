@@ -27,7 +27,6 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author Mark Nolan
  *
  */
-
 public class UtilShimmer implements Serializable {
 	
 	/** * */
@@ -38,6 +37,8 @@ public class UtilShimmer implements Serializable {
 	public Boolean mVerboseMode = true;
 	
 	public static final String STRING_CONSTANT_FOR_UNKNOWN = "Unknown";
+	public static final String MAC_ADDRESS_ZEROS = "000000000000";
+	public static final String MAC_ADDRESS_FFFFS = "FFFFFFFFFFFF";
 
 	public UtilShimmer(String parentClassName, Boolean verboseMode){
 		this.mParentClassName = parentClassName;
@@ -520,7 +521,11 @@ public class UtilShimmer implements Serializable {
 			return false;
 		}
 
-		if(mac.equals("FFFFFFFFFFFF") || mac.equals("000000000000")){
+		if(mac.isEmpty()){
+			return false;
+		}
+
+		if(mac.equals(MAC_ADDRESS_FFFFS) || mac.equals(MAC_ADDRESS_ZEROS)){
 			return false;
 		}
 		
