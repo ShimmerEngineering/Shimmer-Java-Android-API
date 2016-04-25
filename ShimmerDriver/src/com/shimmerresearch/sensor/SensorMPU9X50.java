@@ -150,8 +150,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		//mSensorBitmapIDStreaming = 0x04<<(0*8);
 		//mSensorBitmapIDSDLogHeader =  0x04<<(0*8);    
 		
-		mListOfConfigOptionKeysAssociated = Arrays.asList(
-				Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
 		
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
 //				Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE,
@@ -219,6 +217,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			object = processShimmerChannelData(rawData, channelDetails, object);
+		}
+		
+		if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
+//			ObjectCluster objectCluster = (ObjectCluster) object;
+			double rawXData = ((FormatCluster)ObjectCluster.returnFormatCluster(object.mPropertyCluster.get(channelDetails.mObjectClusterName), ChannelDetails.channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			  
 		}
 		return object;
 	}
@@ -337,6 +341,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //		}
 				
 		return mConfigOptionsMap;
+	}
+
+	@Override
+	public void generateListOfConfigOptionKeysAssociated() {
+		mListOfConfigOptionKeysAssociated = Arrays.asList(
+				Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
 	}
 	
 	

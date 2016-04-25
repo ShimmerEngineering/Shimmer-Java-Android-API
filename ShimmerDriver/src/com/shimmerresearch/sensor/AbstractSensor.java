@@ -287,8 +287,14 @@ public abstract class AbstractSensor implements Serializable{
 		if(mMapOfCommTypetoChannel==null){
 			mMapOfCommTypetoChannel = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>>();
 		}
+		
+		generateListOfConfigOptionKeysAssociated();
+		
+		
 	}
 	
+	public abstract void generateListOfConfigOptionKeysAssociated();
+
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
 	 * @return
 	 */

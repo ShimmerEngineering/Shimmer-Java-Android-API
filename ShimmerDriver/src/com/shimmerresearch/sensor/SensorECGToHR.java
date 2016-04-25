@@ -123,6 +123,12 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 		return null;
 	}
 
+	@Override
+	public void generateListOfConfigOptionKeysAssociated() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 
 }
