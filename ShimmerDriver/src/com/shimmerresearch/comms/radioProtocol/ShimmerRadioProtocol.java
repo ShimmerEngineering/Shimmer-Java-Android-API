@@ -5,24 +5,65 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import jssc.SerialPort;
+import jssc.SerialPortException;
+
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
+import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
+import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.ActionSetting;
 
-public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
+public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 
-	protected abstract void connect(String address);
+	int mPacketSize;
+	
+	public void connect() throws DeviceException{
+		try{
+			mSerialPort.connect();
+		}
+		catch (DeviceException e) {
+        	
+			throw(e);
+        }
+		
+		isConnected();
+		
+	};
+	
+	public void disconnect() throws DeviceException{
+		mRadioProtocol.stop();
+		try{
+			mSerialPort.disconnect();
+		}
+		catch (DeviceException e) {
+        	
+			throw(e);
+        }
+		
+		isDisconnected();
+		
+	};
+	
+	public void startStreaming(){
+		mRadioProtocol.writeInstruction(new byte[]{LiteProtocolInstructionSet.Instructions.START_STREAMING_COMMAND_VALUE});
+		
+		
+	}
 	
 	//Core radio functions to be implemented by native radio libs , jssc, android .. etc.
+	/*
 	protected abstract boolean bytesAvailableToBeRead();
 	protected abstract int availableBytes();
 	protected abstract void writeBytes(byte[] data);
@@ -52,6 +93,8 @@ public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	protected abstract void dockedStateChange();
 	
 	public abstract void actionSettingResolver(ActionSetting ac);
+	*/
+	
 	
 	List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
 	RadioProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
@@ -65,11 +108,12 @@ public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 		mRadioListenerList.clear();
 	}
 	
-	public void initialize(){
-		int OS = 1;
+	public void isConnected(){
+		
+		int OS=1;
 		if (OS==1){
-			mSerialPort = new ShimmerSerialPortJssc("", "", 0); 
 			mRadioProtocol = new LiteProtocol(mSerialPort);	
+			
 		} else {
 			//mSerialPort = new ShimmerSerialPortAndroid();
 			mRadioProtocol = new LiteProtocol(mSerialPort);
@@ -87,7 +131,7 @@ public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 				@Override
 				public void eventNewPacket(byte[] packet) {
 					// TODO Auto-generated method stub
-				
+					System.out.println("New Packet: " + packet);
 				}
 
 				@Override
@@ -105,7 +149,9 @@ public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 				@Override
 				public void eventLogAndStreamStatusChanged() {
 					// TODO Auto-generated method stub
-					
+					if (mSerialPort.isConnected()){
+						mRadioProtocol.setPacketSize(41);
+					}
 				}
 
 				@Override
@@ -130,6 +176,36 @@ public abstract class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		for (RadioListener rl:mRadioListenerList){
+			rl.connected();
+		}
+	}
+	
+	public void isDisconnected(){
+		for (RadioListener rl:mRadioListenerList){
+			rl.disconnected();
+		}
+	}
+	
+	public void initialize(String address){
+		int OS = 1;
+		if (OS==1){
+			mSerialPort = new ShimmerSerialPortJssc(address, address, SerialPort.BAUDRATE_115200); 
+			mSerialPort.setVerboseMode(false,false);
+				
+			
+		} else {
+			//mSerialPort = new ShimmerSerialPortAndroid();
+			
+		}
+		
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

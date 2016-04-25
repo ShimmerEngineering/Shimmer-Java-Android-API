@@ -8,10 +8,7 @@ import com.shimmerresearch.driver.DeviceException;
  */
 public interface ShimmerSerialPortInterface {
 
-    //the timeout value for connecting with the port
-    final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
-
-	public void connect() throws DeviceException;
+    public void connect() throws DeviceException;
 //	public void connect(ShimmerSerialEventCallback shimmerSerialEventCallback) throws DeviceException;
 	public void disconnect() throws DeviceException;
 	public void closeSafely() throws DeviceException;
@@ -25,8 +22,10 @@ public interface ShimmerSerialPortInterface {
 //	public void sendRxCallback(byte[] packet, long timestampMs);
 	public void setVerboseMode(boolean verboseMode, boolean isDebugMode);
 	
-	public boolean bytesAvailableToBeRead();
+	public boolean bytesAvailableToBeRead() throws DeviceException;
 	
-	public int availableBytes();
+	public int availableBytes() throws DeviceException;
+	
+	public boolean isConnected();
   
 }

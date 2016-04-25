@@ -14,6 +14,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.RawBytePacketWithPCTimeStamp;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
 import com.shimmerresearch.driver.DeviceException;
@@ -50,7 +52,6 @@ public class LiteProtocol extends RadioProtocol{
 	protected boolean mDummy=false;
 	protected boolean mFirstTime=true;
 	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
-	protected int mPacketSize=0; 													// Default 2 bytes for time stamp and 6 bytes for accelerometer
 	transient protected Timer mTimerCheckForAckOrResp;								// Timer variable used when waiting for an ack or response packet
 	transient protected Timer mTimerCheckAlive;
 	transient protected Timer mTimerReadStatus;
@@ -71,7 +72,10 @@ public class LiteProtocol extends RadioProtocol{
 	protected boolean mIamAlive = false;
 	public String mMyBluetoothAddress;
 	public String mComPort;
-	protected boolean mUseProcessingThread = false;
+	
+	public void writeInstruction(byte[] instruction){
+		getListofInstructions().add(instruction);
+	};
 	
 	/**
 	 * @return the mFirmwareIdentifier
@@ -102,9 +106,10 @@ public class LiteProtocol extends RadioProtocol{
 	}
 	
 	/**this is to clear the buffer
+	 * @throws DeviceException 
 	 * 
 	 */
-	private void clearSerialBuffer() {
+	private void clearSerialBuffer() throws DeviceException {
 		if(mShimmerRadio.bytesAvailableToBeRead()){
 			byte[] buffer;
 			try {
@@ -292,7 +297,7 @@ public class LiteProtocol extends RadioProtocol{
 //								setInstructionStackLock(false);
 //							}
 							if(tb != null){
-								if((byte)tb[0]==LiteProtocolInstructionSet.Instructions.ACK_COMMAND_PROCESSED_VALUE) {
+								if((byte)tb[0]==(byte)LiteProtocolInstructionSet.Instructions.ACK_COMMAND_PROCESSED_VALUE) {
 
 									mWaitForAck=false;
 									printLogDataForDebugging("Ack Received for Command: \t\t" + LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand).name());
@@ -369,7 +374,7 @@ public class LiteProtocol extends RadioProtocol{
 							if(LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand)!=null){
 								byte responseCommand = tb[0];
 								// response have to read bytes and return the values
-								int lengthOfResponse = (int)LiteProtocolInstructionSet.Instructions.valueOf(responseCommand).getValueDescriptor().getOptions().getField(LiteProtocolInstructionSet.getDescriptor().findFieldByName("response_size"));
+								 int lengthOfResponse = (int)LiteProtocolInstructionSet.Instructions.valueOf(responseCommand).getValueDescriptor().getOptions().getField(LiteProtocolInstructionSet.getDescriptor().findFieldByName("response_size"));
 								byte[] response = mShimmerRadio.rxBytes(lengthOfResponse);
 								response = ArrayUtils.addAll(tb,response);
 								mProtocolListener.eventNewResponse(response);
@@ -630,13 +635,18 @@ public class LiteProtocol extends RadioProtocol{
 					// assume that the connection has been lost and close the
 					// serial port cleanly.
 					
-					if (mShimmerRadio.bytesAvailableToBeRead()){
-						try {
-							mShimmerRadio.rxBytes(mShimmerRadio.availableBytes());
-						} catch (DeviceException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+					try {
+						if (mShimmerRadio.bytesAvailableToBeRead()){
+							try {
+								mShimmerRadio.rxBytes(mShimmerRadio.availableBytes());
+							} catch (DeviceException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
+					} catch (DeviceException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 					stopTimerCheckForAckOrResp(); //Terminate the timer thread
 					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
@@ -695,6 +705,35 @@ public class LiteProtocol extends RadioProtocol{
 		if(getListofInstructions().size() > 0){
 			if(getListofInstructions().get(0)!=null){
 				mProtocolListener.eventAckInstruction(getListofInstructions().get(0));
+				
+				if(currentCommand==LiteProtocolInstructionSet.Instructions.START_STREAMING_COMMAND_VALUE || currentCommand==LiteProtocolInstructionSet.Instructions.START_SDBT_COMMAND_VALUE) {
+					mIsStreaming=true;
+					if(currentCommand==LiteProtocolInstructionSet.Instructions.START_SDBT_COMMAND_VALUE){
+						mIsSDLogging = true;
+						//logAndStreamStatusChanged();
+					}
+					byteStack.clear();
+					//isNowStreaming();
+				}
+				else if((currentCommand==LiteProtocolInstructionSet.Instructions.STOP_STREAMING_COMMAND_VALUE)||(currentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE)){
+					mIsStreaming=false;
+					if(currentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE) {
+						mIsSDLogging=false;
+						//logAndStreamStatusChanged();
+					}
+					
+					byteStack.clear();
+
+					try {
+						clearSerialBuffer();
+					} catch (DeviceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					//hasStopStreaming();					
+					getListofInstructions().removeAll(Collections.singleton(null));
+				}
 			}
 		}
 		
@@ -741,12 +780,8 @@ public class LiteProtocol extends RadioProtocol{
 		//Skip the first byte as it is the identifier DATA_PACKET
 		System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
 		
-		if(mUseProcessingThread){
-			mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
-		} 
-		else {
-			mProtocolListener.eventNewPacket(newPacket);
-		}
+		mProtocolListener.eventNewPacket(newPacket);
+		
 	}
 	
 	
@@ -816,6 +851,21 @@ public class LiteProtocol extends RadioProtocol{
 			e.printStackTrace();
 		}
 	
+	}
+
+	@Override
+	public void initialize() {
+		// TODO Auto-generated method stub
+		mIOThread = new IOThread();
+		mIOThread.start();
+	
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		mIOThread.stop=true;
+		mIOThread = null;
 	}
 	
 }

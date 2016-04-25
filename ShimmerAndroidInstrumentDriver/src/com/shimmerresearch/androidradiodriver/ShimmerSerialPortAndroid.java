@@ -9,31 +9,31 @@ public class ShimmerSerialPortAndroid implements ShimmerSerialPortInterface {
 	@Override
 	public void connect() throws DeviceException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void disconnect() throws DeviceException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void closeSafely() throws DeviceException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void clearSerialPortRxBuffer() throws DeviceException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void txBytes(byte[] buf) throws DeviceException {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class ShimmerSerialPortAndroid implements ShimmerSerialPortInterface {
 	public void registerSerialPortRxEventCallback(
 			ShimmerSerialEventCallback shimmerSerialEventCallback) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -58,19 +58,23 @@ public class ShimmerSerialPortAndroid implements ShimmerSerialPortInterface {
 	@Override
 	public void setVerboseMode(boolean verboseMode, boolean isDebugMode) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
-	public boolean bytesAvailableToBeRead() {
+	public boolean bytesAvailableToBeRead() throws DeviceException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public int availableBytes() {
+	public int availableBytes() throws DeviceException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-}
+	@Override
+	public boolean isConnected() {
+		// TODO Auto-generated method stub
+		return false;
+	}}

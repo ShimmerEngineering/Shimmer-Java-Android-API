@@ -21,6 +21,9 @@ import jssc.SerialPortTimeoutException;
  */
 public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, ShimmerSerialEventCallback {
 
+	//the timeout value for connecting with the port
+    public int SERIAL_PORT_TIMEOUT = 500; // was 2000
+	
 	private SerialPort serialPort = null;
 	public String mUniqueId = "";
 	public String mComPort = "";
@@ -170,7 +173,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 		}
     }
 	
-	private DeviceException generateException(int lowLevelError){
+	public DeviceException generateException(int lowLevelError){
     	DeviceException de = new DeviceException(
     			mUniqueId, 
     			mComPort,
@@ -289,15 +292,44 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 	}
 
 	@Override
-	public boolean bytesAvailableToBeRead() {
-		// TODO Auto-generated method stub
+	public boolean bytesAvailableToBeRead() throws DeviceException {
+		try {
+			if(serialPort != null){
+				if (serialPort.getInputBufferBytesCount()!=0){
+					return true;
+				}
+			}
+
+		} catch (SerialPortException e) {
+			DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_EXCEPTION); 
+        	de.updateDeviceException(e.getMessage(), e.getStackTrace());
+			throw(de);
+		}
 		return false;
 	}
 
 	@Override
-	public int availableBytes() {
+	public int availableBytes() throws DeviceException {
+		try {
+			if(serialPort != null){
+				return serialPort.getInputBufferBytesCount();
+			}
+			else{
+				return 0;
+			}
+			
+		} catch (SerialPortException ex) {
+			DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_EXCEPTION); 
+        	de.updateDeviceException(ex.getMessage(), ex.getStackTrace());
+			throw(de);
+		}
+	}
+
+	@Override
+	public boolean isConnected() {
 		// TODO Auto-generated method stub
-		return 0;
+		serialPort.isOpened();
+		return false;
 	}
 
 }

@@ -9,6 +9,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="/ShimmerPCInstrumentDriver/libs/jssc.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/ShimmerBiophysicalProcessingLibrary_Rev_0_11.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ShimmerDataStructure"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ShimmerDataStructure"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
