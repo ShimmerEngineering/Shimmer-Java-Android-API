@@ -478,7 +478,7 @@ public class ShimmerService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if ((stemp.getBTState()==BT_STATE.CONNECTED || stemp.getBTState()==BT_STATE.SDLOGGING)){
-				stemp.writeSamplingRate(samplingRate);
+				stemp.writeShimmerAndSensorsSamplingRate(samplingRate);
 				if (mPPGtoHREnabled){
 					mPPGtoHR = new PPGtoHRAlgorithm(samplingRate, mNumberOfBeatsToAvg, true);
 					try {
@@ -632,7 +632,7 @@ public class ShimmerService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if ((stemp.getBTState()==BT_STATE.CONNECTED || stemp.getBTState()==BT_STATE.SDLOGGING) && stemp.getBluetoothAddress().equals(bluetoothAddress)){
-				stemp.writeSamplingRate(samplingRate);
+				stemp.writeShimmerAndSensorsSamplingRate(samplingRate);
 				if (mPPGtoHREnabled){
 					mPPGtoHR = new PPGtoHRAlgorithm(samplingRate, mNumberOfBeatsToAvg, true);
 					try {

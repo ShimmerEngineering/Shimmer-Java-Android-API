@@ -749,7 +749,7 @@ public class MultiShimmerTemplateService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBTState()==BT_STATE.CONNECTED){
-				stemp.writeSamplingRate(samplingRate);
+				stemp.writeShimmerAndSensorsSamplingRate(samplingRate);
 			}
 		}
 	}
@@ -911,7 +911,7 @@ public class MultiShimmerTemplateService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
-				stemp.writeSamplingRate(samplingRate);
+				stemp.writeShimmerAndSensorsSamplingRate(samplingRate);
 			}
 		}
 	}
@@ -1392,7 +1392,7 @@ public class MultiShimmerTemplateService extends Service {
 			while (iterator.hasNext()) {
 				Shimmer stemp=(Shimmer) iterator.next();
 				if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getStreamingStatus()==false){ // if in connected state and the device is not streaming already
-					stemp.writeSamplingRate(samplingRate);
+					stemp.writeShimmerAndSensorsSamplingRate(samplingRate);
 				}
 			}
 		} else {

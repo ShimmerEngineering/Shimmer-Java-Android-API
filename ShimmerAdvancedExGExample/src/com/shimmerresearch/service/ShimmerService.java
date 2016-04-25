@@ -326,7 +326,7 @@ public class ShimmerService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBTState()==BT_STATE.CONNECTED){
-				stemp.writeSamplingRate(samplingRate);
+				stemp.writeShimmerAndSensorsSamplingRate(samplingRate);
 			}
 		}
 	}
@@ -441,7 +441,7 @@ public class ShimmerService extends Service {
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
 			if (stemp.getBTState()==BT_STATE.CONNECTED && stemp.getBluetoothAddress().equals(bluetoothAddress)){
-				stemp.writeSamplingRate(samplingRate);
+				stemp.writeShimmerAndSensorsSamplingRate(samplingRate);
 			}
 		}
 	}
