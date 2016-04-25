@@ -330,12 +330,12 @@ public class SimpleExample9DoF extends BasicProcessWithCallBack {
 
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				if(mFirstTime && bAdd.equals(mShimmer.getBluetoothAddress())){
-					mShimmer.writeSamplingRate(10.1);
+					mShimmer.writeShimmerAndSensorsSamplingRate(10.1);
 					mShimmer.writeEnabledSensors(ShimmerObject.SENSOR_ACCEL|ShimmerObject.SENSOR_GYRO|ShimmerObject.SENSOR_MAG);
 					mFirstTime = false;
 				}
 				if(mFirstTime2 && bAdd.equals(mShimmer2.getBluetoothAddress())){
-					mShimmer.writeSamplingRate(10.1);
+					mShimmer.writeShimmerAndSensorsSamplingRate(10.1);
 					mShimmer.writeEnabledSensors(ShimmerObject.SENSOR_ACCEL|ShimmerObject.SENSOR_GYRO|ShimmerObject.SENSOR_MAG);
 					mFirstTime2 = false;
 				}

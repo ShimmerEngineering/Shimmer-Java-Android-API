@@ -3373,7 +3373,7 @@ public class Configuration {
 								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A13,
 								Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,   // RMC 22/04/2016: MPU added to sensor class, check if can delete
 								Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
 								Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER, new SensorGroupingDetails(

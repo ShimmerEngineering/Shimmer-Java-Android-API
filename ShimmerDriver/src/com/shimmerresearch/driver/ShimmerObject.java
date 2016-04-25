@@ -131,6 +131,7 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensor.SensorMPU9X50;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
@@ -466,30 +467,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
-	//TODO switch to just using ShimmerVerObject rather then individual variables 
-//	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
-//	protected int mHardwareVersion = mShimmerVerObject.getHardwareVersion();
-//	public String mHardwareVersionParsed = mShimmerVerObject.getHardwareVersionParsed();
-//	public int mFirmwareVersionCode = mShimmerVerObject.getFirmwareVersionCode();
-//	public int mFirmwareIdentifier = mShimmerVerObject.getFirmwareIdentifier();
-//	public int mFirmwareVersionMajor = mShimmerVerObject.getFirmwareVersionMajor();
-//	public int mFirmwareVersionMinor = mShimmerVerObject.getFirmwareVersionMinor();
-//	public int mFirmwareVersionInternal = mShimmerVerObject.getFirmwareVersionInternal();
-//	public String mFirmwareVersionParsed = mShimmerVerObject.mFirmwareVersionParsed;
-	
-//	//TODO switch to just using ExpansionBoardDetails rather then individual variables 
-//	protected ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
-//	protected int mExpansionBoardId = mExpansionBoardDetails.mExpBoardId; 
-//	protected int mExpansionBoardRev = mExpansionBoardDetails.mExpBoardRev;
-//	protected int mExpansionBoardRevSpecial = mExpansionBoardDetails.mExpBoardRevSpecial;
-//	protected String mExpansionBoardParsed = mExpansionBoardDetails.mExpBoardParsed;  
-//	protected String mExpansionBoardParsedWithVer = mExpansionBoardDetails.mExpBoardParsedWithVer;  
-//	protected byte[] mExpBoardArray = mExpansionBoardDetails.mExpBoardArray; // Array where the expansion board response is stored
-
-//	protected ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails();
-//	public InfoMemLayout mInfoMemLayout = new InfoMemLayout();
-
-
 	protected String mClassName="Shimmer";
 	protected double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
@@ -693,17 +670,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] SensitivityMatrixMag8p1GaShimmer2 = {{230,0,0},{0,230,0},{0,0,230}};
 
 
-	protected double AC1 = 408;
-	protected double AC2 = -72;
-	protected double AC3 = -14383;
-	protected double AC4 = 332741;
-	protected double AC5 = 32757;
-	protected double AC6 = 23153;
-	protected double B1 = 6190;
-	protected double B2 = 4;
-	protected double MB = -32767;
-	protected double MC = -8711;
-	protected double MD = 2868;
+	protected double pressTempAC1 = 408;
+	protected double pressTempAC2 = -72;
+	protected double pressTempAC3 = -14383;
+	protected double pressTempAC4 = 332741;
+	protected double pressTempAC5 = 32757;
+	protected double pressTempAC6 = 23153;
+	protected double pressTempB1 = 6190;
+	protected double pressTempB2 = 4;
+	protected double pressTempMB = -32767;
+	protected double pressTempMC = -8711;
+	protected double pressTempMD = 2868;
 
 	protected boolean mLowPowerMag = false;
 	protected boolean mLowPowerAccelWR = false;
@@ -779,21 +756,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mDirectoryNameLength;
 	private List<String[]> mExtraSignalProperties = null;
 	
-	List<Integer> mListOfMplChannels = Arrays.asList(
-			Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_9DOF,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_6DOF,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_EULER_9DOF,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_HEADING,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_PEDOMETER,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG,
-			Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF_RAW);
-
 	public static final double ACCELERATION_DUE_TO_GRAVITY = 9.81;
 	
 	/** GQ BLE */
@@ -825,7 +787,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
 	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
 	 *  
-	 *  Future hardware which WON'T be using this will start with ShimmerEmotionalGQ HW. 
+	 *  Future hardware which WON'T be using this will start with ShimmerGQ HW. 
 	 * 
 	 * @param newPacket
 	 * @param fwIdentifier
@@ -896,13 +858,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		System.arraycopy(mSignalNameArray, 0, sensorNames, 0, sensorNames.length);
 		
 		//PARSE DATA
-		long[] newPacketInt=parsedData(newPacket,mSignalDataTypeArray);
+		long[] newPacketInt = parsedData(newPacket, mSignalDataTypeArray);
 		
 		double[] tempData=new double[3];
 		Vector3d accelerometer = new Vector3d();
 		Vector3d magnetometer = new Vector3d();
 		Vector3d gyroscope = new Vector3d();
-		
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3  
 				|| getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_LR || getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_NR || getHardwareVersion()==HW_ID.SHIMMER_2R_GQ){
@@ -1502,9 +1463,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iexg1ch2]=CHANNEL_UNITS.MILLIVOLTS;
 					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
 						sensorNames[iexg1ch1]=Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
-						sensorNames[iexg1ch2]=Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1));
+						sensorNames[iexg1ch2]=Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch2));
+						
 						if(getFirmwareIdentifier()==FW_ID.GQ_802154){
 							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1));
 							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LA_RL_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch2));
@@ -1565,12 +1527,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.MILLIVOLTS;
 					calibratedDataUnits[iexg2ch2]=CHANNEL_UNITS.MILLIVOLTS;
 					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
-						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
 						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2));
+//						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
+//						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
+//						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
+						if (isEXGUsingDefaultRespirationConfiguration()){
+							sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT;
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
+						}
 					}
 					else if (isEXGUsingDefaultEMGConfiguration()){
 						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
@@ -1626,8 +1593,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iexg1ch2]=CHANNEL_UNITS.MILLIVOLTS;
 					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
 						sensorNames[iexg1ch1]=Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT;
-						sensorNames[iexg1ch2]=Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT;
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1));
+						sensorNames[iexg1ch2]=Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT;
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch2));
 						if(getFirmwareIdentifier()==FW_ID.GQ_802154){
 							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1));
@@ -1688,21 +1655,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iexg2sta]=CHANNEL_UNITS.NO_UNITS;
 					calibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.MILLIVOLTS;
 					calibratedDataUnits[iexg2ch2]=CHANNEL_UNITS.MILLIVOLTS;
-					if (isEXGUsingDefaultECGConfiguration()){
+					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
+						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT;
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2));
+						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2));
 //						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
-						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT;
 //						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2));
 //						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2));
-					}
-					else if (isEXGUsingDefaultRespirationConfiguration()){
-						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT;
-						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT;
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
-						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2));
+						if (isEXGUsingDefaultRespirationConfiguration()){
+							sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT;
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
+							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
+						}
 					}
 					else if (isEXGUsingDefaultEMGConfiguration()){
 						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
@@ -2073,7 +2037,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels+1; //+1 because timestamp channel appears at the start
 			
 			if (fwIdentifier == FW_TYPE_BT){ // Here so as not to mess with ShimmerSDLog
-				if(isEXGUsingDefaultECGConfiguration()){
+				if(isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
 					if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
 							|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)){
 						
@@ -3366,7 +3330,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param Instructions an array string containing the commands to execute. It is currently not fully supported
 	 * @return
 	 */
-	protected long[] parsedData(byte[] data,String[] dataType){
+	protected static long[] parsedData(byte[] data,String[] dataType){
 		
 		int iData=0;
 		long[] formattedData=new long[dataType.length];
@@ -3484,7 +3448,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * Data Methods
 	 */  
-	protected int[] formatDataPacketReverse(byte[] data,String[] dataType){
+	protected static int[] formatDataPacketReverse(byte[] data,String[] dataType){
 		int iData=0;
 		int[] formattedData=new int[dataType.length];
 
@@ -3515,7 +3479,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return formattedData;
 	}
 
-	private int calculatetwoscomplement(int signedData, int bitLength){
+	private static int calculatetwoscomplement(int signedData, int bitLength){
 		int newData=signedData;
 		if (signedData>=(1<<(bitLength-1))) {
 			newData=-((signedData^(int)(Math.pow(2, bitLength)-1))+1);
@@ -3524,7 +3488,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return newData;
 	}
 
-	private long calculatetwoscomplement(long signedData, int bitLength){
+	private static long calculatetwoscomplement(long signedData, int bitLength){
 		long newData=signedData;
 		if (signedData>=(1L<<(bitLength-1))) {
 			newData=-((signedData^(long)(Math.pow(2, bitLength)-1))+1);
@@ -3545,13 +3509,49 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return iSignal;
 	}
 
+	//TODO get below working
+	/** Based on the SensorMap approach rather then legacy inquiry command */
+	protected void interpretDataPacketFormat(){
+		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
+		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
+		
+		int packetSize=0;//mTimeStampPacketByteSize; // Time stamp
+
+		int index = 0;
+		for(SensorEnabledDetails sED:mSensorEnabledMap.values()) {
+			if(sED.mIsEnabled && !sED.isDerivedChannel()) {
+				for(String channelDetailsName:sED.mListOfChannels){
+					ChannelDetails channelDetails = mChannelMap.get(channelDetailsName);
+					if(channelDetails.mDefaultNumBytes>0){
+						signalNameArray[index] = channelDetails.mObjectClusterName;
+						signalDataTypeArray[index] = channelDetails.mDefaultChannelDataType;
+						packetSize += channelDetails.mDefaultNumBytes;
+						
+						System.out.println(channelDetails.mObjectClusterName + "\t" + channelDetails.mDefaultChannelDataType + "\t" + channelDetails.mDefaultNumBytes);
+						index++;
+					}
+				}
+			}
+		}
+		
+		
+		//Handle 3-byte timestamp for new Shimmer firmware
+		//TODO move to where mChannelMap is initialised but then it can't be static
+		if (getFirmwareVersionCode()>=6){
+			packetSize += 1;
+		}
+		
+		mSignalNameArray=signalNameArray;
+		mSignalDataTypeArray=signalDataTypeArray;
+		mPacketSize=packetSize;
+	}
+
 	
 	/** Only for Bluetooth
-	 * @param nC
+	 * @param numChannels
 	 * @param signalid
 	 */
-	protected void interpretDataPacketFormat(int nC, byte[] signalid)
-	{
+	protected void interpretDataPacketFormat(int numChannels, byte[] signalid){
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
 		
@@ -3570,7 +3570,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		
 		int enabledSensors= 0x00;
-		for (int i=0;i<nC;i++) {
+		for (int i=0;i<numChannels;i++) {
 			if ((byte)signalid[i]==(byte)0x00){
 				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
@@ -4050,17 +4050,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, int packetType) {
 		if (packetType == BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
-			AC1 = calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
-			AC2 = calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
-			AC3 = calculatetwoscomplement((int)((int)(pressureResoRes[5] & 0xFF) + ((int)(pressureResoRes[4] & 0xFF) << 8)),16);
-			AC4 = (int)((int)(pressureResoRes[7] & 0xFF) + ((int)(pressureResoRes[6] & 0xFF) << 8));
-			AC5 = (int)((int)(pressureResoRes[9] & 0xFF) + ((int)(pressureResoRes[8] & 0xFF) << 8));
-			AC6 = (int)((int)(pressureResoRes[11] & 0xFF) + ((int)(pressureResoRes[10] & 0xFF) << 8));
-			B1 = calculatetwoscomplement((int)((int)(pressureResoRes[13] & 0xFF) + ((int)(pressureResoRes[12] & 0xFF) << 8)),16);
-			B2 = calculatetwoscomplement((int)((int)(pressureResoRes[15] & 0xFF) + ((int)(pressureResoRes[14] & 0xFF) << 8)),16);
-			MB = calculatetwoscomplement((int)((int)(pressureResoRes[17] & 0xFF) + ((int)(pressureResoRes[16] & 0xFF) << 8)),16);
-			MC = calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
-			MD = calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
+			pressTempAC1 = calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
+			pressTempAC2 = calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
+			pressTempAC3 = calculatetwoscomplement((int)((int)(pressureResoRes[5] & 0xFF) + ((int)(pressureResoRes[4] & 0xFF) << 8)),16);
+			pressTempAC4 = (int)((int)(pressureResoRes[7] & 0xFF) + ((int)(pressureResoRes[6] & 0xFF) << 8));
+			pressTempAC5 = (int)((int)(pressureResoRes[9] & 0xFF) + ((int)(pressureResoRes[8] & 0xFF) << 8));
+			pressTempAC6 = (int)((int)(pressureResoRes[11] & 0xFF) + ((int)(pressureResoRes[10] & 0xFF) << 8));
+			pressTempB1 = calculatetwoscomplement((int)((int)(pressureResoRes[13] & 0xFF) + ((int)(pressureResoRes[12] & 0xFF) << 8)),16);
+			pressTempB2 = calculatetwoscomplement((int)((int)(pressureResoRes[15] & 0xFF) + ((int)(pressureResoRes[14] & 0xFF) << 8)),16);
+			pressTempMB = calculatetwoscomplement((int)((int)(pressureResoRes[17] & 0xFF) + ((int)(pressureResoRes[16] & 0xFF) << 8)),16);
+			pressTempMC = calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
+			pressTempMD = calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
 		}
 	}
 	
@@ -4772,7 +4772,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	private double[][] matrixinverse3x3(double[][] data) {
+	private static double[][] matrixinverse3x3(double[][] data) {
 		double a,b,c,d,e,f,g,h,i;
 		a=data[0][0];
 		b=data[0][1];
@@ -4798,7 +4798,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		answer[2][2]=(1/deter)*(a*e-b*d);
 		return answer;
 	}
-	private double[][] matrixminus(double[][] a ,double[][] b) {
+	private static double[][] matrixminus(double[][] a ,double[][] b) {
 		int aRows = a.length,
 				aColumns = a[0].length,
 				bRows = b.length,
@@ -4817,7 +4817,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return resultant;
 	}
 
-	private double[][] matrixmultiplication(double[][] a,double[][] b) {
+	private static double[][] matrixmultiplication(double[][] a, double[][] b) {
 
 		int aRows = a.length,
 				aColumns = a[0].length,
@@ -4877,7 +4877,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void sendStatusMsgPacketLossDetected() {
 	}
 
-	protected double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
+	protected static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
 		/*  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
            in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
            C = [R^(-1)] .[K^(-1)] .([U]-[B])
@@ -4902,20 +4902,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	protected double[] calibratePressureSensorData(double UP, double UT){
-		double X1 = (UT - AC6) * AC5 / 32768;
-		double X2 = (MC * 2048 / (X1 + MD));
+		double X1 = (UT - pressTempAC6) * pressTempAC5 / 32768;
+		double X2 = (pressTempMC * 2048 / (X1 + pressTempMD));
 		double B5 = X1 + X2;
 		double T = (B5 + 8) / 16;
 
 		double B6 = B5 - 4000;
-		X1 = (B2 * (Math.pow(B6,2)/ 4096)) / 2048;
-		X2 = AC2 * B6 / 2048;
+		X1 = (pressTempB2 * (Math.pow(B6,2)/ 4096)) / 2048;
+		X2 = pressTempAC2 * B6 / 2048;
 		double X3 = X1 + X2;
-		double B3 = (((AC1 * 4 + X3)*(1<<mPressureResolution) + 2)) / 4;
-		X1 = AC3 * B6 / 8192;
-		X2 = (B1 * (Math.pow(B6,2)/ 4096)) / 65536;
+		double B3 = (((pressTempAC1 * 4 + X3)*(1<<mPressureResolution) + 2)) / 4;
+		X1 = pressTempAC3 * B6 / 8192;
+		X2 = (pressTempB1 * (Math.pow(B6,2)/ 4096)) / 65536;
 		X3 = ((X1 + X2) + 2) / 4;
-		double B4 = AC4 * (X3 + 32768) / 32768;
+		double B4 = pressTempAC4 * (X3 + 32768) / 32768;
 		double B7 = (UP - B3) * (50000>>mPressureResolution);
 		double p=0;
 		if (B7 < 2147483648L ){ //0x80000000
@@ -4935,31 +4935,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 
-	protected double calibrateU12AdcValue(double uncalibratedData,double offset,double vRefP,double gain){
+	protected static double calibrateU12AdcValue(double uncalibratedData,double offset,double vRefP,double gain){
 		double calibratedData=(uncalibratedData-offset)*(((vRefP*1000)/gain)/4095);
 		return calibratedData;
 	}
 	
-	protected double calibratePhillipsSkinTemperatureData(double uncalibratedData){
-		
-		/* 
-		 * SEE Bridge Amplifer+ User Manual for Details
-		 * 
-		 * y = -27.42ln(x) + 56.502 
-		 * where y = temperature in degC
-		 * where x = (200*Vo)/((10.1)Pv-Vo)
-		 * where Pv = 3000mV
-		 * where Vo = Uncalibrated output of the resistance amplifier channel
-		 * 
-		*/
-		
+	/** 
+	 * SEE Bridge Amplifer+ User Manual for Details
+	 * 
+	 * y = -27.42ln(x) + 56.502 
+	 * where y = temperature in degC
+	 * where x = (200*Vo)/((10.1)Pv-Vo)
+	 * where Pv = 3000mV
+	 * where Vo = Uncalibrated output of the resistance amplifier channel
+	 * 
+	*/
+	protected static double calibratePhillipsSkinTemperatureData(double uncalibratedData){
 		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
 		double y = -27.42*Math.log(x) + 56.502;
-		
 		return y;
 	}
 
-	protected double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
+	protected static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
 		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
@@ -4968,7 +4965,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return gsrCalibratedData;  
 	}
 
-	protected double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
+	protected static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
 		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
@@ -5027,8 +5024,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected void interpretInqResponse(byte[] bufferInquiry){
 		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
-
-			
 			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
 			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
 			if (mLSM303MagRate==3 && getSamplingRateShimmer()>10){
@@ -6126,7 +6121,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @param rate
 	 */
-	public void setShimmerSamplingRate(double rate){
+	public void setShimmerAndSensorsSamplingRate(double rate){
 		
 		double maxGUISamplingRate = 2048.0;
 		double maxShimmerSamplingRate = 32768.0;
@@ -7410,7 +7405,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE, mEXG2RespirationDetectPhase);
 	}
 	
-	protected int convertEXGGainSettingToValue(int setting){
+	protected static int convertEXGGainSettingToValue(int setting){
 
 		if (setting==0){
 			return 6;
@@ -7663,7 +7658,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	@Deprecated
-	public String parseLeadOffComparatorTresholdToString(int treshold){
+	public static String parseLeadOffComparatorTresholdToString(int treshold){
 		
 		String tresholdString="";
 		switch(treshold){
@@ -7700,7 +7695,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	@Deprecated
-	public String parseLeadOffModeToString(int leadOffMode){
+	public static String parseLeadOffModeToString(int leadOffMode){
 		
 		String modeString="";
 		switch(leadOffMode){
@@ -7722,7 +7717,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	@Deprecated
-	public String parseLeadOffDetectionCurrentToString(int current){
+	public static String parseLeadOffDetectionCurrentToString(int current){
 		
 		String currentString="";
 		switch(current){
@@ -7780,7 +7775,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSyncBroadcastInterval = 0;
 			mInitialTimeStamp = 0;
 			
-			setShimmerSamplingRate(51.2);
+			setShimmerAndSensorsSamplingRate(51.2);
 			setDefaultECGConfiguration(getSamplingRateShimmer()); 
 			
 			syncNodesList.clear();
@@ -8393,6 +8388,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				updateEnabledSensorsFromExgResolution();
 			}
+//			interpretDataPacketFormat();
 		}
 	}
 	
@@ -8659,6 +8655,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 			}
+			
 		}
 	}
 	
@@ -8885,8 +8882,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
 			}
-			
+//			interpretDataPacketFormat();
 		}
+		
+		
+		//Debugging
+//		for(SensorEnabledDetails sED:mSensorEnabledMap.values()){
+//			if(sED.mIsEnabled){
+//				System.out.println("SENSOR enabled:\t"+ sED.mSensorDetails.mGuiFriendlyLabel);
+//			}
+//		}
 		
 	}
 	
@@ -8925,8 +8930,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}		
 		return false;
 	}
-	
-	
 	
 	/**
 	 * Used to changed the enabled state of a sensor in the sensormap. This is
@@ -9097,25 +9100,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-//	private void copySensorMapSensorDetails(int keyFrom, int keyTo) {
-//		if(mSensorMap!=null) {
-//			if(mSensorMapRef.containsKey(keyFrom)&&mSensorMapRef.containsKey(keyTo)) {
-//				mSensorMapRef.get(keyTo).mListOfCompatibleVersionInfo = mSensorMapRef.get(keyFrom).mListOfCompatibleVersionInfo;
-//				mSensorMapRef.get(keyTo).mListOfSensorMapKeysRequired = mSensorMapRef.get(keyFrom).mListOfSensorMapKeysRequired;
-//				mSensorMapRef.get(keyTo).mListOfSensorMapKeysConflicting = mSensorMapRef.get(keyFrom).mListOfSensorMapKeysConflicting;
-////				mSensorMap.get(keyTo).mIntExpBoardPowerRequired = mSensorMap.get(keyFrom).mIntExpBoardPowerRequired;
-//				mSensorMapRef.get(keyTo).mListOfConfigOptionKeysAssociated = mSensorMapRef.get(keyFrom).mListOfConfigOptionKeysAssociated;
-//				
-////				mSensorMap.get(keyTo).mSensorBitmapIDStreaming = mSensorMap.get(keyFrom).mSensorBitmapIDStreaming;
-////				mSensorMap.get(keyTo).mSensorBitmapIDSDLogHeader = mSensorMap.get(keyFrom).mSensorBitmapIDSDLogHeader;
-////				mSensorMap.get(keyTo).mDerivedChannelBitmapBitShift = mSensorMap.get(keyFrom).mDerivedChannelBitmapBitShift;
-////				mSensorMap.get(keyTo).mDerivedChannelBitmapMask = mSensorMap.get(keyFrom).mDerivedChannelBitmapMask;
-//			}
-//		}		
-//	}
-	
-
-	
 	public List<Integer> sensorMapConflictCheck(Integer key){
 		List<Integer> listOfChannelConflicts = new ArrayList<Integer>();
 		
@@ -9284,7 +9268,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
-		else if(mListOfMplChannels.contains(sensorMapKey)){
+		else if(SensorMPU9X50.mListOfMplChannels.contains(sensorMapKey)){
+//		else if(mListOfMplChannels.contains(sensorMapKey)){
 			if(!checkIfAnyOtherMplChannelEnabled(sensorMapKey)) {
 				setDefaultMpu9150MplSensorConfig(state);
 			}
@@ -9449,7 +9434,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorEnabledMap.keySet().size()>0){
 				
-				for(int key:mListOfMplChannels){
+				for(int key:SensorMPU9X50.mListOfMplChannels){
+//				for(int key:mListOfMplChannels){
 					if(key==sensorMapKey){
 						continue;
 					}
@@ -9466,7 +9452,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorEnabledMap.keySet().size()>0){
 				
-				for(int key:mListOfMplChannels){
+				for(int key:SensorMPU9X50.mListOfMplChannels){
+//					for(int key:mListOfMplChannels){
 					if(isSensorEnabled(key)) {
 						return true;
 					}
@@ -9844,47 +9831,47 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public double getPressTempAC1(){
-		return AC1;
+		return pressTempAC1;
 	}
 	
 	public double getPressTempAC2(){
-		return AC2;
+		return pressTempAC2;
 	}
 	
 	public double getPressTempAC3(){
-		return AC3;
+		return pressTempAC3;
 	}
 	
 	public double getPressTempAC4(){
-		return AC4;
+		return pressTempAC4;
 	}
 	
 	public double getPressTempAC5(){
-		return AC5;
+		return pressTempAC5;
 	}
 	
 	public double getPressTempAC6(){
-		return AC6;
+		return pressTempAC6;
 	}
 	
 	public double getPressTempB1(){
-		return B1;
+		return pressTempB1;
 	}
 	
 	public double getPressTempB2(){
-		return B2;
+		return pressTempB2;
 	}
 	
 	public double getPressTempMB(){
-		return MB;
+		return pressTempMB;
 	}
 	
 	public double getPressTempMC(){
-		return MC;
+		return pressTempMC;
 	}
 	
 	public double getPressTempMD(){
-		return MD;
+		return pressTempMD;
 	}
 
 
@@ -9920,23 +9907,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mPpg2AdcSelectionProto3DeluxeBoard;
 	}
 	
-	
-//	/**
-//	 * @return the mMacIdFromUart
-//	 */
-//	public String getMacIdFromUart() {
-//		return mMacIdFromUart;
-//	}
-//
-//	/**
-//	 * @return the mMacIdFromUartParsed
-//	 */
-//	public String getMacIdFromUartParsed() {
-//		if(this.mMacIdFromUart.length()>=12) {
-//			return this.mMacIdFromUart.substring(8, 12);
-//		}		return "0000";
-//	}
-
 	/**
 	 * @return the mMacIdFromBtParsed
 	 */
@@ -10104,24 +10074,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mLSM303MagRate = mLSM303MagRate;
 	}
 
-//	/**
-//	 * @param shimmerInfoMemBytes the shimmerInfoMemBytes to set
-//	 */
-//	public void setShimmerInfoMemBytes(byte[] shimmerInfoMemBytes) {
-//		this.infoMemByteArrayParse(shimmerInfoMemBytes);
-//	}
-//	
-//	/**
-//	 * @return the mShimmerInfoMemBytes
-//	 */
-//	public byte[] getShimmerInfoMemBytes() {
-//		return mInfoMemBytes;
-//	}
-	
-//	protected void checkShimmerConfigurationBeforeConfiguring() {
-//		this.checkShimmerConfigurationBeforeConfiguring();
-//	}
-	
 	/**
 	 * @return the mShimmerInfoMemBytes generated from an empty byte array. This is called to generate the InfoMem bytes for writing to the Shimmer.
 	 */
@@ -10129,12 +10081,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
 		return infoMemByteArrayGenerate(true);
 	}
-
-
-	
-//	protected void clearShimmerInfoMemBytes() {
-//		this.mShimmerInfoMemBytes = createEmptyInfoMemByteArray(512);
-//	}
 	
 	
 	/**
@@ -10207,18 +10153,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     	}
     	this.mTrialDurationMaximum = mExperimentDurationMaximum;
 	}
-
-//	/**
-//	 * @param mShimmerUserAssignedName the mShimmerUserAssignedName to set
-//	 */
-//	public void setShimmerUserAssignedName(String mShimmerUserAssignedName) {
-//		if(mShimmerUserAssignedName.length()>12) {
-//			this.mShimmerUserAssignedName = mShimmerUserAssignedName.substring(0, 12);
-//		}
-//		else { 
-//			this.mShimmerUserAssignedName = mShimmerUserAssignedName;
-//		}
-//	}
 	
 	/**
 	 * @param state the mInternalExpPower state to set
@@ -10567,13 +10501,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int key = Configuration.Shimmer3.SensorMapKey.PPG2_DUMMY;
 		this.setSensorEnabledState(key, mSensorEnabledMap.get(key).mIsEnabled);
 	}
-
-//	/**
-//	 * @param macIdFromUart the mMacIdFromUart to set
-//	 */
-//	protected void setMacIdFromUart(String macIdFromUart) {
-//		this.mMacIdFromUart = macIdFromUart;
-//	}
 
 	/**
 	 * @param myBluetoothAddress the myBluetoothAddress to set
@@ -11017,7 +10944,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	          	else {
 	          		enteredSamplingRate = Double.parseDouble((String)valueToSet);
 	          	}
-	      		setShimmerSamplingRate(enteredSamplingRate);
+	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
 	      		
 	      		returnValue = Double.toString(getSamplingRateShimmer());
 	        	break;
@@ -11141,16 +11068,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 //		createInfoMemLayoutObjectIfNeeded();
 		
+		updateTimestampByteLength();
+	}
+	
+	public void updateTimestampByteLength(){
 		//Once the version is known update settings accordingly 
 		if (getFirmwareVersionCode()>=6){
-			mTimeStampPacketByteSize =3;
+			mTimeStampPacketByteSize = 3;
 			mTimeStampPacketRawMaxValue = 16777216;
 		} 
-		else if (getFirmwareVersionCode()<6){
-			mTimeStampPacketByteSize =2;
+		else {//if (getFirmwareVersionCode()<6){
+			mTimeStampPacketByteSize = 2;
 			mTimeStampPacketRawMaxValue = 65536;
 		}
 	}
+	
 
 	// --------------- Set Methods Start --------------------------
 

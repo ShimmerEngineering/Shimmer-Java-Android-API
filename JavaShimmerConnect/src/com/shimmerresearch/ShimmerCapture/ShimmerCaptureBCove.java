@@ -1441,7 +1441,7 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 		String samplingRate = (String)comboBoxSamplingRate.getSelectedItem();
 		samplingRate = samplingRate.substring(0, samplingRate.length()-2);
 		double SamplingRate = Double.parseDouble(samplingRate);
-		mShimmer.writeSamplingRate(SamplingRate);
+		mShimmer.writeShimmerAndSensorsSamplingRate(SamplingRate);
 
 		if (chckbx3DOrientation.isSelected()) {
 			mShimmer.enable3DOrientation(true);
