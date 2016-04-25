@@ -123,7 +123,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//Events markers
 	protected int mEventMarkersCodeLast = 0;
 	protected boolean mEventMarkersIsPulse = false;
-	protected int mEventMarkers=0;
+	protected int mEventMarkerDefault = -1; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
+	protected int mEventMarkers = mEventMarkerDefault;
 	
 	public static String STRING_CONSTANT_PENDING = "Pending";
 	public static String STRING_CONSTANT_UNKNOWN = "Unknown";
@@ -232,19 +233,26 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param shimmerUserAssignedName the mShimmerUserAssignedName to set
 	 */
 	public void setShimmerUserAssignedName(String shimmerUserAssignedName) {
-		//Don't allow the first char to be numeric - causes problems with MATLAB variable names
-		if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
-			shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
-		}
-			
-		//Limit the name to 12 Char
-		if(shimmerUserAssignedName.length()>12) {
-			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, 12);
-		}
-		else { 
-			this.mShimmerUserAssignedName = shimmerUserAssignedName;
-		}
-		this.setThreadName("mShimmerUserAssignedName" + getMacId());
+
+			if(!shimmerUserAssignedName.isEmpty()){
+				//Don't allow the first char to be numeric - causes problems with MATLAB variable names
+				if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
+					shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
+				}
+			}
+			else{
+				shimmerUserAssignedName = ShimmerObject.DEFAULT_SHIMMER_NAME + "_" + this.getMacIdFromUartParsed();
+			}
+
+			//Limit the name to 12 Char
+			if(shimmerUserAssignedName.length()>12) {
+				this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, 12);
+			}
+			else { 
+				this.mShimmerUserAssignedName = shimmerUserAssignedName;
+			}
+			this.setThreadName("mShimmerUserAssignedName" + getMacId());
+
 	}
 	
 	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
@@ -278,7 +286,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setEventTriggered(int eventCode, int eventType){
 		
 		mEventMarkersCodeLast = eventCode;
-		mEventMarkers += eventCode;
+		mEventMarkers = mEventMarkers + eventCode + (-mEventMarkerDefault);
 		
 		//TOGGLE(1),
 		//PULSE(2);
@@ -289,7 +297,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void setEventUntrigger(int eventCode){
-		mEventMarkers -= eventCode;
+		mEventMarkers = mEventMarkers - eventCode;
+		if(mEventMarkers == 0){
+			mEventMarkers = mEventMarkerDefault;
+		}
 	}
 	
 	public void untriggerEventIfLastOneWasPulse(){
@@ -1074,7 +1085,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		String strPending = STRING_CONSTANT_PENDING;
 		
 		if(!isSdCardAccessSupported(this)){
-			return "";
+			return STRING_CONSTANT_UNKNOWN;
 		}
 
 		if(mIsSDError){
