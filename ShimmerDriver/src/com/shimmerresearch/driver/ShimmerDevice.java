@@ -286,7 +286,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setEventTriggered(int eventCode, int eventType){
 		
 		mEventMarkersCodeLast = eventCode;
-		mEventMarkers = mEventMarkers + eventCode + (-mEventMarkerDefault);
+		mEventMarkers = mEventMarkers + eventCode + (-mEventMarkerDefault); 
 		
 		//TOGGLE(1),
 		//PULSE(2);
@@ -297,7 +297,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void setEventUntrigger(int eventCode){
-		mEventMarkers = mEventMarkers - eventCode;
+		mEventMarkers = mEventMarkers - eventCode - (-mEventMarkerDefault);
 		if(mEventMarkers == 0){
 			mEventMarkers = mEventMarkerDefault;
 		}
