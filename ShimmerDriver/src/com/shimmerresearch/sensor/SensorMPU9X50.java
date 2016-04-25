@@ -150,8 +150,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		//mSensorBitmapIDStreaming = 0x04<<(0*8);
 		//mSensorBitmapIDSDLogHeader =  0x04<<(0*8);    
 		
-		mListOfConfigOptionKeysAssociated = Arrays.asList(
-				Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
 		
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG, new SensorGroupingDetails(
@@ -208,6 +206,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			object = processShimmerChannelData(rawData, channelDetails, object);
 		}
+		
+		if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
+//			ObjectCluster objectCluster = (ObjectCluster) object;
+			double rawXData = ((FormatCluster)ObjectCluster.returnFormatCluster(object.mPropertyCluster.get(channelDetails.mObjectClusterName), ChannelDetails.channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			  
+		}
 		return object;
 	}
 
@@ -256,6 +260,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void generateListOfConfigOptionKeysAssociated() {
+		mListOfConfigOptionKeysAssociated = Arrays.asList(
+				Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
 	}
 	
 	

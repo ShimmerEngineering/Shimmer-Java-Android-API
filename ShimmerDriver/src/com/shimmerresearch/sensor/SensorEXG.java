@@ -1913,5 +1913,11 @@ public class SensorEXG extends AbstractSensor{
 		return returnValue;
 	}
 
+	@Override
+	public void generateListOfConfigOptionKeysAssociated() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	//-------------------- ExG End -----------------------------------	
 }

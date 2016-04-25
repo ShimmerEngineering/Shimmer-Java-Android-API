@@ -112,6 +112,12 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		return null;
 	}
 
+	@Override
+	public void generateListOfConfigOptionKeysAssociated() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 
 

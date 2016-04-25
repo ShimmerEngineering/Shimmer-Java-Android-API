@@ -145,4 +145,12 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 
+
+	@Override
+	public void generateListOfConfigOptionKeysAssociated() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

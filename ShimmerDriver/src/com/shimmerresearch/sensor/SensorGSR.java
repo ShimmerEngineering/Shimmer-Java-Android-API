@@ -391,5 +391,11 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		mGSRRange = i;
 	}
 
+	@Override
+	public void generateListOfConfigOptionKeysAssociated() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }
