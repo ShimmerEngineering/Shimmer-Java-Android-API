@@ -37,6 +37,9 @@ import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
 
 public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
+	/** * */
+	private static final long serialVersionUID = -1137540822708521997L;
+	
 	public int mMPU9X50GyroAccelRate=0;
 	public int mMPU9X50AccelRange=0;   // This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
 	public int mMagXRange=1;			   // mMagRange changed to mMagXRange
@@ -58,70 +61,67 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
 	public double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};
 	
-	//Default values Shimmer2
-		public static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-		public static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
-		public static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
-		//Shimmer3
-		public static final double[][] SensitivityMatrixGyro250dpsShimmer3 = {{131,0,0},{0,131,0},{0,0,131}};
-		public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
-		public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
-		public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
-		public static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-		public static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};		
+	//Shimmer3
+	public static final double[][] SensitivityMatrixGyro250dpsShimmer3 = {{131,0,0},{0,131,0},{0,0,131}};
+	public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
+	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
+	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
+	public static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+	public static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};		
 
-		// variable names changed from ShimmerObject
-		public boolean mDefaultCalibrationParametersXMag = true;
-		public double[][] mAlignmentMatrixXMagnetometer = {{1,0,0},{0,1,0},{0,0,-1}}; 				
-		public double[][] mSensitivityMatrixXMagnetometer = {{580,0,0},{0,580,0},{0,0,580}}; 		
-		public double[][] mOffsetVectorXMagnetometer = {{0},{0},{0}};								
+	// variable names changed from ShimmerObject
+	public boolean mDefaultCalibrationParametersXMag = true;
+	public double[][] mAlignmentMatrixXMagnetometer = {{1,0,0},{0,1,0},{0,0,-1}}; 				
+	public double[][] mSensitivityMatrixXMagnetometer = {{580,0,0},{0,580,0},{0,0,580}}; 		
+	public double[][] mOffsetVectorXMagnetometer = {{0},{0},{0}};								
 
-		//Default values Shimmer2 and Shimmer3
-		public static final double[][] AlignmentMatrixMagShimmer2 = {{1,0,0},{0,1,0},{0,0,-1}};
-		public static final double[][] SensitivityMatrixMagShimmer2 = {{580,0,0},{0,580,0},{0,0,580}}; 		
-		public static final double[][] OffsetVectorMagShimmer2 = {{0},{0},{0}};				
-		//Shimmer3
-		public static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
-		public static final double[][] SensitivityMatrixMagShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}}; 		
-		public static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
+	//Shimmer3
+	public static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
+	public static final double[][] SensitivityMatrixMagShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}}; 		
+	public static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
 
-		
-		public double[][] AlignmentMatrixMPLXAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-		public double[][] SensitivityMatrixMPLXAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-		public double[][] OffsetVectorMPLXAccel = {{0},{0},{0}};
-		
-		public double[][] AlignmentMatrixMPLXMag = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-		public double[][] SensitivityMatrixMPLXMag = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-		protected double[][] OffsetVectorMPLXMag = {{0},{0},{0}};
-		
-		public double[][] AlignmentMatrixMPLXGyro = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-		public double[][] SensitivityMatrixMPLXGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-		public double[][] OffsetVectorMPLXGyro = {{0},{0},{0}};
-		
-		public boolean mLowPowerXMag = false;
-		public boolean mLowPowerAccelXWR = false;
-		public boolean mLowPowerXGyro = false;
-		
-		public boolean mEnableOntheFlyGyroOVCal = false;
-
-		public double mGyroXOVCalThreshold = 1.2;
-		DescriptiveStatistics mGyroXX;
-		DescriptiveStatistics mGyroXY;
-		DescriptiveStatistics mGyroXZ;
-		DescriptiveStatistics mGyroXRaw;
-		DescriptiveStatistics mGyroXYRaw;
-		DescriptiveStatistics mGyroXZRaw;
-		public boolean mEnableXCalibration = true;
-		public byte[] mInquiryResponseXBytes;
-		
-		public byte[] mGyroCalRawXParams  = new byte[22];
-		public byte[] mMagCalRawXParams  = new byte[22];
-		
 	
-	public static final int ANY_VERSION = -1;
+	public double[][] AlignmentMatrixMPLXAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	public double[][] SensitivityMatrixMPLXAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	public double[][] OffsetVectorMPLXAccel = {{0},{0},{0}};
+	
+	public double[][] AlignmentMatrixMPLXMag = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	public double[][] SensitivityMatrixMPLXMag = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLXMag = {{0},{0},{0}};
+	
+	public double[][] AlignmentMatrixMPLXGyro = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	public double[][] SensitivityMatrixMPLXGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	public double[][] OffsetVectorMPLXGyro = {{0},{0},{0}};
+	
+	public boolean mLowPowerXMag = false;
+	public boolean mLowPowerAccelXWR = false;
+	public boolean mLowPowerXGyro = false;
+	
+	public boolean mEnableOntheFlyGyroOVCal = false;
+
+	public double mGyroXOVCalThreshold = 1.2;
+	DescriptiveStatistics mGyroXX;
+	DescriptiveStatistics mGyroXY;
+	DescriptiveStatistics mGyroXZ;
+	DescriptiveStatistics mGyroXRaw;
+	DescriptiveStatistics mGyroXYRaw;
+	DescriptiveStatistics mGyroXZRaw;
+	public boolean mEnableXCalibration = true;
+	public byte[] mInquiryResponseXBytes;
+	
+	public byte[] mGyroCalRawXParams  = new byte[22];
+	public byte[] mMagCalRawXParams  = new byte[22];
+		
 	
 	//These can be used to enable/disable GUI options depending on what HW, FW, Expansion boards versions are present
-	private static final ShimmerVerObject mpu9x50 =new ShimmerVerObject(HW_ID.SHIMMER_4,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);	
+	private static final ShimmerVerObject mpu9x50 =new ShimmerVerObject(
+			HW_ID.SHIMMER_4,
+			ShimmerVerDetails.ANY_VERSION,
+			ShimmerVerDetails.ANY_VERSION,
+			ShimmerVerDetails.ANY_VERSION,
+			ShimmerVerDetails.ANY_VERSION,
+			ShimmerVerDetails.ANY_VERSION);
+	
 	private static final List<ShimmerVerObject> listOfCompatibleVersionMPU9X50 = Arrays.asList(mpu9x50);
 	
 	public static final List<Integer> mListOfMplChannels = Arrays.asList(
@@ -153,7 +153,19 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		mListOfConfigOptionKeysAssociated = Arrays.asList(
 				Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
 		
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3){
+//		aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//				Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE,
+//				Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
+//		aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//				Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
+//				Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF,
+//				Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE,
+//				Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL);
+//		aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//				Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
+
+		
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
 							Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
@@ -212,50 +224,119 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		// TODO Auto-generated method stub
-		return null;
+		super.updateSensorGroupingMap();
+		return mSensorGroupingMap;
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName,
-			Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
+		Object returnValue = null;
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+//				returnValue = getGSRRange();
+		    	break;
+	        default:
+	        	break;
+		}
+
+		return returnValue;
+	}
+
+	@Override
+	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
-			ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
+		mConfigOptionsMap.clear();
+		
+//		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
+//				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
+//				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154) {
+			
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
+											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+			
+			
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGyroRange, 
+											Configuration.Shimmer3.ListofMPU9150GyroRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			//MPL Options
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150AccelRange, 
+											Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
+											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
+											Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MplRate, 
+											Configuration.Shimmer3.ListofMPU9150MplRateConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE, 
+					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMPU9150MagRate, 
+											Configuration.Shimmer3.ListofMPU9150MagRateConfigValues, 
+											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			
+			//General Config
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM, 
+					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 
-	@Override
-	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
-			ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
+
+//		}
+				
+		return mConfigOptionsMap;
 	}
 	
 	

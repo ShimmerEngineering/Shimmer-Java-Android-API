@@ -131,6 +131,7 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensor.SensorGSR;
 import com.shimmerresearch.sensor.SensorMPU9X50;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
@@ -783,7 +784,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private boolean isOverrideShowRwcErrorLeds = true;
 
-
+	protected abstract void checkBattery();
+	
 	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
 	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
 	 *  
@@ -1879,12 +1881,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
 					if(getFirmwareIdentifier()==FW_ID.GQ_802154){
-						calibratedData[iGSR] = calibrateGsrDataToSiemens(tempData[0],p1,p2);
+						calibratedData[iGSR] = SensorGSR.calibrateGsrDataToSiemens(tempData[0],p1,p2);
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.U_SIEMENS;
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,calibratedData[iGSR]));
 					}
 					else {
-						calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+						calibratedData[iGSR] = SensorGSR.calibrateGsrData(tempData[0],p1,p2);
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
 						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
 					}
@@ -2364,7 +2366,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.mPropertyCluster.put(Shimmer2.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iGSR];
-					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+					calibratedData[iGSR] = SensorGSR.calibrateGsrData(tempData[0],p1,p2);
 					objectCluster.mPropertyCluster.put(Shimmer2.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
 				}
 			}
@@ -3008,7 +3010,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				objectCluster.mPropertyCluster.put("GSR",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
 				if (mEnableCalibration){
-					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+					calibratedData[iGSR] = SensorGSR.calibrateGsrData(tempData[0],p1,p2);
 					objectCluster.mPropertyCluster.put("GSR",new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
 				}
 			}
@@ -3196,7 +3198,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.mPropertyCluster.put("GSR",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGSR]));
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iGSR];
-					calibratedData[iGSR] = calibrateGsrData(tempData[0],p1,p2);
+					calibratedData[iGSR] = SensorGSR.calibrateGsrData(tempData[0],p1,p2);
 					objectCluster.mPropertyCluster.put("GSR",new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]));
 				}
 			}
@@ -4956,23 +4958,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return y;
 	}
 
-	protected static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
-		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
-		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
-		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
-		//the following is the new linear method see user GSR user guide for further details
-		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
-		return gsrCalibratedData;  
-	}
-
-	protected static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
-		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
-		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
-		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
-		//the following is the new linear method see user GSR user guide for further details
-		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
-		return gsrCalibratedData;  
-	}
+//	protected static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
+//		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+//		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
+//		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
+//		//the following is the new linear method see user GSR user guide for further details
+//		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
+//		return gsrCalibratedData;  
+//	}
+//
+//	protected static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
+//		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+//		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
+//		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
+//		//the following is the new linear method see user GSR user guide for further details
+//		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
+//		return gsrCalibratedData;  
+//	}
 
 	public double getSamplingRateShimmer(){
 		return mMapOfSamplingRatesShimmer.get(COMMUNICATION_TYPE.SD); 
@@ -7748,9 +7750,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//-------------------- ExG End -----------------------------------
 
 
-	/**Sets all default Shimmer settings in ShimmerObject.
-	 * 
+	/* Need to override here because ShimmerDevice uses a different sensormap
+	 * (non-Javadoc)
+	 * @see com.shimmerresearch.driver.ShimmerDevice#setDefaultShimmerConfiguration()
 	 */
+	@Override
 	public void setDefaultShimmerConfiguration() {
 		if (getHardwareVersion() != -1){
 			
@@ -9756,7 +9760,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mChannelMap;
 	}
 	
-	/**
+	/**	Need to override here because ShimmerDevice class uses a different map
 	 * @return the mSensorGroupingMap
 	 */
 	@Override
@@ -9778,7 +9782,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mAlgorithmChannelsMap;
 	}
 
-	/**
+	/** Need to override here because ShimmerDevice uses a different sensormap
 	 * @return the mConfigOptionsMap
 	 */
 	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
@@ -10525,239 +10529,244 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
         		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(componentName);
         }
+        
+    	returnValue = super.getConfigValueUsingConfigLabel(componentName);
 		
-		switch(componentName){
-//Booleans
-			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
-				returnValue = isButtonStart();
-				break;
-			case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
-				returnValue = isSingleTouch();
-				break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
-				returnValue = isMasterShimmer();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING):
-				returnValue = isSyncWhenLogging();
-	        	break;
-			
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
-				if(isLSM303DigitalAccelLPM()&&checkLowPowerGyro()&&checkLowPowerMag()) {
-					returnValue = true;
-				}
-				else {
-					returnValue = false;
-				}
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
-				returnValue = isLSM303DigitalAccelLPM();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
-				returnValue = checkLowPowerGyro();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
-				returnValue = checkLowPowerMag();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
-				returnValue = isTCXO();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
-				returnValue = isInternalExpPower();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
-				returnValue = isMPU9150DMP();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
-				returnValue = isMPLEnable();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
-				returnValue = isMPLSensorFusion();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
-				returnValue = isMPLGyroCalTC();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
-				returnValue = isMPLVectCompCal();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
-				returnValue = isMPLMagDistCal();
-	        	break;
-
-//Integers
-			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
-				returnValue = getBluetoothBaudRate();
-	        	break;
-    	
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
-				returnValue = getAccelRange();
-	        	break;
-	        
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
-				returnValue = getGyroRange();
-	        	break;
+    	if(returnValue==null){
+    		switch(componentName){
+	//Booleans
+				case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
+					returnValue = isButtonStart();
+					break;
+				case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
+					returnValue = isSingleTouch();
+					break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
+					returnValue = isMasterShimmer();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING):
+					returnValue = isSyncWhenLogging();
+		        	break;
+				
+				case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
+					if(isLSM303DigitalAccelLPM()&&checkLowPowerGyro()&&checkLowPowerMag()) {
+						returnValue = true;
+					}
+					else {
+						returnValue = false;
+					}
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
+					returnValue = isLSM303DigitalAccelLPM();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
+					returnValue = checkLowPowerGyro();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
+					returnValue = checkLowPowerMag();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
+					returnValue = isTCXO();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+					returnValue = isInternalExpPower();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
+					returnValue = isMPU9150DMP();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
+					returnValue = isMPLEnable();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
+					returnValue = isMPLSensorFusion();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
+					returnValue = isMPLGyroCalTC();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
+					returnValue = isMPLVectCompCal();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
+					returnValue = isMPLMagDistCal();
+		        	break;
 	
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE):
-				//TODO check below and commented out code
-				returnValue = getMagRange();
-			
-//					// firmware sets mag range to 7 (i.e. index 6 in combobox) if user set mag range to 0 in config file
-//					if(getMagRange() == 0) cmBx.setSelectedIndex(6);
-//					else cmBx.setSelectedIndex(getMagRange()-1);
-	    		break;
-			
-			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
-				returnValue = getPressureResolution();
-	    		break;
-	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
-				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
-	        	break;
-	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
-				returnValue = getExGResolution();
-	    		break;
-	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
-				returnValue = getExGGainSetting();
-				//consolePrintLn("Get " + configValue);
-	        	break;
-	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
-				int configValue = getLSM303DigitalAccelRate(); 
-				 
-	        	if(!isLSM303DigitalAccelLPM()) {
-		        	if(configValue==8) {
-		        		configValue = 9;
+	//Integers
+				case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
+					returnValue = getBluetoothBaudRate();
+		        	break;
+	    	
+				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+					returnValue = getAccelRange();
+		        	break;
+		        
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
+					returnValue = getGyroRange();
+		        	break;
+		
+				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+					//TODO check below and commented out code
+					returnValue = getMagRange();
+				
+	//    							// firmware sets mag range to 7 (i.e. index 6 in combobox) if user set mag range to 0 in config file
+	//    							if(getMagRange() == 0) cmBx.setSelectedIndex(6);
+	//    							else cmBx.setSelectedIndex(getMagRange()-1);
+		    		break;
+				
+				case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+					returnValue = getPressureResolution();
+		    		break;
+		    		
+				case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+					returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
+		        	break;
+		        	
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+					returnValue = getExGResolution();
+		    		break;
+		        	
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+					returnValue = getExGGainSetting();
+					//consolePrintLn("Get " + configValue);
+		        	break;
+		        	
+				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+					int configValue = getLSM303DigitalAccelRate(); 
+					 
+		        	if(!isLSM303DigitalAccelLPM()) {
+			        	if(configValue==8) {
+			        		configValue = 9;
+			        	}
 		        	}
-	        	}
-				returnValue = configValue;
-	    		break;
-	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
-				returnValue = getLSM303MagRate();
-	        	break;
+					returnValue = configValue;
+		    		break;
+		    		
+				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
+					returnValue = getLSM303MagRate();
+		        	break;
+	
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+					returnValue = getMPU9150AccelRange();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+					returnValue = getMPU9150MotCalCfg();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF):
+					returnValue = getMPU9150LPF();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
+					returnValue = getMPU9150MPLSamplingRate();
+	        		break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
+					returnValue = getMPU9150MagSamplingRate();
+	            	break;
+	            	
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+					returnValue = getEXG1RateSetting();
+					//returnValue = getEXG2RateSetting();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+					returnValue = getEXGReferenceElectrode();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+					returnValue = getEXGLeadOffCurrentMode();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+					returnValue = getEXGLeadOffDetectionCurrent();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+					returnValue = getEXGLeadOffComparatorTreshold();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+					returnValue = getEXG2RespirationDetectFreq();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+					returnValue = getEXG2RespirationDetectPhase();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+					returnValue = getInternalExpPower();
+	            	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+					returnValue = getPpgAdcSelectionGsrBoard();
+		    		break;
+				case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+					returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
+		    		break;
+				case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+					returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
+		    		break;
+	            	
+	
+				case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
+					returnValue = getSamplingDividerGsr();
+		    		break;
+				case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
+					returnValue = getSamplingDividerLsm303dlhcAccel();
+		    		break;
+				case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
+					returnValue = getSamplingDividerPpg();
+		    		break;
+				case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
+					returnValue = getSamplingDividerVBatt();
+		    		break;
+		    		
+		    		
+	//Strings
+	//    					case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+	//    						returnValue = getShimmerUserAssignedName();
+	//    			        	break;
+	//    					case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+	//    						returnValue = getTrialName();
+	//    			        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+			        Double readSamplingRate = getSamplingRateShimmer();
+			    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
+			    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100; // round sampling rate to two decimal places
+	//    					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
+			    	returnValue = actualSamplingRate.toString();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
+					returnValue = Integer.toString(getBufferSize());
+		        	break;
+	//    					case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+	//    			        	returnValue = getConfigTimeParsed();
+	//    			        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
+		        	returnValue = getMacIdFromInfoMem();
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID):
+		        	returnValue = Integer.toString(getExperimentId());
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS):
+		        	returnValue = Integer.toString(getTrialNumberOfShimmers());
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
+		        	returnValue = Integer.toString(getTrialDurationEstimated());
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
+		        	returnValue = Integer.toString(getTrialDurationMaximum());
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
+		        	returnValue = Integer.toString(getSyncBroadcastInterval());
+		        	break;
+				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
+					returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+	//    		    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
+		        	break;
+		        	
+	////List<Byte[]>
+	//    					case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
+	//    						List<byte[]> listOFExGBytes = new ArrayList<byte[]>();
+	//    						listOFExGBytes.add(getEXG1RegisterArray());
+	//    						listOFExGBytes.add(getEXG2RegisterArray());
+	//    						returnValue = listOFExGBytes;
+	//    			        	break;
+		        	
+		        default:
+		        	break;
+			}
+    	}
+    	
 
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
-				returnValue = getMPU9150AccelRange();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
-				returnValue = getMPU9150MotCalCfg();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF):
-				returnValue = getMPU9150LPF();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
-				returnValue = getMPU9150MPLSamplingRate();
-        		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
-				returnValue = getMPU9150MagSamplingRate();
-            	break;
-            	
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
-				returnValue = getEXG1RateSetting();
-				//returnValue = getEXG2RateSetting();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
-				returnValue = getEXGReferenceElectrode();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
-				returnValue = getEXGLeadOffCurrentMode();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
-				returnValue = getEXGLeadOffDetectionCurrent();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
-				returnValue = getEXGLeadOffComparatorTreshold();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
-				returnValue = getEXG2RespirationDetectFreq();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
-				returnValue = getEXG2RespirationDetectPhase();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
-				returnValue = getInternalExpPower();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
-				returnValue = getPpgAdcSelectionGsrBoard();
-	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
-				returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
-	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
-				returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
-	    		break;
-            	
-
-			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
-				returnValue = getSamplingDividerGsr();
-	    		break;
-			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
-				returnValue = getSamplingDividerLsm303dlhcAccel();
-	    		break;
-			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
-				returnValue = getSamplingDividerPpg();
-	    		break;
-			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
-				returnValue = getSamplingDividerVBatt();
-	    		break;
-	    		
-	    		
-//Strings
-//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
-//				returnValue = getShimmerUserAssignedName();
-//	        	break;
-//			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
-//				returnValue = getTrialName();
-//	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
-		        Double readSamplingRate = getSamplingRateShimmer();
-		    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
-		    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100; // round sampling rate to two decimal places
-//			    	consolePrintLn("GET SAMPLING RATE: " + componentName);
-		    	returnValue = actualSamplingRate.toString();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
-				returnValue = Integer.toString(getBufferSize());
-	        	break;
-//			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
-//	        	returnValue = getConfigTimeParsed();
-//	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
-	        	returnValue = getMacIdFromInfoMem();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID):
-	        	returnValue = Integer.toString(getExperimentId());
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS):
-	        	returnValue = Integer.toString(getTrialNumberOfShimmers());
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
-	        	returnValue = Integer.toString(getTrialDurationEstimated());
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
-	        	returnValue = Integer.toString(getTrialDurationMaximum());
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
-	        	returnValue = Integer.toString(getSyncBroadcastInterval());
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
-				returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
-//    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
-	        	break;
-	        	
-////List<Byte[]>
-//			case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
-//				List<byte[]> listOFExGBytes = new ArrayList<byte[]>();
-//				listOFExGBytes.add(getEXG1RegisterArray());
-//				listOFExGBytes.add(getEXG2RegisterArray());
-//				returnValue = listOFExGBytes;
-//	        	break;
-	        	
-	        default:
-	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
-	        	break;
-		}
 		
 		return returnValue;
 	}		

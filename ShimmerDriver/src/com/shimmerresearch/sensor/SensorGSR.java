@@ -75,7 +75,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 //				Configuration.Shimmer3.ObjectClusterSensorName.GSR);
 		
 		
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3){
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
 								Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
@@ -158,7 +158,6 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		
 		
 		return mMapOfCommTypetoChannel;
-
 	}
 
 	@Override
@@ -288,12 +287,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		}
 		return objectCluster;
 	}
-		
-		
-		
-		
 	
-	protected double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
+	public static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
 		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
@@ -302,7 +297,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return gsrCalibratedData;  
 	}
 
-	protected double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
+	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
 		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
@@ -314,44 +309,32 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	@Override
 	//TODO: Not sure yet whether store sensors infomem layout in Sensor class or in InfoMemLayout class
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		
 		//TODO: tidy
 		int idxConfigSetupByte3 =	9;
 		int bitShiftGSRRange =		1;
 		int maskGSRRange =			0x07;
-
 		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
-		
 	}
 
 	@Override
 	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		
 		//TODO: tidy
 		int idxConfigSetupByte3 =	9;
 		int bitShiftGSRRange =		1;
 		int maskGSRRange =			0x07;
-		
-		
 		mGSRRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftGSRRange) & maskGSRRange;
 	}
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		
 //		generateConfigOptionsMap(svo);
-		
 		super.updateSensorGroupingMap();
-		
 //		mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
-
-		
 		return mSensorGroupingMap;
 	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
-		
 		Object returnValue = null;
 		int buf = 0;
 

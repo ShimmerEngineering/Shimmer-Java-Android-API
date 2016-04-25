@@ -1,5 +1,10 @@
 package com.shimmerresearch.driver;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +16,10 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensor.ActionSetting;
+import com.shimmerresearch.sensor.SensorGSR;
+import com.shimmerresearch.sensor.SensorMPU9X50;
+import com.shimmerresearch.sensor.SensorSystemTimeStamp;
+import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
 
 public class Shimmer4 extends ShimmerDevice {
 	
@@ -19,16 +28,10 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	protected ShimmerRadioProtocol mShimmerRadio;
 
-
 	public Shimmer4() {
 		// TODO Auto-generated constructor stub
 	}
 	
-//	public Shimmer4(String mDockID, int lclSlotNumber, String macIdFromUart, COMMUNICATION_TYPE dock) {
-//		// TODO Auto-generated constructor stub
-//	}
-
-
 	public Shimmer4(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE communicationType) {
 		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(communicationType);
@@ -73,31 +76,6 @@ public class Shimmer4 extends ShimmerDevice {
 			}});
 		}
 	}
-	
-
-	@Override
-	protected void checkBattery() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ShimmerDevice deepClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setDefaultShimmerConfiguration() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
@@ -112,12 +90,6 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	@Override
-	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
 		
@@ -125,8 +97,15 @@ public class Shimmer4 extends ShimmerDevice {
 
 	@Override
 	public void sensorAndConfigMapsCreate() {
-		// TODO Auto-generated method stub
-		
+//		if(UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
+//				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
+//			
+//		}
+//		else {
+			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.MPU9X50.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject));
+//		}
 	}
 
 	@Override
@@ -153,46 +132,42 @@ public class Shimmer4 extends ShimmerDevice {
 		
 	}
 
-	@Override
-	public boolean doesSensorKeyExist(int sensorKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isChannelEnabled(int sensorKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getChannelLabel(int sensorKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<Integer> getSensorMapKeySet() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
-		
-	}
-
 //
 //	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
 //		// TODO Auto-generated method stub
 //		
 //	}
+	
+//	@Override
+//	public Object getConfigValueUsingConfigLabel(String componentName) {
+//		Object returnValue = null;
+//		returnValue = super.getConfigValueUsingConfigLabel(componentName);
+//		return returnValue;
+//	}
+	
+
+	@Override
+	public Shimmer4 deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (Shimmer4) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		//NOT USED IN THIS CLASS
+	}
 
 }

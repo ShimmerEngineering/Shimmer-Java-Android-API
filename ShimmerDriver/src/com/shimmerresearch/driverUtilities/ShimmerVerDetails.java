@@ -23,6 +23,8 @@ public class ShimmerVerDetails implements Serializable {
 	public static final int EXP_BRD_NONE_ID = 255;
 	public static final String EXP_BRD_NONE = "None";
 	
+	public static final int ANY_VERSION = -1;
+
 	//TODO change all to ENUMs with ints and Strings passed in
 	public static final class HW_ID {
 		public static final int UNKNOWN = -1;

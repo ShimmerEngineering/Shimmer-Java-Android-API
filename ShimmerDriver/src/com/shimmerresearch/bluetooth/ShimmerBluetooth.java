@@ -240,8 +240,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
 	
-	private boolean mVerboseMode = true;
-	private String mParentClassName = "ShimmerBluetooth";
+//	private boolean mVerboseMode = true;
+//	private String mParentClassName = "ShimmerBluetooth";
 	
 	protected boolean mUseProcessingThread = false;
 	
@@ -4762,26 +4762,26 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 
-	private void consolePrintLn(String message) {
-		if(mVerboseMode) {
-			Calendar rightNow = Calendar.getInstance();
-			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
-		}		
-	}
-	
-	public void consolePrint(String message) {
-		if(mVerboseMode) {
-			System.out.print(message);
-		}		
-	}
-
-	public void setVerboseMode(boolean verboseMode) {
-		mVerboseMode = verboseMode;
-	}
+//	private void consolePrintLn(String message) {
+//		if(mVerboseMode) {
+//			Calendar rightNow = Calendar.getInstance();
+//			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+//					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+//					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+//					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+//			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
+//		}		
+//	}
+//	
+//	public void consolePrint(String message) {
+//		if(mVerboseMode) {
+//			System.out.print(message);
+//		}		
+//	}
+//
+//	public void setVerboseMode(boolean verboseMode) {
+//		mVerboseMode = verboseMode;
+//	}
 	
 	public String getComPort(){
 		return mComPort;

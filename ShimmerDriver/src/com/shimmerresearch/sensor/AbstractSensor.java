@@ -14,11 +14,9 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
@@ -200,7 +198,7 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public abstract String getSensorName();
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
-	public abstract ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE commType);
+	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
 	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object);
 	
 //	/** Different firmwares might have different infomem layouts
@@ -688,9 +686,10 @@ public abstract class AbstractSensor implements Serializable{
 					}
 				}
 				
-				else if((mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
+				else {
+//				else if((mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
+//						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
+//						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
 					for (String configOption:mListOfConfigOptionKeysAssociated) {
 						// do not add duplicates
 						if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {

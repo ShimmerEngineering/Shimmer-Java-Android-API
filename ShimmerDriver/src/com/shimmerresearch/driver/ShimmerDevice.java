@@ -2,6 +2,7 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -130,21 +131,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static String STRING_CONSTANT_UNKNOWN = "Unknown";
 	public static String STRING_CONSTANT_SD_ERROR = "SD Error";
 
+	public boolean mVerboseMode = true;
 	
 	// --------------- Abstract Methods Start --------------------------
 	
-	protected abstract void checkBattery();
+	/**
+	 * Performs a deep copy of the parent class by Serializing
+	 * @return ShimmerDevice the deep copy of the current ShimmerDevice (should
+	 *         be substituted by the extended ShimmerDevice instance)
+	 * @see java.io.Serializable
+	 */
 	public abstract ShimmerDevice deepClone();
-
-	public abstract void setDefaultShimmerConfiguration();
 
 	// Device sensor map related
 //	public abstract Map<Integer, SensorEnabledDetails> getSensorEnabledMap();
-	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
 	public abstract boolean setSensorEnabledState(int sensorMapKey, boolean state);
 	public abstract List<Integer> sensorMapConflictCheck(Integer key);
 	// Device Config related
-	public abstract Map<String, SensorConfigOptionDetails> getConfigOptionsMap();
+
 	public abstract void checkConfigOptionValues(String stringKey);
 	public abstract void sensorAndConfigMapsCreate();
 	
@@ -954,66 +958,79 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfChannelsPerSensorForCommType;
 	}
 	
-    public abstract boolean doesSensorKeyExist(int sensorKey);
+//	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		Map<String, SensorGroupingDetails> sensorGroupingMapAll = new HashMap<String, SensorGroupingDetails>(); 
+		for(AbstractSensor sensor:mMapOfSensors.values()){
+			Map<String, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
+			if(sensorGroupingMap!=null){
+				sensorGroupingMapAll.putAll(sensorGroupingMap);
+			}
+		}
+		return sensorGroupingMapAll;
+	}
+	
+//    public abstract boolean doesSensorKeyExist(int sensorKey);
+	public boolean doesSensorKeyExist(int sensorKey) {
+		return (mMapOfSensors.containsKey(sensorKey));
+	}
 
-    public abstract boolean isChannelEnabled(int sensorKey);
-//    private boolean isChannelEnabled(int sensorKey) {
-//		if(selectedDockedShimmer instanceof ShimmerPCMSS){
-//		    Map<Integer, SensorEnabledDetails> sensorMap = ((ShimmerPCMSS)selectedDockedShimmer).getSensorEnabledMap();
-//			SensorEnabledDetails sensor = sensorMap.get(sensorKey);
-//		    if(sensor!=null){
-//			    return sensor.mIsEnabled;
-//		    }
-//		}
-//		else if(selectedDockedShimmer instanceof ShimmerGQ_802154){
-//		    Map<Integer, AbstractSensor> sensorMap = ((ShimmerGQ_802154)selectedDockedShimmer).getMapOfSensors();
-//		    AbstractSensor sensor = sensorMap.get(sensorKey);
-//		    if(sensor!=null){
-//			    return sensor.mIsEnabled;
-//		    }
-//		}
-//		return false;
-//	}
+//    public abstract boolean isChannelEnabled(int sensorKey);
+	public boolean isChannelEnabled(int sensorKey) {
+	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mIsEnabled;
+	    }
+	    return false;
+	}
 
-    public abstract String getChannelLabel(int sensorKey);
-//    private String getChannelLabel(int sensorKey) {
-//		if(selectedDockedShimmer instanceof ShimmerPCMSS){
-//		    Map<Integer, SensorEnabledDetails> sensorMap = ((ShimmerPCMSS)selectedDockedShimmer).getSensorEnabledMap();
-//			SensorEnabledDetails sensor = sensorMap.get(sensorKey);
-//		    if(sensor!=null){
-//			    return sensor.mSensorDetails.mLabel;
-//		    }
-//		}
-//		else if(selectedDockedShimmer instanceof ShimmerGQ_802154){
-//		    Map<Integer, AbstractSensor> sensorMap = ((ShimmerGQ_802154)selectedDockedShimmer).getMapOfSensors();
-//		    AbstractSensor sensor = sensorMap.get(sensorKey);
-//		    if(sensor!=null){
-//			    return sensor.mGuiFriendlyLabel;
-//		    }
-//		}
-//		return "";
-//	}
+//    public abstract String getChannelLabel(int sensorKey);
+	public String getChannelLabel(int sensorKey) {
+	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mGuiFriendlyLabel;
+	    }
+		return null;
+	}
 
-    public abstract List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey);
-//    private List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
-//		if(this instanceof ShimmerPCMSS){
-//		    Map<Integer, SensorEnabledDetails> sensorMap = ((ShimmerPCMSS)selectedDockedShimmer).getSensorEnabledMap();
-//			SensorEnabledDetails sensor = sensorMap.get(sensorKey);
-//		    if(sensor!=null){
-//			    return sensor.mSensorDetails.mListOfCompatibleVersionInfo;
-//		    }
-//		}
-//		else if(selectedDockedShimmer instanceof ShimmerGQ_802154){
-//		    Map<Integer, AbstractSensor> sensorMap = ((ShimmerGQ_802154)selectedDockedShimmer).getMapOfSensors();
-//		    AbstractSensor sensor = sensorMap.get(sensorKey);
-//		    if(sensor!=null){
-//			    return sensor.mListOfCompatibleVersionInfo;
-//		    }
-//		}
-//		return null;
-//	}
+//    public abstract List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey);
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+	    if(sensor!=null){
+		    return sensor.mListOfCompatibleVersionInfo;
+	    }
+	    return null;
+	}
+    
+//	public abstract Set<Integer> getSensorMapKeySet();
+	public Set<Integer> getSensorMapKeySet() {
+		return mMapOfSensors.keySet();
+	}
+	
+//	public abstract void setDefaultShimmerConfiguration();
+	/** Sets all default Shimmer settings in ShimmerDevice.
+	 */
+	public void setDefaultShimmerConfiguration() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+//	public abstract Map<String, SensorConfigOptionDetails> getConfigOptionsMap();
+	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
+		
+		HashMap<String, SensorConfigOptionDetails> configOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
+		
+		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+			HashMap<String, SensorConfigOptionDetails> configOptionsMapPerSensor = abstractSensor.generateConfigOptionsMap(mShimmerVerObject);
+			if(configOptionsMapPerSensor!=null){
+				if(configOptionsMapPerSensor.keySet().size()>0){
+					configOptionsMap.putAll(configOptionsMapPerSensor);
+				}
+			}
+		}
+		return configOptionsMap;
+	}
 
-	public abstract Set<Integer> getSensorMapKeySet();
 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet){
 		Object returnValue = null;
@@ -1039,6 +1056,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public Object getConfigValueUsingConfigLabel(String componentName){
 		Object returnValue = null;
+		
+		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
+			returnValue = abstractSensor.getConfigValueUsingConfigLabel(componentName);
+			if(returnValue!=null){
+				return returnValue;
+			}
+		}
 		
 		switch(componentName){
 //Booleans
@@ -1158,7 +1182,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 //	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
 //		setShimmerVersionObject(hwfw);
-//		sensorAndConfigMapsCreate();
+//		();
 //	}
+	
+
+	public void consolePrintLn(String message) {
+		if(mVerboseMode) {
+			Calendar rightNow = Calendar.getInstance();
+			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+			System.out.println(rightNowString + " " + getClass().getSimpleName() + ": " + getMacId() + " " + message);
+		}		
+	}
+	
+	public void consolePrint(String message) {
+		if(mVerboseMode) {
+			System.out.print(message);
+		}		
+	}
+
+	public void setVerboseMode(boolean verboseMode) {
+		mVerboseMode = verboseMode;
+	}
+
 
 }

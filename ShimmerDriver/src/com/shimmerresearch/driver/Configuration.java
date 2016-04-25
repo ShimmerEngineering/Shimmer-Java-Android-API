@@ -1193,7 +1193,7 @@ public class Configuration {
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
 					baseAnyIntExpBoardAndSdlog,baseAnyIntExpBoardAndBtStream,baseAnyIntExpBoardAndLogAndStream);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
@@ -1249,7 +1249,7 @@ public class Configuration {
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
 					baseHighGAccelSdLog,baseHighGAccelBtStream,baseHighGAccelLogAndStream);
 			
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl);
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl);
 		}
 
 

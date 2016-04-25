@@ -48,8 +48,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	public String mSpanId = "";
 	
-	private boolean mVerboseMode = true;
-	
 	//TODO generate from Sensor classes
 	public static final int SENSOR_ECG_TO_HR_FW				= (0x40 << (8*1));
 	public long mEnabledSensors = SENSOR_ECG_TO_HR_FW + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
@@ -249,13 +247,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
+		//NOT USED IN THIS CLASS
 	}
 
-	/**Performs a deep copy of ShimmerGQ by Serializing
-	 * @return ShimmerGQ the deep copy of the current ShimmerGQ
-	 * @see java.io.Serializable
-	 */
 	@Override
 	public ShimmerGQ_802154 deepClone() {
 //		System.out.println("Cloning:" + mUniqueID);
@@ -274,28 +268,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	@Override
-	protected void checkBattery() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
-		
-		HashMap<String, SensorConfigOptionDetails> configOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
-		
-		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
-			HashMap<String, SensorConfigOptionDetails> configOptionsMapPerSensor = abstractSensor.generateConfigOptionsMap(mShimmerVerObject);
-			if(configOptionsMapPerSensor!=null){
-				if(configOptionsMapPerSensor.keySet().size()>0){
-					configOptionsMap.putAll(configOptionsMapPerSensor);
-				}
-			}
-		}
-		return configOptionsMap;
 	}
 
 	@Override
@@ -344,32 +316,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
-		
-		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
-			returnValue = abstractSensor.getConfigValueUsingConfigLabel(componentName);
-			if(returnValue!=null){
-				return returnValue;
-			}
-		}
-		
-		switch(componentName){
-//Booleans
-
-//Integers
-	    		
-//Strings
-	        	
-	        default:
-	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
-	        	break;
-		}
-		
-		return returnValue;	}
-
-	@Override
-	public void setDefaultShimmerConfiguration() {
-		// TODO Auto-generated method stub
-		
+    	returnValue = super.getConfigValueUsingConfigLabel(componentName);
+		return returnValue;
 	}
 
 	@Override
@@ -660,7 +608,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	public void sensorAndConfigMapsCreate() {
-		
 		//in future should compare and build map
 		if( UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
@@ -668,28 +615,23 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.ECG_TO_HR.sensorIndex(),new SensorECGToHR(mShimmerVerObject));
-			
-		} else {
+		} 
+		else {
 //			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.ECG_TO_HR.sensorIndex(),new SensorECGToHR(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.EXG.sensorIndex(),new SensorEXG(mShimmerVerObject));
 		}
-		
 	}
 
-	
+	/**
+	 * overriding buildMsg here to allow us to store the last received packet.
+	 * Used in GQ for GUI generation and to repeat data samples if reception
+	 * drops
+	 */
 	@Override
 	public ObjectCluster buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType){
-//		//if the packet byte has a starting byte indicating enabled channels
-//		interpretDataPacketFormat(packetByteArray[0],commType);
-//		byte[] newPBA = new byte[packetByteArray.length-1];
-//		System.arraycopy(packetByteArray, 1, newPBA, 0, newPBA.length);
-//		
-//		ObjectCluster ojc = (ObjectCluster) super.buildMsg(newPBA, commType);
-//		//sendCallBackMsg();
-		
 		ObjectCluster objectCluster = super.buildMsg(packetByteArray, commType);
 		super.mLastProcessedObjectCluster = objectCluster;
 		return objectCluster;
@@ -697,7 +639,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
-//		byte enabledSensors = (byte) object;
 		byte[] enabledSensorsByteArray = (byte[]) object;
 		long enabledSensors = 0;
 		
@@ -744,17 +685,17 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 	}
 
-	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		Map<String, SensorGroupingDetails> sensorGroupingMapAll = new HashMap<String, SensorGroupingDetails>(); 
-		for(AbstractSensor sensor:mMapOfSensors.values()){
-			Map<String, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
-			if(sensorGroupingMap!=null){
-				sensorGroupingMapAll.putAll(sensorGroupingMap);
-			}
-		}
-		return sensorGroupingMapAll;
-	}
+//	@Override
+//	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+//		Map<String, SensorGroupingDetails> sensorGroupingMapAll = new HashMap<String, SensorGroupingDetails>(); 
+//		for(AbstractSensor sensor:mMapOfSensors.values()){
+//			Map<String, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
+//			if(sensorGroupingMap!=null){
+//				sensorGroupingMapAll.putAll(sensorGroupingMap);
+//			}
+//		}
+//		return sensorGroupingMapAll;
+//	}
 	
 	/**
 	 * @return the MAC address from any source available
@@ -793,17 +734,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		else{
 			return false;
 		}
-	}
-
-	private void consolePrintLn(String message) {
-		if(mVerboseMode) {
-			Calendar rightNow = Calendar.getInstance();
-			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString + " " + getClass().getSimpleName() + ": " + getMacId() + " " + message);
-		}		
 	}
 
 	public void pairToSpan(String spanId) {
@@ -1084,42 +1014,42 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mIsSDError = state;
 	}
 
-	@Override
-	public boolean isChannelEnabled(int sensorKey) {
-	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
-	    if(sensor!=null){
-		    return sensor.mIsEnabled;
-	    }
-	    return false;
-	}
-
-	@Override
-	public String getChannelLabel(int sensorKey) {
-	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
-	    if(sensor!=null){
-		    return sensor.mGuiFriendlyLabel;
-	    }
-		return null;
-	}
-
-	@Override
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
-	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
-	    if(sensor!=null){
-		    return sensor.mListOfCompatibleVersionInfo;
-	    }
-	    return null;
-	}
-
-	@Override
-	public boolean doesSensorKeyExist(int sensorKey) {
-		return (mMapOfSensors.containsKey(sensorKey));
-	}
-
-	@Override
-	public Set<Integer> getSensorMapKeySet() {
-		return mMapOfSensors.keySet();
-	}
+//	@Override
+//	public boolean isChannelEnabled(int sensorKey) {
+//	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+//	    if(sensor!=null){
+//		    return sensor.mIsEnabled;
+//	    }
+//	    return false;
+//	}
+//
+//	@Override
+//	public String getChannelLabel(int sensorKey) {
+//	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+//	    if(sensor!=null){
+//		    return sensor.mGuiFriendlyLabel;
+//	    }
+//		return null;
+//	}
+//
+//	@Override
+//	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+//	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
+//	    if(sensor!=null){
+//		    return sensor.mListOfCompatibleVersionInfo;
+//	    }
+//	    return null;
+//	}
+//
+//	@Override
+//	public boolean doesSensorKeyExist(int sensorKey) {
+//		return (mMapOfSensors.containsKey(sensorKey));
+//	}
+//
+//	@Override
+//	public Set<Integer> getSensorMapKeySet() {
+//		return mMapOfSensors.keySet();
+//	}
 
 	public void setConfigFromSpan(int radioChannel, 
 			int radioGroupId,
