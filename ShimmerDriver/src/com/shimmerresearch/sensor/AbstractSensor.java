@@ -11,6 +11,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -264,7 +265,9 @@ public abstract class AbstractSensor implements Serializable{
 	 * @return
 	 */
 	public abstract HashMap<String,SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo);
-	
+	public abstract List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo);
+	public abstract List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo);
+	public abstract Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo);
 	
 	public final static class SHIMMER3_BT_STREAM_CHANNEL_ID {
 		public final static int GSR = 1;
@@ -290,17 +293,27 @@ public abstract class AbstractSensor implements Serializable{
 			mMapOfCommTypetoChannel = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>>();
 		}
 		
-		generateListOfConfigOptionKeysAssociated();
-		generateListOfSensorMapKeysConflicting();
+		mListOfConfigOptionKeysAssociated = generateListOfConfigOptionKeysAssociated(svo);
+		if(mListOfConfigOptionKeysAssociated == null){
+			mListOfConfigOptionKeysAssociated = new ArrayList<String>() ;
+		}
+		
+		
+		
+		mListOfSensorMapKeysConflicting = generateListOfSensorMapKeysConflicting(svo);
+		if(mListOfConfigOptionKeysAssociated == null){
+			mListOfConfigOptionKeysAssociated = new ArrayList<String>() ;
+		}
+		
+		
+		
 		mSensorGroupingMap = generateSensorGroupMapping(svo);
 		if(mSensorGroupingMap==null){
 			mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		}
 	}
 	
-	public abstract void generateListOfSensorMapKeysConflicting();
-	public abstract void generateListOfConfigOptionKeysAssociated();
-	public abstract Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo);
+	
 
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
 	 * @return
@@ -716,11 +729,8 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		
 	}
-	public void generateSensorGroupMapping() {
-		// TODO Auto-generated method stub
-		
-	}
-	
+
+
 	
 	
 	

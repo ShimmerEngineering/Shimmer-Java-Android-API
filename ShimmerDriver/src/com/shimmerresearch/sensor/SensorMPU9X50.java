@@ -388,13 +388,14 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public void generateListOfConfigOptionKeysAssociated() {
-		mListOfConfigOptionKeysAssociated = Arrays.asList(
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+		return mListOfConfigOptionKeysAssociated = Arrays.asList(
 				Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
 	}
 
 	@Override
-	public void generateListOfSensorMapKeysConflicting() {
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+		return mListOfSensorMapKeysConflicting;
 		// TODO Auto-generated method stub
 		
 	}
