@@ -53,16 +53,11 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		mSensorBitmapIDStreaming = 0x04<<(0*8);
 		mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
 		
-		generateListOfConfigOptionKeysAssociated();
-		generateListOfSensorMapKeysConflicting();
-		generateSensorGroupMapping(svo);
+	
 //		mListOfChannels = Arrays.asList(
 //				Configuration.Shimmer3.ObjectClusterSensorName.GSR);
 		
-		
-	
-		
-	}
+		}
 
 
 
@@ -348,16 +343,16 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public void generateListOfConfigOptionKeysAssociated() {
-		mListOfConfigOptionKeysAssociated = Arrays.asList(
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+		return mListOfConfigOptionKeysAssociated = Arrays.asList(
 				Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
 		
 		
 	}
 
 	@Override
-	public void generateListOfSensorMapKeysConflicting() {
-		mListOfSensorMapKeysConflicting = Arrays.asList(
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+		return mListOfSensorMapKeysConflicting = Arrays.asList(
 				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
 				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
 				Configuration.Shimmer3.SensorMapKey.ECG,
@@ -375,7 +370,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
 		
 			if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
@@ -392,6 +387,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 				
 //				mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
 			}
+			return mSensorGroupingMap;
 		
 	
 	}
@@ -407,6 +403,14 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
+
+
+
+
+	
 
 	
 }
