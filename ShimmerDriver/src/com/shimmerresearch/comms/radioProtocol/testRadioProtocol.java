@@ -44,6 +44,9 @@ public class testRadioProtocol {
 		System.out.println(length);
 		length = (int)LiteProtocolInstructionSet.Instructions.valueOf(3).getValueDescriptor().getOptions().getField(LiteProtocolInstructionSet.getDescriptor().findFieldByName("response_size"));
 		System.out.println(" " + length);
+		length = (int)LiteProtocolInstructionSet.Instructions.INFOMEM_RESPONSE.getValueDescriptor().getOptions().getField(LiteProtocolInstructionSet.getDescriptor().findFieldByName("response_size"));
+		System.out.println(" " + length);
+		
 	}
 
 }
