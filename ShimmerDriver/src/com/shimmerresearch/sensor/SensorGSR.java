@@ -53,51 +53,24 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		mSensorBitmapIDStreaming = 0x04<<(0*8);
 		mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
 		
-		mListOfSensorMapKeysConflicting = Arrays.asList(
-				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
-				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
-				Configuration.Shimmer3.SensorMapKey.ECG,
-				Configuration.Shimmer3.SensorMapKey.EMG,
-				Configuration.Shimmer3.SensorMapKey.EXG_TEST,
-				Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
-				Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
-//				Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//				Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//				Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//				Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
-				Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
-				Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
-
-		mListOfConfigOptionKeysAssociated = Arrays.asList(
-				Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
-		
+		generateListOfConfigOptionKeysAssociated();
+		generateListOfSensorMapKeysConflicting();
+		generateSensorGroupMapping(svo);
 //		mListOfChannels = Arrays.asList(
 //				Configuration.Shimmer3.ObjectClusterSensorName.GSR);
 		
 		
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
-								Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
-		}
-		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
-			
-//			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
-		}
+	
 		
 	}
+
+
 
 	@Override
 	public String getSensorName() {
 		return mSensorName;
 	}
-
+ 
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -376,8 +349,51 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	@Override
 	public void generateListOfConfigOptionKeysAssociated() {
-		// TODO Auto-generated method stub
+		mListOfConfigOptionKeysAssociated = Arrays.asList(
+				Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
 		
+		
+	}
+
+	@Override
+	public void generateListOfSensorMapKeysConflicting() {
+		mListOfSensorMapKeysConflicting = Arrays.asList(
+				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
+				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
+				Configuration.Shimmer3.SensorMapKey.ECG,
+				Configuration.Shimmer3.SensorMapKey.EMG,
+				Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+				Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+				Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
+//				Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+//				Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+//				Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+//				Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+				Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
+				Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
+		
+	}
+
+	@Override
+	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		
+			if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4){
+				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
+									Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
+				mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			}
+			else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
+					||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
+					||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
+				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR)));
+				mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+				
+//				mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
+			}
+		
+	
 	}
 
 	@Override

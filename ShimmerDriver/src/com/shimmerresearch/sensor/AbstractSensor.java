@@ -291,11 +291,14 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		
 		generateListOfConfigOptionKeysAssociated();
-		
+		generateListOfSensorMapKeysConflicting();
+		generateSensorGroupMapping(svo);
 		
 	}
 	
+	public abstract void generateListOfSensorMapKeysConflicting();
 	public abstract void generateListOfConfigOptionKeysAssociated();
+	public abstract void generateSensorGroupMapping(ShimmerVerObject svo);
 
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
 	 * @return
@@ -711,6 +714,11 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		
 	}
+	public void generateSensorGroupMapping() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	
 	
 	
