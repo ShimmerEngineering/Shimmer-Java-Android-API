@@ -48,9 +48,9 @@ public class LiteProtocol extends RadioProtocol{
 	protected boolean mIsInitialised = false;
 	protected boolean mIsDocked = false;
 	protected boolean mHaveAttemptedToReadConfig = false;
-	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
+	private final int ACK_TIMER_DURATION = 10; 									// Duration to wait for an ack packet (seconds)
 	protected boolean mDummy=false;
-	protected boolean mFirstTime=true;
+	protected boolean mFirstTime=false;
 	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
 	transient protected Timer mTimerCheckForAckOrResp;								// Timer variable used when waiting for an ack or response packet
 	transient protected Timer mTimerCheckAlive;
@@ -159,20 +159,20 @@ public class LiteProtocol extends RadioProtocol{
 								clearSerialBuffer();
 							}
 							//Special cases
-							if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.SET_RWC_COMMAND_VALUE){
+							if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.SET_RWC_COMMAND_VALUE){
 								// for Real-world time -> grab PC time just before
 								// writing to Shimmer
 								byte[] rtcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(System.currentTimeMillis());
 								System.arraycopy(rtcTimeArray, 0, insBytes, 1, 8);
 							}
 							//TODO: are the two stops needed here? better to wait for ack from Shimmer
-							if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_STREAMING_COMMAND_VALUE || mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE){} 
+							if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE || mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE){} 
 							else {
 								// Overwritten for commands that aren't supported
 								// for older versions of Shimmer
-								if((mCurrentCommand==LiteProtocolInstructionSet.Instructions.GET_FW_VERSION_COMMAND_VALUE)
-										||(mCurrentCommand==LiteProtocolInstructionSet.Instructions.GET_SAMPLING_RATE_COMMAND_VALUE)
-										||(mCurrentCommand==LiteProtocolInstructionSet.Instructions.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE)){
+								if((mCurrentCommand==LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE)
+										||(mCurrentCommand==LiteProtocolInstructionSet.InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE)
+										||(mCurrentCommand==LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE)){
 									startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
 								}
 								else {
@@ -193,12 +193,12 @@ public class LiteProtocol extends RadioProtocol{
 							
 								mShimmerRadio.txBytes(insBytes);
 							
-							printLogDataForDebugging("Command Transmitted: \t\t\t" + LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand).name() + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(insBytes));
+							printLogDataForDebugging("Command Transmitted: \t\t\t" + mCurrentCommand + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(insBytes));
 	
 							//TODO: are the two stops needed here? better to wait for ack from Shimmer
-							if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_STREAMING_COMMAND_VALUE || mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE){
+							if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE || mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE){
 								mIsStreaming=false;
-								if (mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE){
+								if (mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE){
 									mIsSDLogging = false;
 								}
 								getListofInstructions().removeAll(Collections.singleton(null));
@@ -259,7 +259,7 @@ public class LiteProtocol extends RadioProtocol{
 							mIamAlive = true;
 							
 							//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
-							if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_STREAMING_COMMAND_VALUE || mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE) { //due to not receiving the ack from stop streaming command we will skip looking for it.
+							if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE || mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE) { //due to not receiving the ack from stop streaming command we will skip looking for it.
 								stopTimerCheckForAckOrResp();
 								mIsStreaming=false;
 								mTransactionCompleted=true;
@@ -273,7 +273,7 @@ public class LiteProtocol extends RadioProtocol{
 								mProtocolListener.hasStopStreaming();					
 								getListofInstructions().remove(0);
 								getListofInstructions().removeAll(Collections.singleton(null));
-								if (mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE){
+								if (mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE){
 									mProtocolListener.eventLogAndStreamStatusChanged();	
 								}
 								setInstructionStackLock(false);
@@ -297,24 +297,24 @@ public class LiteProtocol extends RadioProtocol{
 //								setInstructionStackLock(false);
 //							}
 							if(tb != null){
-								if((byte)tb[0]==(byte)LiteProtocolInstructionSet.Instructions.ACK_COMMAND_PROCESSED_VALUE) {
+								if((byte)tb[0]==(byte)LiteProtocolInstructionSet.InstructionsSet.ACK_COMMAND_PROCESSED_VALUE) {
 
 									mWaitForAck=false;
-									printLogDataForDebugging("Ack Received for Command: \t\t" + LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand).name());
+									printLogDataForDebugging("Ack Received for Command: \t\t" + mCurrentCommand);
 
 									// Send status report if needed by the
 									// application and is not one of the below
 									// commands that are triggered by timers
-									if(mCurrentCommand!=LiteProtocolInstructionSet.Instructions.GET_STATUS_COMMAND_VALUE 
-											&& mCurrentCommand!=LiteProtocolInstructionSet.Instructions.TEST_CONNECTION_COMMAND_VALUE 
-											&& mCurrentCommand!=LiteProtocolInstructionSet.Instructions.SET_BLINK_LED_VALUE
+									if(mCurrentCommand!=LiteProtocolInstructionSet.InstructionsGet.GET_STATUS_COMMAND_VALUE 
+											&& mCurrentCommand!=LiteProtocolInstructionSet.InstructionsSet.TEST_CONNECTION_COMMAND_VALUE 
+											&& mCurrentCommand!=LiteProtocolInstructionSet.InstructionsSet.SET_BLINK_LED_VALUE
 											//&& mCurrentCommand!= GET_VBATT_COMMAND
 											&& mOperationUnderway){
 										mProtocolListener.sendProgressReport(new ProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mComPort));
 									}
 									
 									// Process if currentCommand is a SET command
-									if(LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand)!=null){
+									if(LiteProtocolInstructionSet.InstructionsSet.valueOf(mCurrentCommand&0xff)!=null){
 										stopTimerCheckForAckOrResp(); //cancel the ack timer
 										
 										processAckFromSetCommand(mCurrentCommand);
@@ -324,7 +324,7 @@ public class LiteProtocol extends RadioProtocol{
 									}
 									
 									// Process if currentCommand is a GET command
-									else if(LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand)!=null){
+									else if(LiteProtocolInstructionSet.InstructionsGet.valueOf(mCurrentCommand&0xff)!=null){
 										
 										//Special cases
 										byte[] insBytes = getListofInstructions().get(0);
@@ -371,10 +371,13 @@ public class LiteProtocol extends RadioProtocol{
 							mIamAlive = true;
 							
 							//Check to see whether it is a response byte
-							if(LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand)!=null){
+							if(LiteProtocolInstructionSet.InstructionsResponse.valueOf(tb[0]&0xff)!=null){
 								byte responseCommand = tb[0];
 								// response have to read bytes and return the values
-								 int lengthOfResponse = (int)LiteProtocolInstructionSet.Instructions.valueOf(responseCommand).getValueDescriptor().getOptions().getField(LiteProtocolInstructionSet.getDescriptor().findFieldByName("response_size"));
+								 int lengthOfResponse = (int)LiteProtocolInstructionSet.InstructionsResponse.valueOf(responseCommand&0xff).getValueDescriptor().getOptions().getField(LiteProtocolInstructionSet.getDescriptor().findFieldByName("response_size"));
+								if (lengthOfResponse ==-1){
+									lengthOfResponse = (int)(mShimmerRadio.rxBytes(1)[0] & 0xFF);
+								} 
 								byte[] response = mShimmerRadio.rxBytes(lengthOfResponse);
 								response = ArrayUtils.addAll(tb,response);
 								mProtocolListener.eventNewResponse(response);
@@ -384,7 +387,7 @@ public class LiteProtocol extends RadioProtocol{
 								mWaitForResponse=false;
 								mTransactionCompleted=true;
 								setInstructionStackLock(false);
-								printLogDataForDebugging("Response Received:\t\t\t" + LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand).name());
+								printLogDataForDebugging("Response Received:\t\t\t" + LiteProtocolInstructionSet.InstructionsResponse.valueOf(tb[0]&0xff).name());
 								
 								// Special case for FW_VERSION_RESPONSE because it
 								// needs to initialize the Shimmer after releasing
@@ -414,14 +417,14 @@ public class LiteProtocol extends RadioProtocol{
 						
 						tb=mShimmerRadio.rxBytes(1);
 						if(tb != null){
-							if(tb[0]==LiteProtocolInstructionSet.Instructions.ACK_COMMAND_PROCESSED_VALUE) {
+							if(tb[0]==LiteProtocolInstructionSet.InstructionsSet.ACK_COMMAND_PROCESSED_VALUE) {
 								printLogDataForDebugging("ACK RECEIVED , Connected State!!");
 								tb = mShimmerRadio.rxBytes(1);
 								if (tb!=null){ //an android fix.. not fully investigated (JC)
-									if(tb[0]==LiteProtocolInstructionSet.Instructions.ACK_COMMAND_PROCESSED_VALUE){
+									if(tb[0]==LiteProtocolInstructionSet.InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
 										tb = mShimmerRadio.rxBytes(1);
 									}
-									if(tb[0]==LiteProtocolInstructionSet.Instructions.INSTREAM_CMD_RESPONSE_VALUE){
+									if(tb[0]==LiteProtocolInstructionSet.InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){
 										processInstreamResponse();
 									}
 								}
@@ -457,23 +460,23 @@ public class LiteProtocol extends RadioProtocol{
 						byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
 						
 						//Data packet followed by another data packet
-						if(bufferTemp[0]==LiteProtocolInstructionSet.Instructions.DATA_PACKET_VALUE && bufferTemp[mPacketSize+1]==LiteProtocolInstructionSet.Instructions.DATA_PACKET_VALUE){
+						if(bufferTemp[0]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE && bufferTemp[mPacketSize+1]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE){
 							//Handle the data packet
 							processDataPacket(bufferTemp);
 							clearSingleDataPacketFromBuffers(bufferTemp, mPacketSize+1);
 						} 
 						
 						//Data packet followed by an ACK (suggesting an ACK in response to a SET BT command or else a BT response command)
-						else if(bufferTemp[0]==LiteProtocolInstructionSet.Instructions.DATA_PACKET_VALUE && bufferTemp[mPacketSize+1]==LiteProtocolInstructionSet.Instructions.ACK_COMMAND_PROCESSED_VALUE){
+						else if(bufferTemp[0]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE && bufferTemp[mPacketSize+1]==LiteProtocolInstructionSet.InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
 							if(mByteArrayOutputStream.size()>mPacketSize+2){
 								
-								if(bufferTemp[mPacketSize+2]==LiteProtocolInstructionSet.Instructions.DATA_PACKET_VALUE){
+								if(bufferTemp[mPacketSize+2]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE){
 									//Firstly handle the data packet
 									processDataPacket(bufferTemp);
 									clearSingleDataPacketFromBuffers(bufferTemp, mPacketSize+2);
 									
 									//Then handle the ACK from the last SET command
-									if(LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand)!=null){
+									if(LiteProtocolInstructionSet.InstructionsSet.valueOf(mCurrentCommand&0xff)!=null){
 										stopTimerCheckForAckOrResp(); //cancel the ack timer
 										mWaitForAck=false;
 										
@@ -482,11 +485,11 @@ public class LiteProtocol extends RadioProtocol{
 										mTransactionCompleted = true;
 										setInstructionStackLock(false);
 									}
-									printLogDataForDebugging("Ack Received for Command: \t\t\t" + LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand).name());
+									printLogDataForDebugging("Ack Received for Command: \t\t\t" + mCurrentCommand);
 								}
 								
 								//this is for LogAndStream support, command is transmitted and ack received
-								else if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && bufferTemp[mPacketSize+2]==LiteProtocolInstructionSet.Instructions.INSTREAM_CMD_RESPONSE_VALUE){ 
+								else if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && bufferTemp[mPacketSize+2]==LiteProtocolInstructionSet.InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){ 
 									printLogDataForDebugging("COMMAND TXed and ACK RECEIVED IN STREAM");
 									printLogDataForDebugging("INS CMD RESP");
 
@@ -547,8 +550,8 @@ public class LiteProtocol extends RadioProtocol{
 				mTimerCheckForAckOrResp.purge();
 				mTimerCheckForAckOrResp = null;
 			}
-			printLogDataForDebugging("Waiting for ack/response for command:\t" + 
-					LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand).name());
+			
+			printLogDataForDebugging("Waiting for ack/response for command:\t" + mCurrentCommand);
 			mTimerCheckForAckOrResp = new Timer("Shimmer_" + "_TimerCheckForResp");
 			mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
 		}
@@ -564,7 +567,7 @@ public class LiteProtocol extends RadioProtocol{
 				int storedFirstTime = (mFirstTime? 1:0);
 				
 				//Timeout triggered 
-				printLogDataForDebugging("Command:\t" + LiteProtocolInstructionSet.Instructions.valueOf(mCurrentCommand).name() +" timeout");
+				printLogDataForDebugging("Command:\t" + mCurrentCommand +" timeout");
 				if(mWaitForAck){
 					printLogDataForDebugging("Ack not received");
 				}
@@ -578,7 +581,7 @@ public class LiteProtocol extends RadioProtocol{
 				
 				//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
 				//we will send the status changed to the GUI anyway
-				if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.START_LOGGING_ONLY_COMMAND_VALUE){
+				if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE){
 					
 					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
 					
@@ -593,7 +596,7 @@ public class LiteProtocol extends RadioProtocol{
 					
 					return;
 				}
-				else if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.STOP_LOGGING_ONLY_COMMAND_VALUE){
+				else if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE){
 					
 					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
 					
@@ -610,13 +613,13 @@ public class LiteProtocol extends RadioProtocol{
 				}
 				
 
-				if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.GET_FW_VERSION_COMMAND_VALUE){
+				if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE){
 					
 				}
-				else if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.GET_SAMPLING_RATE_COMMAND_VALUE && !mIsInitialised){
+				else if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE && !mIsInitialised){
 					mFirstTime=false;
 				} 
-				else if(mCurrentCommand==LiteProtocolInstructionSet.Instructions.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
+				else if(mCurrentCommand==LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
 					mFirstTime=false;
 					
 				}
@@ -706,18 +709,18 @@ public class LiteProtocol extends RadioProtocol{
 			if(getListofInstructions().get(0)!=null){
 				mProtocolListener.eventAckInstruction(getListofInstructions().get(0));
 				
-				if(currentCommand==LiteProtocolInstructionSet.Instructions.START_STREAMING_COMMAND_VALUE || currentCommand==LiteProtocolInstructionSet.Instructions.START_SDBT_COMMAND_VALUE) {
+				if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE || currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_SDBT_COMMAND_VALUE) {
 					mIsStreaming=true;
-					if(currentCommand==LiteProtocolInstructionSet.Instructions.START_SDBT_COMMAND_VALUE){
+					if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_SDBT_COMMAND_VALUE){
 						mIsSDLogging = true;
 						//logAndStreamStatusChanged();
 					}
 					byteStack.clear();
 					//isNowStreaming();
 				}
-				else if((currentCommand==LiteProtocolInstructionSet.Instructions.STOP_STREAMING_COMMAND_VALUE)||(currentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE)){
+				else if((currentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE)||(currentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE)){
 					mIsStreaming=false;
-					if(currentCommand==LiteProtocolInstructionSet.Instructions.STOP_SDBT_COMMAND_VALUE) {
+					if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE) {
 						mIsSDLogging=false;
 						//logAndStreamStatusChanged();
 					}
@@ -748,7 +751,7 @@ public class LiteProtocol extends RadioProtocol{
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
 			//Just fill empty bytes here for RTC, set them just before writing to Shimmer
 		    byte[] bytearraycommand= new byte[9];
-			bytearraycommand[0]=(byte) LiteProtocolInstructionSet.Instructions.SET_RWC_COMMAND_VALUE;
+			bytearraycommand[0]=(byte) LiteProtocolInstructionSet.InstructionsSet.SET_RWC_COMMAND_VALUE;
 			getListofInstructions().add(bytearraycommand);
 		}
 	}
@@ -814,9 +817,9 @@ public class LiteProtocol extends RadioProtocol{
 		try {
 			inStreamResponseCommand = mShimmerRadio.rxBytes(1);
 		
-		printLogDataForDebugging("In-stream received = " + LiteProtocolInstructionSet.Instructions.valueOf(inStreamResponseCommand[0]).name());
+		printLogDataForDebugging("In-stream received = " + LiteProtocolInstructionSet.InstructionsResponse.valueOf(inStreamResponseCommand[0]).name());
 
-		if(inStreamResponseCommand[0]==LiteProtocolInstructionSet.Instructions.DIR_RESPONSE_VALUE){ 
+		if(inStreamResponseCommand[0]==LiteProtocolInstructionSet.InstructionsResponse.DIR_RESPONSE_VALUE){ 
 			byte[] responseData = mShimmerRadio.rxBytes(1);
 			int directoryNameLength = responseData[0];
 			byte[] bufferDirectoryName = new byte[directoryNameLength];
@@ -827,7 +830,7 @@ public class LiteProtocol extends RadioProtocol{
 			bufferDirectoryName = ArrayUtils.addAll(responseData, bufferDirectoryName);
 			mProtocolListener.eventNewResponse(bufferDirectoryName);
 		}
-		else if(inStreamResponseCommand[0]==LiteProtocolInstructionSet.Instructions.STATUS_RESPONSE_VALUE){
+		else if(inStreamResponseCommand[0]==LiteProtocolInstructionSet.InstructionsResponse.STATUS_RESPONSE_VALUE){
 			byte[] responseData = mShimmerRadio.rxBytes(1);
 			
 
@@ -840,7 +843,7 @@ public class LiteProtocol extends RadioProtocol{
 			
 			
 		} 
-		else if(inStreamResponseCommand[0]==LiteProtocolInstructionSet.Instructions.VBATT_RESPONSE_VALUE) {
+		else if(inStreamResponseCommand[0]==LiteProtocolInstructionSet.InstructionsResponse.VBATT_RESPONSE_VALUE) {
 			byte[] responseData = mShimmerRadio.rxBytes(3); 
 			responseData = ArrayUtils.addAll(inStreamResponseCommand, responseData);
 			mProtocolListener.eventNewResponse(responseData);

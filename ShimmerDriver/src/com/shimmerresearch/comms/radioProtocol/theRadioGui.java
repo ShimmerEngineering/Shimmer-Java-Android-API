@@ -22,7 +22,7 @@ public class theRadioGui{
 
 	public static void initialize(){
 		frame = new JFrame();
-		frame.setVisible(true);
+		
 		frame.setSize(500, 500);
 		frame.getContentPane().setLayout(null);
 		
@@ -67,6 +67,24 @@ public class theRadioGui{
 		btnConnect.setBounds(42, 11, 89, 23);
 		frame.getContentPane().add(btnConnect);
 		
+		JButton btnGetInfoMem = new JButton("Read Infomem");
+		btnGetInfoMem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mSRP.mRadioProtocol.writeInstruction(new byte[]{(byte) LiteProtocolInstructionSet.InstructionsGet.GET_INFOMEM_COMMAND_VALUE,(byte)0x80,0,0});
+			}
+		});
+		btnGetInfoMem.setBounds(42, 45, 114, 23);
+		frame.getContentPane().add(btnGetInfoMem);
+		
+		JButton btnReadAccelRange = new JButton("Read Accel Range");
+		btnReadAccelRange.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mSRP.mRadioProtocol.writeInstruction(new byte[]{(byte) LiteProtocolInstructionSet.InstructionsGet.GET_ACCEL_SENSITIVITY_COMMAND_VALUE});
+			}
+		});
+		btnReadAccelRange.setBounds(165, 45, 138, 23);
+		frame.getContentPane().add(btnReadAccelRange);
+		
 		
 		
 		mSRP = new ShimmerRadioProtocol();
@@ -105,7 +123,7 @@ public class theRadioGui{
 
 			}
 		});
-		
-		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
 	}
 }

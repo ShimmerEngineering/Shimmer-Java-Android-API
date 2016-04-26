@@ -57,7 +57,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	};
 	
 	public void startStreaming(){
-		mRadioProtocol.writeInstruction(new byte[]{LiteProtocolInstructionSet.Instructions.START_STREAMING_COMMAND_VALUE});
+		mRadioProtocol.writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE});
 		
 		
 	}
@@ -137,7 +137,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 				@Override
 				public void eventNewResponse(byte[] respB) {
 					// TODO Auto-generated method stub
-					
+					System.out.println(Arrays.toString(respB));
 				}
 
 				@Override

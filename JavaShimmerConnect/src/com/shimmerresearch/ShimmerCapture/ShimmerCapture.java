@@ -965,7 +965,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	}
 	
 	private void connected() {
-		
+		mShimmer.readConfigurationFromInfoMem();
 		mShimmerVersion = mShimmer.getShimmerVersion();
 		if (firstConfiguration) {
 			if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3) {
