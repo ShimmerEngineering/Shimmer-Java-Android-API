@@ -182,18 +182,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //				Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
 
 		
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
-							Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
-							Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
-			
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
-								Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
-		}
 		
 		
 	}
@@ -412,9 +400,20 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_ACCEL,
+							Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_GYRO,
+							Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+			
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP,
+								Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_QUAT_6DOF)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
+		}
+		return mSensorGroupingMap;
 	}
 	
 	

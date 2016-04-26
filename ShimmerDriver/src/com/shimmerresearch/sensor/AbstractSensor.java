@@ -292,13 +292,15 @@ public abstract class AbstractSensor implements Serializable{
 		
 		generateListOfConfigOptionKeysAssociated();
 		generateListOfSensorMapKeysConflicting();
-		generateSensorGroupMapping(svo);
-		
+		mSensorGroupingMap = generateSensorGroupMapping(svo);
+		if(mSensorGroupingMap==null){
+			mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		}
 	}
 	
 	public abstract void generateListOfSensorMapKeysConflicting();
 	public abstract void generateListOfConfigOptionKeysAssociated();
-	public abstract void generateSensorGroupMapping(ShimmerVerObject svo);
+	public abstract Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo);
 
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
 	 * @return
