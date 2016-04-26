@@ -6351,13 +6351,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param enable
 	 */
 	protected void setLowPowerGyro(boolean enable){
-		if(!checkIfAnyMplChannelEnabled()) {
-			mLowPowerGyro = enable;
-			setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
-		}
-		else{
-			mLowPowerGyro = false;
-			setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
+		if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+			if(!checkIfAnyMplChannelEnabled()) {
+				mLowPowerGyro = enable;
+				setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
+			}
+			else{
+				mLowPowerGyro = false;
+				setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
+			}
 		}
 	}
 	

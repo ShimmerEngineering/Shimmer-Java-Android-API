@@ -40,7 +40,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_2R_GQ = 9; // Used for testing GQ
 		public static final int SHIMMER_GQ_802154_LR = 56; // Long Range
 		public static final int SHIMMER_GQ_802154_NR = 57; // Normal Range
-		public static final int SHIMMER_4 = 58;
+		public static final int SHIMMER_4_SDK = 58;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;
@@ -57,7 +57,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_2R_GQ, "Shimmer2rGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
-        aMap.put(HW_ID.SHIMMER_4, "Shimmer4");
+        aMap.put(HW_ID.SHIMMER_4_SDK, "Shimmer4_SDK");
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
     

@@ -1144,7 +1144,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
 				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4)){
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
 			return true;
 		}
 		return false;
@@ -1160,7 +1160,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				||(hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				||(hwVer==HW_ID.SHIMMER_GQ_802154_LR)
 				||(hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4)){
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
 			return true;
 		}
 		return false;
@@ -1179,7 +1179,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
 				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4)){
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
 			return true;
 		}
 		return false;

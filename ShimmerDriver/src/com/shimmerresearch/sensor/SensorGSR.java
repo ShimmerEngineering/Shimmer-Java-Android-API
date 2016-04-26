@@ -377,7 +377,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
 		
-			if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4){
+			if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
 									Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
