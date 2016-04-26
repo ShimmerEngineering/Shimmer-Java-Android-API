@@ -677,6 +677,7 @@ public class Configuration {
 			public static final String LSM303DLHC_MAG_RANGE = "Mag Range";
 			public static final String LSM303DLHC_MAG_RATE = "Mag Rate";
 			public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
+			
 			public static final String GSR_RANGE = "GSR Range";
 			public static final String EXG_RESOLUTION = "Resolution";
 			public static final String EXG_GAIN = "Gain";
@@ -763,6 +764,7 @@ public class Configuration {
 			public static final String ACCEL_WR = "Wide-Range Accelerometer";
 			public static final String MAG = "Magnetometer";
 			public static final String ACCEL_MPU = "Alternative Accel";
+			public static final String BMP_180 = "BMP180";
 			public static final String MAG_MPU = "Alternative Mag";
 			public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
 			public static final String EMG = "EMG";
@@ -1202,6 +1204,10 @@ public class Configuration {
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGqBle,
 					baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
 					baseGsrUnifiedGqBle, baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP180 = Arrays.asList(
+					baseShimmer4); // May need to add more compatible versions
+			
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  

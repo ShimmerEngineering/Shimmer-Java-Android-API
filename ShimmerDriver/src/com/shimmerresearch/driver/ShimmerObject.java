@@ -637,8 +637,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] SensitivityMatrixMag5p6GaShimmer2 = {{330,0,0},{0,330,0},{0,0,330}};
 	protected static final double[][] SensitivityMatrixMag8p1GaShimmer2 = {{230,0,0},{0,230,0},{0,0,230}};
 
-
-	protected double pressTempAC1 = 408;
+	// ----------- Now implemented in SensorBMP180 -------------------------
+	protected double pressTempAC1 = 408;          
 	protected double pressTempAC2 = -72;
 	protected double pressTempAC3 = -14383;
 	protected double pressTempAC4 = 332741;
@@ -649,7 +649,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double pressTempMB = -32767;
 	protected double pressTempMC = -8711;
 	protected double pressTempMD = 2868;
-
+	// ---------------------------------------------------------------------
 	protected boolean mLowPowerMag = false;
 	protected boolean mLowPowerAccelWR = false;
 	protected boolean mLowPowerGyro = false;
@@ -681,10 +681,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected byte[] mDigiAccelCalRawParams  = new byte[22];
 	protected byte[] mGyroCalRawParams  = new byte[22];
 	protected byte[] mMagCalRawParams  = new byte[22];
-	protected byte[] mPressureRawParams  = new byte[23];
+	
+	    // ----------- Now implemented in SensorBMP180 -------------------------
+		protected byte[] mPressureCalRawParams = new byte[23];
+		protected byte[] mPressureRawParams  = new byte[23];
+		// ---------------------------------------------------------------------
+	
 	protected byte[] mEMGCalRawParams  = new byte[13];
 	protected byte[] mECGCalRawParams = new byte[13];
-	protected byte[] mPressureCalRawParams = new byte[23];
+	
+	
 
 	//EXG
 	protected ExGConfigBytesDetails mExGConfigBytesDetails = new ExGConfigBytesDetails(); 
@@ -9726,7 +9732,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mMagRange = i;
 	}
 	
-	protected void setPressureResolution(int i){
+	public void setPressureResolution(int i){
 		mPressureResolution = i;
 	}
 	

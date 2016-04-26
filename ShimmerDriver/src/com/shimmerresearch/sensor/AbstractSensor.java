@@ -150,7 +150,8 @@ public abstract class AbstractSensor implements Serializable{
 		EXG("EXG", Configuration.Shimmer3.SensorMapKey.ECG),
 		CLOCK("Clock", Configuration.Shimmer3.SensorMapKey.TIMESTAMP),
 		SYSTEM_TIMESTAMP("PC time", Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC),
-		MPU9X50("MPU Accel", Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL);
+		MPU9X50("MPU Accel", Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL),
+		BMP180("BMP180",Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE);
 		
 	    private final String text;
 	    private final int index;
