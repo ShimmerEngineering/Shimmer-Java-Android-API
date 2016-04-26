@@ -163,4 +163,28 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		return null;
 	}
 
+
+
+	@Override
+	public void generateListOfConfigOptionKeysAssociated() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void setSamplingRateFromFreq() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void setDefaultConfiguration() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

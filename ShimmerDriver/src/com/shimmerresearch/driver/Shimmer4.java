@@ -39,14 +39,13 @@ public class Shimmer4 extends ShimmerDevice {
     	setMacIdFromUart(macId);
 	}
 
-	public void setSetting(long sensorID,String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
+	public void setSetting(long sensorID, String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
 		ActionSetting actionSetting = mMapOfSensors.get(sensorID).setSettings(componentName, valueToSet, commType);
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
 			mShimmerRadio.actionSettingResolver(actionSetting);
 		}
 	}
 	
-
 	public void initialize(){
 		if (mShimmerRadio!=null){ // the radio instance should be declared on a higher level and not in this class
 			mShimmerRadio.setRadioListener(new RadioListener(){
@@ -104,7 +103,7 @@ public class Shimmer4 extends ShimmerDevice {
 //		else {
 			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.MPU9X50.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject));
+//			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject)); //for testing
 //		}
 	}
 
@@ -131,20 +130,6 @@ public class Shimmer4 extends ShimmerDevice {
 		// TODO Auto-generated method stub
 		
 	}
-
-//
-//	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-	
-//	@Override
-//	public Object getConfigValueUsingConfigLabel(String componentName) {
-//		Object returnValue = null;
-//		returnValue = super.getConfigValueUsingConfigLabel(componentName);
-//		return returnValue;
-//	}
-	
 
 	@Override
 	public Shimmer4 deepClone() {

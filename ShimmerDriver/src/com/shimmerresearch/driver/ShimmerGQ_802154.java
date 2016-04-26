@@ -288,18 +288,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		Object returnValue = null;
 		int buf = 0;
 
-		for(AbstractSensor abstractSensor:mMapOfSensors.values()){
-			returnValue = abstractSensor.setConfigValueUsingConfigLabel(componentName, valueToSet);
-			if(returnValue!=null){
-				return returnValue;
-			}
-		}
-		
 		switch(componentName){
 //Booleans
-
 //Integers
-	        
 //Strings
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
 	    		setShimmerUserAssignedNameWithMac((String)valueToSet);

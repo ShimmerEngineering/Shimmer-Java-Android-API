@@ -481,11 +481,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mHighResAccelWR = false; //TODO: add comment and set from BT command
 	protected int mLSM303MagRate=4;												// This stores the current Mag Sampling rate, it is a value between 0 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz
 	protected int mLSM303DigitalAccelRate=0;
-	protected int mMPU9150GyroAccelRate=0;
 	protected int mMagRange=1;														// Currently not supported on Shimmer2. This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga
 	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
 	protected int mGyroRange=1;													 
-	protected int mMPU9150AccelRange=0;											// This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
 	protected int mGSRRange=4;													// This stores the current GSR range being used.
 	protected int mPastGSRRange=4; // this is to fix a bug with SDLog v0.9
 	protected int mPastGSRUncalibratedValue=4; // this is to fix a bug with SDLog v0.9
@@ -511,23 +509,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	protected int mShimmer2MagRate=0;
 	
-	//TODO add comments and default values
-	//protected int mDigitalAccelRange = 0;
-	//protected int mAccelRange = 0;
-//	protected int mAccelLPM = 0;
-//	protected int mAccelHPM = 0;
-//	protected int mMPU9150GyroRate = 0;
-//	protected int mMPUAccelRange = 0;
-	protected int mMPU9150DMP = 0;
-	protected int mMPU9150LPF = 0;
-	protected int mMPU9150MotCalCfg = 0;
-	protected int mMPU9150MPLSamplingRate = 0;
-	protected int mMPU9150MagSamplingRate = 0;
-	protected int mMPLSensorFusion = 0;
-	protected int mMPLGyroCalTC = 0;
-	protected int mMPLVectCompCal = 0;
-	protected int mMPLMagDistCal = 0;
-	protected int mMPLEnable = 0;
 	protected int mButtonStart = 0;
 	protected int mShowRtcErrorLeds = 0;
 	protected int mMasterShimmer = 0;
@@ -639,20 +620,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] SensitivityMatrixMagShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}}; 		
 	protected static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
 
-	
-	protected double[][] AlignmentMatrixMPLAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	protected double[][] SensitivityMatrixMPLAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-	protected double[][] OffsetVectorMPLAccel = {{0},{0},{0}};
-	
-	protected double[][] AlignmentMatrixMPLMag = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	protected double[][] SensitivityMatrixMPLMag = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-	protected double[][] OffsetVectorMPLMag = {{0},{0},{0}};
-	
-	protected double[][] AlignmentMatrixMPLGyro = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	protected double[][] SensitivityMatrixMPLGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-	protected double[][] OffsetVectorMPLGyro = {{0},{0},{0}};
-	
-
 	public static final double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
 	public static final double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
 	public static final double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
@@ -704,6 +671,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	DescriptiveStatistics mGyroXRaw;
 	DescriptiveStatistics mGyroYRaw;
 	DescriptiveStatistics mGyroZRaw;
+	
 	protected boolean mEnableCalibration = true;
 	protected byte[] mInquiryResponseBytes;
 //	protected boolean mIsStreaming =false;											// This is used to monitor whether the device is in streaming mode
@@ -751,6 +719,38 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
 	protected int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
 	
+	// ----------- MPU9X50 options start -------------------------
+//	protected int mMPU9150GyroRate = 0;
+//	protected int mMPUAccelRange = 0;
+
+	protected int mMPU9150AccelRange=0;											// This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
+	protected int mMPU9150GyroAccelRate=0;
+
+	protected int mMPU9150DMP = 0;
+	protected int mMPU9150LPF = 0;
+	protected int mMPU9150MotCalCfg = 0;
+	protected int mMPU9150MPLSamplingRate = 0;
+	protected int mMPU9150MagSamplingRate = 0;
+	protected int mMPLSensorFusion = 0;
+	protected int mMPLGyroCalTC = 0;
+	protected int mMPLVectCompCal = 0;
+	protected int mMPLMagDistCal = 0;
+	protected int mMPLEnable = 0;
+
+	protected double[][] AlignmentMatrixMPLAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLAccel = {{0},{0},{0}};
+	
+	protected double[][] AlignmentMatrixMPLMag = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLMag = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLMag = {{0},{0},{0}};
+	
+	protected double[][] AlignmentMatrixMPLGyro = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLGyro = {{0},{0},{0}};
+
+	// ----------- MPU9X50 options end -------------------------	
+
 	
 	//This features are only used in LogAndStream FW 
 	protected String mDirectoryName;
@@ -6274,118 +6274,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mLSM303MagRate;
 	}
 	
-	/**
-	 * Computes next higher available sensor sampling rate setting based on
-	 * passed in "freq" variable and dependent on whether low-power mode is set.
-	 * 
-	 * @param freq
-	 * @return int the rate configuration setting for the respective sensor
-	 */
-	public int setMPU9150GyroAccelRateFromFreq(double freq) {
-		boolean setFreq = false;
-		// Check if channel is enabled 
-		if(checkIfAnyMplChannelEnabled()){
-			setFreq = true;
-		}
-		else if(checkIfAMpuGyroOrAccelEnabled()){
-			setFreq = true;
-		}
-		
-		if(setFreq){
-			// Gyroscope Output Rate = 8kHz when the DLPF (Digital Low-pass filter) is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
-			double numerator = 1000;
-			if(mMPU9150LPF == 0) {
-				numerator = 8000;
-			}
-	
-			if (!mLowPowerGyro){
-				if(freq<4) {
-					freq = 4;
-				}
-				else if(freq>numerator) {
-					freq = numerator;
-				}
-				int result = (int) Math.floor(((numerator / freq) - 1));
-				if(result>255) {
-					result = 255;
-				}
-				mMPU9150GyroAccelRate = result;
-	
-			}
-			else {
-				mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
-			}
-		}
-		else {
-			mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
-		}
-		return mMPU9150GyroAccelRate;
-	}
-	
-	/**
-	 * Computes next higher available sensor sampling rate setting based on
-	 * passed in "freq" variable and dependent on whether low-power mode is set.
-	 * 
-	 * @param freq
-	 * @return int the rate configuration setting for the respective sensor
-	 */
-	private int setMPU9150MagRateFromFreq(double freq) {
-		boolean setFreq = false;
-		// Check if channel is enabled 
-		if(checkIfAnyMplChannelEnabled()){
-			setFreq = true;
-		}
-		else if (isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG)) {
-			setFreq = true;
-		}
-		
-		if(setFreq){
-			if (freq<=10){
-				mMPU9150MagSamplingRate = 0; // 10Hz
-			} else if (freq<=20){
-				mMPU9150MagSamplingRate = 1; // 20Hz
-			} else if (freq<=40) {
-				mMPU9150MagSamplingRate = 2; // 40Hz
-			} else if (freq<=50) {
-				mMPU9150MagSamplingRate = 3; // 50Hz
-			} else {
-				mMPU9150MagSamplingRate = 4; // 100Hz
-			}
-		}
-		else {
-			mMPU9150MagSamplingRate = 0; // 10 Hz
-		}
-		return mMPU9150MagSamplingRate;
-	}
-	
-	/**
-	 * Computes next higher available sensor sampling rate setting based on
-	 * passed in "freq" variable and dependent on whether low-power mode is set.
-	 * 
-	 * @param freq
-	 * @return int the rate configuration setting for the respective sensor
-	 */
-	private int setMPU9150MplRateFromFreq(double freq) {
-		// Check if channel is enabled 
-		if(!checkIfAnyMplChannelEnabled()){
-			mMPU9150MPLSamplingRate = 0; // 10 Hz
-			return mMPU9150MPLSamplingRate;
-		}
-		
-		if (freq<=10){
-			mMPU9150MPLSamplingRate = 0; // 10Hz
-		} else if (freq<=20){
-			mMPU9150MPLSamplingRate = 1; // 20Hz
-		} else if (freq<=40) {
-			mMPU9150MPLSamplingRate = 2; // 40Hz
-		} else if (freq<=50) {
-			mMPU9150MPLSamplingRate = 3; // 50Hz
-		} else {
-			mMPU9150MPLSamplingRate = 4; // 100Hz
-		}
-		return mMPU9150MPLSamplingRate;
-	}
-	
+
 	
 	/**
 	 * Checks to see if the MPU9150 gyro is in low power mode. As determined by
@@ -9339,141 +9228,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	private void setDefaultMpu9150GyroSensorConfig(boolean state) {
-		if(!checkIfAnyMplChannelEnabled()) {
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)) {
-				if(state) {
-					setLowPowerGyro(false);
-				}
-				else {
-					setLowPowerGyro(true);
-				}
-			}
-			
-			mGyroRange=1;
-//			if(!state){
-//				mGyroRange=1; // 500dps
-//			}
-		}
-		else {
-			mGyroRange=3; // 2000dps
-		}
-	}
-	
-	private void setDefaultMpu9150AccelSensorConfig(boolean state) {
-		if(!checkIfAnyMplChannelEnabled()) {
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)) {
-				if(state) {
-					setLowPowerGyro(false);
-				}
-				else {
-					setLowPowerGyro(true);
-				}
-			}
-			
-			if(!state){
-				mMPU9150AccelRange = 0; //=2g
-			}
-		}
-		else {
-			mMPU9150AccelRange = 0; //=2g
-		}
-	}
-	
-	private void setDefaultMpu9150MplSensorConfig(boolean state) {
-		if(state){
-			mMPU9150DMP = 1;
-			mMPLEnable = 1;
-			mMPU9150LPF = 1; // 188Hz
-			mMPU9150MotCalCfg = 1; // Fast Calibration
-			mMPLGyroCalTC = 1;
-			mMPLVectCompCal = 1;
-			mMPLMagDistCal = 1;
-			mMPLSensorFusion = 0;
-			
-//			//Gyro rate can not be set to 250dps when DMP is on
-//			if(mGyroRange==0){
-//				mGyroRange=1;
-//			}
-			
-			//force gyro range to be 2000dps and accel range to be +-2g - others untested
-			mGyroRange=3; // 2000dps
-			mMPU9150AccelRange= 0; // 2g
-			
-			setLowPowerGyro(false);
-			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
-			setMPU9150MplRateFromFreq(getSamplingRateShimmer());
-		}
-		else {
-			mMPU9150DMP = 0;
-			mMPLEnable = 0;
-			mMPU9150LPF = 0;
-			mMPU9150MotCalCfg = 0;
-			mMPLGyroCalTC = 0;
-			mMPLVectCompCal = 0;
-			mMPLMagDistCal = 0;
-			mMPLSensorFusion = 0;
-			
-			if(checkIfAMpuGyroOrAccelEnabled()){
-				setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
-			}
-			else {
-				setLowPowerGyro(true);
-			}
-			
-			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
-			setMPU9150MplRateFromFreq(getSamplingRateShimmer());
-		}
-	}
-	
-	private boolean checkIfAMpuGyroOrAccelEnabled(){
-		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)) {
-			return true;
-		}
-		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)) {
-			return true;
-		}
-//		if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG) != null) {
-//			if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mIsEnabled) {
-//				return true;
-//			}
-//		}
-		return false;
-	}	
-	
-	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
-		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
-			if(mSensorEnabledMap.keySet().size()>0){
-				
-				for(int key:SensorMPU9X50.mListOfMplChannels){
-//				for(int key:mListOfMplChannels){
-					if(key==sensorMapKey){
-						continue;
-					}
-					if(isSensorEnabled(key)) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-			
-	protected boolean checkIfAnyMplChannelEnabled(){
-		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
-			if(mSensorEnabledMap.keySet().size()>0){
-				
-				for(int key:SensorMPU9X50.mListOfMplChannels){
-//					for(int key:mListOfMplChannels){
-					if(isSensorEnabled(key)) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
 	/**
 	 * @return the mBufferSize
 	 */
@@ -9481,51 +9235,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mBufferSize;
 	}
 	
-	/**
-	 * @return the mMPU9150AccelRange
-	 */
-	public int getMPU9150AccelRange() {
-		return mMPU9150AccelRange;
-	}
-
-	/**
-	 * @return the mMPU9150GyroAccelRate
-	 */
-	public int getMPU9150GyroAccelRate() {
-		return mMPU9150GyroAccelRate;
-	}
-
-	/**
-	 * @return the mMPU9150MotCalCfg
-	 */
-	public int getMPU9150MotCalCfg() {
-		return mMPU9150MotCalCfg;
-	}
-	/**
-	 * @return the mMPU9150LPF
-	 */
-	public int getMPU9150LPF() {
-		return mMPU9150LPF;
-	}
-	
-	public int getMPU9150DMP() {
-		return mMPU9150DMP;
-	}
-
-	/**
-	 * @return the mMPU9150MPLSamplingRate
-	 */
-	public int getMPU9150MPLSamplingRate() {
-		return mMPU9150MPLSamplingRate;
-	}
-
-	/**
-	 * @return the mMPU9150MagSamplingRate
-	 */
-	public int getMPU9150MagSamplingRate() {
-		return mMPU9150MagSamplingRate;
-	}
-
 	/**
 	 * @return the mMasterShimmer
 	 */
@@ -9966,25 +9675,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	/**
-	 * @return the mMPU9150GyroAccelRate in Hz
-	 */
-	public double getMPU9150GyroAccelRateInHz() {
-		// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
-		double numerator = 1000.0;
-		if(mMPU9150LPF == 0) {
-			numerator = 8000.0;
-		}
-		
-		if(mMPU9150GyroAccelRate == 0) {
-			return numerator;
-		}
-		else {
-			return (numerator / mMPU9150GyroAccelRate);
-		}
-	}
-	
-	
-	/**
 	 * @return the mSamplingDividerPpg
 	 */
 	public int getSamplingDividerPpg() {
@@ -10018,30 +9708,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public void setDigitalAccelRange(int i){
 		mAccelRange = i;
-	}
-	
-	/**
-	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
-	 */
-	protected void setMPU9150AccelRange(int i) {
-		if(checkIfAnyMplChannelEnabled()){
-			i=0; // 2g
-		}
-		
-		mMPU9150AccelRange = i;
-	}
-	
-	protected void setMPU9150GyroRange(int i){
-//		//Gyro rate can not be set to 250dps when DMP is on
-//		if((checkIfAnyMplChannelEnabled()) && (i==0)){
-//			i=1;
-//		}
-		
-		if(checkIfAnyMplChannelEnabled()){
-			i=3; // 2000dps
-		}
-		
-		mGyroRange = i;
 	}
 	
 	/**
@@ -10107,20 +9773,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected void setBufferSize(int mBufferSize) {
 		this.mBufferSize = mBufferSize;
-	}
-
-	/**
-	 * @param mMPU9150MPLSamplingRate the mMPU9150MPLSamplingRate to set
-	 */
-	protected void setMPU9150MPLSamplingRate(int mMPU9150MPLSamplingRate) {
-		this.mMPU9150MPLSamplingRate = mMPU9150MPLSamplingRate;
-	}
-
-	/**
-	 * @param mMPU9150MagSamplingRate the mMPU9150MagSamplingRate to set
-	 */
-	protected void setMPU9150MagSamplingRate(int mMPU9150MagSamplingRate) {
-		this.mMPU9150MagSamplingRate = mMPU9150MagSamplingRate;
 	}
 
 	/**
@@ -10285,15 +9937,362 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	
+	// ----------- MPU9X50 options start -------------------------
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	public int setMPU9150GyroAccelRateFromFreq(double freq) {
+		boolean setFreq = false;
+		// Check if channel is enabled 
+		if(checkIfAnyMplChannelEnabled()){
+			setFreq = true;
+		}
+		else if(checkIfAMpuGyroOrAccelEnabled()){
+			setFreq = true;
+		}
+		
+		if(setFreq){
+			// Gyroscope Output Rate = 8kHz when the DLPF (Digital Low-pass filter) is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
+			double numerator = 1000;
+			if(mMPU9150LPF == 0) {
+				numerator = 8000;
+			}
+	
+			if (!mLowPowerGyro){
+				if(freq<4) {
+					freq = 4;
+				}
+				else if(freq>numerator) {
+					freq = numerator;
+				}
+				int result = (int) Math.floor(((numerator / freq) - 1));
+				if(result>255) {
+					result = 255;
+				}
+				mMPU9150GyroAccelRate = result;
+	
+			}
+			else {
+				mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
+			}
+		}
+		else {
+			mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
+		}
+		return mMPU9150GyroAccelRate;
+	}
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	private int setMPU9150MagRateFromFreq(double freq) {
+		boolean setFreq = false;
+		// Check if channel is enabled 
+		if(checkIfAnyMplChannelEnabled()){
+			setFreq = true;
+		}
+		else if (isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG)) {
+			setFreq = true;
+		}
+		
+		if(setFreq){
+			if (freq<=10){
+				mMPU9150MagSamplingRate = 0; // 10Hz
+			} else if (freq<=20){
+				mMPU9150MagSamplingRate = 1; // 20Hz
+			} else if (freq<=40) {
+				mMPU9150MagSamplingRate = 2; // 40Hz
+			} else if (freq<=50) {
+				mMPU9150MagSamplingRate = 3; // 50Hz
+			} else {
+				mMPU9150MagSamplingRate = 4; // 100Hz
+			}
+		}
+		else {
+			mMPU9150MagSamplingRate = 0; // 10 Hz
+		}
+		return mMPU9150MagSamplingRate;
+	}
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	private int setMPU9150MplRateFromFreq(double freq) {
+		// Check if channel is enabled 
+		if(!checkIfAnyMplChannelEnabled()){
+			mMPU9150MPLSamplingRate = 0; // 10 Hz
+			return mMPU9150MPLSamplingRate;
+		}
+		
+		if (freq<=10){
+			mMPU9150MPLSamplingRate = 0; // 10Hz
+		} else if (freq<=20){
+			mMPU9150MPLSamplingRate = 1; // 20Hz
+		} else if (freq<=40) {
+			mMPU9150MPLSamplingRate = 2; // 40Hz
+		} else if (freq<=50) {
+			mMPU9150MPLSamplingRate = 3; // 50Hz
+		} else {
+			mMPU9150MPLSamplingRate = 4; // 100Hz
+		}
+		return mMPU9150MPLSamplingRate;
+	}
+
+	private void setDefaultMpu9150GyroSensorConfig(boolean state) {
+		if(!checkIfAnyMplChannelEnabled()) {
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)) {
+				if(state) {
+					setLowPowerGyro(false);
+				}
+				else {
+					setLowPowerGyro(true);
+				}
+			}
+			
+			mGyroRange=1;
+//			if(!state){
+//				mGyroRange=1; // 500dps
+//			}
+		}
+		else {
+			mGyroRange=3; // 2000dps
+		}
+	}
+	
+	private void setDefaultMpu9150AccelSensorConfig(boolean state) {
+		if(!checkIfAnyMplChannelEnabled()) {
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)) {
+				if(state) {
+					setLowPowerGyro(false);
+				}
+				else {
+					setLowPowerGyro(true);
+				}
+			}
+			
+			if(!state){
+				mMPU9150AccelRange = 0; //=2g
+			}
+		}
+		else {
+			mMPU9150AccelRange = 0; //=2g
+		}
+	}
+	
+	private void setDefaultMpu9150MplSensorConfig(boolean state) {
+		if(state){
+			mMPU9150DMP = 1;
+			mMPLEnable = 1;
+			mMPU9150LPF = 1; // 188Hz
+			mMPU9150MotCalCfg = 1; // Fast Calibration
+			mMPLGyroCalTC = 1;
+			mMPLVectCompCal = 1;
+			mMPLMagDistCal = 1;
+			mMPLSensorFusion = 0;
+			
+//			//Gyro rate can not be set to 250dps when DMP is on
+//			if(mGyroRange==0){
+//				mGyroRange=1;
+//			}
+			
+			//force gyro range to be 2000dps and accel range to be +-2g - others untested
+			mGyroRange=3; // 2000dps
+			mMPU9150AccelRange= 0; // 2g
+			
+			setLowPowerGyro(false);
+			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+			setMPU9150MplRateFromFreq(getSamplingRateShimmer());
+		}
+		else {
+			mMPU9150DMP = 0;
+			mMPLEnable = 0;
+			mMPU9150LPF = 0;
+			mMPU9150MotCalCfg = 0;
+			mMPLGyroCalTC = 0;
+			mMPLVectCompCal = 0;
+			mMPLMagDistCal = 0;
+			mMPLSensorFusion = 0;
+			
+			if(checkIfAMpuGyroOrAccelEnabled()){
+				setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
+			}
+			else {
+				setLowPowerGyro(true);
+			}
+			
+			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+			setMPU9150MplRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	private boolean checkIfAMpuGyroOrAccelEnabled(){
+		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)) {
+			return true;
+		}
+		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL)) {
+			return true;
+		}
+//		if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG) != null) {
+//			if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG).mIsEnabled) {
+//				return true;
+//			}
+//		}
+		return false;
+	}	
+	
+	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
+		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
+			if(mSensorEnabledMap.keySet().size()>0){
+				
+				for(int key:SensorMPU9X50.mListOfMplChannels){
+//				for(int key:mListOfMplChannels){
+					if(key==sensorMapKey){
+						continue;
+					}
+					if(isSensorEnabled(key)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+			
+	protected boolean checkIfAnyMplChannelEnabled(){
+		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
+			if(mSensorEnabledMap.keySet().size()>0){
+				
+				for(int key:SensorMPU9X50.mListOfMplChannels){
+//					for(int key:mListOfMplChannels){
+					if(isSensorEnabled(key)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @return the mMPU9150AccelRange
+	 */
+	public int getMPU9150AccelRange() {
+		return mMPU9150AccelRange;
+	}
+
+	/**
+	 * @return the mMPU9150GyroAccelRate
+	 */
+	public int getMPU9150GyroAccelRate() {
+		return mMPU9150GyroAccelRate;
+	}
+
+	/**
+	 * @return the mMPU9150MotCalCfg
+	 */
+	public int getMPU9150MotCalCfg() {
+		return mMPU9150MotCalCfg;
+	}
+	/**
+	 * @return the mMPU9150LPF
+	 */
+	public int getMPU9150LPF() {
+		return mMPU9150LPF;
+	}
+	
+	public int getMPU9150DMP() {
+		return mMPU9150DMP;
+	}
+
+	/**
+	 * @return the mMPU9150MPLSamplingRate
+	 */
+	public int getMPU9150MPLSamplingRate() {
+		return mMPU9150MPLSamplingRate;
+	}
+
+	/**
+	 * @return the mMPU9150MagSamplingRate
+	 */
+	public int getMPU9150MagSamplingRate() {
+		return mMPU9150MagSamplingRate;
+	}
+	
+	/**
+	 * @return the mMPU9150GyroAccelRate in Hz
+	 */
+	public double getMPU9150GyroAccelRateInHz() {
+		// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
+		double numerator = 1000.0;
+		if(mMPU9150LPF == 0) {
+			numerator = 8000.0;
+		}
+		
+		if(mMPU9150GyroAccelRate == 0) {
+			return numerator;
+		}
+		else {
+			return (numerator / mMPU9150GyroAccelRate);
+		}
+	}
+	
+	/**
+	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
+	 */
+	protected void setMPU9150AccelRange(int i) {
+		if(checkIfAnyMplChannelEnabled()){
+			i=0; // 2g
+		}
+		
+		mMPU9150AccelRange = i;
+	}
+	
+	protected void setMPU9150GyroRange(int i){
+//		//Gyro rate can not be set to 250dps when DMP is on
+//		if((checkIfAnyMplChannelEnabled()) && (i==0)){
+//			i=1;
+//		}
+		
+		if(checkIfAnyMplChannelEnabled()){
+			i=3; // 2000dps
+		}
+		
+		mGyroRange = i;
+	}
+
+	/**
+	 * @param mMPU9150MPLSamplingRate the mMPU9150MPLSamplingRate to set
+	 */
+	protected void setMPU9150MPLSamplingRate(int mMPU9150MPLSamplingRate) {
+		this.mMPU9150MPLSamplingRate = mMPU9150MPLSamplingRate;
+	}
+
+	/**
+	 * @param mMPU9150MagSamplingRate the mMPU9150MagSamplingRate to set
+	 */
+	protected void setMPU9150MagSamplingRate(int mMPU9150MagSamplingRate) {
+		this.mMPU9150MagSamplingRate = mMPU9150MagSamplingRate;
+	}
+	
 	// MPL options
 	/**
 	 * @return the mMPU9150DMP
 	 */
 	public boolean isMPU9150DMP() {
-		if(mMPU9150DMP > 0)
-			return true;
-		else
-			return false;
+		return (mMPU9150DMP>0)? true:false;
 	}
 
 
@@ -10311,10 +10310,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mMPLEnable
 	 */
 	public boolean isMPLEnable() {
-		if(mMPLEnable > 0)
-			return true;
-		else
-			return false;
+		return (mMPLEnable>0)? true:false;
 	}
 	
 	/**
@@ -10331,10 +10327,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mMPLSensorFusion
 	 */
 	public boolean isMPLSensorFusion() {
-		if(mMPLSensorFusion > 0)
-			return true;
-		else
-			return false;
+		return (mMPLSensorFusion>0)? true:false;
 	}
 
 	/**
@@ -10351,10 +10344,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mMPLGyroCalTC
 	 */
 	public boolean isMPLGyroCalTC() {
-		if(mMPLGyroCalTC > 0)
-			return true;
-		else
-			return false;
+		return (mMPLGyroCalTC>0)? true:false;
 	}
 	
 	/**
@@ -10371,10 +10361,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mMPLVectCompCal
 	 */
 	public boolean isMPLVectCompCal() {
-		if(mMPLVectCompCal > 0)
-			return true;
-		else
-			return false;
+		return (mMPLVectCompCal>0)? true:false;
 	}
 
 	/**
@@ -10391,10 +10378,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mMPLMagDistCal
 	 */
 	public boolean isMPLMagDistCal() {
-		if(mMPLMagDistCal > 0)
-			return true;
-		else
-			return false;
+		return (mMPLMagDistCal>0)? true:false;
 	}
 	
 	/**
@@ -10411,10 +10395,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mMPLSensorFusion
 	 */
 	public boolean getmMPLSensorFusion() {
-		if(mMPLSensorFusion > 0)
-			return true;
-		else
-			return false;
+		return (mMPLSensorFusion>0)? true:false;
 	}
 
 	/**
@@ -10442,6 +10423,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mMPU9150LPF = mMPU9150LPF;
 	}
 
+	// ----------- MPU9X50 options end -------------------------
+
 	/**
 	 * @param mExperimentId the mExperimentId to set
 	 */
@@ -10455,7 +10438,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     	}
 		this.mTrialId = mExperimentId;
 	}
-
 	
 	/**
 	 * @param syncNodesList the syncNodesList to set
@@ -10530,243 +10512,238 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
         	checkConfigOptionValues(componentName);
         }
         
-    	returnValue = super.getConfigValueUsingConfigLabel(componentName);
-		
-    	if(returnValue==null){
-    		switch(componentName){
-	//Booleans
-				case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
-					returnValue = isButtonStart();
-					break;
-				case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
-					returnValue = isSingleTouch();
-					break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
-					returnValue = isMasterShimmer();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING):
-					returnValue = isSyncWhenLogging();
-		        	break;
-				
-				case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
-					if(isLSM303DigitalAccelLPM()&&checkLowPowerGyro()&&checkLowPowerMag()) {
-						returnValue = true;
-					}
-					else {
-						returnValue = false;
-					}
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
-					returnValue = isLSM303DigitalAccelLPM();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
-					returnValue = checkLowPowerGyro();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
-					returnValue = checkLowPowerMag();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
-					returnValue = isTCXO();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
-					returnValue = isInternalExpPower();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
-					returnValue = isMPU9150DMP();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
-					returnValue = isMPLEnable();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
-					returnValue = isMPLSensorFusion();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
-					returnValue = isMPLGyroCalTC();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
-					returnValue = isMPLVectCompCal();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
-					returnValue = isMPLMagDistCal();
-		        	break;
-	
-	//Integers
-				case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
-					returnValue = getBluetoothBaudRate();
-		        	break;
-	    	
-				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
-					returnValue = getAccelRange();
-		        	break;
-		        
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
-					returnValue = getGyroRange();
-		        	break;
-		
-				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE):
-					//TODO check below and commented out code
-					returnValue = getMagRange();
-				
-	//    							// firmware sets mag range to 7 (i.e. index 6 in combobox) if user set mag range to 0 in config file
-	//    							if(getMagRange() == 0) cmBx.setSelectedIndex(6);
-	//    							else cmBx.setSelectedIndex(getMagRange()-1);
-		    		break;
-				
-				case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
-					returnValue = getPressureResolution();
-		    		break;
-		    		
-				case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
-					returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
-		        	break;
-		        	
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
-					returnValue = getExGResolution();
-		    		break;
-		        	
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
-					returnValue = getExGGainSetting();
-					//consolePrintLn("Get " + configValue);
-		        	break;
-		        	
-				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
-					int configValue = getLSM303DigitalAccelRate(); 
-					 
-		        	if(!isLSM303DigitalAccelLPM()) {
-			        	if(configValue==8) {
-			        		configValue = 9;
-			        	}
-		        	}
-					returnValue = configValue;
-		    		break;
-		    		
-				case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
-					returnValue = getLSM303MagRate();
-		        	break;
-	
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
-					returnValue = getMPU9150AccelRange();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
-					returnValue = getMPU9150MotCalCfg();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF):
-					returnValue = getMPU9150LPF();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
-					returnValue = getMPU9150MPLSamplingRate();
-	        		break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
-					returnValue = getMPU9150MagSamplingRate();
-	            	break;
-	            	
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
-					returnValue = getEXG1RateSetting();
-					//returnValue = getEXG2RateSetting();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
-					returnValue = getEXGReferenceElectrode();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
-					returnValue = getEXGLeadOffCurrentMode();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
-					returnValue = getEXGLeadOffDetectionCurrent();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
-					returnValue = getEXGLeadOffComparatorTreshold();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
-					returnValue = getEXG2RespirationDetectFreq();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
-					returnValue = getEXG2RespirationDetectPhase();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
-					returnValue = getInternalExpPower();
-	            	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
-					returnValue = getPpgAdcSelectionGsrBoard();
-		    		break;
-				case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
-					returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
-		    		break;
-				case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
-					returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
-		    		break;
-	            	
-	
-				case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
-					returnValue = getSamplingDividerGsr();
-		    		break;
-				case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
-					returnValue = getSamplingDividerLsm303dlhcAccel();
-		    		break;
-				case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
-					returnValue = getSamplingDividerPpg();
-		    		break;
-				case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
-					returnValue = getSamplingDividerVBatt();
-		    		break;
-		    		
-		    		
-	//Strings
-	//    					case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
-	//    						returnValue = getShimmerUserAssignedName();
-	//    			        	break;
-	//    					case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
-	//    						returnValue = getTrialName();
-	//    			        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
-			        Double readSamplingRate = getSamplingRateShimmer();
-			    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
-			    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100; // round sampling rate to two decimal places
-	//    					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
-			    	returnValue = actualSamplingRate.toString();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
-					returnValue = Integer.toString(getBufferSize());
-		        	break;
-	//    					case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
-	//    			        	returnValue = getConfigTimeParsed();
-	//    			        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
-		        	returnValue = getMacIdFromInfoMem();
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID):
-		        	returnValue = Integer.toString(getExperimentId());
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS):
-		        	returnValue = Integer.toString(getTrialNumberOfShimmers());
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
-		        	returnValue = Integer.toString(getTrialDurationEstimated());
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
-		        	returnValue = Integer.toString(getTrialDurationMaximum());
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
-		        	returnValue = Integer.toString(getSyncBroadcastInterval());
-		        	break;
-				case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
-					returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
-	//    		    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
-		        	break;
-		        	
-	////List<Byte[]>
-	//    					case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
-	//    						List<byte[]> listOFExGBytes = new ArrayList<byte[]>();
-	//    						listOFExGBytes.add(getEXG1RegisterArray());
-	//    						listOFExGBytes.add(getEXG2RegisterArray());
-	//    						returnValue = listOFExGBytes;
-	//    			        	break;
-		        	
-		        default:
-		        	break;
-			}
-    	}
-    	
+		switch(componentName){
+//Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
+				returnValue = isButtonStart();
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
+				returnValue = isSingleTouch();
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
+				returnValue = isMasterShimmer();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING):
+				returnValue = isSyncWhenLogging();
+	        	break;
+			
+			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
+				if(isLSM303DigitalAccelLPM()&&checkLowPowerGyro()&&checkLowPowerMag()) {
+					returnValue = true;
+				}
+				else {
+					returnValue = false;
+				}
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
+				returnValue = isLSM303DigitalAccelLPM();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
+				returnValue = checkLowPowerGyro();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM):
+				returnValue = checkLowPowerMag();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
+				returnValue = isTCXO();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+				returnValue = isInternalExpPower();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
+				returnValue = isMPU9150DMP();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
+				returnValue = isMPLEnable();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
+				returnValue = isMPLSensorFusion();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
+				returnValue = isMPLGyroCalTC();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
+				returnValue = isMPLVectCompCal();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
+				returnValue = isMPLMagDistCal();
+	        	break;
 
+//Integers
+			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
+				returnValue = getBluetoothBaudRate();
+	        	break;
+    	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+				returnValue = getAccelRange();
+	        	break;
+	        
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
+				returnValue = getGyroRange();
+	        	break;
+	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+				//TODO check below and commented out code
+				returnValue = getMagRange();
+			
+//    							// firmware sets mag range to 7 (i.e. index 6 in combobox) if user set mag range to 0 in config file
+//    							if(getMagRange() == 0) cmBx.setSelectedIndex(6);
+//    							else cmBx.setSelectedIndex(getMagRange()-1);
+	    		break;
+			
+			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+				returnValue = getPressureResolution();
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+				returnValue = getExGResolution();
+	    		break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+				returnValue = getExGGainSetting();
+				//consolePrintLn("Get " + configValue);
+	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+				int configValue = getLSM303DigitalAccelRate(); 
+				 
+	        	if(!isLSM303DigitalAccelLPM()) {
+		        	if(configValue==8) {
+		        		configValue = 9;
+		        	}
+	        	}
+				returnValue = configValue;
+	    		break;
+	    		
+			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
+				returnValue = getLSM303MagRate();
+	        	break;
+
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+				returnValue = getMPU9150AccelRange();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+				returnValue = getMPU9150MotCalCfg();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF):
+				returnValue = getMPU9150LPF();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
+				returnValue = getMPU9150MPLSamplingRate();
+        		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
+				returnValue = getMPU9150MagSamplingRate();
+            	break;
+            	
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+				returnValue = getEXG1RateSetting();
+				//returnValue = getEXG2RateSetting();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+				returnValue = getEXGReferenceElectrode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+				returnValue = getEXGLeadOffCurrentMode();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+				returnValue = getEXGLeadOffDetectionCurrent();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+				returnValue = getEXGLeadOffComparatorTreshold();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+				returnValue = getEXG2RespirationDetectFreq();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+				returnValue = getEXG2RespirationDetectPhase();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+				returnValue = getInternalExpPower();
+            	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+				returnValue = getPpgAdcSelectionGsrBoard();
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+				returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
+	    		break;
+			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+				returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
+	    		break;
+            	
+
+			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
+				returnValue = getSamplingDividerGsr();
+	    		break;
+			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
+				returnValue = getSamplingDividerLsm303dlhcAccel();
+	    		break;
+			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
+				returnValue = getSamplingDividerPpg();
+	    		break;
+			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
+				returnValue = getSamplingDividerVBatt();
+	    		break;
+	    		
+	    		
+//Strings
+//    					case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+//    						returnValue = getShimmerUserAssignedName();
+//    			        	break;
+//    					case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+//    						returnValue = getTrialName();
+//    			        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+		        Double readSamplingRate = getSamplingRateShimmer();
+		    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
+		    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100; // round sampling rate to two decimal places
+//    					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
+		    	returnValue = actualSamplingRate.toString();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
+				returnValue = Integer.toString(getBufferSize());
+	        	break;
+//    					case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+//    			        	returnValue = getConfigTimeParsed();
+//    			        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM):
+	        	returnValue = getMacIdFromInfoMem();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID):
+	        	returnValue = Integer.toString(getExperimentId());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS):
+	        	returnValue = Integer.toString(getTrialNumberOfShimmers());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
+	        	returnValue = Integer.toString(getTrialDurationEstimated());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
+	        	returnValue = Integer.toString(getTrialDurationMaximum());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
+	        	returnValue = Integer.toString(getSyncBroadcastInterval());
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
+				returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+//    		    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
+	        	break;
+	        	
+////List<Byte[]>
+//    					case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
+//    						List<byte[]> listOFExGBytes = new ArrayList<byte[]>();
+//    						listOFExGBytes.add(getEXG1RegisterArray());
+//    						listOFExGBytes.add(getEXG2RegisterArray());
+//    						returnValue = listOFExGBytes;
+//    			        	break;
+	        	
+	        default:
+	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
+	        	break;
+		}
 		
 		return returnValue;
 	}		

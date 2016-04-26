@@ -200,4 +200,8 @@ public class ShimmerVerObject implements Serializable {
 		return mFirmwareVersionParsed;
 	}
 
+	public int getHardwareVersion() {
+		return mHardwareVersion;
+	}
+
 }

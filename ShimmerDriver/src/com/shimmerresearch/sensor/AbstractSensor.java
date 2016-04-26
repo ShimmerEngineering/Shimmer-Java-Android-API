@@ -215,7 +215,9 @@ public abstract class AbstractSensor implements Serializable{
 
 	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
-
+	
+	public abstract void setSamplingRateFromFreq();
+	public abstract void setDefaultConfiguration();
 	
 	/** To process data originating from the Shimmer device
 	 * @param channelByteArray The byte array packet, or byte array sd log
