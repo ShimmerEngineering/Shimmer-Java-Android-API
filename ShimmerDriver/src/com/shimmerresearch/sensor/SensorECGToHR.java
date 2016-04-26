@@ -129,6 +129,18 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 		
 	}
 
+	@Override
+	public void generateListOfSensorMapKeysConflicting() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 
 }

@@ -1919,5 +1919,17 @@ public class SensorEXG extends AbstractSensor{
 		
 	}
 
+	@Override
+	public void generateListOfSensorMapKeysConflicting() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void generateSensorGroupMapping() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	//-------------------- ExG End -----------------------------------	
 }
