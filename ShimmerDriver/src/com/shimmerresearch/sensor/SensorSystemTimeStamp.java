@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
@@ -36,12 +37,6 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	
-	
-	@Override
-	public String getSensorName() {
-		return mSensorName;
-	}
-
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -162,17 +157,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-	@Override
-	public void generateListOfConfigOptionKeysAssociated() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
+	
 	@Override
 	public void setSamplingRateFromFreq() {
 		// TODO Auto-generated method stub
@@ -188,19 +173,24 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 
-
 	@Override
-	public void generateListOfSensorMapKeysConflicting() {
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 
+	@Override
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 }

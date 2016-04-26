@@ -172,7 +172,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //				Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL);
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
 //				Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
-		
 	    
 //		// NV_SENSORS3				
 //		streamingByteIndex = 3;
@@ -186,11 +185,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //		aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_TAP, new SensorDetails((long)0, (long)0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TAPDIRANDTAPCNT));
 //		aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MPL_MOTION_ORIENT, new SensorDetails((long)0, (long)0x01<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_MOTIONANDORIENT));
 	    
-	}
-
-	@Override
-	public String getSensorName() {
-		return mSensorName;
 	}
 
 	@Override

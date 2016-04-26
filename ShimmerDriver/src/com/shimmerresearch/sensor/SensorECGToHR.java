@@ -34,11 +34,6 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	}
 	
 	@Override
-	public String getSensorName() {
-		return mSensorName;
-	}
-
-	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
@@ -126,23 +121,20 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 
 	@Override
 	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
-		return mListOfConfigOptionKeysAssociated;
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 	
 	@Override
 	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-		return mListOfSensorMapKeysConflicting;
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
 	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
-		return mSensorGroupingMap;
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override

@@ -62,11 +62,6 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 
 	@Override
-	public String getSensorName() {
-		return mSensorName;
-	}
- 
-	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
