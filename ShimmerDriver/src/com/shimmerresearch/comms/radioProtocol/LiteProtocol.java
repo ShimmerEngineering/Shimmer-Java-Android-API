@@ -317,8 +317,9 @@ public class LiteProtocol extends RadioProtocol{
 									if(LiteProtocolInstructionSet.InstructionsSet.valueOf(mCurrentCommand&0xff)!=null){
 										stopTimerCheckForAckOrResp(); //cancel the ack timer
 										
+										byte[] insBytes = getListofInstructions().get(0);
+										mProtocolListener.eventAckReceived(insBytes);
 										processAckFromSetCommand(mCurrentCommand);
-										
 										mTransactionCompleted = true;
 										setInstructionStackLock(false);
 									}
@@ -327,12 +328,13 @@ public class LiteProtocol extends RadioProtocol{
 									else if(LiteProtocolInstructionSet.InstructionsGet.valueOf(mCurrentCommand&0xff)!=null){
 										
 										//Special cases
+										
 										byte[] insBytes = getListofInstructions().get(0);
-										mProtocolListener.eventNewResponse(insBytes);
-									
+										mProtocolListener.eventAckReceived(insBytes);
 										mWaitForResponse=true;
 										getListofInstructions().remove(0);
 									}
+									
 									
 								}
 							}

@@ -123,21 +123,29 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 			mRadioProtocol.setProtocolListener(new ProtocolListener(){
 
 				@Override
-				public void eventAckReceived() {
+				public void eventAckReceived(byte[] sentInstruction) {
 					// TODO Auto-generated method stub
-				
+					for (RadioListener rl:mRadioListenerList){
+						rl.eventAckReceived(sentInstruction);
+					}
 				}
 
 				@Override
 				public void eventNewPacket(byte[] packet) {
 					// TODO Auto-generated method stub
-					System.out.println("New Packet: " + packet);
+					
+					for (RadioListener rl:mRadioListenerList){
+						rl.eventNewPacket(packet);
+					}
 				}
 
 				@Override
 				public void eventNewResponse(byte[] respB) {
 					// TODO Auto-generated method stub
-					System.out.println(Arrays.toString(respB));
+					
+					for (RadioListener rl:mRadioListenerList){
+						rl.eventResponseReceived(respB);
+					}
 				}
 
 				@Override

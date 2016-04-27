@@ -111,16 +111,24 @@ public class theRadioGui{
 
 			}
 
+
+
 			@Override
-			public void eventNewPacket() {
+			public void eventResponseReceived(byte[] responseBytes) {
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void configurationResponse(byte[] responseBytes) {
+			public void eventNewPacket(byte[] packetByteArray) {
 				// TODO Auto-generated method stub
+				
+			}
 
+			@Override
+			public void eventAckReceived(byte[] responseBytes) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

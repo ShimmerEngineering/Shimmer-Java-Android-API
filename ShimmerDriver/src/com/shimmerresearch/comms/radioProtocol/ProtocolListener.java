@@ -4,7 +4,7 @@ import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 
 public interface ProtocolListener {
 
-	public void eventAckReceived();
+	public void eventAckReceived(byte[] b);
 	public void eventNewPacket(byte[] b);
 	public void eventNewResponse(byte[] b);
 	public void hasStopStreaming();

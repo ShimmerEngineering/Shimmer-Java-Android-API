@@ -32,6 +32,8 @@ public class testRadioProtocol {
 		
 		System.out.println(LiteProtocolInstructionSet.InstructionsSet.ACK_COMMAND_PROCESSED_VALUE);
 		System.out.println(LiteProtocolInstructionSet.InstructionsSet.valueOf(255).name());
+		String s = LiteProtocolInstructionSet.InstructionsSet.ACK_COMMAND_PROCESSED.toString();
+		System.out.println(LiteProtocolInstructionSet.InstructionsSet.valueOf(s).getNumber());
 		if (LiteProtocolInstructionSet.InstructionsSet.valueOf(254)!=null){
 			System.out.println(LiteProtocolInstructionSet.InstructionsSet.valueOf(254).name());
 		}

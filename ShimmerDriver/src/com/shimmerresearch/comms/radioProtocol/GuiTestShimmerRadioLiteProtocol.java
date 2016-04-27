@@ -41,22 +41,25 @@ import javax.swing.table.*;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
+import com.shimmerresearch.driver.DeviceException;
+import com.shimmerresearch.driver.UtilShimmer;
 
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
  
-public class ListSelectionDemo extends JPanel {
+public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     JTextArea output;
     JList list; 
     JTable table;
     String newline = "\n";
     ListSelectionModel listSelectionModel;
     String[] enumValues;
-    public ListSelectionDemo() {
+	static ShimmerRadioProtocol mSRP;
+    public GuiTestShimmerRadioLiteProtocol() {
         super(new BorderLayout());
- 
-        enumValues = new String[LiteProtocolInstructionSet.InstructionsGet.getDescriptor().getValues().size()];
+        initialize();
+        enumValues = new String[LiteProtocolInstructionSet.InstructionsGet.getDescriptor().getValues().size() + LiteProtocolInstructionSet.InstructionsSet.getDescriptor().getValues().size() ];
 		int i =0;
 		for (EnumValueDescriptor evd: LiteProtocolInstructionSet.InstructionsGet.getDescriptor().getValues()){
 			if (evd.getName().contains("NOT_USED")){
@@ -66,9 +69,15 @@ public class ListSelectionDemo extends JPanel {
 			}
 			i++;
 		}
-        String[] listData = { "one", "two", "three", "four",
-                              "five", "six", "seven" };
-        
+		for (EnumValueDescriptor evd: LiteProtocolInstructionSet.InstructionsSet.getDescriptor().getValues()){
+			if (evd.getName().contains("NOT_USED")){
+				
+			} else {
+				enumValues[i] = evd.getName();
+			}
+			i++;
+		}
+     
         list = new JList(enumValues);
  
         listSelectionModel = list.getSelectionModel();
@@ -115,13 +124,45 @@ public class ListSelectionDemo extends JPanel {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         add(splitPane, BorderLayout.CENTER);
         JPanel shimmerPanel = new JPanel();
-        
-        JButton button = new JButton();
-        button.setText("Test");
-        shimmerPanel.add(button);
+        shimmerPanel.setLayout(new BoxLayout(shimmerPanel, BoxLayout.Y_AXIS));
+        JButton btnConnect = new JButton();
+        btnConnect.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		try {
+					mSRP.connect();
+				} catch (DeviceException de) {
+					// TODO Auto-generated catch block
+					de.printStackTrace();
+				}
+        	}
+        });
+        btnConnect.setText("Connect");
+        shimmerPanel.add(btnConnect);
         
         
         add(shimmerPanel,BorderLayout.WEST);
+        
+        JButton btnStart = new JButton();
+        btnStart.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		mSRP.startStreaming();
+        	}
+        });
+        btnStart.setText("Start");
+        shimmerPanel.add(btnStart);
+        
+        JButton btnNewButton = new JButton("Disconnect");
+        btnNewButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+					mSRP.disconnect();
+				} catch (DeviceException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        	}
+        });
+        shimmerPanel.add(btnNewButton);
         
         JPanel topHalf = new JPanel();
         topHalf.setLayout(new BoxLayout(topHalf, BoxLayout.LINE_AXIS));
@@ -130,7 +171,7 @@ public class ListSelectionDemo extends JPanel {
                                                 "List"));
         listContainer.add(listPane);
          
-    topHalf.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
+        topHalf.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
         topHalf.add(listContainer);
         //topHalf.add(tableContainer);
  
@@ -147,7 +188,59 @@ public class ListSelectionDemo extends JPanel {
         splitPane.add(bottomHalf);
     }
  
-    /**
+    private void initialize() {
+    	mSRP = new ShimmerRadioProtocol();
+	
+    	mSRP.initialize("COM30");
+
+    	mSRP.setRadioListener(new RadioListener(){
+
+		@Override
+		public void connected() {
+			// TODO Auto-generated method stub
+			
+			mSRP.mRadioProtocol.initialize();
+			
+			//Read infomem, and set packetsize
+			//mSRP.mRadioProtocol.writeInstruction(new byte[]{(byte) LiteProtocolInstructionSet.Instructions.GET_INFOMEM_COMMAND_VALUE});
+			
+			mSRP.mRadioProtocol.setPacketSize(41);
+		}
+
+		@Override
+		public void disconnected() {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void eventNewPacket(byte[] pbA) {
+			// TODO Auto-generated method stub
+			//System.out.println("New Packet: " + UtilShimmer.bytesToHexString(pbA));
+			output.append("New Packet: " + UtilShimmer.bytesToHexString(pbA));
+			output.append(newline);
+		}
+
+		@Override
+		public void eventResponseReceived(byte[] responseBytes) {
+			// TODO Auto-generated method stub
+			// TODO Auto-generated method stub
+			//System.out.println("Response Received: " + UtilShimmer.bytesToHexString(responseBytes));
+			output.append("Response Received: " + UtilShimmer.bytesToHexString(responseBytes));
+			output.append(newline);
+		}
+
+		@Override
+		public void eventAckReceived(byte[] instructionSent) {
+			// TODO Auto-generated method stub
+			// TODO Auto-generated method stub
+			//System.out.println("Ack Received: " + UtilShimmer.bytesToHexString(instructionSent));
+			output.append("Ack Received: " + UtilShimmer.bytesToHexString(instructionSent));
+			output.append(newline);
+		}
+	});}
+
+	/**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
      * event-dispatching thread.
@@ -158,7 +251,7 @@ public class ListSelectionDemo extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Create and set up the content pane.
-        ListSelectionDemo demo = new ListSelectionDemo();
+        GuiTestShimmerRadioLiteProtocol demo = new GuiTestShimmerRadioLiteProtocol();
         demo.setOpaque(true);
         frame.setContentPane(demo);
  
@@ -183,16 +276,26 @@ public class ListSelectionDemo extends JPanel {
  
             int firstIndex = e.getFirstIndex();
             
-            System.out.println(enumValues[firstIndex]);
+            //System.out.println(enumValues[firstIndex]);
+            
             
             
             int lastIndex = e.getLastIndex();
             boolean isAdjusting = e.getValueIsAdjusting(); 
-            output.append("Event for indexes "
-                          + firstIndex + " - " + lastIndex
-                          + "; isAdjusting is " + isAdjusting
-                          + "; selected indexes:");
- 
+            if (!isAdjusting){
+            	byte[] ins = new byte[1];
+            	if (enumValues[lastIndex].contains("GET")){
+            		ins[0]= (byte) LiteProtocolInstructionSet.InstructionsGet.valueOf(enumValues[lastIndex]).getNumber();
+            	} else {
+            		ins[0]= (byte) LiteProtocolInstructionSet.InstructionsSet.valueOf(enumValues[lastIndex]).getNumber();
+            	}
+                mSRP.mRadioProtocol.writeInstruction(ins);
+                
+            	output.append("Event for indexes "
+            			+ firstIndex + " - " + lastIndex
+            			+ "; isAdjusting is " + isAdjusting
+            			+ "; selected indexes:");
+            }
             if (lsm.isSelectionEmpty()) {
                 output.append(" <none>");
             } else {

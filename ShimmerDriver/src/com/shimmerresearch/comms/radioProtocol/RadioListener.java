@@ -6,8 +6,12 @@ public interface RadioListener {
 	
 	public void disconnected();
 	
-	public void eventNewPacket();
+	public void eventNewPacket(byte[] packetByteArray);
 	
-	public void configurationResponse(byte[] responseBytes);
+	public void eventResponseReceived(byte[] responseBytes);
+	
+	public void eventAckReceived(byte[] instructionSent);
+	
+	
 
 }
