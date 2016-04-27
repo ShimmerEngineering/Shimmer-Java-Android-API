@@ -3,6 +3,7 @@ package com.shimmerresearch.sensor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
@@ -147,9 +148,9 @@ public class ShimmerClock extends AbstractSensor {
 
 
 	@Override
-	public void generateListOfConfigOptionKeysAssociated() {
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
 		// TODO Auto-generated method stub
-		
+		return mListOfConfigOptionKeysAssociated;
 	}
 
 
@@ -171,7 +172,8 @@ public class ShimmerClock extends AbstractSensor {
 
 
 	@Override
-	public void generateListOfSensorMapKeysConflicting() {
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+		return mListOfSensorMapKeysConflicting;
 		// TODO Auto-generated method stub
 		
 	}
@@ -179,10 +181,10 @@ public class ShimmerClock extends AbstractSensor {
 
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
+		return mSensorGroupingMap;
 		// TODO Auto-generated method stub
 		
 	}
-
 
 }

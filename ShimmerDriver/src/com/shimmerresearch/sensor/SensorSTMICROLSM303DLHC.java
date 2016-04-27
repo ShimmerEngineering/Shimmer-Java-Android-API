@@ -2,6 +2,7 @@ package com.shimmerresearch.sensor;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
@@ -173,8 +174,9 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	}
 
 	@Override
-	public void generateListOfConfigOptionKeysAssociated() {
-		// TODO Auto-generated method stub
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+		return mListOfConfigOptionKeysAssociated;
+		
 		
 	}
 
@@ -191,23 +193,17 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	}
 
 	@Override
-	public void generateListOfSensorMapKeysConflicting() {
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+		return mListOfSensorMapKeysConflicting;
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
+		return mSensorGroupingMap;
 		// TODO Auto-generated method stub
 		
 	}
-
-	
-
-	
-
-
-
-
 
 }

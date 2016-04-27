@@ -3,6 +3,7 @@ package com.shimmerresearch.sensor;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -113,7 +114,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public void generateListOfConfigOptionKeysAssociated() {
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+		return mListOfConfigOptionKeysAssociated;
 		// TODO Auto-generated method stub
 		
 	}
@@ -131,16 +133,22 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public void generateListOfSensorMapKeysConflicting() {
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+		return mListOfSensorMapKeysConflicting;
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
+		return mSensorGroupingMap;
+		
 		
 	}
+
+	
+
+	
 
 	
 

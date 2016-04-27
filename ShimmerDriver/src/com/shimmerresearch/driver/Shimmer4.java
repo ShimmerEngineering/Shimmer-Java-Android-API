@@ -103,6 +103,11 @@ public class Shimmer4 extends ShimmerDevice {
 //		else {
 			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.MPU9X50.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.EXG.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
+			//mMapOfSensors.put(SENSORS.CLOCK.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
+			mMapOfSensors.put(SENSORS.BMP180.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
+			
 //			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject)); //for testing
 //		}
 	}
