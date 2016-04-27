@@ -599,7 +599,7 @@ public abstract class AbstractSensor implements Serializable{
 			}
 		return formattedData;
 	}
-	private static int calculatetwoscomplement(int signedData, int bitLength){
+	protected static int calculatetwoscomplement(int signedData, int bitLength){
 		int newData=signedData;
 		if (signedData>=(1<<(bitLength-1))) {
 			newData=-((signedData^(int)(Math.pow(2, bitLength)-1))+1);

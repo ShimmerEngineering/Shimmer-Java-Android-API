@@ -1,5 +1,7 @@
 package com.shimmerresearch.sensor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -49,6 +52,10 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	
 	protected byte[] mPressureCalRawParams = new byte[23];
 	protected byte[] mPressureRawParams  = new byte[23];
+	
+	public static final byte GET_BMP180_PRES_CALIBRATION_COMMAND 	= (byte) 0x57;
+	public static final byte BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = (byte) 0x58;
+	public static final byte GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND = (byte) 0x59;
 	
 	public int mPressureResolution = 0;
 	
@@ -128,6 +135,47 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		caldata[1]=T/10;
 		return caldata;
 	}
+	public void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, int packetType) {
+		if (packetType == BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
+			pressTempAC1 = calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
+			pressTempAC2 = calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
+			pressTempAC3 = calculatetwoscomplement((int)((int)(pressureResoRes[5] & 0xFF) + ((int)(pressureResoRes[4] & 0xFF) << 8)),16);
+			pressTempAC4 = (int)((int)(pressureResoRes[7] & 0xFF) + ((int)(pressureResoRes[6] & 0xFF) << 8));
+			pressTempAC5 = (int)((int)(pressureResoRes[9] & 0xFF) + ((int)(pressureResoRes[8] & 0xFF) << 8));
+			pressTempAC6 = (int)((int)(pressureResoRes[11] & 0xFF) + ((int)(pressureResoRes[10] & 0xFF) << 8));
+			pressTempB1 = calculatetwoscomplement((int)((int)(pressureResoRes[13] & 0xFF) + ((int)(pressureResoRes[12] & 0xFF) << 8)),16);
+			pressTempB2 = calculatetwoscomplement((int)((int)(pressureResoRes[15] & 0xFF) + ((int)(pressureResoRes[14] & 0xFF) << 8)),16);
+			pressTempMB = calculatetwoscomplement((int)((int)(pressureResoRes[17] & 0xFF) + ((int)(pressureResoRes[16] & 0xFF) << 8)),16);
+			pressTempMC = calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
+			pressTempMD = calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
+		}
+	}
+	
+	// --------------- Check if needed --------------------
+	
+	public byte[] getRawCalibrationParameters(ShimmerVerObject svo){        
+
+		byte[] rawcal=new byte[1];
+		if (svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			// Mag + Pressure
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+			try {
+				outputStream.write(5); // write the number of different calibration parameters
+
+				outputStream.write( mPressureCalRawParams.length);
+				outputStream.write( mPressureCalRawParams );
+				rawcal = outputStream.toByteArray( );
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+
+		} 
+		else {
+			rawcal[0]=0;
+		}
+		return rawcal;
+
+	}
 	
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
@@ -197,7 +245,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
 			ShimmerVerObject svo) {
