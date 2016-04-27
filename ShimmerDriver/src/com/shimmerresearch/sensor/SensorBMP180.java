@@ -13,6 +13,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -22,6 +23,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
 
 public class SensorBMP180 extends AbstractSensor implements Serializable {
@@ -54,7 +56,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		super(svo);
 		mSensorName = SENSORS.BMP180.toString();
 		mGuiFriendlyLabel = Shimmer3.GuiLabelSensors.BMP_180;
-		 mIntExpBoardPowerRequired = false; 
+		mIntExpBoardPowerRequired = false; 
 	}
 
 	@Override
@@ -94,24 +96,61 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		return object;
 	}
 
+	public double[] calibratePressureSensorData(double UP, double UT){
+		double X1 = (UT - pressTempAC6) * pressTempAC5 / 32768;
+		double X2 = (pressTempMC * 2048 / (X1 + pressTempMD));
+		double B5 = X1 + X2;
+		double T = (B5 + 8) / 16;
+
+		double B6 = B5 - 4000;
+		X1 = (pressTempB2 * (Math.pow(B6,2)/ 4096)) / 2048;
+		X2 = pressTempAC2 * B6 / 2048;
+		double X3 = X1 + X2;
+		double B3 = (((pressTempAC1 * 4 + X3)*(1<<mPressureResolution) + 2)) / 4;
+		X1 = pressTempAC3 * B6 / 8192;
+		X2 = (pressTempB1 * (Math.pow(B6,2)/ 4096)) / 65536;
+		X3 = ((X1 + X2) + 2) / 4;
+		double B4 = pressTempAC4 * (X3 + 32768) / 32768;
+		double B7 = (UP - B3) * (50000>>mPressureResolution);
+		double p=0;
+		if (B7 < 2147483648L ){ //0x80000000
+			p = (B7 * 2) / B4;
+		}
+		else{
+			p = (B7 / B4) * 2;
+		}
+		X1 = ((p / 256.0) * (p / 256.0) * 3038) / 65536;
+		X2 = (-7357 * p) / 65536;
+		p = p +( (X1 + X2 + 3791) / 16);
+
+		double[] caldata = new double[2];
+		caldata[0]=p;
+		caldata[1]=T/10;
+		return caldata;
+	}
+	
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
-		// TODO Auto-generated method stub
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		int idxConfigSetupByte3 =	9;
+		int bitShiftBMP180PressureResolution = 4;
+		int maskBMP180PressureResolution = 0x03;
+		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution & maskBMP180PressureResolution) << bitShiftBMP180PressureResolution);
 		
 	}
 
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
-		// TODO Auto-generated method stub
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		int idxConfigSetupByte3 =	9;
+		int bitShiftBMP180PressureResolution = 4;
+		int maskBMP180PressureResolution = 0x03;
+		mPressureResolution = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution;
 		
 	}
 
 	@Override
 	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		// TODO Auto-generated method stub
-		return null;
+		super.updateSensorGroupingMap();
+		return mSensorGroupingMap;
 	}
 
 	@Override
@@ -218,11 +257,65 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(
-			ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180;
+		}
+//		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
+//				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
+//				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
+//			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
+//					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)));
+//			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180;
+//
+//		}
+		return mSensorGroupingMap;
+		
 	}
-
+	public double getPressTempAC1(){
+		return pressTempAC1;
+	}
+	
+	public double getPressTempAC2(){
+		return pressTempAC2;
+	}
+	
+	public double getPressTempAC3(){
+		return pressTempAC3;
+	}
+	
+	public double getPressTempAC4(){
+		return pressTempAC4;
+	}
+	
+	public double getPressTempAC5(){
+		return pressTempAC5;
+	}
+	
+	public double getPressTempAC6(){
+		return pressTempAC6;
+	}
+	
+	public double getPressTempB1(){
+		return pressTempB1;
+	}
+	
+	public double getPressTempB2(){
+		return pressTempB2;
+	}
+	
+	public double getPressTempMB(){
+		return pressTempMB;
+	}
+	
+	public double getPressTempMC(){
+		return pressTempMC;
+	}
+	
+	public double getPressTempMD(){
+		return pressTempMD;
+	}
 
 }
