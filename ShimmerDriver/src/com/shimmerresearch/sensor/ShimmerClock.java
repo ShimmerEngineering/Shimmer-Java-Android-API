@@ -148,7 +148,6 @@ public class ShimmerClock extends AbstractSensor {
 	@Override
 	public void setDefaultConfiguration() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

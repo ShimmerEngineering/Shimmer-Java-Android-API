@@ -169,7 +169,6 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	@Override
 	public void setDefaultConfiguration() {
 		// TODO Auto-generated method stub
-		
 	}
 
 

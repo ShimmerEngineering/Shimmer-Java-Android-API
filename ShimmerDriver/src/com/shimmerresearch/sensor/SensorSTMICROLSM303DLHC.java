@@ -177,7 +177,6 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	@Override
 	public void setDefaultConfiguration() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

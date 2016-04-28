@@ -110,7 +110,6 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	@Override
 	public void setSamplingRateFromFreq() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

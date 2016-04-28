@@ -16,6 +16,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -26,6 +27,30 @@ public abstract class AbstractSensor implements Serializable{
 	/** * */
 	private static final long serialVersionUID = 3465427544416038676L;
 
+	// --------------- Abstract methods start ----------------	
+	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object);
+	
+	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
+	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
+	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
+	public abstract Object getConfigValueUsingConfigLabel(String componentName);
+
+	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
+	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
+
+	public abstract void setSamplingRateFromFreq();
+	public abstract void setDefaultConfiguration();
+	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
+	
+	public abstract HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo);
+	public abstract HashMap<String,SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo);
+	public abstract List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo);
+	public abstract List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo);
+	public abstract Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo);
+
+	// --------------- Abstract methods end ----------------	
+
+	// --------------- Carried from SensorDetails/SensorEnabledDetails start ----------------	
 	/**
 	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
 	 */
@@ -43,18 +68,19 @@ public abstract class AbstractSensor implements Serializable{
 	public boolean mIntExpBoardPowerRequired = false;
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
-	
-    public Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 
+	public boolean mIsEnabled = true;
+	public boolean mIsDummySensor = false;
+	
 //	//Testing for GQ BLE
 //	public String mHeaderFileLabel = "";
 //	public int mHeaderByteMask = 0;
 //	public int mNumChannels = 0;
+
+	// --------------- Carried from SensorDetails/SensorEnabledDetails end ----------------	
+
 	
 	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
-	
-	public boolean mIsEnabled = true;
-	public boolean mIsDummySensor = false;
 	
 	//TODO decide whether to use Configuration.Shimmer3.SensorMapKey
 	public enum SENSORS{
@@ -72,7 +98,8 @@ public abstract class AbstractSensor implements Serializable{
 		EXG("EXG", Configuration.Shimmer3.SensorMapKey.ECG),
 		CLOCK("Clock", Configuration.Shimmer3.SensorMapKey.TIMESTAMP),
 		SYSTEM_TIMESTAMP("PC time", Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC),
-		MPU9X50("MPU Accel", Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL);
+		MPU9X50("MPU Accel", Configuration.Shimmer3.SensorMapKey.MPU9150_ACCEL),
+		BMP180("BMP180",Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE);
 		
 	    private final String text;
 	    private final int index;
@@ -97,20 +124,33 @@ public abstract class AbstractSensor implements Serializable{
 
 	}
 	
-	@Deprecated
-	public SensorEnabledDetails mSensorEnabledDetails;
+//	public final static class SHIMMER3_BT_STREAM_CHANNEL_ID {
+//	public final static int GSR = 1;
+//	public final static int ECG = 1;
+//}
+//
+//public final static class GQ_CHANNEL_ID {
+//	public final static int GSR = 1;
+//}
+
+
+	protected String mSensorName;
+	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
 	protected boolean mEnableCalibration = true;
-	protected String mSensorName;
 	protected String[] mSignalOutputNameArray;
 	protected String[] mSignalOutputFormatArray;
 	protected String[] mSignalOutputUnitArray;
 	protected int mFirmwareType;
-	protected int mHardwareID;
-	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor
+//	protected int mHardwareID;
+//	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor
 	
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
-	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
+    public Map<Integer, SensorDetails> mSensorMapRef = new LinkedHashMap<Integer, SensorDetails>();
+    public Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+
+	@Deprecated
+	public SensorEnabledDetails mSensorEnabledDetails;
 	@Deprecated
 	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapOfCommTypeToSensorMap = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
 	/**
@@ -120,22 +160,8 @@ public abstract class AbstractSensor implements Serializable{
 	 */
 	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> mMapOfCommTypetoChannel = new HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>>(); 
 	
-	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object);
+
 	
-	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
-	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
-	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
-	public abstract Object getConfigValueUsingConfigLabel(String componentName);
-
-	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
-	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
-
-//	public abstract String getSensorName();
-	public abstract void setSamplingRateFromFreq();
-	public abstract void setDefaultConfiguration();
-	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
-
-
 	/** To process data originating from the Shimmer device
 	 * @param channelByteArray The byte array packet, or byte array sd log
 	 * @param commType The communication type
@@ -170,29 +196,6 @@ public abstract class AbstractSensor implements Serializable{
 	
 	}
 	
-	
-	/**
-	 * @param svo
-	 * @return
-	 */
-	public abstract HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo);
-	/**
-	 * @param svo
-	 * @return
-	 */
-	public abstract HashMap<String,SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo);
-	public abstract List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo);
-	public abstract List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo);
-	public abstract Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo);
-	
-//	public final static class SHIMMER3_BT_STREAM_CHANNEL_ID {
-//		public final static int GSR = 1;
-//		public final static int ECG = 1;
-//	}
-//	
-//	public final static class GQ_CHANNEL_ID {
-//		public final static int GSR = 1;
-//	}
 	
 	public AbstractSensor(ShimmerVerObject svo){
 		mShimmerVerObject = svo;
@@ -259,7 +262,7 @@ public abstract class AbstractSensor implements Serializable{
 	public String getSensorName() {
 		return mSensorName;
 	}
-
+	
 	/** This cycles through the channels finding which are enabled and summing up the number of bytes
 	 * @param commType
 	 * @return

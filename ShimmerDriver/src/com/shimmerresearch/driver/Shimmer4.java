@@ -16,6 +16,8 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensor.ActionSetting;
+import com.shimmerresearch.sensor.SensorBMP180;
+import com.shimmerresearch.sensor.SensorEXG;
 import com.shimmerresearch.sensor.SensorGSR;
 import com.shimmerresearch.sensor.SensorMPU9X50;
 import com.shimmerresearch.sensor.SensorSystemTimeStamp;
@@ -104,7 +106,9 @@ public class Shimmer4 extends ShimmerDevice {
 			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensors.put(SENSORS.MPU9X50.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
 			
+//			mMapOfSensors.put(SENSORS.EXG.sensorIndex(),new SensorEXG(mShimmerVerObject));
 //			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject)); //for testing
+//			mMapOfSensors.put(SENSORS.BMP180.sensorIndex(),new SensorBMP180(mShimmerVerObject));
 //		}
 	}
 

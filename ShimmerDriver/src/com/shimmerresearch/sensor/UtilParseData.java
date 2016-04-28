@@ -257,7 +257,7 @@ public class UtilParseData {
 		return formattedData;
 	}
 	
-	private static int calculatetwoscomplement(int signedData, int bitLength){
+	public static int calculatetwoscomplement(int signedData, int bitLength){
 		int newData=signedData;
 		if (signedData>=(1<<(bitLength-1))) {
 			newData=-((signedData^(int)(Math.pow(2, bitLength)-1))+1);
@@ -266,7 +266,7 @@ public class UtilParseData {
 		return newData;
 	}
 
-	private static long calculatetwoscomplement(long signedData, int bitLength){
+	public static long calculatetwoscomplement(long signedData, int bitLength){
 		long newData=signedData;
 		if (signedData>=(1L<<(bitLength-1))) {
 			newData=-((signedData^(long)(Math.pow(2, bitLength)-1))+1);
