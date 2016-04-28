@@ -70,6 +70,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.sensor.SensorBMP180;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
@@ -3333,8 +3334,11 @@ public class Configuration {
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG)));
+			
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)));
+//			aMap.putAll(SensorBMP180.mSensorGroupingMap);
+			
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.VBATT)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, new SensorGroupingDetails(

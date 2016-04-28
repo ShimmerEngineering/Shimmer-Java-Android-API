@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,13 +31,9 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
 
 public class SensorBMP180 extends AbstractSensor implements Serializable {
-
-	/**
-	 * 
-	 */
-	// Needs to be set
-	private static final long serialVersionUID = 1L; 
 	
+	/** * */
+	private static final long serialVersionUID = 4559709230029277863L;
 	
 	public double pressTempAC1 = 408;
 	public double pressTempAC2 = -72;
@@ -58,6 +55,22 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	public static final byte GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND = (byte) 0x59;
 	
 	public int mPressureResolution = 0;
+	
+    public static final Map<Integer, SensorDetails> mSensorMapRef;
+    static {
+        Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer, SensorDetails>();
+        long streamingByteIndex = 2;
+		long logHeaderByteIndex = 2;
+		aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180));
+		aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+		aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfConfigOptionKeysAssociated = Arrays.asList(
+				Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
+		aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfChannelsRef = Arrays.asList(
+				Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
+				Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180);
+
+		mSensorMapRef = Collections.unmodifiableMap(aMap);
+    }
 	
 	public SensorBMP180(ShimmerVerObject svo) {
 		super(svo);
@@ -247,14 +260,12 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	}
 	
 	@Override
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
-			ShimmerVerObject svo) {
-		
+	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
 		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer, ChannelDetails>();
 		ChannelDetails channelDetails = null;
-		  int index = 0;
-				
-		  channelDetails = new ChannelDetails(
+		int index = 0;
+
+		channelDetails = new ChannelDetails(
 				Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,
 				Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,
 				DatabaseChannelHandles.TEMPERATURE,
@@ -262,16 +273,15 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 				CHANNEL_UNITS.DEGREES_CELSUIS,
 				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 		mapOfChannelDetails.put(index++, channelDetails);
-					 
+
 		channelDetails = new ChannelDetails(
-	  		 Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
+				Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
 				Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
 				DatabaseChannelHandles.PRESSURE,
 				CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 				CHANNEL_UNITS.KPASCAL,
 				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 		mapOfChannelDetails.put(index++, channelDetails);					  
-
 
 		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.SD, mapOfChannelDetails);
 		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.BLUETOOTH, mapOfChannelDetails);
@@ -281,21 +291,20 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 
 	@Override
 	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
-				mConfigOptionsMap.clear();
+		mConfigOptionsMap.clear();
 		
-			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION , 
-					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
-											Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
-											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
-			return mConfigOptionsMap;
-	
+		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION , 
+				new SensorConfigOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
+										Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
+										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
+		return mConfigOptionsMap;
 	}
 
 	@Override
 	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
 		
-		return mListOfSensorMapKeysConflicting;
+		return null;
 	}
 
 	@Override
@@ -311,17 +320,9 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)));
 			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180;
 		}
-//		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-//				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-//				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-//			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
-//					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)));
-//			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180;
-//
-//		}
 		return mSensorGroupingMap;
-		
 	}
+	
 	public double getPressTempAC1(){
 		return pressTempAC1;
 	}

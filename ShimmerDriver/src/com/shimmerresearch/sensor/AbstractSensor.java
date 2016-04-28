@@ -27,61 +27,6 @@ public abstract class AbstractSensor implements Serializable{
 	/** * */
 	private static final long serialVersionUID = 3465427544416038676L;
 
-	// --------------- Abstract methods start ----------------	
-	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object);
-	
-	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
-	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
-	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
-	public abstract Object getConfigValueUsingConfigLabel(String componentName);
-
-	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
-	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
-
-	public abstract void setSamplingRateFromFreq();
-	public abstract void setDefaultConfiguration();
-	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
-	
-	public abstract HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo);
-	public abstract HashMap<String,SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo);
-	public abstract List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo);
-	public abstract List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo);
-	public abstract Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo);
-
-	// --------------- Abstract methods end ----------------	
-
-	// --------------- Carried from SensorDetails/SensorEnabledDetails start ----------------	
-	/**
-	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
-	 */
-	public long mSensorBitmapIDStreaming = 0;
-	/**
-	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
-	 */
-	public long mSensorBitmapIDSDLogHeader = 0;
-	
-	public long mDerivedSensorBitmapID = 0;
-	
-	public String mGuiFriendlyLabel = "";
-	public List<Integer> mListOfSensorMapKeysRequired = new ArrayList<Integer>();
-	public List<Integer> mListOfSensorMapKeysConflicting = new ArrayList<Integer>();
-	public boolean mIntExpBoardPowerRequired = false;
-	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
-	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
-
-	public boolean mIsEnabled = true;
-	public boolean mIsDummySensor = false;
-	
-//	//Testing for GQ BLE
-//	public String mHeaderFileLabel = "";
-//	public int mHeaderByteMask = 0;
-//	public int mNumChannels = 0;
-
-	// --------------- Carried from SensorDetails/SensorEnabledDetails end ----------------	
-
-	
-	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
-	
 	//TODO decide whether to use Configuration.Shimmer3.SensorMapKey
 	public enum SENSORS{
 //		/** Shimmer3 Low-noise analog accelerometer */
@@ -128,10 +73,64 @@ public abstract class AbstractSensor implements Serializable{
 //	public final static int GSR = 1;
 //	public final static int ECG = 1;
 //}
-//
 //public final static class GQ_CHANNEL_ID {
 //	public final static int GSR = 1;
 //}
+	
+	// --------------- Abstract methods start ----------------	
+	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object);
+	
+	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
+	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
+	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
+	public abstract Object getConfigValueUsingConfigLabel(String componentName);
+
+	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
+	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
+
+	public abstract void setSamplingRateFromFreq();
+	public abstract void setDefaultConfiguration();
+	public abstract Map<String, SensorGroupingDetails> getSensorGroupingMap();
+	
+	public abstract HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer,ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo);
+	public abstract HashMap<String,SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo);
+	public abstract List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo);
+	public abstract List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo);
+	public abstract Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo);
+
+	// --------------- Abstract methods end ----------------	
+
+	// --------------- Carried from static SensorDetails() start ----------------	
+	/**
+	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
+	 */
+	public long mSensorBitmapIDStreaming = 0;
+	/**
+	 * Used in the configuration header in RAW data logged to the Shimmer's on-board SD-card. 
+	 */
+	public long mSensorBitmapIDSDLogHeader = 0;
+	
+	public String mGuiFriendlyLabel = "";
+	public List<Integer> mListOfSensorMapKeysRequired = new ArrayList<Integer>();
+	public List<Integer> mListOfSensorMapKeysConflicting = new ArrayList<Integer>();
+	public boolean mIntExpBoardPowerRequired = false;
+	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
+
+	public boolean mIsDummySensor = false;
+	
+//	//Testing for GQ BLE
+//	public String mHeaderFileLabel = "";
+//	public int mHeaderByteMask = 0;
+//	public int mNumChannels = 0;
+	// --------------- Carried from static SensorDetails() end ----------------	
+
+	// --------------- Carried from SensorEnabledDetails() start ----------------	
+	public boolean mIsEnabled = false;
+	public long mDerivedSensorBitmapID = 0;
+	public SensorDetails mSensorDetails;
+	public List<String> mListOfChannels = new ArrayList<String>();
+	// --------------- Carried from SensorEnabledDetails() end ----------------	
 
 
 	protected String mSensorName;
@@ -145,12 +144,13 @@ public abstract class AbstractSensor implements Serializable{
 //	protected int mHardwareID;
 //	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor
 	
+	//public LinkedHashMap<String,ChannelDetails> mMapOfChannels = new LinkedHashMap<String,ChannelDetails>();
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
-    public Map<Integer, SensorDetails> mSensorMapRef = new LinkedHashMap<Integer, SensorDetails>();
+//    public Map<Integer, SensorDetails> mSensorMapRef = new LinkedHashMap<Integer, SensorDetails>();
     public Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 
-	@Deprecated
-	public SensorEnabledDetails mSensorEnabledDetails;
+//	@Deprecated
+//	public SensorEnabledDetails mSensorEnabledDetails;
 	@Deprecated
 	public HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>> mMapOfCommTypeToSensorMap = new HashMap<COMMUNICATION_TYPE,LinkedHashMap<Integer, SensorEnabledDetails>>();
 	/**
