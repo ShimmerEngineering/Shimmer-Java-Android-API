@@ -1,4 +1,4 @@
-package com.shimmerresearch.pcRadioDriver;
+package com.shimmerresearch.bluetooth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,9 +9,6 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 
 import com.shimmerresearch.androidradiodriver.ShimmerSerialPortAndroid;
-import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.ProtocolListener;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;

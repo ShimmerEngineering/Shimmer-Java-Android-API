@@ -4,6 +4,7 @@ package com.shimmerresearch.pcRadioDriver;
 import jssc.SerialPortException;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
+import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
