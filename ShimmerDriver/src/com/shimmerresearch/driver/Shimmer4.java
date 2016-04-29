@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
-import com.shimmerresearch.comms.radioProtocol.ShimmerRadioProtocol;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -44,7 +44,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void setSetting(long sensorID, String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
 		ActionSetting actionSetting = mMapOfSensors.get(sensorID).setSettings(componentName, valueToSet, commType);
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
-			mShimmerRadio.actionSettingResolver(actionSetting);
+			//mShimmerRadio.actionSettingResolver(actionSetting);
 		}
 	}
 	
@@ -65,13 +65,19 @@ public class Shimmer4 extends ShimmerDevice {
 			}
 
 			@Override
-			public void eventNewPacket() {
+			public void eventNewPacket(byte[] packetByteArray) {
 				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
-			public void configurationResponse(byte[] responseBytes) {
+			public void eventResponseReceived(byte[] responseBytes) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void eventAckReceived(byte[] instructionSent) {
 				// TODO Auto-generated method stub
 				
 			}});

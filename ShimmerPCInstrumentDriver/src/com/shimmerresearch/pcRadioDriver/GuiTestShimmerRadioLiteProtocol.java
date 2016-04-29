@@ -195,7 +195,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     private void initialize() {
     	mSRP = new ShimmerRadioProtocol();
 	
-    	mSRP.initialize("COM89");
+    	mSRP.initialize(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200));
 
     	mSRP.setRadioListener(new RadioListener(){
 

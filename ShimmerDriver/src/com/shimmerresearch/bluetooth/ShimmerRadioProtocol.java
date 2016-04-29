@@ -113,16 +113,12 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	
 	
 	
-	public void initialize(String address){
+	public void initialize(ByteLevelDataComm bldc){
 		
-		if (mOS==1){
-			mSerialPort = new ShimmerSerialPortJssc(address, address, SerialPort.BAUDRATE_115200); 
-			mSerialPort.setVerboseMode(false,false);
-		} else {
-			//mSerialPort = new ShimmerSerialPortAndroid();
-			//mSerialPort = new ShimmerSerialPortAndroid(address); 
-			mSerialPort.setVerboseMode(false,false);
-		}
+		
+		//mSerialPort = new ShimmerSerialPortJssc(address, address, SerialPort.BAUDRATE_115200);
+		mSerialPort = bldc;
+		mSerialPort.setVerboseMode(false,false);
 		mSerialPort.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
 
 			@Override
