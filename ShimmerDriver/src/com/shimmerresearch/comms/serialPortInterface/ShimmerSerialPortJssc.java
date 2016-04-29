@@ -19,12 +19,10 @@ import jssc.SerialPortTimeoutException;
  * @author Mark Nolan
  *
  */
-public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, ShimmerSerialEventCallback {
+public class ShimmerSerialPortJssc extends SerialPortComm implements ShimmerSerialEventCallback{
 
-	//the timeout value for connecting with the port
-    public int SERIAL_PORT_TIMEOUT = 500; // was 2000
-	
 	private SerialPort serialPort = null;
+	private ByteLevelDataCommListener mSPL;
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
@@ -69,13 +67,16 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 			            		true,
 			            		false);//Set params.
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+            eventDeviceConnected();
         }
         catch (SerialPortException e) {
+        	eventDeviceDisconnected();
         	DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING); 
         	de.updateDeviceException(e.getMessage(), e.getStackTrace());
 			throw(de);
         }
         catch (Exception e) {
+        	eventDeviceDisconnected();
         	DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_OPENING); 
         	de.updateDeviceException(e.getMessage(), e.getStackTrace());
 			throw(de);
@@ -94,6 +95,7 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
     	if(serialPort.isOpened()) {
 	        try {
 	        	serialPort.closePort();
+	        	eventDeviceDisconnected();
 			} catch (SerialPortException e) {
 	        	DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_CLOSING); 
 	        	de.updateDeviceException(e.getMessage(), e.getStackTrace());
@@ -328,8 +330,35 @@ public class ShimmerSerialPortJssc implements ShimmerSerialPortInterface, Shimme
 	@Override
 	public boolean isConnected() {
 		// TODO Auto-generated method stub
-		serialPort.isOpened();
-		return false;
+		return serialPort.isOpened();
+	}
+
+	@Override
+	public boolean isDisonnected() {
+		// TODO Auto-generated method stub
+		return serialPort.isOpened();
+	}
+
+	@Override
+	public void eventDeviceConnected() {
+		// TODO Auto-generated method stub
+		if (mSPL!=null){
+			mSPL.eventConnected();
+		}
+	}
+
+	@Override
+	public void eventDeviceDisconnected() {
+		// TODO Auto-generated method stub
+		if (mSPL!=null){
+			mSPL.eventDisconnected();
+		}
+	}
+
+	@Override
+	public void setByteLevelDataCommListener(ByteLevelDataCommListener spl) {
+		// TODO Auto-generated method stub
+		mSPL = spl;
 	}
 
 }

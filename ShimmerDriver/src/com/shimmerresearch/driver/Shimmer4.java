@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
-import com.shimmerresearch.comms.radioProtocol.ShimmerRadioProtocol;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.pcRadioDriver.ShimmerRadioProtocol;
 import com.shimmerresearch.sensor.ActionSetting;
 
 public class Shimmer4 extends ShimmerDevice {

@@ -1,4 +1,4 @@
-package com.shimmerresearch.comms.radioProtocol;
+package com.shimmerresearch.pcRadioDriver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,13 +8,20 @@ import java.util.List;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
+import com.shimmerresearch.androidradiodriver.ShimmerSerialPortAndroid;
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
+import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
+import com.shimmerresearch.comms.radioProtocol.ProtocolListener;
+import com.shimmerresearch.comms.radioProtocol.RadioListener;
+import com.shimmerresearch.comms.radioProtocol.RadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
+import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
+import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.DeviceException;
@@ -28,7 +35,7 @@ import com.shimmerresearch.sensor.ActionSetting;
 public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 
 	int mPacketSize;
-	
+	int mOS = 1;
 	public void connect() throws DeviceException{
 		try{
 			mSerialPort.connect();
@@ -38,7 +45,6 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 			throw(e);
         }
 		
-		isConnected();
 		
 	};
 	
@@ -52,7 +58,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 			throw(e);
         }
 		
-		isDisconnected();
+		
 		
 	};
 	
@@ -98,7 +104,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	
 	List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
 	RadioProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
-	ShimmerSerialPortInterface mSerialPort;
+	ByteLevelDataComm mSerialPort;
 	
 	public void setRadioListener(RadioListener radioListener){
 		mRadioListenerList.add(radioListener);
@@ -107,106 +113,117 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	public void removeRadioListenerList(){
 		mRadioListenerList.clear();
 	}
+
 	
-	public void isConnected(){
-		
-		int OS=1;
-		if (OS==1){
-			mRadioProtocol = new LiteProtocol(mSerialPort);	
-			
-		} else {
-			//mSerialPort = new ShimmerSerialPortAndroid();
-			mRadioProtocol = new LiteProtocol(mSerialPort);
-		}
-		
-		try {
-			mRadioProtocol.setProtocolListener(new ProtocolListener(){
-
-				@Override
-				public void eventAckReceived(byte[] sentInstruction) {
-					// TODO Auto-generated method stub
-					for (RadioListener rl:mRadioListenerList){
-						rl.eventAckReceived(sentInstruction);
-					}
-				}
-
-				@Override
-				public void eventNewPacket(byte[] packet) {
-					// TODO Auto-generated method stub
-					
-					for (RadioListener rl:mRadioListenerList){
-						rl.eventNewPacket(packet);
-					}
-				}
-
-				@Override
-				public void eventNewResponse(byte[] respB) {
-					// TODO Auto-generated method stub
-					
-					for (RadioListener rl:mRadioListenerList){
-						rl.eventResponseReceived(respB);
-					}
-				}
-
-				@Override
-				public void hasStopStreaming() {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void eventLogAndStreamStatusChanged() {
-					// TODO Auto-generated method stub
-					if (mSerialPort.isConnected()){
-						mRadioProtocol.setPacketSize(41);
-					}
-				}
-
-				@Override
-				public void sendProgressReport(
-						ProgressReportPerCmd progressReportPerCmd) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void eventAckInstruction(byte[] bs) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void eventByteResponseWhileStreaming(byte[] b) {
-					// TODO Auto-generated method stub
-					
-				}});
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		for (RadioListener rl:mRadioListenerList){
-			rl.connected();
-		}
-	}
 	
-	public void isDisconnected(){
-		for (RadioListener rl:mRadioListenerList){
-			rl.disconnected();
-		}
-	}
 	
 	public void initialize(String address){
-		int OS = 1;
-		if (OS==1){
+		
+		if (mOS==1){
 			mSerialPort = new ShimmerSerialPortJssc(address, address, SerialPort.BAUDRATE_115200); 
 			mSerialPort.setVerboseMode(false,false);
-				
-			
 		} else {
 			//mSerialPort = new ShimmerSerialPortAndroid();
-			
+			mSerialPort = new ShimmerSerialPortAndroid(address); 
+			mSerialPort.setVerboseMode(false,false);
 		}
+		mSerialPort.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
+
+			@Override
+			public void eventConnected() {
+				// TODO Auto-generated method stub
+				int OS=1;
+				if (OS==1){
+					mRadioProtocol = new LiteProtocol(mSerialPort);	
+					
+				} else {
+					//mSerialPort = new ShimmerSerialPortAndroid();
+					mRadioProtocol = new LiteProtocol(mSerialPort);
+				}
+				
+				try {
+					mRadioProtocol.setProtocolListener(new ProtocolListener(){
+
+						@Override
+						public void eventAckReceived(byte[] sentInstruction) {
+							// TODO Auto-generated method stub
+							for (RadioListener rl:mRadioListenerList){
+								rl.eventAckReceived(sentInstruction);
+							}
+						}
+
+						@Override
+						public void eventNewPacket(byte[] packet) {
+							// TODO Auto-generated method stub
+							
+							for (RadioListener rl:mRadioListenerList){
+								rl.eventNewPacket(packet);
+							}
+						}
+
+						@Override
+						public void eventNewResponse(byte[] respB) {
+							// TODO Auto-generated method stub
+							
+							for (RadioListener rl:mRadioListenerList){
+								rl.eventResponseReceived(respB);
+							}
+						}
+
+						@Override
+						public void hasStopStreaming() {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void eventLogAndStreamStatusChanged() {
+							// TODO Auto-generated method stub
+							if (mSerialPort.isConnected()){
+								mRadioProtocol.setPacketSize(41);
+							}
+						}
+
+						@Override
+						public void sendProgressReport(
+								ProgressReportPerCmd progressReportPerCmd) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void eventAckInstruction(byte[] bs) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void eventByteResponseWhileStreaming(byte[] b) {
+							// TODO Auto-generated method stub
+							
+						}});
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				for (RadioListener rl:mRadioListenerList){
+					rl.connected();
+				}
+			}
+
+			@Override
+			public void eventDisconnected() {
+				// TODO Auto-generated method stub
+
+				for (RadioListener rl:mRadioListenerList){
+					rl.disconnected();
+				}
+			
+			}
+
+			
+			});
 		
 	}
 
@@ -215,6 +232,8 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 	
 	
 }

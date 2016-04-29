@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
  
-package com.shimmerresearch.comms.radioProtocol;
+package com.shimmerresearch.pcRadioDriver;
  
 /*
  * ListSelectionDemo.java requires no other files.
@@ -40,7 +40,10 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
+import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.UtilShimmer;
 
@@ -191,7 +194,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     private void initialize() {
     	mSRP = new ShimmerRadioProtocol();
 	
-    	mSRP.initialize("COM30");
+    	mSRP.initialize("COM89");
 
     	mSRP.setRadioListener(new RadioListener(){
 

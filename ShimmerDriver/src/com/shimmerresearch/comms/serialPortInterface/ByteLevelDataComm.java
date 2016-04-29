@@ -6,7 +6,7 @@ import com.shimmerresearch.driver.DeviceException;
  * @author Mark Nolan
  *
  */
-public interface ShimmerSerialPortInterface {
+public interface ByteLevelDataComm {
 
     public void connect() throws DeviceException;
 //	public void connect(ShimmerSerialEventCallback shimmerSerialEventCallback) throws DeviceException;
@@ -27,5 +27,9 @@ public interface ShimmerSerialPortInterface {
 	public int availableBytes() throws DeviceException;
 	
 	public boolean isConnected();
+	public boolean isDisonnected();
+	public void eventDeviceConnected();
+	public void eventDeviceDisconnected();
+	void setByteLevelDataCommListener(ByteLevelDataCommListener spl);
   
 }

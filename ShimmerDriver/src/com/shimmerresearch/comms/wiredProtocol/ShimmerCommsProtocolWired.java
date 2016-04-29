@@ -12,7 +12,7 @@ import jssc.SerialPort;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
+import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -29,7 +29,7 @@ import com.shimmerresearch.driver.UtilShimmer;
  */
 public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack implements ShimmerSerialEventCallback{
 	
-	public ShimmerSerialPortInterface shimmerSerialPortInterface;
+	public ByteLevelDataComm shimmerSerialPortInterface;
 	
 	/** Boolean only used if COM port is not left open */
 	private boolean mIsUARTInUse = false;

@@ -17,7 +17,7 @@ import com.shimmerresearch.bluetooth.RawBytePacketWithPCTimeStamp;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortInterface;
+import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
@@ -31,7 +31,7 @@ public class LiteProtocol extends RadioProtocol{
 
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	protected byte mCurrentCommand;
-	public LiteProtocol(ShimmerSerialPortInterface mSerialPort) {
+	public LiteProtocol(ByteLevelDataComm mSerialPort) {
 		super(mSerialPort);
 		// TODO Auto-generated constructor stub
 	}
