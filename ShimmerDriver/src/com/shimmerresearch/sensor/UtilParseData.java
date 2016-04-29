@@ -143,7 +143,7 @@ public class UtilParseData {
 	 * @return
 	 */
 	@Deprecated // Moving to constant data type declarations rather then declaring strings in multiple classes
-	protected long[] parseData(byte[] data, String[] dataType){
+	public static long[] parseData(byte[] data, String[] dataType){
 		int iData=0;
 		long[] formattedData=new long[dataType.length];
 
@@ -275,5 +275,38 @@ public class UtilParseData {
 		return newData;
 	}
 	
+	/**
+	 * Data Methods
+	 */  
+	public static int[] formatDataPacketReverse(byte[] data,String[] dataType){
+		int iData=0;
+		int[] formattedData=new int[dataType.length];
+
+		for (int i=0;i<dataType.length;i++)
+			if (dataType[i]=="u8") {
+				formattedData[i]=(int)data[iData];
+				iData=iData+1;
+			}
+			else if (dataType[i]=="i8") {
+				formattedData[i]=calculatetwoscomplement((int)((int)0xFF & data[iData]),8);
+				iData=iData+1;
+			}
+			else if (dataType[i]=="u12") {
+
+				formattedData[i]=(int)((int)(data[iData+1] & 0xFF) + ((int)(data[iData] & 0xFF) << 8));
+				iData=iData+2;
+			}
+			else if (dataType[i]=="u16") {
+
+				formattedData[i]=(int)((int)(data[iData+1] & 0xFF) + ((int)(data[iData] & 0xFF) << 8));
+				iData=iData+2;
+			}
+			else if (dataType[i]=="i16") {
+
+				formattedData[i]=calculatetwoscomplement((int)((int)(data[iData+1] & 0xFF) + ((int)(data[iData] & 0xFF) << 8)),16);
+				iData=iData+2;
+			}
+		return formattedData;
+	}
 	
 }

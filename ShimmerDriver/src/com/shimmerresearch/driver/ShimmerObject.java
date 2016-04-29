@@ -133,8 +133,10 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensor.SensorGSR;
 import com.shimmerresearch.sensor.SensorMPU9X50;
+import com.shimmerresearch.sensor.UtilParseData;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
+import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
 
@@ -866,7 +868,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		System.arraycopy(mSignalNameArray, 0, sensorNames, 0, sensorNames.length);
 		
 		//PARSE DATA
-		long[] newPacketInt = parsedData(newPacket, mSignalDataTypeArray);
+		long[] newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);
 		
 		double[] tempData=new double[3];
 		Vector3d accelerometer = new Vector3d();
@@ -2526,7 +2528,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		objectCluster.mRawData = newPacket;
 		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
 		double [] calibratedData=new double[mNChannels + 1]; //plus 1 because of the time stamp
-		long[] newPacketInt=parsedData(newPacket,mSignalDataTypeArray);
+		long[] newPacketInt = UtilParseData.parseData(newPacket,mSignalDataTypeArray);
 		double[] tempData=new double[3];
 		Vector3d accelerometer = new Vector3d();
 		Vector3d magnetometer = new Vector3d();
@@ -3327,184 +3329,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return objectCluster;
 	}
 
-
-
-
-	//protected abstract void writeLEDCommand(int i);
-
-	/**
-	 * Converts the raw packet byte values, into the corresponding calibrated and uncalibrated sensor values, the Instruction String determines the output 
-	 * @param newPacket a byte array containing the current received packet
-	 * @param Instructions an array string containing the commands to execute. It is currently not fully supported
-	 * @return
-	 */
-	protected static long[] parsedData(byte[] data,String[] dataType){
-		
-		int iData=0;
-		long[] formattedData=new long[dataType.length];
-
-		for (int i=0;i<dataType.length;i++)
-			if (dataType[i]=="u8") {
-				formattedData[i]=(int)0xFF & data[iData];
-				iData=iData+1;
-			} else if (dataType[i]=="i8") {
-				formattedData[i]=calculatetwoscomplement((int)((int)0xFF & data[iData]),8);
-				iData=iData+1;
-			} else if (dataType[i]=="u12") {
-
-				formattedData[i]=(int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8));
-				iData=iData+2;
-			} else if (dataType[i]=="i12>") {
-				formattedData[i]=calculatetwoscomplement((int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8)),16);
-				formattedData[i]=formattedData[i]>>4; // shift right by 4 bits
-				iData=iData+2;
-			} else if (dataType[i]=="u16") {				
-				formattedData[i]=(int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8));
-				iData=iData+2;
-			} else if (dataType[i]=="u16r") {				
-				formattedData[i]=(int)((int)(data[iData+1] & 0xFF) + ((int)(data[iData+0] & 0xFF) << 8));
-				iData=iData+2;
-			} else if (dataType[i]=="i16") {
-				formattedData[i]=calculatetwoscomplement((int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8)),16);
-				//formattedData[i]=ByteBuffer.wrap(arrayb).order(ByteOrder.LITTLE_ENDIAN).getShort();
-				iData=iData+2;
-			} else if (dataType[i]=="i16r"){
-				formattedData[i]=calculatetwoscomplement((int)((int)(data[iData+1] & 0xFF) + ((int)(data[iData] & 0xFF) << 8)),16);
-				//formattedData[i]=ByteBuffer.wrap(arrayb).order(ByteOrder.LITTLE_ENDIAN).getShort();
-				iData=iData+2;
-			} else if (dataType[i]=="u24r") {
-				long xmsb =((long)(data[iData+0] & 0xFF) << 16);
-				long msb =((long)(data[iData+1] & 0xFF) << 8);
-				long lsb =((long)(data[iData+2] & 0xFF));
-				formattedData[i]=xmsb + msb + lsb;
-				iData=iData+3;
-			}  else if (dataType[i]=="u24") {				
-				long xmsb =((long)(data[iData+2] & 0xFF) << 16);
-				long msb =((long)(data[iData+1] & 0xFF) << 8);
-				long lsb =((long)(data[iData+0] & 0xFF));
-				formattedData[i]=xmsb + msb + lsb;
-				iData=iData+3;
-			} else if (dataType[i]=="i24r") {
-				long xmsb =((long)(data[iData+0] & 0xFF) << 16);
-				long msb =((long)(data[iData+1] & 0xFF) << 8);
-				long lsb =((long)(data[iData+2] & 0xFF));
-				formattedData[i]=calculatetwoscomplement((int)(xmsb + msb + lsb),24);
-				iData=iData+3;
-			} else if (dataType[i]=="u32signed") {
-				//TODO: should this be called i32?
-				//TODO: are the indexes incorrect, current '+1' to '+4', should this be '+0' to '+3' the the others listed here?
-				long offset = (((long)data[iData] & 0xFF));
-				if (offset == 255){
-					offset = 0;
-				}
-				long xxmsb =(((long)data[iData+4] & 0xFF) << 24);
-				long xmsb =(((long)data[iData+3] & 0xFF) << 16);
-				long msb =(((long)data[iData+2] & 0xFF) << 8);
-				long lsb =(((long)data[iData+1] & 0xFF));
-				formattedData[i]=(1-2*offset)*(xxmsb + xmsb + msb + lsb);
-				iData=iData+5;
-			//TODO: Newly added below up to u72 - check
-			} else if (dataType[i]=="u32") {
-				long forthmsb =(((long)data[iData+3] & 0xFF) << 24);
-				long thirdmsb =(((long)data[iData+2] & 0xFF) << 16);
-				long msb =(((long)data[iData+1] & 0xFF) << 8);
-				long lsb =(((long)data[iData+0] & 0xFF) << 0);
-				formattedData[i]=forthmsb + thirdmsb + msb + lsb;
-				iData=iData+4;
-			} else if (dataType[i]=="u32r") {
-				long forthmsb =(((long)data[iData+0] & 0xFF) << 24);
-				long thirdmsb =(((long)data[iData+1] & 0xFF) << 16);
-				long msb =(((long)data[iData+2] & 0xFF) << 8);
-				long lsb =(((long)data[iData+3] & 0xFF) << 0);
-				formattedData[i]=forthmsb + thirdmsb + msb + lsb;
-				iData=iData+4;
-			} else if (dataType[i]=="i32") {
-				long xxmsb =((long)(data[iData+3] & 0xFF) << 24);
-				long xmsb =((long)(data[iData+2] & 0xFF) << 16);
-				long msb =((long)(data[iData+1] & 0xFF) << 8);
-				long lsb =((long)(data[iData+0] & 0xFF) << 0);
-				formattedData[i]=calculatetwoscomplement((long)(xxmsb + xmsb + msb + lsb),32);
-				iData=iData+4;
-			} else if (dataType[i]=="i32r") {
-				long xxmsb =((long)(data[iData+0] & 0xFF) << 24);
-				long xmsb =((long)(data[iData+1] & 0xFF) << 16);
-				long msb =((long)(data[iData+2] & 0xFF) << 8);
-				long lsb =((long)(data[iData+3] & 0xFF) << 0);
-				formattedData[i]=calculatetwoscomplement((long)(xxmsb + xmsb + msb + lsb),32);
-				iData=iData+4;
-			} else if (dataType[i]=="u72"){
-				// do something to parse the 9 byte data
-				long offset = (((long)data[iData] & 0xFF));
-				if (offset == 255){
-					offset = 0;
-				}
-				
-				long eigthmsb =(((long)data[iData+8] & 0x0FL) << 56);
-				long seventhmsb =(((long)data[iData+7] & 0xFFL) << 48);
-				long sixthmsb =(((long)data[iData+6] & 0xFFL) << 40);
-				long fifthmsb =(((long)data[iData+5] & 0xFFL) << 32);
-				long forthmsb =(((long)data[iData+4] & 0xFFL) << 24);
-				long thirdmsb =(((long)data[iData+3] & 0xFFL) << 16);
-				long msb =(((long)data[iData+2] & 0xFF) << 8);
-				long lsb =(((long)data[iData+1] & 0xFF));
-				formattedData[i]=(1-2*offset)*(eigthmsb + seventhmsb + sixthmsb + fifthmsb+ forthmsb+ thirdmsb + msb + lsb);
-				iData=iData+9;
-			}
-		return formattedData;
-	}
-	
-	/**
-	 * Data Methods
-	 */  
-	protected static int[] formatDataPacketReverse(byte[] data,String[] dataType){
-		int iData=0;
-		int[] formattedData=new int[dataType.length];
-
-		for (int i=0;i<dataType.length;i++)
-			if (dataType[i]=="u8") {
-				formattedData[i]=(int)data[iData];
-				iData=iData+1;
-			}
-			else if (dataType[i]=="i8") {
-				formattedData[i]=calculatetwoscomplement((int)((int)0xFF & data[iData]),8);
-				iData=iData+1;
-			}
-			else if (dataType[i]=="u12") {
-
-				formattedData[i]=(int)((int)(data[iData+1] & 0xFF) + ((int)(data[iData] & 0xFF) << 8));
-				iData=iData+2;
-			}
-			else if (dataType[i]=="u16") {
-
-				formattedData[i]=(int)((int)(data[iData+1] & 0xFF) + ((int)(data[iData] & 0xFF) << 8));
-				iData=iData+2;
-			}
-			else if (dataType[i]=="i16") {
-
-				formattedData[i]=calculatetwoscomplement((int)((int)(data[iData+1] & 0xFF) + ((int)(data[iData] & 0xFF) << 8)),16);
-				iData=iData+2;
-			}
-		return formattedData;
-	}
-
-	private static int calculatetwoscomplement(int signedData, int bitLength){
-		int newData=signedData;
-		if (signedData>=(1<<(bitLength-1))) {
-			newData=-((signedData^(int)(Math.pow(2, bitLength)-1))+1);
-		}
-
-		return newData;
-	}
-
-	private static long calculatetwoscomplement(long signedData, int bitLength){
-		long newData=signedData;
-		if (signedData>=(1L<<(bitLength-1))) {
-			newData=-((signedData^(long)(Math.pow(2, bitLength)-1))+1);
-		}
-
-		return newData;
-	}
-	
 	protected int getSignalIndex(String signalName) {
 		int iSignal=-1; //better to fail //used to be -1, putting to zero ensure it works eventhough it might be wrong SR30
 		for (int i=0;i<mSignalNameArray.length;i++) {
@@ -4058,17 +3882,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, int packetType) {
 		if (packetType == BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
-			pressTempAC1 = calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
-			pressTempAC2 = calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
-			pressTempAC3 = calculatetwoscomplement((int)((int)(pressureResoRes[5] & 0xFF) + ((int)(pressureResoRes[4] & 0xFF) << 8)),16);
+			pressTempAC1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
+			pressTempAC2 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
+			pressTempAC3 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[5] & 0xFF) + ((int)(pressureResoRes[4] & 0xFF) << 8)),16);
 			pressTempAC4 = (int)((int)(pressureResoRes[7] & 0xFF) + ((int)(pressureResoRes[6] & 0xFF) << 8));
 			pressTempAC5 = (int)((int)(pressureResoRes[9] & 0xFF) + ((int)(pressureResoRes[8] & 0xFF) << 8));
 			pressTempAC6 = (int)((int)(pressureResoRes[11] & 0xFF) + ((int)(pressureResoRes[10] & 0xFF) << 8));
-			pressTempB1 = calculatetwoscomplement((int)((int)(pressureResoRes[13] & 0xFF) + ((int)(pressureResoRes[12] & 0xFF) << 8)),16);
-			pressTempB2 = calculatetwoscomplement((int)((int)(pressureResoRes[15] & 0xFF) + ((int)(pressureResoRes[14] & 0xFF) << 8)),16);
-			pressTempMB = calculatetwoscomplement((int)((int)(pressureResoRes[17] & 0xFF) + ((int)(pressureResoRes[16] & 0xFF) << 8)),16);
-			pressTempMC = calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
-			pressTempMD = calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
+			pressTempB1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[13] & 0xFF) + ((int)(pressureResoRes[12] & 0xFF) << 8)),16);
+			pressTempB2 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[15] & 0xFF) + ((int)(pressureResoRes[14] & 0xFF) << 8)),16);
+			pressTempMB = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[17] & 0xFF) + ((int)(pressureResoRes[16] & 0xFF) << 8)),16);
+			pressTempMC = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
+			pressTempMD = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
 		}
 	}
 	
@@ -4427,7 +4251,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if (packetType==ACCEL_CALIBRATION_RESPONSE || packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE || packetType==GYRO_CALIBRATION_RESPONSE || packetType==MAG_CALIBRATION_RESPONSE ){
 			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"}; 
-			int[] formattedPacket=formatDataPacketReverse(bufferCalibrationParameters,dataType); // using the datatype the calibration parameters are converted
+			int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType); // using the datatype the calibration parameters are converted
 			double[] AM=new double[9];
 			for (int i=0;i<9;i++){
 				AM[i]=((double)formattedPacket[6+i])/100;
@@ -7874,7 +7698,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					//MPL Accel Calibration Parameters
 					bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
 					System.arraycopy(infoMemBytes, infoMemLayoutCast.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
-					int[] formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
+					int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
 					double[] AM=new double[9];
 					for (int i=0;i<9;i++) {
 						AM[i]=((double)formattedPacket[6+i])/100;
@@ -7889,7 +7713,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					//MPL Mag Calibration Configuration
 					bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
 					System.arraycopy(infoMemBytes, infoMemLayoutCast.idxMPLMagCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
-					formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
+					formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
 					AM=new double[9];
 					for (int i=0;i<9;i++) {
 						AM[i]=((double)formattedPacket[6+i])/100;
@@ -7904,7 +7728,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					//MPL Gyro Calibration Configuration
 					bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
 					System.arraycopy(infoMemBytes, infoMemLayoutCast.idxMPLGyroCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
-					formattedPacket = formatDataPacketReverse(bufferCalibrationParameters,dataType);
+					formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
 					AM=new double[9];
 					for (int i=0;i<9;i++) {
 						AM[i]=((double)formattedPacket[6+i])/100;
