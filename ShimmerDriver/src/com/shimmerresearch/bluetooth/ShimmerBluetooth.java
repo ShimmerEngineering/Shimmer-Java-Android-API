@@ -1440,6 +1440,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						tempdouble=(double)1024/instruction[1];
 					} 
 					else {
+						System.err.println(((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8)));
 						tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
 					}
 					// TODO: MN Change to new method in ShimmerObject? It will
@@ -3014,7 +3015,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				writeGyroSamplingRate(mMPU9150GyroAccelRate);
 				writeExgSamplingRate(rate);
 				
-				int samplingByteValue = (int) (32768/getSamplingRateShimmer());
+				int samplingByteValue;
+				
+				// RM: get Shimmer compatible sampling rate (use ceil or floor depending on which is appropriate to the user entered sampling rate)
+		    	if((Math.ceil(32768/getSamplingRateShimmer()) - 32768/getSamplingRateShimmer()) < 0.05){
+		    		samplingByteValue = (int)Math.ceil(32768/getSamplingRateShimmer());
+		    	}
+		    	else{
+		    		samplingByteValue = (int)Math.floor(32768/getSamplingRateShimmer());
+		    	}	
+				
 				getListofInstructions().add(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
 			}
 		}
