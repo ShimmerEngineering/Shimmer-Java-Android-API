@@ -10179,7 +10179,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return false;
 	}
 			
-	protected boolean checkIfAnyMplChannelEnabled(){
+	public boolean checkIfAnyMplChannelEnabled(){
 		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorEnabledMap.keySet().size()>0){
 				

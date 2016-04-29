@@ -105,15 +105,15 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 
 	
 	@Override
-	public ObjectCluster processData(byte[] rawData,COMMUNICATION_TYPE commType, ObjectCluster object) {
+	public ObjectCluster processData(byte[] rawData,COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
 		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			object = processShimmerChannelData(rawData, channelDetails, object);
+			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
 		}
-		return object;
+		return objectCluster;
 	}
 
 	public double[] calibratePressureSensorData(double UP, double UT){
