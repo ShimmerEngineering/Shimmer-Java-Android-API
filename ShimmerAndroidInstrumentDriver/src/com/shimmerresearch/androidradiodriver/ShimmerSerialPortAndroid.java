@@ -17,11 +17,12 @@ import android.util.Log;
 import com.shimmerresearch.android.Shimmer;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
+import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 import com.shimmerresearch.driver.DeviceException;
 
-public class ShimmerSerialPortAndroid implements ByteLevelDataComm {
+public class ShimmerSerialPortAndroid extends SerialPortComm {
 	//generic UUID for serial port protocol
 	private UUID mSPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 		
@@ -32,10 +33,10 @@ public class ShimmerSerialPortAndroid implements ByteLevelDataComm {
 	private ConnectedThread mConnectedThread;
 	private final BluetoothAdapter mAdapter;
 	private DataInputStream mInStream;
-	private OutputStream mmOutStream=null;
+	private OutputStream mOutStream=null;
 	
 	public ShimmerSerialPortAndroid(String bluetoothAddress){
-		
+		mBluetoothAddress = bluetoothAddress;
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 	}
 	
@@ -213,7 +214,7 @@ public class ShimmerSerialPortAndroid implements ByteLevelDataComm {
 
 			//mInStream = new BufferedInputStream(tmpIn);
 			mInStream = new DataInputStream(tmpIn);
-			mmOutStream = tmpOut;
+			mOutStream = tmpOut;
 		}
 		public void cancel() {
 			try {

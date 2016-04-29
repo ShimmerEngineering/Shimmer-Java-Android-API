@@ -45,12 +45,15 @@ import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.UtilShimmer;
 
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import jssc.SerialPort;
  
 public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     JTextArea output;
