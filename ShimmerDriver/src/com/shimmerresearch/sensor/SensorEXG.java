@@ -124,7 +124,7 @@ public class SensorEXG extends AbstractSensor{
 		mSensorName = SENSORS.EXG.toString();
 		mGuiFriendlyLabel = Shimmer3.GuiLabelSensors.ECG;
 
-		mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+//		mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
@@ -133,75 +133,9 @@ public class SensorEXG extends AbstractSensor{
 
 		mIntExpBoardPowerRequired = true;
 		
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG,
-								Configuration.Shimmer3.SensorMapKey.EMG,
-								Configuration.Shimmer3.SensorMapKey.EXG_TEST,
-								Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
-								Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
-
-//			aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfConfigOptionKeysAssociated = Arrays.asList(
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
-//			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfConfigOptionKeysAssociated = Arrays.asList(
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR);
-//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfConfigOptionKeysAssociated = Arrays.asList(
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION);
-//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mListOfConfigOptionKeysAssociated = Arrays.asList(
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
-//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfConfigOptionKeysAssociated = Arrays.asList(
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);		
-		}
-		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
-			
-//			mListOfConfigOptionKeysAssociated = Arrays.asList(
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
-//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
-	
-		}
 		
 		//TODO copy over mListOfSensorMapKeysConflicting from Configuration.Shimmer3 
 		
-	}
-
-	@Override
-	public String getSensorName() {
-		return mSensorName;
 	}
 
 	@Override
@@ -1912,6 +1846,102 @@ public class SensorEXG extends AbstractSensor{
 	        	
 		return returnValue;
 	}
+
+	@Override
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+		return mListOfConfigOptionKeysAssociated;
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+		return mListOfSensorMapKeysConflicting;
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG,
+								Configuration.Shimmer3.SensorMapKey.EMG,
+								Configuration.Shimmer3.SensorMapKey.EXG_TEST,
+								Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
+								Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.EMG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_TEST).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);		
+		}
+		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
+				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
+				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.ECG)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
+			
+//			mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+//					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
+	
+		}
+		
+		return mSensorGroupingMap;
+		
+	}
+
+	@Override
+	public void setSamplingRateFromFreq() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDefaultConfiguration() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 	//-------------------- ExG End -----------------------------------	
 }

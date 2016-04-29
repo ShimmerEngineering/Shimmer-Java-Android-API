@@ -97,8 +97,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
 	
-	private boolean mVerboseMode = true;
-	private String mParentClassName = "ShimmerPC";
+//	private boolean mVerboseMode = true;
+//	private String mParentClassName = "ShimmerPC";
 	
 	public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
 	public static final int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
@@ -723,16 +723,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	
-	private void consolePrintLn(String message) {
-		if(mVerboseMode) {
-			Calendar rightNow = Calendar.getInstance();
-			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
-		}		
-	}
+//	private void consolePrintLn(String message) {
+//		if(mVerboseMode) {
+//			Calendar rightNow = Calendar.getInstance();
+//			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+//					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+//					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+//					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+//			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
+//		}		
+//	}
 
 	private void consolePrintException(String message, StackTraceElement[] stackTrace) {
 		consolePrintLn("Exception!");
@@ -793,6 +793,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
+	//Need to override here because ShimmerDevice class uses a different map
 	@Override
 	public boolean isChannelEnabled(int sensorKey) {
 		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
@@ -802,6 +803,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	    return false;
 	}
 
+	//Need to override here because ShimmerDevice class uses a different map
 	@Override
 	public String getChannelLabel(int sensorKey) {
 		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
@@ -811,6 +813,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		return null;
 	}
 
+	//Need to override here because ShimmerDevice class uses a different map
 	@Override
 	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
 		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
@@ -820,11 +823,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		return null;
 	}
 
+	//Need to override here because ShimmerDevice class uses a different map
 	@Override
 	public boolean doesSensorKeyExist(int sensorKey) {
 		return (mSensorEnabledMap.containsKey(sensorKey));
 	}
 
+	//Need to override here because ShimmerDevice class uses a different map
 	@Override
 	public Set<Integer> getSensorMapKeySet() {
 		return mSensorEnabledMap.keySet();

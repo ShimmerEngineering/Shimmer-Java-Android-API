@@ -240,8 +240,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
 	
-	private boolean mVerboseMode = true;
-	private String mParentClassName = "ShimmerBluetooth";
+//	private boolean mVerboseMode = true;
+//	private String mParentClassName = "ShimmerBluetooth";
 	
 	protected boolean mUseProcessingThread = false;
 	
@@ -3470,7 +3470,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //		}
 	}
     
-	//TODO: MN
 	public void readConfigurationFromInfoMem(){
 		if(this.getFirmwareVersionCode()>=6){
 //			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
@@ -3479,7 +3478,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	//TODO: MN
 	public void readInfoMem(int address, int size){
 		if(this.getFirmwareVersionCode()>=6){
 			mInfoMemBuffer = new byte[mInfoMemLayout.calculateInfoMemByteLength()];
@@ -3515,7 +3513,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	//TODO: MN
 	public void readMemCommand(int command, int address, int size) {
 		if(this.getFirmwareVersionCode()>=6){
 	    	byte[] memLengthToRead = new byte[]{(byte) size};
@@ -3531,21 +3528,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	//TODO: MN
 	public void writeConfigurationToInfoMem(){
 		if(this.getFirmwareVersionCode()>=6){
 			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, generateShimmerInfoMemBytes());
 		}
 	}
 	
-	//TODO: MN
 	public void writeConfigurationToInfoMem(byte[] buf){
 		if(this.getFirmwareVersionCode()>=6){
 			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, buf);
 		}
 	}
 	
-	//TODO: MN
 	public void writeInfoMem(int startAddress, byte[] buf){
 		this.mNumOfInfoMemSetCmds  = 0;
 		
@@ -3592,29 +3586,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //		inquiry();
 	}
     
-	//TODO: MN
 	/**Could be used by InfoMem or Expansion board memory
 	 * @param command
 	 * @param address
 	 * @param infoMemBytes
 	 */
 	public void writeMemCommand(int command, int address, byte[] infoMemBytes) {
-//		if(((Util.compareVersions(
-//				this.getFirmwareIdentifier(), 
-//				this.getFirmwareVersionMajor(),
-//				this.getFirmwareVersionMinor(), 
-//				this.getFirmwareVersionInternal(), 
-//				FW_ID.BTSTREAM, 
-//				0,7,2))
-//				||(Util.compareVersions(
-//						this.getFirmwareIdentifier(), 
-//						this.getFirmwareVersionMajor(),
-//						this.getFirmwareVersionMinor(), 
-//						this.getFirmwareVersionInternal(), 
-//						FW_ID.LOGANDSTREAM, 
-//						0,5,4)))
-//						||(this.getFirmwareVersionCode()>=6)){
-			
 		if(this.getFirmwareVersionCode()>=6){
 			
 			byte[] memLengthToWrite = new byte[]{(byte) infoMemBytes.length};
@@ -4762,26 +4739,26 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 
-	private void consolePrintLn(String message) {
-		if(mVerboseMode) {
-			Calendar rightNow = Calendar.getInstance();
-			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
-		}		
-	}
-	
-	public void consolePrint(String message) {
-		if(mVerboseMode) {
-			System.out.print(message);
-		}		
-	}
-
-	public void setVerboseMode(boolean verboseMode) {
-		mVerboseMode = verboseMode;
-	}
+//	private void consolePrintLn(String message) {
+//		if(mVerboseMode) {
+//			Calendar rightNow = Calendar.getInstance();
+//			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+//					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+//					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+//					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+//			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
+//		}		
+//	}
+//	
+//	public void consolePrint(String message) {
+//		if(mVerboseMode) {
+//			System.out.print(message);
+//		}		
+//	}
+//
+//	public void setVerboseMode(boolean verboseMode) {
+//		mVerboseMode = verboseMode;
+//	}
 	
 	public String getComPort(){
 		return mComPort;

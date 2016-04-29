@@ -872,5 +872,5 @@ public class LiteProtocol extends RadioProtocol{
 		mIOThread.stop=true;
 		mIOThread = null;
 	}
-	
+
 }

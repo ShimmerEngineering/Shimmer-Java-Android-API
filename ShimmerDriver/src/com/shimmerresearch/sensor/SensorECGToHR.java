@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
@@ -32,11 +33,6 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 		mSensorName = SENSORS.ECG_TO_HR.toString();
 	}
 	
-	@Override
-	public String getSensorName() {
-		return mSensorName;
-	}
-
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -123,6 +119,36 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 		return null;
 	}
 
+	@Override
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
+	@Override
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSamplingRateFromFreq() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDefaultConfiguration() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
-import com.shimmerresearch.androidradiodriver.ShimmerSerialPortAndroid;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.ProtocolListener;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
@@ -100,7 +99,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	
 	
 	List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
-	RadioProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
+	public RadioProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
 	ByteLevelDataComm mSerialPort;
 	
 	public void setRadioListener(RadioListener radioListener){
@@ -121,7 +120,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 			mSerialPort.setVerboseMode(false,false);
 		} else {
 			//mSerialPort = new ShimmerSerialPortAndroid();
-			mSerialPort = new ShimmerSerialPortAndroid(address); 
+			//mSerialPort = new ShimmerSerialPortAndroid(address); 
 			mSerialPort.setVerboseMode(false,false);
 		}
 		mSerialPort.setByteLevelDataCommListener(new ByteLevelDataCommListener(){

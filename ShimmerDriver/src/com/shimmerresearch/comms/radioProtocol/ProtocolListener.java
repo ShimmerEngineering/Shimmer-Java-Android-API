@@ -1,3 +1,4 @@
+
 package com.shimmerresearch.comms.radioProtocol;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
@@ -14,3 +15,4 @@ public interface ProtocolListener {
 	public void eventByteResponseWhileStreaming(byte[] b);
 	
 }
+

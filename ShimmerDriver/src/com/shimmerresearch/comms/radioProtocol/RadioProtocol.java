@@ -27,4 +27,3 @@ public abstract class RadioProtocol {
 		mPacketSize = pSize;
 	}
 }
-

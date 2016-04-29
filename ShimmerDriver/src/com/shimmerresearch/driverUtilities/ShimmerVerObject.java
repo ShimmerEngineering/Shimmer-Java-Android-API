@@ -143,7 +143,7 @@ public class ShimmerVerObject implements Serializable {
 				|| (((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)||(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)) && (mFirmwareIdentifier==FW_ID.GQ_802154))
 				|| ((mHardwareVersion==HW_ID.SHIMMER_2R_GQ)&&(mFirmwareIdentifier==FW_ID.GQ_802154))
 				|| (mHardwareVersion==HW_ID.SPAN)
-				|| (mHardwareVersion==HW_ID.SHIMMER_4)
+				|| (mHardwareVersion==HW_ID.SHIMMER_4_SDK)
 				){
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
@@ -159,7 +159,7 @@ public class ShimmerVerObject implements Serializable {
 			// Handle FW version code.
 			mFirmwareVersionCode = -1;
 			
-			if(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR || mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR || mHardwareVersion==HW_ID.SHIMMER_4){
+			if(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR || mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR || mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 				mFirmwareVersionCode = 6;
 			}
 			else if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,7,3))
@@ -198,6 +198,10 @@ public class ShimmerVerObject implements Serializable {
 	public String getFirmwareVersionParsed() {
 //		return mFirmwareVersionParsedJustVersionNumber;
 		return mFirmwareVersionParsed;
+	}
+
+	public int getHardwareVersion() {
+		return mHardwareVersion;
 	}
 
 }

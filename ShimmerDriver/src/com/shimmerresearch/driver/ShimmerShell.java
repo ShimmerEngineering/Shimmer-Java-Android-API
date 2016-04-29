@@ -58,11 +58,6 @@ public class ShimmerShell extends ShimmerDevice {
 	
 	
 	@Override
-	protected void checkBattery() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public ShimmerShell deepClone() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -82,12 +77,6 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public void setDefaultShimmerConfiguration() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
 		// TODO Auto-generated method stub
 		return false;
@@ -100,14 +89,7 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName,
-			Object configValue) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object configValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -149,58 +131,15 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE commType) {
+	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
-	}
-
-//	@Override
-//	public Map<Integer, SensorEnabledDetails> getSensorEnabledMap() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
 	public void createInfoMemLayout() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public boolean isChannelEnabled(int sensorKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getChannelLabel(int sensorKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean doesSensorKeyExist(int sensorKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Set<Integer> getSensorMapKeySet() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
