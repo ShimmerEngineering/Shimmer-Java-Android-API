@@ -30,11 +30,17 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
 
+/**
+ * @author Ronan McCormack
+ * @author Mark Nolan
+ *
+ */
 public class SensorBMP180 extends AbstractSensor implements Serializable {
 	
 	/** * */
 	private static final long serialVersionUID = 4559709230029277863L;
 	
+	//--------- Calibration info start --------------
 	public double pressTempAC1 = 408;
 	public double pressTempAC2 = -72;
 	public double pressTempAC3 = -14383;
@@ -49,29 +55,70 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	
 	protected byte[] mPressureCalRawParams = new byte[23];
 	protected byte[] mPressureRawParams  = new byte[23];
-	
+	//--------- Calibration info end --------------
+
+	//--------- Bluetooth commands start --------------
 	public static final byte GET_BMP180_PRES_CALIBRATION_COMMAND 	= (byte) 0x57;
 	public static final byte BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = (byte) 0x58;
 	public static final byte GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND = (byte) 0x59;
+	//--------- Bluetooth commands end --------------
 	
+	//--------- Configuration options start --------------
 	public int mPressureResolution = 0;
+	public static final String[] ListofPressureResolution = {"Low","Standard","High","Very High"};
+	public static final Integer[] ListofPressureResolutionConfigValues = {0,1,2,3};
+
+	public static final SensorConfigOptionDetails configOptionPressureResolution = new SensorConfigOptionDetails(
+			ListofPressureResolution, 
+			ListofPressureResolutionConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	//--------- Configuration options end --------------
+
+	//--------- Sensor info start --------------
+	public static final SensorDetails sensorBmp180 = new SensorDetails(
+			0x04<<(2*8), 
+			0x04<<(2*8), 
+			Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION),
+			Arrays.asList(
+					Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
+					Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180));
 	
+	//TODO mSensorMapRef needed any more?
     public static final Map<Integer, SensorDetails> mSensorMapRef;
     static {
         Map<Integer, SensorDetails> aMap = new LinkedHashMap<Integer, SensorDetails>();
-        long streamingByteIndex = 2;
-		long logHeaderByteIndex = 2;
-		aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180));
-		aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-		aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfConfigOptionKeysAssociated = Arrays.asList(
-				Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
-		aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfChannelsRef = Arrays.asList(
-				Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
-				Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180);
-
+		aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, sensorBmp180);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
+	//--------- Sensor info end --------------
+    
+	//--------- Channel info start --------------
+	public static final ChannelDetails cdBmp180Temp = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,
+			Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,
+			DatabaseChannelHandles.TEMPERATURE,
+			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_CELSUIS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+
+	public static final ChannelDetails cdBmp180Press = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
+			Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
+			DatabaseChannelHandles.PRESSURE,
+			CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.KPASCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	//--------- Channel info end --------------
+    
 	
+	/** Constructor for this Sensor
+	 * @param svo
+	 */
 	public SensorBMP180(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.BMP180.toString();
@@ -79,6 +126,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		mIntExpBoardPowerRequired = false; 
 	}
 
+	//--------- Abstract methods implemented start --------------
 	@Override
 	public String getSensorName() {
 		// TODO Auto-generated method stub
@@ -116,6 +164,117 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		return objectCluster;
 	}
 
+	@Override
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		int idxConfigSetupByte3 =	9;
+		int bitShiftBMP180PressureResolution = 4;
+		int maskBMP180PressureResolution = 0x03;
+		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution & maskBMP180PressureResolution) << bitShiftBMP180PressureResolution);
+	}
+
+	@Override
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		int idxConfigSetupByte3 =	9;
+		int bitShiftBMP180PressureResolution = 4;
+		int maskBMP180PressureResolution = 0x03;
+		mPressureResolution = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution;
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		super.updateSensorGroupingMap();
+		return mSensorGroupingMap;
+	}
+
+	@Override
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+		Object returnValue = null;
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+				setPressureResolution((int)valueToSet);
+				returnValue = valueToSet;
+		 		break;
+	}
+		return returnValue;
+	}
+	
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName){
+		Object returnValue = null;
+		
+		switch(componentName){
+		case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+			returnValue = getPressureResolution();
+	 		break;
+		  }
+		return returnValue;
+	}
+
+	@Override
+	public void setSamplingRateFromFreq() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDefaultConfiguration() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
+		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer, ChannelDetails>();
+		int index = 0;
+		mapOfChannelDetails.put(index++, cdBmp180Temp);
+		mapOfChannelDetails.put(index++, cdBmp180Press);					  
+
+		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.SD, mapOfChannelDetails);
+		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.BLUETOOTH, mapOfChannelDetails);
+
+		return mMapOfCommTypetoChannel;
+	}
+
+	@Override
+	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
+		mConfigOptionsMap.clear();
+		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolution); 
+		return mConfigOptionsMap;
+	}
+
+	@Override
+	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+		
+		return null;
+	}
+
+	@Override
+	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+		return mListOfConfigOptionKeysAssociated = Arrays.asList(
+				Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
+	}
+
+	@Override
+	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180;
+		}
+		return mSensorGroupingMap;
+	}
+	//--------- Abstract methods implemented end --------------
+
+
+	//--------- Sensor specific methods start --------------
+	public void setPressureResolution(int i){
+		mPressureResolution = i;
+	}
+	
+	public int getPressureResolution(){
+		return mPressureResolution;
+	}
+	
 	public double[] calibratePressureSensorData(double UP, double UT){
 		double X1 = (UT - pressTempAC6) * pressTempAC5 / 32768;
 		double X2 = (pressTempMC * 2048 / (X1 + pressTempMD));
@@ -148,6 +307,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		caldata[1]=T/10;
 		return caldata;
 	}
+	
 	public void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, int packetType) {
 		if (packetType == BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
 			pressTempAC1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
@@ -164,10 +324,8 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		}
 	}
 	
-	// --------------- Check if needed --------------------
-	
+	//TODO Check if needed 
 	public byte[] getRawCalibrationParameters(ShimmerVerObject svo){        
-
 		byte[] rawcal=new byte[1];
 		if (svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			// Mag + Pressure
@@ -187,140 +345,6 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 			rawcal[0]=0;
 		}
 		return rawcal;
-
-	}
-	
-	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte3 =	9;
-		int bitShiftBMP180PressureResolution = 4;
-		int maskBMP180PressureResolution = 0x03;
-		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution & maskBMP180PressureResolution) << bitShiftBMP180PressureResolution);
-		
-	}
-
-	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte3 =	9;
-		int bitShiftBMP180PressureResolution = 4;
-		int maskBMP180PressureResolution = 0x03;
-		mPressureResolution = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution;
-		
-	}
-
-	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		super.updateSensorGroupingMap();
-		return mSensorGroupingMap;
-	}
-
-	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName,
-			Object valueToSet) {
-		Object returnValue = null;
-		switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
-				setPressureResolution((int)valueToSet);
-				returnValue = valueToSet;
-		 		break;
-	}
-		return returnValue;
-	}
-	
-	public void setPressureResolution(int i){
-		mPressureResolution = i;
-	}
-	
-	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
-		Object returnValue = null;
-		
-		switch(componentName){
-		case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
-			returnValue = getPressureResolution();
-	 		break;
-		  }
-		return returnValue;
-	}
-
-	public int getPressureResolution(){
-		return mPressureResolution;
-	}
-	
-	@Override
-	public void setSamplingRateFromFreq() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setDefaultConfiguration() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
-		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer, ChannelDetails>();
-		ChannelDetails channelDetails = null;
-		int index = 0;
-
-		channelDetails = new ChannelDetails(
-				Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,
-				Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,
-				DatabaseChannelHandles.TEMPERATURE,
-				CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-				CHANNEL_UNITS.DEGREES_CELSUIS,
-				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-		mapOfChannelDetails.put(index++, channelDetails);
-
-		channelDetails = new ChannelDetails(
-				Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
-				Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
-				DatabaseChannelHandles.PRESSURE,
-				CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
-				CHANNEL_UNITS.KPASCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-		mapOfChannelDetails.put(index++, channelDetails);					  
-
-		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.SD, mapOfChannelDetails);
-		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.BLUETOOTH, mapOfChannelDetails);
-
-		return mMapOfCommTypetoChannel;
-	}
-
-	@Override
-	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
-		mConfigOptionsMap.clear();
-		
-		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION , 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
-										Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-										CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
-		return mConfigOptionsMap;
-	}
-
-	@Override
-	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-		
-		return null;
-	}
-
-	@Override
-	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
-		return mListOfConfigOptionKeysAssociated = Arrays.asList(
-				Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
-	}
-
-	@Override
-	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180;
-		}
-		return mSensorGroupingMap;
 	}
 	
 	public double getPressTempAC1(){
@@ -366,5 +390,6 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	public double getPressTempMD(){
 		return pressTempMD;
 	}
+	//--------- Sensor specific methods end --------------
 
 }

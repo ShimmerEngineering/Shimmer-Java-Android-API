@@ -29,15 +29,6 @@ public abstract class AbstractSensor implements Serializable{
 
 	//TODO decide whether to use Configuration.Shimmer3.SensorMapKey
 	public enum SENSORS{
-//		/** Shimmer3 Low-noise analog accelerometer */
-//		A_ACCEL(""),
-//		/** Shimmer3 Gyroscope */
-//		MPU9150_GYRO(""),
-//		/** Shimmer3 Primary magnetometer */
-//		LSM303DLHC_MAG(""),
-//		UNUSED1("UNUSED1"),//EXG1_24BIT(""),
-//		UNUSED2("UNUSED2"),//EXG2_24BIT(""),
-
 		GSR("GSR", Configuration.Shimmer3.SensorMapKey.GSR),
 		ECG_TO_HR("ECG to Heart Rate", Configuration.Shimmer3.SensorMapKey.ECG_TO_HR_FW),
 		EXG("EXG", Configuration.Shimmer3.SensorMapKey.ECG),
@@ -66,16 +57,7 @@ public abstract class AbstractSensor implements Serializable{
 	    public int sensorIndex() {
 	        return index;
 	    }
-
 	}
-	
-//	public final static class SHIMMER3_BT_STREAM_CHANNEL_ID {
-//	public final static int GSR = 1;
-//	public final static int ECG = 1;
-//}
-//public final static class GQ_CHANNEL_ID {
-//	public final static int GSR = 1;
-//}
 	
 	// --------------- Abstract methods start ----------------	
 	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
@@ -84,9 +66,6 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
 	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
-
-	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
-	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
 
 	public abstract void setSamplingRateFromFreq();
 	public abstract void setDefaultConfiguration();
@@ -98,6 +77,8 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo);
 	public abstract Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo);
 
+	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
+	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
 	// --------------- Abstract methods end ----------------	
 
 	// --------------- Carried from static SensorDetails() start ----------------	
@@ -137,9 +118,13 @@ public abstract class AbstractSensor implements Serializable{
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
 	protected boolean mEnableCalibration = true;
+	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
 	protected String[] mSignalOutputNameArray;
+	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
 	protected String[] mSignalOutputFormatArray;
+	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
 	protected String[] mSignalOutputUnitArray;
+	//TODO remove below?
 	protected int mFirmwareType;
 //	protected int mHardwareID;
 //	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor
@@ -230,29 +215,42 @@ public abstract class AbstractSensor implements Serializable{
 	
 	
 
-	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
-	 * @return
+	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+	/**
+	 * This returns a String array of the output signal name, the sequence of
+	 * the format array MUST MATCH the array returned by the method
+	 * returnSignalOutputFormatArray
+	 * 
+	 * @return mSignalOutputNameArray
 	 */
 	public String[] getSignalOutputNameArray() {
-		// TODO Auto-generated method stub
 		return mSignalOutputNameArray;
 	}
 
-	/** This returns a String array of the output signal format, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputNameArray
-	 * @return
+	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+	/**
+	 * This returns a String array of the output signal format, the sequence of
+	 * the format array MUST MATCH the array returned by the method
+	 * returnSignalOutputNameArray
+	 * 
+	 * @return mSignalOutputFormatArray
 	 */
 	public String[] getSignalOutputFormatArray() {
-		// TODO Auto-generated method stub
 		return mSignalOutputFormatArray;
 	}
 
-	/** This returns a String array of the output signal format, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputNameArray
-	 * @return
+	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+	/**
+	 * This returns a String array of the output signal format, the sequence of
+	 * the format array MUST MATCH the array returned by the method
+	 * returnSignalOutputNameArray
+	 * 
+	 * @return mSignalOutputUnitArray
 	 */
 	public String[] getSignalOutputUnitArray() {
-		// TODO Auto-generated method stub
 		return mSignalOutputUnitArray;
 	}
+	
 	
 	public HashMap<String, SensorConfigOptionDetails> getConfigMap() {
 		// TODO Auto-generated method stub

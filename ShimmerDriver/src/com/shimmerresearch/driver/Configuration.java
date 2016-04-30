@@ -493,8 +493,9 @@ public class Configuration {
 		public static final Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
 		public static final String[] ListofMagRange={"+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"}; 
 		public static final Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option
-		public static final String[] ListofPressureResolution={"Low","Standard","High","Very High"};
-		public static final Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
+		//TODO: switch reference to below variables to the relevant variables in SensorBMP180
+//		public static final String[] ListofPressureResolution = SensorBMP180.ListofPressureResolution;
+//		public static final Integer[] ListofPressureResolutionConfigValues = SensorBMP180.ListofPressureResolutionConfigValues;
 		
 		public static final String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
 		public static final Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
@@ -1307,7 +1308,8 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_MAG, new SensorDetails(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MAG_MPU));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT, new SensorDetails(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG1_16BIT));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT, new SensorDetails(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_16BIT));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180));
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, SensorBMP180.sensorBmp180);
 			aMap.put(Configuration.Shimmer3.SensorMapKey.MPU9150_TEMP, new SensorDetails(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE));
 			//shimmerChannels.put(SENSOR_SHIMMER3_MSP430_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
 			//shimmerChannels.put(SENSOR_SHIMMER3_LSM303DLHC_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
@@ -1495,7 +1497,7 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A6).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A7).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.EXT_EXP_ADC_A15).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
@@ -1854,8 +1856,8 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
 					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
 					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
-			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfConfigOptionKeysAssociated = Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.GSR).mListOfConfigOptionKeysAssociated = Arrays.asList(
 					Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.ECG).mListOfConfigOptionKeysAssociated = Arrays.asList(
@@ -2036,11 +2038,11 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Y,
 							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Z);
 
-			//bmp180 - pressure
-			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfChannelsRef = Arrays.asList(
-							Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
-			//bmp180 - temp
-							Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180);
+//			//bmp180 - pressure
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfChannelsRef = Arrays.asList(
+//							Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
+//			//bmp180 - temp
+//							Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180);
 			
 			//ExG - General
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).mListOfChannels = Arrays.asList(
@@ -3530,11 +3532,12 @@ public class Configuration {
 											Configuration.Shimmer3.ListofLSM303DLHCMagRateConfigValues, 
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, 
-					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
-											Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
-											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, SensorBMP180.configOptionPressureResolution);
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, 
+//					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofPressureResolution, 
+//											Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
+//											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
 					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 

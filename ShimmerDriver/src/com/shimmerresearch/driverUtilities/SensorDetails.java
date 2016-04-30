@@ -19,6 +19,7 @@ public class SensorDetails implements Serializable {
 	 */
 	private static final long serialVersionUID = 4567211941610864326L;
 	
+	//TODO no real need to have an ID for streaming and a different one for sd header -> remove one
 	/**
 	 * Used for the BtStream and LogAndStream firmware to indicate enabled sensors when connected over Bluetooth. 
 	 */
@@ -58,12 +59,38 @@ public class SensorDetails implements Serializable {
 	 * @param sensorBitmapIDSDLogHeader
 	 * @param guiFriendlyLabel
 	 */
-	public SensorDetails(long sensorBitmapIDStreaming, long sensorBitmapIDSDLogHeader, String guiFriendlyLabel) {
+	public SensorDetails(long sensorBitmapIDStreaming, 
+			long sensorBitmapIDSDLogHeader, 
+			String guiFriendlyLabel) {
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
 		mSensorBitmapIDSDLogHeader = sensorBitmapIDSDLogHeader;
 		mGuiFriendlyLabel = guiFriendlyLabel;
 		mIntExpBoardPowerRequired = false;
 		mListOfCompatibleVersionInfo = null;
+	}
+
+	/**
+	 * Holds all information related individual sensor channels for dynamic GUI
+	 * and configuration purposes. Currently used in Consensys only.
+
+	 * @param sensorBitmapIDStreaming
+	 * @param sensorBitmapIDSDLogHeader
+	 * @param guiFriendlyLabel
+	 * @param listOfCompatibleVersionInfo
+	 * @param listOfConfigOptionKeysAssociated
+	 * @param listOfChannelsRef
+	 *
+	 */
+	public SensorDetails(int sensorBitmapIDStreaming, 
+			int sensorBitmapIDSDLogHeader, 
+			String guiFriendlyLabel, 
+			List<ShimmerVerObject> listOfCompatibleVersionInfo, 
+			List<String> listOfConfigOptionKeysAssociated, 
+			List<String> listOfChannelsRef) {
+		this(sensorBitmapIDStreaming, sensorBitmapIDSDLogHeader, guiFriendlyLabel);
+		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
+		mListOfConfigOptionKeysAssociated = listOfConfigOptionKeysAssociated;
+		mListOfChannelsRef = listOfChannelsRef;
 	}
 
 //	/**
