@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensor;
+package com.shimmerresearch.sensors;
 
 import java.util.List;
 

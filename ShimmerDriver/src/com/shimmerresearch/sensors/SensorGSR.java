@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensor;
+package com.shimmerresearch.sensors;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -18,8 +19,8 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
-import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -37,30 +38,115 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	/**	 */
 	private static final long serialVersionUID = 1773291747371088953L;
 
-	// --- Configuration variables specific to this Sensor - Start --- 
+	//--------- Sensor specific variables start --------------
 	public int mGSRRange = 4; 					// 4 = Auto
 	
 	public static String calUnitToUse = Configuration.CHANNEL_UNITS.U_SIEMENS;
 //	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
-	// --- Configuration variables specific to this Sensor - End ---
+	//--------- Sensor specific variables end --------------
+	
+	//--------- Bluetooth commands start --------------
+	//--------- Bluetooth commands end --------------
 
+	//--------- Configuration options start --------------
+	public static final String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
+	public static final Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
+
+	public static final SensorConfigOptionDetails configOptionGsrRange = new SensorConfigOptionDetails(
+			Configuration.Shimmer3.ListofGSRRange, 
+			Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
+	//--------- Configuration options end --------------
+
+	//--------- Sensor info start --------------
+	public static final SensorDetailsRef sensorGsrRef = new SensorDetailsRef(
+			0x04<<(0*8), 
+			0x04<<(0*8), 
+			Shimmer3.GuiLabelSensors.GSR,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
+			Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
+					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP),
+			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE),
+			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.GSR),
+			true);
+	//--------- Sensor info end --------------
+    
+	//--------- Channel info start --------------
+	public static final ChannelDetails channelGsr = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.GSR,
+			Configuration.Shimmer3.ObjectClusterSensorName.GSR,
+			DatabaseChannelHandles.GSR,
+			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.KOHMS,
+//			CHANNEL_UNITS.MICROSIEMENS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	{
+		channelGsr.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+		channelGsr.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
+		channelGsr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+	}
+	//--------- Channel info end --------------
+
+	/** Constructor for this Sensor
+	 * @param svo
+	 */
 	public SensorGSR(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.GSR.toString();
-		mGuiFriendlyLabel = Shimmer3.GuiLabelSensors.GSR;
-		mIntExpBoardPowerRequired = true;
+	}
+
+	@Override
+	public void generateSensorMap(ShimmerVerObject svo) {
+		mSensorMap.clear();
 		
-		mSensorBitmapIDStreaming = 0x04<<(0*8);
-		mSensorBitmapIDSDLogHeader =  0x04<<(0*8);
-		
-	
-//		mListOfChannels = Arrays.asList(
-//				Configuration.Shimmer3.ObjectClusterSensorName.GSR);
-		
+		//TODO load channels based on list of channels in the SensorDetailsRef rather then manually loading them here -> need to create a ChannelMapRef like in Configuration.Shimmer3 and then cycle through
+		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorGsrRef);
+		sensorDetails.mListOfChannels.add(channelGsr);
+		mSensorMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR, sensorDetails);
+	}
+
+
+	@Override
+	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
+								Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 		}
+		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
+				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
+				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)));
+			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			
+//			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
+		}
+	}
 
-
-
+	@Override
+	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
+				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
+				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154) {
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
+		}
+	}
+	
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -89,64 +175,45 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	}
 	
-	@Override
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
-		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
-		//COMMUNICATION_TYPE.IEEE802154
-		int count=1;
-		//TODO MN: better to be a static final global like in Configuration.Shimmer3?
-		ChannelDetails channelDetails = new ChannelDetails(
-				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
-				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
-				DatabaseChannelHandles.GSR,
-				CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-				calUnitToUse,
-				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-		channelDetails.mChannelSource = CHANNEL_SOURCE.SHIMMER;
-		channelDetails.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
-		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
-		mapOfChannelDetails.put(count, channelDetails);
-		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
-
-		
-		//TODO MN: with the new AbstractSensor class the each of these properties () can be just stored as individual variables inside the class (no need for SensoreDetails?) 
-//		//JC: Not sure if we need this for GUI leaving this in first
-//		LinkedHashMap<Integer, SensorEnabledDetails> sensorMap = new  LinkedHashMap<Integer, SensorEnabledDetails>(); 
-//		long streamingByteIndex = 0;
-//		long logHeaderByteIndex = 0;
-//		SensorDetails sensorDetails = new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GSR);
-//		sensorMap.put(Configuration.Shimmer3.SensorMapKey.GSR, new SensorEnabledDetails(false, 0, sensorDetails));
-//		mMapOfCommTypeToSensorMap.put(COMMUNICATION_TYPE.IEEE802154, sensorMap);
-//		/////JC: Not sure if we need this for GUI leaving this in first
-		
-		
-		return mMapOfCommTypetoChannel;
-	}
-
-	@Override
-	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(ShimmerVerObject svo) {
-
-		mConfigOptionsMap.clear();
-		
-		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
-				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
-				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154) {
-			
-			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
-					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofGSRRange, 
-											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
-											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
-		}
-				
-		return mConfigOptionsMap;
-	}
+//	@Override
+//	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
+//		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
+//		//COMMUNICATION_TYPE.IEEE802154
+//		int count=1;
+//		//TODO MN: better to be a static final global like in Configuration.Shimmer3?
+//		ChannelDetails channelDetails = new ChannelDetails(
+//				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
+//				Configuration.Shimmer3.ObjectClusterSensorName.GSR,
+//				DatabaseChannelHandles.GSR,
+//				CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+//				calUnitToUse,
+//				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+//		channelDetails.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+//		channelDetails.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
+//		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+//		mapOfChannelDetails.put(count, channelDetails);
+//		mMapOfChannelDetails.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
+//
+//		
+//		//TODO MN: with the new AbstractSensor class the each of these properties () can be just stored as individual variables inside the class (no need for SensoreDetails?) 
+////		//JC: Not sure if we need this for GUI leaving this in first
+////		LinkedHashMap<Integer, SensorEnabledDetails> sensorMap = new  LinkedHashMap<Integer, SensorEnabledDetails>(); 
+////		long streamingByteIndex = 0;
+////		long logHeaderByteIndex = 0;
+////		SensorDetails sensorDetails = new SensorDetails(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GSR);
+////		sensorMap.put(Configuration.Shimmer3.SensorMapKey.GSR, new SensorEnabledDetails(false, 0, sensorDetails));
+////		mMapOfCommTypeToSensorMap.put(COMMUNICATION_TYPE.IEEE802154, sensorMap);
+////		/////JC: Not sure if we need this for GUI leaving this in first
+//		
+//		
+//		return mMapOfChannelDetails;
+//	}
 
 
 	@Override
 	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
-		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
+		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
@@ -337,55 +404,32 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		mGSRRange = i;
 	}
 
-	@Override
-	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
-		return mListOfConfigOptionKeysAssociated = Arrays.asList(
-				Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
-		
-		
-	}
-
-	@Override
-	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-		return mListOfSensorMapKeysConflicting = Arrays.asList(
-				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A1,
-				Configuration.Shimmer3.SensorMapKey.INT_EXP_ADC_A14,
-				Configuration.Shimmer3.SensorMapKey.ECG,
-				Configuration.Shimmer3.SensorMapKey.EMG,
-				Configuration.Shimmer3.SensorMapKey.EXG_TEST,
-				Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM,
-				Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION,
-//				Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//				Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//				Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//				Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
-				Configuration.Shimmer3.SensorMapKey.RESISTANCE_AMP,
-				Configuration.Shimmer3.SensorMapKey.BRIDGE_AMP);
-		
-	}
-
-	@Override
-	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
-		
-			if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR,
-									Configuration.Shimmer3.SensorMapKey.PPG_DUMMY)));
-				mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
-			}
-			else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-					||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-					||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.GSR)));
-				mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
-				
-//				mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
-			}
-			return mSensorGroupingMap;
-		
-	
-	}
+//	@Override
+//	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+//		return mListOfConfigOptionKeysAssociated = Arrays.asList(
+//				Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
+//		
+//		
+//	}
+//
+//	@Override
+//	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+//		return mListOfSensorMapKeysConflicting = Arrays.asList(
+//				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+//				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
+//				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
+//				Configuration.Shimmer3.SensorMapKey.HOST_EMG,
+//				Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
+//				Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
+//				Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+////				Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
+////				Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
+////				Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
+////				Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+//				Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
+//				Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP);
+//		
+//	}
 
 	@Override
 	public void setSamplingRateFromFreq() {
@@ -399,13 +443,4 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		
 	}
 
-
-
-
-
-
-
-	
-
-	
 }

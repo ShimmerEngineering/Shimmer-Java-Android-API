@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensor;
+package com.shimmerresearch.sensors;
 
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -11,7 +11,7 @@ public class UtilParseData {
 	 * @param Instructions an array string containing the commands to execute. It is currently not fully supported
 	 * @return
 	 */
-	protected static long parseData(byte[] data, String dataType, String dataEndian){
+	public static long parseData(byte[] data, String dataType, String dataEndian){
 		int iData=0;
 		long formattedData=0;
 		

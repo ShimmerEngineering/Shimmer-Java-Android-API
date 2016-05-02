@@ -87,7 +87,7 @@ public class ChannelDetails implements Serializable {
 	public boolean mStoreToDatabase = true;
 	
 	//JC: FOR GQ
-	public boolean mIsEnabled = true;
+//	public boolean mIsEnabled = true;
 	
 	public enum CHANNEL_SOURCE{
 		SHIMMER,

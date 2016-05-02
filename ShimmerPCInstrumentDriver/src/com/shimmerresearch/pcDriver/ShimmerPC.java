@@ -73,7 +73,7 @@ import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driverUtilities.SensorEnabledDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
@@ -793,20 +793,24 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
-	//Need to override here because ShimmerDevice class uses a different map
-	@Override
+	
+	
+	
+	
+	
 	public boolean isChannelEnabled(int sensorKey) {
-		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
-	    if(sensor!=null){
-		    return sensor.mIsEnabled;
-	    }
-	    return false;
+		return super.isChannelEnabled(COMMUNICATION_TYPE.BLUETOOTH, sensorKey);
+//		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
+//	    if(sensor!=null){
+//		    return sensor.isEnabled();
+//	    }
+//	    return false;
 	}
 
 	//Need to override here because ShimmerDevice class uses a different map
 	@Override
 	public String getChannelLabel(int sensorKey) {
-		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
+		SensorDetails sensor = mSensorEnabledMap.get(sensorKey);
 	    if(sensor!=null){
 		    return sensor.mSensorDetails.mGuiFriendlyLabel;
 	    }
@@ -816,17 +820,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	//Need to override here because ShimmerDevice class uses a different map
 	@Override
 	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
-		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
+		SensorDetails sensor = mSensorEnabledMap.get(sensorKey);
 	    if(sensor!=null){
 		    return sensor.mSensorDetails.mListOfCompatibleVersionInfo;
 	    }
 		return null;
-	}
-
-	//Need to override here because ShimmerDevice class uses a different map
-	@Override
-	public boolean doesSensorKeyExist(int sensorKey) {
-		return (mSensorEnabledMap.containsKey(sensorKey));
 	}
 
 	//Need to override here because ShimmerDevice class uses a different map

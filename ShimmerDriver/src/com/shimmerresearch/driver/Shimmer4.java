@@ -14,14 +14,16 @@ import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.sensor.ActionSetting;
-import com.shimmerresearch.sensor.SensorBMP180;
-import com.shimmerresearch.sensor.SensorEXG;
-import com.shimmerresearch.sensor.SensorGSR;
-import com.shimmerresearch.sensor.SensorMPU9X50;
-import com.shimmerresearch.sensor.SensorSystemTimeStamp;
-import com.shimmerresearch.sensor.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.SensorBMP180;
+import com.shimmerresearch.sensors.SensorEXG;
+import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.sensors.SensorMPU9X50;
+import com.shimmerresearch.sensors.SensorSystemTimeStamp;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 public class Shimmer4 extends ShimmerDevice {
 	
@@ -42,7 +44,7 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	public void setSetting(long sensorID, String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
-		ActionSetting actionSetting = mMapOfSensors.get(sensorID).setSettings(componentName, valueToSet, commType);
+		ActionSetting actionSetting = mMapOfSensorClasses.get(sensorID).setSettings(componentName, valueToSet, commType);
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
 			//mShimmerRadio.actionSettingResolver(actionSetting);
 		}
@@ -104,18 +106,15 @@ public class Shimmer4 extends ShimmerDevice {
 
 	@Override
 	public void sensorAndConfigMapsCreate() {
-//		if(UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
-//				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
-//			
-//		}
-//		else {
-			mMapOfSensors.put(SENSORS.SYSTEM_TIMESTAMP.sensorIndex(),new SensorSystemTimeStamp(mShimmerVerObject));
-			mMapOfSensors.put(SENSORS.MPU9X50.sensorIndex(),new SensorMPU9X50(mShimmerVerObject));
+		if(UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
+				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ANY_VERSION, ANY_VERSION, ANY_VERSION)){
+			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
 			
-//			mMapOfSensors.put(SENSORS.EXG.sensorIndex(),new SensorEXG(mShimmerVerObject));
-//			mMapOfSensors.put(SENSORS.GSR.sensorIndex(),new SensorGSR(mShimmerVerObject)); //for testing
-//			mMapOfSensors.put(SENSORS.BMP180.sensorIndex(),new SensorBMP180(mShimmerVerObject));
-//		}
+//			mMapOfSensors.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
+//			mMapOfSensors.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject)); //for testing
+		}
 	}
 
 	@Override

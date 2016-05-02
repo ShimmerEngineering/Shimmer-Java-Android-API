@@ -14,14 +14,8 @@ import java.util.List;
  */
 public class SensorGroupingDetails implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** *  */
 	private static final long serialVersionUID = 4373658361698230203L;
-	/**
-	 * Indicates if sensors channel is enabled.
-	 */
-	public boolean mIsEnabled = false;
 	
 	public List<Integer> mListOfSensorMapKeysAssociated = new ArrayList<Integer>();
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
@@ -36,7 +30,6 @@ public class SensorGroupingDetails implements Serializable {
 	 */
 	public SensorGroupingDetails(List<Integer> listOfSensorMapKeysAssociated) {
 		mListOfSensorMapKeysAssociated = listOfSensorMapKeysAssociated;
-		mListOfCompatibleVersionInfo = null;
 	}
 
 	/**
@@ -47,7 +40,7 @@ public class SensorGroupingDetails implements Serializable {
 	 * @param listOfCompatibleVersionInfo
 	 */
 	public SensorGroupingDetails(List<Integer> listOfChannelMapKeysAssociated, List<ShimmerVerObject> listOfCompatibleVersionInfo) {
-		mListOfSensorMapKeysAssociated = listOfChannelMapKeysAssociated;
+		this(listOfChannelMapKeysAssociated);
 		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}
 	

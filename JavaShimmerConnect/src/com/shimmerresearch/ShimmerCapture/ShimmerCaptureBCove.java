@@ -94,7 +94,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcDriver.CallbackObject;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.pcDriver.ShimmerPCBTBCove;
-import com.shimmerresearch.sensor.SensorBMP180;
+import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
 

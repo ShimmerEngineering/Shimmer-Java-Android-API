@@ -13,7 +13,7 @@ import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.sensor.ActionSetting;
+import com.shimmerresearch.sensors.ActionSetting;
 
 public class ShimmerRadioPCBluetooth extends ShimmerRadioProtocol implements ShimmerSerialEventCallback {
 

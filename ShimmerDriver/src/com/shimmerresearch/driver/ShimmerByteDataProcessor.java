@@ -6,7 +6,7 @@ import java.util.List;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
-import com.shimmerresearch.sensor.AbstractSensor;
+import com.shimmerresearch.sensors.AbstractSensor;
 
 /** This object takes in a list of sensors as its constructor. 
  * And uses this list of sensors to interpret raw byte data. 

@@ -589,18 +589,6 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	public boolean doesSensorKeyExist(int sensorKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isChannelEnabled(int sensorKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public String getChannelLabel(int sensorKey) {
 		// TODO Auto-generated method stub
 		return null;

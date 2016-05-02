@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensor;
+package com.shimmerresearch.sensors;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -40,6 +40,23 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 		super(svo);
 	}
 
+	@Override
+	public void generateSensorMap(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+		
+	}	
 
 	{
 		mSensorName ="STMICROLSM303DLHC";
@@ -117,24 +134,6 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	}
 
 
-
-	@Override
-	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(
-			ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		
-		
-		
-		return null;
-	}
-
-	@Override
-	public HashMap<String, SensorConfigOptionDetails> generateConfigOptionsMap(
-			ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
 			byte[] mInfoMemBytes) {
@@ -179,23 +178,20 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 		// TODO Auto-generated method stub
 	}
 
-	@Override
-	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Map<String, SensorGroupingDetails> generateSensorGroupMapping(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
 
 
 
