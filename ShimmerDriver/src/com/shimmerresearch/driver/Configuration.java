@@ -1290,6 +1290,7 @@ public class Configuration {
 
 			aMap.putAll(SensorMPU9X50.mSensorMapRef);
 			aMap.putAll(SensorEXG.mSensorMapRef);
+//			aMap.putAll(SensorGSR.mSensorMapRef);
 
 			// Assemble the channel map
 			// NV_SENSORS0
@@ -1798,8 +1799,8 @@ public class Configuration {
 //					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
 //					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
 //					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST);
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
+//					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO);
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO).mListOfSensorMapKeysConflicting = Arrays.asList(
 //					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO);
 
@@ -1944,16 +1945,16 @@ public class Configuration {
 					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
 			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14).mListOfConfigOptionKeysAssociated = Arrays.asList(
 					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER);
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE,
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF,
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE,
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL);
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE,
+//					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
+//					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF,
+//					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE,
+//					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//					Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF);
 			
 			
 			
@@ -2066,9 +2067,9 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z);
 
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL).mListOfChannelsRef = Arrays.asList(
-//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,
-//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
-//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z);
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_Z);
 
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG).mListOfChannelsRef = Arrays.asList(
 //							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_X,
