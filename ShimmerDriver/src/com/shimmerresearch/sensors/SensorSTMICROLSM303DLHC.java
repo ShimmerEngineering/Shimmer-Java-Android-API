@@ -127,11 +127,11 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	protected void setLowPowerAccelWR(boolean enable){}
 	
 	
-	@Override
-	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 
 	@Override

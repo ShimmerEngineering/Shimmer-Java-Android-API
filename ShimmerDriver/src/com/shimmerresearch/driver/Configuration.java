@@ -1330,6 +1330,7 @@ public class Configuration {
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, new SensorDetailsRef(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180));
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE));
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
 			//shimmerChannels.put(SENSOR_SHIMMER3_MSP430_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
 			//shimmerChannels.put(SENSOR_SHIMMER3_LSM303DLHC_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
 
@@ -2227,29 +2228,29 @@ public class Configuration {
 //							Configuration.Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT);
 
 			//mpl gyro cal
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO).mListOfChannelsRef = Arrays.asList(
-							Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z);
-
-			//mpl accel cal
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL).mListOfChannelsRef = Arrays.asList(
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z);
-
-			//mpl mag cal
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG).mListOfChannelsRef = Arrays.asList(
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z);
-			
-			// Raw 6DOF quaterians from the DMP hardware module of the MPU9150
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannelsRef = Arrays.asList(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_W,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO).mListOfChannelsRef = Arrays.asList(
+//							Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z);
+//
+//			//mpl accel cal
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL).mListOfChannelsRef = Arrays.asList(
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z);
+//
+//			//mpl mag cal
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG).mListOfChannelsRef = Arrays.asList(
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z);
+//			
+//			// Raw 6DOF quaterians from the DMP hardware module of the MPU9150
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW).mListOfChannelsRef = Arrays.asList(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_W,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z);
 			
 			mSensorMapRef = Collections.unmodifiableMap(aMap);
 	    }

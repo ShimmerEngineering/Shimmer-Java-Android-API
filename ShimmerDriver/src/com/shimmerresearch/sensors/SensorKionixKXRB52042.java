@@ -73,11 +73,11 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 //		return null;
 //	}
 
-	@Override
-	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,

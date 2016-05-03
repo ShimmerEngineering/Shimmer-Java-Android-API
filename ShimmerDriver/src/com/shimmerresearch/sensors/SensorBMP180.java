@@ -151,26 +151,26 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	}
 
 	
-	@Override
-	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-		
-		int index = 0;
-		for(SensorDetails sensorEnabledDetails:mSensorMap.values()){
-			if(sensorEnabledDetails.isEnabled(commType)){
-				objectCluster = sensorEnabledDetails.processShimmerChannelData(rawData, objectCluster);
-			}
-		}
-		
-		
+//	@Override
+//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+//		
 //		int index = 0;
-//		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
-//			//first process the data originating from the Shimmer sensor
-//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-//			System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
+//		for(SensorDetails sensorEnabledDetails:mSensorMap.values()){
+//			if(sensorEnabledDetails.isEnabled(commType)){
+//				objectCluster = sensorEnabledDetails.processShimmerChannelData(rawData, objectCluster);
+//			}
 //		}
-		return objectCluster;
-	}
+//		
+//		
+////		int index = 0;
+////		for (ChannelDetails channelDetails:mMapOfCommTypetoChannel.get(commType).values()){
+////			//first process the data originating from the Shimmer sensor
+////			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+////			System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+////			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
+////		}
+//		return objectCluster;
+//	}
 
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
