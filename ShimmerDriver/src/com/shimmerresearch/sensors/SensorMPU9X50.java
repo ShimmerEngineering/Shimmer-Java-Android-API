@@ -171,13 +171,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
    // ------------ Check byte index for Temp----------------
 //	public static final SensorDetailsRef sensorMpu9150TempRef = new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE));
-	public static final SensorDetailsRef sensorMpu9150TempRef = new SensorDetailsRef(0x02<<(2*8), 0x02<<(2*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP), 
-			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE),
-			Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE),
-			false);
+//	public static final SensorDetailsRef sensorMpu9150TempRef = new SensorDetailsRef(0x02<<(2*8), 0x02<<(2*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
+//			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP), 
+//			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE),
+//			Arrays.asList(
+//					Configuration.Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE),
+//			false);
 
 	
 	public static final SensorDetailsRef sensorMpu9150MplQuat6Dof = new SensorDetailsRef((long)0, (long)0x80<<(3*8), Configuration.Shimmer3.GuiLabelSensors.QUAT_MPL_6DOF,
