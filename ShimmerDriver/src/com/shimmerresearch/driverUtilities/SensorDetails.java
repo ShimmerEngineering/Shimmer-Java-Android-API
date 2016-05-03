@@ -77,6 +77,7 @@ public class SensorDetails implements Serializable{
 		mapOfIsEnabledPerCommsType.put(commType, state);
 	}
 
+	//TODO: temp here but probably not suitable for ShimmerObject
 	public boolean isEnabled() {
 		for(Boolean isEnabled:mapOfIsEnabledPerCommsType.values()){
 			if(isEnabled){
@@ -122,7 +123,6 @@ public class SensorDetails implements Serializable{
 	}
 	
 	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object) {
-		
 		int index = 0;
 		for (ChannelDetails channelDetails:mListOfChannels){
 			//first process the data originating from the Shimmer sensor

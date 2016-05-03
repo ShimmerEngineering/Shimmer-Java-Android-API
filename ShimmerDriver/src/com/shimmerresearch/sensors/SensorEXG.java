@@ -614,6 +614,9 @@ public class SensorEXG extends AbstractSensor{
 	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		
+		//TODO hack, should be loaded from channels in updateSensorGroupingMap??
+		
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG,
@@ -630,6 +633,7 @@ public class SensorEXG extends AbstractSensor{
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG)));
 			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
 		}
+		super.updateSensorGroupingMap();
 	}
 
 	@Override
@@ -2212,26 +2216,6 @@ public class SensorEXG extends AbstractSensor{
 		return mExGResolution;
 	}
 
-
-	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		super.updateSensorGroupingMap();
-		
-		//TODO hack, should be loaded from channels in updateSensorGroupingMap
-		
-		mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfConfigOptionKeysAssociated = Arrays.asList(
-				Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-				Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-				Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-				Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
-				Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
-				Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
-				Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
-				Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE);
-
-		
-		return mSensorGroupingMap;
-	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {

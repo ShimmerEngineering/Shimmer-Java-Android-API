@@ -747,6 +747,7 @@ public class Configuration {
 			public static final String WIDE_RANGE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_WR;
 			public static final String PRESSURE_TEMPERATURE = Configuration.Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180;
 			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion ADCs";
+			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
 			public static final String GSR = "GSR+";
 			public static final String EXG = "ECG/EMG";
 			public static final String PROTO3_MINI = "Proto Mini";
@@ -755,7 +756,6 @@ public class Configuration {
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 			public static final String BRIDGE_AMPLIFIER_SUPP = Configuration.Shimmer3.GuiLabelSensors.SKIN_TEMP_PROBE;
 			public static final String HIGH_G_ACCEL = Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL;
-			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
 			public static final String MPU_ACCEL_GYRO_MAG = "MPU 9DoF";
 			public static final String MPU_OTHER = "MPU Other";
 			//public static final String GPS = "GPS";
@@ -1203,7 +1203,7 @@ public class Configuration {
 			private static final ShimmerVerObject baseHighGAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 			private static final ShimmerVerObject baseHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 
-			private static final ShimmerVerObject baseShimmer4 = 				new ShimmerVerObject(HW_ID.SHIMMER_4_SDK,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
+			private static final ShimmerVerObject baseShimmer4 = 				new ShimmerVerObject(HW_ID.SHIMMER_4_SDK,FW_ID.LOGANDSTREAM,ANY_VERSION,ANY_VERSION,ANY_VERSION,ANY_VERSION);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 					baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
@@ -1213,7 +1213,7 @@ public class Configuration {
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
-					baseAnyIntExpBoardAndSdlog,baseAnyIntExpBoardAndBtStream,baseAnyIntExpBoardAndLogAndStream, baseShimmer4);
+					baseAnyIntExpBoardAndSdlog,baseAnyIntExpBoardAndBtStream,baseAnyIntExpBoardAndLogAndStream, baseShimmer4); //TODO Shimmer4 temp here
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGqBle,
@@ -1272,7 +1272,7 @@ public class Configuration {
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
 					baseHighGAccelSdLog,baseHighGAccelBtStream,baseHighGAccelLogAndStream);
 			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl,baseShimmer4);
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl,baseShimmer4); //TODO Shimmer4 temp here
 		}
 
 
@@ -2768,11 +2768,11 @@ public class Configuration {
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE)));
-			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, //X-axis
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13, //Y-axis
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14, //Z-axis
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1))); //unused but accessible
+//			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL, new SensorGroupingDetails(
+//					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, //X-axis
+//								Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13, //Y-axis
+//								Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14, //Z-axis
+//								Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1))); //unused but accessible
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
@@ -2804,7 +2804,7 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
-			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoHighGAccel;
+//			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.HIGH_G_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoHighGAccel;
 			//mShimmerChannelGroupingMap.get(Configuration.Shimmer3.GUI_LABEL_CHANNEL_GROUPING_GPS).mCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGps;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;

@@ -59,9 +59,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * Use for configuration
 	 */
 	protected LinkedHashMap<SENSORS, AbstractSensor> mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
-	protected Map<Integer, SensorDetails> mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
+	protected LinkedHashMap<Integer, SensorDetails> mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 	protected HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>> mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
-	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
+	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
+	protected Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
 
@@ -72,6 +73,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	protected double mSamplingRateShimmer; 	                                        	// 51.2Hz is the default sampling rate 
 	{
 		mMapOfSamplingRatesShimmer.put(COMMUNICATION_TYPE.SD, 51.2);
+		mMapOfSamplingRatesShimmer.put(COMMUNICATION_TYPE.BLUETOOTH, 51.2);
 	}
 
 	public String mDockID = DEFAULT_DOCKID;
@@ -180,14 +182,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void updateSensorAndParserMaps(){
 		//Update sensorMap from all supported sensors that were generated in mMapOfSensorClasses
-		if(isShimmer4Gen()){
-			mSensorMap.clear();
-			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				mSensorMap.putAll(abstractSensor.mSensorMap);
-			}
-		}
-		
+		generateSensorMap();
 		//Create Parser from enabled sensors
+		generateParserMap();
+		generateConfigOptionsMap();
+		generateSensorGroupingMap();
+	}
+
+	private void generateSensorMap() {
+		mSensorMap.clear();
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			mSensorMap.putAll(abstractSensor.mSensorMap);
+		}
+	}
+
+	public void generateParserMap() {
 		mParserMap.clear();
 		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
 			for(Entry<Integer, SensorDetails> sensorEntry:mSensorMap.entrySet()){
@@ -201,11 +210,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 			}
 		}
-		
-		//TODO rename method
-		getConfigOptionsMap();
 	}
 
+	public void generateConfigOptionsMap() {
+		mConfigOptionsMap.clear();
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			HashMap<String, SensorConfigOptionDetails> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
+			if(configOptionsMapPerSensor!=null){
+				if(configOptionsMapPerSensor.keySet().size()>0){
+					mConfigOptionsMap.putAll(configOptionsMapPerSensor);
+				}
+			}
+		}
+	}
+
+	/**	
+	 * @return the mSensorGroupingMap
+	 */
+	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+		return mSensorGroupingMap;
+	}
+
+	/** 
+	 * @return the mConfigOptionsMap
+	 */
+	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
+		return mConfigOptionsMap;
+	}
+	
 	/** If the device instance is already created use this to add a dock communication type to the instance
 	 * @param dockID
 	 * @param slotNumber
@@ -642,115 +674,35 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		
 		for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo) {
-			if((UtilShimmer.compareVersions(getFirmwareIdentifier(), 
-					getFirmwareVersionMajor(), 
-					getFirmwareVersionMinor(), 
-					getFirmwareVersionInternal(), 
+			
+//			int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
+//			int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
+//
+//			if(hwIdToUse==ANY_VERSION ^ fwIdToUse==ANY_VERSION){
+//				if(hwIdToUse==ANY_VERSION){
+//					hwIdToUse = getHardwareVersion();
+//				}
+//				else if(fwIdToUse==ANY_VERSION){
+//					fwIdToUse = getFirmwareIdentifier();
+//				}
+//			}
+			
+			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
+				if(getExpansionBoardId()!=compatibleVersionInfo.mShimmerExpansionBoardId) {
+					return false;
+				}
+			}
+			
+			if(isThisVerCompatibleWith( 
+					compatibleVersionInfo.mHardwareVersion,
 					compatibleVersionInfo.mFirmwareIdentifier, 
 					compatibleVersionInfo.mFirmwareVersionMajor, 
 					compatibleVersionInfo.mFirmwareVersionMinor, 
-					compatibleVersionInfo.mFirmwareVersionInternal))){
+					compatibleVersionInfo.mFirmwareVersionInternal)){
 				return true;
 			}
 		}
 		return false;
-		
-//		for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo) {
-//
-//			boolean compatible = true;
-//			
-//			boolean checkHardwareVersion = false;
-//			boolean checkExpansionBoardId = false;
-//			boolean checkFirmwareIdentifier = false;
-//			boolean checkFirmwareVersionMajor = false;
-//			boolean checkFirmwareVersionMinor = false;
-//			boolean checkFirmwareVersionInternal = false;
-//			
-//			if(compatibleVersionInfo.mHardwareVersion!=ANY_VERSION) {
-//				checkHardwareVersion = true;
-//			}
-//			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
-//				checkExpansionBoardId = true;
-//			}
-//			if(compatibleVersionInfo.mFirmwareIdentifier!=ANY_VERSION) {
-//				checkFirmwareIdentifier = true;
-//			}
-//			if(compatibleVersionInfo.mFirmwareVersionMajor!=ANY_VERSION) {
-//				checkFirmwareVersionMajor = true;
-//			}
-//			if(compatibleVersionInfo.mFirmwareVersionMinor!=ANY_VERSION) {
-//				checkFirmwareVersionMinor = true;
-//			}
-//			if(compatibleVersionInfo.mFirmwareVersionInternal!=ANY_VERSION) {
-//				checkFirmwareVersionInternal = true;
-//			}
-//			
-//			if((compatible)&&(checkHardwareVersion)) {
-//				if(getHardwareVersion() != compatibleVersionInfo.mHardwareVersion) {
-//					compatible = false;
-//				}
-//			}
-//			if((compatible)&&(checkExpansionBoardId)) {
-//				if(getExpansionBoardId() != compatibleVersionInfo.mShimmerExpansionBoardId) {
-//					compatible = false;
-//				}
-//			}
-////			if((compatible)&&(checkFirmwareIdentifier)) {
-////				if(getFirmwareIdentifier() != compatibleVersionInfo.getFirmwareIdentifier()) {
-////					compatible = false;
-////				}
-////			}
-//			
-////			if((compatible)&&(checkFirmwareVersionMajor)) {
-////				if(getFirmwareVersionMajor() < compatibleVersionInfo.getFirmwareVersionMajor()) {
-////					compatible = false;
-////				}
-////				if((compatible)&&(checkFirmwareVersionMinor)) {
-////					if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
-////						compatible = false;
-////					}
-////				}
-////				if((compatible)&&(checkFirmwareVersionInternal)) {
-////					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-////						compatible = false;
-////					}
-////				}
-////			}
-////			else if((compatible)&&(checkFirmwareVersionMinor)) {
-////				if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
-////					compatible = false;
-////				}
-////				if((compatible)&&(checkFirmwareVersionInternal)) {
-////					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-////						compatible = false;
-////					}
-////				}
-////			}
-////			else if((compatible)&&(checkFirmwareVersionInternal)) {
-////				if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-////					compatible = false;
-////				}
-////			}
-//			
-//			if(checkFirmwareVersionMajor){
-//				// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored
-//				if((compatible)&&(!UtilShimmer.compareVersions(getFirmwareIdentifier(), 
-//						getFirmwareVersionMajor(), 
-//						getFirmwareVersionMinor(), 
-//						getFirmwareVersionInternal(), 
-//						compatibleVersionInfo.mFirmwareIdentifier, 
-//						compatibleVersionInfo.mFirmwareVersionMajor, 
-//						compatibleVersionInfo.mFirmwareVersionMinor, 
-//						compatibleVersionInfo.mFirmwareVersionInternal))){
-//					compatible = false;
-//				}
-//			}
-//			
-//			if(compatible) {
-//				return true;
-//			}
-//		}
-//		return false;
 	}
 	
 	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
@@ -759,11 +711,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double samplingRate){
 		mMapOfSamplingRatesShimmer.put(communicationType, samplingRate);
+		updateSamplingRateInSensorClasses();
 	}
 
 //	public void setShimmerSamplingRate(double samplingRate){
 //		mSamplingRateShimmer = samplingRate;
 //	}
+
+	private void updateSamplingRateInSensorClasses() {
+		double maxSetRate = getMaxSetShimmerSamplingRate();
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			abstractSensor.setMaxSetShimmerSamplingRate(maxSetRate);
+		}
+	}
 
 	public InfoMemLayout getInfoMemLayout(){
 		createInfoMemLayoutObjectIfNeeded();
@@ -975,102 +935,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mMapOfSensorClasses;
 	}
 	
-//	@Deprecated
-//	public LinkedHashMap<SENSORS, AbstractSensor> getMapOfSensorsForCommType(COMMUNICATION_TYPE commType) {
-//		LinkedHashMap<SENSORS, AbstractSensor> mapOfSensorsForCommType = new LinkedHashMap<SENSORS, AbstractSensor>(); 
-//		for(SENSORS abstractSensorKey:mMapOfSensorClasses.keySet()){
-//			AbstractSensor abstractSensor = mMapOfSensorClasses.get(abstractSensorKey);
-//			if(abstractSensor.mMapOfCommTypeToSensorMap.containsKey(commType)){
-//				mapOfSensorsForCommType.put(abstractSensorKey, abstractSensor);
-//			}
-//		}
-//		return mapOfSensorsForCommType;
-//	}
-//	
-//	@Deprecated
-//	public Map<Integer, SensorEnabledDetails> getMapOfSensorEnabledForCommType(COMMUNICATION_TYPE commType) {
-//		LinkedHashMap<Integer, SensorEnabledDetails> mapOfSensorsForCommType = new LinkedHashMap<Integer, SensorEnabledDetails>(); 
-//		for(SENSORS abstractSensorKey:mMapOfSensorClasses.keySet()){
-//			AbstractSensor abstractSensor = mMapOfSensorClasses.get(abstractSensorKey);
-//			if(abstractSensor.mMapOfCommTypeToSensorMap.containsKey(commType)){
-//				TreeMap<Integer, SensorEnabledDetails> temp = abstractSensor.mMapOfCommTypeToSensorMap.get(commType);
-//				if(temp!=null){
-//					mapOfSensorsForCommType.putAll(temp);
-//				}
-//			}
-//		}
-//		return mapOfSensorsForCommType;
-//	}
-//	
-//	/** not working because channels don't have a unique integer value so values in output map are just being replaced*/
-//	public LinkedHashMap<Integer, ChannelDetails> getMapOfChannelsForCommType(COMMUNICATION_TYPE commType) {
-//		LinkedHashMap<Integer,ChannelDetails> mapOfCommTypetoAllChannels = new LinkedHashMap<Integer,ChannelDetails>(); 
-//		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-//			LinkedHashMap<Integer, ChannelDetails> mapOfCommTypetoChannel = abstractSensor.mMapOfCommTypetoChannel.get(commType);
-//			if(mapOfCommTypetoChannel!=null){
-//				mapOfCommTypetoAllChannels.putAll(mapOfCommTypetoChannel);
-//			}
-//		}
-//		return mapOfCommTypetoAllChannels;
-//	}
-//
-//	public LinkedHashMap<SENSORS, LinkedHashMap<Integer, ChannelDetails>> getMapOfChannelsPerSensorForCommType(COMMUNICATION_TYPE commType) {
-//		LinkedHashMap<SENSORS,LinkedHashMap<Integer,ChannelDetails>> mapOfChannelsPerSensorForCommType = new LinkedHashMap<SENSORS,LinkedHashMap<Integer,ChannelDetails>>();
-//		for(SENSORS abstractSensorKey:mMapOfSensorClasses.keySet()){
-//			AbstractSensor abstractSensor = mMapOfSensorClasses.get(abstractSensorKey);
-//			LinkedHashMap<Integer, ChannelDetails> mapOfCommTypetoChannel = abstractSensor.mMapOfChannelDetails.get(commType);
-//			if(mapOfCommTypetoChannel!=null){
-//				mapOfChannelsPerSensorForCommType.put(abstractSensorKey, mapOfCommTypetoChannel);
-//			}
-//		}
-//		return mapOfChannelsPerSensorForCommType;
-//	}
-	
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		Map<String, SensorGroupingDetails> sensorGroupingMapAll = new HashMap<String, SensorGroupingDetails>(); 
+	//New approach - should not be run when using ShimmerObject
+	public void generateSensorGroupingMap(){
+		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>(); 
 		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
 			Map<String, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
 			if(sensorGroupingMap!=null){
-				sensorGroupingMapAll.putAll(sensorGroupingMap);
+				mSensorGroupingMap.putAll(sensorGroupingMap);
 			}
 		}
-		return sensorGroupingMapAll;
 	}
-	
 
 	//Need to override here because ShimmerDevice class uses a different map
 	public boolean doesSensorKeyExist(int sensorKey) {
 		return (mSensorMap.containsKey(sensorKey));
 	}
-//	public boolean doesSensorKeyExist(COMMUNICATION_TYPE communicationType, int sensorKey) {
-//		return (mMapOfSensorClasses.containsKey(sensorKey));
-//	}
 
 	public boolean isChannelEnabled(COMMUNICATION_TYPE commType, int sensorKey) {
-		SensorDetails sensorEnabledDetails = mSensorMap.get(sensorKey);
-		if(sensorEnabledDetails!=null){
-			return sensorEnabledDetails.isEnabled(commType);
+		SensorDetails sensorDetails = mSensorMap.get(sensorKey);
+		if(sensorDetails!=null){
+			return sensorDetails.isEnabled(commType);
 		}
-		
-//		TreeMap<Integer, SensorEnabledDetails> mapOfSensorEnabledDetails = mSensorEnabledMap.get(commType);
-//		if(mapOfSensorEnabledDetails!=null){
-//		    SensorEnabledDetails sensor = mapOfSensorEnabledDetails.get(sensorKey);
-//		    if(sensor!=null){
-//			    return sensor.mIsEnabled;
-//		    }
-//		}
-//		
-////	    AbstractSensor sensor = mMapOfSensorClasses.get(sensorKey);
-////	    if(sensor!=null){
-////		    return sensor.mIsEnabled;
-////	    }
 	    return false;
 	}
 	
 	public boolean isChannelEnabled(int sensorKey) {
-		SensorDetails sensorEnabledDetails = mSensorMap.get(sensorKey);
-		if(sensorEnabledDetails!=null){
-			return sensorEnabledDetails.isEnabled();
+		SensorDetails sensorDetails = mSensorMap.get(sensorKey);
+		if(sensorDetails!=null){
+			return sensorDetails.isEnabled();
 		}
 		return false;
 	}
@@ -1129,19 +1021,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO Auto-generated method stub
 		
 	}
-	
-	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
-		mConfigOptionsMap.clear();
-		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			HashMap<String, SensorConfigOptionDetails> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
-			if(configOptionsMapPerSensor!=null){
-				if(configOptionsMapPerSensor.keySet().size()>0){
-					mConfigOptionsMap.putAll(configOptionsMapPerSensor);
-				}
-			}
-		}
-		return mConfigOptionsMap;
-	}
 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet){
 		Object returnValue = null;
@@ -1183,9 +1062,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		switch(componentName){
 //Booleans
-
 //Integers
-	    		
 //Strings
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
 				returnValue = getShimmerUserAssignedName();
@@ -1313,12 +1190,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 
-//	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
-//		setShimmerVersionObject(hwfw);
-//		();
-//	}
-	
-
 	public void consolePrintLn(String message) {
 		if(mVerboseMode) {
 			Calendar rightNow = Calendar.getInstance();
@@ -1411,11 +1282,37 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mSensorMap
 	 */
-	public Map<Integer, SensorDetails> getSensorEnabledMap() {
+	public Map<Integer, SensorDetails> getSensorMap() {
 		return mSensorMap;
 	}
-	
 
+	
+	public boolean isDerivedSensorsSupported(){
+		if((isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 0))
+			||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 69))
+			||(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 3, 17))){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isThisVerCompatibleWith(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
+		return UtilShimmer.compareVersions(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
+				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+
+	public boolean isThisVerCompatibleWith(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
+		return UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
+				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+
+	public Double getMaxSetShimmerSamplingRate(){
+		double maxSetRate = 0.001;
+		for(Double rate:mMapOfSamplingRatesShimmer.values()){
+			maxSetRate = Math.max(maxSetRate, rate);
+		}
+		return maxSetRate;
+	}
 
 
 }

@@ -151,12 +151,6 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Object setConfigValueUsingConfigLabel(String componentName,
 			Object valueToSet) {
 		// TODO Auto-generated method stub

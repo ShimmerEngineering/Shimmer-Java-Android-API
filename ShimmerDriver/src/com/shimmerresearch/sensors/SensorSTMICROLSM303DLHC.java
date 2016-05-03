@@ -124,7 +124,9 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	 * 
 	 * @param enable
 	 */
-	protected void setLowPowerAccelWR(boolean enable){}
+	protected void setLowPowerAccelWR(boolean enable){
+		
+	}
 	
 	
 //	@Override
@@ -146,12 +148,6 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

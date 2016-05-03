@@ -189,12 +189,6 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-		super.updateSensorGroupingMap();
-		return mSensorGroupingMap;
-	}
-
-	@Override
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		Object returnValue = null;
 		switch(componentName){
@@ -261,13 +255,16 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 //				Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
 //	}
 
+
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
 		}
+		super.updateSensorGroupingMap();
 	}
 	//--------- Abstract methods implemented end --------------
 
