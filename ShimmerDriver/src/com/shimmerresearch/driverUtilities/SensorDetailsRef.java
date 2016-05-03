@@ -78,8 +78,8 @@ public class SensorDetailsRef implements Serializable {
 	 *
 	 */
 	public SensorDetailsRef(
-			int sensorBitmapIDStreaming, 
-			int sensorBitmapIDSDLogHeader, 
+			long sensorBitmapIDStreaming, 
+			long sensorBitmapIDSDLogHeader, 
 			String guiFriendlyLabel, 
 			List<ShimmerVerObject> listOfCompatibleVersionInfo, 
 			List<String> listOfConfigOptionKeysAssociated, 
@@ -108,8 +108,8 @@ public class SensorDetailsRef implements Serializable {
 	 * @param listOfChannelsRef
 	 */
 	public SensorDetailsRef(
-			int sensorBitmapIDStreaming, 
-			int sensorBitmapIDSDLogHeader, 
+			long sensorBitmapIDStreaming, 
+			long sensorBitmapIDSDLogHeader, 
 			String guiFriendlyLabel, 
 			List<ShimmerVerObject> listOfCompatibleVersionInfo, 
 			List<Integer> listOfSensorMapKeysConflicting, 
