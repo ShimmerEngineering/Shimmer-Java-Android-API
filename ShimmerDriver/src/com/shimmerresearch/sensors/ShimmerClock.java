@@ -122,20 +122,20 @@ public class ShimmerClock extends AbstractSensor {
 		
 	}
 	
-	@Override
-	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-		int index = 0;
-		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
-			objectCluster.indexKeeper++;
-			index=index+channelDetails.mDefaultNumBytes;
-		}
-		
-		return objectCluster;
-	}
+//	@Override
+//	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+//		int index = 0;
+//		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
+//			//first process the data originating from the Shimmer sensor
+//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+//			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+//			objectCluster = processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+//			objectCluster.indexKeeper++;
+//			index=index+channelDetails.mDefaultNumBytes;
+//		}
+//		
+//		return objectCluster;
+//	}
 
 //	@Override
 //	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {

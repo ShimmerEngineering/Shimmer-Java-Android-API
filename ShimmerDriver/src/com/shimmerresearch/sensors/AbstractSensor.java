@@ -63,7 +63,7 @@ public abstract class AbstractSensor implements Serializable{
 //	public abstract List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo);
 	public abstract void generateSensorGroupMapping(ShimmerVerObject svo);
 
-	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
+//	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
 	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
@@ -255,34 +255,6 @@ public abstract class AbstractSensor implements Serializable{
 		return mSensorName;
 	}
 	
-	/** This cycles through the channels finding which are enabled and summing up the number of bytes
-	 * @param commType
-	 * @return
-	 */
-	public int getExpectedPacketByteArray(COMMUNICATION_TYPE commType) {
-		int count = 0;
-		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
-		while(iterator.hasNext()){
-			SensorDetails sensorEnabledDetails = iterator.next();
-			if (sensorEnabledDetails.isEnabled(commType)){
-				for(ChannelDetails channelDetails:sensorEnabledDetails.mListOfChannels){
-					count += channelDetails.mDefaultNumBytes;
-				}
-			}
-		}
-
-//		int count = 0; 
-//		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfChannelDetails.get(commType);
-//		if(channelsPerCommType!=null){
-//			for (ChannelDetails channelDetails:channelsPerCommType.values()){
-//				if (channelDetails.mIsEnabled){
-//					count = count+channelDetails.mDefaultNumBytes;
-//				}
-//			}
-//		}
-		return count;
-	}
-
 	public int getNumberOfEnabledChannels(COMMUNICATION_TYPE commType){
 		int count = 0;
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
@@ -420,6 +392,10 @@ public abstract class AbstractSensor implements Serializable{
 			}
 			mSensorMap.put(sensorMapKey, sensorDetails);
 		}
+	}
+	
+	public HashMap<String, SensorConfigOptionDetails> getConfigOptionsMap() {
+		return mConfigOptionsMap;
 	}
 	
 }

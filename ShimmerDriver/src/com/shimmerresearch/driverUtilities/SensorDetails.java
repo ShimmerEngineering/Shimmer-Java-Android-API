@@ -3,6 +3,7 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,5 +106,46 @@ public class SensorDetails implements Serializable{
 		return false;
 	}
 
+
+	/** This cycles through the channels finding which are enabled and summing up the number of bytes
+	 * @param commType
+	 * @return
+	 */
+	public int getExpectedPacketByteArray(COMMUNICATION_TYPE commType) {
+		int count = 0;
+		if (isEnabled(commType)){
+			for(ChannelDetails channelDetails:mListOfChannels){
+				count += channelDetails.mDefaultNumBytes;
+			}
+		}
+		return count;
+	}
 	
+	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object) {
+		
+		int index = 0;
+		for (ChannelDetails channelDetails:mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			object = processShimmerChannelData(rawData, channelDetails, object);
+		}
+		return object;
+	}
+	
+	/** To process data originating from the Shimmer device
+	 * @param channelByteArray The byte array packet, or byte array sd log
+	 * @param commType The communication type
+	 * @param object The packet/objectCluster to append the data to
+	 * @return
+	 */
+	public static ObjectCluster processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, ObjectCluster objectCluster){
+//		if(channelDetails.mIsEnabled){
+			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
+			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
+//		}
+
+		return objectCluster;
+	}
+
 }
