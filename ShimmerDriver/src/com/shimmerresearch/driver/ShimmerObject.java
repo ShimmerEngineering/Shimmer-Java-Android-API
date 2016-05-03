@@ -317,8 +317,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	
-	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
-	
 	//Constants describing the packet type
 	public static final byte DATA_PACKET                      		= (byte) 0x00;
 	public static final byte INQUIRY_COMMAND                  		= (byte) 0x01;
@@ -3350,7 +3348,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int packetSize=0;//mTimeStampPacketByteSize; // Time stamp
 
 		int index = 0;
-		for(SensorDetails sED:mSensorEnabledMap.values()) {
+		for(SensorDetails sED:mSensorMap.values()) {
 			if(sED.isEnabled() && !sED.isDerivedChannel()) {
 				for(ChannelDetails channelDetails:sED.mListOfChannels){
 //				for(String channelDetailsName:sED.mListOfChannels){
@@ -6287,7 +6285,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void exgBytesGetConfigFrom(byte[] eXG1RegisterArray, byte[] eXG2RegisterArray){
 		exgBytesGetConfigFrom(1, eXG1RegisterArray);
 		exgBytesGetConfigFrom(2, eXG2RegisterArray);
-		internalCheckExgModeAndUpdateSensorMap(mSensorEnabledMap);
+		internalCheckExgModeAndUpdateSensorMap(mSensorMap);
 	}
 	
 //	//TODO:2015-06-16 remove the need for this by using map
@@ -8105,12 +8103,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public void refreshEnabledSensorsFromSensorMap(){
-		if(mSensorEnabledMap!=null) {
+		if(mSensorMap!=null) {
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				mEnabledSensors = (long)0;
 				mDerivedSensors = (long)0;
 				sensorMapCheckandCorrectHwDependencies();
-				for(SensorDetails sED:mSensorEnabledMap.values()) {
+				for(SensorDetails sED:mSensorMap.values()) {
 					if(sED.isEnabled()) {
 						mEnabledSensors |= sED.mSensorDetails.mSensorBitmapIDSDLogHeader;
 						
@@ -8246,18 +8244,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public void sensorAndConfigMapsCreate() {
 		
-		mSensorEnabledMap = new LinkedHashMap<Integer, SensorDetails>();
+		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
 		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
 		mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
-		mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
+		mConfigOptionsMap.clear();
 		
 		if (getHardwareVersion() != -1){
 			if (getHardwareVersion() == HW_ID.SHIMMER_2R){
 				Map<Integer,SensorDetailsRef> sensorMapRef = Configuration.Shimmer2.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
-					mSensorEnabledMap.put(key, new SensorDetails(false, 0, sensorMapRef.get(key)));
+					mSensorMap.put(key, new SensorDetails(false, 0, sensorMapRef.get(key)));
 				}
 			} 
 			else if (getHardwareVersion() == HW_ID.SHIMMER_3) {
@@ -8295,7 +8293,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
 						}
 							
-						mSensorEnabledMap.put(key, new SensorDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
+						mSensorMap.put(key, new SensorDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
 						
 	    				//Special cases for ExG 24-bit vs. 16-bit
 						if((key==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
@@ -8304,7 +8302,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 								||(key==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
 								||(key==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)){
 
-							Iterator<ChannelDetails> i = mSensorEnabledMap.get(key).mListOfChannels.iterator();
+							Iterator<ChannelDetails> i = mSensorMap.get(key).mListOfChannels.iterator();
 //							Iterator<String> i = mSensorEnabledMap.get(key).mListOfChannels.iterator();
 							while (i.hasNext()) {
 								ChannelDetails channelName = i.next();
@@ -8378,7 +8376,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				Map<Integer,SensorDetailsRef> sensorMapRef = Configuration.ShimmerGqBle.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
-					mSensorEnabledMap.put(key, new SensorDetails(false, 0, sensorMapRef.get(key)));
+					mSensorMap.put(key, new SensorDetails(false, 0, sensorMapRef.get(key)));
 				}
 
 				mSensorGroupingMap = Configuration.ShimmerGqBle.mSensorGroupingMap;
@@ -8389,14 +8387,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 		}
 		
-		//Update ChannelDetails in the mSensorEnabledMap
-		Iterator<SensorDetails> iterator = mSensorEnabledMap.values().iterator();
+		//Update ChannelDetails in the mSensorMap
+		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
-			SensorDetails sensorEnabledDetails = iterator.next();
-			for(String channelMapKey:sensorEnabledDetails.mSensorDetails.mListOfChannelsRef){
+			SensorDetails sensorDetails = iterator.next();
+			for(String channelMapKey:sensorDetails.mSensorDetails.mListOfChannelsRef){
 				ChannelDetails channelDetails = mChannelMap.get(channelMapKey);
 				if(channelDetails!=null){
-					sensorEnabledDetails.mListOfChannels.add(channelDetails);
+					sensorDetails.mListOfChannels.add(channelDetails);
 				}
 			}
 		}
@@ -8498,15 +8496,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		checkExgResolutionFromEnabledSensorsVar();
 
-		if(mSensorEnabledMap==null){
+		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
 		}
 		
-		if(mSensorEnabledMap!=null) {
+		if(mSensorMap!=null) {
 
 			if (getHardwareVersion() == HW_ID.SHIMMER_3) {
 				
-				for(Integer sensorMapKey:mSensorEnabledMap.keySet()) {
+				for(Integer sensorMapKey:mSensorMap.keySet()) {
 					boolean skipKey = false;
 
 					// Skip if ExG channels here -> handle them after for loop.
@@ -8515,7 +8513,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
 							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
 							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
-						mSensorEnabledMap.get(sensorMapKey).setIsEnabled(false);
+						mSensorMap.get(sensorMapKey).setIsEnabled(false);
 						skipKey = true;
 					}
 					// Handle derived sensors based on int adc channels (e.g. PPG vs. A12/A13)
@@ -8526,10 +8524,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 						//Check if a derived channel is enabled, if it is ignore disable and skip 
 						innerloop:
-						for(Integer conflictKey:mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysConflicting) {
-							if(mSensorEnabledMap.get(conflictKey).isDerivedChannel()) {
-								if((mDerivedSensors&mSensorEnabledMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorEnabledMap.get(conflictKey).mDerivedSensorBitmapID) {
-									mSensorEnabledMap.get(sensorMapKey).setIsEnabled(false);
+						for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysConflicting) {
+							if(mSensorMap.get(conflictKey).isDerivedChannel()) {
+								if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
+									mSensorMap.get(sensorMapKey).setIsEnabled(false);
 									skipKey = true;
 									break innerloop;
 								}
@@ -8544,29 +8542,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //						skipKey = true;
 //					}
 					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES){
-						mSensorEnabledMap.get(sensorMapKey).setIsEnabled(true);
+						mSensorMap.get(sensorMapKey).setIsEnabled(true);
 						skipKey = true;
 					}
 
 
 					// Process remaining channels
 					if(!skipKey) {
-						mSensorEnabledMap.get(sensorMapKey).setIsEnabled(false);
+						mSensorMap.get(sensorMapKey).setIsEnabled(false);
 						// Check if this sensor is a derived sensor
-						if(mSensorEnabledMap.get(sensorMapKey).isDerivedChannel()) {
+						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
 							//Check if associated derived channels are enabled 
-							if((mDerivedSensors&mSensorEnabledMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorEnabledMap.get(sensorMapKey).mDerivedSensorBitmapID) {
+							if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
 								//TODO add comment
-								if((mEnabledSensors&mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
-									mSensorEnabledMap.get(sensorMapKey).setIsEnabled(true);
+								if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
+									mSensorMap.get(sensorMapKey).setIsEnabled(true);
 								}
 							}
 						}
 						// This is not a derived sensor
 						else {
 							//Check if sensor's bit in sensor bitmap is enabled
-							if((mEnabledSensors&mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
-								mSensorEnabledMap.get(sensorMapKey).setIsEnabled(true);
+							if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
+								mSensorMap.get(sensorMapKey).setIsEnabled(true);
 							}
 						}
 					}
@@ -8578,50 +8576,50 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				// channel is enabled like whether PPG is on ADC12 or ADC13
 				
 				//Handle ExG sensors
-				internalCheckExgModeAndUpdateSensorMap(mSensorEnabledMap);
+				internalCheckExgModeAndUpdateSensorMap(mSensorMap);
 
 				// Handle PPG sensors so that it appears in Consensys as a
 				// single PPG channel with a selectable ADC based on different
 				// hardware versions.
 				
 				//Used for Shimmer GSR hardware
-				if((mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled())||(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled())) {
-					mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(true);
-					if(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled()) {
+				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled())) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(true);
+					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled()) {
 						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
 					}
-					else if(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled()) {
+					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled()) {
 						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
 					}
 				}
 				else {
-					mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(false);
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(false);
 				}
 				//Used for Shimmer Proto3 Deluxe hardware
-				if((mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled())||(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled())) {
-					mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(true);
-					if(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled()) {
+				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled())) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(true);
+					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled()) {
 						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
 					}
-					else if(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled()) {
+					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled()) {
 						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
 					}
 				}
 				else {
-					mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(false);
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(false);
 				}
 				//Used for Shimmer Proto3 Deluxe hardware
-				if((mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled())||(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled())) {
-					mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(true);
-					if(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled()) {
+				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled())) {
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(true);
+					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled()) {
 						mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
 					}
-					else if(mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled()) {
+					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled()) {
 						mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
 					}
 				}
 				else {
-					mSensorEnabledMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
 				}
 			}
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
@@ -8668,9 +8666,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	private boolean isSensorEnabled(int sensorMapKey){
-		if((mSensorEnabledMap!=null)&&(mSensorEnabledMap!=null)) {
-			if(mSensorEnabledMap.containsKey(sensorMapKey)){
-				return mSensorEnabledMap.get(sensorMapKey).isEnabled();
+		if((mSensorMap!=null)&&(mSensorMap!=null)) {
+			if(mSensorMap.containsKey(sensorMapKey)){
+				return mSensorMap.get(sensorMapKey).isEnabled();
 			}
 		}		
 		return false;
@@ -8692,13 +8690,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
 		
-		if(mSensorEnabledMap!=null) {
+		if(mSensorMap!=null) {
 			
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				
 				// Special case for Dummy entries in the Sensor Map
 				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
-					mSensorEnabledMap.get(sensorMapKey).setIsEnabled(state);
+					mSensorMap.get(sensorMapKey).setIsEnabled(state);
 					if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
 						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
 					}
@@ -8707,7 +8705,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}		
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
-					mSensorEnabledMap.get(sensorMapKey).setIsEnabled(state);
+					mSensorMap.get(sensorMapKey).setIsEnabled(state);
 					if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
 						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
 					}
@@ -8716,7 +8714,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}		
 				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
-					mSensorEnabledMap.get(sensorMapKey).setIsEnabled(state);
+					mSensorMap.get(sensorMapKey).setIsEnabled(state);
 					if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
 						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
 					}
@@ -8726,9 +8724,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}		
 				
 				// Automatically handle required channels for each sensor
-				if(mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysRequired != null) {
-					for(Integer i:mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysRequired) {
-						mSensorEnabledMap.get(i).setIsEnabled(state);
+				if(mSensorMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysRequired != null) {
+					for(Integer i:mSensorMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysRequired) {
+						mSensorMap.get(i).setIsEnabled(state);
 					}
 				}
 				
@@ -8738,17 +8736,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			
 			//Set sensor state
-			mSensorEnabledMap.get(sensorMapKey).setIsEnabled(state);
+			mSensorMap.get(sensorMapKey).setIsEnabled(state);
 
 			sensorMapConflictCheckandCorrect(sensorMapKey);
-			setDefaultConfigForSensor(sensorMapKey, mSensorEnabledMap.get(sensorMapKey).isEnabled());
+			setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).isEnabled());
 
 			// Automatically control internal expansion board power
 			checkIfInternalExpBrdPowerIsNeeded();
 			
 			refreshEnabledSensorsFromSensorMap();
 
-			return ((mSensorEnabledMap.get(sensorMapKey).isEnabled()==state)? true:false);
+			return ((mSensorMap.get(sensorMapKey).isEnabled()==state)? true:false);
 			
 		}
 		else {
@@ -8822,8 +8820,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private void checkIfInternalExpBrdPowerIsNeeded(){
 
 		if (getHardwareVersion() == HW_ID.SHIMMER_3){
-			for(Integer channelKey:mSensorEnabledMap.keySet()) {
-				if(mSensorEnabledMap.get(channelKey).isEnabled() && mSensorEnabledMap.get(channelKey).mSensorDetails.mIntExpBoardPowerRequired) {
+			for(Integer channelKey:mSensorMap.keySet()) {
+				if(mSensorMap.get(channelKey).isEnabled() && mSensorMap.get(channelKey).mSensorDetails.mIntExpBoardPowerRequired) {
 					mInternalExpPower = 1;
 					break;
 				}
@@ -8850,8 +8848,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
 		
 		if (getHardwareVersion() == HW_ID.SHIMMER_3){
-			if(mSensorEnabledMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting != null) {
-				for(Integer sensorMapKey:mSensorEnabledMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting) {
+			if(mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting != null) {
+				for(Integer sensorMapKey:mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting) {
 					if(isSensorEnabled(sensorMapKey)) {
 						listOfChannelConflicts.add(sensorMapKey);
 					}
@@ -8875,15 +8873,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public void sensorMapConflictCheckandCorrect(int key){
 		
-		if(mSensorEnabledMap.get(key) != null) {
-			if(mSensorEnabledMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting != null) {
-				for(Integer sensorMapKey:mSensorEnabledMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting) {
-					if(mSensorEnabledMap.get(sensorMapKey) != null) {
-						mSensorEnabledMap.get(sensorMapKey).setIsEnabled(false);
-						if(mSensorEnabledMap.get(sensorMapKey).isDerivedChannel()) {
-							mDerivedSensors &= ~mSensorEnabledMap.get(sensorMapKey).mDerivedSensorBitmapID;
+		if(mSensorMap.get(key) != null) {
+			if(mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting != null) {
+				for(Integer sensorMapKey:mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting) {
+					if(mSensorMap.get(sensorMapKey) != null) {
+						mSensorMap.get(sensorMapKey).setIsEnabled(false);
+						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+							mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
 						}
-						setDefaultConfigForSensor(sensorMapKey, mSensorEnabledMap.get(sensorMapKey).isEnabled());
+						setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).isEnabled());
 					}
 				}
 			}
@@ -8896,15 +8894,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private void sensorMapCheckandCorrectSensorDependencies() {
 		//Cycle through any required sensors and update sensorMap channel enable values
-		for(Integer sensorMapKey:mSensorEnabledMap.keySet()) {
-			if(mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysRequired != null) {
-				for(Integer requiredSensorKey:mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysRequired) {
-					if(!mSensorEnabledMap.get(requiredSensorKey).isEnabled()) {
-						mSensorEnabledMap.get(sensorMapKey).setIsEnabled(false);
-						if(mSensorEnabledMap.get(sensorMapKey).isDerivedChannel()) {
-							mDerivedSensors &= ~mSensorEnabledMap.get(sensorMapKey).mDerivedSensorBitmapID;
+		for(Integer sensorMapKey:mSensorMap.keySet()) {
+			if(mSensorMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysRequired != null) {
+				for(Integer requiredSensorKey:mSensorMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysRequired) {
+					if(!mSensorMap.get(requiredSensorKey).isEnabled()) {
+						mSensorMap.get(sensorMapKey).setIsEnabled(false);
+						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+							mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
 						}
-						setDefaultConfigForSensor(sensorMapKey, mSensorEnabledMap.get(sensorMapKey).isEnabled());
+						setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).isEnabled());
 						break;
 					}
 				}
@@ -8941,14 +8939,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 
 	private void sensorMapCheckandCorrectHwDependencies() {
-		for(Integer sensorMapKey:mSensorEnabledMap.keySet()) {
-			if(mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mListOfCompatibleVersionInfo != null) {
-				if(!checkIfVersionCompatible(mSensorEnabledMap.get(sensorMapKey).mSensorDetails.mListOfCompatibleVersionInfo)) {
-					mSensorEnabledMap.get(sensorMapKey).setIsEnabled(false);
-					if(mSensorEnabledMap.get(sensorMapKey).isDerivedChannel()) {
-						mDerivedSensors &= ~mSensorEnabledMap.get(sensorMapKey).mDerivedSensorBitmapID;
+		for(Integer sensorMapKey:mSensorMap.keySet()) {
+			if(mSensorMap.get(sensorMapKey).mSensorDetails.mListOfCompatibleVersionInfo != null) {
+				if(!checkIfVersionCompatible(mSensorMap.get(sensorMapKey).mSensorDetails.mListOfCompatibleVersionInfo)) {
+					mSensorMap.get(sensorMapKey).setIsEnabled(false);
+					if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+						mDerivedSensors &= ~mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID;
 					}
-					setDefaultConfigForSensor(sensorMapKey, mSensorEnabledMap.get(sensorMapKey).isEnabled());
+					setDefaultConfigForSensor(sensorMapKey, mSensorMap.get(sensorMapKey).isEnabled());
 				}
 			}
 		}
@@ -9006,7 +9004,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else {
-				if(!checkIfOtherExgChannelEnabled(mSensorEnabledMap)) {
+				if(!checkIfOtherExgChannelEnabled(mSensorMap)) {
 //					System.err.println("CLEAR EXG CHANNEL");
 					clearExgConfig();
 				}
@@ -9342,8 +9340,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     	for(AlgorithmDetailsNew algorithmDetails:mAlgorithmChannelsMap.values()) {
     		if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
         		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
-        			if(mSensorEnabledMap.containsKey(sensorMapKey)){
-        				if(mSensorEnabledMap.get(sensorMapKey).isEnabled()){
+        			if(mSensorMap.containsKey(sensorMapKey)){
+        				if(mSensorMap.get(sensorMapKey).isEnabled()){
         					listOfSupportAlgorihmChannels.add(algorithmDetails);
         					continue parentLoop;
         				}
@@ -9352,11 +9350,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     		}
     		else if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
         		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
-        			if(!mSensorEnabledMap.containsKey(sensorMapKey)){
+        			if(!mSensorMap.containsKey(sensorMapKey)){
     					continue parentLoop;
         			}
         			else{
-        				if(!mSensorEnabledMap.get(sensorMapKey).isEnabled()){
+        				if(!mSensorMap.get(sensorMapKey).isEnabled()){
         					continue parentLoop;
         				}
         			}
@@ -9991,7 +9989,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
 		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
-			if(mSensorEnabledMap.keySet().size()>0){
+			if(mSensorMap.keySet().size()>0){
 				
 				for(int key:SensorMPU9X50.mListOfMplChannels){
 //				for(int key:mListOfMplChannels){
@@ -10009,7 +10007,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 	public boolean checkIfAnyMplChannelEnabled(){
 		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
-			if(mSensorEnabledMap.keySet().size()>0){
+			if(mSensorMap.keySet().size()>0){
 				
 				for(int key:SensorMPU9X50.mListOfMplChannels){
 //					for(int key:mListOfMplChannels){
@@ -10310,7 +10308,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void setPpgAdcSelectionGsrBoard(int ppgAdcSelectionGsrBoard) {
 		this.mPpgAdcSelectionGsrBoard = ppgAdcSelectionGsrBoard;
 		int key = Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY;
-		this.setSensorEnabledState(key, mSensorEnabledMap.get(key).isEnabled());
+		this.setSensorEnabledState(key, mSensorMap.get(key).isEnabled());
 	}
 
 	/**
@@ -10319,7 +10317,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void setPpg1AdcSelectionProto3DeluxeBoard(int ppg1AdcSelectionProto3DeluxeBoard) {
 		this.mPpg1AdcSelectionProto3DeluxeBoard = ppg1AdcSelectionProto3DeluxeBoard;
 		int key = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY;
-		this.setSensorEnabledState(key, mSensorEnabledMap.get(key).isEnabled());
+		this.setSensorEnabledState(key, mSensorMap.get(key).isEnabled());
 	}
 
 	/**
@@ -10328,7 +10326,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void setPpg2AdcSelectionProto3DeluxeBoard(int ppg2AdcSelectionProto3DeluxeBoard) {
 		this.mPpg2AdcSelectionProto3DeluxeBoard = ppg2AdcSelectionProto3DeluxeBoard;
 		int key = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY;
-		this.setSensorEnabledState(key, mSensorEnabledMap.get(key).isEnabled());
+		this.setSensorEnabledState(key, mSensorMap.get(key).isEnabled());
 	}
 
 	/**

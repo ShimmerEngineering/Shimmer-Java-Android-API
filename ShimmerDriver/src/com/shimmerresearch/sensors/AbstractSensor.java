@@ -407,4 +407,19 @@ public abstract class AbstractSensor implements Serializable{
 		return null;
 	}
 	
+	public void updateSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
+		mSensorMap.clear();
+		for(int sensorMapKey:sensorMapRef.keySet()){
+			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
+			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef);
+			for(String channelKey:sensorDetails.mSensorDetails.mListOfChannelsRef){
+				ChannelDetails channelDetails = channelMapRef.get(channelKey);
+				if(channelDetails!=null){
+					sensorDetails.mListOfChannels.add(channelDetails);
+				}
+			}
+			mSensorMap.put(sensorMapKey, sensorDetails);
+		}
+	}
+	
 }

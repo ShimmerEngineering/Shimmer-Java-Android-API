@@ -2,6 +2,7 @@ package com.shimmerresearch.sensors;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,6 +41,13 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	//--------- Sensor info start --------------
 	public static final SensorDetailsRef sensorEcgToHr = new SensorDetailsRef(
 			0,0, Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR);
+	
+    public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
+    static {
+        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ECG_TO_HR_FW, sensorEcgToHr);
+		mSensorMapRef = Collections.unmodifiableMap(aMap);
+	}
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
@@ -55,7 +63,13 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 		channelEcgToHr.mDefaultUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
 		channelEcgToHr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
-
+	
+    public static final Map<String, ChannelDetails> mChannelMapRef;
+    static {
+        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR, channelEcgToHr);
+		mChannelMapRef = Collections.unmodifiableMap(aMap);
+    }
 	//--------- Channel info end --------------
 
 	
@@ -69,13 +83,14 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		mSensorMap.clear();
-		
-		//TODO insert derived sensor bit index
-		//TODO load channels based on list of channels in the SensorDetailsRef rather then manually loading them here -> need to create a ChannelMapRef like in Configuration.Shimmer3 and then cycle through
-		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorEcgToHr);
-		sensorDetails.mListOfChannels.add(channelEcgToHr);
-		mSensorMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR, sensorDetails);
+		updateSensorMap(mSensorMapRef, mChannelMapRef);
+
+		//Update the derived sensor bit index
+		SensorDetails sensorEcgToHr = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_ECG_TO_HR_FW);
+		if(sensorEcgToHr!=null){
+			sensorEcgToHr.mDerivedSensorBitmapID = 0x80 << (8*1);
+		}
+
 	}
 
 	@Override
