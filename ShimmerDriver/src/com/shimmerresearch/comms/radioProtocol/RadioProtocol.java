@@ -7,7 +7,15 @@ public abstract class RadioProtocol {
 	ByteLevelDataComm mShimmerRadio; //every radio protocol requires radio control
 	int mPacketSize;
 	
+	public RadioProtocol(){
+	
+	}
+	
 	public RadioProtocol(ByteLevelDataComm shimmerRadio){
+		mShimmerRadio = shimmerRadio;
+	}
+	
+	public void setByteLevelDataComm(ByteLevelDataComm shimmerRadio){
 		mShimmerRadio = shimmerRadio;
 	}
 	

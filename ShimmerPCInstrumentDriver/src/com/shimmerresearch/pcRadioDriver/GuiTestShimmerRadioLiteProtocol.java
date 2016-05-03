@@ -41,6 +41,7 @@ import javax.swing.table.*;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
+import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
@@ -196,56 +197,57 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     }
  
     private void initialize() {
-    	mSRP = new ShimmerRadioProtocol();
-	
-    	mSRP.initialize(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200));
+    	mSRP = new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
+
+    	mSRP.initialize();
 
     	mSRP.setRadioListener(new RadioListener(){
 
-		@Override
-		public void connected() {
-			// TODO Auto-generated method stub
-			
-			mSRP.mRadioProtocol.initialize();
-			
-			//Read infomem, and set packetsize
-			//mSRP.mRadioProtocol.writeInstruction(new byte[]{(byte) LiteProtocolInstructionSet.Instructions.GET_INFOMEM_COMMAND_VALUE});
-			
-			mSRP.mRadioProtocol.setPacketSize(41);
-		}
+    		@Override
+    		public void connected() {
+    			// TODO Auto-generated method stub
 
-		@Override
-		public void disconnected() {
-			// TODO Auto-generated method stub
+    			mSRP.mRadioProtocol.initialize();
 
-		}
+    			//Read infomem, and set packetsize
+    			//mSRP.mRadioProtocol.writeInstruction(new byte[]{(byte) LiteProtocolInstructionSet.Instructions.GET_INFOMEM_COMMAND_VALUE});
 
-		@Override
-		public void eventNewPacket(byte[] pbA) {
-			// TODO Auto-generated method stub
-			//System.out.println("New Packet: " + UtilShimmer.bytesToHexString(pbA));
-			output.append("New Packet: " + UtilShimmer.bytesToHexString(pbA));
-			output.append(newline);
-		}
+    			mSRP.mRadioProtocol.setPacketSize(41);
+    		}
 
-		@Override
-		public void eventResponseReceived(byte[] responseBytes) {
-			// TODO Auto-generated method stub
-			// TODO Auto-generated method stub
-			//System.out.println("Response Received: " + UtilShimmer.bytesToHexString(responseBytes));
-			output.append("Response Received: " + UtilShimmer.bytesToHexString(responseBytes));
-			output.append(newline);
-		}
+    		@Override
+    		public void disconnected() {
+    			// TODO Auto-generated method stub
 
-		@Override
-		public void eventAckReceived(byte[] instructionSent) {
-			// TODO Auto-generated method stub
-			// TODO Auto-generated method stub
-			//System.out.println("Ack Received: " + UtilShimmer.bytesToHexString(instructionSent));
-			output.append("Ack Received: " + UtilShimmer.bytesToHexString(instructionSent));
-			output.append(newline);
-		}
-	});}
+    		}
+
+    		@Override
+    		public void eventNewPacket(byte[] pbA) {
+    			// TODO Auto-generated method stub
+    			//System.out.println("New Packet: " + UtilShimmer.bytesToHexString(pbA));
+    			output.append("New Packet: " + UtilShimmer.bytesToHexString(pbA));
+    			output.append(newline);
+    		}
+
+    		@Override
+    		public void eventResponseReceived(byte[] responseBytes) {
+    			// TODO Auto-generated method stub
+    			// TODO Auto-generated method stub
+    			//System.out.println("Response Received: " + UtilShimmer.bytesToHexString(responseBytes));
+    			output.append("Response Received: " + UtilShimmer.bytesToHexString(responseBytes));
+    			output.append(newline);
+    		}
+
+    		@Override
+    		public void eventAckReceived(byte[] instructionSent) {
+    			// TODO Auto-generated method stub
+    			// TODO Auto-generated method stub
+    			//System.out.println("Ack Received: " + UtilShimmer.bytesToHexString(instructionSent));
+    			output.append("Ack Received: " + UtilShimmer.bytesToHexString(instructionSent));
+    			output.append(newline);
+    		}
+    	});
+    }
 
 	/**
      * Create the GUI and show it.  For thread safety,

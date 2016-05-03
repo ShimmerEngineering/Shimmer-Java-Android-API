@@ -65,7 +65,21 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 	@Override
 	public void disconnect() throws DeviceException {
 		// TODO Auto-generated method stub
-		
+		if (mConnectThread != null) {
+			mConnectThread.cancel(); 
+			mConnectThread = null;
+		}
+		if (mConnectedThread != null) {
+			try {
+				wait(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			mConnectedThread.cancel(); 
+			mConnectedThread = null;
+		}
+
+	
 	}
 
 	@Override
@@ -82,13 +96,31 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 
 	@Override
 	public void txBytes(byte[] buf) throws DeviceException {
-		// TODO Auto-generated method stub
-		
+		// Create temporary object
+		ConnectedThread r;
+		// Synchronize a copy of the ConnectedThread
+		synchronized (this) {
+			//if (mState != BT_STATE.CONNECTED && mState != BT_STATE.STREAMING) return;
+			if (mState == BT_STATE.DISCONNECTED ) return;
+			r = mConnectedThread;
+		}
+		// Perform the write unsynchronized
+		r.write(buf);
 	}
 
 	@Override
 	public byte[] rxBytes(int numBytes) throws DeviceException {
 		// TODO Auto-generated method stub
+		byte[] b = new byte[numBytes];
+		try {
+			//mIN.read(b,0,numberofBytes);
+			mInStream.readFully(b,0,numBytes);
+			return(b);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Connection Lost");
+			e.printStackTrace();
+		}	
 		return null;
 	}
 
@@ -113,20 +145,38 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 
 	@Override
 	public boolean bytesAvailableToBeRead() throws DeviceException {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			if (mInStream!=null){
+				if (mInStream.available()!=0){
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				System.out.println("IN STREAM NULL");
+				return false;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println(e);
+			return false;
+		}
+	
 	}
 
 	@Override
 	public int availableBytes() throws DeviceException {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			return mInStream.available();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 
 	@Override
 	public boolean isConnected() {
-		// TODO Auto-generated method stub
-		return false;
+		return mConnectThread.isConnected();
 	}
 	
 
@@ -137,11 +187,11 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 	 * succeeds or fails.
 	 */
 	private class ConnectThread extends Thread {
-		private final BluetoothSocket mmSocket;
-		private final BluetoothDevice mmDevice;
+		private final BluetoothSocket mSocket;
+		private final BluetoothDevice mDevice;
 
 		public ConnectThread(BluetoothDevice device) {
-			mmDevice = device;
+			mDevice = device;
 			BluetoothSocket tmp = null;
 			// Get a BluetoothSocket for a connection with the
 			// given BluetoothDevice
@@ -151,7 +201,7 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 				eventDeviceDisconnected();
 
 			}
-			mmSocket = tmp;
+			mSocket = tmp;
 		}
 
 		public void run() {
@@ -163,12 +213,12 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 			try {
 				// Connect the device through the socket. This will block
 				// until it succeeds or throws an exception
-				mmSocket.connect();
+				mSocket.connect();
 			} catch (IOException connectException) {
 				eventDeviceDisconnected();
 				// Unable to connect; close the socket and get out
 				try {
-					mmSocket.close();
+					mSocket.close();
 				} catch (IOException closeException) { }
 				return;
 			}
@@ -183,13 +233,17 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 			// Cancel any thread currently running a connection
 			if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
 			// Start the thread to manage the connection and perform transmissions
-			mConnectedThread = new ConnectedThread(mmSocket);
+			mConnectedThread = new ConnectedThread(mSocket);
 		}
 		
 		public void cancel() {
 			try {
-				mmSocket.close();
+				mSocket.close();
 			} catch (IOException e) { }
+		}
+		
+		public boolean isConnected(){
+			return mSocket.isConnected();
 		}
 	}
 	/**
@@ -215,11 +269,38 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 			//mInStream = new BufferedInputStream(tmpIn);
 			mInStream = new DataInputStream(tmpIn);
 			mOutStream = tmpOut;
+			mState = BT_STATE.CONNECTED;
+			eventDeviceConnected();
 		}
-		public void cancel() {
+		/**
+		 * Write to the connected OutStream.
+		 * @param buffer  The bytes to write
+		 */
+		private void write(byte[] buffer) {
 			try {
-				mSocket.close();
-			} catch (IOException e) { }
+				mOutStream.write(buffer);
+				
+			} catch (IOException e) {
+				
+			}
+		}
+
+		public void cancel() {
+			if(mInStream != null) {
+				try {
+					mInStream.close();
+				} catch (IOException e) {}
+			}
+			if(mOutStream != null) {
+				try {
+					mOutStream.close();
+				} catch (IOException e) {}
+			}
+			if(mSocket != null) {
+				try {
+					mSocket.close();
+				} catch (IOException e) {}
+			}
 		}
 	}
 
@@ -234,24 +315,7 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public void eventDeviceConnected() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void eventDeviceDisconnected() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setByteLevelDataCommListener(ByteLevelDataCommListener spl) {
-		// TODO Auto-generated method stub
-
-	}
+	
 }
 
 	

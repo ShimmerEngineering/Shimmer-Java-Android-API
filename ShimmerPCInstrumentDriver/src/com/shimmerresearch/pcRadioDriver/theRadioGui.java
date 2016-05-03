@@ -3,6 +3,7 @@ package com.shimmerresearch.pcRadioDriver;
 import javax.swing.JFrame;
 
 import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
+import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
@@ -93,10 +94,10 @@ public class theRadioGui{
 		
 		
 		
-		mSRP = new ShimmerRadioProtocol();
+		mSRP = new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
 		
-		mSRP.initialize(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200));
-	
+    	mSRP.initialize();
+
 		mSRP.setRadioListener(new RadioListener(){
 
 			@Override

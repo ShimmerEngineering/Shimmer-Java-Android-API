@@ -22,7 +22,6 @@ import jssc.SerialPortTimeoutException;
 public class ShimmerSerialPortJssc extends SerialPortComm implements ShimmerSerialEventCallback{
 
 	private SerialPort serialPort = null;
-	private ByteLevelDataCommListener mSPL;
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
@@ -339,26 +338,5 @@ public class ShimmerSerialPortJssc extends SerialPortComm implements ShimmerSeri
 		return serialPort.isOpened();
 	}
 
-	@Override
-	public void eventDeviceConnected() {
-		// TODO Auto-generated method stub
-		if (mSPL!=null){
-			mSPL.eventConnected();
-		}
-	}
-
-	@Override
-	public void eventDeviceDisconnected() {
-		// TODO Auto-generated method stub
-		if (mSPL!=null){
-			mSPL.eventDisconnected();
-		}
-	}
-
-	@Override
-	public void setByteLevelDataCommListener(ByteLevelDataCommListener spl) {
-		// TODO Auto-generated method stub
-		mSPL = spl;
-	}
 
 }

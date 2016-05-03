@@ -31,6 +31,9 @@ public class LiteProtocol extends RadioProtocol{
 
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	protected byte mCurrentCommand;
+	public LiteProtocol(){
+		
+	}
 	public LiteProtocol(ByteLevelDataComm mSerialPort) {
 		super(mSerialPort);
 		// TODO Auto-generated constructor stub

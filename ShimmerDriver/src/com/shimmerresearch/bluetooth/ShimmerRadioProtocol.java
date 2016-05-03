@@ -31,7 +31,13 @@ import com.shimmerresearch.sensor.ActionSetting;
 public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 
 	int mPacketSize;
-	int mOS = 1;
+	
+	public ShimmerRadioProtocol(ByteLevelDataComm dataComm, RadioProtocol radioProtocol){
+		mSerialPort = dataComm;
+		mRadioProtocol = radioProtocol;
+		mRadioProtocol.setByteLevelDataComm(dataComm);
+	}
+	
 	public void connect() throws DeviceException{
 		try{
 			mSerialPort.connect();
@@ -113,26 +119,14 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	
 	
 	
-	public void initialize(ByteLevelDataComm bldc){
+	public void initialize(){
 		
-		
-		//mSerialPort = new ShimmerSerialPortJssc(address, address, SerialPort.BAUDRATE_115200);
-		mSerialPort = bldc;
 		mSerialPort.setVerboseMode(false,false);
 		mSerialPort.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
 
 			@Override
 			public void eventConnected() {
 				// TODO Auto-generated method stub
-				int OS=1;
-				if (OS==1){
-					mRadioProtocol = new LiteProtocol(mSerialPort);	
-					
-				} else {
-					//mSerialPort = new ShimmerSerialPortAndroid();
-					mRadioProtocol = new LiteProtocol(mSerialPort);
-				}
-				
 				try {
 					mRadioProtocol.setProtocolListener(new ProtocolListener(){
 
