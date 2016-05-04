@@ -136,6 +136,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public List<ShimmerLogDetails> mListofLogs = new ArrayList<ShimmerLogDetails>();
 
 	public boolean mVerboseMode = true;
+
+	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
+	protected long mDerivedSensors = (long)0;												// This stores the sensors channels derived in SW
+
 	
 	// --------------- Abstract Methods Start --------------------------
 	

@@ -467,8 +467,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected String mClassName="Shimmer";
 	protected double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
-	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
-	protected long mDerivedSensors = (long)0;												// This stores the sensors channels derived in SW
 	protected int mBluetoothBaudRate=9; //460800
 
 	protected int mPacketSize=0; 													// Default 2 bytes for time stamp and 6 bytes for accelerometer 
