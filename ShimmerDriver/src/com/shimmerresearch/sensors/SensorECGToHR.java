@@ -59,7 +59,7 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 			CHANNEL_UNITS.BEATS_PER_MINUTE,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	{
-		//TODO put into constructor
+		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelEcgToHr.mDefaultUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
 		channelEcgToHr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
@@ -182,9 +182,12 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public void setDefaultConfiguration() {
-		// TODO Auto-generated method stub
-		
+	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+		if(mSensorMap.containsKey(sensorMapKey)){
+			//TODO set defaults for particular sensor
+			return true;
+		}
+		return false;
 	}
 
 	@Override

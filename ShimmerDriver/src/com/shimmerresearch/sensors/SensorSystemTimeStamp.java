@@ -66,7 +66,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
-		//TODO put into constructor
+		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		cDSystemTimestamp.mChannelSource = CHANNEL_SOURCE.API;
 		cDSystemTimestamp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
@@ -78,7 +78,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
-		//TODO put into constructor
+		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		cDSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
 		cDSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
@@ -111,7 +111,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 
-	//TODO: include somewhere (SensorDetails??)
+	//TODO: include somewhere (SensorDetails/ChannelDetails??)
 //	@Override
 //	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 //		int index = 0;
@@ -180,8 +180,12 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 
 	@Override
-	public void setDefaultConfiguration() {
-		// TODO Auto-generated method stub
+	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+		if(mSensorMap.containsKey(sensorMapKey)){
+			//TODO set defaults for particular sensor
+			return true;
+		}
+		return false;
 	}
 
 	@Override

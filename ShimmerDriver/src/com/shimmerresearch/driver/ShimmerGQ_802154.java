@@ -416,7 +416,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		//Check if Expansion board power is required for any of the enabled sensors
 		//TODO replace with checkIfInternalExpBrdPowerIsNeeded from ShimmerObject
-		mInternalExpPower = (super.isInternalExpBrdPowerRequired()? 1:0);
+		mInternalExpPower = (super.checkIfInternalExpBrdPowerIsNeeded()? 1:0);
 //		mInternalExpPower = 0;
 //		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 //			if(abstractSensor.mIntExpBoardPowerRequired && abstractSensor.isAnySensorChannelEnabled(COMMUNICATION_TYPE.IEEE802154)){

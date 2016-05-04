@@ -8082,6 +8082,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mConfigFileCreationFlag = state;
 	}
 	
+	@Override
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
@@ -8473,6 +8474,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * Map. Used in Consensys for dynamic GUI generation to configure a Shimmer.
 	 * 
 	 */
+	@Override
 	public void sensorMapUpdateFromEnabledSensorsVars() {
 
 		checkExgResolutionFromEnabledSensorsVar();
@@ -8677,6 +8679,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the sensor state to set 
 	 * @return a boolean indicating if the sensors state was successfully changed
 	 */
+	@Override
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
 		
 		if(mSensorMap!=null) {
@@ -8809,7 +8812,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	/**Automatically control internal expansion board power based on sensor map
 	 */
-	private void checkIfInternalExpBrdPowerIsNeeded(){
+	@Override
+	protected boolean checkIfInternalExpBrdPowerIsNeeded(){
 
 		if (getHardwareVersion() == HW_ID.SHIMMER_3){
 			for(Integer channelKey:mSensorMap.keySet()) {
@@ -8832,6 +8836,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
+		return (mInternalExpPower > 0)? true:false;
 	}
 	
 	public List<Integer> sensorMapConflictCheck(Integer key){
@@ -8857,75 +8862,76 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-	//TODO MOVE TO SHIMMERDEVICE
-	/**
-	 * @param originalSensorMapkey This takes in a single sensor map key to check for conflicts and correct
-	 * @return enabledSensors This returns the new set of enabled sensors, where any sensors which conflicts with sensorToCheck is disabled on the bitmap, so sensorToCheck can be accomodated (e.g. for Shimmer2 using ECG will disable EMG,GSR,..basically any daughter board)
-	 * @return boolean 
-	 *  
-	 */
-	public void sensorMapConflictCheckandCorrect(int originalSensorMapkey){
-		
-		SensorDetails sdOriginal = mSensorMap.get(originalSensorMapkey); 
-		if(sdOriginal != null) {
-			if(sdOriginal.mSensorDetails.mListOfSensorMapKeysConflicting != null) {
-				for(Integer sensorMapKeyConflicting:sdOriginal.mSensorDetails.mListOfSensorMapKeysConflicting) {
-					SensorDetails sdConflicting = mSensorMap.get(sensorMapKeyConflicting); 
-					if(sdConflicting != null) {
-						sdConflicting.setIsEnabled(false);
-						if(sdConflicting.isDerivedChannel()) {
-							mDerivedSensors &= ~sdConflicting.mDerivedSensorBitmapID;
-						}
-						setDefaultConfigForSensor(sensorMapKeyConflicting, sdConflicting.isEnabled());
-					}
-				}
-			}
-		}
-		
-		sensorMapCheckandCorrectSensorDependencies();
-		sensorMapCheckandCorrectHwDependencies();
-	}
-
-	
-	//TODO MOVE TO SHIMMERDEVICE
-	private void sensorMapCheckandCorrectSensorDependencies() {
-		//Cycle through any required sensors and update sensorMap channel enable values
-		for(Integer sensorMapKey:mSensorMap.keySet()) {
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
-			if(sensorDetails.mSensorDetails.mListOfSensorMapKeysRequired != null) {
-				for(Integer requiredSensorKey:sensorDetails.mSensorDetails.mListOfSensorMapKeysRequired) {
-					if(!mSensorMap.get(requiredSensorKey).isEnabled()) {
-						sensorDetails.setIsEnabled(false);
-						if(sensorDetails.isDerivedChannel()) {
-							mDerivedSensors &= ~sensorDetails.mDerivedSensorBitmapID;
-						}
-						setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
-						break;
-					}
-				}
-			}
-		}
-	}
-	
-	//TODO MOVE TO SHIMMERDEVICE
-	private void sensorMapCheckandCorrectHwDependencies() {
-		for(Integer sensorMapKey:mSensorMap.keySet()) {
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
-			if(sensorDetails.mSensorDetails.mListOfCompatibleVersionInfo != null) {
-				if(!checkIfVersionCompatible(sensorDetails.mSensorDetails.mListOfCompatibleVersionInfo)) {
-					sensorDetails.setIsEnabled(false);
-					if(sensorDetails.isDerivedChannel()) {
-						mDerivedSensors &= ~sensorDetails.mDerivedSensorBitmapID;
-					}
-					setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
-				}
-			}
-		}
-	}
+//	//TODO MOVE TO SHIMMERDEVICE
+//	/**
+//	 * @param originalSensorMapkey This takes in a single sensor map key to check for conflicts and correct
+//	 * @return enabledSensors This returns the new set of enabled sensors, where any sensors which conflicts with sensorToCheck is disabled on the bitmap, so sensorToCheck can be accomodated (e.g. for Shimmer2 using ECG will disable EMG,GSR,..basically any daughter board)
+//	 * @return boolean 
+//	 *  
+//	 */
+//	public void sensorMapConflictCheckandCorrect(int originalSensorMapkey){
+//		
+//		SensorDetails sdOriginal = mSensorMap.get(originalSensorMapkey); 
+//		if(sdOriginal != null) {
+//			if(sdOriginal.mSensorDetails.mListOfSensorMapKeysConflicting != null) {
+//				for(Integer sensorMapKeyConflicting:sdOriginal.mSensorDetails.mListOfSensorMapKeysConflicting) {
+//					SensorDetails sdConflicting = mSensorMap.get(sensorMapKeyConflicting); 
+//					if(sdConflicting != null) {
+//						sdConflicting.setIsEnabled(false);
+//						if(sdConflicting.isDerivedChannel()) {
+//							mDerivedSensors &= ~sdConflicting.mDerivedSensorBitmapID;
+//						}
+//						setDefaultConfigForSensor(sensorMapKeyConflicting, sdConflicting.isEnabled());
+//					}
+//				}
+//			}
+//		}
+//		
+//		sensorMapCheckandCorrectSensorDependencies();
+//		sensorMapCheckandCorrectHwDependencies();
+//	}
+//
+//	
+//	//TODO MOVE TO SHIMMERDEVICE
+//	private void sensorMapCheckandCorrectSensorDependencies() {
+//		//Cycle through any required sensors and update sensorMap channel enable values
+//		for(Integer sensorMapKey:mSensorMap.keySet()) {
+//			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
+//			if(sensorDetails.mSensorDetails.mListOfSensorMapKeysRequired != null) {
+//				for(Integer requiredSensorKey:sensorDetails.mSensorDetails.mListOfSensorMapKeysRequired) {
+//					if(!mSensorMap.get(requiredSensorKey).isEnabled()) {
+//						sensorDetails.setIsEnabled(false);
+//						if(sensorDetails.isDerivedChannel()) {
+//							mDerivedSensors &= ~sensorDetails.mDerivedSensorBitmapID;
+//						}
+//						setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
+//						break;
+//					}
+//				}
+//			}
+//		}
+//	}
+//	
+//	//TODO MOVE TO SHIMMERDEVICE
+//	private void sensorMapCheckandCorrectHwDependencies() {
+//		for(Integer sensorMapKey:mSensorMap.keySet()) {
+//			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
+//			if(sensorDetails.mSensorDetails.mListOfCompatibleVersionInfo != null) {
+//				if(!checkIfVersionCompatible(sensorDetails.mSensorDetails.mListOfCompatibleVersionInfo)) {
+//					sensorDetails.setIsEnabled(false);
+//					if(sensorDetails.isDerivedChannel()) {
+//						mDerivedSensors &= ~sensorDetails.mDerivedSensorBitmapID;
+//					}
+//					setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
+//				}
+//			}
+//		}
+//	}
 	
 
 	//TODO set defaults when ").setIsEnabled(false))" is set manually in the code
-	private void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	@Override
+	protected void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
 			setDefaultLsm303dlhcAccelSensorConfig(state);
 		}

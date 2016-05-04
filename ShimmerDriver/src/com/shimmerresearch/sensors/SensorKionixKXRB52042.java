@@ -112,9 +112,12 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public void setDefaultConfiguration() {
-		// TODO Auto-generated method stub
-		
+	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+		if(mSensorMap.containsKey(sensorMapKey)){
+			//TODO set defaults for particular sensor
+			return true;
+		}
+		return false;
 	}
 
 

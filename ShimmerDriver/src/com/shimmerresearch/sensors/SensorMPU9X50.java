@@ -1031,12 +1031,23 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public void setDefaultConfiguration() {
-		// TODO Auto-generated method stub
-
-//		setDefaultMpu9150MplSensorConfig(state);
-//		setDefaultMpu9150GyroSensorConfig(state);
-//		setDefaultMpu9150AccelSensorConfig(state);
+	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+		if(mSensorMap.containsKey(sensorMapKey)){
+			//TODO set defaults for particular sensor
+			
+			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+				setDefaultMpu9150AccelSensorConfig(state);
+			}
+			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+				setDefaultMpu9150GyroSensorConfig(state);
+			}
+//			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_){
+//				setDefaultMpu9150MplSensorConfig(state);
+//			}
+			
+			return true;
+		}
+		return false;
 	}
 	
 	// ----------- MPU9X50 options start -------------------------

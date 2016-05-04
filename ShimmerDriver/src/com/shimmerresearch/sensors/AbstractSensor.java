@@ -68,7 +68,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 
 	public abstract void setSamplingRateFromFreq();
-	public abstract void setDefaultConfiguration();
+	public abstract boolean setDefaultConfiguration(int sensorMapKey, boolean state);
 	
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);

@@ -150,7 +150,6 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		return actionSetting;
 	}
 
-	
 //	@Override
 //	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 //		
@@ -219,9 +218,12 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public void setDefaultConfiguration() {
-		// TODO Auto-generated method stub
-		
+	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+		if(mSensorMap.containsKey(sensorMapKey)){
+			//TODO set defaults for particular sensor
+			return true;
+		}
+		return false;
 	}
 	
 //	@Override

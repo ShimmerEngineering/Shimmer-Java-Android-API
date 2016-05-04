@@ -94,6 +94,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 //			CHANNEL_UNITS.MICROSIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
+		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelGsr.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelGsr.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
 		channelGsr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
@@ -147,7 +148,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		}
 	}
 	
-	//TODO include somewhere (SensorDetails??)
+	//TODO: include somewhere (SensorDetails/ChannelDetails??)
 //	@Override
 //	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 //		int index = 0;
@@ -397,9 +398,12 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public void setDefaultConfiguration() {
-		// TODO Auto-generated method stub
-		
+	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+		if(mSensorMap.containsKey(sensorMapKey)){
+			//TODO set defaults for particular sensor
+			return true;
+		}
+		return false;
 	}
 
 }
