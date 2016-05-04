@@ -1190,7 +1190,7 @@ public class ShimmerService extends Service {
 		boolean logAndStream = false;
 		Shimmer stemp=(Shimmer) mMultiShimmer.get(bluetoothAddress);
 		if (stemp!=null){
-			if(stemp.getFWIdentifier()==3)
+			if(stemp.getFirmwareIdentifier()==3)
 				logAndStream = true;
 		}
 		return logAndStream;
@@ -1201,7 +1201,7 @@ public class ShimmerService extends Service {
 		
 		Shimmer stemp=(Shimmer) mMultiShimmer.get(bluetoothAddress);
 		if (stemp!=null){
-			if(stemp.getFWIdentifier()==3)
+			if(stemp.getFirmwareIdentifier()==3)
 				stemp.readStatusLogAndStream();
 		}
 	}
@@ -1210,7 +1210,7 @@ public class ShimmerService extends Service {
 		
 		Shimmer stemp=(Shimmer) mMultiShimmer.get(bluetoothAddress);
 		if (stemp!=null){
-			if(stemp.getFWIdentifier()==3)
+			if(stemp.getFirmwareIdentifier()==3)
 				return stemp.isSensing();
 		}
 		
@@ -1221,7 +1221,7 @@ public class ShimmerService extends Service {
 		
 		Shimmer stemp=(Shimmer) mMultiShimmer.get(bluetoothAddress);
 		if (stemp!=null){
-			if(stemp.getFWIdentifier()==3)
+			if(stemp.getFirmwareIdentifier()==3)
 				return stemp.isDocked();
 		}
 		

@@ -57,7 +57,9 @@ public class CommandsActivity extends ServiceActivity {
 	public boolean isLedChecked;
 	AlertDialog.Builder dialogPPGtoHR;
 	AlertDialog.Builder dialogECGtoHR;
-	
+	final String[] ListofPressureResolution={"Low","Standard","High","Very High"};
+	final Integer[] ListofPressureResolutionConfigValues={0,1,2,3};
+    
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -394,12 +396,12 @@ public class CommandsActivity extends ServiceActivity {
 
         dialogECGtoHR = new AlertDialog.Builder(this);
         dialogECGtoHR.setCancelable(false);
-        final AlertDialog.Builder dialogPressureResolutionShimmer3 = new AlertDialog.Builder(this);		 
-        dialogPressureResolutionShimmer3.setTitle("Pressure Resolution").setItems(Configuration.Shimmer3.ListofPressureResolution, new DialogInterface.OnClickListener() {
+        final AlertDialog.Builder dialogPressureResolutionShimmer3 = new AlertDialog.Builder(this);
+        //dialogPressureResolutionShimmer3.setTitle("Pressure Resolution").setItems(Configuration.Shimmer3.ListofPressureResolution, new DialogInterface.OnClickListener() {
+		dialogPressureResolutionShimmer3.setTitle("Pressure Resolution").setItems(ListofPressureResolution, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int item) {
-                		 Log.d("Shimmer",Configuration.Shimmer3.ListofPressureResolution[item]);
                 		 int pressureRes=0;
-               		  
+               		  /*
                		    if (Configuration.Shimmer3.ListofPressureResolution[item]=="Low"){
              	  		    	pressureRes=0;
              	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]=="Standard"){
@@ -409,10 +411,19 @@ public class CommandsActivity extends ServiceActivity {
              	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]=="Very High"){
              	  		    	pressureRes=3;
              	  		    } 
-
+*/
+                		 if (ListofPressureResolution[item]=="Low"){
+          	  		    	pressureRes=0;
+          	  		    } else if (ListofPressureResolution[item]=="Standard"){
+          	  		    	pressureRes=1;
+          	  		    } else if (ListofPressureResolution[item]=="High"){
+          	  		    	pressureRes=2;
+          	  		    } else if (ListofPressureResolution[item]=="Very High"){
+          	  		    	pressureRes=3;
+          	  		    } 
                		    ServiceActivity.mService.writePressureResolution(mBluetoothAddress, pressureRes);
-               		    Toast.makeText(getApplicationContext(), "Pressure resolution changed. New resolution = "+Configuration.Shimmer3.ListofPressureResolution[item], Toast.LENGTH_SHORT).show();
-               		    buttonPressureResolution.setText("PRESSURE RES"+"\n"+"("+Configuration.Shimmer3.ListofPressureResolution[item]+")");
+               		    Toast.makeText(getApplicationContext(), "Pressure resolution changed. New resolution = "+ListofPressureResolution[item], Toast.LENGTH_SHORT).show();
+               		    buttonPressureResolution.setText("PRESSURE RES"+"\n"+"("+ListofPressureResolution[item]+")");
            	      }
         });
         
@@ -533,7 +544,7 @@ public class CommandsActivity extends ServiceActivity {
             	buttonGyroRange.setText("GYRO RANGE"+"\n"+currentGyroRange);
             	String currentMagRange = "("+Configuration.Shimmer3.ListofMagRange[shimmer.getMagRange()-1]+")";
         		buttonMagRange.setText("MAG RANGE"+"\n"+currentMagRange);
-        		String currentPressureResolution = "("+Configuration.Shimmer3.ListofPressureResolution[shimmer.getPressureResolution()]+")";
+        		String currentPressureResolution = "("+ListofPressureResolution[shimmer.getPressureResolution()]+")";
         		buttonPressureResolution.setText("PRESSURE RES"+"\n"+currentPressureResolution);
             	
             	if (shimmer.getAccelRange()==0){
