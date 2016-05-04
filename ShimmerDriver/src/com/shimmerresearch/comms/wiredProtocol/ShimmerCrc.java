@@ -23,7 +23,7 @@ public class ShimmerCrc {
 	 * @param len the length of the byte array to calculate the CRC on
 	 * @return the calculated CRC value
 	 */
-	protected static byte[] shimmerUartCrcCalc(byte[] msg, int len) {
+	public static byte[] shimmerUartCrcCalc(byte[] msg, int len) {
         int CRC_INIT = 0xB0CA;
         int crcCalc;
         int i;
@@ -47,7 +47,7 @@ public class ShimmerCrc {
 	 * @param msg the input byte array
 	 * @return a boolean value value, true if CRC matches and false if CRC doesn't match
 	 */
-	protected static boolean shimmerUartCrcCheck(byte[] msg) {
+	public static boolean shimmerUartCrcCheck(byte[] msg) {
         byte[] crc = shimmerUartCrcCalc(msg, msg.length - 2);
         
         if ((crc[0] == msg[msg.length - 2])

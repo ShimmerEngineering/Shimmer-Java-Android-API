@@ -1,20 +1,25 @@
-package com.shimmerresearch.comms.wiredProtocol;
+package com.shimmerresearch.pcserialport;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
 
 import jssc.SerialPort;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
+import com.shimmerresearch.comms.wiredProtocol.DockException;
+import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
+import com.shimmerresearch.comms.wiredProtocol.ShimmerCrc;
+import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
+import com.shimmerresearch.comms.wiredProtocol.UartRxPacketObject;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.MsgDock;

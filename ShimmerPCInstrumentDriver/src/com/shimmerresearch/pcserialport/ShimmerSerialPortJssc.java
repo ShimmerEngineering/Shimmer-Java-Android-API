@@ -1,19 +1,21 @@
-package com.shimmerresearch.comms.serialPortInterface;
+package com.shimmerresearch.pcserialport;
 
 import java.util.concurrent.ExecutionException;
-
-
-import com.shimmerresearch.driver.DeviceException;
-//import com.shimmerresearch.comms.wiredProtocol.DeviceException;
-//import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
-//import com.shimmerresearch.comms.wiredProtocol.ShimmerCommsWired;
-import com.shimmerresearch.driver.UtilShimmer;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
+
+import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
+import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
+import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
+import com.shimmerresearch.driver.DeviceException;
+//import com.shimmerresearch.comms.wiredProtocol.DeviceException;
+//import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
+//import com.shimmerresearch.comms.wiredProtocol.ShimmerCommsWired;
+import com.shimmerresearch.driver.UtilShimmer;
 
 /**
  * @author Mark Nolan

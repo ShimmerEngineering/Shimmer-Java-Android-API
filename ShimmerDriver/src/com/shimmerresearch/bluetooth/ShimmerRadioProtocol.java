@@ -5,20 +5,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import jssc.SerialPort;
-import jssc.SerialPortException;
-
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.ProtocolListener;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.RadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
-import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
-import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
+import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.ObjectCluster;

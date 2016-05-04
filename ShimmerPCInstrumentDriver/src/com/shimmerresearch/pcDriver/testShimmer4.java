@@ -2,9 +2,9 @@ package com.shimmerresearch.pcDriver;
 
 import jssc.SerialPort;
 
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialPortJssc;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.Shimmer4Test;
+import com.shimmerresearch.pcserialport.ShimmerSerialPortJssc;
 
 public class testShimmer4 {
 	
