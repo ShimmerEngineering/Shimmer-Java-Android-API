@@ -26,7 +26,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensor.ActionSetting;
+import com.shimmerresearch.sensors.ActionSetting;
 
 public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 

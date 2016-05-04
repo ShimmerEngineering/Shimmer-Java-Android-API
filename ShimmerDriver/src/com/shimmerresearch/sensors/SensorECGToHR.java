@@ -1,0 +1,203 @@
+package com.shimmerresearch.sensors;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+
+public class SensorECGToHR extends AbstractSensor implements Serializable{
+
+	/** * */
+	private static final long serialVersionUID = 4160314338085066414L;
+
+	//--------- Sensor specific variables start --------------
+	//--------- Sensor specific variables end --------------
+
+	//--------- Bluetooth commands start --------------
+	//--------- Bluetooth commands end --------------
+
+	//--------- Configuration options start --------------
+	//--------- Configuration options end --------------
+
+	//--------- Sensor info start --------------
+	public static final SensorDetailsRef sensorEcgToHr = new SensorDetailsRef(
+			0,0, Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR);
+	
+    public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
+    static {
+        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ECG_TO_HR_FW, sensorEcgToHr);
+		mSensorMapRef = Collections.unmodifiableMap(aMap);
+	}
+	//--------- Sensor info end --------------
+    
+	//--------- Channel info start --------------
+	public static final ChannelDetails channelEcgToHr  = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
+			Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
+			DatabaseChannelHandles.ECG_TO_HR,
+			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.BEATS_PER_MINUTE,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	{
+		//TODO put into constructor
+		channelEcgToHr.mDefaultUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
+		channelEcgToHr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+	}
+	
+    public static final Map<String, ChannelDetails> mChannelMapRef;
+    static {
+        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR, channelEcgToHr);
+		mChannelMapRef = Collections.unmodifiableMap(aMap);
+    }
+	//--------- Channel info end --------------
+
+	
+	/** Constructor for this Sensor
+	 * @param svo
+	 */
+	public SensorECGToHR(ShimmerVerObject svo) {
+		super(svo);
+		mSensorName = SENSORS.ECG_TO_HR.toString();
+	}
+	
+	@Override
+	public void generateSensorMap(ShimmerVerObject svo) {
+		updateSensorMap(mSensorMapRef, mChannelMapRef);
+
+		//Update the derived sensor bit index
+		SensorDetails sensorEcgToHr = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_ECG_TO_HR_FW);
+		if(sensorEcgToHr!=null){
+			sensorEcgToHr.mDerivedSensorBitmapID = 0x80 << (8*1);
+		}
+
+	}
+
+	@Override
+	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+		// TODO Auto-generated method stub
+	}
+
+//	@Override
+//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+//		int index = 0;
+//		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
+//			//first process the data originating from the Shimmer sensor
+//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+//			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+//			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
+//			objectCluster.indexKeeper++;
+//			index=index+channelDetails.mDefaultNumBytes;
+//		}
+//		return objectCluster;
+//	}
+
+//	@Override
+//	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
+//		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
+//
+//		int count=1;
+//		ChannelDetails channelDetails  = new ChannelDetails(
+//				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
+//				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
+//				DatabaseChannelHandles.ECG_TO_HR,
+//				CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
+//				CHANNEL_UNITS.BEATS_PER_MINUTE,
+//				Arrays.asList(CHANNEL_TYPE.CAL));
+//		mapOfChannelDetails.put(count,channelDetails);
+//		channelDetails.mIsEnabled = true;
+//		channelDetails.mDefaultUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
+//		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+//		mMapOfChannelDetails.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
+//		
+//		return mMapOfChannelDetails; 
+//	}
+
+	@Override
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object setConfigValueUsingConfigLabel(String componentName,
+			Object valueToSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+//	@Override
+//	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	
+//	@Override
+//	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
+	@Override
+	public void setSamplingRateFromFreq() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDefaultConfiguration() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+}

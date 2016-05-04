@@ -93,6 +93,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcDriver.CallbackObject;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
 
@@ -988,8 +989,8 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				for (int m=0; m<Configuration.Shimmer3.ListofGSRRange.length; m++) {
 					comboBoxGsrRange.addItem(Configuration.Shimmer3.ListofGSRRange[m]);
 				}
-				for (int n=0; n<Configuration.Shimmer3.ListofPressureResolution.length; n++) {
-					comboBoxPressureResolution.addItem(Configuration.Shimmer3.ListofPressureResolution[n]);
+				for (int n=0; n<SensorBMP180.ListofPressureResolution.length; n++) {
+					comboBoxPressureResolution.addItem(SensorBMP180.ListofPressureResolution[n]);
 				}
 				chckbxVoltageMon.setVisible(false);
 			} else {

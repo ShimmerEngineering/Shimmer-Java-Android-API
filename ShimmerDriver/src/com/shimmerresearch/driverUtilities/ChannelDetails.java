@@ -87,11 +87,11 @@ public class ChannelDetails implements Serializable {
 	public boolean mStoreToDatabase = true;
 	
 	//JC: FOR GQ
-	public boolean mIsEnabled = true;
+//	public boolean mIsEnabled = true;
 	
 	public enum CHANNEL_SOURCE{
-	SHIMMER,
-	API
+		SHIMMER,
+		API
 	}
 	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
 	//each channel if originates from a packetbytearray/sensorbytearray should have this variable defined, null indicates this channel is created within the API
@@ -108,15 +108,11 @@ public class ChannelDetails implements Serializable {
 	
 	public ChannelDetails(String objectClusterName, 
 			String guiName, 
-			String units, 
+			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes, 
 			boolean showWhileStreaming, 
 			boolean storeToDatabase) {
-		
-		mObjectClusterName = objectClusterName;
-		mGuiName = guiName;
-		mDefaultCalibratedUnits = units;
-		mListOfChannelTypes = listOfChannelTypes;
+		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes);
 		
 		mShowWhileStreaming = showWhileStreaming;
 		mStoreToDatabase = storeToDatabase;
@@ -124,19 +120,12 @@ public class ChannelDetails implements Serializable {
 		checkDatabaseChannelHandle();
 	}
 	
-
 	public ChannelDetails(String objectClusterName, 
 			String guiName, 
 			String databaseChannelHandle, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes) {
-		
-		mObjectClusterName = objectClusterName;
-		mGuiName = guiName;
-		mDatabaseChannelHandle = databaseChannelHandle;
-		mDefaultCalibratedUnits = defaultCalibratedUnits;
-		mListOfChannelTypes = listOfChannelTypes;
-		
+		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes, databaseChannelHandle);
 		checkDatabaseChannelHandle();
 	}
 
@@ -147,11 +136,7 @@ public class ChannelDetails implements Serializable {
 			List<CHANNEL_TYPE> listOfChannelTypes, 
 			boolean showWhileStreaming, 
 			boolean storeToDatabase){
-		
-		mObjectClusterName = objectClusterName;
-		mGuiName = guiName;
-		mDatabaseChannelHandle = databaseChannelHandle;
-		mListOfChannelTypes = listOfChannelTypes;
+		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes, databaseChannelHandle);
 		
 		mShowWhileStreaming = showWhileStreaming;
 		mStoreToDatabase = storeToDatabase;
@@ -164,26 +149,23 @@ public class ChannelDetails implements Serializable {
 	 * currently in standard Shimmer operations.
 	 * 
 	 * @param guiName the String name to assign to the channel 
-	 * @param channelDataType the ChannelDataType of the channel
+	 * @param defaultChannelDataType the ChannelDataType of the channel
 	 * @param numBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
 	public ChannelDetails(String objectClusterName, 
 			String guiName, 
 			String databaseChannelHandle, 
-			String channelDataType, int numBytes, 
+			String defaultChannelDataType, 
+			int numBytes, 
 			String channelDataEndian, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes){
-		
-		mObjectClusterName = objectClusterName;
-		mGuiName = guiName;
-		mDatabaseChannelHandle = databaseChannelHandle;
-		mDefaultChannelDataType = channelDataType;
+		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes, databaseChannelHandle);
+
+		mDefaultChannelDataType = defaultChannelDataType;
 		mDefaultNumBytes = numBytes;
 		mDefaultChannelDataEndian = channelDataEndian;
-		mDefaultCalibratedUnits = defaultCalibratedUnits;
-		mListOfChannelTypes = listOfChannelTypes;
 		
 		checkDatabaseChannelHandle();
 	}
@@ -191,7 +173,7 @@ public class ChannelDetails implements Serializable {
 	public ChannelDetails(String objectClusterName, 
 			String guiName, 
 			String databaseChannelHandle, 
-			String channelDataType, 
+			String defaultChannelDataType, 
 			int numBytes, 
 			String channelDataEndian, 
 			String defaultCalibratedUnits, 
@@ -202,16 +184,17 @@ public class ChannelDetails implements Serializable {
 		this(objectClusterName,
 			guiName,
 			databaseChannelHandle,
-			channelDataType,
+			defaultChannelDataType,
 			numBytes,
-			channelDataEndian, defaultCalibratedUnits,
+			channelDataEndian, 
+			defaultCalibratedUnits,
 			listOfChannelTypes);
 		
 		mShowWhileStreaming = showWhileStreaming;
 		mStoreToDatabase = storeToDatabase;
 	}
 
-	
+	//TODO below not currently used
 	/**
 	 * Holds Channel details for parsing. Experimental feature not used
 	 * currently in standard Shimmer operations.
@@ -225,23 +208,36 @@ public class ChannelDetails implements Serializable {
 			String guiName, 
 			String databaseChannelHandle, 
 			int channelId, 
-			String channelDataType, 
+			String defaultChannelDataType, 
 			int numBytes, 
 			String channelDataEndian, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes){
 		
-		mObjectClusterName = objectClusterName;
-		mGuiName = guiName;
-		mDatabaseChannelHandle = databaseChannelHandle;
+		this(objectClusterName,
+				guiName,
+				databaseChannelHandle,
+				defaultChannelDataType,
+				numBytes,
+				channelDataEndian, 
+				defaultCalibratedUnits,
+				listOfChannelTypes);
+
 		mChannelId = channelId;
-		mDefaultChannelDataType = channelDataType;
-		mDefaultNumBytes = numBytes;
-		mDefaultChannelDataEndian = channelDataEndian;
-		mDefaultCalibratedUnits = defaultCalibratedUnits;
-		mListOfChannelTypes = listOfChannelTypes;
 		
 		checkDatabaseChannelHandle();
+	}
+
+	public ChannelDetails(String objectClusterName, String guiName, String defaultCalibratedUnits, List<CHANNEL_TYPE> listOfChannelTypes) {
+		mObjectClusterName = objectClusterName;
+		mGuiName = guiName;
+		mDefaultCalibratedUnits = defaultCalibratedUnits;
+		mListOfChannelTypes = listOfChannelTypes;
+	}
+
+	public ChannelDetails(String objectClusterName, String guiName, String defaultCalibratedUnits, List<CHANNEL_TYPE> listOfChannelTypes, String databaseChannelHandle) {
+		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes);
+		mDatabaseChannelHandle = databaseChannelHandle;
 	}
 
 	private void checkDatabaseChannelHandle(){

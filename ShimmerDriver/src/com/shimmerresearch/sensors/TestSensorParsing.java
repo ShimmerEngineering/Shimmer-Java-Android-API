@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensor;
+package com.shimmerresearch.sensors;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -21,7 +21,7 @@ public class TestSensorParsing {
 		ojc = (ObjectCluster) shimmer.buildMsg(packetByteArray2, COMMUNICATION_TYPE.IEEE802154);
 		*/
 		
-		System.out.println(AbstractSensor.SENSORS.ECG_TO_HR.sensorIndex() + AbstractSensor.SENSORS.ECG_TO_HR.toString());
-		System.out.println(AbstractSensor.SENSORS.GSR.sensorIndex() + AbstractSensor.SENSORS.GSR.toString());
+		System.out.println(AbstractSensor.SENSORS.ECG_TO_HR + AbstractSensor.SENSORS.ECG_TO_HR.toString());
+		System.out.println(AbstractSensor.SENSORS.GSR + AbstractSensor.SENSORS.GSR.toString());
 	}	
 }
