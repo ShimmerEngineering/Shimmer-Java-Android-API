@@ -1290,6 +1290,7 @@ public class Configuration {
 
 			aMap.putAll(SensorMPU9X50.mSensorMapRef);
 			aMap.putAll(SensorEXG.mSensorMapRef);
+			aMap.putAll(SensorBMP180.mSensorMapRef);
 //			aMap.putAll(SensorGSR.mSensorMapRef);
 
 			// Assemble the channel map

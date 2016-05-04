@@ -224,7 +224,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	public static final SensorDetailsRef sensorMpu9150MplHeading = new SensorDetailsRef((long)0, (long)0x08<<(3*8), Configuration.Shimmer3.GuiLabelSensors.MPL_HEADING,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_HEADING),
+			null,
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE),
 			Arrays.asList(
 					Configuration.Shimmer3.ObjectClusterSensorName.MPL_HEADING),
