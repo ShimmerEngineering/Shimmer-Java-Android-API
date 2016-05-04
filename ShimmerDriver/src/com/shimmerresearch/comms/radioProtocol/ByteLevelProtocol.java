@@ -7,6 +7,9 @@ public abstract class ByteLevelProtocol {
 	ByteLevelDataComm mShimmerRadio; //every radio protocol requires radio control
 	int mPacketSize;
 	
+	/**When using this, it is required that the byteleveldatacomm is set using the serByteLevelDataComm
+	 * 
+	 */
 	public ByteLevelProtocol(){
 	
 	}
@@ -33,5 +36,9 @@ public abstract class ByteLevelProtocol {
 	
 	public void setPacketSize(int pSize){
 		mPacketSize = pSize;
+	}
+	
+	public int getPacketSize(){
+		return mPacketSize;
 	}
 }
