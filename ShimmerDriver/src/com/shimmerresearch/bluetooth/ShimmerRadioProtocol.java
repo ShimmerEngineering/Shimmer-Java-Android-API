@@ -8,7 +8,7 @@ import java.util.List;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.ProtocolListener;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
-import com.shimmerresearch.comms.radioProtocol.RadioProtocol;
+import com.shimmerresearch.comms.radioProtocol.ByteLevelProtocol;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
@@ -26,7 +26,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 
 	int mPacketSize;
 	
-	public ShimmerRadioProtocol(ByteLevelDataComm dataComm, RadioProtocol radioProtocol){
+	public ShimmerRadioProtocol(ByteLevelDataComm dataComm, ByteLevelProtocol radioProtocol){
 		mSerialPort = dataComm;
 		mRadioProtocol = radioProtocol;
 		mRadioProtocol.setByteLevelDataComm(dataComm);
@@ -99,7 +99,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	
 	
 	List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
-	public RadioProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
+	public ByteLevelProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
 	ByteLevelDataComm mSerialPort;
 	
 	public void setRadioListener(RadioListener radioListener){

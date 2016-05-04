@@ -27,7 +27,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 
 
 
-public class LiteProtocol extends RadioProtocol{
+public class LiteProtocol extends ByteLevelProtocol{
 
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	protected byte mCurrentCommand;

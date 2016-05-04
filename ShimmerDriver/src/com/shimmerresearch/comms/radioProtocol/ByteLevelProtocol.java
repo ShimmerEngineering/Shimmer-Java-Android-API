@@ -2,16 +2,16 @@ package com.shimmerresearch.comms.radioProtocol;
 
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 
-public abstract class RadioProtocol {
+public abstract class ByteLevelProtocol {
 	ProtocolListener mProtocolListener;
 	ByteLevelDataComm mShimmerRadio; //every radio protocol requires radio control
 	int mPacketSize;
 	
-	public RadioProtocol(){
+	public ByteLevelProtocol(){
 	
 	}
 	
-	public RadioProtocol(ByteLevelDataComm shimmerRadio){
+	public ByteLevelProtocol(ByteLevelDataComm shimmerRadio){
 		mShimmerRadio = shimmerRadio;
 	}
 	
