@@ -83,14 +83,14 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		updateSensorMap(mSensorMapRef, mChannelMapRef);
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 
+		
 		//Update the derived sensor bit index
 		SensorDetails sensorEcgToHr = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_ECG_TO_HR_FW);
 		if(sensorEcgToHr!=null){
 			sensorEcgToHr.mDerivedSensorBitmapID = 0x80 << (8*1);
 		}
-
 	}
 
 	@Override
@@ -103,19 +103,19 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 		// TODO Auto-generated method stub
 	}
 
-//	@Override
-//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-//		int index = 0;
-//		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
-//			//first process the data originating from the Shimmer sensor
-//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-//			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
-//			objectCluster.indexKeeper++;
-//			index=index+channelDetails.mDefaultNumBytes;
-//		}
-//		return objectCluster;
-//	}
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+		int index = 0;
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			objectCluster.indexKeeper++;
+			index=index+channelDetails.mDefaultNumBytes;
+		}
+		return objectCluster;
+	}
 
 //	@Override
 //	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
@@ -200,6 +200,12 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

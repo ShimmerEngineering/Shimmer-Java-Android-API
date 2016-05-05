@@ -799,7 +799,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	
 	public boolean isChannelEnabled(int sensorKey) {
-		return super.isChannelEnabled(COMMUNICATION_TYPE.BLUETOOTH, sensorKey);
+		return super.isSensorEnabled(COMMUNICATION_TYPE.BLUETOOTH, sensorKey);
 //		SensorEnabledDetails sensor = mSensorEnabledMap.get(sensorKey);
 //	    if(sensor!=null){
 //		    return sensor.isEnabled();

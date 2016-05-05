@@ -3,6 +3,7 @@ package com.shimmerresearch.sensors;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,6 +56,12 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT),
 			false);
 
+    public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
+    static {
+        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, SensorSystemTimeStamp.sensorSystemTimeStampRef);
+		mSensorMapRef = Collections.unmodifiableMap(aMap);
+    }
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
@@ -82,6 +89,15 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		cDSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
 		cDSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
+	
+    public static final Map<String, ChannelDetails> mChannelMapRef;
+    static {
+        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, SensorSystemTimeStamp.cDSystemTimestamp);
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorSystemTimeStamp.cDSystemTimestampPlot);
+		mChannelMapRef = Collections.unmodifiableMap(aMap);
+    }
+
 	//--------- Channel info end --------------
 
 	public SensorSystemTimeStamp(ShimmerVerObject svo) {
@@ -91,13 +107,14 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		mSensorMap.clear();
+//		mSensorMap.clear();
+//		//TODO load channels based on list of channels in the SensorDetailsRef rather then manually loading them here -> need to create a ChannelMapRef like in Configuration.Shimmer3 and then cycle through
+//		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorSystemTimeStampRef);
+//		sensorDetails.mListOfChannels.add(cDSystemTimestamp);
+//		sensorDetails.mListOfChannels.add(cDSystemTimestampPlot);
+//		mSensorMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, sensorDetails);
 		
-		//TODO load channels based on list of channels in the SensorDetailsRef rather then manually loading them here -> need to create a ChannelMapRef like in Configuration.Shimmer3 and then cycle through
-		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorSystemTimeStampRef);
-		sensorDetails.mListOfChannels.add(cDSystemTimestamp);
-		sensorDetails.mListOfChannels.add(cDSystemTimestampPlot);
-		mSensorMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, sensorDetails);
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 	
 	@Override
@@ -113,39 +130,39 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 	//TODO: include somewhere (SensorDetails/ChannelDetails??)
 //	@Override
-//	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-//		int index = 0;
-//		
-//		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
-////			if(channelDetails.mIsEnabled){
-//				if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
-////					if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
-//					//first process the data originating from the Shimmer sensor
-//					byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-//					System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//					objectCluster = processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
-//					objectCluster.indexKeeper++;
-//					index=index+channelDetails.mDefaultNumBytes;
-////					}
-//				}
-//				else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
-//					//TODO: Hack -> just copying from elsewhere (forgotten where exactly)
-//					double systemTime = 0;
-//					FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
-//					if(f!=null){
-//						systemTime = f.mData;
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+		int index = 0;
+		
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+//			if(channelDetails.mIsEnabled){
+				if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
+//					if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
+					//first process the data originating from the Shimmer sensor
+					byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+					System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+					objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+					objectCluster.indexKeeper++;
+					index=index+channelDetails.mDefaultNumBytes;
 //					}
-//
-//					objectCluster.mSystemTimeStamp = ByteBuffer.allocate(8).putLong((long) systemTime).array();;
-//					objectCluster.addCalData(channelDetails, systemTime);
-//					objectCluster.indexKeeper++;
-//				}
-////			}
-//
-//		}
-//		
-//		return objectCluster;
-//	}
+				}
+				else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
+					//TODO: Hack -> just copying from elsewhere (forgotten where exactly)
+					double systemTime = 0;
+					FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
+					if(f!=null){
+						systemTime = f.mData;
+					}
+
+					objectCluster.mSystemTimeStamp = ByteBuffer.allocate(8).putLong((long) systemTime).array();;
+					objectCluster.addCalData(channelDetails, systemTime);
+					objectCluster.indexKeeper++;
+				}
+//			}
+
+		}
+		
+		return objectCluster;
+	}
 
 
 	@Override
@@ -198,6 +215,12 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

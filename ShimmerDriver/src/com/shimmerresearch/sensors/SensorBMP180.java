@@ -117,8 +117,11 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		mSensorMap.clear();
+//		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 		
+		//TODO, remove below and use above once reference maps are created.
+		
+		mSensorMap.clear();
 		//TODO load channels based on list of channels in the SensorDetailsRef rather then manually loading them here -> need to create a ChannelMapRef like in Configuration.Shimmer3 and then cycle through
 		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorBmp180);
 		sensorDetails.mListOfChannels.add(channelBmp180Press);
@@ -150,8 +153,8 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		return actionSetting;
 	}
 
-//	@Override
-//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 //		
 //		int index = 0;
 //		for(SensorDetails sensorEnabledDetails:mSensorMap.values()){
@@ -168,8 +171,8 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 ////			System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 ////			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
 ////		}
-//		return objectCluster;
-//	}
+		return objectCluster;
+	}
 
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
@@ -396,6 +399,12 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		return pressTempMD;
 	}
 	//--------- Sensor specific methods end --------------
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	
 //	public class SensorBMP180PressTemp extends SensorDetails{

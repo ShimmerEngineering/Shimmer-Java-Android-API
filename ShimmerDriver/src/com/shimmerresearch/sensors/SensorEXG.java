@@ -609,7 +609,7 @@ public class SensorEXG extends AbstractSensor{
 	
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		super.updateSensorMap(mSensorMapRef, mChannelMapRef);
+		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 	}
 	
 	@Override
@@ -703,11 +703,11 @@ public class SensorEXG extends AbstractSensor{
 		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khzConfigValues);
 	}
 
-//	@Override
-//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+		// TODO Auto-generated method stub
+		return objectCluster;
+	}
 
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
@@ -2332,6 +2332,12 @@ public class SensorEXG extends AbstractSensor{
 			//TODO set defaults for particular sensor
 			return true;
 		}
+		return false;
+	}
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

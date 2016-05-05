@@ -101,19 +101,13 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public void checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void infoMemByteArrayParse(byte[] infoMemContents) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
-	public byte[] refreshShimmerInfoMemBytes() {
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 		// TODO Auto-generated method stub
 		return null;
 	}

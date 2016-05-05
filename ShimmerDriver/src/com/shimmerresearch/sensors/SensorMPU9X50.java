@@ -748,7 +748,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		//TODO populate the other channels depending on firmware version
-		super.updateSensorMap(mSensorMapRef, mChannelMapRef);
+		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 	}
 	
 	@Override
@@ -838,9 +838,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		super.updateSensorGroupingMap();
 	}
 	
-
-//	@Override
-//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object) {
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 //		
 //		int index = 0;
 //		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
@@ -855,8 +854,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 ////			double rawXData = ((FormatCluster)ObjectCluster.returnFormatCluster(object.mPropertyCluster.get(channelDetails.mObjectClusterName), ChannelDetails.channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 ////			  
 ////		}
-//		return object;
-//	}
+		return objectCluster;
+	}
 
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
@@ -1571,6 +1570,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			return 1;
 		else
 			return 0;
+	}
+
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	

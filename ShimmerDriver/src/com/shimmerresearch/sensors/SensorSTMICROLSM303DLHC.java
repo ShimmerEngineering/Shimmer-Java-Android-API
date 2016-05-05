@@ -12,6 +12,7 @@ import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -87,6 +88,13 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
 	}
 	
+	
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+		// TODO Auto-generated method stub
+		return objectCluster;
+	}
+
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -127,14 +135,6 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	protected void setLowPowerAccelWR(boolean enable){
 		
 	}
-	
-	
-//	@Override
-//	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
@@ -175,6 +175,12 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 			//TODO set defaults for particular sensor
 			return true;
 		}
+		return false;
+	}
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

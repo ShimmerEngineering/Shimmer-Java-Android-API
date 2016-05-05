@@ -11,6 +11,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
@@ -117,6 +118,18 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			//TODO set defaults for particular sensor
 			return true;
 		}
+		return false;
+	}
+
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensotDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+		// TODO Auto-generated method stub
+		return objectCluster;
+	}
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

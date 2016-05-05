@@ -56,10 +56,13 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	// --------------- Abstract methods start ----------------
+	/** call either createLocalSensorMap() or createLocalSensorMapWithCustomParser() inside depending if a custom parser is needed. */
 	public abstract void generateSensorMap(ShimmerVerObject svo);
 	public abstract void generateConfigOptionsMap(ShimmerVerObject svo);
 	public abstract void generateSensorGroupMapping(ShimmerVerObject svo);
 
+	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
+	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 //	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
@@ -69,7 +72,9 @@ public abstract class AbstractSensor implements Serializable{
 
 	public abstract void setSamplingRateFromFreq();
 	public abstract boolean setDefaultConfiguration(int sensorMapKey, boolean state);
-	
+	/** TODO populate in individual AbstractSensor classes the relevent entries from ShimmerObject */
+	public abstract boolean checkConfigOptionValues(String stringKey);
+
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
 	// --------------- Abstract methods end ----------------	
@@ -308,18 +313,38 @@ public abstract class AbstractSensor implements Serializable{
 		return null;
 	}
 	
-	public void updateSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
+	public void createLocalSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
 		mSensorMap.clear();
 		for(int sensorMapKey:sensorMapRef.keySet()){
 			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef);
-			for(String channelKey:sensorDetails.mSensorDetails.mListOfChannelsRef){
-				ChannelDetails channelDetails = channelMapRef.get(channelKey);
-				if(channelDetails!=null){
-					sensorDetails.mListOfChannels.add(channelDetails);
-				}
-			}
+			updateSensorDetailsWithChannels(sensorDetails, channelMapRef);
 			mSensorMap.put(sensorMapKey, sensorDetails);
+		}
+	}
+	
+	public void createLocalSensorMapWithCustomParser(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
+		mSensorMap.clear();
+		for(int sensorMapKey:sensorMapRef.keySet()){
+			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
+			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef){
+				@Override
+				public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object) {
+					return processDataCustom(this, rawData, commType, object);
+//					return super.processData(rawData, commType, object);
+				}
+			};
+			updateSensorDetailsWithChannels(sensorDetails, channelMapRef);
+			mSensorMap.put(sensorMapKey, sensorDetails);
+		}
+	}
+
+	public void updateSensorDetailsWithChannels(SensorDetails sensorDetails, Map<String, ChannelDetails> channelMapRef){
+		for(String channelKey:sensorDetails.mSensorDetails.mListOfChannelsRef){
+			ChannelDetails channelDetails = channelMapRef.get(channelKey);
+			if(channelDetails!=null){
+				sensorDetails.mListOfChannels.add(channelDetails);
+			}
 		}
 	}
 	
@@ -344,5 +369,7 @@ public abstract class AbstractSensor implements Serializable{
 	public void setMaxSetShimmerSamplingRate(double maxSetRate) {
 		mMaxSetShimmerSamplingRate = maxSetRate;
 	}
+	
+
 
 }

@@ -82,6 +82,13 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE),
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.GSR),
 			true);
+	
+    public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
+    static {
+        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR, SensorGSR.sensorGsrRef);
+		mSensorMapRef = Collections.unmodifiableMap(aMap);
+    }
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
@@ -99,6 +106,13 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		channelGsr.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
 		channelGsr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
+	
+    public static final Map<String, ChannelDetails> mChannelMapRef;
+    static {
+        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsr);
+		mChannelMapRef = Collections.unmodifiableMap(aMap);
+    }
 	//--------- Channel info end --------------
 
 	/** Constructor for this Sensor
@@ -111,12 +125,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		mSensorMap.clear();
-		
-		//TODO load channels based on list of channels in the SensorDetailsRef rather then manually loading them here -> need to create a ChannelMapRef like in Configuration.Shimmer3 and then cycle through
-		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorGsrRef);
-		sensorDetails.mListOfChannels.add(channelGsr);
-		mSensorMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR, sensorDetails);
+		//TODO populate the other channels depending on firmware version
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 
 
@@ -148,114 +158,116 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		}
 	}
 	
+	//TODO BIG BUG HERE, SHIMMERGQ IS USING INCORRECT CALIBRATION PARAMETERS BECAUSE HW_ID.SHIMMER3 is the only one listed!!!!!!!!
+	
 	//TODO: include somewhere (SensorDetails/ChannelDetails??)
-//	@Override
-//	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-//		int index = 0;
-//		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
-//			//first process the data originating from the Shimmer sensor
-//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-//			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//			objectCluster = processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
-//			
-//			//next process other data
-//			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
-////				ObjectCluster objectCluster = (ObjectCluster) object;
-//				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-//				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
-//				double p1=0,p2=0;
-//				if (mGSRRange==4){
-//					newGSRRange=(49152 & (int)rawData)>>14; 
-//				}
-//				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-//					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-//					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
-//						p1 = 0.0373;
-//						p2 = -24.9915;
-//
-//					} else { //Values have been reverted to 2r values
-//						//p1 = 0.0363;
-//						//p2 = -24.8617;
-//						p1 = 0.0373;
-//						p2 = -24.9915;
-//					}
-//				} else if (mGSRRange==1 || newGSRRange==1) {
-//					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
-//						p1 = 0.0054;
-//						p2 = -3.5194;
-//					} else {
-//						//p1 = 0.0051;
-//						//p2 = -3.8357;
-//						p1 = 0.0054;
-//						p2 = -3.5194;
-//					}
-//				} else if (mGSRRange==2 || newGSRRange==2) {
-//					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
-//						p1 = 0.0015;
-//						p2 = -1.0163;
-//					} else {
-//						//p1 = 0.0015;
-//						//p2 = -1.0067;
-//						p1 = 0.0015;
-//						p2 = -1.0163;
-//					}
-//				} else if (mGSRRange==3 || newGSRRange==3) {
-//					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
-//						p1 = 4.5580e-04;
-//						p2 = -0.3014;
-//					} else {
-//						//p1 = 4.4513e-04;
-//						//p2 = -0.3193;
-//						p1 = 4.5580e-04;
-//						p2 = -0.3014;
-//					}
-//				}
-//
-//				// ---------- Method 1 - ShimmerObject Style -----------
-////				//kOhms
-////				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
-////				objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
-////				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
-////					
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+		int index = 0;
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			
+			//next process other data
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
+//				ObjectCluster objectCluster = (ObjectCluster) object;
+				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+				double p1=0,p2=0;
+				if (mGSRRange==4){
+					newGSRRange=(49152 & (int)rawData)>>14; 
+				}
+				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+						p1 = 0.0373;
+						p2 = -24.9915;
+
+					} else { //Values have been reverted to 2r values
+						//p1 = 0.0363;
+						//p2 = -24.8617;
+						p1 = 0.0373;
+						p2 = -24.9915;
+					}
+				} else if (mGSRRange==1 || newGSRRange==1) {
+					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+						p1 = 0.0054;
+						p2 = -3.5194;
+					} else {
+						//p1 = 0.0051;
+						//p2 = -3.8357;
+						p1 = 0.0054;
+						p2 = -3.5194;
+					}
+				} else if (mGSRRange==2 || newGSRRange==2) {
+					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+						p1 = 0.0015;
+						p2 = -1.0163;
+					} else {
+						//p1 = 0.0015;
+						//p2 = -1.0067;
+						p1 = 0.0015;
+						p2 = -1.0163;
+					}
+				} else if (mGSRRange==3 || newGSRRange==3) {
+					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+						p1 = 4.5580e-04;
+						p2 = -0.3014;
+					} else {
+						//p1 = 4.4513e-04;
+						//p2 = -0.3193;
+						p1 = 4.5580e-04;
+						p2 = -0.3014;
+					}
+				}
+
+				// ---------- Method 1 - ShimmerObject Style -----------
+//				//kOhms
+//				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
+//				objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
+//					
+//				//uS
+//				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
+//				objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
+//					objectCluster.indexKeeper++;
+
+				
+				// ---------- Method 2 - Simplified ShimmerObject Style -----------
+				
+//				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.UNCAL, CHANNEL_UNITS.NO_UNITS, rawData);
+//				//kOhms
+//				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.KOHMS, calibrateGsrData(rawData,p1,p2));
 ////				//uS
-////				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
-////				objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
-////				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
-////					objectCluster.indexKeeper++;
-//
-//				
-//				// ---------- Method 2 - Simplified ShimmerObject Style -----------
-//				
-////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.UNCAL, CHANNEL_UNITS.NO_UNITS, rawData);
-////				//kOhms
-////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.KOHMS, calibrateGsrData(rawData,p1,p2));
-//////				//uS
-//////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.MICROSIEMENS, calibrateGsrDataToSiemens(rawData,p1,p2));
-////				objectCluster.indexKeeper++;
-//
-//
-//
-//				// ----- Method 3 - Approaching dynamic object based approach  -----------
-//				//TODO: Doesn't support having both units
-//				
-////				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket!=CHANNEL_TYPE.CAL){
-//				double calData = 0.0;
-//				if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.KOHMS)){
-//					calData = calibrateGsrData(rawData,p1,p2);
-//				}
-//				else if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
-//					calData = calibrateGsrDataToSiemens(rawData,p1,p2);
-//				}
-//				objectCluster.addCalData(channelDetails, calData);
+////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.MICROSIEMENS, calibrateGsrDataToSiemens(rawData,p1,p2));
 //				objectCluster.indexKeeper++;
-////				}
-////				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0') + "\t" + calData + " " + channelDetails.mDefaultCalibratedUnits);
-//
-//			}
-//			index = index + channelDetails.mDefaultNumBytes;
-//		}
-//		return objectCluster;
-//	}
+
+
+
+				// ----- Method 3 - Approaching dynamic object based approach  -----------
+				//TODO: Doesn't support having both units
+				
+//				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket!=CHANNEL_TYPE.CAL){
+				double calData = 0.0;
+				if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.KOHMS)){
+					calData = calibrateGsrData(rawData,p1,p2);
+				}
+				else if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
+					calData = calibrateGsrDataToSiemens(rawData,p1,p2);
+				}
+				objectCluster.addCalData(channelDetails, calData);
+				objectCluster.indexKeeper++;
+//				}
+//				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0') + "\t" + calData + " " + channelDetails.mDefaultCalibratedUnits);
+
+			}
+			index = index + channelDetails.mDefaultNumBytes;
+		}
+		return objectCluster;
+	}
 	
 	public static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
 		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
@@ -403,6 +415,12 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			//TODO set defaults for particular sensor
 			return true;
 		}
+		return false;
+	}
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

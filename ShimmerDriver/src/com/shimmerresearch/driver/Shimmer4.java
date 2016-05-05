@@ -92,24 +92,6 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	@Override
-	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<Integer> sensorMapConflictCheck(Integer key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void sensorAndConfigMapsCreate() {
 		if(UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ANY_VERSION, ANY_VERSION, ANY_VERSION)){
@@ -117,8 +99,8 @@ public class Shimmer4 extends ShimmerDevice {
 			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
 			
-//			mMapOfSensors.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
-//			mMapOfSensors.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject)); //for testing
+//			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
+//			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject)); //for testing
 		}
 		
 		updateSensorAndParserMaps();
@@ -126,26 +108,103 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
+		//TODO don't think this is relevent for Shimmer4
+	}
+
+	// TODO need to move common infomem related activity to ShimmerDevice. Not
+	// have duplicates in ShimmerObject, ShimmerGQ and Shimmer4. Some items only
+	// copied here for example/testing purposes
+	@Override
+	public void infoMemByteArrayParse(byte[] infoMemBytes) {
+		String shimmerName = "";
+
+		if(!InfoMemLayout.checkInfoMemValid(infoMemBytes)){
+			// InfoMem not valid
+			setDefaultShimmerConfiguration();
+//			mShimmerUsingConfigFromInfoMem = false;
+
+//			mShimmerInfoMemBytes = infoMemByteArrayGenerate();
+//			mShimmerInfoMemBytes = new byte[infoMemContents.length];
+			mInfoMemBytes = infoMemBytes;
+		}
+		else {
+			//TODO create for Shimmer4 or use Shimmer3?
+			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3) mInfoMemLayout;
+	
+			// Sensors
+			mEnabledSensors = ((long)infoMemBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
+			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
+			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors2] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors2;
+	
+			// Configuration from each Sensor settings
+			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
+			}
+	
+			
+			mDerivedSensors = (long)0;
+			// Check if compatible and not equal to 0xFF
+			if((infoMemLayoutCast.idxDerivedSensors0>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors0]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)
+					&& (infoMemLayoutCast.idxDerivedSensors1>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors1]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)) { 
+				
+				mDerivedSensors |= ((long)infoMemBytes[infoMemLayoutCast.idxDerivedSensors0] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors0;
+				mDerivedSensors |= ((long)infoMemBytes[infoMemLayoutCast.idxDerivedSensors1] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors1;
+				
+				// Check if compatible and not equal to 0xFF
+				if((infoMemLayoutCast.idxDerivedSensors2>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors2]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)){ 
+					mDerivedSensors |= ((long)infoMemBytes[infoMemLayoutCast.idxDerivedSensors2] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors2;
+				}
+			}
+			
+			sensorAndConfigMapsCreate();
+			sensorMapUpdateFromEnabledSensorsVars();
+		}
+
 		
 	}
 
+	// TODO need to move common infomem related activity to ShimmerDevice. Not
+	// have duplicates in ShimmerObject, ShimmerGQ and Shimmer4. Some items only
+	// copied here for example/testing purposes
 	@Override
-	public void infoMemByteArrayParse(byte[] infoMemContents) {
-		// TODO Auto-generated method stub
-		
-	}
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+		//TODO refer to same method in ShimmerGQ/ShimmerObject
 
-	@Override
-	public byte[] refreshShimmerInfoMemBytes() {
+		//TODO create for Shimmer4 or use Shimmer3?
+		InfoMemLayoutShimmer3 infoMemLayout = new InfoMemLayoutShimmer3(
+				getFirmwareIdentifier(), 
+				getFirmwareVersionMajor(), 
+				getFirmwareVersionMinor(), 
+				getFirmwareVersionInternal());
+		
+//		byte[] infoMemBackup = mInfoMemBytes.clone();
+		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
+		
+		// Shimmer Name
+		for (int i = 0; i < infoMemLayout.lengthShimmerName; i++) {
+			if (i < mShimmerUserAssignedName.length()) {
+				mInfoMemBytes[infoMemLayout.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
+			}
+			else {
+				mInfoMemBytes[infoMemLayout.idxSDShimmerName + i] = (byte) 0xFF;
+			}
+		}
+		
+		// Configuration from each Sensor settings
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			abstractSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
+		}
+
+		
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	
 	@Override
 	public void createInfoMemLayout() {
-		// TODO Auto-generated method stub
-		
+		//TODO replace with Shimmer4?
+		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
 	@Override
@@ -171,5 +230,6 @@ public class Shimmer4 extends ShimmerDevice {
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		//NOT USED IN THIS CLASS
 	}
+
 
 }

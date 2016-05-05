@@ -8066,14 +8066,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mInfoMemBytes;
 	}
 	
-	/**
-	 * @return a refreshed version of the current mShimmerInfoMemBytes
-	 */
-	public byte[] refreshShimmerInfoMemBytes() {
-//		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
-		return infoMemByteArrayGenerate(false);
-	}
-	
 	public void setCalibFileCreationFlag(boolean state) {
 		mCalibFileCreationFlag = state;
 	}
@@ -8384,7 +8376,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 	}
 	
-	
+	//TODO move to ShimmerDevice
+	@Override
 	public void checkConfigOptionValues(String stringKey) {
 		if(mConfigOptionsMap!=null){
 			if(mConfigOptionsMap.containsKey(stringKey)){
@@ -8656,14 +8649,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return false;
 	}
 	
-	private boolean isSensorEnabled(int sensorMapKey){
-		if((mSensorMap!=null)&&(mSensorMap!=null)) {
-			if(mSensorMap.containsKey(sensorMapKey)){
-				return mSensorMap.get(sensorMapKey).isEnabled();
-			}
-		}		
-		return false;
-	}
+//	private boolean isSensorEnabled(int sensorMapKey){
+//		if((mSensorMap!=null)&&(mSensorMap!=null)) {
+//			if(mSensorMap.containsKey(sensorMapKey)){
+//				return mSensorMap.get(sensorMapKey).isEnabled();
+//			}
+//		}		
+//		return false;
+//	}
 	
 	/**
 	 * Used to changed the enabled state of a sensor in the sensormap. This is
@@ -8839,29 +8832,30 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return (mInternalExpPower > 0)? true:false;
 	}
 	
-	public List<Integer> sensorMapConflictCheck(Integer key){
-		List<Integer> listOfChannelConflicts = new ArrayList<Integer>();
-		
-		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
-		
-		if (getHardwareVersion() == HW_ID.SHIMMER_3){
-			if(mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting != null) {
-				for(Integer sensorMapKey:mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting) {
-					if(isSensorEnabled(sensorMapKey)) {
-						listOfChannelConflicts.add(sensorMapKey);
-					}
-				}
-			}
-		}
-		
-		if(listOfChannelConflicts.isEmpty()) {
-			return null;
-		}
-		else {
-			return listOfChannelConflicts;
-		}
-	}
-	
+//	//TODO MOVE TO SHIMMERDEVICE
+//	public List<Integer> sensorMapConflictCheck(Integer key){
+//		List<Integer> listOfChannelConflicts = new ArrayList<Integer>();
+//		
+//		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
+//		
+//		if (getHardwareVersion() == HW_ID.SHIMMER_3){
+//			if(mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting != null) {
+//				for(Integer sensorMapKey:mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting) {
+//					if(isSensorEnabled(sensorMapKey)) {
+//						listOfChannelConflicts.add(sensorMapKey);
+//					}
+//				}
+//			}
+//		}
+//		
+//		if(listOfChannelConflicts.isEmpty()) {
+//			return null;
+//		}
+//		else {
+//			return listOfChannelConflicts;
+//		}
+//	}
+//	
 //	//TODO MOVE TO SHIMMERDEVICE
 //	/**
 //	 * @param originalSensorMapkey This takes in a single sensor map key to check for conflicts and correct

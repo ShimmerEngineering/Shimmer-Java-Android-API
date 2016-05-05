@@ -87,6 +87,8 @@ public class ShimmerClock extends AbstractSensor {
 
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
+		//TODO sort out below with newer method from other sensor class examples. Still need some of below code.
+		
 		mSensorMap.clear();
 		
 		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorShimmerClock);
@@ -122,8 +124,8 @@ public class ShimmerClock extends AbstractSensor {
 		
 	}
 	
-//	@Override
-//	public ObjectCluster processData(byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 //		int index = 0;
 //		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
 //			//first process the data originating from the Shimmer sensor
@@ -133,9 +135,9 @@ public class ShimmerClock extends AbstractSensor {
 //			objectCluster.indexKeeper++;
 //			index=index+channelDetails.mDefaultNumBytes;
 //		}
-//		
-//		return objectCluster;
-//	}
+		
+		return objectCluster;
+	}
 
 //	@Override
 //	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
@@ -233,6 +235,13 @@ public class ShimmerClock extends AbstractSensor {
 			COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 
