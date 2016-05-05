@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -86,6 +87,13 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 			Arrays.asList(
 					Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
 					Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180));
+	
+    public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
+    static {
+        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
+		mSensorMapRef = Collections.unmodifiableMap(aMap);
+    }
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
@@ -104,6 +112,14 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.DEGREES_CELSUIS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+
+	public static final Map<String, ChannelDetails> mChannelMapRef;
+    static {
+        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180, SensorBMP180.channelBmp180Press);
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180, SensorBMP180.channelBmp180Temp);
+		mChannelMapRef = Collections.unmodifiableMap(aMap);
+    }
 	//--------- Channel info end --------------
     
 	
@@ -114,43 +130,16 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		super(svo);
 		mSensorName = SENSORS.BMP180.toString();
 	}
-
+	
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-//		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
-		
-		//TODO, remove below and use above once reference maps are created.
-		
-		mSensorMap.clear();
-		//TODO load channels based on list of channels in the SensorDetailsRef rather then manually loading them here -> need to create a ChannelMapRef like in Configuration.Shimmer3 and then cycle through
-		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorBmp180);
-		sensorDetails.mListOfChannels.add(channelBmp180Press);
-		sensorDetails.mListOfChannels.add(channelBmp180Temp);
-		mSensorMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, sensorDetails);
+		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 	}
 
 	//--------- Abstract methods implemented start --------------
 	@Override
 	public String getSensorName() {
 		return mSensorName;
-	}
-
-	@Override
-	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE commType) {
-		
-		ActionSetting actionSetting = new ActionSetting(commType);
-		switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
-				setPressureResolution((int)valueToSet);
-		 		break;
-		}
-		return actionSetting;
 	}
 
 	@Override
@@ -198,7 +187,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 				setPressureResolution((int)valueToSet);
 				returnValue = valueToSet;
 		 		break;
-	}
+		}
 		return returnValue;
 	}
 	
@@ -228,6 +217,27 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		}
 		return false;
 	}
+	
+	@Override
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ActionSetting setSettings(String componentName, Object valueToSet,COMMUNICATION_TYPE commType) {
+		
+		ActionSetting actionSetting = new ActionSetting(commType);
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+				setPressureResolution((int)valueToSet);
+		 		break;
+		}
+		return actionSetting;
+	}
+
+	
+
 	
 //	@Override
 //	public LinkedHashMap<Integer, ChannelDetails> generateChannelDetailsMap(ShimmerVerObject svo) {
