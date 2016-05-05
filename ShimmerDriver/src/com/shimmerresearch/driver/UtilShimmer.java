@@ -406,7 +406,7 @@ public class UtilShimmer implements Serializable {
 		return formatter.format(date);
 	}
 	
-	public static File[] getArrayOfFilesWithFileType(File directory, String fileType){
+	public static File[] getArrayOfFilesWithFileType(File directory, final String fileType){
 		File[] listOfFiles = directory.listFiles(new FilenameFilter() {
 	        @Override
 	        public boolean accept(File dir, String fileName) {
@@ -416,7 +416,8 @@ public class UtilShimmer implements Serializable {
 	        	if (i > p) {
 	        	    extension = fileName.substring(i+1);
 	        	}
-	            return extension.matches("txt");
+//	            return extension.matches("txt");
+	        	return extension.matches(fileType);
 	        }
 	    });
 		return listOfFiles;
