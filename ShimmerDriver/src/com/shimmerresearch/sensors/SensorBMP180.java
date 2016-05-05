@@ -15,7 +15,10 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
+import com.shimmerresearch.driver.ShimmerObject.BTStream;
+import com.shimmerresearch.driver.ShimmerObject.SDLogHeader;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -144,7 +147,57 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-//		
+		
+		double rawDataUP;
+		double rawDataUT;
+		int index = 0;
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+		
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180)){
+				rawDataUP = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				rawDataUP=rawDataUP/Math.pow(2,8-mPressureResolution);
+			}
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180)){
+				rawDataUT = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+
+				int iUT = getSignalIndex(Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180);
+				int iUP = getSignalIndex(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180);
+				
+				rawDataUP=rawDataUP/Math.pow(2,8-mPressureResolution);
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,rawDataUP));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,rawDataUT));
+				uncalibratedData[iUT]=(double)newPacketInt[iUT];
+				uncalibratedData[iUP]=(double)newPacketInt[iUP];
+				uncalibratedDataUnits[iUT]=CHANNEL_UNITS.NO_UNITS;
+				uncalibratedDataUnits[iUP]=CHANNEL_UNITS.NO_UNITS;
+				if (mEnableCalibration){
+					double[] bmp180caldata= calibratePressureSensorData(rawDataUP,rawDataUT);
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KPASCAL,bmp180caldata[0]/1000));
+					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,bmp180caldata[1]));
+					calibratedData[iUT]=bmp180caldata[1];
+					calibratedData[iUP]=bmp180caldata[0]/1000;
+					calibratedDataUnits[iUT]=CHANNEL_UNITS.DEGREES_CELSUIS;
+					calibratedDataUnits[iUP]=CHANNEL_UNITS.KPASCAL;
+				}
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 //		int index = 0;
 //		for(SensorDetails sensorEnabledDetails:mSensorMap.values()){
 //			if(sensorEnabledDetails.isEnabled(commType)){
@@ -160,6 +213,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 ////			System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 ////			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
 ////		}
+		}
 		return objectCluster;
 	}
 
