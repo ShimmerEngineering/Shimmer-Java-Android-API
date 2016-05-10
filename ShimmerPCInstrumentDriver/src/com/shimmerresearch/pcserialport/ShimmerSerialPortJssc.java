@@ -8,6 +8,7 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
@@ -16,6 +17,7 @@ import com.shimmerresearch.driver.DeviceException;
 //import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
 //import com.shimmerresearch.comms.wiredProtocol.ShimmerCommsWired;
 import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /**
  * @author Mark Nolan
@@ -340,5 +342,43 @@ public class ShimmerSerialPortJssc extends SerialPortComm implements ShimmerSeri
 		return serialPort.isOpened();
 	}
 
+	@Override
+	public ShimmerVerObject getShimmerVerObject() {
+		// TODO Auto-generated method stub
+		byte[] instruction = {GET_SHIMMER_VERSION_COMMAND}; //every radio should have a method to get the version object, the command value should be the same across all byte radios
+		byte[] response;
+		try {
+			txBytes(instruction);
+			Thread.sleep(200);
+			response = rxBytes(3);
+			int hardwareVersion = response[2];
+			instruction[0] = GET_FW_VERSION_COMMAND;
+			txBytes(instruction);
+			byte[] bufferInquiry = new byte[6]; 
+			Thread.sleep(200);
+			rxBytes(1);
+			rxBytes(1);
+			bufferInquiry = rxBytes(6);
+			int firmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
+			int firmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
+			int firmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
+			int firmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
+			ShimmerVerObject sVOHw = new ShimmerVerObject(hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+			return sVOHw;
+		} catch (DeviceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
+
+	public SerialPort getSerialPort(){
+		return serialPort;
+	}
 
 }

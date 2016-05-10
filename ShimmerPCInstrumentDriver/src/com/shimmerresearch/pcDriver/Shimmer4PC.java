@@ -21,10 +21,5 @@ public class Shimmer4PC extends Shimmer4{
 		super(dockId, slotNumber, macId, connectionType);
 	}
 
-	public void initialize(){
-		mShimmerRadio = new ShimmerRadioProtocol(new ShimmerSerialPortJssc(this.getMacIdFromUart(),this.getMacId(),SerialPort.BAUDRATE_115200), new LiteProtocol());
-		super.initialize();
-	}
-
 
 }

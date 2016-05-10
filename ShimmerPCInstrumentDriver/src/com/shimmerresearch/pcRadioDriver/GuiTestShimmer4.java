@@ -46,8 +46,15 @@ import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
+import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.DeviceException;
+import com.shimmerresearch.driver.Shimmer4;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.pcserialport.ShimmerSerialPortJssc;
 
 import java.util.*;
@@ -56,17 +63,39 @@ import java.awt.event.*;
 
 import jssc.SerialPort;
  
-public class GuiTestShimmerRadioLiteProtocol extends JPanel {
+public class GuiTestShimmer4 extends JPanel {
     JTextArea output;
     JList list; 
     JTable table;
     String newline = "\n";
     ListSelectionModel listSelectionModel;
     String[] enumValues;
-	static ShimmerRadioProtocol mSRP;
-    public GuiTestShimmerRadioLiteProtocol() {
+	static ShimmerDevice mShimmer;
+	static ShimmerSerialPortJssc sspj;
+    public GuiTestShimmer4() {
         super(new BorderLayout());
-        initialize();
+        
+        sspj = new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200);
+        sspj.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
+
+			@Override
+			public void eventConnected() {
+				// TODO Auto-generated method stub
+				ShimmerVerObject svo = sspj.getShimmerVerObject();
+				if (svo.getHardwareVersion()==HW_ID.SHIMMER_3){
+					
+				} else if(svo.getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+					initializeShimmer4(sspj);
+				}
+				
+			}
+
+			@Override
+			public void eventDisconnected() {
+				// TODO Auto-generated method stub
+				
+			}});
+        
         enumValues = new String[LiteProtocolInstructionSet.InstructionsGet.getDescriptor().getValues().size() + LiteProtocolInstructionSet.InstructionsSet.getDescriptor().getValues().size() ];
 		int i =0;
 		for (EnumValueDescriptor evd: LiteProtocolInstructionSet.InstructionsGet.getDescriptor().getValues()){
@@ -133,11 +162,13 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
         add(splitPane, BorderLayout.CENTER);
         JPanel shimmerPanel = new JPanel();
         shimmerPanel.setLayout(new BoxLayout(shimmerPanel, BoxLayout.Y_AXIS));
-        JButton btnConnect = new JButton();
+        
+         JButton btnConnect = new JButton();
         btnConnect.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		try {
-					mSRP.connect();
+        			
+        			sspj.connect();
 				} catch (DeviceException de) {
 					// TODO Auto-generated catch block
 					de.printStackTrace();
@@ -153,7 +184,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
         JButton btnStart = new JButton();
         btnStart.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		mSRP.startStreaming();
+        		((Shimmer4)mShimmer).mShimmerRadio.startStreaming();
         	}
         });
         btnStart.setText("Start");
@@ -163,7 +194,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		try {
-					mSRP.disconnect();
+        			((Shimmer4)mShimmer).mShimmerRadio.disconnect();
 				} catch (DeviceException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -196,9 +227,16 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
         splitPane.add(bottomHalf);
     }
  
-    private void initialize() {
-    	mSRP = new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
-    	mSRP.setRadioListener(new RadioListener(){
+    private void initializeShimmer3(ByteLevelDataComm bldc) {
+    	ShimmerSerialPortJssc ssjc = (ShimmerSerialPortJssc) bldc;
+    	
+    	
+    }
+    
+    private void initializeShimmer4(ByteLevelDataComm bldc) {
+    	mShimmer = new Shimmer4();
+    	((Shimmer4)mShimmer).setRadio(new ShimmerRadioProtocol(bldc,new LiteProtocol()));
+    	((Shimmer4)mShimmer).mShimmerRadio.setRadioListener(new RadioListener(){
 
     		@Override
     		public void connected() {
@@ -207,7 +245,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     			//Read infomem, and set packetsize
     			//mSRP.mRadioProtocol.writeInstruction(new byte[]{(byte) LiteProtocolInstructionSet.Instructions.GET_INFOMEM_COMMAND_VALUE});
 
-    			mSRP.mRadioProtocol.setPacketSize(41);
+    			((Shimmer4)mShimmer).mShimmerRadio.mRadioProtocol.setPacketSize(41);
     		}
 
     		@Override
@@ -255,7 +293,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Create and set up the content pane.
-        GuiTestShimmerRadioLiteProtocol demo = new GuiTestShimmerRadioLiteProtocol();
+        GuiTestShimmer4 demo = new GuiTestShimmer4();
         demo.setOpaque(true);
         frame.setContentPane(demo);
  
@@ -293,7 +331,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
             	} else {
             		ins[0]= (byte) LiteProtocolInstructionSet.InstructionsSet.valueOf(enumValues[lastIndex]).getNumber();
             	}
-                mSRP.mRadioProtocol.writeInstruction(ins);
+            	((Shimmer4)mShimmer).mShimmerRadio.mRadioProtocol.writeInstruction(ins);
                 
             	output.append("Event for indexes "
             			+ firstIndex + " - " + lastIndex

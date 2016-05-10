@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -35,7 +36,7 @@ public class Shimmer4 extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 6916261534384275804L;
 	
-	protected ShimmerRadioProtocol mShimmerRadio;
+	public ShimmerRadioProtocol mShimmerRadio;
 
 	public Shimmer4() {
 		// TODO Auto-generated constructor stub
@@ -56,6 +57,10 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	public void initialize(){
+		
+	}
+	
+	private void initializeRadio(){
 		if (mShimmerRadio!=null){ // the radio instance should be declared on a higher level and not in this class
 			mShimmerRadio.setRadioListener(new RadioListener(){
 
@@ -80,6 +85,7 @@ public class Shimmer4 extends ShimmerDevice {
 			@Override
 			public void eventResponseReceived(byte[] responseBytes) {
 				// TODO Auto-generated method stub
+				 
 				
 			}
 
@@ -231,5 +237,10 @@ public class Shimmer4 extends ShimmerDevice {
 		//NOT USED IN THIS CLASS
 	}
 
+	public void setRadio(ShimmerRadioProtocol srp){
+		mShimmerRadio = srp;
+		initializeRadio();
+	}
+	
 
 }

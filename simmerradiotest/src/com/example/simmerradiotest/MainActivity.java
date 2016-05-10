@@ -26,7 +26,6 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mShimmerRadioProtocol = new ShimmerRadioProtocol(new ShimmerSerialPortAndroid("00:06:66:66:96:86"),new LiteProtocol());
-		mShimmerRadioProtocol.initialize();
 		try {
 			mShimmerRadioProtocol.connect();
 		} catch (DeviceException e) {

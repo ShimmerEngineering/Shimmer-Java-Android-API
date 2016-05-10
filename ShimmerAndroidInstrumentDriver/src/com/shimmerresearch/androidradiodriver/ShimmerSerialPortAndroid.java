@@ -21,6 +21,7 @@ import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 import com.shimmerresearch.driver.DeviceException;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public class ShimmerSerialPortAndroid extends SerialPortComm {
 	//generic UUID for serial port protocol
@@ -176,7 +177,10 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 
 	@Override
 	public boolean isConnected() {
-		return mConnectThread.isConnected();
+		if (mConnectThread!=null){
+			return mConnectThread.isConnected();
+		}
+		return false;
 	}
 	
 
@@ -314,6 +318,12 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 	public boolean isDisonnected() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public ShimmerVerObject getShimmerVerObject() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

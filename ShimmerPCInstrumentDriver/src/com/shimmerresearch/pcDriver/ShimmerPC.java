@@ -94,7 +94,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	private static final long serialVersionUID = -5927054314345918072L;
 	
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
-	transient SerialPort mSerialPort=null;
+	protected transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
 	
 //	private boolean mVerboseMode = true;

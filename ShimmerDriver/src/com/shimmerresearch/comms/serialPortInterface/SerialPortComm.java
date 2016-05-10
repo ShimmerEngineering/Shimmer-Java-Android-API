@@ -12,6 +12,10 @@ public abstract class SerialPortComm implements ByteLevelDataComm {
     
 	private List<ByteLevelDataCommListener> mByteLevelDataCommListener = new ArrayList<ByteLevelDataCommListener>();
     
+	public void clearByteLevelDataCommListener(){
+		mByteLevelDataCommListener.clear();
+	}
+	
     public void setAddress(String address){
     	mAddress = address;
     }

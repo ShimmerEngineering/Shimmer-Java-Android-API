@@ -28,8 +28,10 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	
 	public ShimmerRadioProtocol(ByteLevelDataComm dataComm, ByteLevelProtocol radioProtocol){
 		mSerialPort = dataComm;
+		mSerialPort.clearByteLevelDataCommListener();
 		mRadioProtocol = radioProtocol;
 		mRadioProtocol.setByteLevelDataComm(dataComm);
+		initialize();
 	}
 	
 	public void connect() throws DeviceException{
@@ -113,14 +115,16 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	
 	
 	
-	public void initialize(){
+	private void initialize(){
 		
 		mSerialPort.setVerboseMode(false,false);
+		
 		mSerialPort.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
 
 			@Override
 			public void eventConnected() {
 				// TODO Auto-generated method stub
+				mRadioProtocol.initialize();
 				try {
 					mRadioProtocol.setProtocolListener(new ProtocolListener(){
 
@@ -204,6 +208,9 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 
 			
 			});
+		if (mSerialPort.isConnected()){
+			mSerialPort.eventDeviceConnected();
+		}
 		
 	}
 

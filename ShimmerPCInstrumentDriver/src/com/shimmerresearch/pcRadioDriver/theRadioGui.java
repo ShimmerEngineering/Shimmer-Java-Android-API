@@ -95,8 +95,6 @@ public class theRadioGui{
 		
 		
 		mSRP = new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
-		
-    	mSRP.initialize();
 
 		mSRP.setRadioListener(new RadioListener(){
 
