@@ -15,6 +15,8 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
+import com.shimmerresearch.driver.ShimmerObject.BTStream;
+import com.shimmerresearch.driver.ShimmerObject.SDLogHeader;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -29,6 +31,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 
 public class SensorMPU9X50 extends AbstractSensor implements Serializable {
@@ -840,23 +843,171 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-//		
-//		int index = 0;
-//		for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
-//			//first process the data originating from the Shimmer sensor
-//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-//			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//			object = processShimmerChannelData(rawData, channelDetails, object);
+		double rawDataX=0;
+		double rawDataY=0;
+		double rawDataZ=0;
+		double[] tempData=new double[3];
+		
+		int index = 0;
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_X)){
+				rawDataX = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Y)){
+				rawDataY = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Z)){
+				rawDataZ = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+
+
+		}
+		
+
+//		if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.GYRO) > 0) 
+//				|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GYRO) > 0)
+//				) {
+//			int iGyroX=getSignalIndex(Shimmer3.ObjectClusterSensorName.GYRO_X);
+//			int iGyroY=getSignalIndex(Shimmer3.ObjectClusterSensorName.GYRO_Y);
+//			int iGyroZ=getSignalIndex(Shimmer3.ObjectClusterSensorName.GYRO_Z);
+//			tempData[0]=(double)newPacketInt[iGyroX];
+//			tempData[1]=(double)newPacketInt[iGyroY];
+//			tempData[2]=(double)newPacketInt[iGyroZ];
+
+
+//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GYRO_X,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGyroX]));
+//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GYRO_Y,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGyroY]));
+//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GYRO_Z,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGyroZ]));
+//			uncalibratedData[iGyroX]=(double)newPacketInt[iGyroX];
+//			uncalibratedData[iGyroY]=(double)newPacketInt[iGyroY];
+//			uncalibratedData[iGyroZ]=(double)newPacketInt[iGyroZ];
+//			uncalibratedDataUnits[iGyroX]=CHANNEL_UNITS.NO_UNITS;
+//			uncalibratedDataUnits[iGyroY]=CHANNEL_UNITS.NO_UNITS;
+//			uncalibratedDataUnits[iGyroZ]=CHANNEL_UNITS.NO_UNITS;
+//			if (mEnableCalibration){
+//				double[] gyroCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+//				calibratedData[iGyroX]=gyroCalibratedData[0];
+//				calibratedData[iGyroY]=gyroCalibratedData[1];
+//				calibratedData[iGyroZ]=gyroCalibratedData[2];
+//				
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GYRO_X,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[0],mDefaultCalibrationParametersGyro));
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GYRO_Y,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[1],mDefaultCalibrationParametersGyro));
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GYRO_Z,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[2],mDefaultCalibrationParametersGyro));
+//				gyroscope.x=gyroCalibratedData[0]*Math.PI/180;
+//				gyroscope.y=gyroCalibratedData[1]*Math.PI/180;
+//				gyroscope.z=gyroCalibratedData[2]*Math.PI/180;
+//				calibratedDataUnits[iGyroX]=CHANNEL_UNITS.GYRO_CAL_UNIT;
+//				calibratedDataUnits[iGyroY]=CHANNEL_UNITS.GYRO_CAL_UNIT;
+//				calibratedDataUnits[iGyroZ]=CHANNEL_UNITS.GYRO_CAL_UNIT;
+//
+//
+//				
+//				if (mEnableOntheFlyGyroOVCal){
+//					mGyroX.addValue(gyroCalibratedData[0]);
+//					mGyroY.addValue(gyroCalibratedData[1]);
+//					mGyroZ.addValue(gyroCalibratedData[2]);
+//					mGyroXRaw.addValue((double)newPacketInt[iGyroX]);
+//					mGyroYRaw.addValue((double)newPacketInt[iGyroY]);
+//					mGyroZRaw.addValue((double)newPacketInt[iGyroZ]);
+//					if (mGyroX.getStandardDeviation()<mGyroOVCalThreshold && mGyroY.getStandardDeviation()<mGyroOVCalThreshold && mGyroZ.getStandardDeviation()<mGyroOVCalThreshold){
+//						mOffsetVectorGyroscope[0][0]=mGyroXRaw.getMean();
+//						mOffsetVectorGyroscope[1][0]=mGyroYRaw.getMean();
+//						mOffsetVectorGyroscope[2][0]=mGyroZRaw.getMean();
+//					}
+//				}
+//			}
+//
 //		}
-//		
-////		if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
-//////			ObjectCluster objectCluster = (ObjectCluster) object;
-////			double rawXData = ((FormatCluster)ObjectCluster.returnFormatCluster(object.mPropertyCluster.get(channelDetails.mObjectClusterName), ChannelDetails.channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-////			  
-////		}
 		return objectCluster;
 	}
+	
+	protected static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
+		
+		double [][] data2d=new double [3][1];
+		data2d[0][0]=data[0];
+		data2d[1][0]=data[1];
+		data2d[2][0]=data[2];
+		data2d= matrixmultiplication(matrixmultiplication(matrixinverse3x3(AM),matrixinverse3x3(SM)),matrixminus(data2d,OV));
+		double[] ansdata=new double[3];
+		ansdata[0]=data2d[0][0];
+		ansdata[1]=data2d[1][0];
+		ansdata[2]=data2d[2][0];
+		return ansdata;
+	}
+	private static double[][] matrixmultiplication(double[][] a, double[][] b) {
 
+		int aRows = a.length,
+				aColumns = a[0].length,
+				bRows = b.length,
+				bColumns = b[0].length;
+
+		if ( aColumns != bRows ) {
+			throw new IllegalArgumentException("A:Rows: " + aColumns + " did not match B:Columns " + bRows + ".");
+		}
+
+		double[][] resultant = new double[aRows][bColumns];
+
+		for(int i = 0; i < aRows; i++) { // aRow
+			for(int j = 0; j < bColumns; j++) { // bColumn
+				for(int k = 0; k < aColumns; k++) { // aColumn
+					resultant[i][j] += a[i][k] * b[k][j];
+				}
+			}
+		}
+
+		return resultant;
+	}
+
+	private static double[][] matrixinverse3x3(double[][] data) {
+		double a,b,c,d,e,f,g,h,i;
+		a=data[0][0];
+		b=data[0][1];
+		c=data[0][2];
+		d=data[1][0];
+		e=data[1][1];
+		f=data[1][2];
+		g=data[2][0];
+		h=data[2][1];
+		i=data[2][2];
+		//
+		double deter=a*e*i+b*f*g+c*d*h-c*e*g-b*d*i-a*f*h;
+		double[][] answer=new double[3][3];
+		answer[0][0]=(1/deter)*(e*i-f*h);
+
+		answer[0][1]=(1/deter)*(c*h-b*i);
+		answer[0][2]=(1/deter)*(b*f-c*e);
+		answer[1][0]=(1/deter)*(f*g-d*i);
+		answer[1][1]=(1/deter)*(a*i-c*g);
+		answer[1][2]=(1/deter)*(c*d-a*f);
+		answer[2][0]=(1/deter)*(d*h-e*g);
+		answer[2][1]=(1/deter)*(g*b-a*h);
+		answer[2][2]=(1/deter)*(a*e-b*d);
+		return answer;
+	}
+	private static double[][] matrixminus(double[][] a ,double[][] b) {
+		int aRows = a.length,
+				aColumns = a[0].length,
+				bRows = b.length,
+				bColumns = b[0].length;
+		if (( aColumns != bColumns )&&( aRows != bRows )) {
+			throw new IllegalArgumentException(" Matrix did not match");
+		}
+		double[][] resultant = new double[aRows][bColumns];
+		for(int i = 0; i < aRows; i++) { // aRow
+			for(int k = 0; k < aColumns; k++) { // aColumn
+
+				resultant[i][k]=a[i][k]-b[i][k];
+
+			}
+		}
+		return resultant;
+	}
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
