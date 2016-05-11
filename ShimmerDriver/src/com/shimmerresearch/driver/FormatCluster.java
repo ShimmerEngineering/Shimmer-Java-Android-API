@@ -56,6 +56,12 @@ public class FormatCluster  implements Serializable{
 		mData = data;
 	}
 
+//	public FormatCluster(String format, String units, double[] data){
+//		mFormat = format;
+//		mUnits = units;
+//		double[] mData = data;
+//	}
+	
 	public FormatCluster(String format, String units, List<Double> dataObject){
 		mFormat = format;
 		mUnits = units;
