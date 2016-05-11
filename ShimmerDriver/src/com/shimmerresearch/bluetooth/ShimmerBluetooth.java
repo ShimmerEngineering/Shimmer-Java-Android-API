@@ -463,6 +463,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	private int mNumOfInfoMemSetCmds = 0;
 
+	public static final int NOTIFICATION_SHIMMER_FULLY_INITIALIZED = 2;
+
+	public static final int NOTIFICATION_SHIMMER_START_STREAMING = 1;
+
+	public static final int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
+
+	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0;
+
 	
 	public class ProcessingThread extends Thread {
 		public boolean stop = false;
@@ -1062,7 +1070,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			int firmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
 			int firmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
 			int firmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
-			
 			ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 			setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
 

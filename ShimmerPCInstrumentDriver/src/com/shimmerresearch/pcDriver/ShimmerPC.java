@@ -111,13 +111,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public static final int MSG_IDENTIFIER_DEVICE_PAIRED = 8;
 	public static final int MSG_IDENTIFIER_DEVICE_UNPAIRED = 9;
 	
-	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0;
-	public static final int NOTIFICATION_SHIMMER_START_STREAMING = 1;
-	public static final int NOTIFICATION_SHIMMER_FULLY_INITIALIZED = 2;
-	public static final int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
-	
-	
-	
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	public ProgressReportPerDevice progressReportPerDevice;
 	

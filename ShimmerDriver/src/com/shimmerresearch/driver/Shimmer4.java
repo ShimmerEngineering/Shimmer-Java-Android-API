@@ -5,12 +5,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
@@ -36,10 +39,15 @@ public class Shimmer4 extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 6916261534384275804L;
 	
-	public ShimmerRadioProtocol mShimmerRadio;
+	public ShimmerRadioProtocol mShimmerRadioHWLiteProtocol;
 
+	byte[] mInfoMemBuffer;
+	private int mCurrentInfoMemAddress = 0;
+	private int mCurrentInfoMemLengthToRead = 0;
+	
 	public Shimmer4() {
 		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public Shimmer4(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE communicationType) {
@@ -47,6 +55,7 @@ public class Shimmer4 extends ShimmerDevice {
 		addCommunicationRoute(communicationType);
     	setSamplingRateShimmer(communicationType, 128);
     	setMacIdFromUart(macId);
+    	
 	}
 
 	public void setSetting(long sensorID, String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
@@ -60,13 +69,61 @@ public class Shimmer4 extends ShimmerDevice {
 		
 	}
 	
+	private void readInfoMem(){
+		mInfoMemBuffer = new byte[mInfoMemLayout.calculateInfoMemByteLength()];
+		int size = mInfoMemLayout.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		int address = mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS;
+		if (size > (mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
+//			DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE);
+//			throw(de);
+		} 
+		else {
+			int maxBytesRXed = 128;
+			int numBytesRemaining = size;
+			int currentPacketNumBytes = size;
+			int currentBytePointer = 0;
+			int currentStartAddr = address;
+
+			while (numBytesRemaining > 0) {
+				if (numBytesRemaining > maxBytesRXed) {
+					currentPacketNumBytes = maxBytesRXed;
+				} 
+				else {
+					currentPacketNumBytes = numBytesRemaining;
+				}
+				
+				byte[] rxBuf = new byte[] {};
+				byte[] memLengthToRead = new byte[]{(byte) currentPacketNumBytes};
+		    	byte[] memAddressToRead = ByteBuffer.allocate(2).putShort((short)(currentStartAddr&0xFFFF)).array();
+				ArrayUtils.reverse(memAddressToRead);
+
+		    	byte[] instructionBuffer = new byte[1 + memLengthToRead.length + memAddressToRead.length];
+		    	instructionBuffer[0] = (byte) LiteProtocolInstructionSet.InstructionsGet.GET_INFOMEM_COMMAND_VALUE;
+		    	System.arraycopy(memLengthToRead, 0, instructionBuffer, 1, memLengthToRead.length);
+		    	System.arraycopy(memAddressToRead, 0, instructionBuffer, 1 + memLengthToRead.length, memAddressToRead.length);
+
+		    	mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionBuffer);
+
+				currentBytePointer += currentPacketNumBytes;
+				numBytesRemaining -= currentPacketNumBytes;
+				currentStartAddr += currentPacketNumBytes;
+			}
+//			utilDock.consolePrintLn(mDockID + " - InfoMem Configuration Read = SUCCESS");
+		}
+	}
+	
 	private void initializeRadio(){
-		if (mShimmerRadio!=null){ // the radio instance should be declared on a higher level and not in this class
-			mShimmerRadio.setRadioListener(new RadioListener(){
+		if (mShimmerRadioHWLiteProtocol!=null){ // the radio instance should be declared on a higher level and not in this class
+			mShimmerRadioHWLiteProtocol.setRadioListener(new RadioListener(){
 
 			@Override
 			public void connected() {
 				// TODO Auto-generated method stub
+				byte[] instructionFW = {LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
+				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
+				byte[] instructionHW = {LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE};
+				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionHW);
+				
 				
 			}
 
@@ -85,14 +142,47 @@ public class Shimmer4 extends ShimmerDevice {
 			@Override
 			public void eventResponseReceived(byte[] responseBytes) {
 				// TODO Auto-generated method stub
-				 
+				if ((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
+					int firmwareIdentifier=(int)((responseBytes[2]&0xFF)<<8)+(int)(responseBytes[1]&0xFF);
+					int firmwareVersionMajor = (int)((responseBytes[4]&0xFF)<<8)+(int)(responseBytes[3]&0xFF);
+					int firmwareVersionMinor = ((int)((responseBytes[5]&0xFF)));
+					int firmwareVersionInternal=(int)(responseBytes[6]&0xFF);
+					ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+					setShimmerVersionObject(shimmerVerObject);
+					
+					System.out.println("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
+					System.out.println("FW Version Response Received: " + getFirmwareVersionParsed());
+				} else if ((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE){
+					setHardwareVersion(responseBytes[1]);
+					System.out.println("Shimmer Version Response Received. HW Code: " + getHardwareVersion());
+					createInfoMemLayout();
+					readInfoMem();
+				} else if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
+					// Get data length to read
+					int lengthToRead = responseBytes.length-1;
+					byte[] rxBuf = new byte[lengthToRead];
+					System.arraycopy(responseBytes, 1, rxBuf, 0, lengthToRead);
+					System.out.println("INFOMEM_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+					
+					//Copy to local buffer
+					System.arraycopy(rxBuf, 0, mInfoMemBuffer, mCurrentInfoMemAddress, lengthToRead);
+					//Update configuration when all bytes received.
+					if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
+						setShimmerInfoMemBytes(mInfoMemBuffer);
+					}
+				}
+				
 				
 			}
 
 			@Override
 			public void eventAckReceived(byte[] instructionSent) {
 				// TODO Auto-generated method stub
-				
+				if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsGet.GET_INFOMEM_COMMAND_VALUE){
+					// store current address/InfoMem segment
+					mCurrentInfoMemAddress = ((instructionSent[3]&0xFF)<<8)+(instructionSent[2]&0xFF);
+					mCurrentInfoMemLengthToRead = (instructionSent[1]&0xFF);
+				}
 			}});
 		}
 	}
@@ -238,7 +328,7 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	public void setRadio(ShimmerRadioProtocol srp){
-		mShimmerRadio = srp;
+		mShimmerRadioHWLiteProtocol = srp;
 		initializeRadio();
 	}
 	

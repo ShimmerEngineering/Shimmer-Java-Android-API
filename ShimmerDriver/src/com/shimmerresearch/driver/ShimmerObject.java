@@ -10896,14 +10896,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	/** setShimmerVerionObject should be used instead
-	 * @param hardwareVersion the mHardwareVersion to set
-	 */
-	public void setHardwareVersion(int hardwareVersion) {
-		ShimmerVerObject sVOHw = new ShimmerVerObject(hardwareVersion, getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-		setShimmerVersionObject(sVOHw);
-	}
-
-	/** setShimmerVerionObject should be used instead
 	 * @param firmwareId the firmwareId to set
 	 */
 	public void setFirmwareIdentifier(int firmwareId) {

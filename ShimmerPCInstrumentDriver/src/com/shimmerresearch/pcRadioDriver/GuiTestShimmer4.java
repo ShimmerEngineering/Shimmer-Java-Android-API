@@ -184,7 +184,7 @@ public class GuiTestShimmer4 extends JPanel {
         JButton btnStart = new JButton();
         btnStart.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		((Shimmer4)mShimmer).mShimmerRadio.startStreaming();
+        		((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.startStreaming();
         	}
         });
         btnStart.setText("Start");
@@ -194,7 +194,7 @@ public class GuiTestShimmer4 extends JPanel {
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		try {
-        			((Shimmer4)mShimmer).mShimmerRadio.disconnect();
+        			((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.disconnect();
 				} catch (DeviceException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -236,7 +236,7 @@ public class GuiTestShimmer4 extends JPanel {
     private void initializeShimmer4(ByteLevelDataComm bldc) {
     	mShimmer = new Shimmer4();
     	((Shimmer4)mShimmer).setRadio(new ShimmerRadioProtocol(bldc,new LiteProtocol()));
-    	((Shimmer4)mShimmer).mShimmerRadio.setRadioListener(new RadioListener(){
+    	((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.setRadioListener(new RadioListener(){
 
     		@Override
     		public void connected() {
@@ -245,7 +245,7 @@ public class GuiTestShimmer4 extends JPanel {
     			//Read infomem, and set packetsize
     			//mSRP.mRadioProtocol.writeInstruction(new byte[]{(byte) LiteProtocolInstructionSet.Instructions.GET_INFOMEM_COMMAND_VALUE});
 
-    			((Shimmer4)mShimmer).mShimmerRadio.mRadioProtocol.setPacketSize(41);
+    			((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(41);
     		}
 
     		@Override
@@ -331,7 +331,7 @@ public class GuiTestShimmer4 extends JPanel {
             	} else {
             		ins[0]= (byte) LiteProtocolInstructionSet.InstructionsSet.valueOf(enumValues[lastIndex]).getNumber();
             	}
-            	((Shimmer4)mShimmer).mShimmerRadio.mRadioProtocol.writeInstruction(ins);
+            	((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(ins);
                 
             	output.append("Event for indexes "
             			+ firstIndex + " - " + lastIndex

@@ -182,6 +182,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		sensorAndConfigMapsCreate();
 	}
 	
+	/** setShimmerVerionObject should be used instead
+	 * @param hardwareVersion the mHardwareVersion to set
+	 */
+	public void setHardwareVersion(int hardwareVersion) {
+		ShimmerVerObject sVOHw = new ShimmerVerObject(hardwareVersion, getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		setShimmerVersionObject(sVOHw);
+	}
+	
 	public void clearShimmerVersionObject() {
 		setShimmerVersionObject(new ShimmerVerObject());
 	}
