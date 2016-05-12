@@ -37,7 +37,7 @@
  * 
  * 
  */
-package com.shimmerresearch.pcDriver;
+package com.shimmerresearch.driver;
 
 import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;

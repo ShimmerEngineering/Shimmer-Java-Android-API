@@ -1,5 +1,7 @@
 package com.shimmerresearch.pcDriver;
 
+import javax.swing.JFrame;
+
 import jssc.SerialPort;
 
 import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
@@ -16,13 +18,18 @@ public class testShimmer4 {
 	
 	public static void main(String[] args) {
 		Shimmer4 shimmer = new Shimmer4();
-		shimmer.setRadio(new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM89","COM89",SerialPort.BAUDRATE_115200),new LiteProtocol()));
+		shimmer.setRadio(new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM65","COM65",SerialPort.BAUDRATE_115200),new LiteProtocol()));
 		try {
 			shimmer.mShimmerRadioHWLiteProtocol.connect();
 		} catch (DeviceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		JFrame frame = new JFrame();
+		frame.setSize(200, 200);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
 

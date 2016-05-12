@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
@@ -169,6 +170,9 @@ public class Shimmer4 extends ShimmerDevice {
 					//Update configuration when all bytes received.
 					if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 						setShimmerInfoMemBytes(mInfoMemBuffer);
+						infoMemByteArrayParse(mInfoMemBuffer);
+						CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_FULLY_INITIALIZED, mMacIdFromUart, "comPort");
+						sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 					}
 				}
 				
@@ -183,7 +187,9 @@ public class Shimmer4 extends ShimmerDevice {
 					mCurrentInfoMemAddress = ((instructionSent[3]&0xFF)<<8)+(instructionSent[2]&0xFF);
 					mCurrentInfoMemLengthToRead = (instructionSent[1]&0xFF);
 				}
-			}});
+			}
+
+			});
 		}
 	}
 

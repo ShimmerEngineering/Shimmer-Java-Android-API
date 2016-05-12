@@ -12,6 +12,5 @@ public interface RadioListener {
 	
 	public void eventAckReceived(byte[] instructionSent);
 	
-	
 
 }

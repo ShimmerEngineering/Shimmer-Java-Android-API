@@ -8,11 +8,11 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.pcDriver.CallbackObject;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 
 import javax.swing.JButton;

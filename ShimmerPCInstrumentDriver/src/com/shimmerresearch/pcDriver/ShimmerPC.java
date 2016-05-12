@@ -76,6 +76,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -99,17 +100,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 //	private boolean mVerboseMode = true;
 //	private String mParentClassName = "ShimmerPC";
-	
-	public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
-	public static final int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1; 
-	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
-	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
-	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
-	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
-	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
-	public static final int MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE = 7;
-	public static final int MSG_IDENTIFIER_DEVICE_PAIRED = 8;
-	public static final int MSG_IDENTIFIER_DEVICE_UNPAIRED = 9;
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	public ProgressReportPerDevice progressReportPerDevice;
