@@ -869,18 +869,18 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				tempData[2] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}
 			
-			double[] gyroXCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+			double[] gyroCalData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 
 			if (mEnableCalibration){
-				gyroscope.x=gyroXCalibratedData[0]*Math.PI/180;
-				gyroscope.y=gyroXCalibratedData[1]*Math.PI/180;
-				gyroscope.z=gyroXCalibratedData[2]*Math.PI/180;
+				gyroscope.x=gyroCalData[0]*Math.PI/180;
+				gyroscope.y=gyroCalData[1]*Math.PI/180;
+				gyroscope.z=gyroCalData[2]*Math.PI/180;
 			}
 
 			if (mEnableOntheFlyGyroOVCal){
-					mGyroXX.addValue(gyroXCalibratedData[0]);
-					mGyroXY.addValue(gyroXCalibratedData[1]);
-					mGyroXZ.addValue(gyroXCalibratedData[2]);
+					mGyroXX.addValue(gyroCalData[0]);
+					mGyroXY.addValue(gyroCalData[1]);
+					mGyroXZ.addValue(gyroCalData[2]);
 					
 					if (mGyroXX.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXY.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXZ.getStandardDeviation()<mGyroXOVCalThreshold){
 						mOffsetVectorGyroscope[0][0]=mGyroXXRaw.getMean();
@@ -889,8 +889,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					}
 
 				}
-				for(int i=1; i<3; i++){
-					objectCluster.addCalData(channelDetails, gyroXCalibratedData[i]);
+				for(int i=0; i<3; i++){
+					objectCluster.addCalData(channelDetails, gyroCalData[i]);
 					objectCluster.indexKeeper++;
 				}
 
