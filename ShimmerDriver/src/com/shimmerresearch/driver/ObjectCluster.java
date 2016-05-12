@@ -250,4 +250,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
 		}
 	}
+//	public void addCalData(ChannelDetails channelDetails, double[] calData) {
+//		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
+//			mSensorNames[indexKeeper] = channelDetails.mObjectClusterName;
+//			double[] mCalData = calData;
+//			mUnitCal[indexKeeper] = channelDetails.mDefaultCalibratedUnits;
+//			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
+//		}
+//	}
 }
