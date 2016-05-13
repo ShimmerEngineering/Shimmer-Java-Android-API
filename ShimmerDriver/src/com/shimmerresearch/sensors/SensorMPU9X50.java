@@ -36,6 +36,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.UtilShimmer;
 
 public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
@@ -51,7 +52,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
 	protected int mMPU9150AccelRange=0;											// This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
 	protected int mMPU9150GyroAccelRate=0;
-
+	protected int mAccelRange=0;
+	protected int mMagRange=1;
+	protected long mConfigByte0;
+	protected int mNChannels=0;	                                                // Default number of sensor channels set to three because of the on board accelerometer 
+	protected int mBufferSize;  
+	
 	protected int mMPU9150DMP = 0;
 	protected int mMPU9150LPF = 0;
 	protected int mMPU9150MotCalCfg = 0;
@@ -62,7 +68,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	protected int mMPLVectCompCal = 0;
 	protected int mMPLMagDistCal = 0;
 	protected int mMPLEnable = 0;
-    
+	protected int mPacketSize=0;
+	protected int mTimeStampPacketByteSize = 2;
+	
 	protected double[][] AlignmentMatrixMPLAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
 	protected double[][] SensitivityMatrixMPLAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
 	protected double[][] OffsetVectorMPLAccel = {{0},{0},{0}};
@@ -849,7 +857,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
 		double[] tempData=new double[3];
 		Vector3d gyroscope = new Vector3d();
-		String calUnitToUse = Configuration.CHANNEL_UNITS.MAG_CAL_UNIT;
+//		String calUnitToUse = Configuration.CHANNEL_UNITS.MAG_CAL_UNIT;
 		
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -859,14 +867,14 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
 
 			
-			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_X)){
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X )){
 				tempData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}
-			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Y)){
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y)){
 				tempData[1] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}
 
-			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.MAG_MPU_Z)){
+			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z)){
 				tempData[2] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}
 			
@@ -984,11 +992,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+//		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 		int	idxConfigSetupByte2 = 8;
 		int bitShiftMPU9150GyroRange = 0;
 		int maskMPU9150GyroRange = 0x03;
 		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((mGyroRange & maskMPU9150GyroRange) << bitShiftMPU9150GyroRange);
-		
+//		}
 	}
 
 	@Override
@@ -1071,6 +1080,120 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 		return returnValue;
 	}
+	
+private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
+		
+		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer3;
+		double[][] sensitivityVectorToCompare = mSensitivityMatrixGyroscope;
+		double[][] alignmentVectorToCompare = mAlignmentMatrixGyroscope;
+		
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if (mGyroRange==0){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
+
+			} else if (mGyroRange==1){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
+
+			} else if (mGyroRange==2){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
+
+			} else if (mGyroRange==3){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
+			}
+			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
+			offsetVectorToCompare = OffsetVectorGyroShimmer3;
+		}
+		for(int i=0;i<=2;i++){
+			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
+		}
+		
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+		
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
+	}
+	
+	private void setDefaultCalibrationShimmer3Gyro() {
+		mDefaultCalibrationParametersGyro = true;
+		if (mGyroRange==0){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
+
+		} else if (mGyroRange==1){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
+
+		} else if (mGyroRange==2){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
+
+		} else if (mGyroRange==3){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
+		}
+		mAlignmentMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixGyroShimmer3);
+		mOffsetVectorGyroscope = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorGyroShimmer3);
+	}
+//	************** Check if needed ****************
+//	protected void interpretInqResponse(byte[] bufferInquiry){
+//		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
+//			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
+//			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
+//			
+//			mAccelRange = bufferInquiry[1];
+//			mConfigByte0 = bufferInquiry[2] & 0xFF; //convert the byte to unsigned integer
+//			mNChannels = bufferInquiry[3];
+//			mBufferSize = bufferInquiry[4];
+//			byte[] signalIdArray = new byte[mNChannels];
+//			System.arraycopy(bufferInquiry, 5, signalIdArray, 0, mNChannels);
+//			updateEnabledSensorsFromChannels(signalIdArray);
+//			interpretDataPacketFormat(mNChannels,signalIdArray);
+//			mInquiryResponseBytes = new byte[5+mNChannels];
+//			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
+//		} 
+//		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
+//			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
+//			setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
+//			mNChannels = bufferInquiry[6];
+//			mBufferSize = bufferInquiry[7];
+//			mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
+//			mAccelRange = ((int)(mConfigByte0 & 0xC))>>2;
+//			mGyroRange = ((int)(mConfigByte0 & 196608))>>16;
+//			mMagRange = ((int)(mConfigByte0 & 14680064))>>21;
+//			
+//			mMPU9150GyroAccelRate = ((int)(mConfigByte0 & 65280))>>8;
+//			
+//			mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
+//			mInquiryResponseBytes = new byte[8+mNChannels];
+//			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
+//			
+//			if ((mMPU9150GyroAccelRate==0xFF && getSamplingRateShimmer()>10)){
+//				mLowPowerGyro = true;
+//			}
+//			if ((mLSM303MagRate==4 && getSamplingRateShimmer()>10)){
+//				mLowPowerMag = true;
+//			}
+//			byte[] signalIdArray = new byte[mNChannels];
+//			System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
+//			updateEnabledSensorsFromChannels(signalIdArray);
+//			interpretDataPacketFormat(mNChannels,signalIdArray);
+//			checkExgResolutionFromEnabledSensorsVar();
+//		} 
+//		else if (getHardwareVersion()==HW_ID.SHIMMER_SR30) {
+//			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
+//			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
+//			mAccelRange = bufferInquiry[1];
+//			mNChannels = bufferInquiry[2];
+//			mBufferSize = bufferInquiry[3];
+//			byte[] signalIdArray = new byte[mNChannels];
+//			System.arraycopy(bufferInquiry, 4, signalIdArray, 0, mNChannels); // this is 4 because there is no config byte
+//			interpretDataPacketFormat(mNChannels,signalIdArray);
+//
+//		}
+//	}
+	
+	
+	
 
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
@@ -1703,10 +1826,15 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			return 0;
 	}
 
-
+	public void setSamplingRateShimmer(double samplingRate){
+		//In Shimmer3 the SD and BT have the same sampling rate 
+		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, samplingRate);
+		setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
+	}
 	@Override
 	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
+		
 	}
 
 
