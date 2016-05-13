@@ -10,6 +10,7 @@ import java.util.Map;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -2338,6 +2339,49 @@ public class SensorEXG extends AbstractSensor{
 	@Override
 	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public ShimmerDevice deepClone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void sensorAndConfigMapsCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void interpretDataPacketFormat(Object object,
+			COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void infoMemByteArrayParse(byte[] infoMemContents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createInfoMemLayout() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

@@ -15,6 +15,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject.BTStream;
 import com.shimmerresearch.driver.ShimmerObject.SDLogHeader;
 import com.shimmerresearch.driver.Configuration;
@@ -436,6 +437,49 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	@Override
 	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public ShimmerDevice deepClone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void sensorAndConfigMapsCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void interpretDataPacketFormat(Object object,
+			COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void infoMemByteArrayParse(byte[] infoMemContents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createInfoMemLayout() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

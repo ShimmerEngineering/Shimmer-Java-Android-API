@@ -9,6 +9,7 @@ import java.util.Map;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -130,6 +131,49 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	@Override
 	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public ShimmerDevice deepClone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void sensorAndConfigMapsCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void interpretDataPacketFormat(Object object,
+			COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void infoMemByteArrayParse(byte[] infoMemContents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createInfoMemLayout() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
