@@ -434,9 +434,8 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	//--------- Sensor specific methods end --------------
 
 	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
+	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	

@@ -218,9 +218,8 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
+	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 

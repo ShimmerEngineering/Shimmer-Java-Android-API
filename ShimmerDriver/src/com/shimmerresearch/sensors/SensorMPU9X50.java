@@ -1704,9 +1704,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
 
 	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
+	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	

@@ -73,7 +73,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void setSamplingRateFromFreq();
 	public abstract boolean setDefaultConfiguration(int sensorMapKey, boolean state);
 	/** TODO populate in individual AbstractSensor classes the relevent entries from ShimmerObject */
-	public abstract boolean checkConfigOptionValues(String stringKey);
+	public abstract void checkConfigOptionValues(String stringKey);
 
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
