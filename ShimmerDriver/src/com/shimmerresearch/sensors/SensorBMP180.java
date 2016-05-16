@@ -449,85 +449,9 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	//--------- Sensor specific methods end --------------
 
 	@Override
-	public void checkConfigOptionValues(String stringKey) {
+	public boolean checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
+		return false;
 	}
 
-	@Override
-	public ShimmerDevice deepClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void sensorAndConfigMapsCreate() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void infoMemByteArrayParse(byte[] infoMemContents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createInfoMemLayout() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-//	public class SensorBMP180PressTemp extends SensorDetails{
-//
-//		public SensorBMP180PressTemp(){
-//			mListOfChannels.add(new ChannelDetails(
-//				Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
-//				Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
-//				DatabaseChannelHandles.PRESSURE,
-//				CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
-//				CHANNEL_UNITS.KPASCAL,
-//				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-//			
-//			mListOfChannels.add(new ChannelDetails(
-//					Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,
-//					Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,
-//					DatabaseChannelHandles.TEMPERATURE,
-//					CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-//					CHANNEL_UNITS.DEGREES_CELSUIS,
-//					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-//			
-//			mSensorDetails = new SensorDetailsStatic(
-//					0x04<<(2*8), 
-//					0x04<<(2*8), 
-//					Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180,
-//					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-//					Arrays.asList(
-//							Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION),
-//					Arrays.asList(
-//							Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,
-//							Configuration.Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180));
-//		}
-//		
-//	}
-	
 }

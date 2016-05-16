@@ -129,66 +129,12 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public void checkConfigOptionValues(String stringKey) {
+	public boolean checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public ShimmerDevice deepClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void sensorAndConfigMapsCreate() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void infoMemByteArrayParse(byte[] infoMemContents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createInfoMemLayout() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 
-
-//	@Override
-//	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 
 
