@@ -17,6 +17,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject.BTStream;
 import com.shimmerresearch.driver.ShimmerObject.SDLogHeader;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -869,18 +870,18 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				tempData[2] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}
 			
-			double[] gyroXCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+			double[] gyroCalData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 
 			if (mEnableCalibration){
-				gyroscope.x=gyroXCalibratedData[0]*Math.PI/180;
-				gyroscope.y=gyroXCalibratedData[1]*Math.PI/180;
-				gyroscope.z=gyroXCalibratedData[2]*Math.PI/180;
+				gyroscope.x=gyroCalData[0]*Math.PI/180;
+				gyroscope.y=gyroCalData[1]*Math.PI/180;
+				gyroscope.z=gyroCalData[2]*Math.PI/180;
 			}
 
 			if (mEnableOntheFlyGyroOVCal){
-					mGyroXX.addValue(gyroXCalibratedData[0]);
-					mGyroXY.addValue(gyroXCalibratedData[1]);
-					mGyroXZ.addValue(gyroXCalibratedData[2]);
+					mGyroXX.addValue(gyroCalData[0]);
+					mGyroXY.addValue(gyroCalData[1]);
+					mGyroXZ.addValue(gyroCalData[2]);
 					
 					if (mGyroXX.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXY.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXZ.getStandardDeviation()<mGyroXOVCalThreshold){
 						mOffsetVectorGyroscope[0][0]=mGyroXXRaw.getMean();
@@ -889,8 +890,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					}
 
 				}
-				for(int i=1; i<3; i++){
-					objectCluster.addCalData(channelDetails, gyroXCalibratedData[i]);
+				for(int i=0; i<3; i++){
+					objectCluster.addCalData(channelDetails, gyroCalData[i]);
 					objectCluster.indexKeeper++;
 				}
 
@@ -1704,9 +1705,58 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
 
 	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
+	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
-		return false;
+	}
+
+
+	@Override
+	public ShimmerDevice deepClone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void sensorAndConfigMapsCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	protected void interpretDataPacketFormat(Object object,
+			COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void infoMemByteArrayParse(byte[] infoMemContents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void createInfoMemLayout() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

@@ -1820,9 +1820,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//TODO fill out in abstract sensor classes based on ShimmerObject equivalent
 	public void checkConfigOptionValues(String stringKey){
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			if(abstractSensor.checkConfigOptionValues(stringKey)){
+			/*RS (13/05/2016) commented the below as public void checkConfigOptionValues() does not return a boolean
+			 * if(abstractSensor.checkConfigOptionValues(stringKey)){
 				break;
-			}
+			}  
+			replaced by:*/
+			abstractSensor.checkConfigOptionValues(stringKey);
 		}
 	}
 
