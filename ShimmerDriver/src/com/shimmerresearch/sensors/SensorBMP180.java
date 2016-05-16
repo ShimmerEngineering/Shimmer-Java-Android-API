@@ -59,15 +59,28 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	protected byte[] mPressureCalRawParams = new byte[23];
 	protected byte[] mPressureRawParams  = new byte[23];
 	public static final int MAX_NUMBER_OF_SIGNALS = 50;
-	public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
-	public static  String TEMPERATURE_BMP180 = "Temperature_BMP180";
-	public static  String PRESSURE_BMP180 = "Pressure_BMP180";
-	public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
+	
+	
 	public static final String PRESSURE_TEMPERATURE = "Pressure & Temperature";
 	public static final int SHIMMER_BMP180_PRESSURE = 22;
 	
 	protected String[] mSignalNameArray=new String[MAX_NUMBER_OF_SIGNALS];	
 	public int mPressureResolution = 0;
+	
+	public static class ObjectClusterSensorName{
+		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
+		public static String PRESSURE_BMP180 = "Pressure_BMP180";
+	}
+	public class GuiLabelConfig{
+		public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
+	}
+	public class GuiLabelSensors{
+		public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
+	}
+	public static class DatabaseChannelHandles{
+		public static final String PRESSURE = "BMP180_Pressure";
+		public static final String TEMPERATURE = "BMP180_Temperature";
+	}
 	//--------- Sensor specific variables end --------------
 
 	//--------- Bluetooth commands start --------------
@@ -92,10 +105,10 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	public static final SensorDetailsRef sensorBmp180 = new SensorDetailsRef(
 			0x04<<(2*8), 
 			0x04<<(2*8), 
-			Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180,
+			GuiLabelSensors.PRESS_TEMP_BMP180,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(PRESSURE_RESOLUTION),
-			Arrays.asList(PRESSURE_BMP180,TEMPERATURE_BMP180));
+			Arrays.asList(GuiLabelConfig.PRESSURE_RESOLUTION),
+			Arrays.asList(ObjectClusterSensorName.PRESSURE_BMP180,ObjectClusterSensorName.TEMPERATURE_BMP180));
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -107,16 +120,16 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
     
 	//--------- Channel info start --------------
 	public static final ChannelDetails channelBmp180Press = new ChannelDetails(
-			PRESSURE_BMP180,
-			PRESSURE_BMP180,
+			ObjectClusterSensorName.PRESSURE_BMP180,
+			ObjectClusterSensorName.PRESSURE_BMP180,
 			DatabaseChannelHandles.PRESSURE,
 			CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.KPASCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	
 	public static final ChannelDetails channelBmp180Temp = new ChannelDetails(
-			TEMPERATURE_BMP180,
-			TEMPERATURE_BMP180,
+			ObjectClusterSensorName.TEMPERATURE_BMP180,
+			ObjectClusterSensorName.TEMPERATURE_BMP180,
 			DatabaseChannelHandles.TEMPERATURE,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.DEGREES_CELSUIS,
@@ -125,8 +138,8 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
         Map<String, ChannelDetails> aChannelMap = new LinkedHashMap<String, ChannelDetails>();
-        aChannelMap.put(PRESSURE_BMP180, SensorBMP180.channelBmp180Press);
-        aChannelMap.put(TEMPERATURE_BMP180, SensorBMP180.channelBmp180Temp);
+        aChannelMap.put(ObjectClusterSensorName.PRESSURE_BMP180, SensorBMP180.channelBmp180Press);
+        aChannelMap.put(ObjectClusterSensorName.TEMPERATURE_BMP180, SensorBMP180.channelBmp180Temp);
 		mChannelMapRef = Collections.unmodifiableMap(aChannelMap);
     }
 	//--------- Channel info end --------------
@@ -163,11 +176,11 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
 
-			if (channelDetails.mObjectClusterName.equals(PRESSURE_BMP180)){
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
 				rawDataUP = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 				rawDataUP=rawDataUP/Math.pow(2,8-mPressureResolution);
 			}
-			if (channelDetails.mObjectClusterName.equals(TEMPERATURE_BMP180)){
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				rawDataUT = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}
 
@@ -176,11 +189,11 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		double[] bmp180caldata= calibratePressureSensorData(rawDataUP,rawDataUT);
 
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-			if (channelDetails.mObjectClusterName.equals(PRESSURE_BMP180)){
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
 				objectCluster.addCalData(channelDetails, bmp180caldata[0]);
 				objectCluster.indexKeeper++;
 			}
-			else if(channelDetails.mObjectClusterName.equals(TEMPERATURE_BMP180)){
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				objectCluster.addCalData(channelDetails, bmp180caldata[1]);
 				objectCluster.indexKeeper++;
 			}
@@ -211,7 +224,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		Object returnValue = null;
 		switch(componentName){
-			case(PRESSURE_RESOLUTION):
+			case(GuiLabelConfig.PRESSURE_RESOLUTION):
 				setPressureResolution((int)valueToSet);
 				returnValue = valueToSet;
 		 		break;
@@ -224,7 +237,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		Object returnValue = null;
 		
 		switch(componentName){
-		case(PRESSURE_RESOLUTION):
+		case(GuiLabelConfig.PRESSURE_RESOLUTION):
 			returnValue = getPressureResolution();
 	 		break;
 		  }
@@ -257,7 +270,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		
 		ActionSetting actionSetting = new ActionSetting(commType);
 		switch(componentName){
-			case(PRESSURE_RESOLUTION):
+			case(GuiLabelConfig.PRESSURE_RESOLUTION):
 				setPressureResolution((int)valueToSet);
 		 		break;
 		}
@@ -283,7 +296,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		mConfigOptionsMap.put(PRESSURE_RESOLUTION, configOptionPressureResolution); 
+		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolution); 
 	}
 
 //	@Override

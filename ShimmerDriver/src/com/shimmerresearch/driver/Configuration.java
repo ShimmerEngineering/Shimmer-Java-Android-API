@@ -694,7 +694,7 @@ public class Configuration {
 			public static final String MPU9150_GYRO_RATE = "Gyro Sampling Rate";
 			public static final String LSM303DLHC_MAG_RANGE = "Mag Range";//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_MAG_RATE = "Mag Rate";//XXX-RS-LSM-SensorClass?
-			public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
+			public static final String PRESSURE_RESOLUTION =  SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION; // "Pressure Resolution";
 			
 			public static final String GSR_RANGE = "GSR Range";
 			public static final String EXG_RESOLUTION = "Resolution";
@@ -784,7 +784,7 @@ public class Configuration {
 			public static final String ACCEL_MPU = "Alternative Accel";
 			public static final String BMP_180 = "BMP180";
 			public static final String MAG_MPU = "Alternative Mag";
-			public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
+			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180; //"Pressure & Temperature";
 			public static final String EMG = "EMG";
 			public static final String ECG = "ECG";
 			public static final String EXG_TEST = "Test";
@@ -852,7 +852,7 @@ public class Configuration {
 			public static final String INT_ADC_A14 = "F5437a_Int_A14";
 			public static final String BATTERY = "F5437a_Int_A2_Battery";
 			public static final String GSR = "F5437a_Int_A1_GSR";
-			public static final String PRESSURE = "BMP180_Pressure";
+			public static final String PRESSURE = SensorBMP180.DatabaseChannelHandles.PRESSURE; //"BMP180_Pressure";
 			public static final String MPU_HEADING = "MPU9150_MPL_Heading"; // not available but supported in FW
 			public static final String MPU_TEMP = "MPU9150_Temperature";
 
@@ -888,7 +888,7 @@ public class Configuration {
 			public static final String ALTERNATIVE_MAG_X = "MPU9150_MAG_X"; // not available but supported in FW
 			public static final String ALTERNATIVE_MAG_Y = "MPU9150_MAG_Y"; // not available but supported in FW
 			public static final String ALTERNATIVE_MAG_Z = "MPU9150_MAG_Z"; // not available but supported in FW
-			public static final String TEMPERATURE = "BMP180_Temperature";
+			public static final String TEMPERATURE = SensorBMP180.DatabaseChannelHandles.TEMPERATURE; //"BMP180_Temperature";
 	//		public static final String PRESSURE = "BMP180_Pressure"; -> already define for the shimmerCongig Table
 			public static final String EXG1_CH1_24BITS = "ADS1292R_1_CH1_24BIT";
 			public static final String EXG1_CH2_24BITS = "ADS1292R_1_CH2_24BIT";
@@ -1017,8 +1017,8 @@ public class Configuration {
 			public static  String MAG_MPU_X = "Mag_MPU_X";
 			public static  String MAG_MPU_Y = "Mag_MPU_Y";
 			public static  String MAG_MPU_Z = "Mag_MPU_Z";
-			public static  String TEMPERATURE_BMP180 = "Temperature_BMP180";
-			public static  String PRESSURE_BMP180 = SensorBMP180.PRESSURE_BMP180;//"Pressure_BMP180";
+			public static  String TEMPERATURE_BMP180 = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180; //"Temperature_BMP180";
+			public static  String PRESSURE_BMP180 =    SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;//"Pressure_BMP180";
 			public static  String ECG_GQ = "ECG";
 			public static  String ECG_TO_HR_FW_GQ = "ECGToHR_FW";
 			public static  String ECG_TO_HR_SW_GQ = "ECGToHR_SW";
