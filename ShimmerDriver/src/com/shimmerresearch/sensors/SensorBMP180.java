@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -16,9 +14,6 @@ import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.driver.ShimmerObject.BTStream;
-import com.shimmerresearch.driver.ShimmerObject.SDLogHeader;
-import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -167,8 +162,8 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		
-		double rawDataUP=0;
-		double rawDataUT=0;
+		double rawDataUP = 0;
+		double rawDataUT = 0;
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			//first process the data originating from the Shimmer sensor
@@ -178,7 +173,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
 				rawDataUP = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				rawDataUP=rawDataUP/Math.pow(2,8-mPressureResolution);
+				rawDataUP = rawDataUP/Math.pow(2,8-mPressureResolution);
 			}
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				rawDataUT = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
@@ -206,7 +201,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte3 =	9;
+		int idxConfigSetupByte3 = 9;
 		int bitShiftBMP180PressureResolution = 4;
 		int maskBMP180PressureResolution = 0x03;
 		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution & maskBMP180PressureResolution) << bitShiftBMP180PressureResolution);
@@ -214,7 +209,7 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 
 	@Override
 	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte3 =	9;
+		int idxConfigSetupByte3 = 9;
 		int bitShiftBMP180PressureResolution = 4;
 		int maskBMP180PressureResolution = 0x03;
 		mPressureResolution = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution;
@@ -277,9 +272,6 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		return actionSetting;
 	}
 
-	
-
-	
 //	@Override
 //	public LinkedHashMap<Integer, ChannelDetails> generateChannelDetailsMap(ShimmerVerObject svo) {
 //		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer, ChannelDetails>();
@@ -466,5 +458,6 @@ public class SensorBMP180 extends AbstractSensor implements Serializable {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 
 }
