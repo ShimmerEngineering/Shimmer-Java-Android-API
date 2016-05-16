@@ -204,14 +204,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	private void generateSensorMap() {
-		mSensorMap.clear();
+		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 			mSensorMap.putAll(abstractSensor.mSensorMap);
 		}
 	}
 
 	public void generateParserMap() {
-		mParserMap.clear();
+		mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
 		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
 			for(Entry<Integer, SensorDetails> sensorEntry:mSensorMap.entrySet()){
 				if(sensorEntry.getValue().isEnabled(commType)){
@@ -227,7 +227,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void generateConfigOptionsMap() {
-		mConfigOptionsMap.clear();
+		mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 			HashMap<String, SensorConfigOptionDetails> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
 			if(configOptionsMapPerSensor!=null){

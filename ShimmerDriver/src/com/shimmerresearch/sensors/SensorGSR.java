@@ -50,8 +50,13 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Bluetooth commands end --------------
 
 	//--------- Configuration options start --------------
-	public static final String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
-	public static final Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
+	public static final String[] ListofGSRRange = {
+		"10k\u2126 to 56k\u2126",
+		"56k\u2126 to 220k\u2126",
+		"220k\u2126 to 680k\u2126",
+		"680k\u2126 to 4.7M\u2126",
+		"Auto"};
+	public static final Integer[] ListofGSRRangeConfigValues = {0,1,2,3,4};
 
 	public static final SensorConfigOptionDetails configOptionGsrRange = new SensorConfigOptionDetails(
 			Configuration.Shimmer3.ListofGSRRange, 
@@ -158,8 +163,6 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
 		}
 	}
-	
-	//TODO BIG BUG HERE, SHIMMERGQ IS USING INCORRECT CALIBRATION PARAMETERS BECAUSE HW_ID.SHIMMER3 is the only one listed!!!!!!!!
 	
 	//TODO: include somewhere (SensorDetails/ChannelDetails??)
 	@Override
