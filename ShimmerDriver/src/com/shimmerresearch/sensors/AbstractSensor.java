@@ -24,7 +24,7 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public abstract class AbstractSensor extends ShimmerDevice implements Serializable{
+public abstract class AbstractSensor implements Serializable{
 	
 	/** * */
 	private static final long serialVersionUID = 3465427544416038676L;
@@ -73,7 +73,7 @@ public abstract class AbstractSensor extends ShimmerDevice implements Serializab
 	public abstract void setSamplingRateFromFreq();
 	public abstract boolean setDefaultConfiguration(int sensorMapKey, boolean state);
 	/** TODO populate in individual AbstractSensor classes the relevent entries from ShimmerObject */
-	public abstract void checkConfigOptionValues(String stringKey);
+	public abstract boolean checkConfigOptionValues(String stringKey);
 
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
@@ -370,6 +370,10 @@ public abstract class AbstractSensor extends ShimmerDevice implements Serializab
 		mMaxSetShimmerSamplingRate = maxSetRate;
 	}
 	
+	public int getHardwareVersion() {
+		return mShimmerVerObject.mHardwareVersion;
+	}
+
 
 
 }

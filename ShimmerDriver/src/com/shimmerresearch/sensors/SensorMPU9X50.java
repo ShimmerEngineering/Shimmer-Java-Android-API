@@ -998,6 +998,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		int maskMPU9150GyroRange = 0x03;
 		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((mGyroRange & maskMPU9150GyroRange) << bitShiftMPU9150GyroRange);
 //		}
+//		byte[] bufferCalibrationParameters = generateCalParamGyroscope(); // check if needed
+//		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemLayout.idxMPU9150GyroCalibration, infoMemLayout.lengthGeneralCalibrationBytes);
+//		
+		
 	}
 
 	@Override
@@ -1081,6 +1085,27 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return returnValue;
 	}
 	
+	public byte[] generateCalParamGyroscope(){
+		// MPU9150 Gyroscope Calibration Parameters
+		byte[] bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
+		}
+		return bufferCalibrationParameters;
+	}
 private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
 		
 		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer3;
@@ -1826,66 +1851,69 @@ private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] s
 			return 0;
 	}
 
+	//TODO TODO
 	public void setSamplingRateShimmer(double samplingRate){
-		//In Shimmer3 the SD and BT have the same sampling rate 
-		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, samplingRate);
-		setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
+//		//In Shimmer3 the SD and BT have the same sampling rate 
+//		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, samplingRate);
+//		setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
 	}
+
+
 	@Override
 	public void checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
 		
 	}
+	
 
-
-	@Override
-	public ShimmerDevice deepClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void sensorAndConfigMapsCreate() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	protected void interpretDataPacketFormat(Object object,
-			COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void infoMemByteArrayParse(byte[] infoMemContents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void createInfoMemLayout() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public ShimmerDevice deepClone() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//
+//	@Override
+//	public void sensorAndConfigMapsCreate() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//
+//	@Override
+//	protected void interpretDataPacketFormat(Object object,
+//			COMMUNICATION_TYPE commType) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//
+//	@Override
+//	public void infoMemByteArrayParse(byte[] infoMemContents) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//
+//	@Override
+//	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//
+//	@Override
+//	public void createInfoMemLayout() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//
+//	@Override
+//	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	
 }
