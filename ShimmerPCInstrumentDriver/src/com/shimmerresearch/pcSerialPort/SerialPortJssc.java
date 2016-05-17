@@ -1,4 +1,4 @@
-package com.shimmerresearch.pcserialport;
+package com.shimmerresearch.pcSerialPort;
 
 import java.util.concurrent.ExecutionException;
 
@@ -23,7 +23,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  * @author Mark Nolan
  *
  */
-public class ShimmerSerialPortJssc extends SerialPortComm implements ShimmerSerialEventCallback{
+public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEventCallback{
 
 	private SerialPort serialPort = null;
 	public String mUniqueId = "";
@@ -41,7 +41,7 @@ public class ShimmerSerialPortJssc extends SerialPortComm implements ShimmerSeri
 	private boolean mVerboseMode = true;
 	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
-	public ShimmerSerialPortJssc(String comPort, String uniqueId, int baudToUse) {
+	public SerialPortJssc(String comPort, String uniqueId, int baudToUse) {
 		mUniqueId = uniqueId;
 		mComPort = comPort;
 		mAddress = comPort;
@@ -49,7 +49,7 @@ public class ShimmerSerialPortJssc extends SerialPortComm implements ShimmerSeri
         serialPort = new SerialPort(mComPort);
 	}
 	
-	public ShimmerSerialPortJssc(String comPort, String uniqueId, int baudToUse, ShimmerSerialEventCallback shimmerSerialEventCallback) {
+	public SerialPortJssc(String comPort, String uniqueId, int baudToUse, ShimmerSerialEventCallback shimmerSerialEventCallback) {
 		this(comPort, uniqueId, baudToUse);
 		registerSerialPortRxEventCallback(shimmerSerialEventCallback);
 	}

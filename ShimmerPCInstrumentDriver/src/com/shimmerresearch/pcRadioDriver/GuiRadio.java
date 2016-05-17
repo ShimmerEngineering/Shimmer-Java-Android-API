@@ -8,7 +8,7 @@ import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.driver.DeviceException;
-import com.shimmerresearch.pcserialport.ShimmerSerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortJssc;
 
 import javax.swing.JButton;
 
@@ -17,7 +17,7 @@ import java.awt.event.ActionEvent;
 
 import jssc.SerialPort;
 
-public class theRadioGui{
+public class GuiRadio{
 
 	static JFrame frame;
 	static ShimmerRadioProtocol mSRP;
@@ -94,7 +94,7 @@ public class theRadioGui{
 		
 		
 		
-		mSRP = new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
+		mSRP = new ShimmerRadioProtocol(new SerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
 
 		mSRP.setRadioListener(new RadioListener(){
 

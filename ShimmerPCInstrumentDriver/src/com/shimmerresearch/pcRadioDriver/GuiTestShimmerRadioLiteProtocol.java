@@ -48,7 +48,7 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.UtilShimmer;
-import com.shimmerresearch.pcserialport.ShimmerSerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortJssc;
 
 import java.util.*;
 import java.awt.*;
@@ -197,7 +197,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     }
  
     private void initialize() {
-    	mSRP = new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
+    	mSRP = new ShimmerRadioProtocol(new SerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
     	mSRP.setRadioListener(new RadioListener(){
 
     		@Override

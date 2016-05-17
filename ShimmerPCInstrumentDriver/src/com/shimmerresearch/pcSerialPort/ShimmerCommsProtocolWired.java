@@ -1,4 +1,4 @@
-package com.shimmerresearch.pcserialport;
+package com.shimmerresearch.pcSerialPort;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 
 //		shimmerUartOs = new ShimmerComPortJssc(this, mComPort, mUniqueId, mBaudToUse);
 ////		shimmerUartOs.registerRxCallback(new CallbackUartRx());
-		shimmerSerialPortInterface = new ShimmerSerialPortJssc(mComPort, mUniqueId, mBaudToUse, this);
+		shimmerSerialPortInterface = new SerialPortJssc(mComPort, mUniqueId, mBaudToUse, this);
 		
 		setVerbose(mVerboseMode, mIsDebugMode);
 		setThreadName(mUniqueId + "-" + this.getClass().getSimpleName());

@@ -9,7 +9,7 @@ import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.Shimmer4;
 import com.shimmerresearch.driver.Shimmer4Test;
-import com.shimmerresearch.pcserialport.ShimmerSerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortJssc;
 
 public class testShimmer4 {
 	
@@ -18,7 +18,7 @@ public class testShimmer4 {
 	
 	public static void main(String[] args) {
 		Shimmer4 shimmer = new Shimmer4();
-		shimmer.setRadio(new ShimmerRadioProtocol(new ShimmerSerialPortJssc("COM65","COM65",SerialPort.BAUDRATE_115200),new LiteProtocol()));
+		shimmer.setRadio(new ShimmerRadioProtocol(new SerialPortJssc("COM65","COM65",SerialPort.BAUDRATE_115200),new LiteProtocol()));
 		try {
 			shimmer.mShimmerRadioHWLiteProtocol.connect();
 		} catch (DeviceException e) {

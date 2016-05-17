@@ -8,8 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.shimmerresearch.datastructure.ShimmerObjectCluster.ObjectCluster2;
-import com.shimmerresearch.datastructure.ShimmerObjectCluster.ObjectCluster2.CommunicationType;
+import com.shimmerresearch.dataStructure.ShimmerObjectCluster.ObjectCluster2;
+import com.shimmerresearch.dataStructure.ShimmerObjectCluster.ObjectCluster2.CommunicationType;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;

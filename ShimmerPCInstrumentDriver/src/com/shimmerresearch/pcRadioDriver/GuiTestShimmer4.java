@@ -55,7 +55,7 @@ import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.pcDriver.ShimmerPC;
-import com.shimmerresearch.pcserialport.ShimmerSerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortJssc;
 
 import java.util.*;
 import java.awt.*;
@@ -71,7 +71,7 @@ public class GuiTestShimmer4 extends JPanel {
     ListSelectionModel listSelectionModel;
     String[] enumValues;
 	static ShimmerDevice mShimmer;
-	static ShimmerSerialPortJssc sspj;
+	static SerialPortJssc sspj;
 	private JTextField txtCom;
     public GuiTestShimmer4() {
         super(new BorderLayout());
@@ -149,7 +149,7 @@ public class GuiTestShimmer4 extends JPanel {
         btnConnect.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		try {
-        			sspj = new ShimmerSerialPortJssc(txtCom.getText(), txtCom.getText(), SerialPort.BAUDRATE_115200);
+        			sspj = new SerialPortJssc(txtCom.getText(), txtCom.getText(), SerialPort.BAUDRATE_115200);
         	        sspj.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
 
         				@Override
@@ -234,7 +234,7 @@ public class GuiTestShimmer4 extends JPanel {
     }
  
     private void initializeShimmer3(ByteLevelDataComm bldc) {
-    	ShimmerSerialPortJssc ssjc = (ShimmerSerialPortJssc) bldc;
+    	SerialPortJssc ssjc = (SerialPortJssc) bldc;
     	
     	
     }

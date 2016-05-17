@@ -6,7 +6,7 @@ import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Shimmer4;
-import com.shimmerresearch.pcserialport.ShimmerSerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortJssc;
 
 public class Shimmer4PC extends Shimmer4{
 	
