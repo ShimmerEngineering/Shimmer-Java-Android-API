@@ -17,6 +17,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
@@ -126,7 +127,8 @@ public class Shimmer4 extends ShimmerDevice {
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
 				byte[] instructionHW = {LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE};
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionHW);
-				
+				CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.CONNECTED, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
+				sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 				
 			}
 
@@ -134,6 +136,8 @@ public class Shimmer4 extends ShimmerDevice {
 			public void disconnected() {
 				// TODO Auto-generated method stub
 				mIsConnected = false;
+				CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.DISCONNECTED, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
+				sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 			}
 
 			@Override
@@ -193,6 +197,14 @@ public class Shimmer4 extends ShimmerDevice {
 			}
 
 			});
+			if (mShimmerRadioHWLiteProtocol.mSerialPort.isConnected()){
+				mIsConnected = true;
+				// TODO Auto-generated method stub
+				byte[] instructionFW = {LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
+				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
+				byte[] instructionHW = {LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE};
+				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionHW);
+			}
 		}
 	}
 
