@@ -2742,7 +2742,7 @@ public class Configuration {
 	    }
 
 
-	    public static final Map<String, SensorGroupingDetails> mSensorGroupingMap;
+	    public static final Map<String, SensorGroupingDetails> mSensorGroupingMapRef;
 	    static {
 	        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		
@@ -2859,10 +2859,10 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION);
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION);
 			
-	        mSensorGroupingMap = Collections.unmodifiableMap(aMap);
+	        mSensorGroupingMapRef = Collections.unmodifiableMap(aMap);
 	    }
 
-	    public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMap;
+	    public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMapRef;
 	    static {
 	        Map<String, SensorConfigOptionDetails> aMap = new LinkedHashMap<String, SensorConfigOptionDetails>();
 	        
@@ -3123,11 +3123,11 @@ public class Configuration {
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
 	        
-	        mConfigOptionsMap = Collections.unmodifiableMap(aMap);
+	        mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
 	    }
 
 
-	    public static final Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap;
+	    public static final Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMapRef;
 	    static {
 	        Map<String, AlgorithmDetailsNew> aMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
 	        /*Removed by JC
@@ -3190,11 +3190,11 @@ public class Configuration {
 //			public static  String AXIS_ANGLE_Y = "Axis_Angle_Y";
 //			public static  String AXIS_ANGLE_Z = "Axis_Angle_Z";
 			
-			mAlgorithmChannelsMap = Collections.unmodifiableMap(aMap);
+			mAlgorithmChannelsMapRef = Collections.unmodifiableMap(aMap);
 	    }
 
 		
-	    public static final Map<String, List<String>> mAlgorithmGroupingMap;
+	    public static final Map<String, List<String>> mAlgorithmGroupingMapRef;
 	    static {
 	        Map<String, List<String>> aMap = new LinkedHashMap<String, List<String>>();
 	        
@@ -3237,7 +3237,7 @@ public class Configuration {
 							Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z
 							));
 			
-			mAlgorithmGroupingMap = Collections.unmodifiableMap(aMap);
+			mAlgorithmGroupingMapRef = Collections.unmodifiableMap(aMap);
 	    }
 	}
 

@@ -925,23 +925,29 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		TreeMap<Integer, SensorDetails> parserMapPerComm = mParserMap.get(commType);
 		
-		int index=0;
-		for (SensorDetails sensor:parserMapPerComm.values()){
-			int length = sensor.getExpectedPacketByteArray(commType);
-			//TODO process API sensors, not just bytes from Shimmer packet 
-			if (length!=0){ //if length 0 means there are no channels to be processed
-				byte[] sensorByteArray = new byte[length];
-				if((index+sensorByteArray.length)<=packetByteArray.length){
-					System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
-					sensor.processData(sensorByteArray, commType, ojc);
+		if(parserMapPerComm!=null){
+			int index=0;
+			for (SensorDetails sensor:parserMapPerComm.values()){
+				int length = sensor.getExpectedPacketByteArray(commType);
+				//TODO process API sensors, not just bytes from Shimmer packet 
+				if (length!=0){ //if length 0 means there are no channels to be processed
+					byte[] sensorByteArray = new byte[length];
+					if((index+sensorByteArray.length)<=packetByteArray.length){
+						System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
+						sensor.processData(sensorByteArray, commType, ojc);
+					}
+					else{
+						//TODO replace with consolePrintSystem
+						System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetails.mGuiFriendlyLabel);
+					}
 				}
-				else{
-					//TODO replace with consolePrintSystem
-					System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetails.mGuiFriendlyLabel);
-				}
+				index += length;
 			}
-			index += length;
 		}
+		else{
+			consolePrintLn("ERROR!!!! Parser map null");
+		}
+		
 		return ojc;
 
 		
