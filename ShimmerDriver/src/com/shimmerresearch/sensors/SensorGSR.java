@@ -159,7 +159,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
 		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
 				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
-				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154) {
+				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.LOGANDSTREAM
+				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154
+				) {
 			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
 		}
 	}
