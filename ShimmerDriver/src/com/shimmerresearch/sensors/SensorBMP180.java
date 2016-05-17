@@ -33,7 +33,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
  * @author Mark Nolan
  *
  */
-public class SensorBMP180 extends AbstractSensor implements Serializable {
+public class SensorBMP180 extends AbstractSensor {
 	
 	/** * */
 	private static final long serialVersionUID = 4559709230029277863L;
