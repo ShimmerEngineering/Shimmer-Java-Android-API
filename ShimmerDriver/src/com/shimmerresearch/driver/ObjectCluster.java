@@ -215,38 +215,50 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data) {
+		addData(objectClusterName, channelType, units, data, indexKeeper);
+	}
+
+	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data, int index) {
 		if(channelType==CHANNEL_TYPE.CAL){
-			mCalData[indexKeeper] = data;
-			mUnitCal[indexKeeper] = units;
+			mCalData[index] = data;
+			mUnitCal[index] = units;
 		}
 		else if(channelType==CHANNEL_TYPE.UNCAL){
-			mUncalData[indexKeeper] = data;
-			mUnitUncal[indexKeeper] = units;
+			mUncalData[index] = data;
+			mUnitUncal[index] = units;
 		}
-		mSensorNames[indexKeeper] = objectClusterName;
+		mSensorNames[index] = objectClusterName;
 		mPropertyCluster.put(objectClusterName, new FormatCluster(channelType.toString(), units, data));
 	}
 
 	public void addData(ChannelDetails channelDetails, double uncalData, double calData) {
+		addData(channelDetails, uncalData, calData, indexKeeper);
+	}
+
+	public void addData(ChannelDetails channelDetails, double uncalData, double calData, int index) {
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.UNCAL)){
-			mSensorNames[indexKeeper] = channelDetails.mObjectClusterName;
-			mUncalData[indexKeeper] = uncalData;
-			mUnitUncal[indexKeeper] = channelDetails.mDefaultUnit;
+			mSensorNames[index] = channelDetails.mObjectClusterName;
+			mUncalData[index] = uncalData;
+			mUnitUncal[index] = channelDetails.mDefaultUnit;
 			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(), channelDetails.mDefaultUnit, uncalData));
 		}
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
-			mSensorNames[indexKeeper] = channelDetails.mObjectClusterName;
-			mCalData[indexKeeper] = calData;
-			mUnitCal[indexKeeper] = channelDetails.mDefaultCalibratedUnits;
+			mSensorNames[index] = channelDetails.mObjectClusterName;
+			mCalData[index] = calData;
+			mUnitCal[index] = channelDetails.mDefaultCalibratedUnits;
 			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
 		}
 	}
 
 	public void addCalData(ChannelDetails channelDetails, double calData) {
+		addCalData(channelDetails, calData, indexKeeper);
+	}
+
+	public void addCalData(ChannelDetails channelDetails, double calData, int index) {
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
-			mSensorNames[indexKeeper] = channelDetails.mObjectClusterName;
-			mCalData[indexKeeper] = calData;
-			mUnitCal[indexKeeper] = channelDetails.mDefaultCalibratedUnits;
+			mSensorNames[index] = channelDetails.mObjectClusterName;
+			mCalData[index] = calData;
+			mUnitCal[index] = channelDetails.mDefaultCalibratedUnits;
 			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
 		}
 	}
