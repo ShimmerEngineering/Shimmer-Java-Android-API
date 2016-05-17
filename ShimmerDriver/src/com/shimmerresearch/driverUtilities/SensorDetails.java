@@ -122,15 +122,15 @@ public class SensorDetails implements Serializable{
 		return count;
 	}
 	
-	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object) {
+	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
 		for (ChannelDetails channelDetails:mListOfChannels){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			object = processShimmerChannelData(rawData, channelDetails, object);
+			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
 		}
-		return object;
+		return objectCluster;
 	}
 	
 	/** To process data originating from the Shimmer device
