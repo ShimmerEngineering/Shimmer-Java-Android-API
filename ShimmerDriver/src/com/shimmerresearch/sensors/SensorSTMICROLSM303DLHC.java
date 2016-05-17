@@ -19,22 +19,29 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
+/** 
+ * @author Ruud Stolk
+ * 
+ */
 public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 
-	// list of compatible shimmer hw/fw for sensor not sensor options (see ShimmerVerObject class)
-	
-	//list/map of shimmer ver objects  to specify what config options should be generated based on hw/fw id
-	
+	//TODO - RS: remove these comments that were already in here:
+	// list of compatible shimmer hw/fw for sensor not sensor options (see ShimmerVerObject class	
+	//list/map of shimmer ver objects  to specify what config options should be generated based on hw/fw id	
 	//COMTYPE should have dummy for no action setting
-	
 	//map infomem to fw, index, value
 	
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = -2119834127313796684L;
 
-	// --- Configuration variables specific to this Sensor - Start --- 
+	//--------- Sensor specific variables start --------------
+	public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";  
+	public static final String LOCAL_FLUX = "local_flux";  
+//	public static final String U_TESLA = "uT";
+//	public static final String GRAVITY = "g";
+	public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
+	public static final String MAG_CAL_UNIT = LOCAL_FLUX;
+//	public static final String LOCAL = "local"; //used for axis-angle and madgewick quaternions 
 	
 	public boolean mLowPowerAccelWR = false;
 	public boolean mHighResAccelWR = false;
@@ -43,10 +50,91 @@ public class SensorSTMICROLSM303DLHC extends AbstractSensor{
 	public int mLSM303DigitalAccelRate = 0;
 	public int mMagRange = 1;
 	public int mLSM303MagRate = 4;
-	
-	// --- Configuration variables specific to this Sensor - End --- 
 
+	//XXX
+//	protected byte[] mPressureCalRawParams = new byte[23];
+//	protected byte[] mPressureRawParams  = new byte[23];
+//	public static final int MAX_NUMBER_OF_SIGNALS = 50;
+//	
+//	
+//	public static final String PRESSURE_TEMPERATURE = "Pressure & Temperature";
+//	public static final int SHIMMER_BMP180_PRESSURE = 22;
+//	
+//	protected String[] mSignalNameArray=new String[MAX_NUMBER_OF_SIGNALS];	
+//	public int mPressureResolution = 0;
 	
+	public static class ObjectClusterSensorName{
+//		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
+//		public static String PRESSURE_BMP180 = "Pressure_BMP180";
+	}
+	public class GuiLabelConfig{
+		public static final String SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL = "LSM303DLHC Divider";
+		public static final String LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";  
+		public static final String LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range"; 
+		public static final String LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode"; 
+		
+		
+	}
+	public class GuiLabelSensors{
+		public static final String ACCEL_WR = "Wide-Range Accelerometer"; 
+		public static final String MAG = "Magnetometer"; 
+	}
+	public static class DatabaseChannelHandles{
+//		public static final String PRESSURE = "BMP180_Pressure";
+//		public static final String TEMPERATURE = "BMP180_Temperature";
+	}
+	
+	//--------- Sensor specific variables end --------------
+	
+	
+	//--------- Bluetooth commands start --------------
+	public static final byte SET_ACCEL_SENSITIVITY_COMMAND    		= (byte) 0x09;
+	public static final byte ACCEL_SENSITIVITY_RESPONSE       		= (byte) 0x0A;
+	public static final byte GET_ACCEL_SENSITIVITY_COMMAND    		= (byte) 0x0B;
+	
+	public static final byte SET_MAG_CALIBRATION_COMMAND      		= (byte) 0x17;
+	public static final byte MAG_CALIBRATION_RESPONSE         		= (byte) 0x18;
+	public static final byte GET_MAG_CALIBRATION_COMMAND      		= (byte) 0x19;
+	
+	public static final byte SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND = (byte) 0x1A;
+	public static final byte LSM303DLHC_ACCEL_CALIBRATION_RESPONSE 	= (byte) 0x1B;
+	public static final byte GET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND = (byte) 0x1C;
+	
+	public static final byte SET_MAG_GAIN_COMMAND             		= (byte) 0x37;
+	public static final byte MAG_GAIN_RESPONSE                		= (byte) 0x38;
+	public static final byte GET_MAG_GAIN_COMMAND             		= (byte) 0x39;
+	
+	public static final byte SET_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3A;
+	public static final byte MAG_SAMPLING_RATE_RESPONSE       		= (byte) 0x3B;
+	public static final byte GET_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3C;
+	
+	public static final byte SET_ACCEL_SAMPLING_RATE_COMMAND  		= (byte) 0x40;
+	public static final byte ACCEL_SAMPLING_RATE_RESPONSE  			= (byte) 0x41;
+	public static final byte GET_ACCEL_SAMPLING_RATE_COMMAND  		= (byte) 0x42;
+	
+	public static final byte SET_LSM303DLHC_ACCEL_LPMODE_COMMAND 	= (byte) 0x43;
+	public static final byte LSM303DLHC_ACCEL_LPMODE_RESPONSE		= (byte) 0x44;
+	public static final byte GET_LSM303DLHC_ACCEL_LPMODE_COMMAND 	= (byte) 0x45;
+	
+	public static final byte SET_LSM303DLHC_ACCEL_HRMODE_COMMAND	= (byte) 0x46;
+	public static final byte LSM303DLHC_ACCEL_HRMODE_RESPONSE		= (byte) 0x47;
+	public static final byte GET_LSM303DLHC_ACCEL_HRMODE_COMMAND 	= (byte) 0x48;
+	//--------- Bluetooth commands end --------------
+	
+
+	//--------- Configuration options start --------------
+	
+	//--------- Configuration options end --------------
+	
+	
+	//--------- Sensor info start --------------
+	
+	//--------- Sensor info end --------------
+	
+	
+	//--------- Channel info start --------------
+		
+	//--------- Channel info end --------------
 	public SensorSTMICROLSM303DLHC(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.STMICROLSM303DLHC.toString();

@@ -215,7 +215,7 @@ public class Configuration {
 			public static final String SAMPLING_RATE_DIVIDER_VBATT = "VBATT Divider";
 			public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
 			public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
-			public static final String SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL = "LSM3030DLHC Divider"; //Should be "LSM303DLHC Divider" //XXX-RS-LSM-SensorClass?
+			public static final String SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL = "LSM303DLHC Divider"; //XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";  //XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range"; //XXX-RS-LSM-SensorClass?
 			public static final String GSR_RANGE = "GSR Range";
