@@ -37,7 +37,8 @@ public abstract class AbstractSensor implements Serializable{
 		SYSTEM_TIMESTAMP("PC time"),
 		MPU9X50("MPU Accel"),
 		BMP180("BMP180"),
-		KIONIXKXRB52042("Analog Accelerometer");
+		KIONIXKXRB52042("Analog Accelerometer"),
+		STMICROLSM303DLHC("LSM303DLHC");
 		
 	    private final String text;
 
@@ -241,7 +242,7 @@ public abstract class AbstractSensor implements Serializable{
 		
 		
 //		//TODO: enabledSensors should be directed at channels coming from the Shimmer, derivedSensors at channels from the API 
-//		//TODO move to abstact or override in the extended sensor classes so complexities like EXG can be handled
+//		//TODO move to abstract or override in the extended sensor classes so complexities like EXG can be handled
 //		mIsEnabled = false;
 //		boolean state = (enabledSensors & mSensorBitmapIDStreaming)>0? true:false;
 //		mIsEnabled = state;
