@@ -102,7 +102,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 	
 	List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
 	public ByteLevelProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
-	ByteLevelDataComm mSerialPort;
+	public ByteLevelDataComm mSerialPort;
 	
 	public void setRadioListener(RadioListener radioListener){
 		mRadioListenerList.add(radioListener);

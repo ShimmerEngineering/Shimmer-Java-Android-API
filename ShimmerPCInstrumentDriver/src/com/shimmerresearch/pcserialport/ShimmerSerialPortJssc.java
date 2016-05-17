@@ -44,6 +44,7 @@ public class ShimmerSerialPortJssc extends SerialPortComm implements ShimmerSeri
 	public ShimmerSerialPortJssc(String comPort, String uniqueId, int baudToUse) {
 		mUniqueId = uniqueId;
 		mComPort = comPort;
+		mAddress = comPort;
 		mBaudToUse = baudToUse;
         serialPort = new SerialPort(mComPort);
 	}

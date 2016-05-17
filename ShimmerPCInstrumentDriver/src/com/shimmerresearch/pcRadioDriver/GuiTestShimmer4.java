@@ -72,29 +72,11 @@ public class GuiTestShimmer4 extends JPanel {
     String[] enumValues;
 	static ShimmerDevice mShimmer;
 	static ShimmerSerialPortJssc sspj;
+	private JTextField txtCom;
     public GuiTestShimmer4() {
         super(new BorderLayout());
         
-        sspj = new ShimmerSerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200);
-        sspj.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
-
-			@Override
-			public void eventConnected() {
-				// TODO Auto-generated method stub
-				ShimmerVerObject svo = sspj.getShimmerVerObject();
-				if (svo.getHardwareVersion()==HW_ID.SHIMMER_3){
-					
-				} else if(svo.getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-					initializeShimmer4(sspj);
-				}
-				
-			}
-
-			@Override
-			public void eventDisconnected() {
-				// TODO Auto-generated method stub
-				
-			}});
+        
         
         enumValues = new String[LiteProtocolInstructionSet.InstructionsGet.getDescriptor().getValues().size() + LiteProtocolInstructionSet.InstructionsSet.getDescriptor().getValues().size() ];
 		int i =0;
@@ -151,7 +133,7 @@ public class GuiTestShimmer4 extends JPanel {
         controlPane.add(comboBox);
  
         //Build output area.
-        output = new JTextArea(1, 10);
+        output = new JTextArea(1, 1);
         output.setEditable(false);
         JScrollPane outputPane = new JScrollPane(output,
                          ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
@@ -167,7 +149,26 @@ public class GuiTestShimmer4 extends JPanel {
         btnConnect.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		try {
-        			
+        			sspj = new ShimmerSerialPortJssc(txtCom.getText(), txtCom.getText(), SerialPort.BAUDRATE_115200);
+        	        sspj.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
+
+        				@Override
+        				public void eventConnected() {
+        					// TODO Auto-generated method stub
+        					ShimmerVerObject svo = sspj.getShimmerVerObject();
+        					if (svo.getHardwareVersion()==HW_ID.SHIMMER_3){
+        						
+        					} else if(svo.getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+        						initializeShimmer4(sspj);
+        					}
+        					
+        				}
+
+        				@Override
+        				public void eventDisconnected() {
+        					// TODO Auto-generated method stub
+        					
+        				}});
         			sspj.connect();
 				} catch (DeviceException de) {
 					// TODO Auto-generated catch block
@@ -175,6 +176,11 @@ public class GuiTestShimmer4 extends JPanel {
 				}
         	}
         });
+        
+        txtCom = new JTextField();
+        txtCom.setText("COM65");
+        shimmerPanel.add(txtCom);
+        txtCom.setColumns(1);
         btnConnect.setText("Connect");
         shimmerPanel.add(btnConnect);
         
