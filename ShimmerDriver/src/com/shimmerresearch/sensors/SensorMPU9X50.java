@@ -856,76 +856,76 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-
-		//TODO needed for 6DOF/9DOF
-		Vector3d gyroscope = new Vector3d();
-//		String calUnitToUse = Configuration.CHANNEL_UNITS.MAG_CAL_UNIT;
-		
-//		sensorDetails.processData(sensorByteArray, commType, objectCluster);
-		
-		//Parsing stage
-		int index = 0;
-		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
-			objectCluster.indexKeeper++;
-			index += channelDetails.mDefaultNumBytes;
-		}
-		
-		
-		//Calibration stage
-		double[] tempData = new double[3];
-		String[] gyroAxes = new String[]{
-				Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
-				Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
-				Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z
-		};
-		for(int i=0;i<gyroAxes.length;i++){
-			Collection<FormatCluster> ocAxis = objectCluster.mPropertyCluster.get(gyroAxes[i]);
-			if(ocAxis!=null){
-				tempData[i] = ((FormatCluster)ObjectCluster.returnFormatCluster(ocAxis, CHANNEL_TYPE.UNCAL.toString())).mData;
-			}
-		}
-
-		
-//			if (channelDetails.mObjectClusterName.equals()){
+//
+//		//TODO needed for 6DOF/9DOF
+//		Vector3d gyroscope = new Vector3d();
+////		String calUnitToUse = Configuration.CHANNEL_UNITS.MAG_CAL_UNIT;
+//		
+////		sensorDetails.processData(sensorByteArray, commType, objectCluster);
+//		
+//		//Parsing stage
+//		int index = 0;
+//		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+//			//first process the data originating from the Shimmer sensor
+//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+//			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+//			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+//			objectCluster.indexKeeper++;
+//			index += channelDetails.mDefaultNumBytes;
+//		}
+//		
+//		
+//		//Calibration stage
+//		double[] tempData = new double[3];
+//		String[] gyroAxes = new String[]{
+//				Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
+//				Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
+//				Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z
+//		};
+//		for(int i=0;i<gyroAxes.length;i++){
+//			Collection<FormatCluster> ocAxis = objectCluster.mPropertyCluster.get(gyroAxes[i]);
+//			if(ocAxis!=null){
+//				tempData[i] = ((FormatCluster)ObjectCluster.returnFormatCluster(ocAxis, CHANNEL_TYPE.UNCAL.toString())).mData;
 //			}
-//			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y)){
-//				tempData[1] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//		}
+//
+//		
+////			if (channelDetails.mObjectClusterName.equals()){
+////			}
+////			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y)){
+////				tempData[1] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+////			}
+////
+////			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z)){
+////				tempData[2] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+////			}
+//			
+//			double[] gyroCalData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+//
+//			if (mEnableCalibration){
+//				gyroscope.x=gyroCalData[0]*Math.PI/180;
+//				gyroscope.y=gyroCalData[1]*Math.PI/180;
+//				gyroscope.z=gyroCalData[2]*Math.PI/180;
+//
+//				if (mEnableOntheFlyGyroOVCal){
+//						mGyroXX.addValue(gyroCalData[0]);
+//						mGyroXY.addValue(gyroCalData[1]);
+//						mGyroXZ.addValue(gyroCalData[2]);
+//						
+//						if (mGyroXX.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXY.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXZ.getStandardDeviation()<mGyroXOVCalThreshold){
+//							mOffsetVectorGyroscope[0][0]=mGyroXXRaw.getMean();
+//							mOffsetVectorGyroscope[1][0]=mGyroXYRaw.getMean();
+//							mOffsetVectorGyroscope[2][0]=mGyroXZRaw.getMean();
+//						}
+//	
+//					}
+//					for(int i=0; i<3; i++){
+//						objectCluster.addCalData(channelDetails, gyroCalData[i]);
+//						objectCluster.indexKeeper++;
+//					}
 //			}
 //
-//			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z)){
-//				tempData[2] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-//			}
-			
-			double[] gyroCalData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
-
-			if (mEnableCalibration){
-				gyroscope.x=gyroCalData[0]*Math.PI/180;
-				gyroscope.y=gyroCalData[1]*Math.PI/180;
-				gyroscope.z=gyroCalData[2]*Math.PI/180;
-
-				if (mEnableOntheFlyGyroOVCal){
-						mGyroXX.addValue(gyroCalData[0]);
-						mGyroXY.addValue(gyroCalData[1]);
-						mGyroXZ.addValue(gyroCalData[2]);
-						
-						if (mGyroXX.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXY.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXZ.getStandardDeviation()<mGyroXOVCalThreshold){
-							mOffsetVectorGyroscope[0][0]=mGyroXXRaw.getMean();
-							mOffsetVectorGyroscope[1][0]=mGyroXYRaw.getMean();
-							mOffsetVectorGyroscope[2][0]=mGyroXZRaw.getMean();
-						}
-	
-					}
-					for(int i=0; i<3; i++){
-						objectCluster.addCalData(channelDetails, gyroCalData[i]);
-						objectCluster.indexKeeper++;
-					}
-			}
-
-		}
+//		}
 		
 		return objectCluster;
 	}
