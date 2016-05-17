@@ -402,7 +402,7 @@ public class UtilShimmer implements Serializable {
 		else{
 			formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		}
-
+		
 		return formatter.format(date);
 	}
 	

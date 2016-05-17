@@ -612,7 +612,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public String getConfigTimeExcelCompatible() {
-		return UtilShimmer.fromMilToDateExcelCompatible(Long.toString(mConfigTime*1000), false);
+		return UtilShimmer.fromMilToDateExcelCompatible(Long.toString(mConfigTime*1000L), false);
 	}
 
 	
