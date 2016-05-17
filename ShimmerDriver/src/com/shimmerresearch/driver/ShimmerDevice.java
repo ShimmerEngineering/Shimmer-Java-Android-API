@@ -165,7 +165,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
 //	public abstract byte[] refreshShimmerInfoMemBytes();
 	public abstract void createInfoMemLayout();
-
+	
 	// --------------- Abstract Methods End --------------------------
 
 	/**
@@ -180,8 +180,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setShimmerVersionObject(ShimmerVerObject sVO) {
 		mShimmerVerObject = sVO;
 		sensorAndConfigMapsCreate();
+		
+//		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+//			addCommunicationRoute(COMMUNICATION_TYPE.SD);
+//		}
 	}
 	
+	//TODO draft code
+	private void updateSensorDetailsWithCommsTypes() {
+		if(mMapOfSensorClasses!=null){
+			for(AbstractSensor absensorSensor:mMapOfSensorClasses.values()){
+				absensorSensor.updateSensorDetailsWithCommsTypes(mListOfAvailableCommunicationTypes.toArray(new COMMUNICATION_TYPE[]{}));
+			}
+		}
+	}
+	
+	//TODO draft code
+	private void updateSamplingRatesMapWithCommsTypes() {
+		// TODO Auto-generated method stub
+		
+//		mMapOfSamplingRatesShimmer
+		
+	}
+
+
 	/** setShimmerVerionObject should be used instead
 	 * @param hardwareVersion the mHardwareVersion to set
 	 */
@@ -399,6 +421,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
 			setDocked(true);
 		}
+		
+		//TODO temp here -> check if the best place for it
+		updateSensorDetailsWithCommsTypes();
+		updateSamplingRatesMapWithCommsTypes();
 	}
 
 	public void removeCommunicationRoute(COMMUNICATION_TYPE communicationType) {
@@ -412,6 +438,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			setFirstDockRead();
 			clearDockInfo();
 		}
+		
+		//TODO temp here -> check if the best place for it
+		updateSensorDetailsWithCommsTypes();
+		updateSamplingRatesMapWithCommsTypes();
 	}
 
 	public String getDriveUsedSpaceParsed() {

@@ -374,7 +374,12 @@ public abstract class AbstractSensor implements Serializable{
 	public int getHardwareVersion() {
 		return mShimmerVerObject.mHardwareVersion;
 	}
-
+	
+	public void updateSensorDetailsWithCommsTypes(COMMUNICATION_TYPE[] mListOfSupportedCommsTypes) {
+		for(SensorDetails sensorDetails:mSensorMap.values()){
+			sensorDetails.updateSensorDetailsWithCommsTypes(mListOfSupportedCommsTypes);
+		}
+	}
 
 
 }

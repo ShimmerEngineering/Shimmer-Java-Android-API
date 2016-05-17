@@ -49,7 +49,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	public static final SensorDetailsRef sensorSystemTimeStampRef = new SensorDetailsRef(
 			0, 
 			0, 
-			Shimmer3.GuiLabelSensors.GSR,
+			"SystemTimestmp",//TODO define as static somewhere
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			null,
 			null,

@@ -58,9 +58,8 @@ public class Shimmer4 extends ShimmerDevice {
 		addCommunicationRoute(communicationType);
     	setSamplingRateShimmer(communicationType, 128);
     	setMacIdFromUart(macId);
-    	
 	}
-
+	
 	public void setSetting(long sensorID, String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
 		ActionSetting actionSetting = mMapOfSensorClasses.get(sensorID).setSettings(componentName, valueToSet, commType);
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
@@ -219,7 +218,6 @@ public class Shimmer4 extends ShimmerDevice {
 //			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
 //			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject)); //for testing
 		}
-		
 		updateSensorAndParserMaps();
 	}
 	

@@ -560,8 +560,17 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		//TODO add in below when ready
 //		sensorAndConfigMapsCreate();
-//		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
+		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
+		updateSensorAndParserMaps();
 
+		for(SensorDetails sensorDetails:mSensorMap.values()){
+			System.out.println("SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
+		}
+		
+		for(SensorDetails sensorDetails:mParserMap.get(COMMUNICATION_TYPE.IEEE802154).values()){
+			System.out.println("ENABLED SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
+		}
+		
 
 		//TODO below copied from Shimmer Object -> make single shared class
 		// Set name if nothing was read from InfoMem
@@ -618,8 +627,18 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR,new SensorECGToHR(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.EXG,new SensorEXG(mShimmerVerObject));
 		}
+		
 		updateSensorAndParserMaps();
 	}
+	
+//	@Override
+//	public void updateSensorAndParserMaps() {
+//		super.updateSensorAndParserMaps();
+//
+//		//HACK - only temp
+//		mMapOfSensorClasses.get(SENSORS.SYSTEM_TIMESTAMP).setIsEnabledSensorChannels(COMMUNICATION_TYPE.IEEE802154, true);
+////		mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensorChannels(COMMUNICATION_TYPE.IEEE802154, true);
+//	};
 
 	/**
 	 * overriding buildMsg here to allow us to store the last received packet.
