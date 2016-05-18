@@ -9186,9 +9186,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mBluetoothBaudRate;
 	}
 
-
-	//TODO: MN -> move gets to ShimmerObject (could be duplicated there already)
-
 	public int getLowPowerAccelEnabled(){//XXX-RS-LSM-SensorClass?
 		if(mLowPowerAccelWR)
 			return 1;
@@ -9276,7 +9273,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mDefaultCalibrationParametersAccel;
 	}
 	
-	//XXX-RS-LSM-SensorClass?
 	public boolean isUsingDefaultAccelParam(){
 		return mDefaultCalibrationParametersAccel;
 	}
@@ -9503,7 +9499,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mSamplingDividerLsm303dlhcAccel
 	 */
-	//XXX-RS-LSM-SensorClass?
+	//XXX-RS-LSM-SensorClass?  (Only GQ BLE?)
 	public int getSamplingDividerLsm303dlhcAccel() {
 		return mSamplingDividerLsm303dlhcAccel;
 	}
@@ -10507,7 +10503,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR):
 				returnValue = getSamplingDividerGsr();
 	    		break;
-			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL):
+			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL): //XXX-RS-LSM-SensorClass? 
 				returnValue = getSamplingDividerLsm303dlhcAccel();
 	    		break;
 			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):

@@ -1640,7 +1640,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//TODO unfinished/untested - in the process of being copied from ShimmerObject
 	protected void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			if(abstractSensor.setDefaultConfiguration(sensorMapKey, state)){
+			if(abstractSensor.setDefaultConfigForSensor(sensorMapKey, state)){
 				//Sensor found, break
 				break;
 			}

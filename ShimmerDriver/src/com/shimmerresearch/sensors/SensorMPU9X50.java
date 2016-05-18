@@ -1330,7 +1330,7 @@ private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] s
 	}
 
 	@Override
-	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			//TODO set defaults for particular sensor
 			
