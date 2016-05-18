@@ -275,7 +275,7 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		// TODO Auto-generated method stub
 		return false;
 	}
