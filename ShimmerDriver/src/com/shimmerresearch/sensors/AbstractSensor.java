@@ -236,8 +236,16 @@ public abstract class AbstractSensor implements Serializable{
 	public void updateStateFromEnabledSensorsVars(COMMUNICATION_TYPE commType, long enabledSensors, long derivedSensors) {
 //		TreeMap<Integer, SensorEnabledDetails> sensorMapForCommType = mSensorEnabledMap.get(commType);
 		
-		for(SensorDetails sensorEnabledDetails:mSensorMap.values()){
-			sensorEnabledDetails.setIsEnabled(commType, (enabledSensors & sensorEnabledDetails.mSensorDetails.mSensorBitmapIDStreaming)>0? true:false);
+		for(SensorDetails sensorDetails:mSensorMap.values()){
+			if(sensorDetails.mSensorDetails.mGuiFriendlyLabel.equals(SensorSystemTimeStamp.sensorSystemTimeStampRef.mGuiFriendlyLabel)){
+				continue;
+			}
+			if(sensorDetails.isDerivedChannel()){
+				sensorDetails.setIsEnabled(commType, (derivedSensors & sensorDetails.mDerivedSensorBitmapID)>0? true:false);
+			}
+			else {
+				sensorDetails.setIsEnabled(commType, (enabledSensors & sensorDetails.mSensorDetails.mSensorBitmapIDStreaming)>0? true:false);
+			}
 		}
 		
 		

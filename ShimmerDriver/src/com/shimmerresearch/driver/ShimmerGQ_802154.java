@@ -628,8 +628,20 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			mMapOfSensorClasses.put(SENSORS.EXG,new SensorEXG(mShimmerVerObject));
 		}
 		
+		setDefaultShimmerConfiguration();
 		updateSensorAndParserMaps();
 	}
+	
+	@Override
+	public void setDefaultShimmerConfiguration() {
+		
+		mMapOfSensorClasses.get(SENSORS.SYSTEM_TIMESTAMP).setIsEnabledSensorChannels(COMMUNICATION_TYPE.IEEE802154, true);
+		mMapOfSensorClasses.get(SENSORS.GSR).setIsEnabledSensorChannels(COMMUNICATION_TYPE.IEEE802154, true);
+		mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensorChannels(COMMUNICATION_TYPE.IEEE802154, true);
+//		mMapOfSensorClasses.get(SENSORS.SYSTEM_TIMESTAMP).setIsEnabledSensorChannels(COMMUNICATION_TYPE.IEEE802154, false);
+		
+	}
+
 	
 //	@Override
 //	public void updateSensorAndParserMaps() {
