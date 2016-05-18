@@ -8481,7 +8481,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	
+	//TODO 2016-05-18 feed below into sensor map classes
 	/**
 	 * Used to convert from the enabledSensors long variable read from the
 	 * Shimmer to the set enabled status of the relative entries in the Sensor
