@@ -46,7 +46,7 @@ public class ConfigurationFragment extends Fragment{
 	public View rootView = null;
 	public MultiShimmerTemplateService mService;
 	DatabaseHandler db;
-	
+	final String[] ListofPressureResolution={"Low","Standard","High","Very High"};
 	public static String mDone = "Done";
 	String mAttribute;
 	String deviceBluetoothAddress;
@@ -233,7 +233,7 @@ public class ConfigurationFragment extends Fragment{
         	buttonGyroRange.setText("Gyro Range"+"\n"+currentGyroRange);
         	String currentMagRange = "("+Configuration.Shimmer3.ListofMagRange[shimmerConfig.getMagRange()-1]+")";
     		buttonMagRange.setText("Mag Range"+"\n"+currentMagRange);
-    		String currentPressureResolution = "("+Configuration.Shimmer3.ListofPressureResolution[shimmerConfig.getPressureResolution()]+")";
+    		String currentPressureResolution = "("+ListofPressureResolution[shimmerConfig.getPressureResolution()]+")";
     		buttonPressureResolution.setText("Pressure Res"+"\n"+currentPressureResolution);
         	
     		
@@ -538,26 +538,26 @@ public class ConfigurationFragment extends Fragment{
 
         
         final AlertDialog.Builder dialogPressureResolutionShimmer3 = new AlertDialog.Builder(getActivity());		 
-        dialogPressureResolutionShimmer3.setTitle("Pressure Resolution").setItems(Configuration.Shimmer3.ListofPressureResolution, new DialogInterface.OnClickListener() {
+        dialogPressureResolutionShimmer3.setTitle("Pressure Resolution").setItems(ListofPressureResolution, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int item) {
-                		 Log.d("Shimmer",Configuration.Shimmer3.ListofPressureResolution[item]);
+                		 Log.d("Shimmer",ListofPressureResolution[item]);
                 		 int pressureRes=0;
                		  
-               		    if (Configuration.Shimmer3.ListofPressureResolution[item]==Configuration.Shimmer3.ListofPressureResolution[0]){
+               		    if (ListofPressureResolution[item]==ListofPressureResolution[0]){
              	  		    	pressureRes=0;
-             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]==Configuration.Shimmer3.ListofPressureResolution[1]){
+             	  		    } else if (ListofPressureResolution[item]==ListofPressureResolution[1]){
              	  		    	pressureRes=1;
-             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]==Configuration.Shimmer3.ListofPressureResolution[2]){
+             	  		    } else if (ListofPressureResolution[item]==ListofPressureResolution[2]){
              	  		    	pressureRes=2;
-             	  		    } else if (Configuration.Shimmer3.ListofPressureResolution[item]==Configuration.Shimmer3.ListofPressureResolution[3]){
+             	  		    } else if (ListofPressureResolution[item]==ListofPressureResolution[3]){
              	  		    	pressureRes=3;
              	  		    } 
 
                		    shimmerConfig.setPressureResolution(pressureRes);
                		    mService.mShimmerConfigurationList.set(currentPosition, shimmerConfig);
                		    mService.writePressureResolution(mBluetoothAddress, pressureRes);
-               		    Toast.makeText(getActivity(), "Pressure resolution changed. New resolution = "+Configuration.Shimmer3.ListofPressureResolution[item], Toast.LENGTH_SHORT).show();
-               		    buttonPressureResolution.setText("Pressure Res"+"\n"+"("+Configuration.Shimmer3.ListofPressureResolution[item]+")");
+               		    Toast.makeText(getActivity(), "Pressure resolution changed. New resolution = "+ListofPressureResolution[item], Toast.LENGTH_SHORT).show();
+               		    buttonPressureResolution.setText("Pressure Res"+"\n"+"("+ListofPressureResolution[item]+")");
            	      }
         });
         

@@ -1076,7 +1076,7 @@ public class CalibrateFragment extends Fragment {
 				
 				for(row=0; row<3; row++){
 					for(col=0; col<3; col++){
-						mShimmerAlignment[row][col] = (MainActivity.mShimmerDevice.getAlighmentMatrixAccel()[row][col]);
+						mShimmerAlignment[row][col] = (MainActivity.mShimmerDevice.getAlignmentMatrixAccel()[row][col]);
 					}
 				}
 				updateUI(position);
@@ -1097,7 +1097,7 @@ public class CalibrateFragment extends Fragment {
 				
 				for(row=0; row<3; row++){
 					for(col=0; col<3; col++){
-						mShimmerAlignment[row][col] = (MainActivity.mShimmerDevice.getAlighmentMatrixGyro()[col][row]);
+						mShimmerAlignment[row][col] = (MainActivity.mShimmerDevice.getAlignmentMatrixGyro()[col][row]);
 					}
 				}
 				updateUI(position);
@@ -1140,7 +1140,7 @@ public class CalibrateFragment extends Fragment {
 				
 				for(row=0; row<3; row++){
 					for(col=0; col<3; col++){
-						mShimmerAlignment[row][col] = (MainActivity.mShimmerDevice.getAlighmentMatrixWRAccel()[col][row]);
+						mShimmerAlignment[row][col] = (MainActivity.mShimmerDevice.getAlignmentMatrixWRAccel()[col][row]);
 					}
 				}
 				updateUI(position);
