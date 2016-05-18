@@ -583,7 +583,9 @@ public class Configuration {
 		public static final Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
 		public class SensorMapKey{
+			
 			//Sensors channels originating from the Shimmer
+			public static final int TIMESTAMP = -1;
 			/** Shimmer3 Low-noise analog accelerometer */
 			public static final int SHIMMER_A_ACCEL = 0;
 			/** Shimmer3 Gyroscope */
@@ -652,7 +654,6 @@ public class Configuration {
 			public static final int HOST_PPG2_A1 = 114;
 			public static final int HOST_PPG2_A14 = 115;
 			
-			public static final int TIMESTAMP = 150;
 			public static final int HOST_TIMESTAMP_SYNC = 151;
 			public static final int HOST_REAL_TIME_CLOCK = 152;
 			public static final int HOST_REAL_TIME_CLOCK_SYNC = 153;
@@ -662,8 +663,8 @@ public class Configuration {
 			public static final int HOST_PPG2_DUMMY = 113;
 			
 			public static final int HOST_SHIMMER_STREAMING_PROPERTIES = 200;
-			//TODO below is new and not currently used in this class
-			public static final int HOST_SYSTEM_TIMESTAMP = 201;
+			//TODO below should be merged with HOST_REAL_TIME_CLOCK?
+			public static final int HOST_SYSTEM_TIMESTAMP = -2;
 			
 			public static final int SHIMMER_ECG_TO_HR_FW = 150;
 		}

@@ -33,7 +33,7 @@ public abstract class AbstractSensor implements Serializable{
 		GSR("GSR"),
 		ECG_TO_HR("ECG to Heart Rate"),
 		EXG("EXG"),
-		CLOCK("Clock"),
+		CLOCK("Shimmer Clock"),
 		SYSTEM_TIMESTAMP("PC time"),
 		MPU9X50("MPU Accel"),
 		BMP180("BMP180"),
@@ -217,20 +217,23 @@ public abstract class AbstractSensor implements Serializable{
 		return (getNumberOfEnabledChannels(commType)>0? true:false);
 	}
 
-	public void setIsEnabledSensorChannels(COMMUNICATION_TYPE commType, boolean state){
+	public void setIsEnabledSensor(COMMUNICATION_TYPE commType, boolean state){
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
-			SensorDetails sensorEnabledDetails = iterator.next();
-			sensorEnabledDetails.setIsEnabled(commType, state);
+			SensorDetails sensorDetails = iterator.next();
+			sensorDetails.setIsEnabled(commType, state);
 		}
-
-//		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfChannelDetails.get(commType);
-//		if(channelsPerCommType!=null){
-//			for (ChannelDetails channelDetails:channelsPerCommType.values()){
-//				channelDetails.mIsEnabled = false;
-//			}
-//		}
 	}
+	
+	public boolean setIsEnabledSensor(COMMUNICATION_TYPE commType, boolean state, int sensorMapKey){
+		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+		if(sensorDetails!=null){
+			sensorDetails.setIsEnabled(commType, state);
+			return true;
+		}
+		return false;
+	}
+	
 	
 	//TODO MN: under devel
 	public void updateStateFromEnabledSensorsVars(COMMUNICATION_TYPE commType, long enabledSensors, long derivedSensors) {
@@ -240,12 +243,16 @@ public abstract class AbstractSensor implements Serializable{
 			if(sensorDetails.mSensorDetails.mGuiFriendlyLabel.equals(SensorSystemTimeStamp.sensorSystemTimeStampRef.mGuiFriendlyLabel)){
 				continue;
 			}
+			
+			boolean state = false;
 			if(sensorDetails.isDerivedChannel()){
-				sensorDetails.setIsEnabled(commType, (derivedSensors & sensorDetails.mDerivedSensorBitmapID)>0? true:false);
+				//TODO check enabledSensors aswell if required???
+				state = (derivedSensors & sensorDetails.mDerivedSensorBitmapID)>0? true:false;
 			}
 			else {
-				sensorDetails.setIsEnabled(commType, (enabledSensors & sensorDetails.mSensorDetails.mSensorBitmapIDStreaming)>0? true:false);
+				state = (enabledSensors & sensorDetails.mSensorDetails.mSensorBitmapIDStreaming)>0? true:false;
 			}
+			sensorDetails.setIsEnabled(commType, state);
 		}
 		
 		
@@ -339,6 +346,7 @@ public abstract class AbstractSensor implements Serializable{
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef){
 				@Override
 				public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object) {
+//					System.out.println("PARSING\t" + this.mSensorDetails.mGuiFriendlyLabel);
 					return processDataCustom(this, rawData, commType, object);
 //					return super.processData(rawData, commType, object);
 				}
@@ -383,9 +391,9 @@ public abstract class AbstractSensor implements Serializable{
 		return mShimmerVerObject.mHardwareVersion;
 	}
 	
-	public void updateSensorDetailsWithCommsTypes(COMMUNICATION_TYPE[] mListOfSupportedCommsTypes) {
+	public void updateSensorDetailsWithCommsTypes(List<COMMUNICATION_TYPE> listOfSupportedCommsTypes) {
 		for(SensorDetails sensorDetails:mSensorMap.values()){
-			sensorDetails.updateSensorDetailsWithCommsTypes(mListOfSupportedCommsTypes);
+			sensorDetails.updateSensorDetailsWithCommsTypes(listOfSupportedCommsTypes);
 		}
 	}
 

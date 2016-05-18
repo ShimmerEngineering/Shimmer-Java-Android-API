@@ -108,29 +108,20 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-//		mSensorMap.clear();
-//		//TODO load channels based on list of channels in the SensorDetailsRef rather then manually loading them here -> need to create a ChannelMapRef like in Configuration.Shimmer3 and then cycle through
-//		SensorDetails sensorDetails = new SensorDetails(false, 0, sensorSystemTimeStampRef);
-//		sensorDetails.mListOfChannels.add(cDSystemTimestamp);
-//		sensorDetails.mListOfChannels.add(cDSystemTimestampPlot);
-//		mSensorMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, sensorDetails);
-		
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
+		// NOT NEEDED BECAUSE NOT DISPLAYED ON GUI CONFIG PANEL
 	}
 
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
+		// NOT NEEDED BECAUSE NO CONFIGURATION OPTIONS NEEDED
 	}
 
 
-	//TODO: include somewhere (SensorDetails/ChannelDetails??)
-//	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		int index = 0;
 		
@@ -175,13 +166,10 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName,
-			Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
@@ -192,10 +180,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	@Override
 	public void setSamplingRateFromFreq() {
 		// TODO Auto-generated method stub
-		
 	}
-
-
 
 	@Override
 	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {

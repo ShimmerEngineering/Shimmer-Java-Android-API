@@ -37,6 +37,7 @@ import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.ShimmerClock;
 
 public class Shimmer4 extends ShimmerDevice {
 	
@@ -213,16 +214,15 @@ public class Shimmer4 extends ShimmerDevice {
 		if(UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ANY_VERSION, ANY_VERSION, ANY_VERSION)){
 //			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
-
 			mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
-
 			
-//			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
-//			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject)); //for testing
+			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 		}
-		updateSensorAndParserMaps();
+		generateSensorAndParserMaps();
 	}
 	
 	@Override
