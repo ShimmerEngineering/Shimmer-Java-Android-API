@@ -320,7 +320,6 @@ public class ShimmerSerialPortAndroid extends SerialPortComm {
 		return false;
 	}
 
-	@Override
 	public ShimmerVerObject getShimmerVerObject() {
 		// TODO Auto-generated method stub
 		return null;

@@ -36,8 +36,6 @@ public interface ByteLevelDataComm {
 	public void eventDeviceConnected();
 	public void eventDeviceDisconnected();
 	
-	public ShimmerVerObject getShimmerVerObject();
-	
 	void setByteLevelDataCommListener(ByteLevelDataCommListener spl);
 	
 	public void clearByteLevelDataCommListener();
