@@ -204,7 +204,7 @@ public class ShimmerClock extends AbstractSensor {
 
 
 	@Override
-	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			//TODO set defaults for particular sensor
 			return true;
