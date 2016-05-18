@@ -1226,7 +1226,9 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP180 = Arrays.asList(
 					baseShimmer4); // May need to add more compatible versions
-			
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303 = Arrays.asList(
+					baseShimmer4); // May need to add more compatible versions
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  

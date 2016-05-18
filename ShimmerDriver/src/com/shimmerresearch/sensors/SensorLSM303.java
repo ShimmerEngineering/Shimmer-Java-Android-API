@@ -2,19 +2,15 @@ package com.shimmerresearch.sensors;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -26,11 +22,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorBMP180.DatabaseChannelHandles;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.SensorBMP180.GuiLabelConfig;
-import com.shimmerresearch.sensors.SensorBMP180.GuiLabelSensors;
-import com.shimmerresearch.sensors.SensorBMP180.ObjectClusterSensorName;
 
 /** 
  * @author Ruud Stolk
@@ -54,7 +47,6 @@ public class SensorLSM303 extends AbstractSensor{
 //	public static final String GRAVITY = "g";
 	public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
 	public static final String MAG_CAL_UNIT = LOCAL_FLUX;
-//	public static final String LOCAL = "local"; //used for axis-angle and madgewick quaternions 
 	
 	public boolean mLowPowerAccelWR = false;
 	public boolean mHighResAccelWR = false;
@@ -121,14 +113,9 @@ public class SensorLSM303 extends AbstractSensor{
 	public class GuiLabelSensors{
 		public static final String ACCEL_WR = "Wide-Range Accelerometer"; 
 		public static final String MAG = "Magnetometer"; 
-		
-		//XXX  are these needed here?
-		public static final String ORIENTATION_3D_6DOF = "3D Orientation (6DOF)"; 
-		public static final String ORIENTATION_3D_9DOF = "3D Orientation (9DOF)"; 
-		public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)"; 
-		public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)"; 
 	}
 	
+	//XXX are these needed here?
 	public class GuiLabelAlgorithmGrouping{
 		public static final String ORIENTATION_9DOF = "9DOF"; 
 		public static final String ORIENTATION_6DOF = "6DOF"; 
@@ -141,30 +128,6 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final String MAG_X = "LSM303DLHC_MAG_X";
 		public static final String MAG_Y = "LSM303DLHC_MAG_Y";
 		public static final String MAG_Z = "LSM303DLHC_MAG_Z";
-		
-		//XXX  are these needed here? //TODO Refactor "QUARTENION" to "QUARTERNION"
-		public static final String QUARTENION_W_6DOF = "QUAT_MADGE_6DOF_W";
-		public static final String QUARTENION_X_6DOF = "QUAT_MADGE_6DOF_X";
-		public static final String QUARTENION_Y_6DOF = "QUAT_MADGE_6DOF_Y";
-		public static final String QUARTENION_Z_6DOF = "QUAT_MADGE_6DOF_Z";
-		
-		//XXX  are these needed here? //TODO Refactor "QUARTENION" to "QUARTERNION"
-		public static final String QUARTENION_W_9DOF = "QUAT_MADGE_9DOF_W";
-		public static final String QUARTENION_X_9DOF = "QUAT_MADGE_9DOF_X";
-		public static final String QUARTENION_Y_9DOF = "QUAT_MADGE_9DOF_Y";
-		public static final String QUARTENION_Z_9DOF = "QUAT_MADGE_9DOF_Z";
-		
-		//XXX  are these needed here?
-		public static final String EULER_6DOF_A = "EULER_6DOF_A";
-		public static final String EULER_6DOF_X = "EULER_6DOF_X";
-		public static final String EULER_6DOF_Y = "EULER_6DOF_Y";
-		public static final String EULER_6DOF_Z = "EULER_6DOF_Z";
-		
-		//XXX  are these needed here?
-		public static final String EULER_9DOF_A = "EULER_9DOF_A";
-		public static final String EULER_9DOF_X = "EULER_9DOF_X";
-		public static final String EULER_9DOF_Y = "EULER_9DOF_Y";
-		public static final String EULER_9DOF_Z = "EULER_9DOF_Z";
 	}
 	
 	public static class ObjectClusterSensorName{
@@ -174,32 +137,8 @@ public class SensorLSM303 extends AbstractSensor{
 		
 		public static  String MAG_X = "Mag_X";
 		public static  String MAG_Y = "Mag_Y";
-		public static  String MAG_Z = "Mag_Z";
-		
-		//XXX  are these needed here?
-		public static  String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";//XXX-RS-LSM-SensorClass? 
-		public static  String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";//XXX-RS-LSM-SensorClass? 
-		public static  String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";//XXX-RS-LSM-SensorClass? 
-		public static  String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";//XXX-RS-LSM-SensorClass? 
-		public static  String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";//XXX-RS-LSM-SensorClass? 
-		public static  String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";//XXX-RS-LSM-SensorClass? 
-		public static  String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";//XXX-RS-LSM-SensorClass? 
-		public static  String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";//XXX-RS-LSM-SensorClass? 
-		public static  String EULER_6DOF_A = "Euler_6DOF_A";//XXX-RS-LSM-SensorClass? 
-		public static  String EULER_6DOF_X = "Euler_6DOF_X";//XXX-RS-LSM-SensorClass? 
-		public static  String EULER_6DOF_Y = "Euler_6DOF_Y";//XXX-RS-LSM-SensorClass? 
-		public static  String EULER_6DOF_Z = "Euler_6DOF_Z";//XXX-RS-LSM-SensorClass? 
-		public static  String EULER_9DOF_A = "Euler_9DOF_A";//XXX-RS-LSM-SensorClass? 
-		public static  String EULER_9DOF_X = "Euler_9DOF_X";//XXX-RS-LSM-SensorClass? 
-		public static  String EULER_9DOF_Y = "Euler_9DOF_Y";//XXX-RS-LSM-SensorClass? 
-		public static  String EULER_9DOF_Z = "Euler_9DOF_Z";//XXX-RS-LSM-SensorClass? 
-		//Copied comment from Configuration.java: //TODO: axis angle 9DOF vs 6DOF??
-		public static  String AXIS_ANGLE_A = "Axis_Angle_A";//XXX-RS-LSM-SensorClass? 
-		public static  String AXIS_ANGLE_X = "Axis_Angle_X";//XXX-RS-LSM-SensorClass? 
-		public static  String AXIS_ANGLE_Y = "Axis_Angle_Y";//XXX-RS-LSM-SensorClass? 
-		public static  String AXIS_ANGLE_Z = "Axis_Angle_Z";//XXX-RS-LSM-SensorClass? 
+		public static  String MAG_Z = "Mag_Z";		
 	}
-	
 	//--------- Sensor specific variables end --------------
 	
 	
@@ -254,13 +193,45 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
 	public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
 	
-	//XXX not found equivalent yet
-//	public static final SensorConfigOptionDetails configOptionPressureResolution = new SensorConfigOptionDetails(
-//			ListofPressureResolution, 
-//			ListofPressureResolutionConfigValues, 
-//			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-////			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
-//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	/*XXX - Done in like it is done for BMP180 currently, but:
+	 *  - Use CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303 instead of CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW?
+	 *  - Use other SensorConfigOptionDetails constructor, the one that includes connection type?
+	 */
+	public static final SensorConfigOptionDetails configOptionAccelRange = new SensorConfigOptionDetails(
+			ListofAccelRange, 
+			ListofLSM303DLHCAccelRangeConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	
+	public static final SensorConfigOptionDetails configOptionMagRange = new SensorConfigOptionDetails(
+			ListofMagRange, 
+			ListofMagRangeConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	
+	public static final SensorConfigOptionDetails configOptionAccelRate = new SensorConfigOptionDetails(
+			ListofLSM303DLHCAccelRate, 
+			ListofLSM303DLHCAccelRateConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	
+	public static final SensorConfigOptionDetails configOptionMagRate = new SensorConfigOptionDetails(
+			ListofLSM303DLHCMagRate, 
+			ListofLSM303DLHCMagRateConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	
+	public static final SensorConfigOptionDetails configOptionAccelRateLpm = new SensorConfigOptionDetails(
+			ListofLSM303DLHCAccelRateLpm, 
+			ListofLSM303DLHCAccelRateLpmConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	
 	
 	//--------- Configuration options end --------------
 	
@@ -366,51 +337,61 @@ public class SensorLSM303 extends AbstractSensor{
 	//--------- Abstract methods implemented start --------------
 	@Override 
 	public void generateSensorMap(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		
+		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 	}
 
 	@Override 
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		
+		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, configOptionAccelRange);
+		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_MAG_RANGE, configOptionMagRange);
+		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_RATE, configOptionAccelRate);
+		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_MAG_RATE, configOptionMagRate);
+		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_LPM, configOptionAccelRateLpm);
 	}
 
 	@Override 
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
-		
+		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			mSensorGroupingMap.put(GuiLabelSensorTiles.ACCEL_WR, new SensorGroupingDetails(
+					Arrays.asList(SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303));
+			mSensorGroupingMap.put(GuiLabelSensorTiles.MAG, new SensorGroupingDetails(
+					Arrays.asList(SensorMapKey.SHIMMER_LSM303DLHC_MAG),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303));
+		}
+		super.updateSensorGroupingMap();	
 	}	
 
-	{//TODO - RS: this was already here, move to generateConfigOptionsMap()
-		
-		
-		//config options maps should be configured based on fw and hw id
-		
-		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
-										Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, COMMUNICATION_TYPE.BLUETOOTH));
-		
-		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-										Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, COMMUNICATION_TYPE.BLUETOOTH));
-		
-		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
-										Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, COMMUNICATION_TYPE.SD));
-		
-		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-										Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, COMMUNICATION_TYPE.SD));
-		
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
-	}
-	
+//	{//TODO - RS: this was already here, move to generateConfigOptionsMap()
+//		
+//		
+//		//config options maps should be configured based on fw and hw id
+//		
+//		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
+//				new SensorConfigOptionDetails(ListofAccelRange, 
+//										ListofLSM303DLHCAccelRangeConfigValues, 
+//										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, COMMUNICATION_TYPE.BLUETOOTH));
+//		
+//		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//				new SensorConfigOptionDetails(ListofLSM303DLHCAccelRate, 
+//										ListofLSM303DLHCAccelRateConfigValues, 
+//										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, COMMUNICATION_TYPE.BLUETOOTH));
+//		
+//		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
+//				new SensorConfigOptionDetails(ListofAccelRange, 
+//										ListofLSM303DLHCAccelRangeConfigValues, 
+//										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, COMMUNICATION_TYPE.SD));
+//		
+//		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//				new SensorConfigOptionDetails(ListofLSM303DLHCAccelRate, 
+//										ListofLSM303DLHCAccelRateConfigValues, 
+//										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, COMMUNICATION_TYPE.SD));
+//		
+//		mConfigOptionsMap.get(GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);
+//		mConfigOptionsMap.get(GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
+//	}
+//	
 	
 	@Override 
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
@@ -419,51 +400,19 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 
 	@Override 
-	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override 
-	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
-		// 		Object returnValue = null;
-		ActionSetting actionsetting = new ActionSetting(commType);
-		
-		 switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
-				mAccelRange = ((int)valueToSet);
-				//
-			if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
-				actionsetting.mActionByteArray = new byte[]{ShimmerObject.SET_ACCEL_SENSITIVITY_COMMAND, (byte)mAccelRange};
-				return actionsetting;
-			} else if (mFirmwareType==FW_ID.SDLOG){
-				//compatiblity check and instruction generation
-			}
-        	break;
-		}
-		
-		return actionsetting;
-		
-	}
-
-	
-	@Override 
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override 
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override 
-	public Object setConfigValueUsingConfigLabel(String componentName,
-			Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -489,11 +438,114 @@ public class SensorLSM303 extends AbstractSensor{
 		return false;
 	}
 	
+	
+	@Override 
+	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		//RS: Also returning null in BMP180 and GSR sensors classes.
+		return null;
+	}
+
+	@Override 
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
+		// 		Object returnValue = null;
+		ActionSetting actionsetting = new ActionSetting(commType);
+		
+//		 switch(componentName){
+//			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+//				mAccelRange = ((int)valueToSet);
+//				//
+//			if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
+//				actionsetting.mActionByteArray = new byte[]{ShimmerObject.SET_ACCEL_SENSITIVITY_COMMAND, (byte)mAccelRange};
+//				return actionsetting;
+//			} else if (mFirmwareType==FW_ID.SDLOG){
+//				//compatiblity check and instruction generation
+//			}
+//        	break;
+		
+//		public static final byte SET_ACCEL_SENSITIVITY_COMMAND    		= (byte) 0x09;
+//		public static final byte SET_MAG_CALIBRATION_COMMAND      		= (byte) 0x17;		
+//		public static final byte SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND = (byte) 0x1A;
+//		public static final byte SET_MAG_GAIN_COMMAND             		= (byte) 0x37;	
+//		public static final byte SET_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3A;		
+//		public static final byte SET_ACCEL_SAMPLING_RATE_COMMAND  		= (byte) 0x40;	
+//		public static final byte SET_LSM303DLHC_ACCEL_LPMODE_COMMAND 	= (byte) 0x43;	
+//		public static final byte SET_LSM303DLHC_ACCEL_HRMODE_COMMAND	= (byte) 0x46;
+//		public boolean mLowPowerAccelWR = false;
+//		public boolean mHighResAccelWR = false;
+//		
+//		public int mAccelRange = 0;
+//		public int mLSM303DigitalAccelRate = 0;
+//		public int mMagRange = 1;
+//		public int mLSM303MagRate = 4;
+		
+		//Might be used like this - RS 
+//		switch(componentName){
+//			case(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+//				mAccelRange = ((int)valueToSet);
+//				if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
+//					actionsetting.mActionByteArray = new byte[]{SET_ACCEL_SENSITIVITY_COMMAND, (byte)mAccelRange};
+//					return actionsetting;
+//				} else if (mFirmwareType==FW_ID.SDLOG){
+//					//compatiblity check and instruction generation
+//				}
+//				break;
+//			case(GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+//				mMagRange = ((int)valueToSet);
+//				if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
+//					actionsetting.mActionByteArray = new byte[]{SET_MAG_GAIN_COMMAND, (byte)mMagRange};
+//					return actionsetting;
+//				} else if (mFirmwareType==FW_ID.SDLOG){
+//					//compatiblity check and instruction generation
+//				}
+//				break;
+//			case(GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+//				mLSM303DigitalAccelRate = ((int)valueToSet);
+//				if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
+//					actionsetting.mActionByteArray = new byte[]{SET_ACCEL_SAMPLING_RATE_COMMAND, (byte)mLSM303DigitalAccelRate};
+//					return actionsetting;
+//				} else if (mFirmwareType==FW_ID.SDLOG){
+//					//compatiblity check and instruction generation
+//				}
+//				break;
+//			case(GuiLabelConfig.LSM303DLHC_MAG_RATE):
+//				mLSM303MagRate = ((int)valueToSet);
+//				if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
+//					actionsetting.mActionByteArray = new byte[]{SET_MAG_SAMPLING_RATE_COMMAND, (byte)mLSM303MagRate};
+//					return actionsetting;
+//				} else if (mFirmwareType==FW_ID.SDLOG){
+//					//compatiblity check and instruction generation
+//				}
+//				break;
+//			case(GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
+//				mLowPowerAccelWR = ((boolean)valueToSet);
+//			if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
+//				actionsetting.mActionByteArray = new byte[]{SET_MAG_SAMPLING_RATE_COMMAND, (byte)mLowPowerAccelWR};
+//				return actionsetting;
+//			} else if (mFirmwareType==FW_ID.SDLOG){
+//				//compatiblity check and instruction generation
+//			}
+//			break;
+//			case(GuiLabelConfig.LSM303DLHC_MAG_LPM):
+//				
+//				
+//			//TODO these settings to be included here as well?
+//			/*
+//			case(GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB):
+//			case(GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB):
+//			*/
+//		}
+		
+		return actionsetting;
+		
+	}
+
+	
 	//--------- Abstract methods implemented end --------------
 
 
 	//--------- Sensor specific methods start --------------
-	/**
+	/**XXX
 	 * RS (17/05/2016): Two questions with regards to the information below the questions:
 	 * 
 	 * 		What additional lower power mode is used?
