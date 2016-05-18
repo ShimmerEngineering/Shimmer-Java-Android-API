@@ -312,6 +312,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected Map<String, ChannelDetails> mChannelMap = new LinkedHashMap<String, ChannelDetails>(); 
 	protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
+	//protected Map<String, List<String>> mCompleteAlgorithmMap = new LinkedHashMap<String, List<String>>();
+
 	
 	//Constants describing the packet type
 	public static final byte DATA_PACKET                      		= (byte) 0x00;
@@ -8271,7 +8273,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				createSensorMapShimmer3();
 				
 				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
-				mAlgorithmChannelsMap = Configuration.Shimmer3.mAlgorithmChannelsMapRef;
+				mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
 				mAlgorithmGroupingMap = Configuration.Shimmer3.mAlgorithmGroupingMapRef;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMapRef;
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMapRef;
@@ -9364,9 +9366,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mAlgorithmGroupingMap;
 	}
 	
-	//TODO: finish. Similar approach to above in getListOfSupportedAlgorithmChannels()
+	// TODO: finish. Similar approach to above in
+	// getListOfSupportedAlgorithmChannels()
 	public List<String> getListOfSupportedAlgorithmGroups() {
-		return new ArrayList<String>();
+
+		List<AlgorithmDetailsNew> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetailsNew>();
+		listOfSupportAlgorihmChannels = getListOfSupportedAlgorithmChannels();
+
+		List<String> listOfSupportAlgorihmGroups = new ArrayList<String>();
+
+		for (AlgorithmDetailsNew algorithmDetails : listOfSupportAlgorihmChannels) {
+
+			if (!listOfSupportAlgorihmGroups
+					.contains(algorithmDetails.mGroupName)) {
+				listOfSupportAlgorihmGroups.add(algorithmDetails.mGroupName);
+			}
+		}
+		return listOfSupportAlgorihmGroups;
 	}
 	
 	public double getPressTempAC1(){
