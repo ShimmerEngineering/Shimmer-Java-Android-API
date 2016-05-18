@@ -38,7 +38,8 @@ public abstract class AbstractSensor implements Serializable{
 		MPU9X50("MPU Accel"),
 		BMP180("BMP180"),
 		KIONIXKXRB52042("Analog Accelerometer"),
-		LSM303("LSM303");
+		LSM303("LSM303"),
+		PPG("PPG");
 		
 	    private final String text;
 

@@ -225,9 +225,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
+// ----------- Now implemented in SensorPPG -------------------------
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
 		public final static int PPG_12_13 = 1<<2;
+// ------------------------------------------------------------------		
 		public final static int SKIN_TEMP = 1<<1;
 		public final static int RES_AMP = 1<<0;
 	}
@@ -236,9 +238,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
+// ----------- Now implemented in SensorPPG -------------------------		
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
 		public final static int PPG_12_13 = 1<<2;
+// ------------------------------------------------------------------			
 		public final static int SKIN_TEMP = 1<<1;
 		public final static int RES_AMP = 1<<0;
 	}
@@ -540,11 +544,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mCalibFileCreationFlag = false;
 	
 	protected List<String> syncNodesList = new ArrayList<String>();
-	
+// ----------- Now implemented in SensorPPG -------------------------		
 	protected int mPpgAdcSelectionGsrBoard = 0;
 	protected int mPpg1AdcSelectionProto3DeluxeBoard = 0;
 	protected int mPpg2AdcSelectionProto3DeluxeBoard = 0;
-	
+// ------------------------------------------------------------------	
 
 	//
 	protected double[][] mAlignmentMatrixAnalogAccel = {{-1,0,0},{0,-1,0},{0,0,1}}; 			
@@ -768,8 +772,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mSamplingDividerVBatt = 0;
 	/** GQ BLE */
 	protected int mSamplingDividerGsr = 0;
+// ----------- Now implemented in SensorPPG -------------------------		
 	/** GQ BLE */
 	protected int mSamplingDividerPpg = 0;
+// ------------------------------------------------------------------	
 	/** GQ BLE */
 	protected int mSamplingDividerLsm303dlhcAccel = 0;//XXX-RS-LSM-SensorClass?
 	/** GQ BLE */
