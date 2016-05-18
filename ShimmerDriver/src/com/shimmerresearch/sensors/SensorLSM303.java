@@ -363,7 +363,7 @@ public class SensorLSM303 extends AbstractSensor{
 		super.updateSensorGroupingMap();	
 	}	
 
-//	{//TODO - RS: this was already here, move to generateConfigOptionsMap()
+//	{//TODO - RS: this was already here, includes commtype in SensorConfigOptionDetails() -> remove?
 //		
 //		
 //		//config options maps should be configured based on fw and hw id
@@ -413,8 +413,39 @@ public class SensorLSM303 extends AbstractSensor{
 
 	@Override 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
-		// TODO Auto-generated method stub
-		return null;
+		Object returnValue = null;
+		int buf = 0;
+		
+		switch(componentName){
+			
+			//case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM):
+		
+		//TODO - RS (commented just before commit - uncomment after plus add the missing methods).
+//			case(GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
+//				setLowPowerAccelWR((boolean)valueToSet);
+//			break;
+//			case(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+//				setDigitalAccelRange((int)valueToSet);
+//			break;
+//			case(GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+//				setLSM303DigitalAccelRate((int)valueToSet);
+//			break;				
+//			case(GuiLabelConfig.LSM303DLHC_MAG_LPM):
+//				setLowPowerMag((boolean)valueToSet);
+//			break;
+//			case(GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+//				setLSM303MagRange((int)valueToSet);
+//			break;
+//	
+//			case(GuiLabelConfig.LSM303DLHC_MAG_RATE):
+//				setLSM303MagRate((int)valueToSet);
+//			break;
+			
+			//GQ
+			//case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL)
+		}
+		
+		return returnValue;
 	}
 
 	@Override 
@@ -529,7 +560,7 @@ public class SensorLSM303 extends AbstractSensor{
 //			case(GuiLabelConfig.LSM303DLHC_MAG_LPM):
 //				
 //				
-//			//TODO these settings to be included here as well?
+//			//TODO Above: Do LPM for Accel and Mag as is done in ShimmerObject. Below: Should these settings to be included in here as well? 
 //			/*
 //			case(GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB):
 //			case(GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB):
@@ -562,6 +593,25 @@ public class SensorLSM303 extends AbstractSensor{
 	protected void setLowPowerAccelWR(boolean enable){
 		
 	}
+	
+	//TODO - RS (just before committing) add these:
+//case(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
+//	setDigitalAccelRange((int)valueToSet);
+//break;
+//case(GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
+//	setLSM303DigitalAccelRate((int)valueToSet);
+//break;				
+//case(GuiLabelConfig.LSM303DLHC_MAG_LPM):
+//	setLowPowerMag((boolean)valueToSet);
+//break;
+//case(GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+//	setLSM303MagRange((int)valueToSet);
+//break;
+//
+//case(GuiLabelConfig.LSM303DLHC_MAG_RATE):
+//	setLSM303MagRate((int)valueToSet);
+//break;
+
 
 	public String getSensorName(){
 		return mSensorName;
@@ -577,6 +627,36 @@ public class SensorLSM303 extends AbstractSensor{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	/* XXX - Do something with the LSM303 part of 
+	public void checkConfigOptionValues(String stringKey) {
+		if(mConfigOptionsMap!=null){
+			if(mConfigOptionsMap.containsKey(stringKey)){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3){
+					//XXX-RS-LSM-SensorClass?
+			        if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)) {
+			        	if(isLSM303DigitalAccelLPM()) {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM);
+			        	}
+			        	else {
+							mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.NOT_LPM);
+		        			// double check that rate is compatible with LPM (8 not compatible so set to higher rate) 
+			        		setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
+			        	}
+			        }
+			        else if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)) {
+			        	checkWhichExgRespPhaseValuesToUse();
+			        }
+			        else if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE)) {
+			        	checkWhichExgRefElectrodeValuesToUse();
+			        }
+				}
+				else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
+				}
+			}
+		}
+	}
+	*/
 
 	//--------- Abstract methods not implemented end --------------
 
