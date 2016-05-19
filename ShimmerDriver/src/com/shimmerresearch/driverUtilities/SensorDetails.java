@@ -30,17 +30,17 @@ public class SensorDetails implements Serializable{
 	}
 	
 	public long mDerivedSensorBitmapID = 0;
-	public SensorDetailsRef mSensorDetails;
+	public SensorDetailsRef mSensorDetailsRef;
 //	public List<String> mListOfChannels = new ArrayList<String>();
 	public List<ChannelDetails> mListOfChannels = new ArrayList<ChannelDetails>();
 	
 	public SensorDetails(){
 	}
 	
-	public SensorDetails(boolean isEnabled, long derivedSensorBitmapID, SensorDetailsRef sensorDetails){
+	public SensorDetails(boolean isEnabled, long derivedSensorBitmapID, SensorDetailsRef sensorDetailsRef){
 		setIsEnabled(isEnabled);
 		mDerivedSensorBitmapID = derivedSensorBitmapID;
-		mSensorDetails = sensorDetails;
+		mSensorDetailsRef = sensorDetailsRef;
 		
 //		for(String channelName:sensorDetails.mListOfChannelsRef){
 //			mListOfChannels.add(channelName);
@@ -101,7 +101,7 @@ public class SensorDetails implements Serializable{
 	}
 
 	public boolean isInternalExpBrdPowerRequired() {
-		if(isEnabled() && mSensorDetails.mIntExpBoardPowerRequired) {
+		if(isEnabled() && mSensorDetailsRef.mIntExpBoardPowerRequired) {
 			return true;
 		}
 		return false;

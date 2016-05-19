@@ -7082,7 +7082,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
 			SensorDetails sensorDetails = iterator.next();
-			for(String channelMapKey:sensorDetails.mSensorDetails.mListOfChannelsRef){
+			for(String channelMapKey:sensorDetails.mSensorDetailsRef.mListOfChannelsRef){
 				ChannelDetails channelDetails = mChannelMap.get(channelMapKey);
 				if(channelDetails!=null){
 					sensorDetails.mListOfChannels.add(channelDetails);
@@ -7311,7 +7311,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 						//Check if a derived channel is enabled, if it is ignore disable and skip 
 						innerloop:
-						for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysConflicting) {
+						for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
 							if(mSensorMap.get(conflictKey).isDerivedChannel()) {
 								if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
 									mSensorMap.get(sensorMapKey).setIsEnabled(false);
@@ -7342,7 +7342,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							//Check if associated derived channels are enabled 
 							if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
 								//TODO add comment
-								if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
+								if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
 									mSensorMap.get(sensorMapKey).setIsEnabled(true);
 								}
 							}
@@ -7350,7 +7350,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						// This is not a derived sensor
 						else {
 							//Check if sensor's bit in sensor bitmap is enabled
-							if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
+							if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
 								mSensorMap.get(sensorMapKey).setIsEnabled(true);
 							}
 						}
@@ -7526,7 +7526,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}		
 				
 				// Automatically handle required channels for each sensor
-				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetails.mListOfSensorMapKeysRequired;
+				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
 				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
 					for(Integer i:listOfRequiredKeys) {
 						mSensorMap.get(i).setIsEnabled(state);
@@ -7631,7 +7631,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		if (getHardwareVersion() == HW_ID.SHIMMER_3){
 			for(Integer channelKey:mSensorMap.keySet()) {
-				if(mSensorMap.get(channelKey).isEnabled() && mSensorMap.get(channelKey).mSensorDetails.mIntExpBoardPowerRequired) {
+				if(mSensorMap.get(channelKey).isEnabled() && mSensorMap.get(channelKey).mSensorDetailsRef.mIntExpBoardPowerRequired) {
 					mInternalExpPower = 1;
 					break;
 				}

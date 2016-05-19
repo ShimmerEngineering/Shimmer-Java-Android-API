@@ -87,15 +87,15 @@ public class SensorLSM303 extends AbstractSensor{
 		protected String[] mSignalNameArray=new String[MAX_NUMBER_OF_SIGNALS];	
 	XXX*/
 	
-	//XXX this method is not in BMP180 class -> and not used in here...yet
-	public class Channel{
-		public static final int XDAccel     			 = 0x04;
-		public static final int YDAccel     			 = 0x05;
-		public static final int ZDAccel     			 = 0x06;
-		public static final int XMag        			 = 0x07;
-		public static final int YMag        			 = 0x08;
-		public static final int ZMag        			 = 0x09;
-	}
+//	//XXX this method is not in BMP180 class -> and not used in here...yet
+//	public class Channel{
+//		public static final int XDAccel     			 = 0x04;
+//		public static final int YDAccel     			 = 0x05;
+//		public static final int ZDAccel     			 = 0x06;
+//		public static final int XMag        			 = 0x07;
+//		public static final int YMag        			 = 0x08;
+//		public static final int ZMag        			 = 0x09;
+//	}
 	
 	
 	//XXX this method is not in BMP180 class
@@ -104,11 +104,11 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final int SENSOR_D_ACCEL = 0x1000;
 	}
 	
-	//XXX this method is not in put inside a class environment in the BMP180 class
-	public class SensorMapKey{
-		public static final int SHIMMER_LSM303DLHC_MAG = 2;
-		public static final int SHIMMER_LSM303DLHC_ACCEL = 11;
-	}
+//	//XXX this method is not in put inside a class environment in the BMP180 class
+//	public class SensorMapKey{
+//		public static final int SHIMMER_LSM303DLHC_MAG = 2;
+//		public static final int SHIMMER_LSM303DLHC_ACCEL = 11;
+//	}
 	
 	
 	public class GuiLabelConfig{
@@ -128,7 +128,7 @@ public class SensorLSM303 extends AbstractSensor{
 	//XXX this method is not in BMP180 class
 	public class GuiLabelSensorTiles{
 		public static final String MAG = GuiLabelSensors.MAG;
-		public static final String ACCEL_WR = GuiLabelSensors.ACCEL_WR;
+		public static final String WIDE_RANGE_ACCEL = GuiLabelSensors.ACCEL_WR;
 	}
 	
 	
@@ -272,8 +272,8 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(SensorLSM303.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, SensorLSM303.sensorLSM303DLHCAccel);
-        aMap.put(SensorLSM303.SensorMapKey.SHIMMER_LSM303DLHC_MAG, SensorLSM303.sensorLSM303DLHCMag);	
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, SensorLSM303.sensorLSM303DLHCAccel);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, SensorLSM303.sensorLSM303DLHCMag);	
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
@@ -366,17 +366,16 @@ public class SensorLSM303 extends AbstractSensor{
 		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_MAG_RATE, configOptionMagRate);
 		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_LPM, configOptionAccelRateLpm);
 	}
-
 	
 	@Override 
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
 		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(GuiLabelSensorTiles.ACCEL_WR, new SensorGroupingDetails(
-					Arrays.asList(SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
+			mSensorGroupingMap.put(GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303));
 			mSensorGroupingMap.put(GuiLabelSensorTiles.MAG, new SensorGroupingDetails(
-					Arrays.asList(SensorMapKey.SHIMMER_LSM303DLHC_MAG),
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303));
 		}
 		super.updateSensorGroupingMap();	
@@ -679,10 +678,10 @@ public class SensorLSM303 extends AbstractSensor{
 	@Override 
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			if(sensorMapKey==SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
+			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
 				setDefaultLsm303dlhcAccelSensorConfig(state);		
 			}
-			else if(sensorMapKey==SensorMapKey.SHIMMER_LSM303DLHC_MAG) {
+			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG) {
 				setDefaultLsm303dlhcMagSensorConfig(state);
 			}
 			return true;
@@ -1089,7 +1088,7 @@ public class SensorLSM303 extends AbstractSensor{
 		// Unused: 8 = 1.620kHz (only low-power mode), 9 = 1.344kHz (normal-mode) / 5.376kHz (low-power mode)
 		
 		// Check if channel is enabled 
-		if (!isSensorEnabled(SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
+		if (!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
 			mLSM303DigitalAccelRate = 0; // Power down
 			return mLSM303DigitalAccelRate;
 		}

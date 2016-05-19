@@ -46,22 +46,19 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	protected static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
 	protected static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 
-	
-	public class Channel{
-		public static final int XAAccel     			 = 0x00;
-		public static final int YAAccel    				 = 0x01;
-		public static final int ZAAccel     			 = 0x02;
-	}
-	
+//	public class Channel{
+//		public static final int XAAccel     			 = 0x00;
+//		public static final int YAAccel    				 = 0x01;
+//		public static final int ZAAccel     			 = 0x02;
+//	}
 	
 	public class SensorBitmap{
 		public static final int SENSOR_A_ACCEL			= 0x80;
 	}
-	
-	
-	public class SensorMapKey{
-		public static final int SHIMMER_A_ACCEL = 0;
-	}
+
+//	public class SensorMapKey{
+//		public static final int SHIMMER_A_ACCEL = 0;
+//	}
 	
 	
 	public class GuiLabelConfig{
@@ -118,7 +115,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(SensorKionixKXRB52042.SensorMapKey.SHIMMER_A_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042);
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
@@ -190,7 +187,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorGroupingDetails(
-					Arrays.asList(SensorMapKey.SHIMMER_A_ACCEL),
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXRB52042));
 		}
 		super.updateSensorGroupingMap();	

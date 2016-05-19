@@ -1374,7 +1374,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				isEnabled = sensorDetails.isEnabled(commType);
 			}
 			
-			if(isEnabled && !sensorDetails.mSensorDetails.mIsDummySensor){
+			if(isEnabled && !sensorDetails.mSensorDetailsRef.mIsDummySensor){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if(channelDetails.mStoreToDatabase){
 						listOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
@@ -1578,8 +1578,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void sensorMapConflictCheckandCorrect(int originalSensorMapkey){
 		SensorDetails sdOriginal = mSensorMap.get(originalSensorMapkey); 
 		if(sdOriginal != null) {
-			if(sdOriginal.mSensorDetails.mListOfSensorMapKeysConflicting != null) {
-				for(Integer sensorMapKeyConflicting:sdOriginal.mSensorDetails.mListOfSensorMapKeysConflicting) {
+			if(sdOriginal.mSensorDetailsRef.mListOfSensorMapKeysConflicting != null) {
+				for(Integer sensorMapKeyConflicting:sdOriginal.mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
 					SensorDetails sdConflicting = mSensorMap.get(sensorMapKeyConflicting); 
 					if(sdConflicting != null) {
 						sdConflicting.setIsEnabled(false);
@@ -1601,8 +1601,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//Cycle through any required sensors and update sensorMap channel enable values
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
-			if(sensorDetails.mSensorDetails.mListOfSensorMapKeysRequired != null) {
-				for(Integer requiredSensorKey:sensorDetails.mSensorDetails.mListOfSensorMapKeysRequired) {
+			if(sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired != null) {
+				for(Integer requiredSensorKey:sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired) {
 					if(!mSensorMap.get(requiredSensorKey).isEnabled()) {
 						sensorDetails.setIsEnabled(false);
 						if(sensorDetails.isDerivedChannel()) {
@@ -1620,8 +1620,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void sensorMapCheckandCorrectHwDependencies() {
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
-			if(sensorDetails.mSensorDetails.mListOfCompatibleVersionInfo != null) {
-				if(!checkIfVersionCompatible(sensorDetails.mSensorDetails.mListOfCompatibleVersionInfo)) {
+			if(sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo != null) {
+				if(!checkIfVersionCompatible(sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
 					sensorDetails.setIsEnabled(false);
 					if(sensorDetails.isDerivedChannel()) {
 						mDerivedSensors &= ~sensorDetails.mDerivedSensorBitmapID;
@@ -1679,7 +1679,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				sensorMapCheckandCorrectHwDependencies();
 				for (SensorDetails sED : mSensorMap.values()) {
 					if (sED.isEnabled()) {
-						mEnabledSensors |= sED.mSensorDetails.mSensorBitmapIDSDLogHeader;
+						mEnabledSensors |= sED.mSensorDetailsRef.mSensorBitmapIDSDLogHeader;
 
 						if (sED.isDerivedChannel()) {
 							mDerivedSensors |= sED.mDerivedSensorBitmapID;
@@ -1740,7 +1740,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 						//Check if a derived channel is enabled, if it is ignore disable and skip 
 						innerloop:
-						for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetails.mListOfSensorMapKeysConflicting) {
+						for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
 							if(mSensorMap.get(conflictKey).isDerivedChannel()) {
 								if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
 									mSensorMap.get(sensorMapKey).setIsEnabled(false);
@@ -1771,7 +1771,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 							//Check if associated derived channels are enabled 
 							if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
 								//TODO add comment
-								if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
+								if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
 									mSensorMap.get(sensorMapKey).setIsEnabled(true);
 								}
 							}
@@ -1779,7 +1779,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 						// This is not a derived sensor
 						else {
 							//Check if sensor's bit in sensor bitmap is enabled
-							if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetails.mSensorBitmapIDSDLogHeader) {
+							if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
 								mSensorMap.get(sensorMapKey).setIsEnabled(true);
 							}
 						}
@@ -1860,8 +1860,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-			if(mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting != null) {
-				for(Integer sensorMapKey:mSensorMap.get(key).mSensorDetails.mListOfSensorMapKeysConflicting) {
+			if(mSensorMap.get(key).mSensorDetailsRef.mListOfSensorMapKeysConflicting != null) {
+				for(Integer sensorMapKey:mSensorMap.get(key).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
 					if(isSensorEnabled(sensorMapKey)) {
 						listOfChannelConflicts.add(sensorMapKey);
 					}
