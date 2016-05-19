@@ -25,13 +25,13 @@ import com.shimmerresearch.driver.ShimmerObject;
  */
 //TODO add proper comments
 //TODO remove unnecessary code carried over from dock progress details
-public class ProgressReportAll implements Serializable {
+public class BluetoothProgressReportAll implements Serializable {
 
 	/** * */
 	private static final long serialVersionUID = 2543348738920447317L;
 	
 	public List<ShimmerDevice> mListOfShimmers;
-	public LinkedHashMap<String, ProgressReportPerDevice> mMapOfOperationProgressInfo = new LinkedHashMap<String, ProgressReportPerDevice>();
+	public LinkedHashMap<String, BluetoothProgressReportPerDevice> mMapOfOperationProgressInfo = new LinkedHashMap<String, BluetoothProgressReportPerDevice>();
 	
 	public BT_STATE currentOperationBtState = BT_STATE.DISCONNECTED;
 	
@@ -58,7 +58,7 @@ public class ProgressReportAll implements Serializable {
 //	public List<Integer> mListOfFailedCmds = new ArrayList<Integer>();
 	public int mProgressPercentageComplete = 0;
 
-	public ProgressReportAll(BT_STATE currentOperationBtState, List<ShimmerDevice> lso) {
+	public BluetoothProgressReportAll(BT_STATE currentOperationBtState, List<ShimmerDevice> lso) {
 		this.currentOperationBtState = currentOperationBtState;
 		mListOfShimmers = lso;
 		
@@ -71,7 +71,7 @@ public class ProgressReportAll implements Serializable {
 			else if(shimmer instanceof Shimmer4){
 				comPort = ((Shimmer4)shimmer).getComPort();
 			}
-			mMapOfOperationProgressInfo.put(comPort, new ProgressReportPerDevice(shimmer, currentOperationBtState, 1));
+			mMapOfOperationProgressInfo.put(comPort, new BluetoothProgressReportPerDevice(shimmer, currentOperationBtState, 1));
 		}
 		updateProgressTotal();
 	}
@@ -85,7 +85,7 @@ public class ProgressReportAll implements Serializable {
 		mProgressPercentageComplete = ((int)(((double)mProgressCounter/(double)mProgressEndValue)*100));
 	}
 	
-	public void updateProgressPerDevice(String comPort, ProgressReportPerDevice pRPD){
+	public void updateProgressPerDevice(String comPort, BluetoothProgressReportPerDevice pRPD){
 		mMapOfOperationProgressInfo.put(comPort, pRPD);
 		if(mMapOfOperationProgressInfo.get(comPort).mProgressCounter == mMapOfOperationProgressInfo.get(comPort).mProgressEndValue){
 			updateProgressCount();
@@ -96,7 +96,7 @@ public class ProgressReportAll implements Serializable {
 	 * @return ProgressDetailsAll the deep copy of the current ProgressDetailsAll
 	 * @see java.io.Serializable
 	 */
-	public ProgressReportAll deepClone() {
+	public BluetoothProgressReportAll deepClone() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -104,7 +104,7 @@ public class ProgressReportAll implements Serializable {
 
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (ProgressReportAll) ois.readObject();
+			return (BluetoothProgressReportAll) ois.readObject();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

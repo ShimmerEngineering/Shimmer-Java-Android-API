@@ -12,7 +12,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.RawBytePacketWithPCTimeStamp;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
@@ -313,7 +313,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 											&& mCurrentCommand!=LiteProtocolInstructionSet.InstructionsSet.SET_BLINK_LED_VALUE
 											//&& mCurrentCommand!= GET_VBATT_COMMAND
 											&& mOperationUnderway){
-										mProtocolListener.sendProgressReport(new ProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mComPort));
+										mProtocolListener.sendProgressReport(new BluetoothProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mComPort));
 									}
 									
 									// Process if currentCommand is a SET command

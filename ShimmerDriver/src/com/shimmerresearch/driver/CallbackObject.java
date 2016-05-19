@@ -39,7 +39,7 @@
  */
 package com.shimmerresearch.driver;
 
-import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 
 public class CallbackObject {
@@ -48,7 +48,7 @@ public class CallbackObject {
 	public String mBluetoothAddress;
 	public String mComPort;
 	public double mPacketReceptionRate;
-	public ProgressReportPerDevice mProgressReportPerDevice;
+	public BluetoothProgressReportPerDevice mProgressReportPerDevice;
 
 	
 	/**used for hasStopStreaming, isNowStreaming and isReadyForStreaming notifications
@@ -95,7 +95,7 @@ public class CallbackObject {
 	 * @param comPort
 	 * @param progressReportPerDevice
 	 */
-	public CallbackObject(BT_STATE state, String myBlueAdd, String comPort, ProgressReportPerDevice progressReportPerDevice) {
+	public CallbackObject(BT_STATE state, String myBlueAdd, String comPort, BluetoothProgressReportPerDevice progressReportPerDevice) {
 		mState = state;
 		mBluetoothAddress = myBlueAdd;
 		mComPort = comPort;

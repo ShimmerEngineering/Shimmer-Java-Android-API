@@ -77,10 +77,16 @@ public class Shimmer4 extends ShimmerDevice {
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 		}
-		
-		if(isDerivedSensorsSupported()){
-			mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
-		}
+
+		//Commented out until PPG fully implemented
+//		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
+//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
+//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
+//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+//			if(isDerivedSensorsSupported()){
+//				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
+//			}
+//		}
 
 		generateSensorAndParserMaps();
 	}

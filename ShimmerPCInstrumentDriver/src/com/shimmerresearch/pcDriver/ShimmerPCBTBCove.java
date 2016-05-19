@@ -59,8 +59,8 @@ import java.util.TimerTask;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
-import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
-import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
@@ -525,7 +525,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	protected void sendProgressReport(ProgressReportPerCmd pr) {
+	protected void sendProgressReport(BluetoothProgressReportPerCmd pr) {
 		
 	}
 
