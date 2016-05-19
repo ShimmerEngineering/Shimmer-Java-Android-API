@@ -1657,7 +1657,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED AND NEEDS FURTHER WORK
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
-			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
 				mEnabledSensors = (long)0;
 				mDerivedSensors = (long)0;
 				sensorMapCheckandCorrectHwDependencies();

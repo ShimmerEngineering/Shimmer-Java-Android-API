@@ -176,13 +176,15 @@ public class SensorBMP180 extends AbstractSensor {
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			objectCluster.indexKeeper++;
+			index = index + channelDetails.mDefaultNumBytes;
 
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
-				rawDataUP = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				rawDataUP = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.PRESSURE_BMP180), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 				rawDataUP = rawDataUP/Math.pow(2,8-mPressureResolution);
 			}
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
-				rawDataUT = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				rawDataUT = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.TEMPERATURE_BMP180), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}
 		}
 
@@ -190,17 +192,20 @@ public class SensorBMP180 extends AbstractSensor {
 
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
-				objectCluster.addCalData(channelDetails, bmp180caldata[0]);
-				objectCluster.indexKeeper++;
+				objectCluster.addCalData(channelDetails, bmp180caldata[0], objectCluster.indexKeeper-1);
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				objectCluster.addCalData(channelDetails, bmp180caldata[1]);
-				objectCluster.indexKeeper++;
 			}
-
-			index = index + channelDetails.mDefaultNumBytes;
 		}
-
+		
+//		//Debugging
+//		double pressUncal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.PRESSURE_BMP180), CHANNEL_TYPE.UNCAL.toString())).mData;
+//		double tempUncal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.TEMPERATURE_BMP180), CHANNEL_TYPE.UNCAL.toString())).mData;
+//		double pressCal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.PRESSURE_BMP180), CHANNEL_TYPE.CAL.toString())).mData;
+//		double tempCal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.TEMPERATURE_BMP180), CHANNEL_TYPE.CAL.toString())).mData;
+//		System.out.println("Press UNCAL:" + pressUncal + "\tCAL:" + pressCal + "\tTemp UNCAL:" + tempUncal + "\tCAL:" + tempCal);
+		
 		return objectCluster;
 	}
 

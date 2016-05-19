@@ -256,6 +256,16 @@ public class Shimmer4 extends ShimmerDevice {
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 
+		
+		if(generateForWritingToShimmer) {
+			// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
+			// (already set to 0xFF at start of method but just incase)
+			System.arraycopy(infoMemLayout.invalidMacId, 0, mInfoMemBytes, infoMemLayout.idxMacAddress, infoMemLayout.lengthMacIdBytes);
+
+			//TODO only temporarily here to deal with fake Shimmer4 (i.e., a Shimmer3)
+			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
+		}
+		
 		return mInfoMemBytes;
 	}
 
@@ -314,7 +324,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void eventNewPacket(byte[] packetByteArray) {
-				buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH);
+				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH);
 			}
 
 			@Override
@@ -388,6 +398,7 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
+	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
 	private void readInfoMem(){
 		mInfoMemBuffer = new byte[mInfoMemLayout.calculateInfoMemByteLength()];
 		int size = mInfoMemLayout.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
@@ -431,6 +442,7 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
+	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
 	public void toggleLed() {
 		byte[] instructionLED = {LiteProtocolInstructionSet.InstructionsSet.TOGGLE_LED_COMMAND_VALUE};
 		mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionLED);
