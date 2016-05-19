@@ -569,11 +569,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getBluetoothAddress(), mComPort);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
-
-	@Override
-	public BT_STATE getBTState() {
-		return mBluetoothRadioState;
-	}
 	
 	@Override
 	public void startOperation(BT_STATE currentOperation){

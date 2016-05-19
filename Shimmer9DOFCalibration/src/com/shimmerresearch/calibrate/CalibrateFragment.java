@@ -744,7 +744,7 @@ public class CalibrateFragment extends Fragment {
 			}
 			mButtonSave.setEnabled(false);
 		}
-		else if (MainActivity.mShimmerDevice!=null && MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTED){
+		else if (MainActivity.mShimmerDevice!=null && MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTED){
 			mButtonCalibrate.setText("CAPTURE");
 			mButtonCalibrate.setEnabled(true);
 			mButtonCalibrateSetting.setEnabled(true);
@@ -1063,7 +1063,7 @@ public class CalibrateFragment extends Fragment {
 			break;
 		
 		case 1:
-			if (MainActivity.mShimmerDevice!=null && (MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTED)){
+			if (MainActivity.mShimmerDevice!=null && (MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTED)){
 				for(row=0; row<3; row++){
 						mShimmerOffset[row] = (int)MainActivity.mShimmerDevice.getOffsetVectorMatrixAccel()[row][0];
 				}
@@ -1084,7 +1084,7 @@ public class CalibrateFragment extends Fragment {
 			break;
 		
 		case 2:
-			if (MainActivity.mShimmerDevice!=null && (MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTED)){
+			if (MainActivity.mShimmerDevice!=null && (MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTED)){
 				for(row=0; row<3; row++){
 						mShimmerOffset[row] = (int)MainActivity.mShimmerDevice.getOffsetVectorMatrixGyro()[row][0];
 				}
@@ -1105,7 +1105,7 @@ public class CalibrateFragment extends Fragment {
 			break;
 		
 		case 3:	
-			if (MainActivity.mShimmerDevice!=null && (MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTED)){
+			if (MainActivity.mShimmerDevice!=null && (MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTED)){
 				for(row=0; row<3; row++){
 						mShimmerOffset[row] = (int)MainActivity.mShimmerDevice.getOffsetVectorMatrixMag()[row][0];
 				}
@@ -1127,7 +1127,7 @@ public class CalibrateFragment extends Fragment {
 		
 		case 4:
 
-			if (MainActivity.mShimmerDevice!=null && (MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTED)){
+			if (MainActivity.mShimmerDevice!=null && (MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTED)){
 				for(row=0; row<3; row++){
 						mShimmerOffset[row] = (int)MainActivity.mShimmerDevice.getOffsetVectorMatrixWRAccel()[row][0];
 				}

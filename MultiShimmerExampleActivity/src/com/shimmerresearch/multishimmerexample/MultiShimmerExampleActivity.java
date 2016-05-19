@@ -94,9 +94,9 @@ public class MultiShimmerExampleActivity extends Activity {
 					//Next connect the next device
 					Log.d("ConnectionStatus","Fully Initialized" + ((ObjectCluster)msg.obj).mBluetoothAddress);
 
-					if (mShimmerDevice2.getBTState()==BT_STATE.DISCONNECTED){
+					if (mShimmerDevice2.getBluetoothRadioState()==BT_STATE.DISCONNECTED){
 						mShimmerDevice2.connect("00:06:66:66:96:86","default"); 
-					} else if (mShimmerDevice1.getState()==BT_STATE.CONNECTED && mShimmerDevice1.getStreamingStatus()==false && mShimmerDevice2.getBTState()==BT_STATE.CONNECTED && mShimmerDevice2.getStreamingStatus()==false){
+					} else if (mShimmerDevice1.getState()==BT_STATE.CONNECTED && mShimmerDevice1.getStreamingStatus()==false && mShimmerDevice2.getBluetoothRadioState()==BT_STATE.CONNECTED && mShimmerDevice2.getStreamingStatus()==false){
 						Log.d("ConnectionStatus","Successful!");
 
 						mShimmerDevice1.startStreaming();

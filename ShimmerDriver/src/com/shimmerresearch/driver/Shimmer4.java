@@ -122,15 +122,13 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void connected() {
+				setBluetoothRadioState(BT_STATE.CONNECTING);
 				mIsConnected = true;
 				// TODO Auto-generated method stub
 				byte[] instructionFW = {LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
 				byte[] instructionHW = {LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE};
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionHW);
-				CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.CONNECTING, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
-				sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
-				
 			}
 
 			@Override
@@ -138,8 +136,7 @@ public class Shimmer4 extends ShimmerDevice {
 				// TODO Auto-generated method stub
 				mIsConnected = false;
 				mIsInitialised = false;
-				CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.DISCONNECTED, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
-				sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+				setBluetoothRadioState(BT_STATE.DISCONNECTED);
 			}
 
 			@Override
@@ -181,8 +178,7 @@ public class Shimmer4 extends ShimmerDevice {
 						infoMemByteArrayParse(mInfoMemBuffer);
 						String comPort = ((SerialPortComm)mShimmerRadioHWLiteProtocol.mSerialPort).mAddress;
 						mIsInitialised = true;
-						CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.CONNECTED, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
-						sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject2);
+						setBluetoothRadioState(BT_STATE.CONNECTED);
 						CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_FULLY_INITIALIZED, mMacIdFromUart, comPort);
 						sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 					}
@@ -357,6 +353,13 @@ public class Shimmer4 extends ShimmerDevice {
 	public void setRadio(ShimmerRadioProtocol srp){
 		mShimmerRadioHWLiteProtocol = srp;
 		initializeRadio();
+	}
+	
+	@Override
+	protected void setBluetoothRadioState(BT_STATE state){
+		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE,state, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject2);
+		mBluetoothRadioState = state;
 	}
 	
 

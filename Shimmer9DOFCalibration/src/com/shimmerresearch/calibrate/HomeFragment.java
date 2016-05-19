@@ -139,7 +139,7 @@ public class HomeFragment extends Fragment{
 		mConnectDisconnect.setOnClickListener(new View.OnClickListener() {
              public void onClick(View v) {
             	// Perform action on click
-            	if((MainActivity.mShimmerDevice != null) && (MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTED)){
+            	if((MainActivity.mShimmerDevice != null) && (MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTED)){
             		MainActivity.mShimmerDevice.stop();
             	}
             	else{
@@ -348,7 +348,7 @@ public class HomeFragment extends Fragment{
 				else mSensor.setText(getResources().getStringArray(R.array.shimmer2r_calibration_strings)[RadioButtonListActivity.mRadioButtonSensorPosition]);	
 		}
 		
-		if(MainActivity.mShimmerDevice != null && MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTED){
+		if(MainActivity.mShimmerDevice != null && MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTED){
 				
 			switch (RadioButtonListActivity.mRadioButtonSensorPosition){
 			
@@ -425,7 +425,7 @@ public class HomeFragment extends Fragment{
 			mSensorRange.setEnabled(false);
 		}
 		
-		if(MainActivity.mShimmerDevice != null && MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTED){
+		if(MainActivity.mShimmerDevice != null && MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTED){
 			mConnectDisconnect.setText("DISCONNECT");
 			mConnectDisconnect.setEnabled(true);
 			mStartStop.setEnabled(true);
@@ -433,14 +433,14 @@ public class HomeFragment extends Fragment{
 			mRawCal.setEnabled(true);
 			//mSensorRange.setEnabled(true);
 		}
-		else if (MainActivity.mShimmerDevice != null && MainActivity.mShimmerDevice.getBTState() == BT_STATE.CONNECTING){ 
+		else if (MainActivity.mShimmerDevice != null && MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.CONNECTING){ 
 			mConnectDisconnect.setText("CONNECTING");
 			mConnectDisconnect.setEnabled(false);
 			mStartStop.setEnabled(false);
 			mSensor.setEnabled(false);
 			mRawCal.setEnabled(false);
 		}
-		else if (MainActivity.mShimmerDevice != null && MainActivity.mShimmerDevice.getBTState() == BT_STATE.DISCONNECTED){ 
+		else if (MainActivity.mShimmerDevice != null && MainActivity.mShimmerDevice.getBluetoothRadioState() == BT_STATE.DISCONNECTED){ 
 			mConnectDisconnect.setText("CONNECT");
 			mConnectDisconnect.setEnabled(true);
 			mStartStop.setEnabled(false);

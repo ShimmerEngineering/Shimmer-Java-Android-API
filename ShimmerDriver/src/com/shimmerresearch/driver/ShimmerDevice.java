@@ -15,7 +15,9 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -1907,5 +1909,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected void setBluetoothRadioState(BT_STATE state){
 		
+	}
+	
+	
+	public BT_STATE getBluetoothRadioState() {
+		return mBluetoothRadioState;
 	}
 }

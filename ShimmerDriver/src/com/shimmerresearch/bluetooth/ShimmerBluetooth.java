@@ -3686,10 +3686,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return mLowBattLimit;
 	}
 
-    public BT_STATE getBTState(){
-        return mBluetoothRadioState;
-    }
-
 	/**
 	 * Get the Gain value for the ExG1 Channel 1
 	 * 
