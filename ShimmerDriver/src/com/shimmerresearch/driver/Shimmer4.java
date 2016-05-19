@@ -16,8 +16,6 @@ import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driverUtilities.SensorDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -36,7 +34,7 @@ public class Shimmer4 extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 6916261534384275804L;
 	
-	public ShimmerRadioProtocol mShimmerRadioHWLiteProtocol = null;
+	public transient ShimmerRadioProtocol mShimmerRadioHWLiteProtocol = null;
 
 	byte[] mInfoMemBuffer;
 	private int mCurrentInfoMemAddress = 0;
@@ -286,8 +284,8 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	// ----------------- BT LiteProtocolInstructionSet Start ------------------
-	public void setRadio(ShimmerRadioProtocol srp){
-		mShimmerRadioHWLiteProtocol = srp;
+	public void setRadio(ShimmerRadioProtocol shimmerRadioHWLiteProtocol){
+		setShimmerRadioHWLiteProtocol(shimmerRadioHWLiteProtocol);
 		initializeRadio();
 	}
 
@@ -440,6 +438,20 @@ public class Shimmer4 extends ShimmerDevice {
 		mBluetoothRadioState = state;
 	}
 	
+	/**
+	 * @return the mShimmerRadioHWLiteProtocol
+	 */
+	public ShimmerRadioProtocol getShimmerRadioHWLiteProtocol() {
+		return mShimmerRadioHWLiteProtocol;
+	}
+
+	/**
+	 * @param shimmerRadioHWLiteProtocol the mShimmerRadioHWLiteProtocol to set
+	 */
+	public void setShimmerRadioHWLiteProtocol(ShimmerRadioProtocol shimmerRadioHWLiteProtocol) {
+		this.mShimmerRadioHWLiteProtocol = shimmerRadioHWLiteProtocol;
+	}
+
 	// ----------------- BT LiteProtocolInstructionSet End ------------------
 
 }

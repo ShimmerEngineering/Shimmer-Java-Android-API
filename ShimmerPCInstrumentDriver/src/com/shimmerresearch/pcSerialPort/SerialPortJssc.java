@@ -8,7 +8,6 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
-import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
@@ -17,15 +16,14 @@ import com.shimmerresearch.driver.DeviceException;
 //import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
 //import com.shimmerresearch.comms.wiredProtocol.ShimmerCommsWired;
 import com.shimmerresearch.driver.UtilShimmer;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /**
  * @author Mark Nolan
  *
  */
-public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEventCallback{
+public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEventCallback {
 
-	private SerialPort serialPort = null;
+	protected transient SerialPort serialPort = null;
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;

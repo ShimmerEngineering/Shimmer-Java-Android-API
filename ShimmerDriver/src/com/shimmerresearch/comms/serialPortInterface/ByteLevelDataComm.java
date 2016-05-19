@@ -1,7 +1,6 @@
 package com.shimmerresearch.comms.serialPortInterface;
 
 import com.shimmerresearch.driver.DeviceException;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /**
  * @author Mark Nolan
