@@ -6,9 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -22,10 +22,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorBMP180.GuiLabelConfig;
 
 /** 
  * @author Ruud Stolk
@@ -39,15 +36,14 @@ public class SensorLSM303 extends AbstractSensor{
 	//COMTYPE should have dummy for no action setting
 	//map infomem to fw, index, value
 	
-	/** * */  //XXX Should there be a Java doc here? (The "/** * */" suggests so.)
+	/**
+	 * Sensorclass for LSM303 - digital/wide-range accelerometer + magnetometer 
+	 *  
+	 *  @param svo
+	 * * */  
 	private static final long serialVersionUID = -2119834127313796684L;
 
-	//--------- Sensor specific variables start --------------
-	public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";  
-	public static final String LOCAL_FLUX = "local_flux";  
-	public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
-	public static final String MAG_CAL_UNIT = LOCAL_FLUX;
-	
+	//--------- Sensor specific variables start --------------	
 	public boolean mLowPowerAccelWR = false;
 	public boolean mHighResAccelWR = true;
 	public boolean mLowPowerMag = false;
@@ -348,10 +344,6 @@ public class SensorLSM303 extends AbstractSensor{
     
     
     //--------- Constructors for this class start --------------
-    
-    /**--------- Constructor for this sensor --------------
-    * @param svo
-	*/
     public SensorLSM303(ShimmerVerObject svo) {
 		super(svo);
 		setSensorName(SENSORS.LSM303.toString());
@@ -423,7 +415,72 @@ public class SensorLSM303 extends AbstractSensor{
 	
 	@Override 
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-		// TODO Auto-generated method stub
+		int index = 0;
+		double[] unCalibratedAccelWrData = new double[3];
+		double[] unCalibratedMagData = new double[3];
+
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			
+			//Uncalibrated Accelerometer data
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
+				unCalibratedAccelWrData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
+				unCalibratedAccelWrData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
+				unCalibratedAccelWrData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+			
+			//Uncalibrated Magnetometer data
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
+				unCalibratedMagData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
+				unCalibratedMagData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
+				unCalibratedMagData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}	
+		}
+			
+		//Calibration
+		double[] calibratedAccelWrData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelWrData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
+		double[] calibratedMagData = UtilCalibration.calibrateInertialSensorData(unCalibratedMagData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+
+		//Add calibrated data to Object cluster
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
+				objectCluster.addCalData(channelDetails, calibratedAccelWrData[0]);
+				objectCluster.indexKeeper++;
+			}
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
+				objectCluster.addCalData(channelDetails, calibratedAccelWrData[1]);
+				objectCluster.indexKeeper++;
+			}
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
+				objectCluster.addCalData(channelDetails, calibratedAccelWrData[2]);
+				objectCluster.indexKeeper++;
+			}
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
+				objectCluster.addCalData(channelDetails, calibratedMagData[0]);
+				objectCluster.indexKeeper++;
+			}
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
+				objectCluster.addCalData(channelDetails, calibratedMagData[1]);
+				objectCluster.indexKeeper++;
+			}
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
+				objectCluster.addCalData(channelDetails, calibratedMagData[2]);
+				objectCluster.indexKeeper++;
+			}
+
+			index = index + channelDetails.mDefaultNumBytes;
+		}
 		return objectCluster;
 	}
 
@@ -528,7 +585,6 @@ public class SensorLSM303 extends AbstractSensor{
 	@Override 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		Object returnValue = null;
-		int buf = 0;
 		
 		switch(componentName){
 		
@@ -602,7 +658,7 @@ public class SensorLSM303 extends AbstractSensor{
 				returnValue = configValue;
 				break;
 		
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
+			case(GuiLabelConfig.LSM303DLHC_MAG_RATE):
 				returnValue = getLSM303MagRate();
 	        	break;
 			
@@ -623,10 +679,10 @@ public class SensorLSM303 extends AbstractSensor{
 	@Override 
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
+			if(sensorMapKey==SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
 				setDefaultLsm303dlhcAccelSensorConfig(state);		
 			}
-			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG) {
+			else if(sensorMapKey==SensorMapKey.SHIMMER_LSM303DLHC_MAG) {
 				setDefaultLsm303dlhcMagSensorConfig(state);
 			}
 			return true;
@@ -639,7 +695,6 @@ public class SensorLSM303 extends AbstractSensor{
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		//RS: Also returning null in BMP180 and GSR sensors classes 
-		// See also setDefaultLsm303dlhcAccelSensorConfig() and setDefaultLsm303dlhcMagSensorConfig() in ShimmerObject
 		return null;
 	}
 
@@ -760,7 +815,7 @@ public class SensorLSM303 extends AbstractSensor{
 
 
 	//--------- Sensor specific methods start --------------
-	public byte[] generateCalParamLSM303DLHCAccel(){
+	private byte[] generateCalParamLSM303DLHCAccel(){
 		byte[] bufferCalibrationParameters = new byte[21];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
@@ -782,7 +837,7 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	
-	public byte[] generateCalParamLSM303DLHCMag(){
+	private byte[] generateCalParamLSM303DLHCMag(){
 		byte[] bufferCalibrationParameters = new byte[21];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
@@ -1144,7 +1199,7 @@ public class SensorLSM303 extends AbstractSensor{
 	
 	
 	//TODO Returning same variable as isLowPowerAccelWr() -> remove one method?
-	private boolean isLSM303DigitalAccelLPM() {
+	public boolean isLSM303DigitalAccelLPM() {
 		return mLowPowerAccelWR;
 	}
 	
@@ -1191,22 +1246,22 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	
-	private int getAccelRange() {
+	public int getAccelRange() {
 		return mAccelRange;
 	}
 	
 	
-	private int getMagRange() {
+	public int getMagRange() {
 		return mMagRange;
 	}
 	
 	
-	private int getLSM303MagRate() {
+	public int getLSM303MagRate() {
 		return mLSM303MagRate;
 	}
 
 	
-	private int getLSM303DigitalAccelRate() {
+	public int getLSM303DigitalAccelRate() {
 		return mLSM303DigitalAccelRate;
 	}
 

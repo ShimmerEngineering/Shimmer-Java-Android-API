@@ -148,6 +148,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public int OFFSET_LENGTH = 9;
 	
 	//Sensor Bitmap for ID ; for the purpose of forward compatibility the sensor bitmap and the ID and the sensor bitmap for the Shimmer firmware has been kept separate, 
+	//XXX-RS-AA-SensorClass?
 	public static final int SENSOR_ACCEL				   = 0x80; 
 	public static final int SENSOR_DACCEL				   = 0x1000; //only             //XXX-RS-LSM-SensorClass? "only" -> Only what?
 	public static final int SENSOR_GYRO				   	   = 0x40;
@@ -179,6 +180,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public BiMap<String, String> mSensorBitmaptoName;  
 	
 	public class SDLogHeader {
+		//XXX-RS-AA-SensorClass?
 		public final static int ACCEL_LN 		= 1<<7;
 		public final static int GYRO 			= 1<<6;
 		public final static int MAG 			= 1<<5;//XXX-RS-LSM-SensorClass?
@@ -248,6 +250,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public class BTStream {
+		//XXX-RS-AA-SensorClass?
 		public final static int ACCEL_LN = 0x80; 
 		public final static int GYRO = 0x40;
 		public final static int MAG = 0x20;//XXX-RS-LSM-SensorClass?
@@ -338,12 +341,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte CONFIG_BYTE0_RESPONSE      	   		= (byte) 0x0F;
 	public static final byte GET_CONFIG_BYTE0_COMMAND   	   		= (byte) 0x10;
 	public static final byte STOP_STREAMING_COMMAND           		= (byte) 0x20;
+	//XXX-RS-AA-SensorClass?
 	public static final byte SET_ACCEL_CALIBRATION_COMMAND			= (byte) 0x11;
 	public static final byte ACCEL_CALIBRATION_RESPONSE       		= (byte) 0x12;
+	
 	public static final byte SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND = (byte) 0x1A;//XXX-RS-LSM-SensorClass?
 	public static final byte LSM303DLHC_ACCEL_CALIBRATION_RESPONSE 	= (byte) 0x1B;//XXX-RS-LSM-SensorClass?
 	public static final byte GET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND = (byte) 0x1C;//XXX-RS-LSM-SensorClass?
+	//XXX-RS-AA-SensorClass?
 	public static final byte GET_ACCEL_CALIBRATION_COMMAND    		= (byte) 0x13;
+	
 	public static final byte SET_GYRO_CALIBRATION_COMMAND 	  		= (byte) 0x14;
 	public static final byte GYRO_CALIBRATION_RESPONSE        		= (byte) 0x15;
 	public static final byte GET_GYRO_CALIBRATION_COMMAND     		= (byte) 0x16;
@@ -497,7 +504,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected String[] mSignalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];						// 19 is the maximum number of signal thus far
 	protected boolean mDefaultCalibrationParametersECG = true;
 	protected boolean mDefaultCalibrationParametersEMG = true;
-	protected boolean mDefaultCalibrationParametersAccel = true;
+	protected boolean mDefaultCalibrationParametersAccel = true;//XXX-RS-AA-SensorClass?
 	protected boolean mDefaultCalibrationParametersDigitalAccel = true; //Also known as the wide range accelerometer //XXX-RS-LSM-SensorClass?
 	protected int mPressureResolution = 0;
 	/** 0 = 16 bit, 1 = 24 bit */
@@ -553,9 +560,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 // ------------------------------------------------------------------	
 
 	//
+	//XXX-RS-AA-SensorClass?
 	protected double[][] mAlignmentMatrixAnalogAccel = {{-1,0,0},{0,-1,0},{0,0,1}}; 			
 	protected double[][] mSensitivityMatrixAnalogAccel = {{38,0,0},{0,38,0},{0,0,38}}; 	
-	protected double[][] mOffsetVectorAnalogAccel = {{2048},{2048},{2048}};				
+	protected double[][] mOffsetVectorAnalogAccel = {{2048},{2048},{2048}};
+	
 	protected double[][] mAlignmentMatrixWRAccel = {{-1,0,0},{0,1,0},{0,0,-1}};//XXX-RS-LSM-SensorClass?	 			
 	protected double[][] mSensitivityMatrixWRAccel = {{1631,0,0},{0,1631,0},{0,0,1631}};//XXX-RS-LSM-SensorClass?	 	
 	protected double[][] mOffsetVectorWRAccel = {{0},{0},{0}};//XXX-RS-LSM-SensorClass?		
@@ -568,6 +577,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] AlignmentMatrixAccelShimmer2 =  {{-1,0,0},{0,-1,0},{0,0,1}}; 			
 	protected static final double[][] OffsetVectorAccelShimmer2 = {{2048},{2048},{2048}};			
 	//Shimmer3
+	//XXX-RS-AA-SensorClass?
 	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
 	protected static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
 	
@@ -578,7 +588,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected static final double[][] AlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}};//XXX-RS-LSM-SensorClass?	 	
 	protected static final double[][] AlignmentMatrixAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
+	//XXX-RS-AA-SensorClass?
 	protected static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
+	
 	protected static final double[][] OffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};//XXX-RS-LSM-SensorClass?	
 
 	protected double OffsetECGRALL=2060;
@@ -680,7 +692,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //	protected boolean mIsStreaming =false;											// This is used to monitor whether the device is in streaming mode
 //	protected boolean mIsSDLogging =false;											// This is used to monitor whether the device is in sd log mode
 	//all raw params should start with a 1 byte identifier in position [0]
+	//XXX-RS-AA-SensorClass?
 	protected byte[] mAccelCalRawParams = new byte[22];
+	
 	protected byte[] mDigiAccelCalRawParams  = new byte[22];//XXX-RS-LSM-SensorClass?	
 	protected byte[] mGyroCalRawParams  = new byte[22];
 	protected byte[] mMagCalRawParams  = new byte[22];//XXX-RS-LSM-SensorClass?	
@@ -861,7 +875,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				numAdditionalChannels += 1;
 			}
 		}
-		//XXX-RS-LSM-SensorClass?
+		//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 		double [] calibratedData = new double[numCalibratedData+numAdditionalChannels];
 		double [] uncalibratedData = new double[numUncalibratedData+numAdditionalChannels];
 		String [] uncalibratedDataUnits = new String[numUncalibratedDataUnits+numAdditionalChannels];
@@ -874,8 +888,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		long[] newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);
 		
 		double[] tempData=new double[3];
-		Vector3d accelerometer = new Vector3d();//XXX-RS-LSM-SensorClass?
-		Vector3d magnetometer = new Vector3d();//XXX-RS-LSM-SensorClass?
+		Vector3d accelerometer = new Vector3d();//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
+		Vector3d magnetometer = new Vector3d();//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 		Vector3d gyroscope = new Vector3d();
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3  
@@ -985,7 +999,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			//first get raw and calibrated data, this is data derived from the Shimmer device and involves no involvement from the API
 
-
+			//XXX-RS-AA-SensorClass?
 			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.ACCEL_LN) > 0) 
 					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_LN) > 0)){
 				int iAccelX=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_LN_X); //find index
@@ -1427,7 +1441,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 
-			//XXX-RS-LSM-SensorClass?
+			//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 			if (((fwIdentifier == FW_TYPE_BT)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && mOrientationEnabled )
 					||((fwIdentifier == FW_TYPE_SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && mOrientationEnabled )){
 				if (mEnableCalibration){
@@ -2513,7 +2527,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return objectCluster;
 	}
 	
-	//XXX-RS-LSM-SensorClass?
+	
 	@Deprecated
 	protected Object buildMsg(byte[] newPacket, Object object) {
 		ObjectCluster objectCluster = (ObjectCluster) object;
@@ -3397,7 +3411,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int enabledSensors= 0x00;
 		for (int i=0;i<numChannels;i++) {
 			if ((byte)signalid[i]==(byte)0x00){
-				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){//XXX-RS-AA-SensorClass?
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -3411,7 +3425,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x01){
-				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){//XXX-RS-AA-SensorClass?
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2; 
@@ -3425,7 +3439,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalid[i]==(byte)0x02){
-				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
+				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){//XXX-RS-AA-SensorClass?
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
@@ -4068,7 +4082,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		} else {
 			listofSignals.add("Timestamp");
-			if ((mEnabledSensors & SENSOR_ACCEL) >0){
+			if ((mEnabledSensors & SENSOR_ACCEL) >0){//XXX-RS-AA-SensorClass?
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.ACCEL_LN_X);
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y);
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z);
@@ -4112,14 +4126,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A14) > 0) {
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14);
 			}
-			//XXX-RS-LSM-SensorClass?
+			//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 			if ((((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 || ((mEnabledSensors & 0xFFFF)& SENSOR_DACCEL) > 0)&& ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A);
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X);
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y);
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z);
 			}
-			//XXX-RS-LSM-SensorClass?
+			//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 			if ((((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 || ((mEnabledSensors & 0xFFFF)& SENSOR_DACCEL) > 0) && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);
 				listofSignals.add(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X);
@@ -4255,7 +4269,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			double[][] AlignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
 			double[][] SensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
 			double[][] OffsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-
+			
+			//XXX-RS-AA-SensorClass?
 			if(packetType==ACCEL_CALIBRATION_RESPONSE && checkIfDefaultAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
 				mDefaultCalibrationParametersAccel = true;
 				mAlignmentMatrixAnalogAccel = AlignmentMatrix;
@@ -4374,6 +4389,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+	//XXX-RS-AA-SensorClass?
 	private boolean checkIfDefaultAccelCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
 		
 		double[][] offsetVectorToCompare = OffsetVectorLowNoiseAccelShimmer3;
@@ -4543,6 +4559,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setDefaultCalibrationShimmer3Mag();
 	}
 
+	//XXX-RS-AA-SensorClass?
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
 		mDefaultCalibrationParametersAccel = true;
 		mSensitivityMatrixAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixLowNoiseAccel2gShimmer3);
@@ -4709,7 +4726,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void sendStatusMsgPacketLossDetected() {
 	}
 
-	//XXX-RS-LSM-SensorClass?
+	//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 	protected static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
 		/*  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
            in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
@@ -4925,6 +4942,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		for (int i=0;i<channels.length;i++)
 		{
 			if (getHardwareVersion()==HW_ID.SHIMMER_3){
+				//XXX-RS-AA-SensorClass?
 				if (channels[i]==Configuration.Shimmer3.Channel.XAAccel || channels[i]==Configuration.Shimmer3.Channel.YAAccel || channels[i]==Configuration.Shimmer3.Channel.ZAAccel){
 					enabledSensors = enabledSensors | SENSOR_ACCEL;
 				}
@@ -5089,8 +5107,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			try {
 				outputStream.write(5); // write the number of different calibration parameters
+				//XXX-RS-AA-SensorClass?
 				outputStream.write( mAccelCalRawParams.length);
 				outputStream.write( mAccelCalRawParams);
+				
 				outputStream.write( mDigiAccelCalRawParams.length);//XXX-RS-LSM-SensorClass?
 				outputStream.write( mDigiAccelCalRawParams );//XXX-RS-LSM-SensorClass?
 				outputStream.write( mGyroCalRawParams.length );
@@ -5138,17 +5158,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public List<String> getListofEnabledSensors(){
 		List<String> listofSensors = new ArrayList<String>();
 		if (getHardwareVersion()==HW_ID.SHIMMER_3){
+			//XXX-RS-AA-SensorClass?
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				listofSensors.add("Low Noise Accelerometer");
 			}
+			
 			if ((mEnabledSensors & SENSOR_DACCEL) > 0){//XXX-RS-LSM-SensorClass?
 				listofSensors.add("Wide Range Accelerometer");
 			}
+			//XXX-RS-AA-SensorClass?
 		} else {
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				listofSensors.add("Accelerometer");
 			}
 		}
+		
 		if (((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0) {
 			listofSensors.add("Gyroscope");
 		}
@@ -5412,6 +5436,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			listofSignals.add(channel);
 			channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
 			listofSignals.add(channel);
+			//XXX-RS-AA-SensorClass?
 			if ((mEnabledSensors & SENSOR_ACCEL) >0){
 
 				String unit = CHANNEL_UNITS.METER_PER_SECOND_SQUARE;
@@ -5565,7 +5590,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
-			//XXX-RS-LSM-SensorClass?
+			//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 			if ((((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 || ((mEnabledSensors & 0xFFFF)& SENSOR_DACCEL) > 0)&& ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && mOrientationEnabled){
 				channel = new String[]{mShimmerUserAssignedName,Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
@@ -5835,14 +5860,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mOffsetVectorGyroscope;
 	}
 
+	//XXX-RS-AA-SensorClass?
 	public double[][] getAlignmentMatrixAccel(){
 		return mAlignmentMatrixAnalogAccel;
 	}
 
+	//XXX-RS-AA-SensorClass?
 	public double[][] getSensitivityMatrixAccel(){
 		return mSensitivityMatrixAnalogAccel;
 	}
 
+	//XXX-RS-AA-SensorClass?
 	public double[][] getOffsetVectorMatrixAccel(){
 		return mOffsetVectorAnalogAccel;
 	}
@@ -6155,7 +6183,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @param enable
 	 */
-	//XXX-RS-LSM-SensorClass?
+	//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 	protected void set3DOrientation(boolean enable){
 		//enable the sensors if they have not been enabled 
 		mOrientationEnabled = enable;
@@ -6271,7 +6299,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			sensorAndConfigMapsCreate();
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+				//XXX-RS-AA-SensorClass?
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL, true);
+				
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, true);
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, true);//XXX-RS-LSM-SensorClass? Where is the LSM303DLHC_ACCEL?
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, true);
@@ -6383,6 +6413,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			}
 			
 			byte[] bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
+			//XXX-RS-AA-SensorClass?
 			// Analog Accel Calibration Parameters
 			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
 			retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
@@ -6694,6 +6725,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			mInfoMemBytes[infoMemLayout.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & infoMemLayout.maskBaudRate);
 	
+			//XXX-RS-AA-SensorClass?
 			// Analog Accel Calibration Parameters
 			byte[] bufferCalibrationParameters = generateCalParamAnalogAccel();
 			System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemLayout.idxAnalogAccelCalibration, infoMemLayout.lengthGeneralCalibrationBytes);
@@ -6918,6 +6950,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @return the bytes array containing the Analog Accel Calibration
 	 */
+	//XXX-RS-AA-SensorClass?
 	public byte[] generateCalParamAnalogAccel(){
 		// Analog Accel Calibration Parameters
 		byte[] bufferCalibrationParameters = new byte[21];
@@ -7861,10 +7894,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mLowPowerGyro;
 	}
 	
+	//XXX-RS-AA-SensorClass?
 	public boolean isUsingDefaultLNAccelParam(){
 		return mDefaultCalibrationParametersAccel;
 	}
 	
+	//XXX-RS-AA-SensorClass?
 	public boolean isUsingDefaultAccelParam(){
 		return mDefaultCalibrationParametersAccel;
 	}
