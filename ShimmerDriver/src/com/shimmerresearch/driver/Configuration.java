@@ -431,9 +431,9 @@ public class Configuration {
 	
 	public static class Shimmer3{
 		public class Channel{
-			public static final int XAAccel     			 = 0x00;
-			public static final int YAAccel    				 = 0x01;
-			public static final int ZAAccel     			 = 0x02;
+			public static final int XAAccel     			 = 0x00;//XXX-RS-AA-SensorClass?
+			public static final int YAAccel    				 = 0x01;//XXX-RS-AA-SensorClass?
+			public static final int ZAAccel     			 = 0x02;//XXX-RS-AA-SensorClass?
 			public static final int VBatt       			 = 0x03;
 			public static final int XDAccel     			 = 0x04;//XXX-RS-LSM-SensorClass?
 			public static final int YDAccel     			 = 0x05;//XXX-RS-LSM-SensorClass?
@@ -476,7 +476,7 @@ public class Configuration {
 
 		public class SensorBitmap{
 			//Sensor Bitmap for Shimmer 3
-			public static final int SENSOR_A_ACCEL			= 0x80;
+			public static final int SENSOR_A_ACCEL			= 0x80;//XXX-RS-AA-SensorClass?
 			public static final int SENSOR_GYRO			   	= 0x40;
 			public static final int SENSOR_MAG				= 0x20; //XXX-RS-LSM-SensorClass?
 			public static final int SENSOR_EXG1_24BIT		= 0x10;
@@ -588,6 +588,7 @@ public class Configuration {
 			//Sensors channels originating from the Shimmer
 			public static final int TIMESTAMP = -1;
 			/** Shimmer3 Low-noise analog accelerometer */
+			//XXX-RS-AA-SensorClass?
 			public static final int SHIMMER_A_ACCEL = 0;
 			/** Shimmer3 Gyroscope */
 			public static final int SHIMMER_MPU9150_GYRO = 1;
@@ -740,12 +741,14 @@ public class Configuration {
 			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = "Wide Range Accel Default Calibration";//XXX-RS-LSM-SensorClass?
 			public static final String MPU9150_GYRO_DEFAULT_CALIB = "Gyro Default Calibration";
 			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = "Mag Default Calibration";//XXX-RS-LSM-SensorClass?
+			//XXX-RS-AA-SensorClass?
 			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = "Low Noise Accel Default Calibration";
 
 		}
 
 		// GUI Sensor Tiles
 		public class GuiLabelSensorTiles{
+			//XXX-RS-AA-SensorClass?
 			public static final String LOW_NOISE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_LN;
 			public static final String GYRO = Configuration.Shimmer3.GuiLabelSensors.GYRO;
 			public static final String MAG = Configuration.Shimmer3.GuiLabelSensors.MAG;//XXX-RS-LSM-SensorClass?
@@ -769,6 +772,7 @@ public class Configuration {
 		
 		//GUI SENSORS
 		public class GuiLabelSensors{
+			//XXX-RS-AA-SensorClass?
 			public static final String ACCEL_LN = "Low-Noise Accelerometer";
 			public static final String BATTERY = "Battery Voltage";
 			public static final String EXT_EXP_A7 = "Ext A7";
@@ -859,9 +863,11 @@ public class Configuration {
 			public static final String MPU_HEADING = "MPU9150_MPL_Heading"; // not available but supported in FW
 			public static final String MPU_TEMP = "MPU9150_Temperature";
 
+			//XXX-RS-AA-SensorClass?
 			public static final String LN_ACC_X = "KXRB8_2042_X";
 			public static final String LN_ACC_Y = "KXRB8_2042_Y";
 			public static final String LN_ACC_Z = "KXRB8_2042_Z";
+			
 			public static final String WR_ACC_X = "LSM303DLHC_ACC_X";//XXX-RS-LSM-SensorClass?
 			public static final String WR_ACC_Y = "LSM303DLHC_ACC_Y";//XXX-RS-LSM-SensorClass?
 			public static final String WR_ACC_Z = "LSM303DLHC_ACC_Z";//XXX-RS-LSM-SensorClass?
@@ -989,6 +995,7 @@ public class Configuration {
 			public static  String TIMESTAMP_SYNC = "Timestamp_Sync";
 			public static  String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
 			
+			//XXX-RS-AA-SensorClass?
 			public static  String ACCEL_LN_X = "Accel_LN_X";
 			public static  String ACCEL_LN_Y = "Accel_LN_Y";
 			public static  String ACCEL_LN_Z = "Accel_LN_Z";
@@ -1233,6 +1240,9 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303 = Arrays.asList(
 					baseShimmer4); // May need to add more compatible versions
 			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXRB52042 = Arrays.asList(
+					baseShimmer4); // May need to add more compatible versions
+			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
 					baseBrAmpUnifiedSdLog,  baseBrAmpUnifiedBtStream, baseBrAmpUnifiedLogAndStream);
@@ -1306,6 +1316,7 @@ public class Configuration {
 			// NV_SENSORS0
 			long streamingByteIndex = 0;
 			long logHeaderByteIndex = 0;
+			//XXX-RS-AA-SensorClass?
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL, new SensorDetailsRef(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_LN));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, new SensorDetailsRef(0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GYRO));
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, new SensorDetailsRef(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MAG));//XXX-RS-LSM-SensorClass? 
@@ -2338,7 +2349,7 @@ public class Configuration {
 							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
 			
 //			TIMESTAMP_SYNC
-			
+			//XXX-RS-AA-SensorClass?
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
@@ -2754,6 +2765,7 @@ public class Configuration {
 	        Map<String, SensorGroupingDetails> aMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		
 			//Sensor Grouping for Configuration Panel 'tile' generation. 
+	      //XXX-RS-AA-SensorClass?
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(//XXX-RS-LSM-SensorClass? 

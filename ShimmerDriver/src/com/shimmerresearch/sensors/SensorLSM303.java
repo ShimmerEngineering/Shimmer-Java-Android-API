@@ -9,7 +9,6 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -23,10 +22,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.SensorBMP180.GuiLabelConfig;
-import com.shimmerresearch.sensors.SensorBMP180.ObjectClusterSensorName;
 
 /** 
  * @author Ruud Stolk
@@ -40,15 +36,14 @@ public class SensorLSM303 extends AbstractSensor{
 	//COMTYPE should have dummy for no action setting
 	//map infomem to fw, index, value
 	
-	/** * */  //XXX Should there be a Java doc here? (The "/** * */" suggests so.)
+	/**
+	 * Sensorclass for LSM303 - digital/wide-range accelerometer + magnetometer 
+	 *  
+	 *  @param svo
+	 * * */  
 	private static final long serialVersionUID = -2119834127313796684L;
 
-	//--------- Sensor specific variables start --------------
-	public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";  
-	public static final String LOCAL_FLUX = "local_flux";  
-	public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
-	public static final String MAG_CAL_UNIT = LOCAL_FLUX;
-	
+	//--------- Sensor specific variables start --------------	
 	public boolean mLowPowerAccelWR = false;
 	public boolean mHighResAccelWR = true;
 	public boolean mLowPowerMag = false;
@@ -349,10 +344,6 @@ public class SensorLSM303 extends AbstractSensor{
     
     
     //--------- Constructors for this class start --------------
-    
-    /**--------- Constructor for this sensor --------------
-    * @param svo
-	*/
     public SensorLSM303(ShimmerVerObject svo) {
 		super(svo);
 		mSensorName = SENSORS.LSM303.toString();
@@ -594,7 +585,6 @@ public class SensorLSM303 extends AbstractSensor{
 	@Override 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		Object returnValue = null;
-		int buf = 0;
 		
 		switch(componentName){
 		
