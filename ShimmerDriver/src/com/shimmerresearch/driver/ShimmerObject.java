@@ -316,6 +316,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected Map<String, ChannelDetails> mChannelMap = new LinkedHashMap<String, ChannelDetails>(); 
 	protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
+	//protected Map<String, List<String>> mCompleteAlgorithmMap = new LinkedHashMap<String, List<String>>();
+
 	
 	//Constants describing the packet type
 	public static final byte DATA_PACKET                      		= (byte) 0x00;
@@ -6877,6 +6879,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 				updateEnabledSensorsFromExgResolution();
+				//add in algorithm map 
 			}
 //			interpretDataPacketFormat();
 		}
@@ -7023,7 +7026,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				createSensorMapShimmer3();
 				
 				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
-				mAlgorithmChannelsMap = Configuration.Shimmer3.mAlgorithmChannelsMapRef;
+				mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
 				mAlgorithmGroupingMap = Configuration.Shimmer3.mAlgorithmGroupingMapRef;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMapRef;
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMapRef;
@@ -7937,9 +7940,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mAlgorithmGroupingMap;
 	}
 	
-	//TODO: finish. Similar approach to above in getListOfSupportedAlgorithmChannels()
+	// TODO: finish. Similar approach to above in
+	// getListOfSupportedAlgorithmChannels()
 	public List<String> getListOfSupportedAlgorithmGroups() {
-		return new ArrayList<String>();
+
+		List<AlgorithmDetailsNew> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetailsNew>();
+		listOfSupportAlgorihmChannels = getListOfSupportedAlgorithmChannels();
+
+		List<String> listOfSupportAlgorihmGroups = new ArrayList<String>();
+
+		for (AlgorithmDetailsNew algorithmDetails : listOfSupportAlgorihmChannels) {
+
+			if (!listOfSupportAlgorihmGroups
+					.contains(algorithmDetails.mGroupName)) {
+				listOfSupportAlgorihmGroups.add(algorithmDetails.mGroupName);
+			}
+		}
+		return listOfSupportAlgorihmGroups;
 	}
 	
 	public double getPressTempAC1(){
@@ -9073,6 +9090,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		}
 	}
 	
+	//list of algorithms to configure from panel configure algorithm GUI
+	protected void addDerivedSensorConfig(int configAlgorithmInt){
+		//adding in configuration fo algorithms
+		//test bitwise OR
+		mDerivedSensors = mDerivedSensors | configAlgorithmInt;
+	}
+	
+	protected void configDerivedSensor(
+			List<AlgorithmDetailsNew> guiConfigAlgorithms) {
+
+		// looping through algorthims to see which ones are enabled
+		for (AlgorithmDetailsNew algoDetails : guiConfigAlgorithms) {
+			if (algoDetails.mEnabled) { // an algorithm has been switched on
+				for (Integer sensor : algoDetails.mListOfRequiredSensors) {
+					setSensorEnabledState(sensor, true);
+				}
+				// configure byte
+				addDerivedSensorConfig(algoDetails.mConfigByte);
+			}
+		}
+	}		
+	
+	
 	public int getExGGainSetting(){
 //		mEXG1CH1GainSetting = i;
 //		mEXG1CH2GainSetting = i;
@@ -9610,7 +9650,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//-------------------- ExG End -----------------------------------
 	
 	// ----------- LSM303 start -----------------------------------
-	
 	//XXX-RS-LSM-SensorClass?
 	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
 		if(state) {
@@ -9705,7 +9744,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public boolean isUsingDefaultMagParam(){
 		return mDefaultCalibrationParametersMag;
 	}
-	
+
 	/**
 	 * @return the mSamplingDividerLsm303dlhcAccel
 	 */
