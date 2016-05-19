@@ -605,7 +605,7 @@ public class SensorEXG extends AbstractSensor{
 	 */
 	public SensorEXG(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSORS.EXG.toString();
+		setSensorName(SENSORS.EXG.toString());
 	}
 	
 	@Override

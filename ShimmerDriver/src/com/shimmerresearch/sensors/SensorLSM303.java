@@ -24,6 +24,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.SensorBMP180.GuiLabelConfig;
 
 /** 
@@ -353,7 +354,7 @@ public class SensorLSM303 extends AbstractSensor{
 	*/
     public SensorLSM303(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSORS.LSM303.toString();
+		setSensorName(SENSORS.LSM303.toString());
 	}
    //--------- Constructors for this class end --------------
 
@@ -1125,11 +1126,6 @@ public class SensorLSM303 extends AbstractSensor{
 		}
 	}
 	
-	
-	public String getSensorName(){
-		return mSensorName;
-	}
-
 	
 	public boolean isHighResAccelWr(){
 		return mHighResAccelWR;

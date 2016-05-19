@@ -38,6 +38,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
@@ -758,7 +759,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 */
 	public SensorMPU9X50(ShimmerVerObject svo){
 		super(svo);
-		mSensorName = SENSORS.MPU9X50.toString();
+		setSensorName(SENSORS.MPU9X50.toString());
 	}
 
 

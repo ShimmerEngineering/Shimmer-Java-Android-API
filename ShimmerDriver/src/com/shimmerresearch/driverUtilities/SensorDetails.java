@@ -166,4 +166,19 @@ public class SensorDetails implements Serializable{
 		
 	}
 
+	public int getExpectedDataPacketSize() {
+		int dataPacketSize = 0;
+//		if(!mSensorDetails.mIsDummySensor){
+			Iterator<ChannelDetails> iterator = mListOfChannels.iterator();
+			while(iterator.hasNext()){
+				ChannelDetails channelDetails = iterator.next();
+//				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket){
+//				}
+				dataPacketSize += channelDetails.mDefaultNumBytes;
+			}
+			
+//		}
+		return dataPacketSize;
+	}
+
 }

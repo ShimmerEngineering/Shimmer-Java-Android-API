@@ -714,7 +714,8 @@ public class LiteProtocol extends ByteLevelProtocol{
 			if(getListofInstructions().get(0)!=null){
 				mProtocolListener.eventAckInstruction(getListofInstructions().get(0));
 				
-				if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE || currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_SDBT_COMMAND_VALUE) {
+				if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE 
+						|| currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_SDBT_COMMAND_VALUE) {
 					mIsStreaming=true;
 					if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_SDBT_COMMAND_VALUE){
 						mIsSDLogging = true;
@@ -723,7 +724,8 @@ public class LiteProtocol extends ByteLevelProtocol{
 					byteStack.clear();
 					//isNowStreaming();
 				}
-				else if((currentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE)||(currentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE)){
+				else if((currentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE)
+						||(currentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE)){
 					mIsStreaming=false;
 					if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE) {
 						mIsSDLogging=false;

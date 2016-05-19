@@ -15,6 +15,7 @@ import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 public class SensorKionixKXRB52042 extends AbstractSensor{
 
@@ -38,7 +39,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	public SensorKionixKXRB52042(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSORS.KIONIXKXRB52042.toString();
+		setSensorName(SENSORS.KIONIXKXRB52042.toString());
 	}
 	
 	@Override
