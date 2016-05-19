@@ -6602,22 +6602,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 //			}
 			
-			//TODO Complete and tidy below
-			sensorAndConfigMapsCreate();
-			sensorMapUpdateFromEnabledSensorsVars();
-			
-//			sensorMapCheckandCorrectSensorDependencies();
+			prepareAllAfterConfigRead();
 		}
 		
-		// Set name if nothing was read from InfoMem
-		if(!shimmerName.isEmpty()) {
-			mShimmerUserAssignedName = new String(shimmerName);
-		}
-		else {
-			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
-		}
-		
+		checkAndCorrectShimmerName(shimmerName);
 	}
+	
+	//TODO improve flow of below, move to ShimmerDevice also?
+	private void prepareAllAfterConfigRead() {
+		//TODO Complete and tidy below
+		sensorAndConfigMapsCreate();
+		sensorMapUpdateFromEnabledSensorsVars();
+		
+//		sensorMapCheckandCorrectSensorDependencies();
+	}
+
 	
 	/**
 	 * Generate the Shimmer's Information Memory byte array based on the
@@ -6637,8 +6636,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		byte[] infoMemBackup = mInfoMemBytes.clone();
 		
 		// InfoMem defaults to 0xFF on firmware flash
-//		mInfoMemBytes = new byte[mInfoMemLayout.mInfoMemSize];
 		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray(mInfoMemBytes.length);
+//		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
 		
 		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 		

@@ -76,7 +76,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
 	// --------------- Abstract methods end ----------------	
 
-	protected String mSensorName;
+	protected String mSensorName = "";
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
 	protected boolean mEnableCalibration = true;
@@ -183,6 +183,10 @@ public abstract class AbstractSensor implements Serializable{
 		return mConfigOptionsMap;
 	}
 	
+	public void setSensorName(String sensorName) {
+		mSensorName = sensorName;
+	}
+
 	public String getSensorName() {
 		return mSensorName;
 	}

@@ -56,14 +56,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
 	
-	/** A shimmer device will have multiple sensors, depending on HW type and revision, 
-	 * these type of sensors can change, this holds a list of all the sensors for different versions.
-	 * This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ
-	 * 
-	 * Use for configuration
-	 */
+	/** A shimmer device will have multiple sensors, depending on HW type and revision, these type of sensors can change, this holds a list of all the sensors for different versions. This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ. A single AbstractSensor (e.g., for MPU92X50) class can contain multiple SensorDetails (e.g., Accel, gyro etc.) */
 	protected LinkedHashMap<SENSORS, AbstractSensor> mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
 	protected LinkedHashMap<Integer, SensorDetails> mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
+	/** The contents of Parser are kept in a fixed order based on the SensorMapKey */ 
 	protected HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>> mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
 	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
 	protected Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
@@ -239,7 +235,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void generateParserMap() {
-		mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
+//		mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
 		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
 			for(Entry<Integer, SensorDetails> sensorEntry:mSensorMap.entrySet()){
 				if(sensorEntry.getValue().isEnabled(commType)){
@@ -946,16 +942,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return
 	 */
 	public ObjectCluster buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType){
-		
-		// TODO 2016-05-04 old code is commented below from previous ShimmerGQ
-		// approach.
-		// Was working but only suitable if it is one sensor per AbstractSensor
-		// class where they are in order in the mMapOfSensorClasses map.
-		// now based on parserMap whereby the contents are kept in order via the
-		// SensorMapKey and therefore a single AbstractSensor (e.g., for
-		// MPU92X50) class can contain multiple SensorDetails (e.g., Accel, gyro
-		// etc.) 
-		
 		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
 		ojc.createArrayData(getNumberOfEnabledChannels(commType));
 
@@ -987,29 +973,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		
 		return ojc;
-
-		
-		//		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
-//		ojc.createArrayData(getNumberOfEnabledChannels(commType));
-////		ojc.mMyName = mUniqueID;
-//		int index=0;
-//		for (AbstractSensor sensor:mMapOfSensorClasses.values()){
-//			int length = sensor.getExpectedPacketByteArray(commType);
-//			//TODO process API sensors, not just bytes from Shimmer packet 
-//			if (length!=0){ //if length 0 means there are no channels to be processed
-//				byte[] sensorByteArray = new byte[length];
-//				if((index+sensorByteArray.length)<=packetByteArray.length){
-//					System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
-//					sensor.processData(sensorByteArray, commType, ojc);
-//				}
-//				else{
-//					//TODO replace with consolePrintSystem
-//					System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.getSensorName());
-//				}
-//			}
-//			index += length;
-//		}
-//		return ojc;
+	}
+	
+	public int getExpectedDataPacketSize(COMMUNICATION_TYPE commsType){
+		int dataPacketSize = 0;
+		TreeMap<Integer, SensorDetails> parserMapPerCommType = mParserMap.get(commsType);
+		if(parserMapPerCommType!=null){
+			Iterator<SensorDetails> iterator = parserMapPerCommType.values().iterator();
+			while(iterator.hasNext()){
+				SensorDetails sensorDetails = iterator.next();
+				dataPacketSize += sensorDetails.getExpectedDataPacketSize();
+			}
+		}
+		return dataPacketSize;
 	}
 	
 	public byte[] generateUartConfigMessage(UartComponentPropertyDetails cPD){
@@ -1031,23 +1007,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				total += sensorEnabledDetails.getNumberOfChannels();
 			}
 		}
-
-//		int total = 0;
-//		TreeMap<Integer, SensorEnabledDetails> sensorMap = mSensorEnabledMap.get(commType);
-//		if(sensorMap!=null){
-//			Iterator<SensorEnabledDetails> iterator = sensorMap.values().iterator();
-//			while(iterator.hasNext()){
-//				SensorEnabledDetails sensorEnabledDetails = iterator.next();
-//				if(sensorEnabledDetails.isEnabled()){
-//					total += sensorEnabledDetails.getNumberOfChannels();
-//				}
-//			}
-//		}
-//		
-////		int total = 0;
-////		for (AbstractSensor sensor:mMapOfSensorClasses.values()){
-////			total += sensor.getNumberOfEnabledChannels(commType);
-////		}
 		return total;
 	}
 	
@@ -1560,15 +1519,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //			}
 			
 			//Set sensor state
+			
 			sensorDetails.setIsEnabled(state);
+			
+//			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.TIMESTAMP){
+//				for(COMMUNICATION_TYPE commType: sensorDetails.mapOfIsEnabledPerCommsType.keySet()){
+//					System.out.println("0)Timestamp is enabled:\t" + sensorDetails.isEnabled(commType) + "\t" + commType);
+//				}
+//			}
 
 			sensorMapConflictCheckandCorrect(sensorMapKey);
 			setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
 
 			// Automatically control internal expansion board power
 			checkIfInternalExpBrdPowerIsNeeded();
-			
+
 			refreshEnabledSensorsFromSensorMap();
+			
+			generateParserMap();
 
 			return ((sensorDetails.isEnabled()==state)? true:false);
 			
@@ -1576,6 +1544,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		else {
 			return false;
 		}
+	}
+	
+	public boolean isTimestampEnabled(){
+		SensorDetails sensorDetails = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.TIMESTAMP);
+		if(sensorDetails!=null){
+			return sensorDetails.isEnabled();
+		}
+		return false;
 	}
 	
 	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED
@@ -1665,17 +1641,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		sensorMapUpdateFromEnabledSensorsVars();
 	}
 	
-	public void setEnabledAndDerivedSensors(int enabledSensors, int derivedSensors) {
+	public void setEnabledAndDerivedSensors(long enabledSensors, long derivedSensors, COMMUNICATION_TYPE commsType) {
 		setEnabledSensors(enabledSensors);
 		setDerivedSensors(derivedSensors);
-		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
+		sensorMapUpdateFromEnabledSensorsVars(commsType);
+		generateParserMap();
 	}
-	
-//	private void refreshEnabledSensorsFromSensorMap(COMMUNICATION_TYPE commType) {
-//		for(AbstractSensor sensor:mMapOfSensors.values()){
-//			sensor.isAnySensorChannelEnabled(commType)
-//		}
-//	}
 	
 	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
 		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
@@ -1894,6 +1865,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
 		return infoMemByteArrayGenerate(false);
 	}
+	
+	public void checkAndCorrectShimmerName(String shimmerName) {
+		// Set name if nothing was read from InfoMem
+		if(!shimmerName.isEmpty()) {
+			mShimmerUserAssignedName = new String(shimmerName);
+		}
+		else {
+			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
+		}
+	}
+
 
 	//TODO fill out in abstract sensor classes based on ShimmerObject equivalent
 	public void checkConfigOptionValues(String stringKey){

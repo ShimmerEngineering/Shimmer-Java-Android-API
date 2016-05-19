@@ -29,6 +29,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 public class SensorSystemTimeStamp extends AbstractSensor {
 
@@ -103,7 +104,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 	public SensorSystemTimeStamp(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSORS.SYSTEM_TIMESTAMP.toString();
+		setSensorName(SENSORS.SYSTEM_TIMESTAMP.toString());
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package com.shimmerresearch.sensors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -10,10 +9,7 @@ import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
-import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -25,8 +21,10 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 /**
  * @author Ronan McCormack
@@ -103,7 +101,8 @@ public class SensorBMP180 extends AbstractSensor {
 			GuiLabelSensors.PRESS_TEMP_BMP180,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(GuiLabelConfig.PRESSURE_RESOLUTION),
-			Arrays.asList(ObjectClusterSensorName.PRESSURE_BMP180,ObjectClusterSensorName.TEMPERATURE_BMP180));
+			Arrays.asList(ObjectClusterSensorName.PRESSURE_BMP180,
+					ObjectClusterSensorName.TEMPERATURE_BMP180));
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -121,6 +120,12 @@ public class SensorBMP180 extends AbstractSensor {
 			CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.KPASCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	{
+		//TODO put into above constructor
+		channelBmp180Press.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+		channelBmp180Press.mDefaultUnit = CHANNEL_UNITS.KPASCAL;
+		channelBmp180Press.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+	}
 	
 	public static final ChannelDetails channelBmp180Temp = new ChannelDetails(
 			ObjectClusterSensorName.TEMPERATURE_BMP180,
@@ -129,6 +134,12 @@ public class SensorBMP180 extends AbstractSensor {
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.DEGREES_CELSUIS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	{
+		//TODO put into above constructor
+		channelBmp180Temp.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+		channelBmp180Temp.mDefaultUnit = CHANNEL_UNITS.DEGREES_CELSUIS;
+		channelBmp180Temp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+	}
 
 	public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
@@ -145,20 +156,15 @@ public class SensorBMP180 extends AbstractSensor {
 	 */
 	public SensorBMP180(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSORS.BMP180.toString();
+		setSensorName(SENSORS.BMP180.toString());
 	}
 	
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 
 	//--------- Abstract methods implemented start --------------
-	@Override
-	public String getSensorName() {
-		return mSensorName;
-	}
-
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 		
@@ -178,7 +184,6 @@ public class SensorBMP180 extends AbstractSensor {
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				rawDataUT = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}
-
 		}
 
 		double[] bmp180caldata= calibratePressureSensorData(rawDataUP,rawDataUT);

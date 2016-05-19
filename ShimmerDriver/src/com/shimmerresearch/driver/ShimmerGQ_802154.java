@@ -460,7 +460,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
 			}
-
 			
 			mDerivedSensors = (long)0;
 			// Check if compatible and not equal to 0xFF
@@ -521,19 +520,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			
 		}
 		
-		//TODO add in below when ready
-//		sensorAndConfigMapsCreate();
-		generateSensorAndParserMaps();
-		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
-
-//		for(SensorDetails sensorDetails:mSensorMap.values()){
-//			System.out.println("SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
-//		}
-//		
-//		for(SensorDetails sensorDetails:mParserMap.get(COMMUNICATION_TYPE.IEEE802154).values()){
-//			System.out.println("ENABLED SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
-//		}
-		
+		prepareAllAfterConfigRead();
 
 		//TODO below copied from Shimmer Object -> make single shared class
 		// Set name if nothing was read from InfoMem
@@ -544,7 +531,24 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			setShimmerUserAssignedNameWithMac(DEFAULT_SHIMMER_NAME);
 //			mShimmerUserAssignedName = DEFAULT_SHIMMER_NAME + "_" + getMacIdFromUartParsed();
 		}
-
+	}
+	
+	//TODO improve flow of below, move to ShimmerDevice also?
+	private void prepareAllAfterConfigRead() {
+		//TODO add in below when ready
+//		sensorAndConfigMapsCreate();
+		generateSensorAndParserMaps();
+		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
+		
+//		//For debugging
+//		for(SensorDetails sensorDetails:mSensorMap.values()){
+//			System.out.println("SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
+//		}
+//		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
+//			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
+//				System.out.println("ENABLED SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
+//			}
+//		}
 	}
 
 	@Override

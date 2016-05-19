@@ -55,7 +55,7 @@ public class SensorPPG extends AbstractSensor {
 	
 	public SensorPPG(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSORS.PPG.toString();
+		setSensorName(SENSORS.PPG.toString());
 	}
 	
 	

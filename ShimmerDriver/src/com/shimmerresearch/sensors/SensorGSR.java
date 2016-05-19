@@ -33,6 +33,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 public class SensorGSR extends AbstractSensor implements Serializable{
 
@@ -126,7 +127,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	 */
 	public SensorGSR(ShimmerVerObject svo) {
 		super(svo);
-		mSensorName = SENSORS.GSR.toString();
+		setSensorName(SENSORS.GSR.toString());
 	}
 
 	@Override
