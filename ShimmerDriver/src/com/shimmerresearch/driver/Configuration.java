@@ -2221,6 +2221,7 @@ public class Configuration {
 	    
 	    
 	    public static final Map<String, ChannelDetails> mChannelMapRef;
+	    
 	    static {
 	        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
 	        
