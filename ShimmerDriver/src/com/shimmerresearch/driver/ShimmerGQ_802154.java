@@ -30,6 +30,7 @@ import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.ShimmerClock;
 
 /**
  * @author JC
@@ -75,10 +76,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			FW_ID.UNKNOWN,
 			FW_ID.UNKNOWN);
 	
-	
-	//This maps the channel ID to sensor
-	//Map<Integer,AbstractSensor> mMapofSensorChannelToSensor = new HashMap<Integer,AbstractSensor>();
-	
 	//Action Setting Checker, if cant do pass it to next layer to be handled
 	
 	//priority of comm type to know whether it is dock and radio connected, if dock connected send uart priority
@@ -117,16 +114,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		super.setShimmerVersionObject(sVO);
 	}
 
-	/** 
-	 * @param dockId
-	 * @param slotNumber
-	 * @param macId 
-	 */
-	public ShimmerGQ_802154(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE connectionType){
-		this(dockId, slotNumber, connectionType);
-		setMacIdFromUart(macId);
-	}
-
 	/**
 	 * @param dockId
 	 * @param slotNumber
@@ -136,6 +123,18 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(connectionType);
 	}
+	
+	/**
+	 * @param dockId
+	 * @param slotNumber
+	 * @param macId
+	 * @param connectionType
+	 */
+	public ShimmerGQ_802154(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE connectionType){
+		this(dockId, slotNumber, connectionType);
+		setMacIdFromUart(macId);
+	}
+
 
 	// ----------------- Constructors End ---------------------------------
 
@@ -314,18 +313,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return returnValue;
 	}
 
-//	@Override
-//	public byte[] refreshShimmerInfoMemBytes() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public List<Integer> sensorMapConflictCheck(Integer key) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 	@Override
 	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
 		
@@ -428,30 +415,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 		
 		return mInfoMemBytes;
-	}
-
-//	private void refreshEnabledSensorsFromSensorMap(COMMUNICATION_TYPE commType) {
-//		for(AbstractSensor sensor:mMapOfSensors.values()){
-//			sensor.isAnySensorChannelEnabled(commType)
-//		}
-//	}
-	
-	private void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
-		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
-			sensor.updateStateFromEnabledSensorsVars(commType, mEnabledSensors, mDerivedSensors);
-		}		
-	}
-	
-	//TODO update sensor map with enabledSensors
-	public void setEnabledSensors(long mEnabledSensors) {
-		this.mEnabledSensors = mEnabledSensors;
-//		sensorMapUpdateFromEnabledSensorsVars();
-	}
-
-	//TODO update sensor map with derivedSensors
-	public void setDerivedSensors(long mDerivedSensors) {
-		this.mDerivedSensors = mDerivedSensors;
-//		sensorMapUpdateFromEnabledSensorsVars();
 	}
 
 	@Override
@@ -560,8 +523,17 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		//TODO add in below when ready
 //		sensorAndConfigMapsCreate();
-//		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
+		generateSensorAndParserMaps();
+		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
 
+//		for(SensorDetails sensorDetails:mSensorMap.values()){
+//			System.out.println("SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
+//		}
+//		
+//		for(SensorDetails sensorDetails:mParserMap.get(COMMUNICATION_TYPE.IEEE802154).values()){
+//			System.out.println("ENABLED SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
+//		}
+		
 
 		//TODO below copied from Shimmer Object -> make single shared class
 		// Set name if nothing was read from InfoMem
@@ -575,50 +547,39 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	}
 
-
-	@Override
-	public void parseUartConfigResponse(UartComponentPropertyDetails cPD, byte[] response){
-		// Parse response string
-		if(cPD==UART_COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
-			setRadioConfig(response);
-		}
-		else {
-			super.parseUartConfigResponse(cPD, response);
-		}
-	}
-	
-	@Override
-	public byte[] generateUartConfigMessage(UartComponentPropertyDetails cPD){
-		
-//		System.out.println("Component:" + cPD.component + " Property:" + cPD.property + " ByteArray:" + cPD.byteArray.length);
-		
-		if(cPD==UART_COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
-			return getRadioConfigByteArray();
-		}
-		else {
-			return super.generateUartConfigMessage(cPD);
-		}			
-
-	}
-
 	@Override
 	public void sensorAndConfigMapsCreate() {
 		//in future should compare and build map
 		if( UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
 //			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP,new SensorSystemTimeStamp(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.GSR,new SensorGSR(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR,new SensorECGToHR(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHR(mShimmerVerObject));
 		} 
 		else {
-//			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP,new SensorSystemTimeStamp(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.GSR,new SensorGSR(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR,new SensorECGToHR(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.EXG,new SensorEXG(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHR(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
 		}
-		updateSensorAndParserMaps();
+		
+		setDefaultShimmerConfiguration();
+		generateSensorAndParserMaps();
+	}
+	
+	@Override
+	public void setDefaultShimmerConfiguration() {
+		mMapOfSensorClasses.get(SENSORS.SYSTEM_TIMESTAMP).setIsEnabledSensor(COMMUNICATION_TYPE.IEEE802154, true);
+		mMapOfSensorClasses.get(SENSORS.GSR).setIsEnabledSensor(COMMUNICATION_TYPE.IEEE802154, true);
+		mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(COMMUNICATION_TYPE.IEEE802154, true);
+		
+		//TODO Currently SD communication type is not used via this class, GQ relies on the Shimmer3 SD parsing structure (to save devel time). Including here for future work.
+		mMapOfSensorClasses.get(SENSORS.CLOCK).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
+		mMapOfSensorClasses.get(SENSORS.EXG).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true, Configuration.Shimmer3.SensorMapKey.HOST_ECG);
+		mMapOfSensorClasses.get(SENSORS.GSR).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
+		mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
 	}
 
 	/**
@@ -646,9 +607,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		if (commType == COMMUNICATION_TYPE.IEEE802154){
 			if (enabledSensors == 0){
 //				mMapOfSensors.get(SENSOR_NAMES.CLOCK).enableSensorChannels(commType);
-				mMapOfSensorClasses.get(SENSORS.SYSTEM_TIMESTAMP).setIsEnabledSensorChannels(commType, true);
-				mMapOfSensorClasses.get(SENSORS.GSR).setIsEnabledSensorChannels(commType, true);
-				mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensorChannels(commType, true);
+				mMapOfSensorClasses.get(SENSORS.SYSTEM_TIMESTAMP).setIsEnabledSensor(commType, true);
+				mMapOfSensorClasses.get(SENSORS.GSR).setIsEnabledSensor(commType, true);
+				mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(commType, true);
 			} 
 			else {
 				//TODO: needs a lot of work
@@ -681,39 +642,37 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 	}
 
-//	@Override
-//	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
-//		Map<String, SensorGroupingDetails> sensorGroupingMapAll = new HashMap<String, SensorGroupingDetails>(); 
-//		for(AbstractSensor sensor:mMapOfSensors.values()){
-//			Map<String, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
-//			if(sensorGroupingMap!=null){
-//				sensorGroupingMapAll.putAll(sensorGroupingMap);
-//			}
-//		}
-//		return sensorGroupingMapAll;
-//	}
-	
 	/**
 	 * @return the MAC address from any source available
 	 */
 	@Override
 	public String getMacId() {
-//		if(!mMacIdFromUart.isEmpty()){
-			return mMacIdFromUart; 
-//		}
-//		else {
-//			if(!mMacIdFromInfoMem.isEmpty()){
-//				return mMacIdFromInfoMem; 
-//			}
-//			else {
-//				if(!mMacIdFromInfoMem.isEmpty()){
-//					return mMacIdFromInfoMem; 
-//				}
-//				else {
-//					return mMyBluetoothAddress; 
-//				}
-//			}
-//		}
+		return mMacIdFromUart; 
+	}
+
+	@Override
+	public void parseUartConfigResponse(UartComponentPropertyDetails cPD, byte[] response){
+		// Parse response string
+		if(cPD==UART_COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
+			setRadioConfig(response);
+		}
+		else {
+			super.parseUartConfigResponse(cPD, response);
+		}
+	}
+	
+	@Override
+	public byte[] generateUartConfigMessage(UartComponentPropertyDetails cPD){
+		
+//		System.out.println("Component:" + cPD.component + " Property:" + cPD.property + " ByteArray:" + cPD.byteArray.length);
+		
+		if(cPD==UART_COMPONENT_PROPERTY.RADIO_802154.SETTINGS){
+			return getRadioConfigByteArray();
+		}
+		else {
+			return super.generateUartConfigMessage(cPD);
+		}			
+
 	}
 	
 	public boolean hasSameConfiguration(ShimmerGQ_802154 shimmerGQToCompareWith){
@@ -994,14 +953,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return mConfigValues;
 	}
 
-//	public boolean isSensorEnabled(int sensorMapKey) {
-//		AbstractSensor sensor = mMapOfSensors.get(sensorMapKey);
-//		if(sensor!=null){
-//			return sensor.mIsEnabled;
-//		}
-//		return false;
-//	}
-	
 	public boolean isSDError() {
 		return mIsSDError;
 	}
@@ -1009,44 +960,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public void setSDError(boolean state) {
 		mIsSDError = state;
 	}
-
-	//TODO remove all of below from other extended instances of ShimmerDevice
-//	@Override
-//	public boolean isChannelEnabled(int sensorKey) {
-//	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
-//	    if(sensor!=null){
-//		    return sensor.mIsEnabled;
-//	    }
-//	    return false;
-//	}
-//
-//	@Override
-//	public String getChannelLabel(int sensorKey) {
-//	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
-//	    if(sensor!=null){
-//		    return sensor.mGuiFriendlyLabel;
-//	    }
-//		return null;
-//	}
-//
-//	@Override
-//	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
-//	    AbstractSensor sensor = mMapOfSensors.get(sensorKey);
-//	    if(sensor!=null){
-//		    return sensor.mListOfCompatibleVersionInfo;
-//	    }
-//	    return null;
-//	}
-//
-//	@Override
-//	public boolean doesSensorKeyExist(int sensorKey) {
-//		return (mMapOfSensors.containsKey(sensorKey));
-//	}
-//
-//	@Override
-//	public Set<Integer> getSensorMapKeySet() {
-//		return mMapOfSensors.keySet();
-//	}
 
 	public void setConfigFromSpan(int radioChannel, 
 			int radioGroupId,
@@ -1104,5 +1017,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public void setLastSyncSuccessTime(long mLastSyncSuccessTime) {
 		this.mLastSyncSuccessTime = mLastSyncSuccessTime;
 	}
+
 
 }

@@ -148,4 +148,22 @@ public class SensorDetails implements Serializable{
 		return objectCluster;
 	}
 
+	public void updateSensorDetailsWithCommsTypes(List<COMMUNICATION_TYPE> listOfSupportedCommsTypes) {
+//		mapOfIsEnabledPerCommsType = new HashMap<COMMUNICATION_TYPE, Boolean>();
+		for(COMMUNICATION_TYPE commsType:listOfSupportedCommsTypes){
+			if(!mapOfIsEnabledPerCommsType.containsKey(commsType)){
+				mapOfIsEnabledPerCommsType.put(commsType, false);
+			}
+		}
+		
+		Iterator<COMMUNICATION_TYPE> iterator = mapOfIsEnabledPerCommsType.keySet().iterator();
+		while(iterator.hasNext()){
+			COMMUNICATION_TYPE commsType = iterator.next();
+			if(!listOfSupportedCommsTypes.contains(commsType)){
+				iterator.remove();
+			}
+		}
+		
+	}
+
 }

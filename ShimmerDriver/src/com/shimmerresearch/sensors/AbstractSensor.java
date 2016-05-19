@@ -10,18 +10,13 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractSensor implements Serializable{
@@ -33,12 +28,13 @@ public abstract class AbstractSensor implements Serializable{
 		GSR("GSR"),
 		ECG_TO_HR("ECG to Heart Rate"),
 		EXG("EXG"),
-		CLOCK("Clock"),
+		CLOCK("Shimmer Clock"),
 		SYSTEM_TIMESTAMP("PC time"),
 		MPU9X50("MPU Accel"),
 		BMP180("BMP180"),
 		KIONIXKXRB52042("Analog Accelerometer"),
-		STMICROLSM303DLHC("LSM303DLHC");
+		LSM303("LSM303"),
+		PPG("PPG");
 		
 	    private final String text;
 
@@ -72,7 +68,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 
 	public abstract void setSamplingRateFromFreq();
-	public abstract boolean setDefaultConfiguration(int sensorMapKey, boolean state);
+	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean state);
 	/** TODO populate in individual AbstractSensor classes the relevent entries from ShimmerObject */
 	public abstract boolean checkConfigOptionValues(String stringKey);
 
@@ -200,16 +196,6 @@ public abstract class AbstractSensor implements Serializable{
 				count += sensorEnabledDetails.mListOfChannels.size();
 			}
 		}
-		
-//		int count = 0;
-//		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfChannelDetails.get(commType);
-//		if(channelsPerCommType!=null){
-//			for (ChannelDetails channelDetails:mMapOfChannelDetails.get(commType).values()){
-//				if (channelDetails.mIsEnabled){
-//					count = count+1;
-//				}
-//			}
-//		}
 		return count;
 	}
 
@@ -217,27 +203,44 @@ public abstract class AbstractSensor implements Serializable{
 		return (getNumberOfEnabledChannels(commType)>0? true:false);
 	}
 
-	public void setIsEnabledSensorChannels(COMMUNICATION_TYPE commType, boolean state){
+	public void setIsEnabledSensor(COMMUNICATION_TYPE commType, boolean state){
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
-			SensorDetails sensorEnabledDetails = iterator.next();
-			sensorEnabledDetails.setIsEnabled(commType, state);
+			SensorDetails sensorDetails = iterator.next();
+			sensorDetails.setIsEnabled(commType, state);
 		}
-
-//		LinkedHashMap<Integer, ChannelDetails> channelsPerCommType = mMapOfChannelDetails.get(commType);
-//		if(channelsPerCommType!=null){
-//			for (ChannelDetails channelDetails:channelsPerCommType.values()){
-//				channelDetails.mIsEnabled = false;
-//			}
-//		}
 	}
+	
+	public boolean setIsEnabledSensor(COMMUNICATION_TYPE commType, boolean state, int sensorMapKey){
+		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+		if(sensorDetails!=null){
+			sensorDetails.setIsEnabled(commType, state);
+			return true;
+		}
+		return false;
+	}
+	
 	
 	//TODO MN: under devel
 	public void updateStateFromEnabledSensorsVars(COMMUNICATION_TYPE commType, long enabledSensors, long derivedSensors) {
 //		TreeMap<Integer, SensorEnabledDetails> sensorMapForCommType = mSensorEnabledMap.get(commType);
 		
-		for(SensorDetails sensorEnabledDetails:mSensorMap.values()){
-			sensorEnabledDetails.setIsEnabled(commType, (enabledSensors & sensorEnabledDetails.mSensorDetails.mSensorBitmapIDStreaming)>0? true:false);
+		for(SensorDetails sensorDetails:mSensorMap.values()){
+			
+			//TODO remove below with a check as to whether the sensor originates from the Shimmer data packet or the API ()
+			if(sensorDetails.mSensorDetails.mGuiFriendlyLabel.equals(SensorSystemTimeStamp.sensorSystemTimeStampRef.mGuiFriendlyLabel)){
+				continue;
+			}
+			
+			boolean state = false;
+			if(sensorDetails.isDerivedChannel()){
+				//TODO check enabledSensors aswell if required???
+				state = (derivedSensors & sensorDetails.mDerivedSensorBitmapID)>0? true:false;
+			}
+			else {
+				state = (enabledSensors & sensorDetails.mSensorDetails.mSensorBitmapIDStreaming)>0? true:false;
+			}
+			sensorDetails.setIsEnabled(commType, state);
 		}
 		
 		
@@ -264,36 +267,6 @@ public abstract class AbstractSensor implements Serializable{
 						}
 					}
 				}
-				
-//				if(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_3){
-//					if(Configuration.Shimmer3.mSensorMapRef.containsKey(sensor)){
-//						List<String> associatedConfigOptions = Configuration.Shimmer3.mSensorMapRef.get(sensor).mListOfConfigOptionKeysAssociated;
-//						if (associatedConfigOptions != null) {
-//							for (String configOption:associatedConfigOptions) {
-//								// do not add duplicates
-//								if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-//									mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
-//								}
-//							}
-//						}
-//					}
-//				}
-//				
-//				else {
-////				else if((mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-////						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-////						||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-//					
-////					for(SensorEnabledDetails sensorEnabledDetails:sensorMapForCommType.values()){
-////						
-////					}
-//					for (String configOption:mListOfConfigOptionKeysAssociated) {
-//						// do not add duplicates
-//						if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-//							mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
-//						}
-//					}
-//				}
 			}
 		}
 	}
@@ -331,6 +304,7 @@ public abstract class AbstractSensor implements Serializable{
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef){
 				@Override
 				public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object) {
+//					System.out.println("PARSING\t" + this.mSensorDetails.mGuiFriendlyLabel);
 					return processDataCustom(this, rawData, commType, object);
 //					return super.processData(rawData, commType, object);
 				}
@@ -374,7 +348,12 @@ public abstract class AbstractSensor implements Serializable{
 	public int getHardwareVersion() {
 		return mShimmerVerObject.mHardwareVersion;
 	}
-
+	
+	public void updateSensorDetailsWithCommsTypes(List<COMMUNICATION_TYPE> listOfSupportedCommsTypes) {
+		for(SensorDetails sensorDetails:mSensorMap.values()){
+			sensorDetails.updateSensorDetailsWithCommsTypes(listOfSupportedCommsTypes);
+		}
+	}
 
 
 }

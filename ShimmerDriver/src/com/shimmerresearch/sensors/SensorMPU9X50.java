@@ -97,6 +97,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	public static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};		
 
+	public static final int MPU9150_GYRO = 1;
+	
 	public boolean mEnableOntheFlyGyroOVCal = false;
 
 	public double mGyroXOVCalThreshold = 1.2;
@@ -1330,7 +1332,7 @@ private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] s
 	}
 
 	@Override
-	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			//TODO set defaults for particular sensor
 			

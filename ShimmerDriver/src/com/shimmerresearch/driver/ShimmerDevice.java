@@ -165,7 +165,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
 //	public abstract byte[] refreshShimmerInfoMemBytes();
 	public abstract void createInfoMemLayout();
-
+	
 	// --------------- Abstract Methods End --------------------------
 
 	/**
@@ -180,8 +180,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setShimmerVersionObject(ShimmerVerObject sVO) {
 		mShimmerVerObject = sVO;
 		sensorAndConfigMapsCreate();
+		
+//		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+//			addCommunicationRoute(COMMUNICATION_TYPE.SD);
+//		}
 	}
 	
+	//TODO draft code
+	private void updateSensorDetailsWithCommsTypes() {
+		if(mMapOfSensorClasses!=null){
+			for(AbstractSensor absensorSensor:mMapOfSensorClasses.values()){
+				absensorSensor.updateSensorDetailsWithCommsTypes(mListOfAvailableCommunicationTypes);
+			}
+		}
+	}
+	
+	//TODO draft code
+	private void updateSamplingRatesMapWithCommsTypes() {
+		// TODO Auto-generated method stub
+		
+//		mMapOfSamplingRatesShimmer
+		
+	}
+
+
 	/** setShimmerVerionObject should be used instead
 	 * @param hardwareVersion the mHardwareVersion to set
 	 */
@@ -194,7 +216,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		setShimmerVersionObject(new ShimmerVerObject());
 	}
 	
-	public void updateSensorAndParserMaps(){
+	public void generateSensorAndParserMaps(){
 		//Update sensorMap from all supported sensors that were generated in mMapOfSensorClasses
 		generateSensorMap();
 		//Create Parser from enabled sensors
@@ -399,6 +421,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
 			setDocked(true);
 		}
+		
+		//TODO temp here -> check if the best place for it
+		updateSensorDetailsWithCommsTypes();
+		updateSamplingRatesMapWithCommsTypes();
 	}
 
 	public void removeCommunicationRoute(COMMUNICATION_TYPE communicationType) {
@@ -412,6 +438,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			setFirstDockRead();
 			clearDockInfo();
 		}
+		
+		//TODO temp here -> check if the best place for it
+		updateSensorDetailsWithCommsTypes();
+		updateSamplingRatesMapWithCommsTypes();
 	}
 
 	public String getDriveUsedSpaceParsed() {
@@ -925,6 +955,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		TreeMap<Integer, SensorDetails> parserMapPerComm = mParserMap.get(commType);
 		
+//		System.out.println("\nNew Parser loop. Packet length:\t" + packetByteArray.length);
 		if(parserMapPerComm!=null){
 			int index=0;
 			for (SensorDetails sensor:parserMapPerComm.values()){
@@ -938,9 +969,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					}
 					else{
 						//TODO replace with consolePrintSystem
-						System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetails.mGuiFriendlyLabel);
+//						System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetails.mGuiFriendlyLabel);
 					}
 				}
+//				System.out.println(sensor.mSensorDetails.mGuiFriendlyLabel + "\texpectedPacketArraySize:" + length + "\tcurrentIndex:" + index);
 				index += length;
 			}
 		}
@@ -1410,6 +1442,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 			}
 		}
+		
+		if(listOfChannels.size()==0){
+			System.out.println(getMacIdFromUartParsed() + "\tNO SENSORS ENABLED");
+		}
+		
 		return listOfChannels;
 	}
 	
@@ -1603,13 +1640,42 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//TODO unfinished/untested - in the process of being copied from ShimmerObject
 	protected void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			if(abstractSensor.setDefaultConfiguration(sensorMapKey, state)){
+			if(abstractSensor.setDefaultConfigForSensor(sensorMapKey, state)){
 				//Sensor found, break
 				break;
 			}
 		}
 	}
+	
+	//TODO update sensor map with enabledSensors
+	public void setEnabledSensors(long mEnabledSensors) {
+		this.mEnabledSensors = mEnabledSensors;
+//		sensorMapUpdateFromEnabledSensorsVars();
+	}
 
+	//TODO update sensor map with derivedSensors
+	public void setDerivedSensors(long mDerivedSensors) {
+		this.mDerivedSensors = mDerivedSensors;
+//		sensorMapUpdateFromEnabledSensorsVars();
+	}
+	
+	public void setEnabledAndDerivedSensors(int enabledSensors, int derivedSensors) {
+		setEnabledSensors(enabledSensors);
+		setDerivedSensors(derivedSensors);
+		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
+	}
+	
+//	private void refreshEnabledSensorsFromSensorMap(COMMUNICATION_TYPE commType) {
+//		for(AbstractSensor sensor:mMapOfSensors.values()){
+//			sensor.isAnySensorChannelEnabled(commType)
+//		}
+//	}
+	
+	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
+		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
+			sensor.updateStateFromEnabledSensorsVars(commType, mEnabledSensors, mDerivedSensors);
+		}		
+	}
 	
 	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED AND NEEDS FURTHER WORK
 	public void refreshEnabledSensorsFromSensorMap(){

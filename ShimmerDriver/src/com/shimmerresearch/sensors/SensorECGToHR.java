@@ -13,6 +13,8 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -41,7 +43,14 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 
 	//--------- Sensor info start --------------
 	public static final SensorDetailsRef sensorEcgToHr = new SensorDetailsRef(
-			0,0, Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR);
+			0,
+			0, 
+			Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			null,
+			null,
+			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR),
+			true);
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -85,7 +94,6 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
-
 		
 		//Update the derived sensor bit index
 		SensorDetails sensorEcgToHr = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_ECG_TO_HR_FW);
@@ -118,27 +126,6 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 		return objectCluster;
 	}
 
-//	@Override
-//	public HashMap<COMMUNICATION_TYPE, LinkedHashMap<Integer, ChannelDetails>> generateChannelDetailsMap(ShimmerVerObject svo) {
-//		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer,ChannelDetails>();
-//
-//		int count=1;
-//		ChannelDetails channelDetails  = new ChannelDetails(
-//				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
-//				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
-//				DatabaseChannelHandles.ECG_TO_HR,
-//				CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
-//				CHANNEL_UNITS.BEATS_PER_MINUTE,
-//				Arrays.asList(CHANNEL_TYPE.CAL));
-//		mapOfChannelDetails.put(count,channelDetails);
-//		channelDetails.mIsEnabled = true;
-//		channelDetails.mDefaultUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
-//		channelDetails.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
-//		mMapOfChannelDetails.put(COMMUNICATION_TYPE.IEEE802154, mapOfChannelDetails);
-//		
-//		return mMapOfChannelDetails; 
-//	}
-
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
@@ -152,8 +139,7 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName,
-			Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -164,18 +150,6 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 		return null;
 	}
 
-//	@Override
-//	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//	
-//	@Override
-//	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 	@Override
 	public void setSamplingRateFromFreq() {
 		// TODO Auto-generated method stub
@@ -183,11 +157,17 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			//TODO set defaults for particular sensor
 			return true;
 		}
+		return false;
+	}
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -201,12 +181,6 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 

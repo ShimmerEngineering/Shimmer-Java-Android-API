@@ -107,9 +107,9 @@ public class SensorBMP180 extends AbstractSensor {
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
-        Map<Integer, SensorDetailsRef> aSensorMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aSensorMap.put(SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
-		mSensorMapRef = Collections.unmodifiableMap(aSensorMap);
+        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+        aMap.put(SensorBMP180.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
+		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
     
@@ -132,10 +132,10 @@ public class SensorBMP180 extends AbstractSensor {
 
 	public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
-        Map<String, ChannelDetails> aChannelMap = new LinkedHashMap<String, ChannelDetails>();
-        aChannelMap.put(ObjectClusterSensorName.PRESSURE_BMP180, SensorBMP180.channelBmp180Press);
-        aChannelMap.put(ObjectClusterSensorName.TEMPERATURE_BMP180, SensorBMP180.channelBmp180Temp);
-		mChannelMapRef = Collections.unmodifiableMap(aChannelMap);
+        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+        aMap.put(ObjectClusterSensorName.PRESSURE_BMP180, SensorBMP180.channelBmp180Press);
+        aMap.put(ObjectClusterSensorName.TEMPERATURE_BMP180, SensorBMP180.channelBmp180Temp);
+		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Channel info end --------------
     
@@ -246,7 +246,7 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfiguration(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			//TODO set defaults for particular sensor
 			return true;
