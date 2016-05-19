@@ -7511,7 +7511,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			refreshEnabledSensorsFromSensorMap();
 
-			return ((sensorDetails.isEnabled()==state)? true:false);
+			boolean result = sensorDetails.isEnabled();
+			
+			return (result==state? true:false);
 			
 		}
 		else {

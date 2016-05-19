@@ -28,11 +28,11 @@ public class SensorDetailsRef implements Serializable {
 	public long mSensorBitmapIDSDLogHeader = 0;
 	
 	public String mGuiFriendlyLabel = "";
-	public List<Integer> mListOfSensorMapKeysRequired = new ArrayList<Integer>();
-	public List<Integer> mListOfSensorMapKeysConflicting = new ArrayList<Integer>();
+	public List<Integer> mListOfSensorMapKeysRequired = null; //needs to be null by default
+	public List<Integer> mListOfSensorMapKeysConflicting = null; //needs to be null by default
 	public boolean mIntExpBoardPowerRequired = false;
-	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
-	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
+	public List<String> mListOfConfigOptionKeysAssociated = null; //needs to be null by default
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null; //needs to be null by default  
 
 	public List<String> mListOfChannelsRef = new ArrayList<String>();
 	
