@@ -292,7 +292,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public void createLocalSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
-		mSensorMap.clear();
+		mSensorMap = new TreeMap<Integer, SensorDetails>();
 		for(int sensorMapKey:sensorMapRef.keySet()){
 			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef);
@@ -302,7 +302,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public void createLocalSensorMapWithCustomParser(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
-		mSensorMap.clear();
+		mSensorMap = new TreeMap<Integer, SensorDetails>();
 		for(int sensorMapKey:sensorMapRef.keySet()){
 			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef){

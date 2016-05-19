@@ -185,7 +185,7 @@ public class Configuration {
 			public static final int MPU9150_MAG = 18;
 			public static final int VBATT = 10;
 			public static final int LSM303DLHC_ACCEL = 11;  //XXX-RS-LSM-SensorClass?
-			public static final int PPG = SensorPPG.SensorMapKey.PPG; //107;
+			public static final int PPG = SensorPPG.ShimmerGqBle.SensorMapKey.PPG; //107;
 			public static final int GSR = 5;
 			public static final int BEACON = 108;
 		}
@@ -209,7 +209,7 @@ public class Configuration {
 			public static final String MAG = "Magnetometer"; 				//XXX-RS-LSM-SensorClass?
 			public static final String ACCEL_MPU = "Alternative Accel";
 			public static final String MAG_MPU = "Alternative Mag";
-			public static final String PPG_TO_HR = SensorPPG.GuiLabelSensors.PPG_TO_HR; //"PPG To HR";
+			public static final String PPG_TO_HR = "PPG To HR";
 			public static final String PPG = SensorPPG.GuiLabelSensors.PPG; //"PPG";
 			public static final String BEACON = "Beacon";
 		}
@@ -514,12 +514,12 @@ public class Configuration {
 		public static final Integer[] ListofGSRRangeConfigValues = SensorGSR.ListofGSRRangeConfigValues;
 //		public static final String[] ListofGSRRange={"10k\u2126 to 56k\u2126","56k\u2126 to 220k\u2126","220k\u2126 to 680k\u2126","680k\u2126 to 4.7M\u2126","Auto"};
 //		public static final Integer[] ListofGSRRangeConfigValues={0,1,2,3,4};
-		public static final String[] ListOfPpgAdcSelection={"Int A13","Int A12"};
-		public static final Integer[] ListOfPpgAdcSelectionConfigValues={0,1};
-		public static final String[] ListOfPpg1AdcSelection={"Int A13","Int A12"};
-		public static final Integer[] ListOfPpg1AdcSelectionConfigValues={0,1};
-		public static final String[] ListOfPpg2AdcSelection={"Int A1","Int A14"};
-		public static final Integer[] ListOfPpg2AdcSelectionConfigValues={0,1};
+		public static final String[] ListOfPpgAdcSelection= SensorPPG.ListOfPpgAdcSelection; //{"Int A13","Int A12"};
+		public static final Integer[] ListOfPpgAdcSelectionConfigValues= SensorPPG.ListOfPpgAdcSelectionConfigValues; // {0,1};
+		public static final String[] ListOfPpg1AdcSelection=SensorPPG.ListOfPpg1AdcSelection; //{"Int A13","Int A12"};
+		public static final Integer[] ListOfPpg1AdcSelectionConfigValues=SensorPPG.ListOfPpg1AdcSelectionConfigValues; //{0,1};
+		public static final String[] ListOfPpg2AdcSelection=SensorPPG.ListOfPpg2AdcSelection; //{"Int A1","Int A14"};
+		public static final Integer[] ListOfPpg2AdcSelectionConfigValues= SensorPPG.ListOfPpg2AdcSelectionConfigValues; //{0,1};
 
 		//TODO: base ExG config in ExGConfigBytesDetails rather then here
 		public static final String[] ListofDefaultEXG={"ECG","EMG","Test Signal"};
@@ -647,22 +647,22 @@ public class Configuration {
 			public static final int HOST_SKIN_TEMPERATURE_PROBE = 104;
 	
 			// Derived Channels - GSR Board
-			public static final int HOST_PPG_A12 = 106;
-			public static final int HOST_PPG_A13 = 107;
+			public static final int HOST_PPG_A12 = SensorPPG.SensorMapKey.HOST_PPG_A12; //106;
+			public static final int HOST_PPG_A13 = SensorPPG.SensorMapKey.HOST_PPG_A13; //107;
 			
 			// Derived Channels - Proto3 Deluxe Board
-			public static final int HOST_PPG1_A12 = 111;
-			public static final int HOST_PPG1_A13 = 112;
-			public static final int HOST_PPG2_A1 = 114;
-			public static final int HOST_PPG2_A14 = 115;
+			public static final int HOST_PPG1_A12 = SensorPPG.SensorMapKey.HOST_PPG1_A12; //111;
+			public static final int HOST_PPG1_A13 = SensorPPG.SensorMapKey.HOST_PPG1_A13; //112;
+			public static final int HOST_PPG2_A1 = SensorPPG.SensorMapKey.HOST_PPG2_A1;   //114;
+			public static final int HOST_PPG2_A14 = SensorPPG.SensorMapKey.HOST_PPG2_A14; //115;
 			
 			public static final int HOST_TIMESTAMP_SYNC = 151;
 			public static final int HOST_REAL_TIME_CLOCK = 152;
 			public static final int HOST_REAL_TIME_CLOCK_SYNC = 153;
 
-			public static final int HOST_PPG_DUMMY = 105;
-			public static final int HOST_PPG1_DUMMY = 110;
-			public static final int HOST_PPG2_DUMMY = 113;
+			public static final int HOST_PPG_DUMMY = SensorPPG.SensorMapKey.HOST_PPG_DUMMY;   //105;
+			public static final int HOST_PPG1_DUMMY = SensorPPG.SensorMapKey.HOST_PPG1_DUMMY; //110;
+			public static final int HOST_PPG2_DUMMY = SensorPPG.SensorMapKey.HOST_PPG2_DUMMY; //113;
 			
 			public static final int HOST_SHIMMER_STREAMING_PROPERTIES = 200;
 			//TODO below should be merged with HOST_REAL_TIME_CLOCK?
@@ -734,9 +734,9 @@ public class Configuration {
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 			
-			public static final String PPG_ADC_SELECTION = "PPG Channel";
-			public static final String PPG1_ADC_SELECTION = "Channel1";
-			public static final String PPG2_ADC_SELECTION = "Channel2";
+			public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION; //"PPG Channel";
+			public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";
+			public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION; // "Channel2";
 			
 			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = "Wide Range Accel Default Calibration";//XXX-RS-LSM-SensorClass?
 			public static final String MPU9150_GYRO_DEFAULT_CALIB = "Gyro Default Calibration";
@@ -1097,12 +1097,12 @@ public class Configuration {
 			public static  String SKIN_TEMPERATURE_PROBE = "Skin_Temperature";
 			public static  String EVENT_MARKER = "Event_Marker";
 // ----------------Implemented in SensorPPG----------------------			
-			public static  String PPG_A12 = "PPG_A12";
-			public static  String PPG_A13 = "PPG_A13";
-			public static  String PPG1_A12 = "PPG1_A12";
-			public static  String PPG1_A13 = "PPG1_A13";
-			public static  String PPG2_A1 = "PPG2_A1";
-			public static  String PPG2_A14 = "PPG2_A14";
+			public static  String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12; //"PPG_A12";
+			public static  String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13; //"PPG_A13";
+			public static  String PPG1_A12 = SensorPPG.ObjectClusterSensorName.PPG1_A12; //"PPG1_A12";
+			public static  String PPG1_A13 = SensorPPG.ObjectClusterSensorName.PPG1_A13; //"PPG1_A13";
+			public static  String PPG2_A1 = SensorPPG.ObjectClusterSensorName.PPG2_A1; //"PPG2_A1";
+			public static  String PPG2_A14 = SensorPPG.ObjectClusterSensorName.PPG2_A14; //"PPG2_A14";
 // --------------------------------------------------------------			
 
 			//TODO: move to algorithms class (JC).
@@ -3114,7 +3114,7 @@ public class Configuration {
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX));
-			
+			//---------------- Implemented In SensorPPG -----------------------------------------------------
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION, 
 					new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfPpgAdcSelection, 
 											Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues, 
@@ -3132,6 +3132,7 @@ public class Configuration {
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
 	        
 	        mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
+	        //------------------------------------------------------------------------------------------------------
 	    }
 
 

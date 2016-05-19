@@ -7398,6 +7398,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	//TODO 2016-05-18 feed below into sensor map classes
+	
+// --------------------Implemented in SensorPPG-----------------------	
 	public boolean checkIfSensorEnabled(int sensorMapKey){
 		if (getHardwareVersion() == HW_ID.SHIMMER_3) {
 			//Used for Shimmer GSR hardware
@@ -7424,7 +7426,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		return false;
 	}
-	
+// -------------------------------------------------------------------------------------------------------------------	
 //	private boolean isSensorEnabled(int sensorMapKey){
 //		if((mSensorMap!=null)&&(mSensorMap!=null)) {
 //			if(mSensorMap.containsKey(sensorMapKey)){
