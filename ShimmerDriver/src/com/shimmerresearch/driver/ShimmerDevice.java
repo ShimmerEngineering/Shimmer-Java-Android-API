@@ -1834,4 +1834,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
+	public boolean isChannelUsingDefaultCal(int sensorMapKey) {
+		return false;
+	}
 }
