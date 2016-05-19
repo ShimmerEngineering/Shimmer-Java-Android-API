@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -140,7 +141,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 	protected long mDerivedSensors = (long)0;												// This stores the sensors channels derived in SW
-
+	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	
 	// --------------- Abstract Methods Start --------------------------
 	
@@ -1902,5 +1903,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public boolean isChannelUsingDefaultCal(int sensorMapKey) {
 		return false;
+	}
+	
+	protected void setBluetoothRadioState(BT_STATE state){
+		
 	}
 }

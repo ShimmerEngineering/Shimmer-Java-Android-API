@@ -158,8 +158,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	        return text;
 	    }
 	}
-	public BT_STATE mState = BT_STATE.DISCONNECTED;
-
+	
 	private boolean mInstructionStackLock = false;
 	protected boolean mSendProgressReport = false;
 	protected boolean mOperationUnderway = false;
@@ -197,7 +196,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void sendStatusMSGtoUI(String msg);
 	protected abstract void printLogDataForDebugging(String msg);
 	protected abstract void connectionLost();
-	protected abstract void setState(BT_STATE state);
+	//protected abstract void setBluetoothRadioState(BT_STATE state);
 	protected abstract void startOperation(BT_STATE currentOperation);
 	protected abstract void finishOperation(BT_STATE currentOperation);
 	protected abstract void startOperation(BT_STATE currentOperation, int totalNumOfCmds);
@@ -2033,7 +2032,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if(mSendProgressReport){
 			operationPrepare();
-			setState(BT_STATE.CONNECTING);
+			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
 		
 		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
@@ -3688,7 +3687,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
     public BT_STATE getBTState(){
-        return mState;
+        return mBluetoothRadioState;
     }
 
 	/**

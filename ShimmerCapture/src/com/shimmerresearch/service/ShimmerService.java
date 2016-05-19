@@ -1029,7 +1029,7 @@ public class ShimmerService extends Service {
 		Iterator<Object> iterator = colS.iterator();
 		while (iterator.hasNext()) {
 			Shimmer stemp=(Shimmer) iterator.next();
-			if ((stemp.mState == BT_STATE.SDLOGGING || stemp.mState == BT_STATE.STREAMING_AND_SDLOGGING) && stemp.getBluetoothAddress().equals(bluetoothAddress)){
+			if ((stemp.mBluetoothRadioState == BT_STATE.SDLOGGING || stemp.mBluetoothRadioState == BT_STATE.STREAMING_AND_SDLOGGING) && stemp.getBluetoothAddress().equals(bluetoothAddress)){
 				deviceLogging=true;
 			}
 		}

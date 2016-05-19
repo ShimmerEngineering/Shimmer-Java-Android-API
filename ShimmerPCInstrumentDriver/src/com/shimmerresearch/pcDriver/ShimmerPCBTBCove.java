@@ -137,7 +137,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPCBTBCove(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
-		mState = BT_STATE.DISCONNECTED;
+		mBluetoothRadioState = BT_STATE.DISCONNECTED;
 		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mGSRRange = gsrRange;
@@ -165,7 +165,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPCBTBCove(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
-		mState = BT_STATE.DISCONNECTED;
+		mBluetoothRadioState = BT_STATE.DISCONNECTED;
 		setSamplingRateShimmer(samplingRate);
 		mAccelRange = accelRange;
 		mMagRange = magGain;
@@ -188,7 +188,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		getListofInstructions().clear();
 		mFirstTime=true;
 		try {
-			setState(BT_STATE.CONNECTING);
+			setBluetoothRadioState(BT_STATE.CONNECTING);
 //			setState(BT_STATE.CONNECTING);
 			conn = (StreamConnection)Connector.open(address);
 			mIN = new DataInputStream(conn.openInputStream());
@@ -203,7 +203,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 			mPThread.start();
 			initialize();
 //			setState(BT_STATE.CONNECTED);
-			setState(BT_STATE.CONNECTED);
+			setBluetoothRadioState(BT_STATE.CONNECTED);
 		}
 		catch ( IOException e ) { 
 			System.err.print(e.toString()); 
@@ -278,7 +278,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	@Override
 	protected void stop() {
 		// TODO Auto-generated method stub
-		setState(BT_STATE.DISCONNECTED);
+		setBluetoothRadioState(BT_STATE.DISCONNECTED);
 	}
 	
 	@Override
@@ -290,9 +290,9 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
 		if (mIsSDLogging){
-			setState(BT_STATE.STREAMING_AND_SDLOGGING);
+			setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
 		} else {
-			setState(BT_STATE.STREAMING);
+			setBluetoothRadioState(BT_STATE.STREAMING);
 		}
 		
 	}
@@ -305,7 +305,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void inquiryDone() {
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 		isReadyForStreaming();
 	}
@@ -331,7 +331,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 			startTimerReadBattStatus();
 			
         }
-		setState(BT_STATE.CONNECTED);
+		setBluetoothRadioState(BT_STATE.CONNECTED);
 	}
 
 	@Override
@@ -370,10 +370,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 			mOUT.close();
 			conn.close();
 			conn = null;
-			setState(BT_STATE.DISCONNECTED);
+			setBluetoothRadioState(BT_STATE.DISCONNECTED);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			setState(BT_STATE.DISCONNECTED);
+			setBluetoothRadioState(BT_STATE.DISCONNECTED);
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}
@@ -400,10 +400,10 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 			mIsInitialised = false;
 			conn.close();
 			conn = null;
-			setState(BT_STATE.CONNECTION_LOST);
+			setBluetoothRadioState(BT_STATE.CONNECTION_LOST);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			setState(BT_STATE.CONNECTION_LOST);
+			setBluetoothRadioState(BT_STATE.CONNECTION_LOST);
 			System.out.println("Connection Lost");
 			e.printStackTrace();
 		}	
@@ -425,30 +425,30 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	protected void setState(BT_STATE state) {
+	protected void setBluetoothRadioState(BT_STATE state) {
 
 		
 		//TODO: below not needed any more?
 //		if (state==STATE.NONE && mIsStreaming==true){
 //			disconnect();
 //		}
-		mState = state;
+		mBluetoothRadioState = state;
 		
 //		if(mState==BT_STATE.CONNECTED){
 //			mIsConnected = true;
 //			mIsStreaming = false;
 //		}
-		if(mState==BT_STATE.CONNECTED){
+		if(mBluetoothRadioState==BT_STATE.CONNECTED){
 			mIsInitialised = true;
 			mIsStreaming = false;
 		}
-		else if(mState==BT_STATE.STREAMING){
+		else if(mBluetoothRadioState==BT_STATE.STREAMING){
 			mIsStreaming = true;
 		}		
-		else if((mState==BT_STATE.DISCONNECTED)
-				||(mState==BT_STATE.CONNECTION_LOST)
+		else if((mBluetoothRadioState==BT_STATE.DISCONNECTED)
+				||(mBluetoothRadioState==BT_STATE.CONNECTION_LOST)
 //				||(mState==BT_STATE.NONE)
-				||(mState==BT_STATE.CONNECTION_FAILED)){
+				||(mBluetoothRadioState==BT_STATE.CONNECTION_FAILED)){
 			mIsConnected = false;
 			mIsStreaming = false;
 			mIsInitialised = false;
@@ -456,7 +456,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		
 //		System.out.println("SetState: " + mUniqueID + "\tState:" + mState + "\tisConnected:" + mIsConnected + "\tisInitialised:" + mIsInitialised + "\tisStreaming:" + mIsStreaming);
 		
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	
 	}
@@ -468,7 +468,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STOP_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		startTimerReadStatus();
-		setState(BT_STATE.CONNECTED);
+		setBluetoothRadioState(BT_STATE.CONNECTED);
 	}
 
 	@Override
@@ -481,28 +481,28 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		if(mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
 			//TODO need to query the Bluetooth connection here!
 			if(mIsStreaming){
-				setState(BT_STATE.STREAMING);
+				setBluetoothRadioState(BT_STATE.STREAMING);
 			}
 			else if(mIsConnected){
-				setState(BT_STATE.CONNECTED);
+				setBluetoothRadioState(BT_STATE.CONNECTED);
 			}
 			else{
-				setState(BT_STATE.DISCONNECTED);
+				setBluetoothRadioState(BT_STATE.DISCONNECTED);
 			}
 		}
 		else{
 			if(mIsStreaming && mIsSDLogging){
-				setState(BT_STATE.STREAMING_AND_SDLOGGING);
+				setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
 			}
 			else if(mIsStreaming){
-				setState(BT_STATE.STREAMING);
+				setBluetoothRadioState(BT_STATE.STREAMING);
 			}
 			else if(mIsSDLogging){
-				setState(BT_STATE.SDLOGGING);
+				setBluetoothRadioState(BT_STATE.SDLOGGING);
 			}
 			else{
 				if(!mIsStreaming && !mIsSDLogging && mIsConnected){
-					setState(BT_STATE.CONNECTED);	
+					setBluetoothRadioState(BT_STATE.CONNECTED);	
 				}
 //				if(getBTState() == BT_STATE.INITIALISED){
 //					
@@ -511,7 +511,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 //					setState(BT_STATE.CONNECTED);
 //				}
 				
-				CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mState, getBluetoothAddress(), mUniqueID);
+				CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getBluetoothAddress(), mUniqueID);
 				sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 			}
 		}

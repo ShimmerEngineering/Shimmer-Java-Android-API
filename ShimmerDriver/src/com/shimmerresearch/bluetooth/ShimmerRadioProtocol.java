@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.ProtocolListener;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
@@ -59,11 +60,13 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 		
 		
 	};
+
+	public void stopStreaming(){
+		mRadioProtocol.writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE});
+	}
 	
 	public void startStreaming(){
 		mRadioProtocol.writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE});
-		
-		
 	}
 	
 	//Core radio functions to be implemented by native radio libs , jssc, android .. etc.
