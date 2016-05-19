@@ -139,7 +139,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean mVerboseMode = true;
 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
-	protected long mDerivedSensors = (long)0;												// This stores the sensors channels derived in SW
+	protected long mDerivedSensors = (long)0;												// This stores the algorithm channels derived in SW
 
 	
 	// --------------- Abstract Methods Start --------------------------

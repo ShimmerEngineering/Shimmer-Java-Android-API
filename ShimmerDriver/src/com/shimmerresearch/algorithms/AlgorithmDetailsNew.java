@@ -12,6 +12,8 @@ public class AlgorithmDetailsNew implements Serializable {
 	public String mAlgorithmName = "";
 	public String mGroupName = "";
 	public boolean mEnabled =false;
+	public int mConfigByte  = 0;
+
 	
 	public enum SENSOR_CHECK_METHOD{
 		ALL,
@@ -41,10 +43,9 @@ public class AlgorithmDetailsNew implements Serializable {
 	}
 	
 	//or PPG 
-	public AlgorithmDetailsNew(List<Integer> listOfRequiredSensors, String units, SENSOR_CHECK_METHOD sensorCheckMethod,String AlgorithmName,String groupName, boolean enabled){
+	public AlgorithmDetailsNew(List<Integer> listOfRequiredSensors, int configByte,String AlgorithmName,String groupName, boolean enabled){
 		mListOfRequiredSensors = listOfRequiredSensors;
-		mUnits = units;
-		mSensorCheckMethod = sensorCheckMethod;
+		mConfigByte = configByte;
 		mAlgorithmName = AlgorithmName;
 		mGroupName = groupName;
 		mEnabled = enabled;

@@ -6939,6 +6939,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		}
 	}
 	
+	//list of algorithms to configure from panel configure algorithm GUI
+	protected void addDerivedSensorConfig(int configAlgorithmInt){
+		//adding in configuration fo algorithms
+		//test bitwise OR
+		mDerivedSensors = mDerivedSensors | configAlgorithmInt;
+	}
+	
+	protected void configDerivedSensor(
+			List<AlgorithmDetailsNew> guiConfigAlgorithms) {
+
+		// looping through algorthims to see which ones are enabled
+		for (AlgorithmDetailsNew algoDetails : guiConfigAlgorithms) {
+			if (algoDetails.mEnabled) { // an algorithm has been switched on
+				for (Integer sensor : algoDetails.mListOfRequiredSensors) {
+					setSensorEnabledState(sensor, true);
+				}
+				// configure byte
+				addDerivedSensorConfig(algoDetails.mConfigByte);
+			}
+		}
+	}		
+	
+	
 	public int getExGGainSetting(){
 //		mEXG1CH1GainSetting = i;
 //		mEXG1CH2GainSetting = i;
@@ -8127,6 +8150,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 				updateEnabledSensorsFromExgResolution();
+				//add in algorithm map 
+				 
 			}
 //			interpretDataPacketFormat();
 		}

@@ -58,6 +58,7 @@ import java.util.TreeMap;
 
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
+import com.shimmerresearch.driver.ShimmerObject.BTStreamDerivedSensors;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -3251,16 +3252,15 @@ public class Configuration {
 		// Assemble the channel configuration options map
 		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,new AlgorithmDetailsNew(
 				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
-				CHANNEL_UNITS.BEATS_PER_MINUTE,SENSOR_CHECK_METHOD.ALL, Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,
-				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
-		
+				BTStreamDerivedSensors.ECG2HR_CHIP1_CH1,Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,
+				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));		
 		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,new AlgorithmDetailsNew(
 				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
-				CHANNEL_UNITS.BEATS_PER_MINUTE,SENSOR_CHECK_METHOD.ALL, Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,
+				BTStreamDerivedSensors.ECG2HR_CHIP1_CH2, Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,
 				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
 		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,new AlgorithmDetailsNew(
 				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
-				CHANNEL_UNITS.BEATS_PER_MINUTE, SENSOR_CHECK_METHOD.ALL,
+				BTStreamDerivedSensors.ECG2HR_CHIP2_CH1, 
 				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,
 				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
 
