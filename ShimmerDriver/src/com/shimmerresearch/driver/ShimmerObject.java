@@ -314,8 +314,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	
 	protected Map<String, ChannelDetails> mChannelMap = new LinkedHashMap<String, ChannelDetails>(); 
-	protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
-	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
+	//protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
+	// moved to Shimmer Device by E.N.
+	//protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	//protected Map<String, List<String>> mCompleteAlgorithmMap = new LinkedHashMap<String, List<String>>();
 
 	
@@ -6862,28 +6863,30 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mConfigFileCreationFlag = state;
 	}
 	
-	@Override
-	public void refreshEnabledSensorsFromSensorMap(){
-		if(mSensorMap!=null) {
-			if (getHardwareVersion() == HW_ID.SHIMMER_3){
-				mEnabledSensors = (long)0;
-				mDerivedSensors = (long)0;
-				sensorMapCheckandCorrectHwDependencies();
-				for(SensorDetails sED:mSensorMap.values()) {
-					if(sED.isEnabled()) {
-						mEnabledSensors |= sED.mSensorDetails.mSensorBitmapIDSDLogHeader;
-						
-						if(sED.isDerivedChannel()){
-							mDerivedSensors |= sED.mDerivedSensorBitmapID;
-						}
-					}
-				}
-				updateEnabledSensorsFromExgResolution();
-				//add in algorithm map 
-			}
-//			interpretDataPacketFormat();
-		}
-	}
+//	@Override
+//	public void refreshEnabledSensorsFromSensorMap(){
+//		if(mSensorMap!=null) {
+//			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+//				mEnabledSensors = (long)0;
+//				mDerivedSensors = (long)0;
+//				sensorMapCheckandCorrectHwDependencies();
+//				for(SensorDetails sED:mSensorMap.values()) {
+//					if(sED.isEnabled()) {
+//						mEnabledSensors |= sED.mSensorDetails.mSensorBitmapIDSDLogHeader;
+//						
+//						if(sED.isDerivedChannel()){
+//							mDerivedSensors |= sED.mDerivedSensorBitmapID;
+//						}
+//					}
+//				}
+//				updateEnabledSensorsFromExgResolution();
+//				//add in algorithm map compatible with device
+//				configDerivedSensor(getListOfSupportedAlgorithmChannels());
+//				mDerivedSensors =getDerivedSensors();
+//			}
+////			interpretDataPacketFormat();
+//		}
+	//}
 	
 	/**
 	 * Converts the LSM303DLHC Accel calibration variables from Shimmer Object
@@ -7887,9 +7890,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mChannelMap;
 	}
 	
-	/**
-	 * @return the mAlgorithmChannelsMap
-	 */
+	/* moved to Shimmer Device by E.N.
+	
 	public Map<String, AlgorithmDetailsNew> getAlgorithmChannelsMap() {
 		return mAlgorithmChannelsMap;
 	}
@@ -7933,9 +7935,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return listOfSupportAlgorihmChannels;
 	}
 
-	/**
-	 * @return the mAlgorithmGroupingMap
-	 */
+
 	public Map<String, List<String>> getAlgorithmGroupingMap() {
 		return mAlgorithmGroupingMap;
 	}
@@ -7958,6 +7958,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		return listOfSupportAlgorihmGroups;
 	}
+	
+	*/
+	
 	
 	public double getPressTempAC1(){
 		return pressTempAC1;
@@ -8007,9 +8010,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mDerivedSensors
 	 */
-	public long getDerivedSensors() {
-		return mDerivedSensors;
-	}
+	//moved to Shimmer Device by EN
+//	public long getDerivedSensors() {
+//		return mDerivedSensors;
+//	}
 
 	public boolean isUsingConfigFromInfoMem() {
 		return mShimmerUsingConfigFromInfoMem;
@@ -9090,6 +9094,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		}
 	}
 	
+	
+	/* migrated to shimmer Device 19--20016 by EN 
 	//list of algorithms to configure from panel configure algorithm GUI
 	protected void addDerivedSensorConfig(int configAlgorithmInt){
 		//adding in configuration fo algorithms
@@ -9112,6 +9118,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}		
 	
+	*/
 	
 	public int getExGGainSetting(){
 //		mEXG1CH1GainSetting = i;

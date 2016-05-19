@@ -3255,15 +3255,15 @@ public class Configuration {
         Map<String, AlgorithmDetailsNew> aMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
 		// Assemble the channel configuration options map
 		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,new AlgorithmDetailsNew(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
+				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
 				BTStreamDerivedSensors.ECG2HR_CHIP1_CH1,Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,
 				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));		
 		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,new AlgorithmDetailsNew(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
+				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
 				BTStreamDerivedSensors.ECG2HR_CHIP1_CH2, Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,
 				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
 		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,new AlgorithmDetailsNew(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
+				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
 				BTStreamDerivedSensors.ECG2HR_CHIP2_CH1, 
 				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,
 				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
