@@ -27,6 +27,7 @@ import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.ShimmerClock;
 
 public class Shimmer4 extends ShimmerDevice {
@@ -72,6 +73,10 @@ public class Shimmer4 extends ShimmerDevice {
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+		}
+		
+		if(isDerivedSensorsSupported()){
+			mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
 		}
 
 		generateSensorAndParserMaps();
