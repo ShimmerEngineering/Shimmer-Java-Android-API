@@ -7893,7 +7893,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mDefaultCalibrationParametersAccel;
 	}
 	
-		public boolean isUsingDefaultAccelParam(){
+	//XXX-RS-AA-SensorClass?
+	public boolean isUsingDefaultAccelParam(){
 		return mDefaultCalibrationParametersAccel;
 	}
 	

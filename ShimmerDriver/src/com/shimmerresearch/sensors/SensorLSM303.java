@@ -658,7 +658,7 @@ public class SensorLSM303 extends AbstractSensor{
 				returnValue = configValue;
 				break;
 		
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE):
+			case(GuiLabelConfig.LSM303DLHC_MAG_RATE):
 				returnValue = getLSM303MagRate();
 	        	break;
 			
@@ -679,10 +679,10 @@ public class SensorLSM303 extends AbstractSensor{
 	@Override 
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
+			if(sensorMapKey==SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
 				setDefaultLsm303dlhcAccelSensorConfig(state);		
 			}
-			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG) {
+			else if(sensorMapKey==SensorMapKey.SHIMMER_LSM303DLHC_MAG) {
 				setDefaultLsm303dlhcMagSensorConfig(state);
 			}
 			return true;
@@ -695,7 +695,6 @@ public class SensorLSM303 extends AbstractSensor{
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		//RS: Also returning null in BMP180 and GSR sensors classes 
-		// See also setDefaultLsm303dlhcAccelSensorConfig() and setDefaultLsm303dlhcMagSensorConfig() in ShimmerObject
 		return null;
 	}
 
@@ -816,7 +815,7 @@ public class SensorLSM303 extends AbstractSensor{
 
 
 	//--------- Sensor specific methods start --------------
-	public byte[] generateCalParamLSM303DLHCAccel(){
+	private byte[] generateCalParamLSM303DLHCAccel(){
 		byte[] bufferCalibrationParameters = new byte[21];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
@@ -838,7 +837,7 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	
-	public byte[] generateCalParamLSM303DLHCMag(){
+	private byte[] generateCalParamLSM303DLHCMag(){
 		byte[] bufferCalibrationParameters = new byte[21];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
@@ -1205,7 +1204,7 @@ public class SensorLSM303 extends AbstractSensor{
 	
 	
 	//TODO Returning same variable as isLowPowerAccelWr() -> remove one method?
-	private boolean isLSM303DigitalAccelLPM() {
+	public boolean isLSM303DigitalAccelLPM() {
 		return mLowPowerAccelWR;
 	}
 	
@@ -1252,22 +1251,22 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	
-	private int getAccelRange() {
+	public int getAccelRange() {
 		return mAccelRange;
 	}
 	
 	
-	private int getMagRange() {
+	public int getMagRange() {
 		return mMagRange;
 	}
 	
 	
-	private int getLSM303MagRate() {
+	public int getLSM303MagRate() {
 		return mLSM303MagRate;
 	}
 
 	
-	private int getLSM303DigitalAccelRate() {
+	public int getLSM303DigitalAccelRate() {
 		return mLSM303DigitalAccelRate;
 	}
 

@@ -10,8 +10,10 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -102,6 +104,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	
 	//--------- Configuration options start --------------
+	// No configuration options.
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
@@ -112,6 +115,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			null,
 			Arrays.asList(ObjectClusterSensorName.ACCEL_LN_X,ObjectClusterSensorName.ACCEL_LN_Y,ObjectClusterSensorName.ACCEL_LN_Z));
+	
 	
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -132,6 +136,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
     
+    
     public static final ChannelDetails channelLSM303AccelY = new ChannelDetails(
 			ObjectClusterSensorName.ACCEL_LN_Y,
 			ObjectClusterSensorName.ACCEL_LN_Y,
@@ -140,6 +145,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
     
+    
     public static final ChannelDetails channelLSM303AccelZ = new ChannelDetails(
 			ObjectClusterSensorName.ACCEL_LN_Z,
 			ObjectClusterSensorName.ACCEL_LN_Z,
@@ -147,6 +153,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    
     
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
@@ -176,7 +183,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		//Nothing to configure.
+		//No configuration options.
 	}
 	
 	
@@ -193,53 +200,98 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensotDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-		// TODO Auto-generated method stub
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+		int index = 0;
+		double[] unCalibratedAccelData = new double[3];
+
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			
+			//Uncalibrated Accelerometer data
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
+				unCalibratedAccelData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
+				unCalibratedAccelData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
+				unCalibratedAccelData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			}	
+		}
+			
+		//Calibration
+		double[] calibratedAccelData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+
+		//Add calibrated data to Object cluster
+		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
+				objectCluster.addCalData(channelDetails, calibratedAccelData[0]);
+				objectCluster.indexKeeper++;
+			}
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
+				objectCluster.addCalData(channelDetails, calibratedAccelData[1]);
+				objectCluster.indexKeeper++;
+			}
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
+				objectCluster.addCalData(channelDetails, calibratedAccelData[2]);
+				objectCluster.indexKeeper++;
+			}
+			index = index + channelDetails.mDefaultNumBytes;
+		}
 		return objectCluster;
 	}
 	
 	
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
-		// TODO Auto-generated method stub
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
+		int idxAnalogAccelCalibration = 31;
+		int lengthGeneralCalibrationBytes = 21;
 		
+		//Accel Calibration Parameters
+		byte[] bufferCalibrationParameters = generateCalParamAnalogAccel();
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, idxAnalogAccelCalibration, lengthGeneralCalibrationBytes);
 	}
 	
 	
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
-		// TODO Auto-generated method stub
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
+		int idxAnalogAccelCalibration = 31;
+		int lengthGeneralCalibrationBytes = 21;
 		
+		//Accel Calibration Parameters
+		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
+		System.arraycopy(mInfoMemBytes, idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
+		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);	
 	}
 
-	
+
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName,
-			Object valueToSet) {
-		// TODO Auto-generated method stub
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+		// No configuration options.
 		return null;
 	}
 
 	
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
-		// TODO Auto-generated method stub
+		// No configuration options.
 		return null;
 	}
 
 	
 	@Override
 	public void setSamplingRateFromFreq() {
-		// TODO Auto-generated method stub
+		// No data rate setting.
 	}
 	
 	
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//TODO set defaults for particular sensor
+			//XXX Return true if mSensorMap contains sensorMapKey regardless of the fact there a no configuration options?
 			return true;
 		}
 		return false;
@@ -248,30 +300,149 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
+		//TODO RS - Implement rest of this method.
 		return null;
 	}
 
 	
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		return null;
+		ActionSetting actionsetting = new ActionSetting(commType);
+
+		//TODO RS - Implement rest of this method.
+		
+		return actionsetting;
 	}
 
 	
 	@Override
 	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
+		if(mConfigOptionsMap.containsKey(stringKey)){
+			//XXX Return true if mSensorMap contains sensorMapKey regardless of the fact there a no configuration options?
+
+			return true;
+		}
 		return false;
 	}
 	//--------- Abstract methods implemented end --------------
 
 
+	//--------- Sensor specific methods start --------------
+	private byte[] generateCalParamAnalogAccel(){
+		// Analog Accel Calibration Parameters
+		byte[] bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 0) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
+		}
+		return bufferCalibrationParameters;
+	}
+	
+	
+	private void retrieveKinematicCalibrationParametersFromPacket(byte[] bufferCalibrationParameters,  int packetType) {
+		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"}; 
+		int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType); // using the datatype the calibration parameters are converted
+		double[] AM=new double[9];
+		for (int i=0;i<9;i++){
+			AM[i]=((double)formattedPacket[6+i])/100;
+		}
 
+		double[][] AlignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+		double[][] SensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+		double[][] OffsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+		
+		//Accel Calibration Parameters
+		if(packetType==ACCEL_CALIBRATION_RESPONSE && checkIfDefaultAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
+			mDefaultCalibrationParametersAccel = true;
+			mAlignmentMatrixAnalogAccel = AlignmentMatrix;
+			mOffsetVectorAnalogAccel = OffsetVector;
+			mSensitivityMatrixAnalogAccel = SensitivityMatrix;
+		}
+		else if (packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
+			mDefaultCalibrationParametersAccel = false;
+			mAlignmentMatrixAnalogAccel = AlignmentMatrix;
+			mOffsetVectorAnalogAccel = OffsetVector;
+			mSensitivityMatrixAnalogAccel = SensitivityMatrix;
+		} 
+		else if(packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
+			//TODO - Use Shimmer3 values or something different? 
 
-
-
+			setDefaultCalibrationShimmer3LowNoiseAccel();
+		}
+	}
 
 	
+	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
+		//TODO - Use Shimmer3 values or something different? 
+		
+		mDefaultCalibrationParametersAccel = true;
+		mSensitivityMatrixAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixLowNoiseAccel2gShimmer3);
+		mAlignmentMatrixAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixLowNoiseAccelShimmer3);
+		mOffsetVectorAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorLowNoiseAccelShimmer3);	
+	}
+
+
+	private boolean checkIfDefaultAccelCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
+		//TODO - Use Shimmer3 defaults or something different?
+	
+		double[][] offsetVectorToCompare = OffsetVectorLowNoiseAccelShimmer3;
+		double[][] sensitivityVectorToCompare = SensitivityMatrixLowNoiseAccel2gShimmer3;
+		double[][] alignmentVectorToCompare = AlignmentMatrixLowNoiseAccelShimmer3;
+		
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+		
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public String getSensorName(){
+		return mSensorName;
+	}
+	
+	
+	public boolean isUsingDefaultAccelParam(){
+		return mDefaultCalibrationParametersAccel; 
+	}
+	
+	
+	//XXX returning same variable as isUsingDefaultAccelParam() -> keep one of the two methods?
+	public boolean isUsingDefaultLNAccelParam(){
+		return mDefaultCalibrationParametersAccel;
+	}
+	
+	
+	public double[][] getAlignmentMatrixAccel(){
+		return mAlignmentMatrixAnalogAccel;
+	}
+
+
+	public double[][] getSensitivityMatrixAccel(){
+		return mSensitivityMatrixAnalogAccel;
+	}
+
+
+	public double[][] getOffsetVectorMatrixAccel(){
+		return mOffsetVectorAnalogAccel;
+	}
+	//--------- Sensor specific methods end --------------
+
+	//--------- Abstract methods not implemented start --------------
+	//--------- Abstract methods not implemented end --------------	
 }
