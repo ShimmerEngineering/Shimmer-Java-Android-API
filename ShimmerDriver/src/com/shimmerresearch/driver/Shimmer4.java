@@ -431,6 +431,11 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
+	public void toggleLed() {
+		byte[] instructionLED = {LiteProtocolInstructionSet.InstructionsSet.TOGGLE_LED_COMMAND_VALUE};
+		mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionLED);
+	}
+	
 	@Override
 	protected void setBluetoothRadioState(BT_STATE state){
 		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE,state, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
@@ -450,6 +455,19 @@ public class Shimmer4 extends ShimmerDevice {
 	 */
 	public void setShimmerRadioHWLiteProtocol(ShimmerRadioProtocol shimmerRadioHWLiteProtocol) {
 		this.mShimmerRadioHWLiteProtocol = shimmerRadioHWLiteProtocol;
+	}
+	
+	@Override
+	public void disconnect() {
+		super.disconnect();
+		if(mShimmerRadioHWLiteProtocol!=null){
+			try {
+				mShimmerRadioHWLiteProtocol.disconnect();
+			} catch (DeviceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// ----------------- BT LiteProtocolInstructionSet End ------------------

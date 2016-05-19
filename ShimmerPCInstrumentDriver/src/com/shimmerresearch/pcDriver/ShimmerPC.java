@@ -471,6 +471,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			return null;
 	}
 	
+	@Override
 	public synchronized void disconnect(){
 		stopAllTimers();
 		closeConnection();

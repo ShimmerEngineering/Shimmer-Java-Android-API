@@ -1900,4 +1900,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public BT_STATE getBluetoothRadioState() {
 		return mBluetoothRadioState;
 	}
+
+	public void disconnect() {
+		// TODO Auto-generated method stub
+		
+	}
 }
