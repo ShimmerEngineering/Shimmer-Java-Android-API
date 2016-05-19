@@ -314,6 +314,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void eventNewPacket(byte[] packetByteArray) {
+				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
 				buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH);
 			}
 

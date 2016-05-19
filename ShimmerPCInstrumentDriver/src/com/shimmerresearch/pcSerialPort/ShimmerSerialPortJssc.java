@@ -4,10 +4,11 @@ import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public class ShimmerSerialPortJssc extends SerialPortJssc{
-
+	
 	public ShimmerSerialPortJssc(String comPort, String uniqueId, int baudToUse) {
 		super(comPort, uniqueId, baudToUse);
 		// TODO Auto-generated constructor stub
+		SERIAL_PORT_TIMEOUT = 2000; // was 2000
 	}
 	
 	public ShimmerVerObject getShimmerVerObject() {

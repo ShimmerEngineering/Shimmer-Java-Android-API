@@ -252,7 +252,7 @@ public class GuiTestShimmer4 extends JPanel {
     			//Read infomem, and set packetsize
     			//mSRP.mRadioProtocol.writeInstruction(new byte[]{(byte) LiteProtocolInstructionSet.Instructions.GET_INFOMEM_COMMAND_VALUE});
 
-    			((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(41);
+    			((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(8);
     		}
 
     		@Override
