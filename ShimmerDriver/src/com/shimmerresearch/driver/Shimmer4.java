@@ -367,7 +367,7 @@ public class Shimmer4 extends ShimmerDevice {
 					if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 						setShimmerInfoMemBytes(mInfoMemBuffer);
 						infoMemByteArrayParse(mInfoMemBuffer);
-						String comPort = ((SerialPortComm)mShimmerRadioHWLiteProtocol.mSerialPort).mAddress;
+						String comPort = getComPort();
 						mIsInitialised = true;
 						setBluetoothRadioState(BT_STATE.CONNECTED);
 						CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_FULLY_INITIALIZED, mMacIdFromUart, comPort);
@@ -459,7 +459,7 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	protected void setBluetoothRadioState(BT_STATE state){
-		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE,state, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
+		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE,state, getMacIdFromUart(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject2);
 		mBluetoothRadioState = state;
 	}
@@ -488,6 +488,25 @@ public class Shimmer4 extends ShimmerDevice {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public String getComPort() {
+		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
+			return ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress;
+		}
+		return null;
+	}
+
+	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
+		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
+//			mShimmerRadioHWLiteProtocol.
+		}
+	}
+
+	public void writeEnabledSensors(long enabledSensors) {
+		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
+//			mShimmerRadioHWLiteProtocol.
 		}
 	}
 

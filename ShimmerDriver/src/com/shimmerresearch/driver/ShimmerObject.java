@@ -5925,10 +5925,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 
-	public long getEnabledSensors() {
-		return mEnabledSensors;
-	}
-	
 	public long getRTCOffset(){
 		return mRTCOffset;
 	}

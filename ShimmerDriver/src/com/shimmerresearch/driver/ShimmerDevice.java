@@ -1650,6 +1650,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		this.mEnabledSensors = mEnabledSensors;
 //		sensorMapUpdateFromEnabledSensorsVars();
 	}
+	
+	public long getEnabledSensors() {
+		return mEnabledSensors;
+	}
 
 	//TODO update sensor map with derivedSensors
 	public void setDerivedSensors(long mDerivedSensors) {
@@ -1915,7 +1919,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 	}	
-	
 	
 	public Map<String, AlgorithmDetailsNew> getAlgorithmChannelsMap() {
 		return mAlgorithmChannelsMap;
