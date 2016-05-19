@@ -43,7 +43,7 @@ public class AlgorithmDetailsNew implements Serializable {
 	}
 	
 	//or PPG 
-	public AlgorithmDetailsNew(List<Integer> listOfRequiredSensors, int configByte,String AlgorithmName,String groupName, boolean enabled){
+	public AlgorithmDetailsNew(List<Integer> listOfRequiredSensors,SENSOR_CHECK_METHOD sensorCheckMethod, int configByte,String AlgorithmName,String groupName, boolean enabled){
 		mListOfRequiredSensors = listOfRequiredSensors;
 		mConfigByte = configByte;
 		mAlgorithmName = AlgorithmName;

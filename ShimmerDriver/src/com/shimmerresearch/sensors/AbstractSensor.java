@@ -232,7 +232,7 @@ public abstract class AbstractSensor implements Serializable{
 		for(SensorDetails sensorDetails:mSensorMap.values()){
 			
 			//TODO remove below with a check as to whether the sensor originates from the Shimmer data packet or the API ()
-			if(sensorDetails.mSensorDetails.mGuiFriendlyLabel.equals(SensorSystemTimeStamp.sensorSystemTimeStampRef.mGuiFriendlyLabel)){
+			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(SensorSystemTimeStamp.sensorSystemTimeStampRef.mGuiFriendlyLabel)){
 				continue;
 			}
 			
@@ -242,7 +242,7 @@ public abstract class AbstractSensor implements Serializable{
 				state = (derivedSensors & sensorDetails.mDerivedSensorBitmapID)>0? true:false;
 			}
 			else {
-				state = (enabledSensors & sensorDetails.mSensorDetails.mSensorBitmapIDStreaming)>0? true:false;
+				state = (enabledSensors & sensorDetails.mSensorDetailsRef.mSensorBitmapIDStreaming)>0? true:false;
 			}
 			sensorDetails.setIsEnabled(commType, state);
 		}
@@ -262,9 +262,9 @@ public abstract class AbstractSensor implements Serializable{
 			// Ok to clear here because variable is initiated in the class
 			mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 			for (Integer sensorKey:mSensorGroupingMap.get(sensorGroup).mListOfSensorMapKeysAssociated) {
-				SensorDetails sensorEnabledDetails = mSensorMap.get(sensorKey);
-				if(sensorEnabledDetails!=null){
-					for (String configOption:sensorEnabledDetails.mSensorDetails.mListOfConfigOptionKeysAssociated) {
+				SensorDetails sensorDetails = mSensorMap.get(sensorKey);
+				if(sensorDetails!=null && sensorDetails.mSensorDetailsRef!=null && sensorDetails.mSensorDetailsRef.mListOfConfigOptionKeysAssociated!=null){
+					for (String configOption:sensorDetails.mSensorDetailsRef.mListOfConfigOptionKeysAssociated) {
 						// do not add duplicates
 						if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
 							mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
@@ -278,7 +278,7 @@ public abstract class AbstractSensor implements Serializable{
 	public String getSensorGuiFriendlyLabel(int sensorKey) {
 		SensorDetails sensorDetails = mSensorMap.get(sensorKey);
 		if(sensorDetails!=null){
-			return sensorDetails.mSensorDetails.mGuiFriendlyLabel;
+			return sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel;
 		}
 		return null;
 	}
@@ -286,13 +286,13 @@ public abstract class AbstractSensor implements Serializable{
 	public List<ShimmerVerObject> getSensorListOfCompatibleVersionInfo(int sensorKey) {
 		SensorDetails sensorDetails = mSensorMap.get(sensorKey);
 		if(sensorDetails!=null){
-			return sensorDetails.mSensorDetails.mListOfCompatibleVersionInfo;
+			return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
 		}
 		return null;
 	}
 	
 	public void createLocalSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
-		mSensorMap.clear();
+		mSensorMap = new TreeMap<Integer, SensorDetails>();
 		for(int sensorMapKey:sensorMapRef.keySet()){
 			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef);
@@ -302,7 +302,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public void createLocalSensorMapWithCustomParser(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
-		mSensorMap.clear();
+		mSensorMap = new TreeMap<Integer, SensorDetails>();
 		for(int sensorMapKey:sensorMapRef.keySet()){
 			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef){
@@ -319,7 +319,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 
 	public void updateSensorDetailsWithChannels(SensorDetails sensorDetails, Map<String, ChannelDetails> channelMapRef){
-		for(String channelKey:sensorDetails.mSensorDetails.mListOfChannelsRef){
+		for(String channelKey:sensorDetails.mSensorDetailsRef.mListOfChannelsRef){
 			ChannelDetails channelDetails = channelMapRef.get(channelKey);
 			if(channelDetails!=null){
 				sensorDetails.mListOfChannels.add(channelDetails);

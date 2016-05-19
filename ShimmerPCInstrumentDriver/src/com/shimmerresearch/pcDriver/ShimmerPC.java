@@ -791,7 +791,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public String getChannelLabel(int sensorKey) {
 		SensorDetails sensor = mSensorMap.get(sensorKey);
 	    if(sensor!=null){
-		    return sensor.mSensorDetails.mGuiFriendlyLabel;
+		    return sensor.mSensorDetailsRef.mGuiFriendlyLabel;
 	    }
 		return null;
 	}
@@ -801,7 +801,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
 		SensorDetails sensor = mSensorMap.get(sensorKey);
 	    if(sensor!=null){
-		    return sensor.mSensorDetails.mListOfCompatibleVersionInfo;
+		    return sensor.mSensorDetailsRef.mListOfCompatibleVersionInfo;
 	    }
 		return null;
 	}

@@ -24,9 +24,11 @@ import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.ShimmerClock;
 
 public class Shimmer4 extends ShimmerDevice {
@@ -57,9 +59,11 @@ public class Shimmer4 extends ShimmerDevice {
 //				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ANY_VERSION, ANY_VERSION, ANY_VERSION)){
 //			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
+			
 //		}
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
@@ -72,6 +76,10 @@ public class Shimmer4 extends ShimmerDevice {
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+		}
+		
+		if(isDerivedSensorsSupported()){
+			mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
 		}
 
 		generateSensorAndParserMaps();
@@ -256,6 +264,16 @@ public class Shimmer4 extends ShimmerDevice {
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 
+		
+		if(generateForWritingToShimmer) {
+			// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
+			// (already set to 0xFF at start of method but just incase)
+			System.arraycopy(infoMemLayout.invalidMacId, 0, mInfoMemBytes, infoMemLayout.idxMacAddress, infoMemLayout.lengthMacIdBytes);
+
+			//TODO only temporarily here to deal with fake Shimmer4 (i.e., a Shimmer3)
+			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
+		}
+		
 		return mInfoMemBytes;
 	}
 
@@ -315,7 +333,7 @@ public class Shimmer4 extends ShimmerDevice {
 			@Override
 			public void eventNewPacket(byte[] packetByteArray) {
 				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
-				buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH);
+				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH);
 			}
 
 			@Override
@@ -389,6 +407,7 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
+	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
 	private void readInfoMem(){
 		mInfoMemBuffer = new byte[mInfoMemLayout.calculateInfoMemByteLength()];
 		int size = mInfoMemLayout.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
@@ -432,6 +451,7 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
+	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
 	public void toggleLed() {
 		byte[] instructionLED = {LiteProtocolInstructionSet.InstructionsSet.TOGGLE_LED_COMMAND_VALUE};
 		mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionLED);
