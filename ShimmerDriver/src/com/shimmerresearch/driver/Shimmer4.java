@@ -128,7 +128,7 @@ public class Shimmer4 extends ShimmerDevice {
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
 				byte[] instructionHW = {LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE};
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionHW);
-				CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.CONNECTED, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
+				CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.CONNECTING, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
 				sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 				
 			}
@@ -137,6 +137,7 @@ public class Shimmer4 extends ShimmerDevice {
 			public void disconnected() {
 				// TODO Auto-generated method stub
 				mIsConnected = false;
+				mIsInitialised = false;
 				CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.DISCONNECTED, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
 				sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 			}
@@ -179,6 +180,9 @@ public class Shimmer4 extends ShimmerDevice {
 						setShimmerInfoMemBytes(mInfoMemBuffer);
 						infoMemByteArrayParse(mInfoMemBuffer);
 						String comPort = ((SerialPortComm)mShimmerRadioHWLiteProtocol.mSerialPort).mAddress;
+						mIsInitialised = true;
+						CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.CONNECTED, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
+						sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject2);
 						CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_FULLY_INITIALIZED, mMacIdFromUart, comPort);
 						sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 					}
