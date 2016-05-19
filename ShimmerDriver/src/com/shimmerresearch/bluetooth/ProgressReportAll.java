@@ -12,7 +12,9 @@ import java.util.List;
 
 
 
+
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.Shimmer4;
 import com.shimmerresearch.driver.ShimmerDevice;
 //import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
@@ -25,6 +27,9 @@ import com.shimmerresearch.driver.ShimmerObject;
 //TODO remove unnecessary code carried over from dock progress details
 public class ProgressReportAll implements Serializable {
 
+	/** * */
+	private static final long serialVersionUID = 2543348738920447317L;
+	
 	public List<ShimmerDevice> mListOfShimmers;
 	public LinkedHashMap<String, ProgressReportPerDevice> mMapOfOperationProgressInfo = new LinkedHashMap<String, ProgressReportPerDevice>();
 	
@@ -59,7 +64,14 @@ public class ProgressReportAll implements Serializable {
 		
 		mMapOfOperationProgressInfo.clear();
 		for(ShimmerDevice shimmer:lso){
-			mMapOfOperationProgressInfo.put(((ShimmerBluetooth)shimmer).getComPort(), new ProgressReportPerDevice(shimmer, currentOperationBtState, 1));
+			String comPort = "";
+			if(shimmer instanceof ShimmerBluetooth){
+				comPort = ((ShimmerBluetooth)shimmer).getComPort();
+			}
+			else if(shimmer instanceof Shimmer4){
+				comPort = ((Shimmer4)shimmer).getComPort();
+			}
+			mMapOfOperationProgressInfo.put(comPort, new ProgressReportPerDevice(shimmer, currentOperationBtState, 1));
 		}
 		updateProgressTotal();
 	}
