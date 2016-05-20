@@ -106,8 +106,8 @@ public abstract class AbstractSensor implements Serializable{
     	//NOT USED IN THIS CLASS
     	return false;
     }
-	public void handleSpecCasesAfterSensorMapUpdate(){
-		//NOT USED IN THIS CLASS
+	public void handleSpecCasesAfterSensorMapUpdate() {
+		//NOT IN THIS CLASS
 	}
 
 	
@@ -369,6 +369,7 @@ public abstract class AbstractSensor implements Serializable{
 			sensorDetails.updateSensorDetailsWithCommsTypes(listOfSupportedCommsTypes);
 		}
 	}
+
 
 
 }
