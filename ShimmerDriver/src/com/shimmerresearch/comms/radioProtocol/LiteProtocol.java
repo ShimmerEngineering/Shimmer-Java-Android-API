@@ -204,7 +204,10 @@ public class LiteProtocol extends ByteLevelProtocol{
 								if (mCurrentCommand==LiteProtocolInstructionSet.InstructionsSet.STOP_SDBT_COMMAND_VALUE){
 									mIsSDLogging = false;
 								}
+								mProtocolListener.eventAckReceived((byte[]) getListofInstructions().get(0)); //DUMMY
+								mProtocolListener.hasStopStreaming();
 								getListofInstructions().removeAll(Collections.singleton(null));
+								
 							} 
 							else {
 								/*

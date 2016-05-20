@@ -179,7 +179,7 @@ public class GuiTestShimmer4 extends JPanel {
         });
         
         txtCom = new JTextField();
-        txtCom.setText("COM65");
+        txtCom.setText("COM89");
         shimmerPanel.add(txtCom);
         txtCom.setColumns(1);
         btnConnect.setText("Connect");
@@ -208,6 +208,14 @@ public class GuiTestShimmer4 extends JPanel {
 				}
         	}
         });
+        
+        JButton btnStop = new JButton("Stop");
+        btnStop.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.stopStreaming();
+        	}
+        });
+        shimmerPanel.add(btnStop);
         shimmerPanel.add(btnNewButton);
         
         JPanel topHalf = new JPanel();

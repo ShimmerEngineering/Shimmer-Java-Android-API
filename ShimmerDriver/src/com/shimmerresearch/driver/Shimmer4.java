@@ -314,7 +314,6 @@ public class Shimmer4 extends ShimmerDevice {
 			@Override
 			public void connected() {
 				setBluetoothRadioState(BT_STATE.CONNECTING);
-				mIsConnected = true;
 				// TODO Auto-generated method stub
 				byte[] instructionFW = {LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
@@ -325,8 +324,6 @@ public class Shimmer4 extends ShimmerDevice {
 			@Override
 			public void disconnected() {
 				// TODO Auto-generated method stub
-				mIsConnected = false;
-				mIsInitialised = false;
 				setBluetoothRadioState(BT_STATE.DISCONNECTED);
 			}
 
@@ -385,12 +382,15 @@ public class Shimmer4 extends ShimmerDevice {
 					// store current address/InfoMem segment
 					mCurrentInfoMemAddress = ((instructionSent[3]&0xFF)<<8)+(instructionSent[2]&0xFF);
 					mCurrentInfoMemLengthToRead = (instructionSent[1]&0xFF);
+				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE){
+					setBluetoothRadioState(BT_STATE.STREAMING);
+				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE){
+					setBluetoothRadioState(BT_STATE.CONNECTED);
 				}
 			}
 
 			});
 			if (mShimmerRadioHWLiteProtocol.mSerialPort.isConnected()){
-				mIsConnected = true;
 				// TODO Auto-generated method stub
 				byte[] instructionFW = {LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
@@ -459,9 +459,23 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	protected void setBluetoothRadioState(BT_STATE state){
+		if (state.equals(BT_STATE.CONNECTED)){
+			mIsConnected = true;
+			mIsStreaming = false;
+		} else if (state.equals(BT_STATE.DISCONNECTED)){
+			mIsConnected = false;
+			mIsStreaming = false;
+			mIsInitialised = false;
+		} else if (state.equals(BT_STATE.STREAMING)){
+			mIsStreaming = true;
+		} else if (state.equals(BT_STATE.CONNECTING)){
+			mIsConnected = true;
+		}
 		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE,state, getMacIdFromUart(), ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress);
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject2);
-		mBluetoothRadioState = state;
+		mBluetoothRadioState = state;		
+		
+		
 	}
 	
 	/**
