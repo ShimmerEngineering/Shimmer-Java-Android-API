@@ -15,6 +15,11 @@ public class UtilParseData {
 		int iData=0;
 		long formattedData=0;
 		
+		//TODO simplify significantly with:
+		//1) a single for loop looping over the required number of bytes
+		//2) an if statement to change the order of the bytes if required
+		//3) an if statement to calculate the twos complement if required
+		
 		if (dataType==CHANNEL_DATA_TYPE.UINT8) {
 			formattedData=(int)0xFF & data[iData];
 			iData=iData+1;

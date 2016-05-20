@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
@@ -77,9 +78,31 @@ public class SensorBMP180 extends AbstractSensor {
 	//--------- Sensor specific variables end --------------
 
 	//--------- Bluetooth commands start --------------
+	public static final byte SET_BMP180_PRES_RESOLUTION_COMMAND 	= (byte) 0x52;
+	public static final byte BMP180_PRES_RESOLUTION_RESPONSE 		= (byte) 0x53;
+	public static final byte GET_BMP180_PRES_RESOLUTION_COMMAND 	= (byte) 0x54;
+	public static final byte SET_BMP180_PRES_CALIBRATION_COMMAND	= (byte) 0x55;
+	public static final byte BMP180_PRES_CALIBRATION_RESPONSE 		= (byte) 0x56;
 	public static final byte GET_BMP180_PRES_CALIBRATION_COMMAND 	= (byte) 0x57;
 	public static final byte BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = (byte) 0x58;
 	public static final byte GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND = (byte) 0x59;
+	
+    public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+    static {
+        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+        aMap.put(GET_BMP180_PRES_RESOLUTION_COMMAND, new BtCommandDetails(GET_BMP180_PRES_RESOLUTION_COMMAND, "GET_BMP180_PRES_RESOLUTION_COMMAND", BMP180_PRES_RESOLUTION_RESPONSE));
+        aMap.put(GET_BMP180_PRES_CALIBRATION_COMMAND, new BtCommandDetails(GET_BMP180_PRES_CALIBRATION_COMMAND, "GET_BMP180_PRES_CALIBRATION_COMMAND", BMP180_PRES_CALIBRATION_RESPONSE));
+        aMap.put(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND, new BtCommandDetails(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND, "GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND", BMP180_CALIBRATION_COEFFICIENTS_RESPONSE));
+        mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+    }
+
+    public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+    static {
+        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+        aMap.put(SET_BMP180_PRES_RESOLUTION_COMMAND, new BtCommandDetails(SET_BMP180_PRES_RESOLUTION_COMMAND, "SET_BMP180_PRES_RESOLUTION_COMMAND"));
+        aMap.put(SET_BMP180_PRES_CALIBRATION_COMMAND, new BtCommandDetails(SET_BMP180_PRES_CALIBRATION_COMMAND, "SET_BMP180_PRES_CALIBRATION_COMMAND"));
+        mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+    }
 	//--------- Bluetooth commands end --------------
 	
 	//--------- Configuration options start --------------
@@ -199,12 +222,12 @@ public class SensorBMP180 extends AbstractSensor {
 			}
 		}
 		
-//		//Debugging
-//		double pressUncal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.PRESSURE_BMP180), CHANNEL_TYPE.UNCAL.toString())).mData;
-//		double tempUncal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.TEMPERATURE_BMP180), CHANNEL_TYPE.UNCAL.toString())).mData;
-//		double pressCal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.PRESSURE_BMP180), CHANNEL_TYPE.CAL.toString())).mData;
-//		double tempCal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(ObjectClusterSensorName.TEMPERATURE_BMP180), CHANNEL_TYPE.CAL.toString())).mData;
-//		System.out.println("Press UNCAL:" + pressUncal + "\tCAL:" + pressCal + "\tTemp UNCAL:" + tempUncal + "\tCAL:" + tempCal);
+		//Debugging
+		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+				new String[]{ObjectClusterSensorName.PRESSURE_BMP180, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.TEMPERATURE_BMP180, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.PRESSURE_BMP180, CHANNEL_TYPE.CAL.toString()}, 
+				new String[]{ObjectClusterSensorName.TEMPERATURE_BMP180, CHANNEL_TYPE.CAL.toString()}));
 		
 		return objectCluster;
 	}

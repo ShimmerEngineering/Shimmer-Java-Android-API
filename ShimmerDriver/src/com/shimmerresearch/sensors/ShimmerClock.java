@@ -6,10 +6,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -30,6 +32,11 @@ public class ShimmerClock extends AbstractSensor {
 	private static final long serialVersionUID = 4841055784366989272L;
 
 	//--------- Sensor specific variables start --------------
+	protected boolean mFirstTime = true;
+	double mFirstRawTS = 0;
+	public int OFFSET_LENGTH = 9;
+	protected long mInitialTimeStamp = 0;
+	protected long mRTCOffset = 0; //this is in ticks
 	//--------- Sensor specific variables end --------------
 
 	//--------- Bluetooth commands start --------------
@@ -100,7 +107,7 @@ public class ShimmerClock extends AbstractSensor {
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
 		}
 		
-		super.createLocalSensorMap(mSensorMapRef, channelMapRef);
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 	}
 
 	@Override
@@ -115,7 +122,105 @@ public class ShimmerClock extends AbstractSensor {
 	
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-		//NOT USED IN THIS CLASS
+
+		//TODO
+////		int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
+//		if(mFirstTime && fwType == FW_TYPE_SD){
+//			//this is to make sure the Raw starts from zero
+//			mFirstRawTS = (double)newPacketInt[iTimeStamp];
+//			mFirstTime = false;
+//		}
+//		double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
+//
+//		//TIMESTAMP
+//		if (fwType == FW_TYPE_SD){
+//			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
+//			double unwrappedrawtimestamp = calibratedTS*32768/1000;
+//			if (mShimmerVerObject.getFirmwareVersionMajor() ==0 && mShimmerVerObject.getFirmwareVersionMinor()==5){
+//				
+//			} else {
+//				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
+//			}
+//			long sdlograwtimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp;
+//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)sdlograwtimestamp));
+//			
+//			uncalibratedData[iTimeStamp] = (double)sdlograwtimestamp;
+//			if (mShimmerVerObject.getFirmwareVersionMajor() ==0 && mShimmerVerObject.getFirmwareVersionMinor()==5){
+//				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
+//			}
+//			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
+//
+//			if (mEnableCalibration){
+//				double sdlogcaltimestamp = (double)sdlograwtimestamp/32768*1000;
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,sdlogcaltimestamp));
+//				calibratedData[iTimeStamp] = sdlogcaltimestamp;
+//				calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
+//			}
+//		} 
+//		else if (fwType == FW_TYPE_BT){
+//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]));
+//			uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
+//			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
+//			if (mEnableCalibration){
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS));
+//				calibratedData[iTimeStamp] = calibratedTS;
+//				calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
+//				objectCluster.mShimmerCalibratedTimeStamp = calibratedTS;
+//			}
+//		}
+//
+//		//RAW RTC
+//		if ((fwType == FW_TYPE_SD) && mRTCOffset!=0) {
+////		if (fwType == FW_TYPE_SD) {
+//			double unwrappedrawtimestamp = calibratedTS*32768/1000;
+//			unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
+//			long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCOffset;
+//			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)rtctimestamp));
+//			uncalibratedData[sensorNames.length-1] = (double)rtctimestamp;
+//			uncalibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.CLOCK_UNIT;
+//			sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
+//			if (mEnableCalibration){
+//				double rtctimestampcal = calibratedTS;
+//				if(mInitialTimeStamp!=0){
+//					rtctimestampcal += ((double)mInitialTimeStamp/32768.0*1000.0);
+//				}
+//				if(mRTCOffset!=0){
+//					rtctimestampcal += ((double)mRTCOffset/32768.0*1000.0);
+//				}
+//				if(mFirstRawTS!=0){
+//					rtctimestampcal -= (mFirstRawTS/32768.0*1000.0);
+//				}
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,rtctimestampcal));
+//				calibratedData[sensorNames.length-1] = rtctimestampcal;
+//				calibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.MILLISECONDS;
+//			}
+//		}
+//
+//		//OFFSET
+//		if(timeSync==1 && (fwType == FW_TYPE_SD)){
+//			int iOffset=getSignalIndex("Offset"); //find index
+//			double offsetValue = Double.NaN;
+//			if (OFFSET_LENGTH==9){
+//				if(newPacketInt[iOffset] == 1152921504606846975L){
+//					offsetValue=Double.NaN;
+//				} else {
+//					offsetValue=(double)newPacketInt[iOffset];
+//				}	
+//			}
+//			else{
+//				if(newPacketInt[iOffset] == 4294967295L){ //this is 4 bytes
+//					offsetValue=Double.NaN;
+//				} else {
+//					offsetValue=(double)newPacketInt[iOffset];
+//				}
+//			}
+//
+//			objectCluster.mPropertyCluster.put("Offset",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue));
+//			uncalibratedData[iOffset] = offsetValue;
+//			calibratedData[iOffset] = Double.NaN;
+//			uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
+//			calibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
+//		} 
 		return objectCluster;
 	}
 

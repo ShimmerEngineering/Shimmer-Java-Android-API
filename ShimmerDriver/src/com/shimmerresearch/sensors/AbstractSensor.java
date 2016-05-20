@@ -10,9 +10,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -357,6 +359,28 @@ public abstract class AbstractSensor implements Serializable{
 		for(SensorDetails sensorDetails:mSensorMap.values()){
 			sensorDetails.updateSensorDetailsWithCommsTypes(listOfSupportedCommsTypes);
 		}
+	}
+	
+	/** Quickly implemented method to print channel data to the console
+	 * @param objectCluster 
+	 * @param listOfChannelOCNAndType a list of channel objectClusterNames to print to the console
+	 */
+	public void consolePrintChannelsCal(ObjectCluster objectCluster, List<String[]> listOfChannelOCNAndType) {
+		String textToPrint = "";
+		for(String[] channelOCN:listOfChannelOCNAndType){
+			textToPrint += channelOCN[0] + "_" + channelOCN[1] + ":";
+			FormatCluster formatCluster = (FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelOCN[0]), channelOCN[1]);
+			if(formatCluster==null){
+				textToPrint += "null";
+			}
+			else {
+				double tempCal = formatCluster.mData;
+				textToPrint += tempCal;
+			}
+			textToPrint += "\t";
+		}
+		//TODO use the consolePrintLn system 
+		System.out.println(textToPrint);
 	}
 
 

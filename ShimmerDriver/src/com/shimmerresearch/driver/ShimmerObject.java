@@ -818,26 +818,26 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 *  Future hardware which WON'T be using this will start with ShimmerGQ HW. 
 	 * 
 	 * @param newPacket
-	 * @param fwIdentifier
+	 * @param fwType
 	 * @param timeSync
 	 * @param pctimestamp this is only used by shimmerbluetooth, set to -1 if not using
 	 * @return
 	 * @throws Exception
 	 */
-	protected ObjectCluster buildMsg(byte[] newPacket, int fwIdentifier, int timeSync, long pctimestamp) throws Exception {
+	protected ObjectCluster buildMsg(byte[] newPacket, int fwType, int timeSync, long pctimestamp) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
 		
 		objectCluster.mMyName = mShimmerUserAssignedName;
 		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
 		objectCluster.mRawData = newPacket;
 		long systemTime = System.currentTimeMillis();
-		if(fwIdentifier == FW_TYPE_BT){
+		if(fwType == FW_TYPE_BT){
 			systemTime = pctimestamp;
 		}
 		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 		objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime));
 		
-		if(fwIdentifier != FW_TYPE_BT && fwIdentifier != FW_TYPE_SD){
+		if(fwType != FW_TYPE_BT && fwType != FW_TYPE_SD){
 			throw new Exception("The Firmware is not compatible");
 		}
 		
@@ -848,7 +848,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int numSensorNames = mNChannels;
 		int numAdditionalChannels = 0;
 		
-		if (fwIdentifier == FW_TYPE_BT){
+		if (fwType == FW_TYPE_BT){
 			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 			//plus 1 because of: timestamp
 			numAdditionalChannels += 1;
@@ -870,7 +870,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		}
 		
-		if (fwIdentifier == FW_TYPE_BT){ // Here so as not to mess with ShimmerSDLog
+		if (fwType == FW_TYPE_BT){ // Here so as not to mess with ShimmerSDLog
 			//for ECG LL-LA Channel added&calculated in API
 			if(isEXGUsingDefaultECGConfiguration()){
 				numAdditionalChannels += 1;
@@ -897,7 +897,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				|| getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_LR || getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_NR || getHardwareVersion()==HW_ID.SHIMMER_2R_GQ){
 			
 			int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
-			if(mFirstTime && fwIdentifier == FW_TYPE_SD){
+			if(mFirstTime && fwType == FW_TYPE_SD){
 				//this is to make sure the Raw starts from zero
 				mFirstRawTS = (double)newPacketInt[iTimeStamp];
 				mFirstTime = false;
@@ -905,7 +905,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
 
 			//TIMESTAMP
-			if (fwIdentifier == FW_TYPE_SD){
+			if (fwType == FW_TYPE_SD){
 				// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
 				double unwrappedrawtimestamp = calibratedTS*32768/1000;
 				if (getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==5){
@@ -929,7 +929,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
 				}
 			} 
-			else if (fwIdentifier == FW_TYPE_BT){
+			else if (fwType == FW_TYPE_BT){
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]));
 				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
@@ -942,7 +942,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//RAW RTC
-			if ((fwIdentifier == FW_TYPE_SD) && mRTCOffset!=0) {
+			if ((fwType == FW_TYPE_SD) && mRTCOffset!=0) {
 //			if (fwIdentifier == FW_TYPE_SD) {
 				double unwrappedrawtimestamp = calibratedTS*32768/1000;
 				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
@@ -969,7 +969,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//OFFSET
-			if(timeSync==1 && (fwIdentifier == FW_TYPE_SD)){
+			if(timeSync==1 && (fwType == FW_TYPE_SD)){
 				int iOffset=getSignalIndex("Offset"); //find index
 				double offsetValue = Double.NaN;
 				if (OFFSET_LENGTH==9){
@@ -1001,8 +1001,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//first get raw and calibrated data, this is data derived from the Shimmer device and involves no involvement from the API
 
 			//XXX-RS-AA-SensorClass?
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.ACCEL_LN) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_LN) > 0)){
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.ACCEL_LN) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_LN) > 0)){
 				int iAccelX=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_LN_X); //find index
 				int iAccelY=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y); //find index
 				int iAccelZ=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z); //find index
@@ -1064,8 +1064,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			//XXX-RS-LSM-SensorClass?
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.ACCEL_WR) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.ACCEL_WR) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0)
 					){
 				int iAccelX=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_WR_X); //find index
 				int iAccelY=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y); //find index
@@ -1132,8 +1132,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					}	
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.GYRO) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GYRO) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.GYRO) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GYRO) > 0)
 					) {
 				int iGyroX=getSignalIndex(Shimmer3.ObjectClusterSensorName.GYRO_X);
 				int iGyroY=getSignalIndex(Shimmer3.ObjectClusterSensorName.GYRO_Y);
@@ -1207,8 +1207,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			}
 			//XXX-RS-LSM-SensorClass?
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.MAG) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MAG) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.MAG) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MAG) > 0)
 					) {
 				int iMagX=getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_X);
 				int iMagY=getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_Y);
@@ -1266,8 +1266,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.BATTERY) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.BATTERY) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.BATTERY) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.BATTERY) > 0)
 					) {
 				int iBatt = getSignalIndex(Shimmer3.ObjectClusterSensorName.BATTERY);
 				tempData[0] = (double)newPacketInt[iBatt];
@@ -1282,8 +1282,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					checkBattery();
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A7) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A7) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A7) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A7) > 0)
 					) {
 				int iA7 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7);
 				tempData[0] = (double)newPacketInt[iA7];
@@ -1296,8 +1296,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]));
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A6) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A6) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A6) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A6) > 0)
 					) {
 				int iA6 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6);
 				tempData[0] = (double)newPacketInt[iA6];
@@ -1310,8 +1310,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA6]));
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A15) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A15) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A15) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXT_EXP_A15) > 0)
 					) {
 				int iA15 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15);
 				tempData[0] = (double)newPacketInt[iA15];
@@ -1325,8 +1325,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA15]));
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A1) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A1) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A1) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A1) > 0)
 					) {
 					int iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1);
 					tempData[0] = (double)newPacketInt[iA1];
@@ -1361,8 +1361,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						}
 					}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A12) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A12) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A12) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A12) > 0)
 					) {
 				int iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12);
 				tempData[0] = (double)newPacketInt[iA12];
@@ -1388,8 +1388,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A13) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A13) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A13) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A13) > 0)
 					) {
 				int iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
 				tempData[0] = (double)newPacketInt[iA13];
@@ -1414,8 +1414,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iA13] = CHANNEL_UNITS.MILLIVOLTS;
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A14) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A14) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.INT_EXP_A14) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A14) > 0)
 					) {
 				int iA14 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14);
 				tempData[0] = (double)newPacketInt[iA14];
@@ -1443,8 +1443,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 			//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
-			if (((fwIdentifier == FW_TYPE_BT)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && mOrientationEnabled )
-					||((fwIdentifier == FW_TYPE_SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && mOrientationEnabled )){
+			if (((fwType == FW_TYPE_BT)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && mOrientationEnabled )
+					||((fwType == FW_TYPE_SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && mOrientationEnabled )){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
 						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
@@ -1466,8 +1466,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_24BIT) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_24BIT) > 0)
 					){
 				int iexg1ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT);
 				int iexg1ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT);
@@ -1531,8 +1531,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG2_24BIT) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG2_24BIT) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG2_24BIT) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG2_24BIT) > 0)
 					){
 				int iexg2ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT);
 				int iexg2ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT);
@@ -1596,8 +1596,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)
 					){
 				int iexg1ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT);
 				int iexg1ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT);
@@ -1660,8 +1660,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 			}
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG2_16BIT) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG2_16BIT) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG2_16BIT) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG2_16BIT) > 0)
 					){
 				int iexg2ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT);
 				int iexg2ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT);
@@ -1725,8 +1725,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.BMP180) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.BMP180) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.BMP180) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.BMP180) > 0)
 					){
 				int iUT = getSignalIndex(Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180);
 				int iUP = getSignalIndex(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180);
@@ -1750,8 +1750,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.BRIDGE_AMP) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.BRIDGE_AMP) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.BRIDGE_AMP) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.BRIDGE_AMP) > 0)
 					) {
 				int iBAHigh = getSignalIndex(Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH);
 				int iBALow = getSignalIndex(Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW);
@@ -1773,12 +1773,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			
-			if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.GSR) > 0) 
-					|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GSR) > 0)
+			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.GSR) > 0) 
+					|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GSR) > 0)
 					) {
 				int iGSR = getSignalIndex(Shimmer3.ObjectClusterSensorName.GSR);
 				double p1=0,p2=0;//,p3=0,p4=0,p5=0;
-				if (fwIdentifier == FW_TYPE_SD && getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==9){
+				if (fwType == FW_TYPE_SD && getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==9){
 					tempData[0] = (double)newPacketInt[iGSR];
 					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 					int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
@@ -1921,7 +1921,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GYRO_MPU_MPL) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.GYRO_MPU_MPL) > 0)){
 				int iGyroX = getSignalIndex(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X);
 				int iGyroY = getSignalIndex(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y);
 				int iGyroZ = getSignalIndex(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z);
@@ -1939,7 +1939,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iGyroZ] = CHANNEL_UNITS.NO_UNITS;
 			}
 
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_MPU_MPL) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_MPU_MPL) > 0)){
 				int iAccelX = getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X);
 				int iAccelY = getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y);
 				int iAccelZ = getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z);
@@ -1963,7 +1963,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iAccelZ] = CHANNEL_UNITS.NO_UNITS;
 			}
 
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MAG_MPU_MPL) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MAG_MPU_MPL) > 0)){
 				int iMagX = getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X);
 				int iMagY = getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y);
 				int iMagZ = getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z);
@@ -1981,7 +1981,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iMagZ] = CHANNEL_UNITS.NO_UNITS;
 			}
 
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_QUAT_6DOF) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_QUAT_6DOF) > 0)){
 				int iQW = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_W);
 				int iQX = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_X);
 				int iQY = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Y);
@@ -2003,7 +2003,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iQY] = CHANNEL_UNITS.NO_UNITS;
 				calibratedDataUnits[iQZ] = CHANNEL_UNITS.NO_UNITS;
 			}
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_TEMPERATURE) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_TEMPERATURE) > 0)){
 				int iT = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE);
 				calibratedData[iT] = (double)newPacketInt[iT]/Math.pow(2, 16);
 				calibratedDataUnits[iT] = CHANNEL_UNITS.DEGREES_CELSUIS;
@@ -2011,7 +2011,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iT] = CHANNEL_UNITS.NO_UNITS;
 			}
 			
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_PEDOMETER) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_PEDOMETER) > 0)){
 				int iPedoCnt = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_PEDOM_CNT);
 				int iPedoTime = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_PEDOM_TIME);
 				calibratedData[iPedoCnt] = (double)newPacketInt[iPedoCnt];
@@ -2024,7 +2024,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iPedoTime] = CHANNEL_UNITS.NO_UNITS;
 			}
 			
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_HEADING) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_HEADING) > 0)){
 				int iH = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_HEADING);
 				calibratedData[iH] = (double)newPacketInt[iH]/Math.pow(2, 16);
 				calibratedDataUnits[iH] = CHANNEL_UNITS.DEGREES;
@@ -2034,7 +2034,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			//TODO: separate out tap dir and cnt to two channels 
 			//Bits 7-5 - Direction,	Bits 4-0 - Count
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_TAP) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_TAP) > 0)){
 				int iTap = getSignalIndex(Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT);
 //				calibratedData[iTapCnt] = (double)(newPacketInt[iPedoCnt]&0x1F);
 //				calibratedData[iTapDir] = (double)((newPacketInt[iPedoTime]>>5)&0x07);
@@ -2046,7 +2046,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//TODO: separate out motion and orientation to two channels
 			//Bit 7 - Motion/No motion,	Bits 5-4 - Display Orientation,	Bits 3-1 - Orientation,	Bit 0 - Flip indicator
-			if (((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_MOTION_ORIENT) > 0)){
+			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_MOTION_ORIENT) > 0)){
 				int iMotOrient = getSignalIndex(Shimmer3.ObjectClusterSensorName.MOTIONANDORIENT);
 				calibratedData[iMotOrient] = (double)newPacketInt[iMotOrient];
 				calibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
@@ -2054,7 +2054,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
 			}
 			
-			if ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR_FW) > 0){
+			if ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR_FW) > 0){
 				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR);
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.ECG_TO_HR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]));
 //				uncalibratedData[sigIndex]=(double)newPacketInt[sigIndex];
@@ -2066,10 +2066,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//Additional Channels Offset
 			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels+1; //+1 because timestamp channel appears at the start
 			
-			if (fwIdentifier == FW_TYPE_BT){ // Here so as not to mess with ShimmerSDLog
+			if (fwType == FW_TYPE_BT){ // Here so as not to mess with ShimmerSDLog
 				if(isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
-					if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
-							|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)){
+					if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
+							|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)){
 						
 						int iexg1ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT);
 						int iexg1ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT);
@@ -2089,8 +2089,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 						
 					}
-					else if (((fwIdentifier == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
-							|| ((fwIdentifier == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_24BIT) > 0)){
+					else if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
+							|| ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.EXG1_24BIT) > 0)){
 						
 						int iexg1ch1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT);
 						int iexg1ch2 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT);
@@ -2110,7 +2110,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 			}
-			else if(fwIdentifier == FW_TYPE_SD){
+			else if(fwType == FW_TYPE_SD){
 				if (getHardwareVersion() == HW_ID.SHIMMER_3){
 					if(isEXGUsingDefaultECGConfigurationForSDFW()){
 						//calculate the ECG Derived sensor for SD (LL-LA) and replace it for the ECG Respiration
@@ -2158,7 +2158,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			
-			if(fwIdentifier == FW_TYPE_BT){
+			if(fwType == FW_TYPE_BT){
 				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage));
 				calibratedData[additionalChannelsOffset] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
@@ -2220,7 +2220,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
 
 			//TIMESTAMP
-			if (fwIdentifier == FW_TYPE_BT){
+			if (fwType == FW_TYPE_BT){
 				objectCluster.mPropertyCluster.put(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]));
 				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
