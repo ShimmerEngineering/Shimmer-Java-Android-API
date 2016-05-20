@@ -36,7 +36,8 @@ public abstract class AbstractSensor implements Serializable{
 		BMP180("BMP180"),
 		KIONIXKXRB52042("Analog Accelerometer"),
 		LSM303("LSM303"),
-		PPG("PPG");
+		PPG("PPG"), 
+		TEMPLATE("Template sensor - not a real sensor of course!");
 		
 	    private final String text;
 
@@ -69,9 +70,9 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 
-	public abstract void setSamplingRateFromFreq();
+	public abstract void setSensorSamplingRate();
 	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean state);
-	/** TODO populate in individual AbstractSensor classes the relevent entries from ShimmerObject */
+	/** TODO populate in individual AbstractSensor classes the relevant entries from ShimmerObject */
 	public abstract boolean checkConfigOptionValues(String stringKey);
 
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);

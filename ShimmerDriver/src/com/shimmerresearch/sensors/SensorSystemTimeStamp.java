@@ -179,7 +179,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 	
 	@Override
-	public void setSamplingRateFromFreq() {
+	public void setSensorSamplingRate() {
 		// TODO Auto-generated method stub
 	}
 

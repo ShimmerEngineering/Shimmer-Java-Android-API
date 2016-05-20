@@ -46,20 +46,11 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	protected static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
 	protected static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 
-//	public class Channel{
-//		public static final int XAAccel     			 = 0x00;
-//		public static final int YAAccel    				 = 0x01;
-//		public static final int ZAAccel     			 = 0x02;
+	//TODO commented - RS (20/5/2016): Keep in Configuration.java for now. 
+//	public class SensorBitmap{
+//		public static final int SENSOR_A_ACCEL			= 0x80;
 //	}
-	
-	public class SensorBitmap{
-		public static final int SENSOR_A_ACCEL			= 0x80;
-	}
-
-//	public class SensorMapKey{
-//		public static final int SHIMMER_A_ACCEL = 0;
-//	}
-	
+//	
 	
 	public class GuiLabelConfig{
 		public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = "Low Noise Accel Default Calibration";
@@ -104,8 +95,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	//--------- Sensor info start --------------
 	public static final SensorDetailsRef sensorKionixKXRB52042 = new SensorDetailsRef(
-			SensorBitmap.SENSOR_A_ACCEL, 
-			SensorBitmap.SENSOR_A_ACCEL, 
+			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 
+			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 
 			GuiLabelSensors.ACCEL_LN,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			null,
@@ -188,7 +179,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXRB52042));
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 		}
 		super.updateSensorGroupingMap();	
 	}
@@ -278,7 +269,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	
 	@Override
-	public void setSamplingRateFromFreq() {
+	public void setSensorSamplingRate() {
 		// No data rate setting.
 	}
 	
@@ -286,6 +277,16 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
+			//XXX Return true if mSensorMap contains sensorMapKey regardless of the fact there a no configuration options?
+			return true;
+		}
+		return false;
+	}
+	
+	
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		if(mConfigOptionsMap.containsKey(stringKey)){
 			//XXX Return true if mSensorMap contains sensorMapKey regardless of the fact there a no configuration options?
 			return true;
 		}
@@ -303,21 +304,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		ActionSetting actionsetting = new ActionSetting(commType);
-
-		//TODO RS - Implement rest of this method.
-		
+		//TODO RS - Implement rest of this method.		
 		return actionsetting;
-	}
-
-	
-	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
-		if(mConfigOptionsMap.containsKey(stringKey)){
-			//XXX Return true if mSensorMap contains sensorMapKey regardless of the fact there a no configuration options?
-
-			return true;
-		}
-		return false;
 	}
 	//--------- Abstract methods implemented end --------------
 
@@ -437,7 +425,4 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		return mOffsetVectorAnalogAccel;
 	}
 	//--------- Sensor specific methods end --------------
-
-	//--------- Abstract methods not implemented start --------------
-	//--------- Abstract methods not implemented end --------------	
 }

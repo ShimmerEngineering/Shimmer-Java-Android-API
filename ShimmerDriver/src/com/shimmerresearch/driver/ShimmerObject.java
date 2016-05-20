@@ -4835,18 +4835,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
 	}
 
-	/** 0 = +/-2g, 1 = +/-4g, 2 = +/-8g, 3 = +/- 16g */
-	public int getAccelRange(){//XXX-RS-LSM-SensorClass?
-		return mAccelRange;
-	}
 
 	public int getPressureResolution(){
 		return mPressureResolution;
 	}
 
-	public int getMagRange(){//XXX-RS-LSM-SensorClass?
-		return mMagRange;
-	}
 
 	public int getGSRRange(){
 		return mGSRRange;
@@ -5837,17 +5830,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	//AlignmentMatrixMag, SensitivityMatrixMag, OffsetVectorMag
 
-	public double[][] getAlignmentMatrixMag(){//XXX-RS-LSM-SensorClass?
-		return mAlignmentMatrixMagnetometer;
-	}
 
-	public double[][] getSensitivityMatrixMag(){//XXX-RS-LSM-SensorClass?
-		return mSensitivityMatrixMagnetometer;
-	}
-
-	public double[][] getOffsetVectorMatrixMag(){//XXX-RS-LSM-SensorClass?
-		return mOffsetVectorMagnetometer;
-	}
 
 	public double[][] getAlignmentMatrixGyro(){
 		return mAlignmentMatrixGyroscope;
@@ -5861,32 +5844,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mOffsetVectorGyroscope;
 	}
 
-	//XXX-RS-AA-SensorClass?
-	public double[][] getAlignmentMatrixAccel(){
-		return mAlignmentMatrixAnalogAccel;
-	}
 
-	//XXX-RS-AA-SensorClass?
-	public double[][] getSensitivityMatrixAccel(){
-		return mSensitivityMatrixAnalogAccel;
-	}
-
-	//XXX-RS-AA-SensorClass?
-	public double[][] getOffsetVectorMatrixAccel(){
-		return mOffsetVectorAnalogAccel;
-	}
-
-	public double[][] getAlignmentMatrixWRAccel(){//XXX-RS-LSM-SensorClass?
-		return mAlignmentMatrixWRAccel;
-	}
-
-	public double[][] getSensitivityMatrixWRAccel(){//XXX-RS-LSM-SensorClass?
-		return mSensitivityMatrixWRAccel;
-	}
-
-	public double[][] getOffsetVectorMatrixWRAccel(){//XXX-RS-LSM-SensorClass?
-		return mOffsetVectorWRAccel;
-	}
 	
 	public double[][] getOffsetVectorMPLAccel(){
 		return OffsetVectorMPLAccel;
@@ -6043,94 +6001,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-	/**
-	 * Computes next higher available sensor sampling rate setting based on
-	 * passed in "freq" variable and dependent on whether low-power mode is set.
-	 * 
-	 * @param freq
-	 * @return int the rate configuration setting for the respective sensor
-	 */
-	//XXX-RS-LSM-SensorClass?
-	private int setLSM303AccelRateFromFreq(double freq) {
-		// Unused: 8 = 1.620kHz (only low-power mode), 9 = 1.344kHz (normal-mode) / 5.376kHz (low-power mode)
-		
-		// Check if channel is enabled 
-		if (!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
-			mLSM303DigitalAccelRate = 0; // Power down
-			return mLSM303DigitalAccelRate;
-		}
-		
-		if (!mLowPowerAccelWR){
-			if (freq<=1){
-				mLSM303DigitalAccelRate = 1; // 1Hz
-			} else if (freq<=10){
-				mLSM303DigitalAccelRate = 2; // 10Hz
-			} else if (freq<=25){
-				mLSM303DigitalAccelRate = 3; // 25Hz
-			} else if (freq<=50){
-				mLSM303DigitalAccelRate = 4; // 50Hz
-			} else if (freq<=100){
-				mLSM303DigitalAccelRate = 5; // 100Hz
-			} else if (freq<=200){
-				mLSM303DigitalAccelRate = 6; // 200Hz
-			} else if (freq<=400){
-				mLSM303DigitalAccelRate = 7; // 400Hz
-			} else {
-				mLSM303DigitalAccelRate = 9; // 1344Hz
-			}
-		}
-		else {
-			if (freq>=10){
-				mLSM303DigitalAccelRate = 2; // 10Hz
-			} else {
-				mLSM303DigitalAccelRate = 1; // 1Hz
-			}
-		}
-		return mLSM303DigitalAccelRate;
-	}
-	
-	/**
-	 * Computes next higher available sensor sampling rate setting based on
-	 * passed in "freq" variable and dependent on whether low-power mode is set.
-	 * 
-	 * @param freq
-	 * @return int the rate configuration setting for the respective sensor
-	 */
-	//XXX-RS-LSM-SensorClass?
-	private int setLSM303MagRateFromFreq(double freq) {
-		// Check if channel is enabled 
-		if (!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
-			mLSM303MagRate = 0; // 0.75Hz
-			return mLSM303MagRate;
-		}
-		
-		if (!mLowPowerMag){
-			if (freq<=0.75){
-				mLSM303MagRate = 0; // 0.75Hz
-			} else if (freq<=1){
-				mLSM303MagRate = 1; // 1.5Hz
-			} else if (freq<=3) {
-				mLSM303MagRate = 2; // 3Hz
-			} else if (freq<=7.5) {
-				mLSM303MagRate = 3; // 7.5Hz
-			} else if (freq<=15) {
-				mLSM303MagRate = 4; // 15Hz
-			} else if (freq<=30) {
-				mLSM303MagRate = 5; // 30Hz
-			} else if (freq<=75) {
-				mLSM303MagRate = 6; // 75Hz
-			} else {
-				mLSM303MagRate = 7; // 220Hz
-			}
-		} else {
-			if (freq>=10){
-				mLSM303MagRate = 4; // 15Hz
-			} else {
-				mLSM303MagRate = 1; // 1.5Hz
-			}
-		}		
-		return mLSM303MagRate;
-	}
 	
 
 	
@@ -6186,23 +6056,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mOrientationEnabled = enable;
 	}	
 	
-	/**
-	 * This enables the low power accel option. When not enabled the sampling
-	 * rate of the accel is set to the closest value to the actual sampling rate
-	 * that it can achieve. In low power mode it defaults to 10Hz. Also an
-	 * additional low power mode is used for the LSM303DLHC. This command will
-	 * only supports the following Accel range +4g, +8g , +16g   //XXX-RS-LSM-SensorClass? Where in the datasheet is this mentioned?
-	 * 
-	 * @param enable
-	 */
-	//XXX-RS-LSM-SensorClass?
-	public void setLowPowerAccelWR(boolean enable){
-		mLowPowerAccelWR = enable;
-		mHighResAccelWR = !enable;
 
-		setLSM303AccelRateFromFreq(getSamplingRateShimmer());
-	}
-	
 	/**
 	 * This enables the low-power gyro option. When not enabled the sampling
 	 * rate of the gyro is set to the closest supported value to the actual
@@ -6224,34 +6078,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-	/**
-	 * This enables the low power mag option. When not enabled the sampling rate
-	 * of the mag is set to the closest supported value to the actual sampling
-	 * rate that it can achieve. In low power mode it defaults to 10Hz
-	 * 
-	 * @param enable
-	 */
-	//XXX-RS-LSM-SensorClass?
-	protected void setLowPowerMag(boolean enable){
-		mLowPowerMag = enable;
-		if((getHardwareVersion()==HW_ID.SHIMMER_2)||(getHardwareVersion()==HW_ID.SHIMMER_2R)){
-			if (!mLowPowerMag){
-				if (getSamplingRateShimmer()>=50){
-					mShimmer2MagRate = 6;
-				} else if (getSamplingRateShimmer()>=20) {
-					mShimmer2MagRate = 5;
-				} else if (getSamplingRateShimmer()>=10) {
-					mShimmer2MagRate = 4;
-				} else {
-					mShimmer2MagRate = 3;
-				}
-			} else {
-				mShimmer2MagRate = 4;
-			}
-		} else {
-			setLSM303MagRateFromFreq(getSamplingRateShimmer());
-		}
-	}
+
 	
 	/* Need to override here because ShimmerDevice uses a different sensormap
 	 * (non-Javadoc)
@@ -7891,16 +7718,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public boolean isLowPowerGyroEnabled() {
 		return mLowPowerGyro;
-	}
-	
-	//XXX-RS-AA-SensorClass?
-	public boolean isUsingDefaultLNAccelParam(){
-		return mDefaultCalibrationParametersAccel;
-	}
-	
-	//XXX-RS-AA-SensorClass?
-	public boolean isUsingDefaultAccelParam(){
-		return mDefaultCalibrationParametersAccel;
 	}
 	
 	public boolean isUsingDefaultGyroParam(){
@@ -9596,101 +9413,309 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Deprecated
 	public String parseReferenceElectrodeTotring(int referenceElectrode){
 		String refElectrode = "Unknown";
-		
+
 		if(referenceElectrode==0 && (isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultEMGConfiguration()))
 			refElectrode = "Fixed Potential";
 		else if(referenceElectrode==13 && isEXGUsingDefaultECGConfiguration())
 			refElectrode = "Inverse Wilson CT";
 		else if(referenceElectrode==3 && isEXGUsingDefaultEMGConfiguration())
 			refElectrode = "Inverse of Ch1";
-		
+
 		return refElectrode;
 	}
-	
+
 	@Deprecated
 	public static String parseLeadOffComparatorTresholdToString(int treshold){
-		
+
 		String tresholdString="";
 		switch(treshold){
-			case 0:
-				tresholdString = "Pos:95% - Neg:5%";
+		case 0:
+			tresholdString = "Pos:95% - Neg:5%";
 			break;
-			case 1:
-				tresholdString = "Pos:92.5% - Neg:7.5%";
+		case 1:
+			tresholdString = "Pos:92.5% - Neg:7.5%";
 			break;
-			case 2:
-				tresholdString = "Pos:90% - Neg:10%";
+		case 2:
+			tresholdString = "Pos:90% - Neg:10%";
 			break;
-			case 3:
-				tresholdString = "Pos:87.5% - Neg:12.5%";
+		case 3:
+			tresholdString = "Pos:87.5% - Neg:12.5%";
 			break;
-			case 4:
-				tresholdString = "Pos:85% - Neg:15%";
+		case 4:
+			tresholdString = "Pos:85% - Neg:15%";
 			break;
-			case 5:
-				tresholdString = "Pos:80% - Neg:20%";
+		case 5:
+			tresholdString = "Pos:80% - Neg:20%";
 			break;
-			case 6:
-				tresholdString = "Pos:75% - Neg:25%";
-				break;
-			case 7:
-				tresholdString = "Pos:70% - Neg:30%";
+		case 6:
+			tresholdString = "Pos:75% - Neg:25%";
 			break;
-			default:
-				tresholdString = "Treshold unread";
+		case 7:
+			tresholdString = "Pos:70% - Neg:30%";
+			break;
+		default:
+			tresholdString = "Treshold unread";
 			break;
 		}
-		
+
 		return tresholdString;
 	}
-	
+
 	@Deprecated
 	public static String parseLeadOffModeToString(int leadOffMode){
-		
+
 		String modeString="";
 		switch(leadOffMode){
-			case 0:
-				modeString +="Off";
+		case 0:
+			modeString +="Off";
 			break;
-			case 1:
-				modeString +="DC Current";
+		case 1:
+			modeString +="DC Current";
 			break;
-			case 2:
-				modeString +="AC Current";
+		case 2:
+			modeString +="AC Current";
 			break;
-			default:
-				modeString +="No mode selected";
+		default:
+			modeString +="No mode selected";
 			break;
 		}
-		
+
 		return modeString;
 	}
-	
+
 	@Deprecated
 	public static String parseLeadOffDetectionCurrentToString(int current){
-		
+
 		String currentString="";
 		switch(current){
-			case 0:
-				currentString +="6 nA";
+		case 0:
+			currentString +="6 nA";
 			break;
-			case 1:
-				currentString +="22 nA";
+		case 1:
+			currentString +="22 nA";
 			break;
-			case 2:
-				currentString +="6 uA";
+		case 2:
+			currentString +="6 uA";
 			break;
-			default:
-				currentString +="22 uA";
+		default:
+			currentString +="22 uA";
 			break;
 		}
-		
+
 		return currentString;
 	}
-	
+
 	//-------------------- ExG End -----------------------------------
-	
+
+
+	// ----------- KionixKXRB52042 - Analog Accelerometer start -----------------------------------
+	//XXX-RS-AA-SensorClass?
+	public boolean isUsingDefaultLNAccelParam(){
+		return mDefaultCalibrationParametersAccel;
+	}
+
+	//XXX-RS-AA-SensorClass?
+	public boolean isUsingDefaultAccelParam(){
+		return mDefaultCalibrationParametersAccel;
+	}
+
+	//XXX-RS-AA-SensorClass?
+	public double[][] getAlignmentMatrixAccel(){
+		return mAlignmentMatrixAnalogAccel;
+	}
+
+	//XXX-RS-AA-SensorClass?
+	public double[][] getSensitivityMatrixAccel(){
+		return mSensitivityMatrixAnalogAccel;
+	}
+
+	//XXX-RS-AA-SensorClass?
+	public double[][] getOffsetVectorMatrixAccel(){
+		return mOffsetVectorAnalogAccel;
+	}
+	// ----------- KionixKXRB52042 - Analog Accelerometer end -----------------------------------
+
 	// ----------- LSM303 start -----------------------------------
+	/**
+	 * @param mHighResAccelWR the mHighResAccelWR to set
+	 */
+	//XXX-RS-LSM-SensorClass?
+	public void setHighResAccelWR(boolean mHighResAccelWR) {
+		this.mHighResAccelWR = mHighResAccelWR;
+	}
+
+	/**
+	 * This enables the low power accel option. When not enabled the sampling
+	 * rate of the accel is set to the closest value to the actual sampling rate
+	 * that it can achieve. In low power mode it defaults to 10Hz. Also an
+	 * additional low power mode is used for the LSM303DLHC. This command will
+	 * only supports the following Accel range +4g, +8g , +16g   //XXX-RS-LSM-SensorClass? Where in the datasheet is this mentioned?
+	 * 
+	 * @param enable
+	 */
+	//XXX-RS-LSM-SensorClass?
+	public void setLowPowerAccelWR(boolean enable){
+		mLowPowerAccelWR = enable;
+		mHighResAccelWR = !enable;
+
+		setLSM303AccelRateFromFreq(getSamplingRateShimmer());
+	}
+
+
+	/**
+	 * This enables the low power mag option. When not enabled the sampling rate
+	 * of the mag is set to the closest supported value to the actual sampling
+	 * rate that it can achieve. In low power mode it defaults to 10Hz
+	 * 
+	 * @param enable
+	 */
+	//XXX-RS-LSM-SensorClass?
+	protected void setLowPowerMag(boolean enable){
+		mLowPowerMag = enable;
+		if((getHardwareVersion()==HW_ID.SHIMMER_2)||(getHardwareVersion()==HW_ID.SHIMMER_2R)){
+			if (!mLowPowerMag){
+				if (getSamplingRateShimmer()>=50){
+					mShimmer2MagRate = 6;
+				} else if (getSamplingRateShimmer()>=20) {
+					mShimmer2MagRate = 5;
+				} else if (getSamplingRateShimmer()>=10) {
+					mShimmer2MagRate = 4;
+				} else {
+					mShimmer2MagRate = 3;
+				}
+			} else {
+				mShimmer2MagRate = 4;
+			}
+		} else {
+			setLSM303MagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	
+	//XXX-RS-LSM-SensorClass?
+	public void setDigitalAccelRange(int i){
+		mAccelRange = i;
+	}
+
+	
+	/**
+	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
+	 */
+	//XXX-RS-LSM-SensorClass?
+	public void setLSM303DigitalAccelRate(int mLSM303DigitalAccelRate) {
+		// double check that rate is compatible with LPM (8 not compatible so set to higher rate)
+		if((!isLSM303DigitalAccelLPM()) && (mLSM303DigitalAccelRate==8)) {
+			mLSM303DigitalAccelRate = 9;
+		}
+		this.mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
+	}
+	
+	
+	//XXX-RS-LSM-SensorClass?
+	protected void setLSM303MagRange(int i){
+		mMagRange = i;
+	}
+	
+
+	/**
+	 * @param mLSM303MagRate the mLSM303MagRate to set
+	 */
+	//XXX-RS-LSM-SensorClass?  
+	protected void setLSM303MagRate(int mLSM303MagRate) {
+		this.mLSM303MagRate = mLSM303MagRate;
+	}
+	
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	//XXX-RS-LSM-SensorClass?
+	private int setLSM303AccelRateFromFreq(double freq) {
+		// Unused: 8 = 1.620kHz (only low-power mode), 9 = 1.344kHz (normal-mode) / 5.376kHz (low-power mode)
+		
+		// Check if channel is enabled 
+		if (!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
+			mLSM303DigitalAccelRate = 0; // Power down
+			return mLSM303DigitalAccelRate;
+		}
+		
+		if (!mLowPowerAccelWR){
+			if (freq<=1){
+				mLSM303DigitalAccelRate = 1; // 1Hz
+			} else if (freq<=10){
+				mLSM303DigitalAccelRate = 2; // 10Hz
+			} else if (freq<=25){
+				mLSM303DigitalAccelRate = 3; // 25Hz
+			} else if (freq<=50){
+				mLSM303DigitalAccelRate = 4; // 50Hz
+			} else if (freq<=100){
+				mLSM303DigitalAccelRate = 5; // 100Hz
+			} else if (freq<=200){
+				mLSM303DigitalAccelRate = 6; // 200Hz
+			} else if (freq<=400){
+				mLSM303DigitalAccelRate = 7; // 400Hz
+			} else {
+				mLSM303DigitalAccelRate = 9; // 1344Hz
+			}
+		}
+		else {
+			if (freq>=10){
+				mLSM303DigitalAccelRate = 2; // 10Hz
+			} else {
+				mLSM303DigitalAccelRate = 1; // 1Hz
+			}
+		}
+		return mLSM303DigitalAccelRate;
+	}
+	
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	//XXX-RS-LSM-SensorClass?
+	private int setLSM303MagRateFromFreq(double freq) {
+		// Check if channel is enabled 
+		if (!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
+			mLSM303MagRate = 0; // 0.75Hz
+			return mLSM303MagRate;
+		}
+		
+		if (!mLowPowerMag){
+			if (freq<=0.75){
+				mLSM303MagRate = 0; // 0.75Hz
+			} else if (freq<=1){
+				mLSM303MagRate = 1; // 1.5Hz
+			} else if (freq<=3) {
+				mLSM303MagRate = 2; // 3Hz
+			} else if (freq<=7.5) {
+				mLSM303MagRate = 3; // 7.5Hz
+			} else if (freq<=15) {
+				mLSM303MagRate = 4; // 15Hz
+			} else if (freq<=30) {
+				mLSM303MagRate = 5; // 30Hz
+			} else if (freq<=75) {
+				mLSM303MagRate = 6; // 75Hz
+			} else {
+				mLSM303MagRate = 7; // 220Hz
+			}
+		} else {
+			if (freq>=10){
+				mLSM303MagRate = 4; // 15Hz
+			} else {
+				mLSM303MagRate = 1; // 1.5Hz
+			}
+		}		
+		return mLSM303MagRate;
+	}
+	
 	//XXX-RS-LSM-SensorClass?
 	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
 		if(state) {
@@ -9702,6 +9727,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 		}
 	}
+
 
 	//XXX-RS-LSM-SensorClass?
 	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
@@ -9715,14 +9741,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+
 	/**
-	 * @return the mLSM303DigitalAccelLPM
+	 * @return the mHighResAccelWR
 	 */
 	//XXX-RS-LSM-SensorClass?
-	public boolean isLSM303DigitalAccelLPM() {
-		return mLowPowerAccelWR;
+	public boolean isHighResAccelWR() {
+		return mHighResAccelWR;
 	}
-	
+
 	/**
 	 * @return the mLSM303DigitalAccelHRM
 	 */
@@ -9730,7 +9757,80 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public boolean isLSM303DigitalAccelHRM() {
 		return mHighResAccelWR;
 	}
+
+	/**
+	 * @return the mLowPowerAccelWR
+	 */
+	//XXX-RS-LSM-SensorClass?
+	public boolean isLowPowerAccelWR() {
+		return mLowPowerAccelWR;
+	}
+
+	/**
+	 * @return the mLSM303DigitalAccelLPM
+	 */
+	//XXX-RS-LSM-SensorClass?
+	public boolean isLSM303DigitalAccelLPM() {
+		return mLowPowerAccelWR;
+	}
+
+
+	//XXX-RS-LSM-SensorClass?
+	public boolean isLowPowerAccelEnabled() {
+		return mLowPowerAccelWR;
+	}
+
+
+	//XXX-RS-LSM-SensorClass?
+    public boolean isLowPowerMagEnabled(){
+		return mLowPowerMag;
+	} 
+
 	
+	//XXX-RS-LSM-SensorClass?
+	public boolean isUsingDefaultWRAccelParam(){
+		return mDefaultCalibrationParametersDigitalAccel; 
+	}
+
+
+	//XXX-RS-LSM-SensorClass?
+	public boolean isUsingDefaultMagParam(){
+		return mDefaultCalibrationParametersMag;
+	}
+	
+
+	//XXX-RS-LSM-SensorClass?  Not unique for LSM303
+	public boolean is3DOrientatioEnabled(){
+		return mOrientationEnabled;
+	}
+
+
+	public int getLowPowerAccelEnabled(){//XXX-RS-LSM-SensorClass?
+		if(mLowPowerAccelWR)
+			return 1;
+		else
+			return 0;
+	}
+
+	public int getLowPowerMagEnabled() {//XXX-RS-LSM-SensorClass?
+		if(mLowPowerMag)
+			return 1;
+		else
+			return 0;
+	}
+
+	
+	/** 0 = +/-2g, 1 = +/-4g, 2 = +/-8g, 3 = +/- 16g */
+	public int getAccelRange(){//XXX-RS-LSM-SensorClass?
+		return mAccelRange;
+	}
+
+	
+	public int getMagRange(){//XXX-RS-LSM-SensorClass?
+		return mMagRange;
+	}
+
+
 	/**
 	 * @return the mLSM303MagRate
 	 */
@@ -9747,43 +9847,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mLSM303DigitalAccelRate;
 	}
 
-	public int getLowPowerAccelEnabled(){//XXX-RS-LSM-SensorClass?
-		if(mLowPowerAccelWR)
-			return 1;
-		else
-			return 0;
+
+	public double[][] getAlignmentMatrixWRAccel(){//XXX-RS-LSM-SensorClass?
+		return mAlignmentMatrixWRAccel;
 	}
 
-	public int getLowPowerMagEnabled() {//XXX-RS-LSM-SensorClass?
-		if(mLowPowerMag)
-			return 1;
-		else
-			return 0;
-	}
-	
-	//XXX-RS-LSM-SensorClass?
-    public boolean isLowPowerMagEnabled(){
-		return mLowPowerMag;
+	public double[][] getSensitivityMatrixWRAccel(){//XXX-RS-LSM-SensorClass?
+		return mSensitivityMatrixWRAccel;
 	}
 
-  //XXX-RS-LSM-SensorClass?
-	public boolean is3DOrientatioEnabled(){
-		return mOrientationEnabled;
-	}
-    
-	//XXX-RS-LSM-SensorClass?
-	public boolean isLowPowerAccelEnabled() {
-		return mLowPowerAccelWR;
-	}
-	
-	//XXX-RS-LSM-SensorClass?
-	public boolean isUsingDefaultWRAccelParam(){
-		return mDefaultCalibrationParametersDigitalAccel; 
+	public double[][] getOffsetVectorMatrixWRAccel(){//XXX-RS-LSM-SensorClass?
+		return mOffsetVectorWRAccel;
 	}
 
-	//XXX-RS-LSM-SensorClass?
-	public boolean isUsingDefaultMagParam(){
-		return mDefaultCalibrationParametersMag;
+	public double[][] getAlignmentMatrixMag(){//XXX-RS-LSM-SensorClass?
+		return mAlignmentMatrixMagnetometer;
+	}
+
+	public double[][] getSensitivityMatrixMag(){//XXX-RS-LSM-SensorClass?
+		return mSensitivityMatrixMagnetometer;
+	}
+
+	public double[][] getOffsetVectorMatrixMag(){//XXX-RS-LSM-SensorClass?
+		return mOffsetVectorMagnetometer;
 	}
 
 	/**
@@ -9794,51 +9880,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mSamplingDividerLsm303dlhcAccel;
 	}
 
-	/**
-	 * @return the mHighResAccelWR
-	 */
-	//XXX-RS-LSM-SensorClass?
-	public boolean isHighResAccelWR() {
-		return mHighResAccelWR;
-	}
 
-	/**
-	 * @return the mLowPowerAccelWR
-	 */
-	//XXX-RS-LSM-SensorClass?
-	public boolean isLowPowerAccelWR() {
-		return mLowPowerAccelWR;
-	}
 
-	//XXX-RS-LSM-SensorClass?
-	public void setDigitalAccelRange(int i){
-		mAccelRange = i;
-	}
-
-	//XXX-RS-LSM-SensorClass?
-	protected void setLSM303MagRange(int i){
-		mMagRange = i;
-	}
-
-	/**
-	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
-	 */
-	//XXX-RS-LSM-SensorClass?
-	public void setLSM303DigitalAccelRate(int mLSM303DigitalAccelRate) {
-		// double check that rate is compatible with LPM (8 not compatible so set to higher rate)
-		if((!isLSM303DigitalAccelLPM()) && (mLSM303DigitalAccelRate==8)) {
-			mLSM303DigitalAccelRate = 9;
-		}
-		this.mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
-	}
-	
-	/**
-	 * @param mLSM303MagRate the mLSM303MagRate to set
-	 */
-	//XXX-RS-LSM-SensorClass?  
-	protected void setLSM303MagRate(int mLSM303MagRate) {
-		this.mLSM303MagRate = mLSM303MagRate;
-	}
 
 	// ----------- LSM303 end -----------------------------------
 	
@@ -10445,6 +10488,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				 
 	        	if(!isLSM303DigitalAccelLPM()) {
 		        	if(configValue==8) {
+		        		//TODO:
+		        		/* RS (20/5/2016): Why returning a different value?
+		        		 * In the Set-method the compatibility-check for Accel Rates supported for Low Power Mode is made.
+		        		 * In this get-method the it should just read/get the value, not manipulating it.
+		        		 * */
 		        		configValue = 9;
 		        	}
 	        	}
@@ -10949,13 +10997,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setShimmerVersionObject(sVOFwId);
 	}
 
-	/**
-	 * @param mHighResAccelWR the mHighResAccelWR to set
-	 */
-	//XXX-RS-LSM-SensorClass?
-	public void setHighResAccelWR(boolean mHighResAccelWR) {
-		this.mHighResAccelWR = mHighResAccelWR;
-	}
+
 
 	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
 		setShimmerVersionObject(hwfw);
