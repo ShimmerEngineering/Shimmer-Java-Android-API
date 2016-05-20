@@ -34,7 +34,8 @@ public abstract class AbstractSensor implements Serializable{
 		BMP180("BMP180"),
 		KIONIXKXRB52042("Analog Accelerometer"),
 		LSM303("LSM303"),
-		PPG("PPG");
+		PPG("PPG"), 
+		TEMPLATE("Template sensor - not a real sensor of course!");
 		
 	    private final String text;
 

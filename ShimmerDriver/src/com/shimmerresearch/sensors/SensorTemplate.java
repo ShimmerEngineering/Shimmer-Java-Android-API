@@ -93,7 +93,7 @@ public class SensorTemplate extends AbstractSensor{
 
 			public SensorTemplate(ShimmerVerObject svo) {
 				super(svo);
-				// TODO Auto-generated constructor stub
+				setSensorName(SENSORS.TEMPLATE.toString());
 			}
 	//--------- Constructors for this class end --------------
 
@@ -117,8 +117,13 @@ public class SensorTemplate extends AbstractSensor{
 			 */
 			@Override
 			public void generateSensorMap(ShimmerVerObject svo) {
-				// TODO Auto-generated method stub
-				
+			/** 
+			 *  call one of the two methods:
+			 *  
+			 *  1) super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
+			 *  2) super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
+			 *
+			 */
 			}
 		
 			@Override
