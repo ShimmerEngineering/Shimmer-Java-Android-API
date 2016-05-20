@@ -79,7 +79,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	//for reading the connected devices configuration 
-	//protected Map<String,AbstractAlgorithm> mMapOfAlgorithms = new HashMap<String,AbstractAlgorithm>();
+	protected Map<String,AbstractAlgorithm> mMapOfAlgorithms = new HashMap<String,AbstractAlgorithm>();
 	
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
@@ -1957,7 +1957,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mDerivedSensorsClone=0;
 		
 		// fake data to feed in from non existent GUI
-		List<AlgorithmDetailsNew> fakeGuiData = getListOfCompatibleAlgorithm();
+		List<AlgorithmDetailsNew> fakeGuiData = getListOfCompatibleAlgorithmChannels();
 		for (AlgorithmDetailsNew algoDetails : fakeGuiData) {
 			algoDetails.mEnabled = true;
 			// all algorithm has been switched on
@@ -2022,21 +2022,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	
-	public List<AlgorithmDetailsNew> getListOfCompatibleAlgorithm() {
+	public List<AlgorithmDetailsNew> getListOfCompatibleAlgorithmChannels() {
 		
-	    Map<String, SensorGroupingDetails> sensorGroupingMap = getSensorGroupingMap();
+		//mMapOfSensorClasses
 
 		//returns list of compatible algorithms based on Shimmer hardware 
 		List<AlgorithmDetailsNew> listOfCompatibleAlgorithmChannels = new ArrayList<AlgorithmDetailsNew>();
 		parentLoop:
     	for(AlgorithmDetailsNew algorithmDetails:mAlgorithmChannelsMap.values()) {
+    		
     		//if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
         		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
         			if(mSensorMap.containsKey(sensorMapKey)){
-        				if(mSensorMap.get(sensorMapKey).isEnabled()){
         					listOfCompatibleAlgorithmChannels.add(algorithmDetails);
-        					continue parentLoop;
-        				}
         			}
         		}
     	}
@@ -2116,11 +2114,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 	}
+	*/
 	
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithms(){
 		return mMapOfAlgorithms;
 	}
-	*/
+	
 	
 	
 	
