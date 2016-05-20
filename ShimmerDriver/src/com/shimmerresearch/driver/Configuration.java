@@ -1236,13 +1236,7 @@ public class Configuration {
 					baseGsrUnifiedGqBle, baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP180 = Arrays.asList(
-					baseShimmer4); // May need to add more compatible versions
-
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303 = Arrays.asList(
-					baseShimmer4); // May need to add more compatible versions
-			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXRB52042 = Arrays.asList(
-					baseShimmer4); // May need to add more compatible versions
+					baseShimmer4); // May need to add more compatible versions  
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  

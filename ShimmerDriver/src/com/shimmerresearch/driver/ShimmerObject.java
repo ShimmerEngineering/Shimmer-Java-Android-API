@@ -10445,6 +10445,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				 
 	        	if(!isLSM303DigitalAccelLPM()) {
 		        	if(configValue==8) {
+		        		//TODO:
+		        		/* RS (20/5/2016): Why returning a different value?
+		        		 * In the Set-method the compatibility-check for Accel Rates supported for Low Power Mode is made.
+		        		 * In this get-method the it should just read/get the value, not manipulating it.
+		        		 * */
 		        		configValue = 9;
 		        	}
 	        	}

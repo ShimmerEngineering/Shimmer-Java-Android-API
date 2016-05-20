@@ -1327,7 +1327,7 @@ private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] s
 	
 	
 	@Override
-	public void setSamplingRateFromFreq() {
+	public void setSensorSamplingRate() {
 		// TODO Auto-generated method stub
 		
 	}
