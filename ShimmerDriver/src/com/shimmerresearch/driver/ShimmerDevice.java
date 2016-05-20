@@ -49,6 +49,12 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.SensorEXG;
+import com.shimmerresearch.advance.FilterManager;
+import com.shimmerresearch.advance.TimeSyncFromObjectCluster;
+import com.shimmerresearch.pluginalgo.ECGAdaptiveModule;
+//import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.pluginalgo.ECGAlgorithmModule;
+import com.shimmerresearch.pluginalgo.PPGAlgorithmModule;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -80,7 +86,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	//for reading the connected devices configuration 
 	protected Map<String,AbstractAlgorithm> mMapOfAlgorithms = new HashMap<String,AbstractAlgorithm>();
-	
+	transient FilterManager mFilterManager = null;	
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
 
@@ -993,6 +999,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		else{
 			consolePrintLn("ERROR!!!! Parser map null");
 		}
+		//add in algorithm processing
+		dfd
 		
 		return ojc;
 	}
@@ -2071,7 +2079,197 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfSupportAlgorihmGroups;
 	}
 	
-	/*
+	//added by En 20-5-2016
+	protected void addDerivedSensorAlgorithm(long derived){
+		mMapOfAlgorithms.clear();
+		if ((derived&BTStreamDerivedSensors.PPG_12_13)>0){
+			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13).isEnabled()){
+				PPGAlgorithmModule eam = new PPGAlgorithmModule();
+				eam.setSamplingRate(getSamplingRateShimmer());
+				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+				eam.setSignalName(Shimmer3.ObjectClusterSensorName.PPG_A13);
+				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+				eam.setFiltering(eam.FILTERING_OPTION_DEFAULT);
+				String key = Integer.toString(BTStreamDerivedSensors.PPG_12_13)+"_"+Integer.toString(BTStream.INT_EXP_A13);
+				mMapOfAlgorithms.put(key, eam);
+			}
+			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12).isEnabled()){
+				PPGAlgorithmModule eam = new PPGAlgorithmModule();
+				eam.setSamplingRate(getSamplingRateShimmer());
+				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+				eam.setSignalName(Shimmer3.ObjectClusterSensorName.PPG_A12);
+				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+				eam.setFiltering(eam.FILTERING_OPTION_DEFAULT);
+				String key = Integer.toString(BTStreamDerivedSensors.PPG_12_13)+"_"+Integer.toString(BTStream.INT_EXP_A12);
+				mMapOfAlgorithms.put(key, eam);
+			}
+		}
+		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)>0){
+			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
+				ECGAdaptiveModule eam = new ECGAdaptiveModule();
+				eam.setSamplingRate(getSamplingRateShimmer());
+				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+				String key="";
+				if (getExGResolution()==1){
+					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_24BIT);
+				} else {
+					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_16BIT);
+				}
+				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+				eam.setFiltering(eam.FILTERING_OPTION_NONE);
+				mMapOfAlgorithms.put(key, eam);
+			}
+		}
+		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)>0){
+			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
+				ECGAdaptiveModule eam = new ECGAdaptiveModule();
+				eam.setSamplingRate(getSamplingRateShimmer());
+				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+				String key="";
+				if(getExGResolution()==1){
+					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)+"_"+Integer.toString(BTStream.EXG1_24BIT);
+				} else {
+					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
+					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)+"_"+Integer.toString(BTStream.EXG1_16BIT);
+				}
+				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+				eam.setFiltering(eam.FILTERING_OPTION_NONE);
+				mMapOfAlgorithms.put(key, eam);
+			}
+		}
+		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)>0){
+			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
+				ECGAdaptiveModule eam = new ECGAdaptiveModule();
+				eam.setSamplingRate(getSamplingRateShimmer());
+				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+				String key="";
+				if(getExGResolution()==1){
+					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)+"_"+Integer.toString(BTStream.EXG2_24BIT);
+				} else {
+					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
+					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)+"_"+Integer.toString(BTStream.EXG2_16BIT);
+				}
+				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+				eam.setFiltering(eam.FILTERING_OPTION_NONE);
+				mMapOfAlgorithms.put(key, eam);
+				
+			}
+		}
+	}
+
+	
+	
+	protected void initializeAlgorithms() throws Exception{
+		clearExtraSignalProperties();
+		for (AbstractAlgorithm aa:mMapOfAlgorithms.values()){
+			aa.initialize();
+			String[] outputNameArray = aa.getSignalOutputNameArray();
+			String[] outputFormatArray = aa.getSignalOutputFormatArray();
+			String[] outputUnitArray = aa.getSignalOutputUnitArray();
+
+			for (int i=0;i<outputNameArray.length;i++){
+				String[] prop= new String[4];
+				prop[0] = mShimmerUserAssignedName;
+				prop[1] = outputNameArray[i];
+				prop[2] = outputFormatArray[i];
+				prop[3] = outputUnitArray[i];
+				addExtraSignalProperty(prop);
+			}
+		}
+	}
+	
+	
+	public void InitializeProcessData() {
+		// TODO Auto-generated method stub
+		mFilterManager = new FilterManager();
+		
+		if (mEnableTimeSync){
+			mSync = new TimeSyncFromObjectCluster((int)getSamplingRateShimmer()*mTimeSyncTrainingPeriod);
+		}
+		
+		
+		
+		
+	}
+
+	//@Override
+	protected void initializeDerivedSensors(){
+		//insert map of algorithms here 
+		//TODO
+			addDerivedSensorAlgorithm(mDerivedSensors);
+			
+		try {
+			initializeAlgorithms();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	public ObjectCluster ProcessData(ObjectCluster ojc){
+		try {
+			if (mEnableTimeSync) {
+				ojc = mSync.CalculateTimeSync(ojc);
+			} else {
+				//update to work with consensys 4.3 with time sync switched off
+				ojc.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN));
+	    		String[] sensorNames = new String[ojc.mSensorNames.length+1];
+	    		String[] unitCal = new String[ojc.mUnitCal.length+1];
+	    		String[] unitUncal = new String[ojc.mUnitUncal.length+1];
+	    		double[] uncalData = new double[ojc.mUncalData.length+1];
+	    		double[] calData = new double[ojc.mCalData.length+1];
+	    		System.arraycopy(ojc.mSensorNames, 0, sensorNames, 0, ojc.mSensorNames.length);
+	    		System.arraycopy(ojc.mUnitCal, 0, unitCal, 0, ojc.mUnitCal.length);
+	    		System.arraycopy(ojc.mUnitUncal, 0, unitUncal, 0, ojc.mUnitUncal.length);
+	    		System.arraycopy(ojc.mUncalData, 0, uncalData, 0, ojc.mUncalData.length);
+	    		System.arraycopy(ojc.mCalData, 0, calData, 0, ojc.mCalData.length);
+	    		sensorNames[sensorNames.length-1] = Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;
+	    		unitCal[unitCal.length-1] = CHANNEL_UNITS.MILLISECONDS;
+	    		unitUncal[unitUncal.length-1] = "";
+	    		uncalData[uncalData.length-1] = Double.NaN;
+	    		calData[calData.length-1] = Double.NaN;
+	    		ojc.mSensorNames = sensorNames;
+	    		ojc.mUnitCal = unitCal;
+	    		ojc.mUnitUncal = unitUncal;
+	    		ojc.mUncalData = uncalData;
+	    		ojc.mCalData = calData;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (mFilterManager.hasASignalToFilter()) {
+			try {
+				ojc = mFilterManager.filterData(ojc);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		for (AbstractAlgorithm am:mMapOfAlgorithms.values()){
+			
+			try {
+				ojc = (ObjectCluster)((AlgorithmResultObject) am.processDataRealTime(ojc)).mResult;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		return ojc;
+	}
+	
 
 	public boolean doesAlgorithmAlreadyExist(AbstractAlgorithm obj){
 		for (AbstractAlgorithm aa:mMapOfAlgorithms.values())
@@ -2119,7 +2317,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 	}
-	*/
+	
 	
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithms(){
 		return mMapOfAlgorithms;
