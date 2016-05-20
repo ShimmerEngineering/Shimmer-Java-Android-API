@@ -53,7 +53,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	// --------------- Abstract methods start ----------------
-	/** call either createLocalSensorMap() or createLocalSensorMapWithCustomParser() inside depending if a custom parser is needed. */
+	/** XXX - call either createLocalSensorMap() or createLocalSensorMapWithCustomParser() inside depending if a custom parser is needed. */
 	public abstract void generateSensorMap(ShimmerVerObject svo);
 	public abstract void generateConfigOptionsMap(ShimmerVerObject svo);
 	public abstract void generateSensorGroupMapping(ShimmerVerObject svo);
@@ -69,7 +69,7 @@ public abstract class AbstractSensor implements Serializable{
 
 	public abstract void setSamplingRateFromFreq();
 	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean state);
-	/** TODO populate in individual AbstractSensor classes the relevent entries from ShimmerObject */
+	/** TODO populate in individual AbstractSensor classes the relevant entries from ShimmerObject */
 	public abstract boolean checkConfigOptionValues(String stringKey);
 
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);

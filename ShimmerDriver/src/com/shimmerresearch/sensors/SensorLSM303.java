@@ -30,7 +30,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
  */
 public class SensorLSM303 extends AbstractSensor{
 
-	//TODO - RS: remove these comments that were already in here:
+	//XXX - RS: remove these comments that were already in here:
 	// list of compatible shimmer hw/fw for sensor not sensor options (see ShimmerVerObject class	
 	//list/map of shimmer ver objects  to specify what config options should be generated based on hw/fw id	
 	//COMTYPE should have dummy for no action setting
@@ -382,7 +382,7 @@ public class SensorLSM303 extends AbstractSensor{
 	}	
 
 	
-//	{//TODO - RS: this was already here, includes commtype in SensorConfigOptionDetails() -> remove?
+//	{//XXX - RS: this was already here, includes commtype in SensorConfigOptionDetails() -> remove?
 //		
 //		
 //		//config options maps should be configured based on fw and hw id
@@ -638,6 +638,7 @@ public class SensorLSM303 extends AbstractSensor{
 		    	break;
 		    	
 			case(GuiLabelConfig.LSM303DLHC_MAG_RANGE):
+				//XXX - copied as is -> remove comments or some action required?
 				//TODO check below and commented out code
 				returnValue = getMagRange();
 			
@@ -650,7 +651,7 @@ public class SensorLSM303 extends AbstractSensor{
 				int configValue = getLSM303DigitalAccelRate(); 
 				 
 		    	if(!isLSM303DigitalAccelLPM()) {
-		        	if(configValue==8) {//RS: Why not returning a different value? (In the set method the check for LPM is already made.)
+		        	if(configValue==8) {//XXX - RS: Why returning a different value? (In the set method the check for LPM is already made.)
 		        		configValue = 9;
 		        	}
 		    	}
@@ -672,6 +673,9 @@ public class SensorLSM303 extends AbstractSensor{
 		// Should this return an int? 
 		// See private int setLSM303AccelRateFromFreq(double freq) and
 		// private int setLSM303MagRateFromFreq(double freq) in ShimmerObject
+		// XXX - or Should this return a boolean and have sensorMapKey as input similar as setDefaultConfigForSensor() below? 
+		//(But with the ACCEL/MAG specific method returning an int instead of void.) 
+		
 	}
 
 	
@@ -693,7 +697,7 @@ public class SensorLSM303 extends AbstractSensor{
 	@Override 
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
-		//RS: Also returning null in BMP180 and GSR sensors classes 
+		//XXX - RS: Also returning null in BMP180 and GSR sensors classes 
 		return null;
 	}
 
