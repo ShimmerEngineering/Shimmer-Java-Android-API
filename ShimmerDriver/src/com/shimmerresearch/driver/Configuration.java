@@ -185,7 +185,7 @@ public class Configuration {
 			public static final int MPU9150_MAG = 18;
 			public static final int VBATT = 10;
 			public static final int LSM303DLHC_ACCEL = 11;  //XXX-RS-LSM-SensorClass?
-			public static final int PPG = SensorPPG.ShimmerGqBle.SensorMapKey.PPG; //107;
+			public static final int PPG = 107;
 			public static final int GSR = 5;
 			public static final int BEACON = 108;
 		}
@@ -607,10 +607,10 @@ public class Configuration {
 			/** Shimmer3 Wide-range digital accelerometer */
 			public static final int SHIMMER_LSM303DLHC_ACCEL = 11;//XXX-RS-LSM-SensorClass?
 			public static final int SHIMMER_EXT_EXP_ADC_A15 = 12;
-			public static final int SHIMMER_INT_EXP_ADC_A1 = 13;
-			public static final int SHIMMER_INT_EXP_ADC_A12 = 14;
-			public static final int SHIMMER_INT_EXP_ADC_A13 = 15;
-			public static final int SHIMMER_INT_EXP_ADC_A14 = 16;
+			public static final int SHIMMER_INT_EXP_ADC_A1 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A1; //13;
+			public static final int SHIMMER_INT_EXP_ADC_A12 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A12; //14;
+			public static final int SHIMMER_INT_EXP_ADC_A13 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A13; //15;
+			public static final int SHIMMER_INT_EXP_ADC_A14 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A14; //16;
 			/** Shimmer3 Alternative accelerometer */
 			public static final int SHIMMER_MPU9150_ACCEL = 17;
 			/** Shimmer3 Alternative magnetometer */
@@ -820,15 +820,15 @@ public class Configuration {
 
 			public static final String HIGH_G_ACCEL = "200g Accel";
 
-			public static final String PPG_DUMMY = "PPG";
-			public static final String PPG_A12 = "PPG A12";
-			public static final String PPG_A13 = "PPG A13";
-			public static final String PPG1_DUMMY = "PPG1";
-			public static final String PPG1_A12 = "PPG1 A12";
-			public static final String PPG1_A13 = "PPG1 A13";
-			public static final String PPG2_DUMMY = "PPG2";
-			public static final String PPG2_A1 = "PPG2 A1";
-			public static final String PPG2_A14 = "PPG2 A14";
+			public static final String PPG_DUMMY = SensorPPG.GuiLabelSensors.PPG_DUMMY; //"PPG";
+			public static final String PPG_A12 = SensorPPG.GuiLabelSensors.PPG_A12; //"PPG A12";
+			public static final String PPG_A13 = SensorPPG.GuiLabelSensors.PPG_A13; //"PPG A13";
+			public static final String PPG1_DUMMY = SensorPPG.GuiLabelSensors.PPG1_DUMMY; //"PPG1";
+			public static final String PPG1_A12 = SensorPPG.GuiLabelSensors.PPG1_A12;//"PPG1 A12";
+			public static final String PPG1_A13 = SensorPPG.GuiLabelSensors.PPG1_A13; //"PPG1 A13";
+			public static final String PPG2_DUMMY = SensorPPG.GuiLabelSensors.PPG2_DUMMY; //"PPG2";
+			public static final String PPG2_A1 = SensorPPG.GuiLabelSensors.PPG2_A1; //"PPG2 A1";
+			public static final String PPG2_A14 = SensorPPG.GuiLabelSensors.PPG2_A14; //"PPG2 A14";
 			public static final String EXG_RESPIRATION = "Respiration";
 			public static final String SKIN_TEMP_PROBE = "Skin Temperature";
 			public static final String BRAMP_HIGHGAIN = "High Gain";

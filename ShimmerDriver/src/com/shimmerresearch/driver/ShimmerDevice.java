@@ -1719,52 +1719,57 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
 		}
-		
+
 		if(mSensorMap!=null) {
 
 			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
-				
+
 				for(Integer sensorMapKey:mSensorMap.keySet()) {
+					
+					if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
+						continue;
+					}
+					
 					boolean skipKey = false;
 
-					// Skip if ExG channels here -> handle them after for loop.
-					if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
-							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
-							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
-							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
-							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
-						mSensorMap.get(sensorMapKey).setIsEnabled(false);
-						skipKey = true;
-					}
-					// Handle derived sensors based on int adc channels (e.g. PPG vs. A12/A13)
-					else if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14))){
-
-						//Check if a derived channel is enabled, if it is ignore disable and skip 
-						innerloop:
-						for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
-							if(mSensorMap.get(conflictKey).isDerivedChannel()) {
-								if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
-									mSensorMap.get(sensorMapKey).setIsEnabled(false);
-									skipKey = true;
-									break innerloop;
-								}
-							}
-						}
-					}
-//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
-////							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
-////							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK
-//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
+//					// Skip if ExG channels here -> handle them after for loop.
+//					if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
 //						mSensorMap.get(sensorMapKey).setIsEnabled(false);
 //						skipKey = true;
 //					}
-					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES){
-						mSensorMap.get(sensorMapKey).setIsEnabled(true);
-						skipKey = true;
-					}
+//					// Handle derived sensors based on int adc channels (e.g. PPG vs. A12/A13)
+//					else if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14))){
+//
+//						//Check if a derived channel is enabled, if it is ignore disable and skip 
+//						innerloop:
+//							for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
+//								if(mSensorMap.get(conflictKey).isDerivedChannel()) {
+//									if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
+//										mSensorMap.get(sensorMapKey).setIsEnabled(false);
+//										skipKey = true;
+//										break innerloop;
+//									}
+//								}
+//							}
+//					}
+//					//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
+//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
+//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK
+//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
+//					//						mSensorMap.get(sensorMapKey).setIsEnabled(false);
+//					//						skipKey = true;
+//					//					}
+//					//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES){
+//					//						mSensorMap.get(sensorMapKey).setIsEnabled(true);
+//					//						skipKey = true;
+//					//					}
 
 
 					// Process remaining channels
@@ -1789,74 +1794,100 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 						}
 					}
 				}
+
+				handleSpecCasesAfterSensorMapUpdate();
+			}}
 				
-				// Now that all main sensor channels have been parsed, deal with
-				// sensor channels that have special conditions. E.g. deciding
-				// what type of signal the ExG is configured for or what derived
-				// channel is enabled like whether PPG is on ADC12 or ADC13
-				
-//				//TODO 2016-05-04 Special case for EXG - best to do by cycling through SensorClasses for any special conditions? 
-//
-//				//Handle ExG sensors
-//				internalCheckExgModeAndUpdateSensorMap(mSensorMap);
-//
-//				// Handle PPG sensors so that it appears in Consensys as a
-//				// single PPG channel with a selectable ADC based on different
-//				// hardware versions.
+//				// Now that all main sensor channels have been parsed, deal with
+//				// sensor channels that have special conditions. E.g. deciding
+//				// what type of signal the ExG is configured for or what derived
+//				// channel is enabled like whether PPG is on ADC12 or ADC13
 //				
-//				//Used for Shimmer GSR hardware
-//				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12)!=null){
-//				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled())) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(true);
-//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled()) {
-//						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
-//					}
-//					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled()) {
-//						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
-//
-//					}
-//				}
-//				else {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(false);
-//
-//				}
-//				}
-//				//Used for Shimmer Proto3 Deluxe hardware
-//				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12)!=null){
-//				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled())) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(true);
-//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled()) {
-//						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
-//					}
-//					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled()) {
-//						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
-//					}
-//				}
-//				else {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(false);
-//				}
-//				}
-//				//Used for Shimmer Proto3 Deluxe hardware
-//				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1)!=null){
-//					if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled())) {
-//						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(true);
-//						if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled()) {
-//							mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
-//						}
-//						else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled()) {
-//							mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
-//						}
-//					}
-//					else {
-//						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
-//					}
-//				}
-			}
-			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
-				
+////				//TODO 2016-05-04 Special case for EXG - best to do by cycling through SensorClasses for any special conditions? 
+////
+////				//Handle ExG sensors
+////				internalCheckExgModeAndUpdateSensorMap(mSensorMap);
+////
+////				// Handle PPG sensors so that it appears in Consensys as a
+////				// single PPG channel with a selectable ADC based on different
+////				// hardware versions.
+////				
+////				//Used for Shimmer GSR hardware
+////				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12)!=null){
+////				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled())) {
+////					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(true);
+////					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled()) {
+////						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
+////					}
+////					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled()) {
+////						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
+////
+////					}
+////				}
+////				else {
+////					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(false);
+////
+////				}
+////				}
+////				//Used for Shimmer Proto3 Deluxe hardware
+////				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12)!=null){
+////				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled())) {
+////					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(true);
+////					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled()) {
+////						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
+////					}
+////					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled()) {
+////						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
+////					}
+////				}
+////				else {
+////					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(false);
+////				}
+////				}
+////				//Used for Shimmer Proto3 Deluxe hardware
+////				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1)!=null){
+////					if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled())) {
+////						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(true);
+////						if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled()) {
+////							mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
+////						}
+////						else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled()) {
+////							mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
+////						}
+////					}
+////					else {
+////						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
+////					}
+////				}
+//			}
+//			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
+//				
+//			}
+//		}
+	}
+	
+	private boolean handleSpecCasesBeforeSensorMapUpdate(Integer sensorMapKey) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			if(abstractSensor.handleSpecCasesBeforeSensorMapUpdate(this, sensorMapKey)){
+				return true;
 			}
 		}
+		return false;
 	}
+
+	private void handleSpecCasesAfterSensorMapUpdate() {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.handleSpecCasesAfterSensorMapUpdate();
+		}
+	}
+
+
+	
+
 
 	public List<Integer> sensorMapConflictCheck(Integer key){
 		List<Integer> listOfChannelConflicts = new ArrayList<Integer>();
@@ -2034,5 +2065,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void disconnect() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public boolean ignoreAndDisable(Integer sensorMapKey) {
+		//Check if a derived channel is enabled, if it is ignore disable and skip 
+//		innerloop:
+			for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
+				if(mSensorMap.get(conflictKey).isDerivedChannel()) {
+					if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
+						mSensorMap.get(sensorMapKey).setIsEnabled(false);
+						return true;
+//						skipKey = true;
+//						break innerloop;
+					}
+				}
+			}
+			return false;
 	}
 }

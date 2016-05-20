@@ -74,6 +74,8 @@ public abstract class AbstractSensor implements Serializable{
 
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
+	
+//	public abstract void handleSpecCasesAfterSensorMapUpdate();
 	// --------------- Abstract methods end ----------------	
 
 	protected String mSensorName = "";
@@ -98,6 +100,15 @@ public abstract class AbstractSensor implements Serializable{
 	public TreeMap<Integer, SensorDetails> mSensorMap = new TreeMap<Integer, SensorDetails>();
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
     public LinkedHashMap<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+    
+    
+    public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
+    	//NOT USED IN THIS CLASS
+    	return false;
+    }
+	public void handleSpecCasesAfterSensorMapUpdate(){
+		//NOT USED IN THIS CLASS
+	}
 
 	
 	public AbstractSensor(ShimmerVerObject svo){
