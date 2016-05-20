@@ -15,13 +15,23 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import com.shimmerresearch.driver.ShimmerObject.BTStream;
+import com.shimmerresearch.driver.ShimmerObject.BTStreamDerivedSensors;
+import com.shimmerresearch.driver.ShimmerObject.SDLogHeaderDerivedSensors;
+import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
+import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
+import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
@@ -32,6 +42,7 @@ import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -67,6 +78,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 	protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
+	//for reading the connected devices configuration 
+	//protected Map<String,AbstractAlgorithm> mMapOfAlgorithms = new HashMap<String,AbstractAlgorithm>();
 	
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
@@ -1899,12 +1912,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mDerivedSensorsClone=0;
 		
 		// fake data to feed in from non existent GUI
-		List<AlgorithmDetailsNew> fakeGuiData = getListOfSupportedAlgorithmChannels();
+		List<AlgorithmDetailsNew> fakeGuiData = getListOfCompatibleAlgorithm();
 		for (AlgorithmDetailsNew algoDetails : fakeGuiData) {
 			algoDetails.mEnabled = true;
 			// all algorithm has been switched on
 		}		
-		
 		
 		// looping through algorthims to see which ones are enabled
 		for (AlgorithmDetailsNew algoDetails : fakeGuiData) {
@@ -1929,7 +1941,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		List<AlgorithmDetailsNew> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetailsNew>();
 		parentLoop:
     	for(AlgorithmDetailsNew algorithmDetails:mAlgorithmChannelsMap.values()) {
-    		//if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
+    		if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
         		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
         			if(mSensorMap.containsKey(sensorMapKey)){
         				if(mSensorMap.get(sensorMapKey).isEnabled()){
@@ -1938,31 +1950,55 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
         				}
         			}
         		}
-    		//}
-//    		else if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
-//        		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
-//        			if(!mSensorMap.containsKey(sensorMapKey)){
-//    					continue parentLoop;
-//        			}
-//        			else{
-//        				if(!mSensorMap.get(sensorMapKey).isEnabled()){
-//        					continue parentLoop;
-//        				}
-//        			}
-//       			
-//      			//made it to past the last sensor
-//        			if(sensorMapKey==algorithmDetails.mListOfRequiredSensors.get(algorithmDetails.mListOfRequiredSensors.size()-1)){
-//    					listOfSupportAlgorihmChannels.add(algorithmDetails);
-//        			}
-//        		}
+    		}
+    		else if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
+        		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
+        			if(!mSensorMap.containsKey(sensorMapKey)){
+    					continue parentLoop;
+        			}
+        			else{
+        				if(!mSensorMap.get(sensorMapKey).isEnabled()){
+        					continue parentLoop;
+        				}
+        			}
+        		
+       			
+      			//made it to past the last sensor
+        			if(sensorMapKey==algorithmDetails.mListOfRequiredSensors.get(algorithmDetails.mListOfRequiredSensors.size()-1)){
+    					listOfSupportAlgorihmChannels.add(algorithmDetails);
+        			}
+        		}
 		
-    		
+    		}	
     	}
 
 		// TODO Auto-generated method stub
 		return listOfSupportAlgorihmChannels;
 	}
 
+	
+	public List<AlgorithmDetailsNew> getListOfCompatibleAlgorithm() {
+		
+	    Map<String, SensorGroupingDetails> sensorGroupingMap = getSensorGroupingMap();
+
+		//returns list of compatible algorithms based on Shimmer hardware 
+		List<AlgorithmDetailsNew> listOfCompatibleAlgorithmChannels = new ArrayList<AlgorithmDetailsNew>();
+		parentLoop:
+    	for(AlgorithmDetailsNew algorithmDetails:mAlgorithmChannelsMap.values()) {
+    		//if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
+        		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
+        			if(mSensorMap.containsKey(sensorMapKey)){
+        				if(mSensorMap.get(sensorMapKey).isEnabled()){
+        					listOfCompatibleAlgorithmChannels.add(algorithmDetails);
+        					continue parentLoop;
+        				}
+        			}
+        		}
+    	}
+
+		// TODO Auto-generated method stub
+		return listOfCompatibleAlgorithmChannels;
+	}
 
 	public Map<String, List<String>> getAlgorithmGroupingMap() {
 		return mAlgorithmGroupingMap;
@@ -1986,6 +2022,61 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return listOfSupportAlgorihmGroups;
 	}
+	
+	/*
+
+	public boolean doesAlgorithmAlreadyExist(AbstractAlgorithm obj){
+		for (AbstractAlgorithm aa:mMapOfAlgorithms.values())
+		{
+			if (aa.getAlgorithmName().equals(obj.getAlgorithmName())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void removeAlgorithm(AbstractAlgorithm aobj){
+		mMapOfAlgorithms.remove(aobj);
+	}
+	public void removeAlgorithm(String algoName){
+		int index=0;
+		int keepIndex=-1;
+		for (AbstractAlgorithm a:mMapOfAlgorithms.values()){
+			if (a.getAlgorithmName().equals(algoName)){
+				keepIndex = index;
+			}
+			index++;
+		}
+		
+		if (keepIndex>=0){
+			mMapOfAlgorithms.remove(keepIndex);
+		}
+		
+	}
+	
+	public void addAlgorithm(String key,AbstractAlgorithm aobj){
+		if (!doesAlgorithmAlreadyExist(aobj)){
+			mMapOfAlgorithms.put(key,aobj);
+			String[] outputNameArray = aobj.getSignalOutputNameArray();
+			String[] outputFormatArray = aobj.getSignalOutputFormatArray();
+			String[] outputUnitArray = aobj.getSignalOutputUnitArray();
+
+			for (int i=0;i<outputNameArray.length;i++){
+				String[] prop= new String[4];
+				prop[0] = mShimmerUserAssignedName;
+				prop[1] = outputNameArray[i];
+				prop[2] = outputFormatArray[i];
+				prop[3] = outputUnitArray[i];
+				addExtraSignalProperty(prop);
+			}
+		}
+	}
+	
+	public Map<String,AbstractAlgorithm> getMapOfAlgorithms(){
+		return mMapOfAlgorithms;
+	}
+	*/
+	
 	
 	
 	/**

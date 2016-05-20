@@ -15,7 +15,10 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -41,6 +44,8 @@ public class Shimmer4 extends ShimmerDevice {
 	byte[] mInfoMemBuffer;
 	private int mCurrentInfoMemAddress = 0;
 	private int mCurrentInfoMemLengthToRead = 0;
+	private double mOffsetFirstTime;
+	private boolean mFirstPacketParsed;
 	
 	public Shimmer4() {
 		// TODO Auto-generated constructor stub
@@ -335,8 +340,24 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void eventNewPacket(byte[] packetByteArray) {
-				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
 				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH);
+				//JC: This is temp, should actually be set using the real Shimmer Clock cal time
+				objectCluster.mShimmerCalibratedTimeStamp = System.currentTimeMillis();
+				
+				if(mFirstPacketParsed) {
+					mFirstPacketParsed=false;
+					long systemTime = System.currentTimeMillis();
+					objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
+					byte[] bSystemTS = objectCluster.mSystemTimeStamp;
+					ByteBuffer bb = ByteBuffer.allocate(8);
+			    	bb.put(bSystemTS);
+			    	bb.flip();
+			    	long systemTimeStamp = bb.getLong();
+					mOffsetFirstTime = systemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
+				}
+				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime));
+				dataHandler(objectCluster);
 			}
 
 			@Override
@@ -389,6 +410,7 @@ public class Shimmer4 extends ShimmerDevice {
 					mCurrentInfoMemAddress = ((instructionSent[3]&0xFF)<<8)+(instructionSent[2]&0xFF);
 					mCurrentInfoMemLengthToRead = (instructionSent[1]&0xFF);
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE){
+					mFirstPacketParsed = true;
 					setBluetoothRadioState(BT_STATE.STREAMING);
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE){
 					setBluetoothRadioState(BT_STATE.CONNECTED);
@@ -531,4 +553,13 @@ public class Shimmer4 extends ShimmerDevice {
 
 	// ----------------- BT LiteProtocolInstructionSet End ------------------
 
+	protected void dataHandler(ObjectCluster ojc) {
+		
+		//CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress(), mComPort, getPacketReceptionRate());
+		//sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, callBackObject);
+		
+//		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET, ojc);
+	}
+	
 }
