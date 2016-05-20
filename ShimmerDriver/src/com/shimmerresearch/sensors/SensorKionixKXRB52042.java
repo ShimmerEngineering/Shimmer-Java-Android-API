@@ -428,7 +428,4 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		return mOffsetVectorAnalogAccel;
 	}
 	//--------- Sensor specific methods end --------------
-
-	//--------- Abstract methods not implemented start --------------
-	//--------- Abstract methods not implemented end --------------	
 }
