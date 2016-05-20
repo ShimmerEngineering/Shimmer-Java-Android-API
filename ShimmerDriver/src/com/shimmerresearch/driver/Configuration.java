@@ -75,6 +75,8 @@ import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorECGToHR;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.sensors.SensorKionixKXRB52042;
+import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
@@ -499,12 +501,12 @@ public class Configuration {
 		}
 
 		public static final String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
-		public static final String[] ListofAccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};  //XXX-RS-LSM-SensorClass?
-		public static final Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};  //XXX-RS-LSM-SensorClass?
-		public static final String[] ListofGyroRange={"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"}; 
-		public static final Integer[] ListofMPU9150GyroRangeConfigValues={0,1,2,3};
-		public static final String[] ListofMagRange={"+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"}; //XXX-RS-LSM-SensorClass?
-		public static final Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option  //XXX-RS-LSM-SensorClass?
+		public static final String[] ListofAccelRange = SensorLSM303.ListofAccelRange;
+		public static final Integer[] ListofLSM303DLHCAccelRangeConfigValues = SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues;
+		public static final String[] ListofGyroRange = {"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"}; 
+		public static final Integer[] ListofMPU9150GyroRangeConfigValues = {0,1,2,3};
+		public static final String[] ListofMagRange = SensorLSM303.ListofMagRange;
+		public static final Integer[] ListofMagRangeConfigValues = SensorLSM303.ListofMagRangeConfigValues;
 		//TODO: switch reference to below variables to the relevant variables in SensorBMP180
 //		public static final String[] ListofPressureResolution = SensorBMP180.ListofPressureResolution;
 //		public static final Integer[] ListofPressureResolutionConfigValues = SensorBMP180.ListofPressureResolutionConfigValues;
@@ -560,10 +562,10 @@ public class Configuration {
 		public static final Integer[] ListofBluetoothBaudRatesConfigValues={0,1,2,3,4,5,6,7,8,9,10};
 
 		//TODO   //XXX-RS-LSM-SensorClass?
-		public static final String[] ListofLSM303DLHCAccelRate={"Power-down","1.0Hz","10.0Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","1344.0Hz"};
-		public static final Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
-		public static final String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
-		public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
+		public static final String[] ListofLSM303DLHCAccelRate = SensorLSM303.ListofLSM303DLHCAccelRate;
+		public static final Integer[] ListofLSM303DLHCAccelRateConfigValues = SensorLSM303.ListofLSM303DLHCAccelRateConfigValues;
+		public static final String[] ListofLSM303DLHCAccelRateLpm = SensorLSM303.ListofLSM303DLHCAccelRateLpm;
+		public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues = SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues;
 		
 		//XXX-RS-LSM-SensorClass?
 		public static final String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3.0Hz","7.5Hz","15.0Hz","30.0Hz","75.0Hz","220.0Hz"};
@@ -693,12 +695,17 @@ public class Configuration {
 			public static final String EXPERIMENT_MASTER_SHIMMER = "Master Shimmer";
 			public static final String EXPERIMENT_SYNC_WHEN_LOGGING = "Sync When Logging";
 
-			public static final String LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";//XXX-RS-LSM-SensorClass?
-			public static final String LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range";//XXX-RS-LSM-SensorClass?
+			//XXX-RS-LSM-SensorClass?
+			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE;
+			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE;
+			
 			public static final String MPU9150_GYRO_RANGE = "Gyro Range";
 			public static final String MPU9150_GYRO_RATE = "Gyro Sampling Rate";
-			public static final String LSM303DLHC_MAG_RANGE = "Mag Range";//XXX-RS-LSM-SensorClass?
-			public static final String LSM303DLHC_MAG_RATE = "Mag Rate";//XXX-RS-LSM-SensorClass?
+			
+			//XXX-RS-LSM-SensorClass?
+			public static final String LSM303DLHC_MAG_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE;
+			public static final String LSM303DLHC_MAG_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE;
+			
 			public static final String PRESSURE_RESOLUTION =  SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION; // "Pressure Resolution";
 			
 			public static final String GSR_RANGE = "GSR Range";
@@ -728,9 +735,15 @@ public class Configuration {
 			public static final String MPU9150_MPL_MAG_CAL = "Magnetic Disturbance Calibration";
 
 			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
-			public static final String LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
+			
+			//XXX-RS-LSM-SensorClass?
+			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM;
+			
 			public static final String MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
-			public static final String LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";//XXX-RS-LSM-SensorClass?
+			
+			//XXX-RS-LSM-SensorClass?
+			public static final String LSM303DLHC_MAG_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM;
+			
 			public static final String TCX0 = "TCX0";
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
@@ -739,22 +752,34 @@ public class Configuration {
 			public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";
 			public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION; // "Channel2";
 			
-			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = "Wide Range Accel Default Calibration";//XXX-RS-LSM-SensorClass?
+			//XXX-RS-LSM-SensorClass?
+			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB;
+			
 			public static final String MPU9150_GYRO_DEFAULT_CALIB = "Gyro Default Calibration";
-			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = "Mag Default Calibration";//XXX-RS-LSM-SensorClass?
+			
+			//XXX-RS-LSM-SensorClass?
+			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB;
+
 			//XXX-RS-AA-SensorClass?
-			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = "Low Noise Accel Default Calibration";
+			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = SensorKionixKXRB52042.GuiLabelConfig.KXRB8_2042_ACCEL_DEFAULT_CALIB;
 
 		}
 
 		// GUI Sensor Tiles
 		public class GuiLabelSensorTiles{
 			//XXX-RS-AA-SensorClass?
-			public static final String LOW_NOISE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_LN;
+			public static final String LOW_NOISE_ACCEL = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
+			
 			public static final String GYRO = Configuration.Shimmer3.GuiLabelSensors.GYRO;
-			public static final String MAG = Configuration.Shimmer3.GuiLabelSensors.MAG;//XXX-RS-LSM-SensorClass?
+			
+			//XXX-RS-LSM-SensorClass?
+			public static final String MAG = SensorLSM303.GuiLabelSensors.MAG;
+			
 			public static final String BATTERY_MONITORING = Configuration.Shimmer3.GuiLabelSensors.BATTERY;
-			public static final String WIDE_RANGE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_WR;//XXX-RS-LSM-SensorClass?
+			
+			//XXX-RS-LSM-SensorClass?
+			public static final String WIDE_RANGE_ACCEL = SensorLSM303.GuiLabelSensors.ACCEL_WR;
+			
 			public static final String PRESSURE_TEMPERATURE = Configuration.Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180;
 			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion ADCs";
 			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
@@ -774,7 +799,8 @@ public class Configuration {
 		//GUI SENSORS
 		public class GuiLabelSensors{
 			//XXX-RS-AA-SensorClass?
-			public static final String ACCEL_LN = "Low-Noise Accelerometer";
+			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
+			
 			public static final String BATTERY = "Battery Voltage";
 			public static final String EXT_EXP_A7 = "Ext A7";
 			public static final String EXT_EXP_A6 = "Ext A6";
@@ -787,8 +813,11 @@ public class Configuration {
 			public static final String INT_EXP_A1 = "Int A1";
 			public static final String RESISTANCE_AMP = "Resistance Amp";
 			public static final String GYRO = "Gyroscope";
-			public static final String ACCEL_WR = "Wide-Range Accelerometer";//XXX-RS-LSM-SensorClass?
-			public static final String MAG = "Magnetometer";//XXX-RS-LSM-SensorClass?
+			
+			//XXX-RS-LSM-SensorClass?
+			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
+			public static final String MAG = SensorLSM303.GuiLabelSensors.MAG;
+			
 			public static final String ACCEL_MPU = "Alternative Accel";
 			public static final String BMP_180 = "BMP180";
 			public static final String MAG_MPU = "Alternative Mag";
@@ -813,10 +842,12 @@ public class Configuration {
 			public static final String QUAT_DMP_6DOF = "MPU Quat 6DOF (from DMP)";
 			public static final String ECG_TO_HR = "ECG To HR";
 			public static final String PPG_TO_HR = "PPG To HR";
-			public static final String ORIENTATION_3D_6DOF = "3D Orientation (6DOF)"; //XXX-RS-LSM-SensorClass?
-			public static final String ORIENTATION_3D_9DOF = "3D Orientation (9DOF)"; //XXX-RS-LSM-SensorClass?
-			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)"; //XXX-RS-LSM-SensorClass?
-			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)"; //XXX-RS-LSM-SensorClass?
+			
+			//XXX-RS-LSM-SensorClass? (Nope -> algorithm class.)
+			public static final String ORIENTATION_3D_6DOF = "3D Orientation (6DOF)"; 
+			public static final String ORIENTATION_3D_9DOF = "3D Orientation (9DOF)"; 
+			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)"; 
+			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)"; 
 
 			public static final String HIGH_G_ACCEL = "200g Accel";
 
@@ -845,8 +876,10 @@ public class Configuration {
 		public class GuiLabelAlgorithmGrouping{
 			public static final String ECG_TO_HR = "ECG-to-HR";
 			public static final String PPG_TO_HR = "PPG-to-HR";
-			public static final String ORIENTATION_9DOF = "9DOF";  //XXX-RS-LSM-SensorClass?
-			public static final String ORIENTATION_6DOF = "6DOF";  //XXX-RS-LSM-SensorClass?
+			
+			//XXX-RS-LSM-SensorClass? (Nope -> algorithm class.)
+			public static final String ORIENTATION_9DOF = "9DOF";  
+			public static final String ORIENTATION_6DOF = "6DOF";  
 		}
 
 		//DATABASE NAMES
@@ -865,16 +898,18 @@ public class Configuration {
 			public static final String MPU_TEMP = "MPU9150_Temperature";
 
 			//XXX-RS-AA-SensorClass?
-			public static final String LN_ACC_X = "KXRB8_2042_X";
-			public static final String LN_ACC_Y = "KXRB8_2042_Y";
-			public static final String LN_ACC_Z = "KXRB8_2042_Z";
+			public static final String LN_ACC_X = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_X;
+			public static final String LN_ACC_Y = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_Y;
+			public static final String LN_ACC_Z = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_Z;
 			
-			public static final String WR_ACC_X = "LSM303DLHC_ACC_X";//XXX-RS-LSM-SensorClass?
-			public static final String WR_ACC_Y = "LSM303DLHC_ACC_Y";//XXX-RS-LSM-SensorClass?
-			public static final String WR_ACC_Z = "LSM303DLHC_ACC_Z";//XXX-RS-LSM-SensorClass?
-			public static final String MAG_X = "LSM303DLHC_MAG_X";//XXX-RS-LSM-SensorClass?
-			public static final String MAG_Y = "LSM303DLHC_MAG_Y";//XXX-RS-LSM-SensorClass?
-			public static final String MAG_Z = "LSM303DLHC_MAG_Z";//XXX-RS-LSM-SensorClass?
+			//XXX-RS-LSM-SensorClass?
+			public static final String WR_ACC_X = SensorLSM303.DatabaseChannelHandles.WR_ACC_X;
+			public static final String WR_ACC_Y = SensorLSM303.DatabaseChannelHandles.WR_ACC_Y;
+			public static final String WR_ACC_Z = SensorLSM303.DatabaseChannelHandles.WR_ACC_Z;
+			public static final String MAG_X = SensorLSM303.DatabaseChannelHandles.MAG_X;
+			public static final String MAG_Y = SensorLSM303.DatabaseChannelHandles.MAG_Y;
+			public static final String MAG_Z = SensorLSM303.DatabaseChannelHandles.MAG_Z;
+			
 			public static final String GYRO_X = "MPU9150_GYRO_X";
 			public static final String GYRO_Y = "MPU9150_GYRO_Y";
 			public static final String GYRO_Z = "MPU9150_GYRO_Z";
@@ -997,9 +1032,10 @@ public class Configuration {
 			public static  String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
 			
 			//XXX-RS-AA-SensorClass?
-			public static  String ACCEL_LN_X = "Accel_LN_X";
-			public static  String ACCEL_LN_Y = "Accel_LN_Y";
-			public static  String ACCEL_LN_Z = "Accel_LN_Z";
+			public static  String ACCEL_LN_X = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_X;
+			public static  String ACCEL_LN_Y = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Y;
+			public static  String ACCEL_LN_Z = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Z;
+			
 			public static  String BATTERY = "Battery";
 			public static  String EXT_EXP_ADC_A7 = "Ext_Exp_A7";
 			public static  String EXT_EXP_ADC_A6 = "Ext_Exp_A6";
@@ -1016,12 +1052,15 @@ public class Configuration {
 			public static  String GYRO_X = "Gyro_X";
 			public static  String GYRO_Y = "Gyro_Y";
 			public static  String GYRO_Z = "Gyro_Z";
-			public static  String ACCEL_WR_X = "Accel_WR_X";//XXX-RS-LSM-SensorClass? 
-			public static  String ACCEL_WR_Y = "Accel_WR_Y";//XXX-RS-LSM-SensorClass? 
-			public static  String ACCEL_WR_Z= "Accel_WR_Z";//XXX-RS-LSM-SensorClass? 
-			public static  String MAG_X = "Mag_X";//XXX-RS-LSM-SensorClass? 
-			public static  String MAG_Y = "Mag_Y";//XXX-RS-LSM-SensorClass? 
-			public static  String MAG_Z = "Mag_Z";//XXX-RS-LSM-SensorClass? 
+			
+			//XXX-RS-LSM-SensorClass? 
+			public static  String ACCEL_WR_X = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
+			public static  String ACCEL_WR_Y = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y;
+			public static  String ACCEL_WR_Z= SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z;
+			public static  String MAG_X = SensorLSM303.ObjectClusterSensorName.MAG_X;
+			public static  String MAG_Y = SensorLSM303.ObjectClusterSensorName.MAG_Y;
+			public static  String MAG_Z = SensorLSM303.ObjectClusterSensorName.MAG_Z;
+			
 			public static  String ACCEL_MPU_X = "Accel_MPU_X";
 			public static  String ACCEL_MPU_Y = "Accel_MPU_Y";
 			public static  String ACCEL_MPU_Z = "Accel_MPU_Z";
@@ -1305,6 +1344,8 @@ public class Configuration {
 			aMap.putAll(SensorMPU9X50.mSensorMapRef);
 			aMap.putAll(SensorEXG.mSensorMapRef);
 			aMap.putAll(SensorBMP180.mSensorMapRef);
+			aMap.putAll(SensorLSM303.mSensorMapRef);
+			aMap.putAll(SensorKionixKXRB52042.mSensorMapRef);
 //			aMap.putAll(SensorGSR.mSensorMapRef);
 
 			// Assemble the channel map
@@ -1312,9 +1353,9 @@ public class Configuration {
 			long streamingByteIndex = 0;
 			long logHeaderByteIndex = 0;
 			//XXX-RS-AA-SensorClass?
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL, new SensorDetailsRef(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_LN));
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL, new SensorDetailsRef(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_LN));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, new SensorDetailsRef(0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GYRO));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, new SensorDetailsRef(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MAG));//XXX-RS-LSM-SensorClass? 
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, new SensorDetailsRef(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MAG));//XXX-RS-LSM-SensorClass? 
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT, new SensorDetailsRef(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG1_24BIT));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT, new SensorDetailsRef(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_24BIT));
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR, SensorGSR.sensorGsrRef);
@@ -1328,7 +1369,7 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP, new SensorDetailsRef(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.BRIDGE_AMPLIFIER));
 			//shimmerChannels.put(, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), "")); // unused? - new PPG bit might be here now
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, new SensorDetailsRef(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.BATTERY));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, new SensorDetailsRef(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_WR));
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, new SensorDetailsRef(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_WR));
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15, new SensorDetailsRef(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A15));
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1, new SensorDetailsRef(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A1));
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A12));
@@ -1547,10 +1588,12 @@ public class Configuration {
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp;
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-AA-SensorClass?
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;//XXX-RS-LSM-SensorClass? 
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;//XXX-RS-LSM-SensorClass? 
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;//XXX-RS-LSM-SensorClass? 
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
@@ -1901,12 +1944,12 @@ public class Configuration {
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14);
 			
 			// Associated config options for each channel (currently used for the ChannelTileMap)
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(//XXX-RS-LSM-SensorClass? 
-					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,
-					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(//XXX-RS-LSM-SensorClass? 
-					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE,
-					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL).mListOfConfigOptionKeysAssociated = Arrays.asList(//XXX-RS-LSM-SensorClass? 
+//					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,
+//					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG).mListOfConfigOptionKeysAssociated = Arrays.asList(//XXX-RS-LSM-SensorClass? 
+//					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE,
+//					Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO).mListOfConfigOptionKeysAssociated = Arrays.asList(
 //					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE,
 //					Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
@@ -2001,10 +2044,10 @@ public class Configuration {
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC).mListOfChannels = Arrays.asList(
 //							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC);
 			
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL).mListOfChannelsRef = Arrays.asList(
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL).mListOfChannelsRef = Arrays.asList(
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z);
 			
 			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT).mListOfChannelsRef = Arrays.asList(
 							Configuration.Shimmer3.ObjectClusterSensorName.BATTERY);
@@ -2072,15 +2115,15 @@ public class Configuration {
 //							Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 //							Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z);
 
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL).mListOfChannelsRef = Arrays.asList(//XXX-RS-LSM-SensorClass? 
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z);
-
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG).mListOfChannelsRef = Arrays.asList(//XXX-RS-LSM-SensorClass? 
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z);
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL).mListOfChannelsRef = Arrays.asList(//XXX-RS-LSM-SensorClass? 
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z);
+//
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG).mListOfChannelsRef = Arrays.asList(//XXX-RS-LSM-SensorClass? 
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z);
 
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL).mListOfChannelsRef = Arrays.asList(
 //							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_MPU_X,
@@ -2344,31 +2387,35 @@ public class Configuration {
 							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
 			
 //			TIMESTAMP_SYNC
+			
 			//XXX-RS-AA-SensorClass?
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
-							DatabaseChannelHandles.LN_ACC_X,
-							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
-							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
-							DatabaseChannelHandles.LN_ACC_Y,
-							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
-							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
-							DatabaseChannelHandles.LN_ACC_Z,
-							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
-							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+			// KionixKXRB52042 - analog accel
+			aMap.putAll(SensorKionixKXRB52042.mChannelMapRef);
+			
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
+//							DatabaseChannelHandles.LN_ACC_X,
+//							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+//							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
+//							DatabaseChannelHandles.LN_ACC_Y,
+//							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+//							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
+//							DatabaseChannelHandles.LN_ACC_Z,
+//							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+//							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
 			
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY,
 					new ChannelDetails(
@@ -2484,61 +2531,64 @@ public class Configuration {
 			// MPU9150
 			aMap.putAll(SensorMPU9X50.mChannelMapRef);
 
+			
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
-							DatabaseChannelHandles.WR_ACC_X,
-							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
-							DatabaseChannelHandles.WR_ACC_Y,
-							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
-							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
-							DatabaseChannelHandles.WR_ACC_Z,
-							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-
-			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
-							DatabaseChannelHandles.MAG_X,
-							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-							CHANNEL_UNITS.LOCAL_FLUX,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
-							DatabaseChannelHandles.MAG_Y,
-							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-							CHANNEL_UNITS.LOCAL_FLUX,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,
-							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,
-							DatabaseChannelHandles.MAG_Z,
-							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-							CHANNEL_UNITS.LOCAL_FLUX,
-							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+			// LSM303
+			aMap.putAll(SensorLSM303.mChannelMapRef);
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
+//							DatabaseChannelHandles.WR_ACC_X,
+//							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+//							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+//			//XXX-RS-LSM-SensorClass? 
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
+//							DatabaseChannelHandles.WR_ACC_Y,
+//							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+//							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+//			//XXX-RS-LSM-SensorClass? 
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
+//							Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
+//							DatabaseChannelHandles.WR_ACC_Z,
+//							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+//							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+//
+//			//XXX-RS-LSM-SensorClass? 
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
+//							DatabaseChannelHandles.MAG_X,
+//							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+//							CHANNEL_UNITS.LOCAL_FLUX,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+//			//XXX-RS-LSM-SensorClass? 
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+//							DatabaseChannelHandles.MAG_Y,
+//							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+//							CHANNEL_UNITS.LOCAL_FLUX,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+//			//XXX-RS-LSM-SensorClass? 
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,
+//							Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z,
+//							DatabaseChannelHandles.MAG_Z,
+//							CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+//							CHANNEL_UNITS.LOCAL_FLUX,
+//							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
 
 			//bmp180 - pressure
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180, SensorBMP180.channelBmp180Press);
@@ -2621,7 +2671,7 @@ public class Configuration {
 							DatabaseChannelHandles.PPG_TO_HR,
 							CHANNEL_UNITS.BEATS_PER_MINUTE,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.)
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
@@ -2629,7 +2679,7 @@ public class Configuration {
 							DatabaseChannelHandles.QUARTENION_W_6DOF,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
@@ -2637,7 +2687,7 @@ public class Configuration {
 							DatabaseChannelHandles.QUARTENION_X_6DOF,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
@@ -2645,7 +2695,7 @@ public class Configuration {
 							DatabaseChannelHandles.QUARTENION_Y_6DOF,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
@@ -2653,7 +2703,7 @@ public class Configuration {
 							DatabaseChannelHandles.QUARTENION_Z_6DOF,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
@@ -2661,7 +2711,7 @@ public class Configuration {
 							DatabaseChannelHandles.QUARTENION_W_9DOF,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
@@ -2669,7 +2719,7 @@ public class Configuration {
 							DatabaseChannelHandles.QUARTENION_X_9DOF,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
@@ -2677,7 +2727,7 @@ public class Configuration {
 							DatabaseChannelHandles.QUARTENION_Y_9DOF,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
@@ -2686,7 +2736,7 @@ public class Configuration {
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
 						
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
@@ -2694,7 +2744,7 @@ public class Configuration {
 							DatabaseChannelHandles.EULER_6DOF_A,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
@@ -2702,7 +2752,7 @@ public class Configuration {
 							DatabaseChannelHandles.EULER_6DOF_X,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
@@ -2710,7 +2760,7 @@ public class Configuration {
 							DatabaseChannelHandles.EULER_6DOF_Y,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
@@ -2718,7 +2768,7 @@ public class Configuration {
 							DatabaseChannelHandles.EULER_6DOF_Z,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
@@ -2726,7 +2776,7 @@ public class Configuration {
 							DatabaseChannelHandles.EULER_9DOF_A,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
@@ -2734,7 +2784,7 @@ public class Configuration {
 							DatabaseChannelHandles.EULER_9DOF_X,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
@@ -2742,7 +2792,7 @@ public class Configuration {
 							DatabaseChannelHandles.EULER_9DOF_Y,
 							CHANNEL_UNITS.NO_UNITS,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			//XXX-RS-LSM-SensorClass? 
+			//XXX-RS-LSM-SensorClass? (Nope -> alg. class.) 
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
@@ -2761,13 +2811,13 @@ public class Configuration {
 		
 			//Sensor Grouping for Configuration Panel 'tile' generation. 
 	      //XXX-RS-AA-SensorClass?
-			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorGroupingDetails(
+			aMap.put(SensorKionixKXRB52042.GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL)));
-			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(//XXX-RS-LSM-SensorClass? 
+			aMap.put(SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(//XXX-RS-LSM-SensorClass? 
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)));
-			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG, new SensorGroupingDetails(//XXX-RS-LSM-SensorClass? 
+			aMap.put(SensorLSM303.GuiLabelSensorTiles.MAG, new SensorGroupingDetails(//XXX-RS-LSM-SensorClass? 
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)));
 			
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
@@ -2830,11 +2880,11 @@ public class Configuration {
 			//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
 			
 			// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
-			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
+			aMap.get(SensorKionixKXRB52042.GuiLabelSensorTiles.LOW_NOISE_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;//XXX-RS-LSM-SensorClass? 
+			aMap.get(SensorLSM303.GuiLabelSensorTiles.MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;//XXX-RS-LSM-SensorClass? 
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw;
-			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw;//XXX-RS-LSM-SensorClass? 
+			aMap.get(SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw;//XXX-RS-LSM-SensorClass? 
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			//aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
@@ -2926,19 +2976,19 @@ public class Configuration {
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
 			
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
-					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofAccelRange, 
-											Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
+					new SensorConfigOptionDetails(SensorLSM303.ListofAccelRange, 
+							SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, 
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-											Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+					new SensorConfigOptionDetails(SensorLSM303.ListofLSM303DLHCAccelRate, 
+							SensorLSM303.ListofLSM303DLHCAccelRateConfigValues, 
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);
+			aMap.get(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpm);
 			//XXX-RS-LSM-SensorClass? 
-			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues);
+			aMap.get(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues);
 
 			//XXX-RS-LSM-SensorClass? 
 //			if(mLowPowerAccelWR) {
@@ -2960,15 +3010,15 @@ public class Configuration {
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE, 
-					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofMagRange, 
-											Configuration.Shimmer3.ListofMagRangeConfigValues, 
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE, 
+					new SensorConfigOptionDetails(SensorLSM303.ListofMagRange, 
+							SensorLSM303.ListofMagRangeConfigValues, 
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE, 
-					new SensorConfigOptionDetails(Configuration.Shimmer3.ListofLSM303DLHCMagRate, 
-											Configuration.Shimmer3.ListofLSM303DLHCMagRateConfigValues, 
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE, 
+					new SensorConfigOptionDetails(SensorLSM303.ListofLSM303DLHCMagRate, 
+							SensorLSM303.ListofLSM303DLHCMagRateConfigValues, 
 											SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, SensorBMP180.configOptionPressureResolution);
@@ -3109,12 +3159,12 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM, 
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM, 
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0, 
 					new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
