@@ -7,7 +7,9 @@ import java.util.Map;
 
 
 
+
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.Shimmer4;
 import com.shimmerresearch.driver.ShimmerDevice;
 //import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
@@ -18,19 +20,15 @@ import com.shimmerresearch.driver.ShimmerObject;
  */
 //TODO add proper comments
 //TODO remove unnecessary code carried over from dock progress details
-public class ProgressReportPerDevice implements Serializable {
+public class BluetoothProgressReportPerDevice implements Serializable {
 	
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = -7997745169511235203L;
-	
 	
 	public int mCommandCompleted;
 	public int mNumberofRemainingCMDsInBuffer;
 	public String mBluetoothAddress;
 	public String mComPort;
-	
 	
 	public static enum OperationState {
 		PENDING,
@@ -63,14 +61,19 @@ public class ProgressReportPerDevice implements Serializable {
 //	public List<ErrorDetails> mListOfErrors = new ArrayList<ErrorDetails>(); 
 //	public String mLog = "";
 
-	public ProgressReportPerDevice(ShimmerDevice shimmerObject, BT_STATE currentOperationBtState, int endValue) {
-		if(shimmerObject instanceof ShimmerBluetooth){
-			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerObject;
-			setShimmerBluetooth(shimmerBluetooth);
+	public BluetoothProgressReportPerDevice(ShimmerDevice shimmerDevice, BT_STATE currentOperationBtState, int endValue) {
+		if(shimmerDevice instanceof ShimmerBluetooth){
+			ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerDevice;
+			updateShimmerDeviceMini(shimmerBluetooth);
 			mComPort = shimmerBluetooth.getComPort();
-			mCurrentOperationBtState = currentOperationBtState;
-			mProgressEndValue = endValue;
 		}
+		else if(shimmerDevice instanceof Shimmer4){
+			Shimmer4 shimmer4 = (Shimmer4) shimmerDevice;
+			updateShimmerDeviceMini(shimmer4);
+			mComPort = shimmer4.getComPort();
+		}
+		mCurrentOperationBtState = currentOperationBtState;
+		mProgressEndValue = endValue;
 	}
 
 	/**
@@ -79,7 +82,7 @@ public class ProgressReportPerDevice implements Serializable {
 	 * 
 	 * @param pRPC the ProgressReportPerCmd
 	 */
-	public void updateProgress(ProgressReportPerCmd pRPC) {
+	public void updateProgress(BluetoothProgressReportPerCmd pRPC) {
 		mProgressCounter = mProgressEndValue - pRPC.mNumberofRemainingCMDsInBuffer + 1;
 		
 		mCommandCompleted = pRPC.mCommandCompleted;
@@ -92,27 +95,40 @@ public class ProgressReportPerDevice implements Serializable {
 		}
 	}
 	
-	public void setShimmerBluetooth(ShimmerBluetooth shimmerBluetooth) {
-		mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.getComPort();
-		mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();
-		mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmerBluetooth.getMacIdFromBtParsed();
-		mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.getFirmwareVersionParsed();
-//		mShimmerBluetoothDetailsMini.mListOfFailMsg = shimmerBluetooth.mListOfFailMsg;
-		mShimmerBluetoothDetailsMini.mShimmerUserAssignedName = shimmerBluetooth.getShimmerUserAssignedName();
-//		mShimmerBluetoothDetailsMini.mShimmerLastReadRealTimeClockValue = shimmerBluetooth.mShimmerLastReadRealTimeClockValue;
-//		mShimmerBluetoothDetailsMini.mShimmerLastReadRtcValueParsed = shimmerBluetooth.mShimmerLastReadRtcValueParsed;
-		
-		//TODO: add entry for sdlogdetails
-	}
+//	public void setShimmerBluetooth(ShimmerBluetooth shimmerBluetooth) {
+//		mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.getComPort();
+//		mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();
+//		mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmerBluetooth.getMacIdFromBtParsed();
+//		
+//		mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.getFirmwareVersionParsed();
+//		mShimmerBluetoothDetailsMini.mShimmerUserAssignedName = shimmerBluetooth.getShimmerUserAssignedName();
+//		
+////		mShimmerBluetoothDetailsMini.mListOfFailMsg = shimmerBluetooth.mListOfFailMsg;
+////		mShimmerBluetoothDetailsMini.mShimmerLastReadRealTimeClockValue = shimmerBluetooth.mShimmerLastReadRealTimeClockValue;
+////		mShimmerBluetoothDetailsMini.mShimmerLastReadRtcValueParsed = shimmerBluetooth.mShimmerLastReadRtcValueParsed;
+//		
+//		//TODO: add entry for sdlogdetails
+//	}
 	
-	public void updateProgressDetails(ShimmerBluetooth shimmerBluetooth) {
-		if(shimmerBluetooth!=null){
-			mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.getComPort();
-			mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();
-			mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmerBluetooth.getMacIdFromBtParsed();
-			mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerBluetooth.getFirmwareVersionParsed();
+	public void updateShimmerDeviceMini(ShimmerDevice shimmerDevice) {
+		if(shimmerDevice!=null){
+			if(shimmerDevice instanceof ShimmerBluetooth){
+				ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
+				mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.getComPort();
+				mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();
+				mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmerBluetooth.getMacIdFromBtParsed();
+			}
+			else if(shimmerDevice instanceof Shimmer4){
+				Shimmer4 shimmer4 = (Shimmer4)shimmerDevice;
+				mShimmerBluetoothDetailsMini.mUniqueID = shimmer4.getComPort();
+				mShimmerBluetoothDetailsMini.mShimmerMacID = shimmer4.getMacId();
+				mShimmerBluetoothDetailsMini.mShimmerMacIDParsed = shimmer4.getMacIdParsed();
+			}
+			
+			mShimmerBluetoothDetailsMini.mFirmwareVersionParsed  = shimmerDevice.getFirmwareVersionParsed();
+			mShimmerBluetoothDetailsMini.mShimmerUserAssignedName = shimmerDevice.getShimmerUserAssignedName();
+			
 	//		mshimmerBluetoothMini.mListOfFailMsg = shimmerBluetooth.mListOfFailMsg;
-			mShimmerBluetoothDetailsMini.mShimmerUserAssignedName = shimmerBluetooth.getShimmerUserAssignedName();
 //			mShimmerBluetoothDetailsMini.mShimmerLastReadRealTimeClockValue = shimmerBluetooth.mShimmerLastReadRealTimeClockValue;
 //			mShimmerBluetoothDetailsMini.mShimmerLastReadRtcValueParsed = shimmerBluetooth.mShimmerLastReadRtcValueParsed;
 		}
@@ -151,9 +167,7 @@ public class ProgressReportPerDevice implements Serializable {
 //	}
 
 	public class ShimmerBluetoothDetailsMini implements Serializable {
-		/**
-		 * 
-		 */
+		/** * */
 		private static final long serialVersionUID = 4289859702565448002L;
 		
 		public int mSlotNumber = -1;

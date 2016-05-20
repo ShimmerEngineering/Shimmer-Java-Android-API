@@ -1,6 +1,6 @@
 package com.shimmerresearch.bluetooth;
 
-public class ProgressReportPerCmd {
+public class BluetoothProgressReportPerCmd {
 
 	public int mCommandCompleted;
 	public int mNumberofRemainingCMDsInBuffer;
@@ -13,7 +13,7 @@ public class ProgressReportPerCmd {
 //		mBluetoothAddress = address;
 //	}
 	
-	public ProgressReportPerCmd(int command, int numberofcmdsleft, String address, String comPort){
+	public BluetoothProgressReportPerCmd(int command, int numberofcmdsleft, String address, String comPort){
 		mCommandCompleted = command;
 		mNumberofRemainingCMDsInBuffer = numberofcmdsleft;
 		mBluetoothAddress = address;

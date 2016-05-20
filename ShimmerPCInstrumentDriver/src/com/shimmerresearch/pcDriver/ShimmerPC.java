@@ -69,8 +69,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import com.shimmerresearch.bluetooth.ProgressReportPerCmd;
-import com.shimmerresearch.bluetooth.ProgressReportPerDevice;
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -102,7 +102,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	private String mParentClassName = "ShimmerPC";
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
-	public ProgressReportPerDevice progressReportPerDevice;
+	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	
 	
 	/**
@@ -575,8 +575,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public void startOperation(BT_STATE currentOperation){
 		consolePrintLn(currentOperation + " START");
 		
-		progressReportPerDevice = new ProgressReportPerDevice(this, currentOperation, 1);
-		progressReportPerDevice.mOperationState = ProgressReportPerDevice.OperationState.INPROGRESS;
+		progressReportPerDevice = new BluetoothProgressReportPerDevice(this, currentOperation, 1);
+		progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.INPROGRESS;
 		
 		CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getBluetoothAddress(), mComPort, progressReportPerDevice);
 		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
@@ -587,8 +587,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public void startOperation(BT_STATE currentOperation, int totalNumOfCmds){
 		consolePrintLn(currentOperation + " START");
 
-		progressReportPerDevice = new ProgressReportPerDevice(this, currentOperation, totalNumOfCmds);
-		progressReportPerDevice.mOperationState = ProgressReportPerDevice.OperationState.INPROGRESS;
+		progressReportPerDevice = new BluetoothProgressReportPerDevice(this, currentOperation, totalNumOfCmds);
+		progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.INPROGRESS;
 		
 		CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getBluetoothAddress(), mComPort, progressReportPerDevice);
 		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
@@ -602,7 +602,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		if(progressReportPerDevice.mCurrentOperationBtState == btState){
 
 			progressReportPerDevice.finishOperation();
-			progressReportPerDevice.mOperationState = ProgressReportPerDevice.OperationState.SUCCESS;
+			progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.SUCCESS;
 			//JC: moved operationFinished to is ready for streaming, seems to be called before the inquiry response is received
 			super.operationFinished();
 			CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getBluetoothAddress(), mComPort, progressReportPerDevice);
@@ -680,7 +680,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	@Override
-	protected void sendProgressReport(ProgressReportPerCmd pRPC) {
+	protected void sendProgressReport(BluetoothProgressReportPerCmd pRPC) {
 		if(progressReportPerDevice!=null){
 			progressReportPerDevice.updateProgress(pRPC);
 			

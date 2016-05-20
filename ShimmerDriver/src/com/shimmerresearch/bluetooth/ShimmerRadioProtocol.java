@@ -163,7 +163,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 
 						@Override
 						public void sendProgressReport(
-								ProgressReportPerCmd progressReportPerCmd) {
+								BluetoothProgressReportPerCmd progressReportPerCmd) {
 							// TODO Auto-generated method stub
 							
 						}
