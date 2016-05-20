@@ -37,6 +37,16 @@ public class ShimmerClock extends AbstractSensor {
 	public int OFFSET_LENGTH = 9;
 	protected long mInitialTimeStamp = 0;
 	protected long mRTCOffset = 0; //this is in ticks
+	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
+	protected double mLastReceivedCalibratedTimeStamp=-1; 
+	protected double mLastReceivedTimeStamp=0;
+	protected double mCurrentTimeStampCycle=0;
+	protected boolean mFirstTimeCalTime=true;	
+	protected double mCalTimeStart;	
+	
+	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
+	protected double mPacketReceptionRate = 100;
+	protected double mPacketReceptionRateCurrent = 100;
 	//--------- Sensor specific variables end --------------
 
 	//--------- Bluetooth commands start --------------
@@ -90,6 +100,20 @@ public class ShimmerClock extends AbstractSensor {
 		channelShimmerClock2byte.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
 		channelShimmerClock2byte.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
+	
+	public static final ChannelDetails channelShimmerClockOffset = new ChannelDetails(
+			"Offset",
+			"Offset",
+			DatabaseChannelHandles.OFFSET_TIMESTAMP,
+			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.UNCAL), false, true);
+	{
+		//TODO put into above constructor
+		channelShimmerClock2byte.mChannelSource = CHANNEL_SOURCE.API;
+		channelShimmerClock2byte.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
+		channelShimmerClock2byte.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+	}
 	//--------- Channel info end --------------
 
 	public ShimmerClock(ShimmerVerObject svo) {
@@ -123,7 +147,9 @@ public class ShimmerClock extends AbstractSensor {
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
 
-		//TODO
+////		double[] newPacketInt = new double[]{};
+//		
+//		//TODO
 ////		int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
 //		if(mFirstTime && fwType == FW_TYPE_SD){
 //			//this is to make sure the Raw starts from zero
@@ -136,7 +162,8 @@ public class ShimmerClock extends AbstractSensor {
 //		if (fwType == FW_TYPE_SD){
 //			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
 //			double unwrappedrawtimestamp = calibratedTS*32768/1000;
-//			if (mShimmerVerObject.getFirmwareVersionMajor() ==0 && mShimmerVerObject.getFirmwareVersionMinor()==5){
+//			//TODO re below, what firmware ID does this relate to specifically?
+//			if (mShimmerVerObject.getFirmwareVersionMajor()==0 && mShimmerVerObject.getFirmwareVersionMinor()==5){
 //				
 //			} else {
 //				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
@@ -145,6 +172,7 @@ public class ShimmerClock extends AbstractSensor {
 //			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)sdlograwtimestamp));
 //			
 //			uncalibratedData[iTimeStamp] = (double)sdlograwtimestamp;
+//			//TODO re below, what firmware ID does this relate to specifically?
 //			if (mShimmerVerObject.getFirmwareVersionMajor() ==0 && mShimmerVerObject.getFirmwareVersionMinor()==5){
 //				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
 //			}
@@ -215,11 +243,13 @@ public class ShimmerClock extends AbstractSensor {
 //				}
 //			}
 //
-//			objectCluster.mPropertyCluster.put("Offset",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue));
-//			uncalibratedData[iOffset] = offsetValue;
-//			calibratedData[iOffset] = Double.NaN;
-//			uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
-//			calibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
+//			objectCluster.addData(channelShimmerClockOffset, offsetValue, Double.NaN);
+//			objectCluster.indexKeeper++;
+////			objectCluster.mPropertyCluster.put("Offset",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue));
+////			uncalibratedData[iOffset] = offsetValue;
+////			calibratedData[iOffset] = Double.NaN;
+////			uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
+////			calibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
 //		} 
 		return objectCluster;
 	}
@@ -278,4 +308,34 @@ public class ShimmerClock extends AbstractSensor {
 		return null;
 	}
 	
+//	protected double calibrateTimeStamp(double timeStamp){
+//		//first convert to continuous time stamp
+//		double calibratedTimeStamp=0;
+//		if (mLastReceivedTimeStamp>(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle))){ 
+//			mCurrentTimeStampCycle=mCurrentTimeStampCycle+1;
+//		}
+//
+//		mLastReceivedTimeStamp=(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
+//		calibratedTimeStamp=mLastReceivedTimeStamp/32768*1000;   // to convert into mS
+//		if (mFirstTimeCalTime){
+//			mFirstTimeCalTime=false;
+//			mCalTimeStart = calibratedTimeStamp;
+//		}
+//		if (mLastReceivedCalibratedTimeStamp!=-1){
+//			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
+//			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
+//			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
+//			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
+//			if (timeDifference>expectedTimeDifferenceLimit){
+////				mPacketLossCount=mPacketLossCount+1;
+//				mPacketLossCount+= (long) (timeDifference/expectedTimeDifferenceLimit);
+//				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
+//
+//				mPacketReceptionRate = (double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100;
+//				sendStatusMsgPacketLossDetected();
+//			}
+//		}	
+//		mLastReceivedCalibratedTimeStamp=calibratedTimeStamp;
+//		return calibratedTimeStamp;
+//	}
 }

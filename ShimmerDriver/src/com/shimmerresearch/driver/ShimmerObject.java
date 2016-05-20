@@ -7420,10 +7420,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		
 		
-		//Debugging
-//		for(SensorEnabledDetails sED:mSensorEnabledMap.values()){
-//			if(sED.mIsEnabled){
-//				System.out.println("SENSOR enabled:\t"+ sED.mSensorDetails.mGuiFriendlyLabel);
+//		//Debugging
+//		for(SensorDetails sED:mSensorMap.values()){
+//			if(sED.isEnabled()){
+//				System.out.println("SENSOR enabled:\t"+ sED.mSensorDetailsRef.mGuiFriendlyLabel);
 //			}
 //		}
 		
