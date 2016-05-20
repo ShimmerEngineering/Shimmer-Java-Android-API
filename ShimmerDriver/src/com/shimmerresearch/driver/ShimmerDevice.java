@@ -1726,58 +1726,67 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public void sensorMapUpdateFromEnabledSensorsVars() {
 
-//		//TODO 2016-05-04 Special case for EXG - best to do by cycling through SensorClasses for any special conditions? 
-//		checkExgResolutionFromEnabledSensorsVar();
-
+////		//TODO 2016-05-04 Special case for EXG - best to do by cycling through SensorClasses for any special conditions? 
+////		checkExgResolutionFromEnabledSensorsVar();
+//		AbstractSensor sensorExg = mMapOfSensorClasses.get(SENSORS.EXG);
+//		if(sensorExg!=null){
+//			((SensorEXG)sensorExg).checkExgResolutionFromEnabledSensorsVar();
+//		}
+		
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
 		}
-		
+
 		if(mSensorMap!=null) {
 
-			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
-				
+//			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
+
 				for(Integer sensorMapKey:mSensorMap.keySet()) {
+					
+					if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
+						continue;
+					}
+					
 					boolean skipKey = false;
 
-					// Skip if ExG channels here -> handle them after for loop.
-					if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
-							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
-							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
-							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
-							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
-						mSensorMap.get(sensorMapKey).setIsEnabled(false);
-						skipKey = true;
-					}
-					// Handle derived sensors based on int adc channels (e.g. PPG vs. A12/A13)
-					else if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14))){
-
-						//Check if a derived channel is enabled, if it is ignore disable and skip 
-						innerloop:
-						for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
-							if(mSensorMap.get(conflictKey).isDerivedChannel()) {
-								if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
-									mSensorMap.get(sensorMapKey).setIsEnabled(false);
-									skipKey = true;
-									break innerloop;
-								}
-							}
-						}
-					}
-//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
-////							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
-////							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK
-//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
+//					// Skip if ExG channels here -> handle them after for loop.
+//					if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
 //						mSensorMap.get(sensorMapKey).setIsEnabled(false);
 //						skipKey = true;
 //					}
-					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES){
-						mSensorMap.get(sensorMapKey).setIsEnabled(true);
-						skipKey = true;
-					}
+//					// Handle derived sensors based on int adc channels (e.g. PPG vs. A12/A13)
+//					else if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
+//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14))){
+//
+//						//Check if a derived channel is enabled, if it is ignore disable and skip 
+//						innerloop:
+//							for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
+//								if(mSensorMap.get(conflictKey).isDerivedChannel()) {
+//									if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
+//										mSensorMap.get(sensorMapKey).setIsEnabled(false);
+//										skipKey = true;
+//										break innerloop;
+//									}
+//								}
+//							}
+//					}
+//					//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
+//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
+//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK
+//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
+//					//						mSensorMap.get(sensorMapKey).setIsEnabled(false);
+//					//						skipKey = true;
+//					//					}
+//					//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES){
+//					//						mSensorMap.get(sensorMapKey).setIsEnabled(true);
+//					//						skipKey = true;
+//					//					}
 
 
 					// Process remaining channels
@@ -1802,6 +1811,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 						}
 					}
 				}
+				
+				handleSpecCasesAfterSensorMapUpdate();
+
+				
+//			}
 				
 				// Now that all main sensor channels have been parsed, deal with
 				// sensor channels that have special conditions. E.g. deciding
@@ -1864,12 +1878,43 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
 //					}
 //				}
-			}
-			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
-				
+//			}
+//			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
+//				
+//			}
+	
+		}
+		
+		//Debugging
+//		for(SensorEnabledDetails sED:mSensorEnabledMap.values()){
+//			if(sED.mIsEnabled){
+//				System.out.println("SENSOR enabled:\t"+ sED.mSensorDetails.mGuiFriendlyLabel);
+//			}
+//		}
+	}
+	
+	private boolean handleSpecCasesBeforeSensorMapUpdate(Integer sensorMapKey) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			if(abstractSensor.handleSpecCasesBeforeSensorMapUpdate(this, sensorMapKey)){
+				return true;
 			}
 		}
+		return false;
 	}
+
+	private void handleSpecCasesAfterSensorMapUpdate() {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.handleSpecCasesAfterSensorMapUpdate();
+		}
+	}
+
+
+	
+
 
 	public List<Integer> sensorMapConflictCheck(Integer key){
 		List<Integer> listOfChannelConflicts = new ArrayList<Integer>();
@@ -2125,5 +2170,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void disconnect() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public boolean ignoreAndDisable(Integer sensorMapKey) {
+		//Check if a derived channel is enabled, if it is ignore disable and skip 
+//		innerloop:
+			for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
+				if(mSensorMap.get(conflictKey).isDerivedChannel()) {
+					if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
+						mSensorMap.get(sensorMapKey).setIsEnabled(false);
+						return true;
+//						skipKey = true;
+//						break innerloop;
+					}
+				}
+			}
+			return false;
 	}
 }

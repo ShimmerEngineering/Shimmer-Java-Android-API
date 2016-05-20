@@ -1551,7 +1551,7 @@ public class SensorEXG extends AbstractSensor{
 //			mExGResolution = 1;
 //		}
 //	}
-//
+
 //	private void updateEnabledSensorsFromExgResolution(long enabledSensors){
 //		InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mInfoMemLayout;
 //

@@ -52,13 +52,8 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	protected byte[] mPressureCalRawParams = new byte[23];
 	protected byte[] mPressureRawParams  = new byte[23];
-	public static final int MAX_NUMBER_OF_SIGNALS = 50;
-	
-	
 	public static final String PRESSURE_TEMPERATURE = "Pressure & Temperature";
 	public static final int SHIMMER_BMP180_PRESSURE = 22;
-	
-	protected String[] mSignalNameArray=new String[MAX_NUMBER_OF_SIGNALS];	
 	public int mPressureResolution = 0;
 	
 	public static class ObjectClusterSensorName{

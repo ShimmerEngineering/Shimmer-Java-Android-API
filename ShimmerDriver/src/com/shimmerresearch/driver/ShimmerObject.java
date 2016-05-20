@@ -7095,6 +7095,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	//TODO 2016-05-18 feed below into sensor map classes
+// -------------Copied to Sensor PPG----------------------------------	
 	/**
 	 * Used to convert from the enabledSensors long variable read from the
 	 * Shimmer to the set enabled status of the relative entries in the Sensor
@@ -7296,6 +7297,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //	}
 	
 	//TODO 2016-05-18 feed below into sensor map classes
+	
+//-----------------Copied to PPG Sensor Class-----------------
 	/**
 	 * Used to changed the enabled state of a sensor in the sensormap. This is
 	 * only used in Consensys for dynamic configuration of a Shimmer. This
@@ -7381,6 +7384,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return false;
 		}
 	}
+//--------------------------------------------------------------------------------
 	
 	//TODO 2016-05-18 feed below into sensor map classes
 	/**
@@ -7447,6 +7451,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	//TODO 2016-05-18 feed below into sensor map classes
+	
+// --------------Copied to PPG sensor class----------------------
+	
 	/**Automatically control internal expansion board power based on sensor map
 	 */
 	@Override
@@ -7475,6 +7482,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		return (mInternalExpPower > 0)? true:false;
 	}
+	
+// --------------------------------------------------------------------------------------	
 	
 	//TODO 2016-05-18 feed below into sensor map classes
 	//TODO set defaults when ").setIsEnabled(false))" is set manually in the code
