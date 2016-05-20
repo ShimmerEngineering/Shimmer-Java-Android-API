@@ -74,9 +74,7 @@ public class SensorLSM303 extends AbstractSensor{
 	
 	protected static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
 	protected static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};	
-	
-	
-	
+
 	//TODO commented - RS (20/5/2016): Keep in Configuration.java for now. 
 //	public class SensorBitmap{
 //		public static final int SENSOR_MAG = 0x20;
@@ -985,14 +983,12 @@ public class SensorLSM303 extends AbstractSensor{
 	public void setLowPowerAccelWR(boolean enable){
 		mLowPowerAccelWR = enable;
 		mHighResAccelWR = !enable;
-		//TODO - mMaxSetShimmerSamplingRate -> Change this to something else and/or test it?
 		setLSM303AccelRateFromFreq(mMaxSetShimmerSamplingRate);
 	}
 	
 	
 	public void	setLowPowerMag(boolean enable){
 		mLowPowerMag = enable;
-		//TODO - mMaxSetShimmerSamplingRate -> Change this to something else and/or test it?
 		setLSM303MagRateFromFreq(mMaxSetShimmerSamplingRate);
 	}
 		
@@ -1145,12 +1141,6 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	
-	public boolean isLowPowerMag(){
-		return mLowPowerMag;
-	}
-	
-	
-	//TODO Returning same variable as isLowPowerMag() -> remove one method?
 	public boolean isLowPowerMagEnabled(){
 		return mLowPowerMag;
 	}

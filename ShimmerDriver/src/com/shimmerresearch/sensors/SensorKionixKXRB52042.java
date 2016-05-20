@@ -46,7 +46,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	protected static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
 	protected static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 
-	
+	//TODO commented - RS (20/5/2016): Keep in Configuration.java for now. 
 //	public class SensorBitmap{
 //		public static final int SENSOR_A_ACCEL			= 0x80;
 //	}
@@ -288,7 +288,6 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	public boolean checkConfigOptionValues(String stringKey) {
 		if(mConfigOptionsMap.containsKey(stringKey)){
 			//XXX Return true if mSensorMap contains sensorMapKey regardless of the fact there a no configuration options?
-
 			return true;
 		}
 		return false;
@@ -305,9 +304,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		ActionSetting actionsetting = new ActionSetting(commType);
-
-		//TODO RS - Implement rest of this method.
-		
+		//TODO RS - Implement rest of this method.		
 		return actionsetting;
 	}
 	//--------- Abstract methods implemented end --------------
