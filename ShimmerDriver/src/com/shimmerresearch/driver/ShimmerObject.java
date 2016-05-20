@@ -6890,7 +6890,38 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mConfigFileCreationFlag = state;
 	}
 	
-//	@Override
+	//TODO 2016-05-18 feed below into sensor map classes
+	@Override
+	public void refreshEnabledSensorsFromSensorMap(){
+		if(mSensorMap!=null) {
+			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
+				mEnabledSensors = (long)0;
+				mDerivedSensors = (long)0;
+				sensorMapCheckandCorrectHwDependencies();
+				for (SensorDetails sED : mSensorMap.values()) {
+					if (sED.isEnabled()) {
+						mEnabledSensors |= sED.mSensorDetailsRef.mSensorBitmapIDSDLogHeader;
+
+						if (sED.isDerivedChannel()) {
+							mDerivedSensors |= sED.mDerivedSensorBitmapID;
+						}
+					}
+				}
+				updateEnabledSensorsFromExgResolution();
+				// add in algorithm map compatible with device
+				mDerivedSensors = getDerivedSensors();
+				// //TODO 2016-05-04 Special case for EXG - best to do by
+				// cycling through SensorClasses for any special conditions?
+				// AbstractSensor abstractSensor =
+				// mMapOfSensorClasses.get(SENSORS.EXG);
+				// if(abstractSensor!=null){
+				// ((SensorEXG)abstractSensor).updateEnabledSensorsFromExgResolution();
+				// }
+
+			}
+		}
+	}
+	
 //	public void refreshEnabledSensorsFromSensorMap(){
 //		if(mSensorMap!=null) {
 //			if (getHardwareVersion() == HW_ID.SHIMMER_3){
@@ -6899,7 +6930,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //				sensorMapCheckandCorrectHwDependencies();
 //				for(SensorDetails sED:mSensorMap.values()) {
 //					if(sED.isEnabled()) {
-//						mEnabledSensors |= sED.mSensorDetails.mSensorBitmapIDSDLogHeader;
+//						mEnabledSensors |= sED.mSensorDetailsRef.mSensorBitmapIDSDLogHeader;
 //						
 //						if(sED.isDerivedChannel()){
 //							mDerivedSensors |= sED.mDerivedSensorBitmapID;
@@ -6907,13 +6938,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					}
 //				}
 //				updateEnabledSensorsFromExgResolution();
-//				//add in algorithm map compatible with device
-//				configDerivedSensor(getListOfSupportedAlgorithmChannels());
+////				//add in algorithm map compatible with device
+////				configDerivedSensor(getListOfSupportedAlgorithmChannels());
 //				mDerivedSensors =getDerivedSensors();
 //			}
 ////			interpretDataPacketFormat();
 //		}
-	//}
+//	}
 	
 	/**
 	 * Converts the LSM303DLHC Accel calibration variables from Shimmer Object
