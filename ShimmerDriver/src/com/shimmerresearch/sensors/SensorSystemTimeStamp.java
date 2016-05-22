@@ -122,8 +122,8 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		// NOT NEEDED BECAUSE NO CONFIGURATION OPTIONS NEEDED
 	}
 
-
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	@Override
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -134,7 +134,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 					byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 					System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 					objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
-					objectCluster.indexKeeper++;
+					objectCluster.incrementIndexKeeper();
 					index=index+channelDetails.mDefaultNumBytes;
 //					}
 				}
@@ -148,7 +148,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 					objectCluster.mSystemTimeStamp = ByteBuffer.allocate(8).putLong((long) systemTime).array();;
 					objectCluster.addCalData(channelDetails, systemTime);
-					objectCluster.indexKeeper++;
+					objectCluster.incrementIndexKeeper();
 				}
 //			}
 

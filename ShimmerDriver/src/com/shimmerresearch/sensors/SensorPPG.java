@@ -488,7 +488,7 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		//NOT USED IN THIS CLASS
 		
 		return objectCluster;

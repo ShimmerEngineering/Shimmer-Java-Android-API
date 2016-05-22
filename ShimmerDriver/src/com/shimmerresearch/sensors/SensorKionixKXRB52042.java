@@ -186,7 +186,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
 		double[] unCalibratedAccelData = new double[3];
 
@@ -215,15 +215,15 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
 				objectCluster.addCalData(channelDetails, calibratedAccelData[0]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
 				objectCluster.addCalData(channelDetails, calibratedAccelData[1]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
 				objectCluster.addCalData(channelDetails, calibratedAccelData[2]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 			index = index + channelDetails.mDefaultNumBytes;
 		}

@@ -46,10 +46,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -58,10 +58,10 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
 final public class ObjectCluster implements Cloneable,Serializable{
-	/**
-	 * 
-	 */
+	
+	/** * */
 	private static final long serialVersionUID = -7601464501144773539L;
+	
 	public Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
 	public String mMyName;
 	public String mBluetoothAddress;
@@ -72,7 +72,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public String[] mUnitCal;
 	public String[] mUnitUncal;
 	
-	public int indexKeeper = 0;
+	private int indexKeeper = 0;
 	
 	public BT_STATE mState;
 	
@@ -80,10 +80,19 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	String[] mSensorUnits;
 	String[] mSensorIsUsingDefaultCal;
 	
-	
 	public byte[] mSystemTimeStamp = new byte[8];
 	public double mShimmerCalibratedTimeStamp;
 	public boolean mIsValidObjectCluster = true;
+	
+	public enum OBJECTCLUSTER_TYPE{
+		ARRAYS,
+		FORMAT_CLUSTER,
+		PROTOBUF
+	}
+	public static List<OBJECTCLUSTER_TYPE> mListOfOCTypesEnabled = Arrays.asList(
+			OBJECTCLUSTER_TYPE.ARRAYS,
+			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER,
+			OBJECTCLUSTER_TYPE.PROTOBUF);
 	
 	public ObjectCluster(){
 	}
@@ -93,13 +102,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public ObjectCluster(String myName, String myBlueAdd){
-		mMyName = myName;
+		this(myName);
 		mBluetoothAddress=myBlueAdd;
 	}
 
 	public ObjectCluster(String myName, String myBlueAdd, BT_STATE state){
-		mMyName = myName;
-		mBluetoothAddress=myBlueAdd;
+		this(myName, myBlueAdd);
 		mState = state;
 	}
 	
@@ -128,7 +136,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	 * @param propertyname Property name you want to delete
 	 * @param formatname Format you want to delete
 	 */
-	
 	public void removePropertyFormat(String propertyname, String formatname){
 		Collection<FormatCluster> colFormats = mPropertyCluster.get(propertyname); 
 		// first retrieve all the possible formats for the current sensor device
@@ -207,28 +214,13 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 	
 	public void createArrayData(int length){
-		mUncalData = new double[length];
-		mCalData = new double[length];
-		mSensorNames = new String[length];
-		mUnitCal = new String[length];
-		mUnitUncal = new String[length];
-	}
-
-	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data) {
-		addData(objectClusterName, channelType, units, data, indexKeeper);
-	}
-
-	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data, int index) {
-		if(channelType==CHANNEL_TYPE.CAL){
-			mCalData[index] = data;
-			mUnitCal[index] = units;
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)){
+			mUncalData = new double[length];
+			mCalData = new double[length];
+			mSensorNames = new String[length];
+			mUnitCal = new String[length];
+			mUnitUncal = new String[length];
 		}
-		else if(channelType==CHANNEL_TYPE.UNCAL){
-			mUncalData[index] = data;
-			mUnitUncal[index] = units;
-		}
-		mSensorNames[index] = objectClusterName;
-		mPropertyCluster.put(objectClusterName, new FormatCluster(channelType.toString(), units, data));
 	}
 
 	public void addData(ChannelDetails channelDetails, double uncalData, double calData) {
@@ -237,17 +229,13 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	public void addData(ChannelDetails channelDetails, double uncalData, double calData, int index) {
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.UNCAL)){
-			mSensorNames[index] = channelDetails.mObjectClusterName;
-			mUncalData[index] = uncalData;
-			mUnitUncal[index] = channelDetails.mDefaultUnit;
-			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(), channelDetails.mDefaultUnit, uncalData));
+			addUncalData(channelDetails, uncalData, index);
 		}
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
-			mSensorNames[index] = channelDetails.mObjectClusterName;
-			mCalData[index] = calData;
-			mUnitCal[index] = channelDetails.mDefaultCalibratedUnits;
-			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
+			addCalData(channelDetails, calData, index);
 		}
+		//TODO decide whether to include the below here
+//		incrementIndexKeeper();
 	}
 
 	public void addCalData(ChannelDetails channelDetails, double calData) {
@@ -255,19 +243,56 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addCalData(ChannelDetails channelDetails, double calData, int index) {
-		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
-			mSensorNames[index] = channelDetails.mObjectClusterName;
-			mCalData[index] = calData;
-			mUnitCal[index] = channelDetails.mDefaultCalibratedUnits;
-			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
+		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL, channelDetails.mDefaultCalibratedUnits, calData, index);
+	}
+
+	public void addUncalData(ChannelDetails channelDetails, double uncalData) {
+		addUncalData(channelDetails, uncalData, indexKeeper);
+	}
+
+	public void addUncalData(ChannelDetails channelDetails, double uncalData, int index) {
+		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL, channelDetails.mDefaultUnit, uncalData, index);
+	}
+	
+	
+	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data) {
+		addData(objectClusterName, channelType, units, data, indexKeeper);
+	}
+
+	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data, int index) {
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)){
+			if(channelType==CHANNEL_TYPE.CAL){
+				mCalData[index] = data;
+				mUnitCal[index] = units;
+			}
+			else if(channelType==CHANNEL_TYPE.UNCAL){
+				mUncalData[index] = data;
+				mUnitUncal[index] = units;
+			}
+			mSensorNames[index] = objectClusterName;
+		}
+		
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)){
+			mPropertyCluster.put(objectClusterName, new FormatCluster(channelType.toString(), units, data));
+		}
+		
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.PROTOBUF)){
+			//TODO
 		}
 	}
-//	public void addCalData(ChannelDetails channelDetails, double[] calData) {
-//		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
-//			mSensorNames[indexKeeper] = channelDetails.mObjectClusterName;
-//			double[] mCalData = calData;
-//			mUnitCal[indexKeeper] = channelDetails.mDefaultCalibratedUnits;
-//			mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalibratedUnits, calData));
-//		}
-//	}
+
+	public void incrementIndexKeeper(){
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)){
+			indexKeeper++;
+		}
+	}
+
+	public int getIndexKeeper() {
+		return indexKeeper;
+	}
+
+	public void setIndexKeeper(int indexKeeper) {
+		this.indexKeeper = indexKeeper;
+	}
+
 }

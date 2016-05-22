@@ -139,7 +139,7 @@ public class SensorTemplate extends AbstractSensor{
 			}
 		
 			@Override
-			public ObjectCluster processDataCustom(SensorDetails sensorDetails,	byte[] sensorByteArray, COMMUNICATION_TYPE commType,ObjectCluster objectCluster) {
+			public ObjectCluster processDataCustom(SensorDetails sensorDetails,	byte[] sensorByteArray, COMMUNICATION_TYPE commType,ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 				// TODO Auto-generated method stub
 				return null;
 			}

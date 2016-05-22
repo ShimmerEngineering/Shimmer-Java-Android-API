@@ -344,7 +344,7 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 	@Override 
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
 		double[] unCalibratedAccelWrData = new double[3];
 		double[] unCalibratedMagData = new double[3];
@@ -386,27 +386,27 @@ public class SensorLSM303 extends AbstractSensor{
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
 				objectCluster.addCalData(channelDetails, calibratedAccelWrData[0]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
 				objectCluster.addCalData(channelDetails, calibratedAccelWrData[1]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
 				objectCluster.addCalData(channelDetails, calibratedAccelWrData[2]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
 				objectCluster.addCalData(channelDetails, calibratedMagData[0]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
 				objectCluster.addCalData(channelDetails, calibratedMagData[1]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
 				objectCluster.addCalData(channelDetails, calibratedMagData[2]);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 			}
 
 			index = index + channelDetails.mDefaultNumBytes;

@@ -114,14 +114,14 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
-			objectCluster.indexKeeper++;
+			objectCluster.incrementIndexKeeper();
 			index=index+channelDetails.mDefaultNumBytes;
 		}
 		return objectCluster;

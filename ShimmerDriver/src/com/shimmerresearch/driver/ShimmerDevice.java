@@ -954,17 +954,22 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	/** The packet format can be changed by calling interpretpacketformat
-	 * @param packetByteArray
+	 * @param newPacket
 	 * @param commType
 	 * @return
 	 */
-	public ObjectCluster buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType){
+	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType){
+		
+		//TODO temp here
+		boolean isTimeSyncEnabled = false;
+		long pcTimestamp = 0;
+		
 		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
+		ojc.mRawData = newPacket;
 		ojc.createArrayData(getNumberOfEnabledChannels(commType));
 
+//		System.out.println("\nNew Parser loop. Packet length:\t" + newPacket.length);
 		TreeMap<Integer, SensorDetails> parserMapPerComm = mParserMap.get(commType);
-		
-//		System.out.println("\nNew Parser loop. Packet length:\t" + packetByteArray.length);
 		if(parserMapPerComm!=null){
 			int index=0;
 			for (SensorDetails sensor:parserMapPerComm.values()){
@@ -972,9 +977,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				//TODO process API sensors, not just bytes from Shimmer packet 
 				if (length!=0){ //if length 0 means there are no channels to be processed
 					byte[] sensorByteArray = new byte[length];
-					if((index+sensorByteArray.length)<=packetByteArray.length){
-						System.arraycopy(packetByteArray, index, sensorByteArray, 0, sensorByteArray.length);
-						sensor.processData(sensorByteArray, commType, ojc);
+					if((index+sensorByteArray.length)<=newPacket.length){
+						System.arraycopy(newPacket, index, sensorByteArray, 0, sensorByteArray.length);
+						sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestamp);
 					}
 					else{
 						//TODO replace with consolePrintSystem

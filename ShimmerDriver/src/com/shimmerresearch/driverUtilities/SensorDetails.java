@@ -20,7 +20,6 @@ public class SensorDetails implements Serializable{
 	/** * */
 	private static final long serialVersionUID = 1545530433767674139L;
 	
-//	public boolean mIsEnabled = false;
 	/** by default load in communication types for Bluetooth and SD	 */
 	public HashMap<COMMUNICATION_TYPE, Boolean> mapOfIsEnabledPerCommsType = new HashMap<COMMUNICATION_TYPE, Boolean>();
 	{
@@ -28,6 +27,7 @@ public class SensorDetails implements Serializable{
 		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.SD, false);
 //		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.IEEE802154, false);
 	}
+//	public boolean mIsEnabled = false;
 	
 	public long mDerivedSensorBitmapID = 0;
 	public SensorDetailsRef mSensorDetailsRef;
@@ -47,18 +47,78 @@ public class SensorDetails implements Serializable{
 //		}
 	}
 
+	public ObjectCluster processShimmerChannelData(byte[] rawData, ObjectCluster objectCluster) {
+		for(ChannelDetails channelDetails:mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+//			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
+			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
+			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
+		}
+		return objectCluster;
+	}
+	
+	/** To process data originating from the Shimmer device
+	 * @param channelByteArray The byte array packet, or byte array sd log
+	 * @param commType The communication type
+	 * @param object The packet/objectCluster to append the data to
+	 * @return
+	 */
+	public static ObjectCluster processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, ObjectCluster objectCluster){
+//		if(channelDetails.mIsEnabled){
+			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
+			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
+//		}
+
+		return objectCluster;
+	}
+
+	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+		int index = 0;
+		for (ChannelDetails channelDetails:mListOfChannels){
+			//first process the data originating from the Shimmer sensor
+			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
+		}
+		return objectCluster;
+	}
+	
+	public void updateSensorDetailsWithCommsTypes(List<COMMUNICATION_TYPE> listOfSupportedCommsTypes) {
+//		mapOfIsEnabledPerCommsType = new HashMap<COMMUNICATION_TYPE, Boolean>();
+		for(COMMUNICATION_TYPE commsType:listOfSupportedCommsTypes){
+			if(!mapOfIsEnabledPerCommsType.containsKey(commsType)){
+				mapOfIsEnabledPerCommsType.put(commsType, false);
+			}
+		}
+		
+		Iterator<COMMUNICATION_TYPE> iterator = mapOfIsEnabledPerCommsType.keySet().iterator();
+		while(iterator.hasNext()){
+			COMMUNICATION_TYPE commsType = iterator.next();
+			if(!listOfSupportedCommsTypes.contains(commsType)){
+				iterator.remove();
+			}
+		}
+	}
+
+	public int getExpectedDataPacketSize() {
+		int dataPacketSize = 0;
+//		if(!mSensorDetails.mIsDummySensor){
+			Iterator<ChannelDetails> iterator = mListOfChannels.iterator();
+			while(iterator.hasNext()){
+				ChannelDetails channelDetails = iterator.next();
+//				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket){
+//				}
+				dataPacketSize += channelDetails.mDefaultNumBytes;
+			}
+//		}
+		return dataPacketSize;
+	}
+
 	public boolean isDerivedChannel() {
 		if(mDerivedSensorBitmapID>0) {
 			return true;
-		}
-		return false;
-	}
-
-	public boolean isEnabled(COMMUNICATION_TYPE commType) {
-//		return mIsEnabled;
-		
-		if(mapOfIsEnabledPerCommsType.containsKey(commType)){
-			return mapOfIsEnabledPerCommsType.get(commType);
 		}
 		return false;
 	}
@@ -77,6 +137,15 @@ public class SensorDetails implements Serializable{
 		mapOfIsEnabledPerCommsType.put(commType, state);
 	}
 
+	public boolean isEnabled(COMMUNICATION_TYPE commType) {
+//		return mIsEnabled;
+		
+		if(mapOfIsEnabledPerCommsType.containsKey(commType)){
+			return mapOfIsEnabledPerCommsType.get(commType);
+		}
+		return false;
+	}
+
 	//TODO: temp here but probably not suitable for ShimmerObject
 	public boolean isEnabled() {
 		for(Boolean isEnabled:mapOfIsEnabledPerCommsType.values()){
@@ -86,20 +155,7 @@ public class SensorDetails implements Serializable{
 		}
 		return false;
 	}
-
 	
-	public ObjectCluster processShimmerChannelData(byte[] rawData, ObjectCluster objectCluster) {
-		for(ChannelDetails channelDetails:mListOfChannels){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
-			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
-			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
-		}
-		return objectCluster;
-	}
-
 	public boolean isInternalExpBrdPowerRequired() {
 		if(isEnabled() && mSensorDetailsRef.mIntExpBoardPowerRequired) {
 			return true;
@@ -122,63 +178,5 @@ public class SensorDetails implements Serializable{
 		return count;
 	}
 	
-	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
-		int index = 0;
-		for (ChannelDetails channelDetails:mListOfChannels){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
-		}
-		return objectCluster;
-	}
-	
-	/** To process data originating from the Shimmer device
-	 * @param channelByteArray The byte array packet, or byte array sd log
-	 * @param commType The communication type
-	 * @param object The packet/objectCluster to append the data to
-	 * @return
-	 */
-	public static ObjectCluster processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, ObjectCluster objectCluster){
-//		if(channelDetails.mIsEnabled){
-			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
-			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
-//		}
-
-		return objectCluster;
-	}
-
-	public void updateSensorDetailsWithCommsTypes(List<COMMUNICATION_TYPE> listOfSupportedCommsTypes) {
-//		mapOfIsEnabledPerCommsType = new HashMap<COMMUNICATION_TYPE, Boolean>();
-		for(COMMUNICATION_TYPE commsType:listOfSupportedCommsTypes){
-			if(!mapOfIsEnabledPerCommsType.containsKey(commsType)){
-				mapOfIsEnabledPerCommsType.put(commsType, false);
-			}
-		}
-		
-		Iterator<COMMUNICATION_TYPE> iterator = mapOfIsEnabledPerCommsType.keySet().iterator();
-		while(iterator.hasNext()){
-			COMMUNICATION_TYPE commsType = iterator.next();
-			if(!listOfSupportedCommsTypes.contains(commsType)){
-				iterator.remove();
-			}
-		}
-		
-	}
-
-	public int getExpectedDataPacketSize() {
-		int dataPacketSize = 0;
-//		if(!mSensorDetails.mIsDummySensor){
-			Iterator<ChannelDetails> iterator = mListOfChannels.iterator();
-			while(iterator.hasNext()){
-				ChannelDetails channelDetails = iterator.next();
-//				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket){
-//				}
-				dataPacketSize += channelDetails.mDefaultNumBytes;
-			}
-			
-//		}
-		return dataPacketSize;
-	}
 
 }

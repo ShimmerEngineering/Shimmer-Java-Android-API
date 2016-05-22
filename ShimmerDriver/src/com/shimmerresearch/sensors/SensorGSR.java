@@ -169,7 +169,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	//TODO: include somewhere (SensorDetails/ChannelDetails??)
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			//first process the data originating from the Shimmer sensor
@@ -266,7 +266,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 					calData = calibrateGsrDataToSiemens(rawData,p1,p2);
 				}
 				objectCluster.addCalData(channelDetails, calData);
-				objectCluster.indexKeeper++;
+				objectCluster.incrementIndexKeeper();
 //				}
 //				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0') + "\t" + calData + " " + channelDetails.mDefaultCalibratedUnits);
 

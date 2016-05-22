@@ -62,7 +62,8 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void generateSensorGroupMapping(ShimmerVerObject svo);
 
 	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
-	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
+	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimestamp);
+//	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 //	public abstract ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
@@ -84,7 +85,7 @@ public abstract class AbstractSensor implements Serializable{
 	protected String mSensorName = "";
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
-	protected boolean mEnableCalibration = true;
+	protected static boolean mEnableCalibration = true;
 	
 	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
 	protected String[] mSignalOutputNameArray;
@@ -321,9 +322,9 @@ public abstract class AbstractSensor implements Serializable{
 			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef){
 				@Override
-				public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object) {
+				public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object, boolean isTimeSyncEnabled, long pcTimestamp) {
 //					System.out.println("PARSING\t" + this.mSensorDetails.mGuiFriendlyLabel);
-					return processDataCustom(this, rawData, commType, object);
+					return processDataCustom(this, rawData, commType, object, isTimeSyncEnabled, pcTimestamp);
 //					return super.processData(rawData, commType, object);
 				}
 			};

@@ -55,7 +55,8 @@ public class SensorDetailsRef implements Serializable {
 	 * @param sensorBitmapIDSDLogHeader
 	 * @param guiFriendlyLabel
 	 */
-	public SensorDetailsRef(long sensorBitmapIDStreaming, 
+	public SensorDetailsRef(
+			long sensorBitmapIDStreaming, 
 			long sensorBitmapIDSDLogHeader, 
 			String guiFriendlyLabel) {
 		mSensorBitmapIDStreaming = sensorBitmapIDStreaming;
@@ -126,6 +127,26 @@ public class SensorDetailsRef implements Serializable {
 			mListOfSensorMapKeysConflicting = listOfSensorMapKeysConflicting;
 		}
 		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
+	}
+
+	/** Used for API sensors
+	 * @param guiFriendlyLabel
+	 * @param listOfCompatibleVersionInfo
+	 * @param listOfChannelsRef
+	 */
+	public SensorDetailsRef(
+			String guiFriendlyLabel,
+			List<ShimmerVerObject> listOfCompatibleVersionInfo,
+			List<String> listOfChannelsRef) {
+		if(guiFriendlyLabel!=null){
+			mGuiFriendlyLabel = guiFriendlyLabel;
+		}
+		if(listOfCompatibleVersionInfo!=null){
+			mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
+		}
+		if(listOfChannelsRef!=null){
+			mListOfChannelsRef = listOfChannelsRef;
+		}
 	}
 
 

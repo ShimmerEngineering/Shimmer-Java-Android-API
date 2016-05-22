@@ -169,10 +169,10 @@ public class Configuration {
 		//GUI AND EXPORT CHANNELS
 		public static class ObjectClusterSensorName{
 			//Related to the Spectrum Analyser
-			public static  String POWER_CALC_85 = "SpanManager-85";//"Results-85";
-			public static  String POWER_CALC_15 = "SpanManager-15";//"Results-15";
-			public static  String FREQUENCY = "Frequency";
-			public static  String POWER = "Power";
+			public static String POWER_CALC_85 = "SpanManager-85";//"Results-85";
+			public static String POWER_CALC_15 = "SpanManager-15";//"Results-15";
+			public static String FREQUENCY = "Frequency";
+			public static String POWER = "Power";
 			
 			public static final String RADIO_RECEPTION = "Radio_Reception";
 		}
@@ -1024,172 +1024,174 @@ public class Configuration {
 			public static final String PACKET_RECEPTION_RATE_CURRENT = "Packet_Reception_Rate_Current";
 			public static final String PACKET_RECEPTION_RATE_TRIAL = "Packet_Reception_Rate_Trial";
 			
-			public static  String TIMESTAMP = "Timestamp";
-			public static  String REAL_TIME_CLOCK = "RealTime";
-			public static  String SYSTEM_TIMESTAMP = "System_Timestamp";
-			public static  String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
-			public static  String TIMESTAMP_SYNC = "Timestamp_Sync";
-			public static  String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
-			
+			public static String TIMESTAMP = "Timestamp";
+			public static String REAL_TIME_CLOCK = "RealTime";
+			public static String SYSTEM_TIMESTAMP = "System_Timestamp";
+			public static String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
+			public static String TIMESTAMP_SYNC = "Timestamp_Sync";
+			public static String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
+
+			public static String TIMESTAMP_OFFSET = "Offset";
+
 			//XXX-RS-AA-SensorClass?
-			public static  String ACCEL_LN_X = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_X;
-			public static  String ACCEL_LN_Y = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Y;
-			public static  String ACCEL_LN_Z = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Z;
+			public static String ACCEL_LN_X = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_X;
+			public static String ACCEL_LN_Y = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Y;
+			public static String ACCEL_LN_Z = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Z;
 			
-			public static  String BATTERY = "Battery";
-			public static  String EXT_EXP_ADC_A7 = "Ext_Exp_A7";
-			public static  String EXT_EXP_ADC_A6 = "Ext_Exp_A6";
-			public static  String EXT_EXP_ADC_A15 = "Ext_Exp_A15";
-			public static  String INT_EXP_ADC_A12 = "Int_Exp_A12";
-			public static  String INT_EXP_ADC_A13 = "Int_Exp_A13";
-			public static  String INT_EXP_ADC_A14 = "Int_Exp_A14";
-			public static  String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
-			public static  String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
-			public static  String GSR = "GSR";
-			public static  String GSR_CONDUCTANCE = "GSR_Conductance";
-			public static  String INT_EXP_ADC_A1 = "Int_Exp_A1";
-			public static  String RESISTANCE_AMP = "Resistance_Amp";
-			public static  String GYRO_X = "Gyro_X";
-			public static  String GYRO_Y = "Gyro_Y";
-			public static  String GYRO_Z = "Gyro_Z";
+			public static String BATTERY = "Battery";
+			public static String EXT_EXP_ADC_A7 = "Ext_Exp_A7";
+			public static String EXT_EXP_ADC_A6 = "Ext_Exp_A6";
+			public static String EXT_EXP_ADC_A15 = "Ext_Exp_A15";
+			public static String INT_EXP_ADC_A12 = "Int_Exp_A12";
+			public static String INT_EXP_ADC_A13 = "Int_Exp_A13";
+			public static String INT_EXP_ADC_A14 = "Int_Exp_A14";
+			public static String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
+			public static String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
+			public static String GSR = "GSR";
+			public static String GSR_CONDUCTANCE = "GSR_Conductance";
+			public static String INT_EXP_ADC_A1 = "Int_Exp_A1";
+			public static String RESISTANCE_AMP = "Resistance_Amp";
+			public static String GYRO_X = "Gyro_X";
+			public static String GYRO_Y = "Gyro_Y";
+			public static String GYRO_Z = "Gyro_Z";
 			
 			//XXX-RS-LSM-SensorClass? 
-			public static  String ACCEL_WR_X = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
-			public static  String ACCEL_WR_Y = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y;
-			public static  String ACCEL_WR_Z= SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z;
-			public static  String MAG_X = SensorLSM303.ObjectClusterSensorName.MAG_X;
-			public static  String MAG_Y = SensorLSM303.ObjectClusterSensorName.MAG_Y;
-			public static  String MAG_Z = SensorLSM303.ObjectClusterSensorName.MAG_Z;
+			public static String ACCEL_WR_X = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
+			public static String ACCEL_WR_Y = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y;
+			public static String ACCEL_WR_Z= SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z;
+			public static String MAG_X = SensorLSM303.ObjectClusterSensorName.MAG_X;
+			public static String MAG_Y = SensorLSM303.ObjectClusterSensorName.MAG_Y;
+			public static String MAG_Z = SensorLSM303.ObjectClusterSensorName.MAG_Z;
 			
-			public static  String ACCEL_MPU_X = "Accel_MPU_X";
-			public static  String ACCEL_MPU_Y = "Accel_MPU_Y";
-			public static  String ACCEL_MPU_Z = "Accel_MPU_Z";
-			public static  String MAG_MPU_X = "Mag_MPU_X";
-			public static  String MAG_MPU_Y = "Mag_MPU_Y";
-			public static  String MAG_MPU_Z = "Mag_MPU_Z";
-			public static  String TEMPERATURE_BMP180 = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180; //"Temperature_BMP180";
-			public static  String PRESSURE_BMP180 =    SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;//"Pressure_BMP180";
-			public static  String ECG_GQ = "ECG";
-			public static  String ECG_TO_HR_FW_GQ = "ECGToHR_FW";
-			public static  String ECG_TO_HR_SW_GQ = "ECGToHR_SW";
-			public static  String EXG1_STATUS = "ECG_EMG_Status1";
-			public static  String EXG2_STATUS = "ECG_EMG_Status2";
-			public static  String EXG1_CH1_24BIT = "ExG1_CH1_24BIT";
-			public static  String EXG1_CH2_24BIT = "ExG1_CH2_24BIT";
-			public static  String EXG1_CH1_16BIT = "ExG1_CH1_16BIT";
-			public static  String EXG1_CH2_16BIT = "ExG1_CH2_16BIT";
-			public static  String EXG2_CH1_24BIT = "ExG2_CH1_24BIT";
-			public static  String EXG2_CH2_24BIT = "ExG2_CH2_24BIT";
-			public static  String EXG2_CH1_16BIT = "ExG2_CH1_16BIT";
-			public static  String EXG2_CH2_16BIT = "ExG2_CH2_16BIT";
-			public static  String EMG_CH1_24BIT = "EMG_CH1_24BIT";
-			public static  String EMG_CH2_24BIT = "EMG_CH2_24BIT";
-			public static  String EMG_CH1_16BIT = "EMG_CH1_16BIT";
-			public static  String EMG_CH2_16BIT = "EMG_CH2_16BIT";
-			public static  String ECG_LA_RA_24BIT = "ECG_LA-RA_24BIT";
-			public static  String ECG_LA_RL_24BIT = "ECG_LA-RL_24BIT";
-			public static  String ECG_LL_RA_24BIT = "ECG_LL-RA_24BIT";
-			public static  String ECG_LL_LA_24BIT = "ECG_LL-LA_24BIT"; //derived
-			public static  String ECG_RESP_24BIT = "ECG_RESP_24BIT";
-			public static  String ECG_VX_RL_24BIT = "ECG_Vx-RL_24BIT";
-			public static  String ECG_LA_RA_16BIT = "ECG_LA-RA_16BIT";
-			public static  String ECG_LA_RL_16BIT = "ECG_LA-RL_16BIT";
-			public static  String ECG_LL_RA_16BIT = "ECG_LL-RA_16BIT";
-			public static  String ECG_LL_LA_16BIT = "ECG_LL-LA_16BIT"; //derived
-			public static  String ECG_RESP_16BIT = "ECG_RESP_16BIT";
-			public static  String ECG_VX_RL_16BIT = "ECG_Vx-RL_16BIT";
-			public static  String EXG_TEST_CHIP1_CH1_24BIT = "Test_CHIP1_CH1_24BIT";
-			public static  String EXG_TEST_CHIP1_CH2_24BIT = "Test_CHIP1_CH2_24BIT";
-			public static  String EXG_TEST_CHIP2_CH1_24BIT = "Test_CHIP2_CH1_24BIT";
-			public static  String EXG_TEST_CHIP2_CH2_24BIT = "Test_CHIP2_CH2_24BIT";
-			public static  String EXG_TEST_CHIP1_CH1_16BIT = "Test_CHIP1_CH1_16BIT";
-			public static  String EXG_TEST_CHIP1_CH2_16BIT = "Test_CHIP1_CH2_16BIT";
-			public static  String EXG_TEST_CHIP2_CH1_16BIT = "Test_CHIP2_CH1_16BIT";
-			public static  String EXG_TEST_CHIP2_CH2_16BIT = "Test_CHIP2_CH2_16BIT";
-			public static  String QUAT_MPL_6DOF_W = "Quat_MPL_6DOF_W";
-			public static  String QUAT_MPL_6DOF_X = "Quat_MPL_6DOF_X";
-			public static  String QUAT_MPL_6DOF_Y = "Quat_MPL_6DOF_Y";
-			public static  String QUAT_MPL_6DOF_Z = "Quat_MPL_6DOF_Z";
-			public static  String QUAT_MPL_9DOF_W = "Quat_MPL_9DOF_W";
-			public static  String QUAT_MPL_9DOF_X = "Quat_MPL_9DOF_X";
-			public static  String QUAT_MPL_9DOF_Y = "Quat_MPL_9DOF_Y";
-			public static  String QUAT_MPL_9DOF_Z = "Quat_MPL_9DOF_Z";
-			public static  String EULER_MPL_6DOF_X = "Euler_MPL_6DOF_X";
-			public static  String EULER_MPL_6DOF_Y = "Euler_MPL_6DOF_Y";
-			public static  String EULER_MPL_6DOF_Z = "Euler_MPL_6DOF_Z";
-			public static  String EULER_MPL_9DOF_X = "Euler_MPL_9DOF_X";
-			public static  String EULER_MPL_9DOF_Y = "Euler_MPL_9DOF_Y";
-			public static  String EULER_MPL_9DOF_Z = "Euler_MPL_9DOF_Z";
-			public static  String MPL_HEADING = "MPL_heading";
-			public static  String MPL_TEMPERATURE = "MPL_Temperature";
-			public static  String MPL_PEDOM_CNT = "MPL_Pedom_cnt";
-			public static  String MPL_PEDOM_TIME = "MPL_Pedom_Time";
-			public static  String TAPDIRANDTAPCNT = "TapDirAndTapCnt";
-			public static  String MOTIONANDORIENT = "MotionAndOrient";
-			public static  String GYRO_MPU_MPL_X = "Gyro_MPU_MPL_X";
-			public static  String GYRO_MPU_MPL_Y = "Gyro_MPU_MPL_Y";
-			public static  String GYRO_MPU_MPL_Z = "Gyro_MPU_MPL_Z";
-			public static  String ACCEL_MPU_MPL_X = "Accel_MPU_MPL_X";
-			public static  String ACCEL_MPU_MPL_Y = "Accel_MPU_MPL_Y";
-			public static  String ACCEL_MPU_MPL_Z = "Accel_MPU_MPL_Z";
-			public static  String MAG_MPU_MPL_X = "Mag_MPU_MPL_X";
-			public static  String MAG_MPU_MPL_Y = "Mag_MPU_MPL_Y";
-			public static  String MAG_MPU_MPL_Z = "Mag_MPU_MPL_Z";
-			public static  String QUAT_DMP_6DOF_W = "Quat_DMP_6DOF_W";
-			public static  String QUAT_DMP_6DOF_X = "Quat_DMP_6DOF_X";
-			public static  String QUAT_DMP_6DOF_Y = "Quat_DMP_6DOF_Y";
-			public static  String QUAT_DMP_6DOF_Z = "Quat_DMP_6DOF_Z";
+			public static String ACCEL_MPU_X = "Accel_MPU_X";
+			public static String ACCEL_MPU_Y = "Accel_MPU_Y";
+			public static String ACCEL_MPU_Z = "Accel_MPU_Z";
+			public static String MAG_MPU_X = "Mag_MPU_X";
+			public static String MAG_MPU_Y = "Mag_MPU_Y";
+			public static String MAG_MPU_Z = "Mag_MPU_Z";
+			public static String TEMPERATURE_BMP180 = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180; //"Temperature_BMP180";
+			public static String PRESSURE_BMP180 =    SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;//"Pressure_BMP180";
+			public static String ECG_GQ = "ECG";
+			public static String ECG_TO_HR_FW_GQ = "ECGToHR_FW";
+			public static String ECG_TO_HR_SW_GQ = "ECGToHR_SW";
+			public static String EXG1_STATUS = "ECG_EMG_Status1";
+			public static String EXG2_STATUS = "ECG_EMG_Status2";
+			public static String EXG1_CH1_24BIT = "ExG1_CH1_24BIT";
+			public static String EXG1_CH2_24BIT = "ExG1_CH2_24BIT";
+			public static String EXG1_CH1_16BIT = "ExG1_CH1_16BIT";
+			public static String EXG1_CH2_16BIT = "ExG1_CH2_16BIT";
+			public static String EXG2_CH1_24BIT = "ExG2_CH1_24BIT";
+			public static String EXG2_CH2_24BIT = "ExG2_CH2_24BIT";
+			public static String EXG2_CH1_16BIT = "ExG2_CH1_16BIT";
+			public static String EXG2_CH2_16BIT = "ExG2_CH2_16BIT";
+			public static String EMG_CH1_24BIT = "EMG_CH1_24BIT";
+			public static String EMG_CH2_24BIT = "EMG_CH2_24BIT";
+			public static String EMG_CH1_16BIT = "EMG_CH1_16BIT";
+			public static String EMG_CH2_16BIT = "EMG_CH2_16BIT";
+			public static String ECG_LA_RA_24BIT = "ECG_LA-RA_24BIT";
+			public static String ECG_LA_RL_24BIT = "ECG_LA-RL_24BIT";
+			public static String ECG_LL_RA_24BIT = "ECG_LL-RA_24BIT";
+			public static String ECG_LL_LA_24BIT = "ECG_LL-LA_24BIT"; //derived
+			public static String ECG_RESP_24BIT = "ECG_RESP_24BIT";
+			public static String ECG_VX_RL_24BIT = "ECG_Vx-RL_24BIT";
+			public static String ECG_LA_RA_16BIT = "ECG_LA-RA_16BIT";
+			public static String ECG_LA_RL_16BIT = "ECG_LA-RL_16BIT";
+			public static String ECG_LL_RA_16BIT = "ECG_LL-RA_16BIT";
+			public static String ECG_LL_LA_16BIT = "ECG_LL-LA_16BIT"; //derived
+			public static String ECG_RESP_16BIT = "ECG_RESP_16BIT";
+			public static String ECG_VX_RL_16BIT = "ECG_Vx-RL_16BIT";
+			public static String EXG_TEST_CHIP1_CH1_24BIT = "Test_CHIP1_CH1_24BIT";
+			public static String EXG_TEST_CHIP1_CH2_24BIT = "Test_CHIP1_CH2_24BIT";
+			public static String EXG_TEST_CHIP2_CH1_24BIT = "Test_CHIP2_CH1_24BIT";
+			public static String EXG_TEST_CHIP2_CH2_24BIT = "Test_CHIP2_CH2_24BIT";
+			public static String EXG_TEST_CHIP1_CH1_16BIT = "Test_CHIP1_CH1_16BIT";
+			public static String EXG_TEST_CHIP1_CH2_16BIT = "Test_CHIP1_CH2_16BIT";
+			public static String EXG_TEST_CHIP2_CH1_16BIT = "Test_CHIP2_CH1_16BIT";
+			public static String EXG_TEST_CHIP2_CH2_16BIT = "Test_CHIP2_CH2_16BIT";
+			public static String QUAT_MPL_6DOF_W = "Quat_MPL_6DOF_W";
+			public static String QUAT_MPL_6DOF_X = "Quat_MPL_6DOF_X";
+			public static String QUAT_MPL_6DOF_Y = "Quat_MPL_6DOF_Y";
+			public static String QUAT_MPL_6DOF_Z = "Quat_MPL_6DOF_Z";
+			public static String QUAT_MPL_9DOF_W = "Quat_MPL_9DOF_W";
+			public static String QUAT_MPL_9DOF_X = "Quat_MPL_9DOF_X";
+			public static String QUAT_MPL_9DOF_Y = "Quat_MPL_9DOF_Y";
+			public static String QUAT_MPL_9DOF_Z = "Quat_MPL_9DOF_Z";
+			public static String EULER_MPL_6DOF_X = "Euler_MPL_6DOF_X";
+			public static String EULER_MPL_6DOF_Y = "Euler_MPL_6DOF_Y";
+			public static String EULER_MPL_6DOF_Z = "Euler_MPL_6DOF_Z";
+			public static String EULER_MPL_9DOF_X = "Euler_MPL_9DOF_X";
+			public static String EULER_MPL_9DOF_Y = "Euler_MPL_9DOF_Y";
+			public static String EULER_MPL_9DOF_Z = "Euler_MPL_9DOF_Z";
+			public static String MPL_HEADING = "MPL_heading";
+			public static String MPL_TEMPERATURE = "MPL_Temperature";
+			public static String MPL_PEDOM_CNT = "MPL_Pedom_cnt";
+			public static String MPL_PEDOM_TIME = "MPL_Pedom_Time";
+			public static String TAPDIRANDTAPCNT = "TapDirAndTapCnt";
+			public static String MOTIONANDORIENT = "MotionAndOrient";
+			public static String GYRO_MPU_MPL_X = "Gyro_MPU_MPL_X";
+			public static String GYRO_MPU_MPL_Y = "Gyro_MPU_MPL_Y";
+			public static String GYRO_MPU_MPL_Z = "Gyro_MPU_MPL_Z";
+			public static String ACCEL_MPU_MPL_X = "Accel_MPU_MPL_X";
+			public static String ACCEL_MPU_MPL_Y = "Accel_MPU_MPL_Y";
+			public static String ACCEL_MPU_MPL_Z = "Accel_MPU_MPL_Z";
+			public static String MAG_MPU_MPL_X = "Mag_MPU_MPL_X";
+			public static String MAG_MPU_MPL_Y = "Mag_MPU_MPL_Y";
+			public static String MAG_MPU_MPL_Z = "Mag_MPU_MPL_Z";
+			public static String QUAT_DMP_6DOF_W = "Quat_DMP_6DOF_W";
+			public static String QUAT_DMP_6DOF_X = "Quat_DMP_6DOF_X";
+			public static String QUAT_DMP_6DOF_Y = "Quat_DMP_6DOF_Y";
+			public static String QUAT_DMP_6DOF_Z = "Quat_DMP_6DOF_Z";
 
-			public static  String SKIN_TEMPERATURE_PROBE = "Skin_Temperature";
-			public static  String EVENT_MARKER = "Event_Marker";
+			public static String SKIN_TEMPERATURE_PROBE = "Skin_Temperature";
+			public static String EVENT_MARKER = "Event_Marker";
 // ----------------Implemented in SensorPPG----------------------			
-			public static  String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12; //"PPG_A12";
-			public static  String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13; //"PPG_A13";
-			public static  String PPG1_A12 = SensorPPG.ObjectClusterSensorName.PPG1_A12; //"PPG1_A12";
-			public static  String PPG1_A13 = SensorPPG.ObjectClusterSensorName.PPG1_A13; //"PPG1_A13";
-			public static  String PPG2_A1 = SensorPPG.ObjectClusterSensorName.PPG2_A1; //"PPG2_A1";
-			public static  String PPG2_A14 = SensorPPG.ObjectClusterSensorName.PPG2_A14; //"PPG2_A14";
+			public static String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12; //"PPG_A12";
+			public static String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13; //"PPG_A13";
+			public static String PPG1_A12 = SensorPPG.ObjectClusterSensorName.PPG1_A12; //"PPG1_A12";
+			public static String PPG1_A13 = SensorPPG.ObjectClusterSensorName.PPG1_A13; //"PPG1_A13";
+			public static String PPG2_A1 = SensorPPG.ObjectClusterSensorName.PPG2_A1; //"PPG2_A1";
+			public static String PPG2_A14 = SensorPPG.ObjectClusterSensorName.PPG2_A14; //"PPG2_A14";
 // --------------------------------------------------------------			
 
 			//TODO: move to algorithms class (JC).
 			//Algorithms
 			//TODO separate entries for LN accel vs. WR accel. 
-			public static  String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";//XXX-RS-LSM-SensorClass? 
-			public static  String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";//XXX-RS-LSM-SensorClass? 
-			public static  String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";//XXX-RS-LSM-SensorClass? 
-			public static  String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";//XXX-RS-LSM-SensorClass? 
-			public static  String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";//XXX-RS-LSM-SensorClass? 
-			public static  String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";//XXX-RS-LSM-SensorClass? 
-			public static  String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";//XXX-RS-LSM-SensorClass? 
-			public static  String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";//XXX-RS-LSM-SensorClass? 
-			public static  String EULER_6DOF_A = "Euler_6DOF_A";//XXX-RS-LSM-SensorClass? 
-			public static  String EULER_6DOF_X = "Euler_6DOF_X";//XXX-RS-LSM-SensorClass? 
-			public static  String EULER_6DOF_Y = "Euler_6DOF_Y";//XXX-RS-LSM-SensorClass? 
-			public static  String EULER_6DOF_Z = "Euler_6DOF_Z";//XXX-RS-LSM-SensorClass? 
-			public static  String EULER_9DOF_A = "Euler_9DOF_A";//XXX-RS-LSM-SensorClass? 
-			public static  String EULER_9DOF_X = "Euler_9DOF_X";//XXX-RS-LSM-SensorClass? 
-			public static  String EULER_9DOF_Y = "Euler_9DOF_Y";//XXX-RS-LSM-SensorClass? 
-			public static  String EULER_9DOF_Z = "Euler_9DOF_Z";//XXX-RS-LSM-SensorClass? 
+			public static String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";//XXX-RS-LSM-SensorClass? 
+			public static String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";//XXX-RS-LSM-SensorClass? 
+			public static String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";//XXX-RS-LSM-SensorClass? 
+			public static String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";//XXX-RS-LSM-SensorClass? 
+			public static String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";//XXX-RS-LSM-SensorClass? 
+			public static String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";//XXX-RS-LSM-SensorClass? 
+			public static String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";//XXX-RS-LSM-SensorClass? 
+			public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";//XXX-RS-LSM-SensorClass? 
+			public static String EULER_6DOF_A = "Euler_6DOF_A";//XXX-RS-LSM-SensorClass? 
+			public static String EULER_6DOF_X = "Euler_6DOF_X";//XXX-RS-LSM-SensorClass? 
+			public static String EULER_6DOF_Y = "Euler_6DOF_Y";//XXX-RS-LSM-SensorClass? 
+			public static String EULER_6DOF_Z = "Euler_6DOF_Z";//XXX-RS-LSM-SensorClass? 
+			public static String EULER_9DOF_A = "Euler_9DOF_A";//XXX-RS-LSM-SensorClass? 
+			public static String EULER_9DOF_X = "Euler_9DOF_X";//XXX-RS-LSM-SensorClass? 
+			public static String EULER_9DOF_Y = "Euler_9DOF_Y";//XXX-RS-LSM-SensorClass? 
+			public static String EULER_9DOF_Z = "Euler_9DOF_Z";//XXX-RS-LSM-SensorClass? 
 			//TODO: axis angle 9DOF vs 6DOF??
-			public static  String AXIS_ANGLE_A = "Axis_Angle_A";//XXX-RS-LSM-SensorClass? 
-			public static  String AXIS_ANGLE_X = "Axis_Angle_X";//XXX-RS-LSM-SensorClass? 
-			public static  String AXIS_ANGLE_Y = "Axis_Angle_Y";//XXX-RS-LSM-SensorClass? 
-			public static  String AXIS_ANGLE_Z = "Axis_Angle_Z";//XXX-RS-LSM-SensorClass? 
+			public static String AXIS_ANGLE_A = "Axis_Angle_A";//XXX-RS-LSM-SensorClass? 
+			public static String AXIS_ANGLE_X = "Axis_Angle_X";//XXX-RS-LSM-SensorClass? 
+			public static String AXIS_ANGLE_Y = "Axis_Angle_Y";//XXX-RS-LSM-SensorClass? 
+			public static String AXIS_ANGLE_Z = "Axis_Angle_Z";//XXX-RS-LSM-SensorClass? 
 			
 			// Moved by JC to algorithm module
-			public static  String ECG_TO_HR_LA_RA = "ECGtoHR_LA-RA";
-			public static  String ECG_TO_HR_LL_RA = "ECGtoHR_LL-RA";
-			public static  String ECG_TO_HR_VX_RL = "ECGtoHR_VX-RL";
+			public static String ECG_TO_HR_LA_RA = "ECGtoHR_LA-RA";
+			public static String ECG_TO_HR_LL_RA = "ECGtoHR_LL-RA";
+			public static String ECG_TO_HR_VX_RL = "ECGtoHR_VX-RL";
 
-			public static  String PPG_TO_HR_A12 = "PPGtoHR_A12";
-			public static  String PPG_TO_HR_A13 = "PPGtoHR_A13";
-			public static  String PPG_TO_HR_A1 = "PPGtoHR_A1";
-			public static  String PPG_TO_HR_A14 = "PPGtoHR_A14";
+			public static String PPG_TO_HR_A12 = "PPGtoHR_A12";
+			public static String PPG_TO_HR_A13 = "PPGtoHR_A13";
+			public static String PPG_TO_HR_A1 = "PPGtoHR_A1";
+			public static String PPG_TO_HR_A14 = "PPGtoHR_A14";
 
 			//TODO: remove two old channels names below
-			public static  String ECG_TO_HR = "ECGtoHR";
+			public static String ECG_TO_HR = "ECGtoHR";
 // ----------------Implemented in SensorPPG----------------------
-			public static  String PPG_TO_HR = "PPGtoHR";
+			public static String PPG_TO_HR = "PPGtoHR";
 // --------------------------------------------------------------			
 		}
 		
@@ -2238,8 +2240,8 @@ public class Configuration {
 //							Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT);
 			
 			//TODO:
-//			public static  String ECG_RESP_24BIT = "ECG_RESP_24BIT";
-//			public static  String ECG_RESP_16BIT = "ECG_RESP_16BIT";
+//			public static String ECG_RESP_24BIT = "ECG_RESP_24BIT";
+//			public static String ECG_RESP_16BIT = "ECG_RESP_16BIT";
 			
 			
 			
@@ -3234,26 +3236,26 @@ public class Configuration {
 					CHANNEL_UNITS.BEATS_PER_MINUTE));
 			//XXX-RS-LSM-SensorClass? 
 			//TODO: finish
-//			public static  String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";
-//			public static  String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";
-//			public static  String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";
-//			public static  String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";
-//			public static  String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";
-//			public static  String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";
-//			public static  String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";
-//			public static  String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
-//			public static  String EULER_6DOF_A = "Euler_6DOF_A";
-//			public static  String EULER_6DOF_X = "Euler_6DOF_X";
-//			public static  String EULER_6DOF_Y = "Euler_6DOF_Y";
-//			public static  String EULER_6DOF_Z = "Euler_6DOF_Z";
-//			public static  String EULER_9DOF_A = "Euler_9DOF_A";
-//			public static  String EULER_9DOF_X = "Euler_9DOF_X";
-//			public static  String EULER_9DOF_Y = "Euler_9DOF_Y";
-//			public static  String EULER_9DOF_Z = "Euler_9DOF_Z";
-//			public static  String AXIS_ANGLE_A = "Axis_Angle_A";
-//			public static  String AXIS_ANGLE_X = "Axis_Angle_X";
-//			public static  String AXIS_ANGLE_Y = "Axis_Angle_Y";
-//			public static  String AXIS_ANGLE_Z = "Axis_Angle_Z";
+//			public static String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";
+//			public static String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";
+//			public static String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";
+//			public static String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";
+//			public static String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";
+//			public static String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";
+//			public static String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";
+//			public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
+//			public static String EULER_6DOF_A = "Euler_6DOF_A";
+//			public static String EULER_6DOF_X = "Euler_6DOF_X";
+//			public static String EULER_6DOF_Y = "Euler_6DOF_Y";
+//			public static String EULER_6DOF_Z = "Euler_6DOF_Z";
+//			public static String EULER_9DOF_A = "Euler_9DOF_A";
+//			public static String EULER_9DOF_X = "Euler_9DOF_X";
+//			public static String EULER_9DOF_Y = "Euler_9DOF_Y";
+//			public static String EULER_9DOF_Z = "Euler_9DOF_Z";
+//			public static String AXIS_ANGLE_A = "Axis_Angle_A";
+//			public static String AXIS_ANGLE_X = "Axis_Angle_X";
+//			public static String AXIS_ANGLE_Y = "Axis_Angle_Y";
+//			public static String AXIS_ANGLE_Z = "Axis_Angle_Z";
 			
 			mAlgorithmChannelsMapRef = Collections.unmodifiableMap(aMap);
 	    }

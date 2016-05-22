@@ -826,10 +826,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwType, int timeSync, long pctimestamp) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
-		
 		objectCluster.mMyName = mShimmerUserAssignedName;
 		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
 		objectCluster.mRawData = newPacket;
+		
 		long systemTime = System.currentTimeMillis();
 		if(fwType == FW_TYPE_BT){
 			systemTime = pctimestamp;
@@ -970,7 +970,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			//OFFSET
 			if(timeSync==1 && (fwType == FW_TYPE_SD)){
-				int iOffset=getSignalIndex("Offset"); //find index
+				int iOffset=getSignalIndex(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
 				double offsetValue = Double.NaN;
 				if (OFFSET_LENGTH==9){
 					if(newPacketInt[iOffset] == 1152921504606846975L){
@@ -987,7 +987,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 
-				objectCluster.mPropertyCluster.put("Offset",new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue));
+				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue));
 				uncalibratedData[iOffset] = offsetValue;
 				calibratedData[iOffset] = Double.NaN;
 				uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;

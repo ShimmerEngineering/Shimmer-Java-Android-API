@@ -858,7 +858,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 //
 //		//TODO needed for 6DOF/9DOF
 //		Vector3d gyroscope = new Vector3d();
