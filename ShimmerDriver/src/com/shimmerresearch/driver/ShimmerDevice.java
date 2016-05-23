@@ -88,6 +88,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	//for reading the connected devices configuration 
 	protected Map<String,AbstractAlgorithm> mMapOfAlgorithms = new HashMap<String,AbstractAlgorithm>();
+	public List<AlgorithmDetailsNew> algorithmGuiData = new ArrayList<AlgorithmDetailsNew>(); //tracks what algorithm has been turned on in the GUI
 	transient FilterManager mFilterManager = null;	
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
@@ -1582,6 +1583,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			refreshEnabledSensorsFromSensorMap();
 			
 			generateParserMap();
+			//refresh algorithms
+			algorithmRequiredSensorCheck();
 
 			return ((sensorDetails.isEnabled()==state)? true:false);
 			
@@ -1971,18 +1974,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void configDerivedSensor(){
-			//List<AlgorithmDetailsNew> guiConfigAlgorithms) {
 		mDerivedSensorsClone=0;
 		
-		// fake data to feed in from non existent GUI
-		List<AlgorithmDetailsNew> fakeGuiData = getListOfCompatibleAlgorithmChannels();
-		for (AlgorithmDetailsNew algoDetails : fakeGuiData) {
+		// FAKE DATA - WILL BE REMOVED
+		algorithmGuiData = getListOfCompatibleAlgorithmChannels();
+		
+		for (AlgorithmDetailsNew algoDetails : algorithmGuiData) {
 			algoDetails.mEnabled = true;
-			// all algorithm has been switched on
+			// all algorithm has been switched on for testing
 		}		
 		
 		// looping through algorthims to see which ones are enabled
-		for (AlgorithmDetailsNew algoDetails : fakeGuiData) {
+		for (AlgorithmDetailsNew algoDetails : algorithmGuiData) {
 			if (algoDetails.mEnabled) { // an algorithm has been switched on
 				// configure byte
 				addDerivedSensorConfig(algoDetails.mConfigByte);
@@ -1994,6 +1997,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 	}	
+	
+	// check to ensure sensors that algorithm requires hasn't been switched off
+	//to be called during sensor pane mouse press?
+	public void algorithmRequiredSensorCheck() {
+		// looping through algorithms to see which ones are enabled
+		for (AlgorithmDetailsNew algoDetails : algorithmGuiData) {
+			if (algoDetails.mEnabled) { // run check to see if accompanying s
+				for (Integer sensor : algoDetails.mListOfRequiredSensors) {
+					SensorDetails sensorDetails = mSensorMap.get(sensor);
+					if (sensorDetails.isEnabled() == false) {
+						algoDetails.mEnabled = false; // TURNS ALGORITHM OFF
+						// refresh panels??
+					}
+
+				}
+			}
+		}
+	}
 	
 	public Map<String, AlgorithmDetailsNew> getAlgorithmChannelsMap() {
 		return mAlgorithmChannelsMap;

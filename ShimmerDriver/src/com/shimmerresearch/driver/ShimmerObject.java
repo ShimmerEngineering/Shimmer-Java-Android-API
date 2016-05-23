@@ -4817,7 +4817,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
 //		return gsrCalibratedData;  
 //	}
-//
+// 
 //	protected static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
 //		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 //		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
