@@ -98,6 +98,17 @@ public class SensorPPG extends AbstractSensor {
 		public static final int SHIMMER_INT_EXP_ADC_A12 = 14;
 		public static final int SHIMMER_INT_EXP_ADC_A13 = 15;
 		public static final int SHIMMER_INT_EXP_ADC_A14 = 16;
+		// For conficting Channels
+		public static final int SHIMMER_BRIDGE_AMP = 8;
+		public static final int SHIMMER_RESISTANCE_AMP = 9;
+		
+		public static final int HOST_ECG = 100;
+		public static final int HOST_EMG = 101;
+		public static final int HOST_EXG_TEST = 102;
+		public static final int HOST_EXG_RESPIRATION = 103;
+		public static final int HOST_EXG_CUSTOM = 116;
+		
+		
 	}
 	//GUI SENSORs
 	public class GuiLabelSensors{
@@ -141,6 +152,14 @@ public class SensorPPG extends AbstractSensor {
 	public static final String[] ListOfPpg2AdcSelection = {"Int A1","Int A14"};
 	public static final Integer[] ListOfPpg2AdcSelectionConfigValues = {0,1};
 	
+	public static final Integer[] FixedConflictingSensorMapKeys = {SensorMapKey.HOST_ECG,SensorMapKey.HOST_EMG, 
+		SensorMapKey.HOST_EXG_TEST,SensorMapKey.HOST_EXG_RESPIRATION, 
+		SensorMapKey.SHIMMER_RESISTANCE_AMP,SensorMapKey.SHIMMER_BRIDGE_AMP};
+
+    List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
+  
+	
+	
 	public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMapRef;
 	static {
 		Map<String, SensorConfigOptionDetails> aConfigMap = new LinkedHashMap<String, SensorConfigOptionDetails>(); 
@@ -182,16 +201,138 @@ public class SensorPPG extends AbstractSensor {
 
 	
 	public static final SensorDetailsRef sensorPpgHostDummy = new SensorDetailsRef(
-			0, 0, GuiLabelSensors.PPG_DUMMY,
+			0, 0,
+			GuiLabelSensors.PPG_DUMMY,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
 			null,
-			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION),
+			Arrays.asList(GuiLabelConfig.PPG_ADC_SELECTION),
 			null,
 			false);
 	{
 		sensorPpgHostDummy.mIsDummySensor = true;
 	}
-
+	
+	public static final SensorDetailsRef sensorPpgHostPPG_A12 = new SensorDetailsRef(
+			0,
+			0, 
+			GuiLabelSensors.PPG_A12,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
+			Arrays.asList(SensorMapKey.SHIMMER_INT_EXP_ADC_A1,SensorMapKey.SHIMMER_INT_EXP_ADC_A14,SensorMapKey.HOST_PPG_A13,
+					SensorMapKey.SHIMMER_INT_EXP_ADC_A12,SensorMapKey.SHIMMER_INT_EXP_ADC_A13,SensorMapKey.HOST_EXG_CUSTOM
+					),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG_A12),
+			true
+			);
+	{
+		sensorPpgHostPPG_A12.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+	}
+	
+	public static final SensorDetailsRef sensorPpgHostPPG_A13 = new SensorDetailsRef(
+			0, 
+			0, 
+			GuiLabelSensors.PPG_A13,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
+			Arrays.asList(SensorMapKey.SHIMMER_INT_EXP_ADC_A1,SensorMapKey.SHIMMER_INT_EXP_ADC_A14,SensorMapKey.HOST_EXG_CUSTOM,
+					SensorMapKey.HOST_PPG_A12,SensorMapKey.HOST_PPG_A13, SensorMapKey.SHIMMER_INT_EXP_ADC_A12, SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG_A13),
+			true
+			);
+	
+	{
+		sensorPpgHostPPG_A13.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+	}
+	
+	// Derived Channels - Proto3 Board
+	public static final SensorDetailsRef sensorPpgHostPPG1Dummy = new SensorDetailsRef(
+			0, 
+			0, 
+			GuiLabelSensors.PPG1_DUMMY,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			null,
+			Arrays.asList(GuiLabelConfig.PPG1_ADC_SELECTION),
+			null,
+			true
+			);
+	{
+		sensorPpgHostPPG1Dummy.mIsDummySensor = true;
+	}
+	public static final SensorDetailsRef sensorPpgHostPPG1A12 = new SensorDetailsRef(
+			0, 
+			0, 
+			GuiLabelSensors.PPG1_A12,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			Arrays.asList(SensorMapKey.SHIMMER_INT_EXP_ADC_A1,SensorMapKey.SHIMMER_INT_EXP_ADC_A14,SensorMapKey.HOST_EXG_CUSTOM,
+					SensorMapKey.HOST_PPG_A12,SensorMapKey.HOST_PPG_A13, SensorMapKey.SHIMMER_INT_EXP_ADC_A12, 
+		            SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG1_A12),
+			true
+			);
+	{
+		sensorPpgHostPPG1A12.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+	}
+	
+	public static final SensorDetailsRef sensorPpgHostPPG1A13 = new SensorDetailsRef(
+			0, 
+			0, 
+			GuiLabelSensors.PPG1_A13,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			Arrays.asList(SensorMapKey.HOST_PPG1_A12,SensorMapKey.SHIMMER_GSR,SensorMapKey.SHIMMER_INT_EXP_ADC_A12,SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG1_A13),
+			true
+			);
+	{
+		sensorPpgHostPPG1A13.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+	}
+	
+	public static final SensorDetailsRef sensorPpgHostPPG2Dummy = new SensorDetailsRef(
+			0, 
+			0, 
+			GuiLabelSensors.PPG2_DUMMY,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			null,
+			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION),
+			null,
+			true
+			);
+	{
+		sensorPpgHostPPG2Dummy.mIsDummySensor = true;
+	}
+	
+	
+	public static final SensorDetailsRef sensorPpgHostPPG2_A1 = new SensorDetailsRef(
+			0, 
+			0, 
+			GuiLabelSensors.PPG2_A1,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			Arrays.asList(SensorMapKey.SHIMMER_GSR,SensorMapKey.HOST_PPG2_A14,SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+					SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG2_A1),
+			true
+			);
+	{
+		sensorPpgHostPPG2_A1.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+	}
+	
+	public static final SensorDetailsRef sensorPpgHostPPG2_A14 = new SensorDetailsRef(
+			0, 
+			0, 
+			GuiLabelSensors.PPG2_A14,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			Arrays.asList(SensorMapKey.SHIMMER_GSR,SensorMapKey.HOST_EXG_CUSTOM,SensorMapKey.HOST_PPG2_A1,
+					SensorMapKey.SHIMMER_INT_EXP_ADC_A1,SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG2_A14),
+			true
+			);
+	
+	{
+		sensorPpgHostPPG2_A14.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+	}
 //	public SensorDetailsRef(
 //			long sensorBitmapIDStreaming, 
 //			long sensorBitmapIDSDLogHeader, 
@@ -220,43 +361,55 @@ public class SensorPPG extends AbstractSensor {
     	// Derived Channels - GSR Board
         
 		aMap.put(SensorMapKey.HOST_PPG_DUMMY, sensorPpgHostDummy);
-        
-        
-////		aMap.put(SensorMapKey.HOST_PPG_DUMMY, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG_DUMMY));
+		aMap.put(SensorMapKey.HOST_PPG_A12, sensorPpgHostPPG_A12);
+		aMap.put(SensorMapKey.HOST_PPG_A13, sensorPpgHostPPG_A13);
+		aMap.put(SensorMapKey.HOST_PPG1_DUMMY,sensorPpgHostPPG1Dummy);
+		aMap.put(SensorMapKey.HOST_PPG1_A12, sensorPpgHostPPG1A12);
+		aMap.put(SensorMapKey.HOST_PPG1_A13, sensorPpgHostPPG1A13);
+		aMap.put(SensorMapKey.HOST_PPG2_DUMMY ,sensorPpgHostPPG2Dummy);
+		aMap.put(SensorMapKey.HOST_PPG2_A1, sensorPpgHostPPG2_A1);
+		aMap.put(SensorMapKey.HOST_PPG2_A14, sensorPpgHostPPG2_A14);
+		
+//		aMap.put(SensorMapKey.HOST_PPG_DUMMY, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG_DUMMY));
 //		aMap.put(SensorMapKey.HOST_PPG_A12, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG_A12));
 //		aMap.get(SensorMapKey.HOST_PPG_A12).mSensorBitmapIDStreaming = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
 //		aMap.get(SensorMapKey.HOST_PPG_A12).mSensorBitmapIDSDLogHeader = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
-////		aMap.get(SensorMapKey.PPG_A12).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+//		aMap.get(SensorMapKey.PPG_A12).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
 //		aMap.put(SensorMapKey.HOST_PPG_A13, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG_A13));
 //		aMap.get(SensorMapKey.HOST_PPG_A13).mSensorBitmapIDStreaming = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
 //		aMap.get(SensorMapKey.HOST_PPG_A13).mSensorBitmapIDSDLogHeader = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
-////		aMap.get(SensorMapKey.PPG_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
-////		
-////		// Derived Channels - Proto3 Board
+//		aMap.get(SensorMapKey.PPG_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg_ADC12ADC13;
+//		
+//		// Derived Channels - Proto3 Board
 //		aMap.put(SensorMapKey.HOST_PPG1_DUMMY, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG1_DUMMY));
 //		aMap.put(SensorMapKey.HOST_PPG1_A12, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG1_A12));
 //		aMap.get(SensorMapKey.HOST_PPG1_A12).mSensorBitmapIDStreaming = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A12).mSensorBitmapIDStreaming;
 //		aMap.get(SensorMapKey.HOST_PPG1_A12).mSensorBitmapIDSDLogHeader = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A12).mSensorBitmapIDSDLogHeader;
-////		aMap.get(SensorMapKey.PPG1_A12).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+//		aMap.get(SensorMapKey.PPG1_A12).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+		
+		
 //		aMap.put(SensorMapKey.HOST_PPG1_A13, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG1_A13));
 //		aMap.get(SensorMapKey.HOST_PPG1_A13).mSensorBitmapIDStreaming = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A13).mSensorBitmapIDStreaming;
 //		aMap.get(SensorMapKey.HOST_PPG1_A13).mSensorBitmapIDSDLogHeader = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A13).mSensorBitmapIDSDLogHeader;
-////		aMap.get(SensorMapKey.PPG1_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+//		aMap.get(SensorMapKey.PPG1_A13).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg1_ADC12ADC13;
+		
+		
 //		aMap.put(SensorMapKey.HOST_PPG2_DUMMY, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG2_DUMMY));
+		
 //		aMap.put(SensorMapKey.HOST_PPG2_A1, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG2_A1));
 //		aMap.get(SensorMapKey.HOST_PPG2_A1).mSensorBitmapIDStreaming = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A1).mSensorBitmapIDStreaming;
 //		aMap.get(SensorMapKey.HOST_PPG2_A1).mSensorBitmapIDSDLogHeader = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A1).mSensorBitmapIDSDLogHeader;
-////		aMap.get(SensorMapKey.PPG2_A1).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
+//		aMap.get(SensorMapKey.PPG2_A1).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
 //		aMap.put(SensorMapKey.HOST_PPG2_A14, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG2_A14));
 //		aMap.get(SensorMapKey.HOST_PPG2_A14).mSensorBitmapIDStreaming = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A14).mSensorBitmapIDStreaming;
 //		aMap.get(SensorMapKey.HOST_PPG2_A14).mSensorBitmapIDSDLogHeader = aMap.get(SensorMapKey.SHIMMER_INT_EXP_ADC_A14).mSensorBitmapIDSDLogHeader;
-////		aMap.get(SensorMapKey.PPG2_A14).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
-//
-////		aMap.get(SensorMapKey.HOST_PPG_DUMMY).mIsDummySensor = true;
+//		aMap.get(SensorMapKey.PPG2_A14).mDerivedSensorBitmapID = infoMemMap.maskDerivedChannelPpg2_ADC1ADC14;
+
+//		aMap.get(SensorMapKey.HOST_PPG_DUMMY).mIsDummySensor = true;
 //		aMap.get(SensorMapKey.HOST_PPG1_DUMMY).mIsDummySensor = true;
 //		aMap.get(SensorMapKey.HOST_PPG2_DUMMY).mIsDummySensor = true;
-//		
-////		aMap.get(SensorMapKey.HOST_PPG_DUMMY).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+		
+//		aMap.get(SensorMapKey.HOST_PPG_DUMMY).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 //		aMap.get(SensorMapKey.HOST_PPG_A12).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 //		aMap.get(SensorMapKey.HOST_PPG_A13).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 //		aMap.get(SensorMapKey.HOST_PPG1_DUMMY).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
@@ -265,15 +418,15 @@ public class SensorPPG extends AbstractSensor {
 //		aMap.get(SensorMapKey.HOST_PPG2_DUMMY).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
 //		aMap.get(SensorMapKey.HOST_PPG2_A1).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
 //		aMap.get(SensorMapKey.HOST_PPG2_A14).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe;
-//		
+		
 //		aMap.get(SensorMapKey.HOST_PPG_A12).mIntExpBoardPowerRequired = true;
 //		aMap.get(SensorMapKey.HOST_PPG_A13).mIntExpBoardPowerRequired = true;
 //		aMap.get(SensorMapKey.HOST_PPG1_A12).mIntExpBoardPowerRequired = true;
 //		aMap.get(SensorMapKey.HOST_PPG1_A13).mIntExpBoardPowerRequired = true;
 //		aMap.get(SensorMapKey.HOST_PPG2_A1).mIntExpBoardPowerRequired = true;
 //		aMap.get(SensorMapKey.HOST_PPG2_A14).mIntExpBoardPowerRequired = true;
-//		
-//		//The A12 and A13 based PPG channels have the same channel exceptions as GSR with the addition of their counterpart channel 
+		
+		//The A12 and A13 based PPG channels have the same channel exceptions as GSR with the addition of their counterpart channel 
 //		aMap.get(SensorMapKey.HOST_PPG_A12).mListOfSensorMapKeysConflicting = new ArrayList<Integer>(aMap.get(SensorMapKey.SHIMMER_GSR).mListOfSensorMapKeysConflicting);
 //		aMap.get(SensorMapKey.HOST_PPG_A12).mListOfSensorMapKeysConflicting.add(SensorMapKey.HOST_PPG_A13);
 //		aMap.get(SensorMapKey.HOST_PPG_A12).mListOfSensorMapKeysConflicting.add(SensorMapKey.SHIMMER_INT_EXP_ADC_A12);
@@ -282,7 +435,7 @@ public class SensorPPG extends AbstractSensor {
 //		aMap.get(SensorMapKey.HOST_PPG_A13).mListOfSensorMapKeysConflicting.add(SensorMapKey.HOST_PPG_A12);
 //		aMap.get(SensorMapKey.HOST_PPG_A13).mListOfSensorMapKeysConflicting.add(SensorMapKey.SHIMMER_INT_EXP_ADC_A12);
 //		aMap.get(SensorMapKey.HOST_PPG_A13).mListOfSensorMapKeysConflicting.add(SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
-//        
+        
 //		aMap.get(SensorMapKey.HOST_PPG1_A12).mListOfSensorMapKeysConflicting = Arrays.asList(
 //				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
@@ -300,7 +453,7 @@ public class SensorPPG extends AbstractSensor {
 //				Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
-//		
+		
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).mListOfSensorMapKeysConflicting = Arrays.asList(
 //				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
@@ -317,7 +470,7 @@ public class SensorPPG extends AbstractSensor {
 //				Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
-//		
+		
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).mListOfSensorMapKeysConflicting = Arrays.asList(
 //				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
@@ -334,7 +487,7 @@ public class SensorPPG extends AbstractSensor {
 //				Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14);
-//		
+		
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).mListOfSensorMapKeysConflicting = Arrays.asList(
 //				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
@@ -352,17 +505,17 @@ public class SensorPPG extends AbstractSensor {
 //				Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
 //				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14);
-//		
-//		
-//		
-//		
-////		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).mListOfConfigOptionKeysAssociated = Arrays.asList(
-////				Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
+		
+		
+		
+		
+//		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).mListOfConfigOptionKeysAssociated = Arrays.asList(
+//				Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).mListOfConfigOptionKeysAssociated = Arrays.asList(
 //				Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION);
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).mListOfConfigOptionKeysAssociated = Arrays.asList(
 //				Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION);
-//        
+        
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).mListOfChannelsRef = Arrays.asList(
 //				Configuration.Shimmer3.ObjectClusterSensorName.PPG_A12);
 //		aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).mListOfChannelsRef = Arrays.asList(
