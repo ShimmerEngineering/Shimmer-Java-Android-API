@@ -109,6 +109,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
 	public ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails(); 
 	public ShimmerSDCardDetails mShimmerSDCardDetails = new ShimmerSDCardDetails(); 
+	transient TimeSyncFromObjectCluster mSync;
 
 	public boolean mReadHwFwSuccess = false;
 	public boolean mConfigurationReadSuccess = false;
@@ -132,6 +133,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public float mFwImageWriteSpeed = 0;
 	//BSL related end
 	public List<MsgDock> mListOfFailMsg = new ArrayList<MsgDock>();
+	
 	
 
 	//TODO: are these variables too specific to different versions of Shimmer HW?
@@ -888,9 +890,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
-	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
-		return mMapOfSamplingRatesShimmer.get(communicationType); 
-	}
+//	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
+//		return mMapOfSamplingRatesShimmer.get(communicationType); 
+//	}
 	
 	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double samplingRate){
 		mMapOfSamplingRatesShimmer.put(communicationType, samplingRate);
@@ -1000,7 +1002,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			consolePrintLn("ERROR!!!! Parser map null");
 		}
 		//add in algorithm processing
-		dfd
+		// TO  TEST
+		hf
+		ProcessAlgorithmData(ojc);
 		
 		return ojc;
 	}
@@ -2187,19 +2191,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	
-	public void InitializeProcessData() {
-		// TODO Auto-generated method stub
-		mFilterManager = new FilterManager();
-		
-		if (mEnableTimeSync){
-			mSync = new TimeSyncFromObjectCluster((int)getSamplingRateShimmer()*mTimeSyncTrainingPeriod);
-		}
-		
-		
-		
-		
-	}
 
 	//@Override
 	protected void initializeDerivedSensors(){
@@ -2215,11 +2206,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public ObjectCluster ProcessData(ObjectCluster ojc){
+	public ObjectCluster ProcessAlgorithmData(ObjectCluster ojc){
 		try {
-			if (mEnableTimeSync) {
-				ojc = mSync.CalculateTimeSync(ojc);
-			} else {
 				//update to work with consensys 4.3 with time sync switched off
 				ojc.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN));
 	    		String[] sensorNames = new String[ojc.mSensorNames.length+1];
@@ -2242,20 +2230,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	    		ojc.mUnitUncal = unitUncal;
 	    		ojc.mUncalData = uncalData;
 	    		ojc.mCalData = calData;
-			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (mFilterManager.hasASignalToFilter()) {
-			try {
-				ojc = mFilterManager.filterData(ojc);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
+
+		// create new functions
 		for (AbstractAlgorithm am:mMapOfAlgorithms.values()){
 			
 			try {
