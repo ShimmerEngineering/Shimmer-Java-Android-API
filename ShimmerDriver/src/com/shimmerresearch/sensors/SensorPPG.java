@@ -43,8 +43,6 @@ import com.shimmerresearch.sensors.SensorBMP180.ObjectClusterSensorName;
  *
  */
 
-
-
 public class SensorPPG extends AbstractSensor {
 	
 	private static final long serialVersionUID = 2251208184040052082L;
@@ -107,9 +105,7 @@ public class SensorPPG extends AbstractSensor {
 		public static final int HOST_EXG_TEST = 102;
 		public static final int HOST_EXG_RESPIRATION = 103;
 		public static final int HOST_EXG_CUSTOM = 116;
-		
-		
-	}
+		}
 	//GUI SENSORs
 	public class GuiLabelSensors{
 		public static final String PPG = "PPG";
@@ -1063,31 +1059,14 @@ public class SensorPPG extends AbstractSensor {
 	
 	@Override
 	public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
-		
-//		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
+		if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14))){
+			shimmerDevice.ignoreAndDisable(sensorMapKey);
+			return true;
+		}
 
-//			for(Integer sensorMapKey:mSensorMap.keySet()) {
-//				boolean skipKey = false;
-//
-//				// Skip if ExG channels here -> handle them after for loop.
-//				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
-//						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
-//						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
-//						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
-//						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
-//					mSensorMap.get(sensorMapKey).setIsEnabled(false);
-//					skipKey = true;
-//				}
-				// Handle derived sensors based on int adc channels (e.g. PPG vs. A12/A13)
-				if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14))){
-					shimmerDevice.ignoreAndDisable(sensorMapKey);
-					return true;
-				}
-//			}
-//		}
 		return false;
 	}
 
