@@ -71,6 +71,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.pluginalgo.PPGAlgorithmModule;
 import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorECGToHR;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -1876,7 +1877,6 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).mListOfSensorMapKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
 
 			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).mListOfSensorMapKeysConflicting = Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
 					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
@@ -1894,7 +1894,6 @@ public class Configuration {
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
 			
 			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).mListOfSensorMapKeysConflicting = Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
 					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
@@ -1911,7 +1910,6 @@ public class Configuration {
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
 					
 			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).mListOfSensorMapKeysConflicting = Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
 					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
@@ -1928,7 +1926,6 @@ public class Configuration {
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14);
 					
 			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).mListOfSensorMapKeysConflicting = Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
 					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
@@ -3340,10 +3337,8 @@ public class Configuration {
 //		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A1,new AlgorithmDetailsNew(
 //				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG2_A1),
 //				CHANNEL_UNITS.BEATS_PER_MINUTE));
-//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A14,new AlgorithmDetailsNew(
-//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG2_A14),
-//				CHANNEL_UNITS.BEATS_PER_MINUTE));
-//        
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A14, PPGAlgorithmModule.algoPPGtoHR_A14);
+        
 //		//TODO choose best method, PPG requires either sensor, quat will require all
 //		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,new AlgorithmDetailsNew(
 //				Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,

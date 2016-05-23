@@ -13,7 +13,6 @@ public class AlgorithmDetailsNew implements Serializable {
 	public String mGroupName = "";
 	public boolean mEnabled =false;
 	public int mConfigByte  = 0;
-
 	
 	public enum SENSOR_CHECK_METHOD{
 		ALL,
@@ -26,16 +25,13 @@ public class AlgorithmDetailsNew implements Serializable {
 	}
 	
 	public AlgorithmDetailsNew(List<Integer> listOfRequiredSensors, String units, SENSOR_CHECK_METHOD sensorCheckMethod){
-		mListOfRequiredSensors = listOfRequiredSensors;
-		mUnits = units;
+		this(listOfRequiredSensors, units);
 		mSensorCheckMethod = sensorCheckMethod;
-
 	}
 
 	
 	public AlgorithmDetailsNew(List<Integer> listOfRequiredSensors, String units, String AlgorithmName,String groupName, boolean enabled){
-		mListOfRequiredSensors = listOfRequiredSensors;
-		mUnits = units;
+		this(listOfRequiredSensors, units);
 		//mSensorCheckMethod = sensorCheckMethod;
 		mAlgorithmName = AlgorithmName;
 		mGroupName = groupName;

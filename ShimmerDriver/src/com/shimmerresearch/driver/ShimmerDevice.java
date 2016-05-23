@@ -2,6 +2,7 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
+import com.shimmerresearch.algorithms.AbstractAlgorithm.FILTERING_OPTION;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
@@ -2082,7 +2084,70 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return listOfSupportAlgorihmGroups;
 	}
+
+	private boolean checkIfToEnableAlgo(AlgorithmDetailsNew algorithmDetails){
+		for(Integer sensorMapKey:algorithmDetails.mListOfRequiredSensors){
+			boolean isSensorEnabled = mSensorMap.get(sensorMapKey).isEnabled(); 
+			if(algorithmDetails.mSensorCheckMethod==SENSOR_CHECK_METHOD.ANY){
+				if(isSensorEnabled){
+					//One of the required sensors is enabled -> create algorithm
+					return true;
+				}
+			}
+			else if(algorithmDetails.mSensorCheckMethod==SENSOR_CHECK_METHOD.ALL){
+				if(!isSensorEnabled){
+					//One of the required sensors is not enabled -> continue to next algorithm
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	
+	protected void addDerivedSensorAlgorithm(){
+		mMapOfAlgorithms.clear();
+		
+		algorithmLoop:
+		for(AlgorithmDetailsNew algorithmDetails:PPGAlgorithmModule.mAlgorithmMapRef.values()){
+			if(!checkIfToEnableAlgo(algorithmDetails)){
+				continue algorithmLoop;
+			}
+			
+			PPGAlgorithmModule eam = new PPGAlgorithmModule();
+			eam.setSamplingRate(getSamplingRateShimmer());
+			eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+			eam.setSignalName(algorithmDetails.mAlgorithmName);
+			eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+			eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+			eam.setFiltering(FILTERING_OPTION.DEFAULT);
+			//TODO fix key
+			mMapOfAlgorithms.put(algorithmDetails.mAlgorithmName, eam);
+		}
+		
+		algorithmLoop:
+		for(AlgorithmDetailsNew algorithmDetails:ECGAdaptiveModule.mAlgorithmMapRef.values()){
+			if(!checkIfToEnableAlgo(algorithmDetails)){
+				continue algorithmLoop;
+			}
+			
+			ECGAdaptiveModule eam = new ECGAdaptiveModule();
+			eam.setSamplingRate(getSamplingRateShimmer());
+			eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+			String key="";
+			if (getExGResolution()==1){
+				eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+				key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_24BIT);
+			} else {
+				eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+				key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_16BIT);
+			}
+			eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+			eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+			eam.setFiltering(FILTERING_OPTION.NONE);
+			mMapOfAlgorithms.put(key, eam);
+		}
+	}
+
 	//added by En 20-5-2016
 	protected void addDerivedSensorAlgorithm(long derived){
 		mMapOfAlgorithms.clear();
@@ -2094,7 +2159,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				eam.setSignalName(Shimmer3.ObjectClusterSensorName.PPG_A13);
 				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setFiltering(eam.FILTERING_OPTION_DEFAULT);
+				eam.setFiltering(FILTERING_OPTION.DEFAULT);
 				String key = Integer.toString(BTStreamDerivedSensors.PPG_12_13)+"_"+Integer.toString(BTStream.INT_EXP_A13);
 				mMapOfAlgorithms.put(key, eam);
 			}
@@ -2105,7 +2170,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				eam.setSignalName(Shimmer3.ObjectClusterSensorName.PPG_A12);
 				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setFiltering(eam.FILTERING_OPTION_DEFAULT);
+				eam.setFiltering(FILTERING_OPTION.DEFAULT);
 				String key = Integer.toString(BTStreamDerivedSensors.PPG_12_13)+"_"+Integer.toString(BTStream.INT_EXP_A12);
 				mMapOfAlgorithms.put(key, eam);
 			}
@@ -2125,7 +2190,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setFiltering(eam.FILTERING_OPTION_NONE);
+				eam.setFiltering(FILTERING_OPTION.NONE);
 				mMapOfAlgorithms.put(key, eam);
 			}
 		}
@@ -2144,7 +2209,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setFiltering(eam.FILTERING_OPTION_NONE);
+				eam.setFiltering(FILTERING_OPTION.NONE);
 				mMapOfAlgorithms.put(key, eam);
 			}
 		}
@@ -2163,7 +2228,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setFiltering(eam.FILTERING_OPTION_NONE);
+				eam.setFiltering(FILTERING_OPTION.NONE);
 				mMapOfAlgorithms.put(key, eam);
 				
 			}

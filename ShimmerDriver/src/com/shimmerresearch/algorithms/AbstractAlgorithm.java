@@ -17,12 +17,16 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 
 public abstract class AbstractAlgorithm extends BasicProcessWithCallBack implements Serializable{
-	/**
-	 * 
-	 */
+	
+	/** * */
 	private static final long serialVersionUID = 1L;
-	public final int FILTERING_OPTION_NONE = 0;
-	public final int FILTERING_OPTION_DEFAULT = 1;
+	
+//	public final int FILTERING_OPTION_NONE = 0;
+//	public final int FILTERING_OPTION_DEFAULT = 1;
+	public enum FILTERING_OPTION{
+		NONE,
+		DEFAULT
+	};
 	
 	public static final double mVersion=1.0;
 	
@@ -111,7 +115,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	protected List<ChannelDetails> mListofChannelDetails;
 	protected List<String> mOutputChannels; // list of all output channels - can be used for extracting specific metrics after processing
-	protected int mFilteringOptions = FILTERING_OPTION_NONE;
+	protected FILTERING_OPTION mFilteringOptions = FILTERING_OPTION.NONE;
 	protected ALGORITHM_TYPE mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
 	protected ALGORITHM_RESULT_TYPE mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
 	protected ALGORITHM_INPUT_TYPE mAlgorithmInputType = ALGORITHM_INPUT_TYPE.ALGORITHM_INPUT_TYPE_SINGLE_OBJECT_CLUSTER;
@@ -281,7 +285,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return mAlgorithmResultType;
 	}
 	
-	public void setFiltering(int option) {
+	public void setFiltering(FILTERING_OPTION option) {
 		// TODO Auto-generated method stub
 		mFilteringOptions = option;
 	}
