@@ -9757,7 +9757,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	//XXX-RS-LSM-SensorClass?
-	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
+	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
 		if(state) {
 			setLowPowerAccelWR(false);
 		}
@@ -9770,7 +9770,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 	//XXX-RS-LSM-SensorClass?
-	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
+	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
 		if(state) {
 			setLowPowerMag(false);
 		}

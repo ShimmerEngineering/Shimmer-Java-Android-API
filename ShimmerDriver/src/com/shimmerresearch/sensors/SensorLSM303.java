@@ -1109,7 +1109,7 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	
-	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
+	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
 		if(state) {
 			setLowPowerMag(false);
 		}
@@ -1120,7 +1120,7 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 
 	
-	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
+	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
 		if(state) {
 			setLowPowerAccelWR(false);
 		}
