@@ -780,7 +780,7 @@ public class Configuration {
 			//XXX-RS-LSM-SensorClass?
 			public static final String WIDE_RANGE_ACCEL = SensorLSM303.GuiLabelSensors.ACCEL_WR;
 			
-			public static final String PRESSURE_TEMPERATURE = Configuration.Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180;
+			public static final String PRESSURE_TEMPERATURE = SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
 			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion ADCs";
 			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
 			public static final String GSR = "GSR+";

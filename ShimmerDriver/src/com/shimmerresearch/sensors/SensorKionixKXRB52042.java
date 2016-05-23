@@ -22,6 +22,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorBMP180.ObjectClusterSensorName;
 
 /** 
  * @author Ruud Stolk
@@ -57,15 +58,15 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 	
 	
-	public class GuiLabelSensorTiles{
-		public static final String LOW_NOISE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_LN;
-	}
-	
-	
 	public class GuiLabelSensors{
 		public static final String ACCEL_LN = "Low-Noise Accelerometer";
 	}
 	
+	
+	public class GuiLabelSensorTiles{
+		public static final String LOW_NOISE_ACCEL = GuiLabelSensors.ACCEL_LN;
+	}
+
 	
 	public static class DatabaseChannelHandles{
 		public static final String LN_ACC_X = "KXRB8_2042_X";
@@ -227,6 +228,16 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			}
 			index = index + channelDetails.mDefaultNumBytes;
 		}
+		
+		//Debugging
+		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+				new String[]{ObjectClusterSensorName.ACCEL_LN_X, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_LN_Y, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_LN_Z, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_LN_X, CHANNEL_TYPE.CAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_LN_Y, CHANNEL_TYPE.CAL.toString()},
+				new String[]{ObjectClusterSensorName.ACCEL_LN_Z, CHANNEL_TYPE.CAL.toString()}));
+
 		return objectCluster;
 	}
 	

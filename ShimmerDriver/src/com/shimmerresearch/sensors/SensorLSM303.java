@@ -23,6 +23,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorKionixKXRB52042.ObjectClusterSensorName;
 
 /** 
  * @author Ruud Stolk
@@ -95,16 +96,16 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final String LSM303DLHC_MAG_DEFAULT_CALIB = "Mag Default Calibration";
 	}
 	
-	//XXX this method is not in BMP180 class
-	public class GuiLabelSensorTiles{
-		public static final String MAG = GuiLabelSensors.MAG;
-		public static final String WIDE_RANGE_ACCEL = GuiLabelSensors.ACCEL_WR;
-	}
-	
-	
+
 	public class GuiLabelSensors{
 		public static final String ACCEL_WR = "Wide-Range Accelerometer"; 
 		public static final String MAG = "Magnetometer"; 
+	}
+
+	
+	public class GuiLabelSensorTiles{
+		public static final String MAG = GuiLabelSensors.MAG;
+		public static final String WIDE_RANGE_ACCEL = GuiLabelSensors.ACCEL_WR;
 	}
 	
 	
@@ -411,6 +412,22 @@ public class SensorLSM303 extends AbstractSensor{
 
 			index = index + channelDetails.mDefaultNumBytes;
 		}
+		
+		//Debugging
+		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+				new String[]{ObjectClusterSensorName.ACCEL_WR_X, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_WR_Y, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_WR_Z, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.MAG_X, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.MAG_Y, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.MAG_Z, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_WR_X, CHANNEL_TYPE.CAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_WR_Y, CHANNEL_TYPE.CAL.toString()},
+				new String[]{ObjectClusterSensorName.ACCEL_WR_Z, CHANNEL_TYPE.CAL.toString()},
+				new String[]{ObjectClusterSensorName.MAG_X, CHANNEL_TYPE.CAL.toString()}, 
+				new String[]{ObjectClusterSensorName.MAG_Y, CHANNEL_TYPE.CAL.toString()},
+				new String[]{ObjectClusterSensorName.MAG_Z, CHANNEL_TYPE.CAL.toString()}));
+
 		return objectCluster;
 	}
 

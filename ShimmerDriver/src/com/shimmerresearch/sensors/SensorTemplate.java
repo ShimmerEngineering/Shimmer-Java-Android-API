@@ -35,14 +35,13 @@ public class SensorTemplate extends AbstractSensor{
 	//--------- Sensor specific variables start --------------
 			/**	
 			 * 	initialise boolean variables   					-> e.g. mLowPowerAccelWR = false;
-			 * 	initialise int variables       					-> e.g. mMagRange = 1;
+			 * 	initialise other variables       					-> e.g. mMagRange = 1;
 			 * 	calibration matrices           					-> alignment, sensitivity, offset matrices for each range for each (sub)sensor
 			 * 	class GuiLabelConfig           					-> class containing GUI configuration labels 
-			 * 	class GuiLabelSensorTiles      					-> class containing GUI sensor tile labels
 			 * 	class GuiLabelSensors		   					-> class containing GUI sensor labels
+			 *  class GuiLabelSensorTiles      					-> class containing GUI sensor tile labels
 			 * 	class DatabaseChannelHandles   					-> class containing Database handles
 			 * 	class ObjectClusterSensorName  					-> class containing ObjectClusterSensorName (channel name)
-			 * 
 			 */
 	//--------- Sensor specific variables end --------------
 
@@ -53,6 +52,8 @@ public class SensorTemplate extends AbstractSensor{
 			 *  Bluetooth commands related to the sensor 		-> public static final byte SET_ACCEL_SENSITIVITY_COMMAND    		= (byte) 0x09;
 			 *													-> public static final byte ACCEL_SENSITIVITY_RESPONSE       		= (byte) 0x0A;
 			 *													-> public static final byte GET_ACCEL_SENSITIVITY_COMMAND    		= (byte) 0x0B;
+			 *  mBtGetCommandMap - LinkedHashmap<K,V>  			-> with for get command:  K=command's byte value, V=BtCommandDetails
+			 *  mBtSetCommandMap - LinkedHashmap<K,V>  			-> with for set command:  K=command's byte value, V=BtCommandDetails
 			 */
 	//--------- Bluetooth commands end --------------
 
