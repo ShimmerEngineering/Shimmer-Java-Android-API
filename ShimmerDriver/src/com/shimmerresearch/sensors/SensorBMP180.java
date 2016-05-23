@@ -11,6 +11,7 @@ import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -305,18 +306,18 @@ public class SensorBMP180 extends AbstractSensor {
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//TODO set defaults for particular sensor
-			//XXX set default pressure resolution
-			return true;
-		}
-		return false;
+			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE) {
+				setDefaultBmp180PressureSensorConfig(state);
+				return true;
+				}
+		  }
+	  return false;
 	}
 	
 
 	@Override
 	public boolean checkConfigOptionValues(String stringKey) {
 		if(mConfigOptionsMap.containsKey(stringKey)){
-			//XXX Think there are no Config Options to check for pressure, but double check. (Compare with LSM303 class.)
 			return true;
 		}
 		return false;
@@ -325,7 +326,6 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -341,49 +341,12 @@ public class SensorBMP180 extends AbstractSensor {
 		return actionSetting;
 	}
 
-	//XXX This can be removed?
-//	@Override
-//	public LinkedHashMap<Integer, ChannelDetails> generateChannelDetailsMap(ShimmerVerObject svo) {
-//		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer, ChannelDetails>();
-//		int index = 0;
-//		mapOfChannelDetails.put(index++, cdBmp180Temp);
-//		mapOfChannelDetails.put(index++, cdBmp180Press);					  
-//
-////		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.SD, mapOfChannelDetails);
-////		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.BLUETOOTH, mapOfChannelDetails);
-//		mMapOfChannelDetails = mapOfChannelDetails;
-//		
-//		return mMapOfChannelDetails;
-//	}
-
-
-
-	//XXX This can be removed?
-//	@Override
-//	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-//		
-//		return null;
-//	}
-//
 //	@Override
 //	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
 //		return mListOfConfigOptionKeysAssociated = Arrays.asList(
 //				Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
 //	}
 
-	//XXX This can be removed?
-//	@Override
-//	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-//		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
-//		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-//			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
-//					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
-//					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
-//		}
-//		super.updateSensorGroupingMap();
-//	}
-
-	
 	//--------- Abstract methods implemented end --------------
 
 
@@ -437,7 +400,7 @@ public class SensorBMP180 extends AbstractSensor {
 		}
 	}
 	
-	//TODO Check if needed 
+
 	public byte[] getRawCalibrationParameters(ShimmerVerObject svo){        
 		byte[] rawcal=new byte[1];
 		if (svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
@@ -467,6 +430,14 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	public int getPressureResolution(){
 		return mPressureResolution;
+	}
+	
+	private void setDefaultBmp180PressureSensorConfig(boolean state) {
+		if(state) {
+		}
+		else {
+			mPressureResolution = 0;
+		}
 	}
 	
 	
