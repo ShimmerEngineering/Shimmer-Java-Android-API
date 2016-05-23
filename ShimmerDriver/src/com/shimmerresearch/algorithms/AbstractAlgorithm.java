@@ -15,6 +15,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractAlgorithm extends BasicProcessWithCallBack implements Serializable{
 	
@@ -121,7 +122,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	protected ALGORITHM_INPUT_TYPE mAlgorithmInputType = ALGORITHM_INPUT_TYPE.ALGORITHM_INPUT_TYPE_SINGLE_OBJECT_CLUSTER;
 		
 	public HashMap<String,AlgorithmConfigOptionDetails> mConfigOptionsMap = new HashMap<String,AlgorithmConfigOptionDetails>();//Define the gui to be generated
-	public HashMap<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetailsNew>();//Defines algorithm requirements
+	public HashMap<String, AlgorithmDetails> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetails>();//Defines algorithm requirements
 	
 	public Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	public abstract Object getSettings(String componentName);
@@ -316,5 +317,11 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public String getTrialName(){
 		return mTrialName;
 	}
+	
+	public static boolean isCompatibleWith(ShimmerVerObject mShimmerVerObject) {
+		// TODO search through mListSVO
+		return true;
+	}
+
 	
 }

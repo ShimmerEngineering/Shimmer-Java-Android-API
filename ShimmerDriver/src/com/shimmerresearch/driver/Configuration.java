@@ -54,11 +54,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
-import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
-import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
-import com.shimmerresearch.driver.ShimmerObject.BTStreamDerivedSensors;
+import com.shimmerresearch.algorithms.AlgorithmDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -71,7 +68,6 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
-import com.shimmerresearch.pluginalgo.PPGAlgorithmModule;
 import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorECGToHR;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -82,8 +78,6 @@ import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.ShimmerClock;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorBMP180.ObjectClusterSensorName;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
@@ -1185,15 +1179,21 @@ public class Configuration {
 			public static String ECG_TO_HR_LL_LA = "ECGtoHR_LL_LA";
 			public static String ECG_TO_HR_VX_RL = "ECGtoHR_VX-RL";
 
-			public static String PPG_TO_HR_A12 = "PPGtoHR_A12";
-			public static String PPG_TO_HR_A13 = "PPGtoHR_A13";
-			public static String PPG_TO_HR_A1 = "PPGtoHR_A1";
-			public static String PPG_TO_HR_A14 = "PPGtoHR_A14";
-
 			//TODO: remove two old channels names below
 			public static String ECG_TO_HR = "ECGtoHR";
 // ----------------Implemented in SensorPPG----------------------
-			public static String PPG_TO_HR = "PPGtoHR";
+			@Deprecated
+			public static String PPG_TO_HR_A12 = "PPGtoHR_A12";
+			@Deprecated
+			public static String PPG_TO_HR_A13 = "PPGtoHR_A13";
+			@Deprecated
+			public static String PPG_TO_HR_A1 = "PPGtoHR_A1";
+			@Deprecated
+			public static String PPG_TO_HR_A14 = "PPGtoHR_A14";
+
+			public static  String PPG_TO_HR = "PPGtoHR";
+			public static  String PPG_TO_HR1 = "PPGtoHR1";
+			public static  String PPG_TO_HR2 = "PPGtoHR2";
 // --------------------------------------------------------------			
 		}
 		
@@ -3192,9 +3192,9 @@ public class Configuration {
 	    }
 
 
-	    public static final Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMapRef;
+	    public static final Map<String, AlgorithmDetailsRef> mAlgorithmChannelsMapRef;
 	    static {
-	        Map<String, AlgorithmDetailsNew> aMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
+	        Map<String, AlgorithmDetailsRef> aMap = new LinkedHashMap<String, AlgorithmDetailsRef>();
 	        /*Removed by JC
 			// Assemble the channel configuration options map
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,new AlgorithmDetailsNew(
@@ -3228,7 +3228,7 @@ public class Configuration {
 	        
 			//TODO choose best method, PPG requires either sensor, quat will require all
 	      //XXX-RS-LSM-SensorClass? 
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,new AlgorithmDetailsNew(
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,new AlgorithmDetailsRef(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 					CHANNEL_UNITS.BEATS_PER_MINUTE));
@@ -3306,49 +3306,52 @@ public class Configuration {
 	    }
 	
 	
-	public static final Map<String, AlgorithmDetailsNew> mCompleteAlgorithmMap;
-    static {
-    	
-        Map<String, AlgorithmDetailsNew> aMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
-		// Assemble the channel configuration options map
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,new AlgorithmDetailsNew(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
-				BTStreamDerivedSensors.ECG2HR_CHIP1_CH1,Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,
-				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));		
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,new AlgorithmDetailsNew(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
-				BTStreamDerivedSensors.ECG2HR_CHIP1_CH2, Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,
-				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,new AlgorithmDetailsNew(
-				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
-				BTStreamDerivedSensors.ECG2HR_CHIP2_CH1, 
-				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,
-				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
-
-//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A12,new AlgorithmDetailsNew(
-//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A12,
-//						Configuration.Shimmer3.SensorMapKey.PPG_A12),
-//				CHANNEL_UNITS.BEATS_PER_MINUTE,
-//				SENSOR_CHECK_METHOD.ANY));
-//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A13,new AlgorithmDetailsNew(
-//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A13,
-//						Configuration.Shimmer3.SensorMapKey.PPG_A13),
-//				CHANNEL_UNITS.BEATS_PER_MINUTE,
-//				SENSOR_CHECK_METHOD.ANY));
-//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A1,new AlgorithmDetailsNew(
-//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG2_A1),
-//				CHANNEL_UNITS.BEATS_PER_MINUTE));
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A14, PPGAlgorithmModule.algoPPGtoHR_A14);
-        
-//		//TODO choose best method, PPG requires either sensor, quat will require all
-//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,new AlgorithmDetailsNew(
-//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,
-//						Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO),
-//				CHANNEL_UNITS.BEATS_PER_MINUTE));  	
-		
-		mCompleteAlgorithmMap = Collections.unmodifiableMap(aMap);
-
-    }
+//	public static final Map<String, AlgorithmDetailsRef> mCompleteAlgorithmMap;
+//    static {
+//    	
+//        Map<String, AlgorithmDetailsRef> aMap = new LinkedHashMap<String, AlgorithmDetailsRef>();
+//		// Assemble the channel configuration options map
+//        aMap.putAll(ECGAdaptiveModule.mAlgorithmMapRef);
+//        aMap.putAll(PPGAlgorithmModule.mAlgorithmMapRef);
+//        
+////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,new AlgorithmDetails(
+////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
+////				BTStreamDerivedSensors.ECG2HR_CHIP1_CH1,Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,
+////				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));		
+////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,new AlgorithmDetails(
+////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
+////				BTStreamDerivedSensors.ECG2HR_CHIP1_CH2, Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,
+////				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
+////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,new AlgorithmDetails(
+////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
+////				BTStreamDerivedSensors.ECG2HR_CHIP2_CH1, 
+////				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,
+////				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
+//
+////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A12,new AlgorithmDetailsNew(
+////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A12,
+////						Configuration.Shimmer3.SensorMapKey.PPG_A12),
+////				CHANNEL_UNITS.BEATS_PER_MINUTE,
+////				SENSOR_CHECK_METHOD.ANY));
+////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A13,new AlgorithmDetailsNew(
+////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A13,
+////						Configuration.Shimmer3.SensorMapKey.PPG_A13),
+////				CHANNEL_UNITS.BEATS_PER_MINUTE,
+////				SENSOR_CHECK_METHOD.ANY));
+////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A1,new AlgorithmDetailsNew(
+////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG2_A1),
+////				CHANNEL_UNITS.BEATS_PER_MINUTE));
+////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A14, PPGAlgorithmModule.algoPPGtoHR_A14);
+//        
+////		//TODO choose best method, PPG requires either sensor, quat will require all
+////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,new AlgorithmDetailsNew(
+////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,
+////						Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO),
+////				CHANNEL_UNITS.BEATS_PER_MINUTE));  	
+//		
+//		mCompleteAlgorithmMap = Collections.unmodifiableMap(aMap);
+//
+//    }
     
 }
 	

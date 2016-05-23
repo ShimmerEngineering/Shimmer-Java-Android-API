@@ -108,7 +108,8 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
-import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
+import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.AlgorithmDetailsRef;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
@@ -135,7 +136,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.UtilParseData;
-import com.shimmerresearch.algorithms.AlgorithmDetailsNew.SENSOR_CHECK_METHOD;
+import com.shimmerresearch.algorithms.AlgorithmDetailsRef.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
@@ -5810,22 +5811,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return listofSignals;
 	}
 	
-	private List<String[]> getListofEnabledAlgorithmsSignalsandFormats(){
-		List<String[]> listAlgoSignalProperties = new ArrayList<String[]>();
-		for(AlgorithmDetailsNew algoDetails:mAlgorithmChannelsMap.values()){
-			if(algoDetails.isEnabled()){
-				String[] signalStringArray = algoDetails.getSignalStringArray();
-				signalStringArray[0] = mShimmerUserAssignedName;
-				listAlgoSignalProperties.add(signalStringArray);
-			}
-		}
-		return listAlgoSignalProperties;
-	}
-	
 	@Deprecated
 	public void addAlgorithm(String key,AbstractAlgorithm aobj){
 		if (!doesAlgorithmAlreadyExist(aobj)){
-			mMapOfAlgorithms.put(key,aobj);
+			mMapOfAlgorithmModules.put(key,aobj);
 			String[] outputNameArray = aobj.getSignalOutputNameArray();
 			String[] outputFormatArray = aobj.getSignalOutputFormatArray();
 			String[] outputUnitArray = aobj.getSignalOutputUnitArray();
@@ -6776,8 +6765,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 				updateEnabledSensorsFromExgResolution();
+				
 				// add in algorithm map compatible with device
-				mDerivedSensors = getDerivedSensors();
+				updateDerivedSensors();
+				
 				// //TODO 2016-05-04 Special case for EXG - best to do by
 				// cycling through SensorClasses for any special conditions?
 				// AbstractSensor abstractSensor =
@@ -6785,7 +6776,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				// if(abstractSensor!=null){
 				// ((SensorEXG)abstractSensor).updateEnabledSensorsFromExgResolution();
 				// }
-
 			}
 		}
 	}
@@ -6938,9 +6928,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public void sensorAndConfigMapsCreate() {
+		// Clear all here because they won't necessarily be cleared depending on
+		// hardware version
 		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
-		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
+		mMapOfAlgorithmModules = new LinkedHashMap<String, AbstractAlgorithm>();
+		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
 		mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
@@ -6956,10 +6949,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				createSensorMapShimmer3();
 				
 				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
-				mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
-				mAlgorithmGroupingMap = Configuration.Shimmer3.mAlgorithmGroupingMapRef;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMapRef;
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMapRef;
+				
+				generateMapOfAlgorithmModules();
+				generateAlgorithmChannelsMap();
+				mAlgorithmGroupingMap = Configuration.Shimmer3.mAlgorithmGroupingMapRef;
 			}
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
@@ -6983,6 +6978,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					sensorDetails.mListOfChannels.add(channelDetails);
 				}
 			}
+		}
+	}
+	
+	private void generateAlgorithmChannelsMap(){
+//		mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
+		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
+			mAlgorithmChannelsMap.putAll(aA.mAlgorithmChannelsMap);
 		}
 	}
 	

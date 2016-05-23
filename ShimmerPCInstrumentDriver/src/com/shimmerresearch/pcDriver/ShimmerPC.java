@@ -67,8 +67,10 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
@@ -89,9 +91,7 @@ import jssc.SerialPortException;
 
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = -5927054314345918072L;
 	
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
@@ -103,7 +103,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
-	
 	
 	/**
 	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors.
