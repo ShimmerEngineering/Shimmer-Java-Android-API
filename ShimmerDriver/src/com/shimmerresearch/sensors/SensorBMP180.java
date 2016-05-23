@@ -56,19 +56,27 @@ public class SensorBMP180 extends AbstractSensor {
 	public static final int SHIMMER_BMP180_PRESSURE = 22;
 	public int mPressureResolution = 0;
 	
-	public static class ObjectClusterSensorName{
-		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
-		public static String PRESSURE_BMP180 = "Pressure_BMP180";
-	}
+
 	public class GuiLabelConfig{
 		public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
 	}
+	
 	public class GuiLabelSensors{
 		public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
 	}
+	
+	public class GuiLabelSensorTiles{
+		public static final String PRESSURE_TEMPERATURE = GuiLabelSensors.PRESS_TEMP_BMP180;
+	}
+	
 	public static class DatabaseChannelHandles{
 		public static final String PRESSURE = "BMP180_Pressure";
 		public static final String TEMPERATURE = "BMP180_Temperature";
+	}
+	
+	public static class ObjectClusterSensorName{
+		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
+		public static String PRESSURE_BMP180 = "Pressure_BMP180";
 	}
 	//--------- Sensor specific variables end --------------
 
@@ -168,7 +176,7 @@ public class SensorBMP180 extends AbstractSensor {
     }
 	//--------- Channel info end --------------
     
-	
+	//--------- Constructors for this class start --------------
 	/** Constructor for this Sensor
 	 * @param svo
 	 */
@@ -176,13 +184,34 @@ public class SensorBMP180 extends AbstractSensor {
 		super(svo);
 		setSensorName(SENSORS.BMP180.toString());
 	}
+	//--------- Constructors for this class end --------------
 	
+
+	//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
-
-	//--------- Abstract methods implemented start --------------
+	
+	
+	@Override
+	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolution); 
+	}
+	
+	
+	@Override
+	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			mSensorGroupingMap.put(PRESSURE_TEMPERATURE, new SensorGroupingDetails(
+					Arrays.asList(SHIMMER_BMP180_PRESSURE),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
+		}
+		super.updateSensorGroupingMap();
+	}
+	
+	
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
@@ -277,10 +306,22 @@ public class SensorBMP180 extends AbstractSensor {
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			//TODO set defaults for particular sensor
+			//XXX set default pressure resolution
 			return true;
 		}
 		return false;
 	}
+	
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		if(mConfigOptionsMap.containsKey(stringKey)){
+			//XXX Think there are no Config Options to check for pressure, but double check. (Compare with LSM303 class.)
+			return true;
+		}
+		return false;
+	}
+	
 	
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
@@ -300,6 +341,7 @@ public class SensorBMP180 extends AbstractSensor {
 		return actionSetting;
 	}
 
+	//XXX This can be removed?
 //	@Override
 //	public LinkedHashMap<Integer, ChannelDetails> generateChannelDetailsMap(ShimmerVerObject svo) {
 //		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer, ChannelDetails>();
@@ -314,11 +356,9 @@ public class SensorBMP180 extends AbstractSensor {
 //		return mMapOfChannelDetails;
 //	}
 
-	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolution); 
-	}
 
+
+	//XXX This can be removed?
 //	@Override
 //	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
 //		
@@ -331,7 +371,7 @@ public class SensorBMP180 extends AbstractSensor {
 //				Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
 //	}
 
-
+	//XXX This can be removed?
 //	@Override
 //	public void generateSensorGroupMapping(ShimmerVerObject svo) {
 //		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
@@ -342,28 +382,12 @@ public class SensorBMP180 extends AbstractSensor {
 //		}
 //		super.updateSensorGroupingMap();
 //	}
-	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(PRESSURE_TEMPERATURE, new SensorGroupingDetails(
-					Arrays.asList(SHIMMER_BMP180_PRESSURE),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
-		}
-		super.updateSensorGroupingMap();
-	}
+
+	
 	//--------- Abstract methods implemented end --------------
 
 
 	//--------- Sensor specific methods start --------------
-	public void setPressureResolution(int i){
-		mPressureResolution = i;
-	}
-	
-	public int getPressureResolution(){
-		return mPressureResolution;
-	}
-	
 	public double[] calibratePressureSensorData(double UP, double UT){
 		double X1 = (UT - pressTempAC6) * pressTempAC5 / 32768;
 		double X2 = (pressTempMC * 2048 / (X1 + pressTempMD));
@@ -436,6 +460,16 @@ public class SensorBMP180 extends AbstractSensor {
 		return rawcal;
 	}
 	
+	
+	public void setPressureResolution(int i){
+		mPressureResolution = i;
+	}
+	
+	public int getPressureResolution(){
+		return mPressureResolution;
+	}
+	
+	
 	public double getPressTempAC1(){
 		return pressTempAC1;
 	}
@@ -480,12 +514,6 @@ public class SensorBMP180 extends AbstractSensor {
 		return pressTempMD;
 	}
 	//--------- Sensor specific methods end --------------
-
-	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 
 }
