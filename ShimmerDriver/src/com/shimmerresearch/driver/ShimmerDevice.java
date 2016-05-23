@@ -892,9 +892,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
-//	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
-//		return mMapOfSamplingRatesShimmer.get(communicationType); 
-//	}
+	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
+		return mMapOfSamplingRatesShimmer.get(communicationType); 
+	}
 	
 	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double samplingRate){
 		mMapOfSamplingRatesShimmer.put(communicationType, samplingRate);
@@ -1005,8 +1005,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		//add in algorithm processing
 		// TO  TEST
-		hf
-		ProcessAlgorithmData(ojc);
+		processAlgorithmData(ojc);
 		
 		return ojc;
 	}
@@ -2105,163 +2104,156 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	protected void addDerivedSensorAlgorithm(){
-		mMapOfAlgorithms.clear();
+		mMapOfAlgorithms = new HashMap<String,AbstractAlgorithm>();
 		
-		algorithmLoop:
-		for(AlgorithmDetailsNew algorithmDetails:PPGAlgorithmModule.mAlgorithmMapRef.values()){
-			if(!checkIfToEnableAlgo(algorithmDetails)){
-				continue algorithmLoop;
-			}
-			
-			PPGAlgorithmModule eam = new PPGAlgorithmModule();
-			eam.setSamplingRate(getSamplingRateShimmer());
-			eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
-			eam.setSignalName(algorithmDetails.mAlgorithmName);
-			eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
-			eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-			eam.setFiltering(FILTERING_OPTION.DEFAULT);
-			//TODO fix key
-			mMapOfAlgorithms.put(algorithmDetails.mAlgorithmName, eam);
-		}
-		
-		algorithmLoop:
 		for(AlgorithmDetailsNew algorithmDetails:ECGAdaptiveModule.mAlgorithmMapRef.values()){
-			if(!checkIfToEnableAlgo(algorithmDetails)){
-				continue algorithmLoop;
-			}
-			
-			ECGAdaptiveModule eam = new ECGAdaptiveModule();
-			eam.setSamplingRate(getSamplingRateShimmer());
-			eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
-			String key="";
-			if (getExGResolution()==1){
-				eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
-				key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_24BIT);
-			} else {
-				eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
-				key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_16BIT);
-			}
-			eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
-			eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-			eam.setFiltering(FILTERING_OPTION.NONE);
-			mMapOfAlgorithms.put(key, eam);
-		}
-	}
-
-	//added by En 20-5-2016
-	protected void addDerivedSensorAlgorithm(long derived){
-		mMapOfAlgorithms.clear();
-		if ((derived&BTStreamDerivedSensors.PPG_12_13)>0){
-			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13).isEnabled()){
+			if((mDerivedSensors & algorithmDetails.mDerivedSensorBitmap)>0){
 				PPGAlgorithmModule eam = new PPGAlgorithmModule();
-				eam.setSamplingRate(getSamplingRateShimmer());
+				eam.setSamplingRate(getSamplingRateShimmer(COMMUNICATION_TYPE.SD)); //TODO temp passing in SD here
 				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setSignalName(Shimmer3.ObjectClusterSensorName.PPG_A13);
+				eam.setSignalName(algorithmDetails.mAlgorithmName);
 				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
 				eam.setFiltering(FILTERING_OPTION.DEFAULT);
-				String key = Integer.toString(BTStreamDerivedSensors.PPG_12_13)+"_"+Integer.toString(BTStream.INT_EXP_A13);
-				mMapOfAlgorithms.put(key, eam);
-			}
-			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12).isEnabled()){
-				PPGAlgorithmModule eam = new PPGAlgorithmModule();
-				eam.setSamplingRate(getSamplingRateShimmer());
-				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setSignalName(Shimmer3.ObjectClusterSensorName.PPG_A12);
-				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
-				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setFiltering(FILTERING_OPTION.DEFAULT);
-				String key = Integer.toString(BTStreamDerivedSensors.PPG_12_13)+"_"+Integer.toString(BTStream.INT_EXP_A12);
-				mMapOfAlgorithms.put(key, eam);
+				//TODO fix key
+				mMapOfAlgorithms.put(algorithmDetails.mAlgorithmName, eam);
 			}
 		}
-		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)>0){
-			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
+		
+		for(AlgorithmDetailsNew algorithmDetails:ECGAdaptiveModule.mAlgorithmMapRef.values()){
+			if((mDerivedSensors & algorithmDetails.mDerivedSensorBitmap)>0){
 				ECGAdaptiveModule eam = new ECGAdaptiveModule();
-				eam.setSamplingRate(getSamplingRateShimmer());
+				eam.setSamplingRate(getSamplingRateShimmer(COMMUNICATION_TYPE.SD)); //TODO temp passing in SD here
 				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
-				String key="";
-				if (getExGResolution()==1){
-					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
-					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_24BIT);
-				} else {
-					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
-					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_16BIT);
-				}
+				eam.setSignalName(algorithmDetails.mAlgorithmName);
 				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
 				eam.setFiltering(FILTERING_OPTION.NONE);
-				mMapOfAlgorithms.put(key, eam);
-			}
-		}
-		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)>0){
-			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
-				ECGAdaptiveModule eam = new ECGAdaptiveModule();
-				eam.setSamplingRate(getSamplingRateShimmer());
-				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
-				String key="";
-				if(getExGResolution()==1){
-					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
-					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)+"_"+Integer.toString(BTStream.EXG1_24BIT);
-				} else {
-					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
-					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)+"_"+Integer.toString(BTStream.EXG1_16BIT);
-				}
-				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
-				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setFiltering(FILTERING_OPTION.NONE);
-				mMapOfAlgorithms.put(key, eam);
-			}
-		}
-		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)>0){
-			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
-				ECGAdaptiveModule eam = new ECGAdaptiveModule();
-				eam.setSamplingRate(getSamplingRateShimmer());
-				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
-				String key="";
-				if(getExGResolution()==1){
-					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
-					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)+"_"+Integer.toString(BTStream.EXG2_24BIT);
-				} else {
-					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
-					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)+"_"+Integer.toString(BTStream.EXG2_16BIT);
-				}
-				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
-				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
-				eam.setFiltering(FILTERING_OPTION.NONE);
-				mMapOfAlgorithms.put(key, eam);
-				
+				mMapOfAlgorithms.put(algorithmDetails.mAlgorithmName, eam);
 			}
 		}
 	}
 
-	
+//	//added by En 20-5-2016
+//	protected void addDerivedSensorAlgorithm(long derived){
+//		mMapOfAlgorithms.clear();
+//		if ((derived&BTStreamDerivedSensors.PPG_12_13)>0){
+//			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13).isEnabled()){
+//				PPGAlgorithmModule eam = new PPGAlgorithmModule();
+//				eam.setSamplingRate(getSamplingRateShimmer());
+//				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+//				eam.setSignalName(Shimmer3.ObjectClusterSensorName.PPG_A13);
+//				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+//				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+//				eam.setFiltering(FILTERING_OPTION.DEFAULT);
+//				String key = Integer.toString(BTStreamDerivedSensors.PPG_12_13)+"_"+Integer.toString(BTStream.INT_EXP_A13);
+//				mMapOfAlgorithms.put(key, eam);
+//			}
+//			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12).isEnabled()){
+//				PPGAlgorithmModule eam = new PPGAlgorithmModule();
+//				eam.setSamplingRate(getSamplingRateShimmer());
+//				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+//				eam.setSignalName(Shimmer3.ObjectClusterSensorName.PPG_A12);
+//				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+//				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+//				eam.setFiltering(FILTERING_OPTION.DEFAULT);
+//				String key = Integer.toString(BTStreamDerivedSensors.PPG_12_13)+"_"+Integer.toString(BTStream.INT_EXP_A12);
+//				mMapOfAlgorithms.put(key, eam);
+//			}
+//		}
+//		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)>0){
+//			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
+//				ECGAdaptiveModule eam = new ECGAdaptiveModule();
+//				eam.setSamplingRate(getSamplingRateShimmer());
+//				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+//				String key="";
+//				if (getExGResolution()==1){
+//					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT);
+//					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_24BIT);
+//				} else {
+//					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT);
+//					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH1)+"_"+Integer.toString(BTStream.EXG1_16BIT);
+//				}
+//				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+//				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+//				eam.setFiltering(FILTERING_OPTION.NONE);
+//				mMapOfAlgorithms.put(key, eam);
+//			}
+//		}
+//		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)>0){
+//			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
+//				ECGAdaptiveModule eam = new ECGAdaptiveModule();
+//				eam.setSamplingRate(getSamplingRateShimmer());
+//				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+//				String key="";
+//				if(getExGResolution()==1){
+//					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+//					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)+"_"+Integer.toString(BTStream.EXG1_24BIT);
+//				} else {
+//					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT);
+//					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP1_CH2)+"_"+Integer.toString(BTStream.EXG1_16BIT);
+//				}
+//				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+//				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+//				eam.setFiltering(FILTERING_OPTION.NONE);
+//				mMapOfAlgorithms.put(key, eam);
+//			}
+//		}
+//		if ((derived&BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)>0){
+//			if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).isEnabled()){
+//				ECGAdaptiveModule eam = new ECGAdaptiveModule();
+//				eam.setSamplingRate(getSamplingRateShimmer());
+//				eam.setSignalFormat(CHANNEL_TYPE.CAL.toString());
+//				String key="";
+//				if(getExGResolution()==1){
+//					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT);
+//					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)+"_"+Integer.toString(BTStream.EXG2_24BIT);
+//				} else {
+//					eam.setSignalName(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT);
+//					key = Integer.toString(BTStreamDerivedSensors.ECG2HR_CHIP2_CH1)+"_"+Integer.toString(BTStream.EXG2_16BIT);
+//				}
+//				eam.setTimeStampName(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+//				eam.setTimeStampFormat(CHANNEL_TYPE.CAL.toString());
+//				eam.setFiltering(FILTERING_OPTION.NONE);
+//				mMapOfAlgorithms.put(key, eam);
+//				
+//			}
+//		}
+//	}
+
 	
 	protected void initializeAlgorithms() throws Exception{
-		clearExtraSignalProperties();
 		for (AbstractAlgorithm aa:mMapOfAlgorithms.values()){
 			aa.initialize();
-			String[] outputNameArray = aa.getSignalOutputNameArray();
-			String[] outputFormatArray = aa.getSignalOutputFormatArray();
-			String[] outputUnitArray = aa.getSignalOutputUnitArray();
-
-			for (int i=0;i<outputNameArray.length;i++){
-				String[] prop= new String[4];
-				prop[0] = mShimmerUserAssignedName;
-				prop[1] = outputNameArray[i];
-				prop[2] = outputFormatArray[i];
-				prop[3] = outputUnitArray[i];
-				addExtraSignalProperty(prop);
-			}
 		}
 	}
+	
+//	protected void initializeAlgorithms() throws Exception{
+//		clearExtraSignalProperties();
+//		for (AbstractAlgorithm aa:mMapOfAlgorithms.values()){
+//			aa.initialize();
+//			String[] outputNameArray = aa.getSignalOutputNameArray();
+//			String[] outputFormatArray = aa.getSignalOutputFormatArray();
+//			String[] outputUnitArray = aa.getSignalOutputUnitArray();
+//
+//			for (int i=0;i<outputNameArray.length;i++){
+//				String[] prop= new String[4];
+//				prop[0] = mShimmerUserAssignedName;
+//				prop[1] = outputNameArray[i];
+//				prop[2] = outputFormatArray[i];
+//				prop[3] = outputUnitArray[i];
+//				addExtraSignalProperty(prop);
+//			}
+//		}
+//	}
 	
 
 	//@Override
 	protected void initializeDerivedSensors(){
 		//insert map of algorithms here 
 		//TODO
-			addDerivedSensorAlgorithm(mDerivedSensors);
+//			addDerivedSensorAlgorithm(mDerivedSensors);
+			addDerivedSensorAlgorithm();
 			
 		try {
 			initializeAlgorithms();
@@ -2271,7 +2263,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public ObjectCluster ProcessAlgorithmData(ObjectCluster ojc){
+	public ObjectCluster processAlgorithmData(ObjectCluster ojc){
 		try {
 				//update to work with consensys 4.3 with time sync switched off
 				ojc.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN));
@@ -2301,15 +2293,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 
 		// create new functions
-		for (AbstractAlgorithm am:mMapOfAlgorithms.values()){
-			
+		for (AbstractAlgorithm aA:mMapOfAlgorithms.values()){
 			try {
-				ojc = (ObjectCluster)((AlgorithmResultObject) am.processDataRealTime(ojc)).mResult;
+				ojc = (ObjectCluster)((AlgorithmResultObject) aA.processDataRealTime(ojc)).mResult;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 		
 		return ojc;
@@ -2317,9 +2307,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 
 	public boolean doesAlgorithmAlreadyExist(AbstractAlgorithm obj){
-		for (AbstractAlgorithm aa:mMapOfAlgorithms.values())
+		for (AbstractAlgorithm aA:mMapOfAlgorithms.values())
 		{
-			if (aa.getAlgorithmName().equals(obj.getAlgorithmName())){
+			if (aA.getAlgorithmName().equals(obj.getAlgorithmName())){
 				return true;
 			}
 		}
@@ -2332,8 +2322,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void removeAlgorithm(String algoName){
 		int index=0;
 		int keepIndex=-1;
-		for (AbstractAlgorithm a:mMapOfAlgorithms.values()){
-			if (a.getAlgorithmName().equals(algoName)){
+		for (AbstractAlgorithm aA:mMapOfAlgorithms.values()){
+			if (aA.getAlgorithmName().equals(algoName)){
 				keepIndex = index;
 			}
 			index++;
@@ -2345,30 +2335,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 	}
 	
-	public void addAlgorithm(String key,AbstractAlgorithm aobj){
-		if (!doesAlgorithmAlreadyExist(aobj)){
-			mMapOfAlgorithms.put(key,aobj);
-			String[] outputNameArray = aobj.getSignalOutputNameArray();
-			String[] outputFormatArray = aobj.getSignalOutputFormatArray();
-			String[] outputUnitArray = aobj.getSignalOutputUnitArray();
-
-			for (int i=0;i<outputNameArray.length;i++){
-				String[] prop= new String[4];
-				prop[0] = mShimmerUserAssignedName;
-				prop[1] = outputNameArray[i];
-				prop[2] = outputFormatArray[i];
-				prop[3] = outputUnitArray[i];
-				addExtraSignalProperty(prop);
-			}
-		}
-	}
-	
 	
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithms(){
 		return mMapOfAlgorithms;
 	}
 	
-	
+
 	
 	
 	/**

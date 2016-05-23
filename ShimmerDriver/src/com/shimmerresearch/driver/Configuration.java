@@ -1182,6 +1182,7 @@ public class Configuration {
 			// Moved by JC to algorithm module
 			public static String ECG_TO_HR_LA_RA = "ECGtoHR_LA-RA";
 			public static String ECG_TO_HR_LL_RA = "ECGtoHR_LL-RA";
+			public static String ECG_TO_HR_LL_LA = "ECGtoHR_LL_LA";
 			public static String ECG_TO_HR_VX_RL = "ECGtoHR_VX-RL";
 
 			public static String PPG_TO_HR_A12 = "PPGtoHR_A12";

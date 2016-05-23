@@ -107,6 +107,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetailsNew;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
@@ -779,6 +780,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//This features are only used in LogAndStream FW 
 	protected String mDirectoryName;
 	protected int mDirectoryNameLength;
+	@Deprecated
 	private List<String[]> mExtraSignalProperties = null;
 	
 	public static final double ACCELERATION_DUE_TO_GRAVITY = 9.81;//XXX-RS-LSM-SensorClass?
@@ -5796,13 +5798,50 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		}
 		
+		
+		//Currently just used by the REAL_TIME_CLOCK channel
 		if (mExtraSignalProperties != null){
 			listofSignals.addAll(mExtraSignalProperties);
 		}
 		
+		//Process enabled algorithms
+		listofSignals.addAll(getListofEnabledAlgorithmsSignalsandFormats());
+		
 		return listofSignals;
-	}	
+	}
 	
+	private List<String[]> getListofEnabledAlgorithmsSignalsandFormats(){
+		List<String[]> listAlgoSignalProperties = new ArrayList<String[]>();
+		for(AlgorithmDetailsNew algoDetails:mAlgorithmChannelsMap.values()){
+			if(algoDetails.isEnabled()){
+				String[] signalStringArray = algoDetails.getSignalStringArray();
+				signalStringArray[0] = mShimmerUserAssignedName;
+				listAlgoSignalProperties.add(signalStringArray);
+			}
+		}
+		return listAlgoSignalProperties;
+	}
+	
+	@Deprecated
+	public void addAlgorithm(String key,AbstractAlgorithm aobj){
+		if (!doesAlgorithmAlreadyExist(aobj)){
+			mMapOfAlgorithms.put(key,aobj);
+			String[] outputNameArray = aobj.getSignalOutputNameArray();
+			String[] outputFormatArray = aobj.getSignalOutputFormatArray();
+			String[] outputUnitArray = aobj.getSignalOutputUnitArray();
+
+			for (int i=0;i<outputNameArray.length;i++){
+				String[] prop= new String[4];
+				prop[0] = mShimmerUserAssignedName;
+				prop[1] = outputNameArray[i];
+				prop[2] = outputFormatArray[i];
+				prop[3] = outputUnitArray[i];
+				addExtraSignalProperty(prop);
+			}
+		}
+	}
+	
+	@Deprecated
 	public void addExtraSignalProperty(String [] property){
 		if (mExtraSignalProperties==null){
 			mExtraSignalProperties = new ArrayList<String[]>();
@@ -5810,12 +5849,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mExtraSignalProperties.add(property);
 	}
 	
+	@Deprecated
 	public void clearExtraSignalProperties(){
 		if (mExtraSignalProperties!=null){
 			mExtraSignalProperties.clear();
 		}
 	}
 	
+	@Deprecated
 	public void removeExtraSignalProperty(String [] property){
 		if(mExtraSignalProperties!=null){//JC: fix for consensys 4.3
 			for (int i=mExtraSignalProperties.size()-1;i>-1;i--){
