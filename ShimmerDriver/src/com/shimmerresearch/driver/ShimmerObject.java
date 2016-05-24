@@ -6985,13 +6985,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private void generateAlgorithmChannelsMap() {
 		// mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
+//		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+//		for (AlgorithmDetailsRef aDF : Configuration.Shimmer3.mCompleteAlgorithmMap
+//				.values()) {
+//			mAlgorithmChannelsMap.put(aDF.mAlgorithmName, new AlgorithmDetails(
+//					aDF, false));
+//		}
+//		createMapOfSupportedAlgorithmChannels();
 		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
-		for (AlgorithmDetailsRef aDF : Configuration.Shimmer3.mCompleteAlgorithmMap
-				.values()) {
-			mAlgorithmChannelsMap.put(aDF.mAlgorithmName, new AlgorithmDetails(
-					aDF, false));
-		}
-		createMapOfSupportedAlgorithmChannels();
+		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
+			mAlgorithmChannelsMap.putAll(aA.mAlgorithmChannelsMap);
+		}	
+		
 	}
 	
 	//TODO 2016-05-18 feed below into sensor map classes

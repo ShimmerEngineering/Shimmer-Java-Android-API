@@ -84,7 +84,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, AbstractAlgorithm> mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 	/** All supported channels based on hardware, expansion board and firmware */
 	protected Map<String, AlgorithmDetails> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
-	protected Map<String, AlgorithmDetails> mSupportedAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
 
 	//protected List<AlgorithmDetails> mSupportedAlgorithmChannelsList = new ArrayList< AlgorithmDetails>();
 
@@ -2064,7 +2063,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public List<AlgorithmDetails> getListOfEnabledAlgorithms(){
 		List<AlgorithmDetails> listOfEnabledAlgorithms = new ArrayList<AlgorithmDetails>();
-		for(AlgorithmDetails aD:mSupportedAlgorithmChannelsMap.values()){
+		for(AlgorithmDetails aD:mAlgorithmChannelsMap.values()){
 			if(aD.isEnabled()){
 				listOfEnabledAlgorithms.add(aD);
 			}
@@ -2109,7 +2108,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setAlgorithmEnabled(String key, boolean state){
 		
-		AlgorithmDetails algoDetails = mSupportedAlgorithmChannelsMap.get(key);
+		AlgorithmDetails algoDetails = mAlgorithmChannelsMap.get(key);
 		if(algoDetails!=null){
 			algoDetails.mEnabled = state; 
 			
@@ -2130,7 +2129,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//to be called during sensor pane mouse press?
 	public void algorithmRequiredSensorCheck() {
 		// looping through algorithms to see which ones are enabled
-		for (AlgorithmDetails algoDetails:mSupportedAlgorithmChannelsMap.values()) {
+		for (AlgorithmDetails algoDetails:mAlgorithmChannelsMap.values()) {
 			if (algoDetails.isEnabled()) { // run check to see if accompanying s
 				for (Integer sensor : algoDetails.mAlgorithmDetailsRef.mListOfRequiredSensors) {
 					SensorDetails sensorDetails = mSensorMap.get(sensor);
@@ -2207,7 +2206,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
 			for (Integer sensorMapKey : aD.mAlgorithmDetailsRef.mListOfRequiredSensors) {
 				if (mSensorMap.containsKey(sensorMapKey)) {
-					mSupportedAlgorithmChannelsMap.put(aD.mAlgorithmDetailsRef.mAlgorithmName, aD);
+					mAlgorithmChannelsMap.put(aD.mAlgorithmDetailsRef.mAlgorithmName, aD);
 				}
 			}
 		}
@@ -2215,6 +2214,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public Map<String, AlgorithmDetails> getSupportedAlgorithmChannels(){
+		
+	Map<String, AlgorithmDetails> mSupportedAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+		// returns list of compatible algorithms based on Shimmer hardware
+		parentLoop:
+			for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
+			for (Integer sensorMapKey : aD.mAlgorithmDetailsRef.mListOfRequiredSensors) {
+				if (mSensorMap.containsKey(sensorMapKey)) {
+					mSupportedAlgorithmChannelsMap.put(aD.mAlgorithmDetailsRef.mAlgorithmName, aD);
+				}
+			}
+		}		
 		return mSupportedAlgorithmChannelsMap;
 	}
 	
@@ -2253,6 +2263,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return true;
 	}
 	
+	//
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 		/*
