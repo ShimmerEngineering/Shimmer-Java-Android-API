@@ -91,6 +91,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
 	public double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};
 	
+	//Default values Shimmer2
+	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
+	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
 	//Shimmer3
 	public static final double[][] SensitivityMatrixGyro250dpsShimmer3 = {{131,0,0},{0,131,0},{0,0,131}};
 	public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
@@ -1274,26 +1278,194 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-//		if(getHardwareVersion()==HW_ID.SHIMMER_3){
-		int	idxConfigSetupByte2 = 8;
+		int idxConfigSetupByte4 = 128+0;
+		int idxConfigSetupByte5 = 128+1;
+		int idxConfigSetupByte6 = 128+4;	
+		int idxConfigSetupByte1 = 7;
+		int idxConfigSetupByte2 = 8;
+		int idxConfigSetupByte3 = 9;
+		int idxMPU9150GyroCalibration = 52;
+		//Config Byte1
+		int bitShiftMPU9150AccelGyroSamplingRate =	0;
+		int maskMPU9150AccelGyroSamplingRate = 0xFF;
+		//Config Byte2
 		int bitShiftMPU9150GyroRange = 0;
 		int maskMPU9150GyroRange = 0x03;
+		//Config Byte3
+		int bitShiftMPU9150AccelRange = 6;
+		int maskMPU9150AccelRange = 0x03;
+		// MPL related
+		int bitShiftMPU9150DMP = 7;
+		int maskMPU9150DMP = 0x01;
+		int bitShiftMPU9150LPF = 3;
+		int maskMPU9150LPF = 0x07;
+		int bitShiftMPU9150MotCalCfg = 0;
+		int maskMPU9150MotCalCfg = 0x07;
+		int bitShiftMPU9150MPLSamplingRate = 5;
+		int maskMPU9150MPLSamplingRate = 0x07;
+		int bitShiftMPU9150MagSamplingRate = 2;
+//		int maskMPU9150MagSamplingRate = 0x07;
+		int lengthGeneralCalibrationBytes =	21;
+		int bitShiftMPLSensorFusion = 7;
+		int maskMPLSensorFusion = 0x01;
+		int bitShiftMPLGyroCalTC = 6;
+		int maskMPLGyroCalTC = 0x01;
+		int bitShiftMPLVectCompCal = 5;
+		int maskMPLVectCompCal = 0x01;
+		int bitShiftMPLMagDistCal = 4;
+		int maskMPLMagDistCal = 0x01;
+		int bitShiftMPLEnable = 3;
+		int maskMPLEnable = 0x01;
+
+		mInfoMemBytes[idxConfigSetupByte1] = (byte) ((mMPU9150GyroAccelRate & maskMPU9150AccelGyroSamplingRate) << bitShiftMPU9150AccelGyroSamplingRate);
 		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((mGyroRange & maskMPU9150GyroRange) << bitShiftMPU9150GyroRange);
-//		}
-//		byte[] bufferCalibrationParameters = generateCalParamGyroscope(); // check if needed
-//		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, infoMemLayout.idxMPU9150GyroCalibration, infoMemLayout.lengthGeneralCalibrationBytes);
-//		
-		
+		mInfoMemBytes[idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & maskMPU9150AccelRange) << bitShiftMPU9150AccelRange);
+
+		// MPU9150 Gyroscope Calibration Parameters
+		byte[] bufferCalibrationParameters = generateCalParamGyroscope();
+		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, idxMPU9150GyroCalibration, lengthGeneralCalibrationBytes);
+
+		//if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+		mInfoMemBytes[idxConfigSetupByte4] = (byte) ((mMPU9150DMP & maskMPU9150DMP) << bitShiftMPU9150DMP);
+		mInfoMemBytes[idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & maskMPU9150LPF) << bitShiftMPU9150LPF);
+		mInfoMemBytes[idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & maskMPU9150MotCalCfg) << bitShiftMPU9150MotCalCfg);
+
+		mInfoMemBytes[idxConfigSetupByte5] = (byte) ((mMPU9150MPLSamplingRate & maskMPU9150MPLSamplingRate) << bitShiftMPU9150MPLSamplingRate);
+		mInfoMemBytes[idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & maskMPU9150MPLSamplingRate) << bitShiftMPU9150MagSamplingRate);
+
+		mInfoMemBytes[idxConfigSetupByte6] = (byte) ((mMPLSensorFusion & maskMPLSensorFusion) << bitShiftMPLSensorFusion);
+		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & maskMPLGyroCalTC) << bitShiftMPLGyroCalTC);
+		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & maskMPLVectCompCal) << bitShiftMPLVectCompCal);
+		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & maskMPLMagDistCal) << bitShiftMPLMagDistCal);
+		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLEnable & maskMPLEnable) << bitShiftMPLEnable);
+
 	}
 
 	@Override
 	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int	idxConfigSetupByte2 = 8;
+		int idxConfigSetupByte4 = 128+0;
+		int idxConfigSetupByte5 = 128+1;
+		int idxConfigSetupByte6 = 128+4;	
+		int idxConfigSetupByte1 = 7;
+		int idxConfigSetupByte2 = 8;
+		int idxConfigSetupByte3 = 9;
+		int idxMPU9150GyroCalibration = 52;
+		int idxMPLAccelCalibration = 128+5; //+21
+		int idxMPLMagCalibration = 128+26; //+21
+		int idxMPLGyroCalibration = 128+47; //+12
+		//Config Byte1
+		int bitShiftMPU9150AccelGyroSamplingRate =	0;
+		int maskMPU9150AccelGyroSamplingRate = 0xFF;
+		//Config Byte2
 		int bitShiftMPU9150GyroRange = 0;
 		int maskMPU9150GyroRange = 0x03;
+		//Config Byte3
+		int bitShiftMPU9150AccelRange = 6;
+		int maskMPU9150AccelRange = 0x03;
+		// MPL related
+		int bitShiftMPU9150DMP = 7;
+		int maskMPU9150DMP = 0x01;
+		int bitShiftMPU9150LPF = 3;
+		int maskMPU9150LPF = 0x07;
+		int bitShiftMPU9150MotCalCfg = 0;
+		int maskMPU9150MotCalCfg = 0x07;
+		int bitShiftMPU9150MPLSamplingRate = 5;
+		int maskMPU9150MPLSamplingRate = 0x07;
+		int bitShiftMPU9150MagSamplingRate = 2;
+		int maskMPU9150MagSamplingRate = 0x07;
+		int lengthGeneralCalibrationBytes =	21;
+		int bitShiftMPLSensorFusion = 7;
+		int maskMPLSensorFusion = 0x01;
+		int bitShiftMPLGyroCalTC = 6;
+		int maskMPLGyroCalTC = 0x01;
+		int bitShiftMPLVectCompCal = 5;
+		int maskMPLVectCompCal = 0x01;
+		int bitShiftMPLMagDistCal = 4;
+		int maskMPLMagDistCal = 0x01;
+		int bitShiftMPLEnable = 3;
+		int maskMPLEnable = 0x01;
+
+		mMPU9150GyroAccelRate = (mInfoMemBytes[idxConfigSetupByte1] >> bitShiftMPU9150AccelGyroSamplingRate) & maskMPU9150AccelGyroSamplingRate;
+		checkLowPowerGyro(); // check rate to determine if Sensor is in LPM mode
+
 		mGyroRange = (mInfoMemBytes[idxConfigSetupByte2] >> bitShiftMPU9150GyroRange) & maskMPU9150GyroRange;
-		
+		mMPU9150AccelRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftMPU9150AccelRange) & maskMPU9150AccelRange;
+
+		// MPU9150 Gyroscope Calibration Parameters
+		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
+		System.arraycopy(mInfoMemBytes, idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 ,lengthGeneralCalibrationBytes);
+		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
+
+		// InfoMem C - Start - used by SdLog and LogAndStream
+		//		if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+		mMPU9150DMP = (mInfoMemBytes[idxConfigSetupByte4] >> bitShiftMPU9150DMP) & maskMPU9150DMP;
+		mMPU9150LPF = (mInfoMemBytes[idxConfigSetupByte4] >> bitShiftMPU9150LPF) & maskMPU9150LPF;
+		mMPU9150MotCalCfg =  (mInfoMemBytes[idxConfigSetupByte4] >> bitShiftMPU9150MotCalCfg) & maskMPU9150MotCalCfg;
+
+		mMPU9150MPLSamplingRate = (mInfoMemBytes[idxConfigSetupByte5] >> bitShiftMPU9150MPLSamplingRate) & maskMPU9150MPLSamplingRate;
+		mMPU9150MagSamplingRate = (mInfoMemBytes[idxConfigSetupByte5] >> bitShiftMPU9150MagSamplingRate) & maskMPU9150MagSamplingRate;
+
+
+
+		mMPLSensorFusion = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLSensorFusion) & maskMPLSensorFusion;
+		mMPLGyroCalTC = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLGyroCalTC) & maskMPLGyroCalTC;
+		mMPLVectCompCal = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLVectCompCal) & maskMPLVectCompCal;
+		mMPLMagDistCal = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLMagDistCal) & maskMPLMagDistCal;
+		mMPLEnable = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLEnable) & maskMPLEnable;
+
+		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
+
+		//MPL Accel Calibration Parameters
+		bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
+		System.arraycopy(mInfoMemBytes, idxMPLAccelCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
+		int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
+		double[] AM=new double[9];
+		for (int i=0;i<9;i++) {
+			AM[i]=((double)formattedPacket[6+i])/100;
+		}
+		double[][] alignmentMatrixMPLA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+		double[][] sensitivityMatrixMPLA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+		double[][] offsetVectorMPLA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+		AlignmentMatrixMPLAccel = alignmentMatrixMPLA; 			
+		SensitivityMatrixMPLAccel = sensitivityMatrixMPLA; 	
+		OffsetVectorMPLAccel = offsetVectorMPLA;
+
+		//MPL Mag Calibration Configuration
+		bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
+		System.arraycopy(mInfoMemBytes, idxMPLMagCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
+		formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
+		AM=new double[9];
+		for (int i=0;i<9;i++) {
+			AM[i]=((double)formattedPacket[6+i])/100;
+		}
+		double[][] alignmentMatrixMPLMag = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+		double[][] sensitivityMatrixMPLMag = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+		double[][] offsetVectorMPLMag = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+		AlignmentMatrixMPLMag = alignmentMatrixMPLMag; 			
+		SensitivityMatrixMPLMag = sensitivityMatrixMPLMag; 	
+		OffsetVectorMPLMag = offsetVectorMPLMag;
+
+		//MPL Gyro Calibration Configuration
+		bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
+		System.arraycopy(mInfoMemBytes, idxMPLGyroCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
+		formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
+		AM=new double[9];
+		for (int i=0;i<9;i++) {
+			AM[i]=((double)formattedPacket[6+i])/100;
+		}
+		double[][] alignmentMatrixMPLGyro = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+		double[][] sensitivityMatrixMPLGyro = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+		double[][] offsetVectorMPLGyro = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+		AlignmentMatrixMPLGyro = alignmentMatrixMPLGyro; 			
+		SensitivityMatrixMPLGyro = sensitivityMatrixMPLGyro; 	
+		OffsetVectorMPLGyro = offsetVectorMPLGyro;
 	}
+		
+		
+
+
+		
+//	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
@@ -1498,10 +1670,6 @@ private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] s
 //
 //		}
 //	}
-	
-	
-	
-
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
@@ -2148,7 +2316,66 @@ private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] s
 		
 	}
 	
+	public boolean checkLowPowerGyro() {
+		if(mMPU9150GyroAccelRate == 0xFF) {
+			mLowPowerGyro = true;
+		}
+		else {
+			mLowPowerGyro = false;
+		}
+		return mLowPowerGyro;
+	}
+
+	public void retrieveKinematicCalibrationParametersFromPacket(byte[] bufferCalibrationParameters, int packetType) {
+		
+			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"}; 
+			int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType); // using the datatype the calibration parameters are converted
+			double[] AM=new double[9];
+			for (int i=0;i<9;i++){
+				AM[i]=((double)formattedPacket[6+i])/100;
+			}
+
+			double[][] AlignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+			double[][] SensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+			double[][] OffsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+			
+			
+			
+			if(packetType==GYRO_CALIBRATION_RESPONSE && checkIfDefaulGyroCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
+				mDefaultCalibrationParametersGyro = true;
+				mAlignmentMatrixGyroscope = AlignmentMatrix;
+				mOffsetVectorGyroscope = OffsetVector;
+				mSensitivityMatrixGyroscope = SensitivityMatrix;
+				for(int i=0;i<=2;i++){
+					mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
+				}
+			}
+			else if (packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
+				mDefaultCalibrationParametersGyro = false;
+				mAlignmentMatrixGyroscope = AlignmentMatrix;
+				mOffsetVectorGyroscope = OffsetVector;
+				mSensitivityMatrixGyroscope = SensitivityMatrix;
+				for(int i=0;i<=2;i++){
+					mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
+				}
+			} 
+			else if(packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
+				if(getHardwareVersion()!=3){
+					mDefaultCalibrationParametersGyro = true;
+					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
+					mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
+					mSensitivityMatrixGyroscope = SensitivityMatrixGyroShimmer2;	
+				} 
+				else {
+					setDefaultCalibrationShimmer3Gyro();
+				}
+			} 
 
 
-	
+
+
+	}
+
 }
+	
+

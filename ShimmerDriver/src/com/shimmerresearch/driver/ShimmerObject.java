@@ -6011,6 +6011,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @return boolean, true if low-power mode enabled
 	 */
+	
+//	------------Implemented in MPU----------------
 	public boolean checkLowPowerGyro() {
 		if(mMPU9150GyroAccelRate == 0xFF) {
 			mLowPowerGyro = true;
