@@ -177,13 +177,19 @@ public class SensorTemplate extends AbstractSensor{
 		
 			@Override
 			public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
-				// TODO Auto-generated method stub
+				if(mSensorMap.containsKey(sensorMapKey)){
+					//Set defaults for particular sensor here if applicable
+					return true;
+				}
 				return false;
 			}
 		
 			@Override
 			public boolean checkConfigOptionValues(String stringKey) {
-				// TODO Auto-generated method stub
+				if(mConfigOptionsMap.containsKey(stringKey)){
+					//Set values for particular Config Option here if applicable
+					return true;
+				}
 				return false;
 			}
 		
