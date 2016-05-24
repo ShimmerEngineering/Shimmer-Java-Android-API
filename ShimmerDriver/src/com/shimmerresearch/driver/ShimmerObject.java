@@ -352,9 +352,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//XXX-RS-AA-SensorClass?
 	public static final byte GET_ACCEL_CALIBRATION_COMMAND    		= (byte) 0x13;
 	
-	public static final byte SET_GYRO_CALIBRATION_COMMAND 	  		= (byte) 0x14;
-	public static final byte GYRO_CALIBRATION_RESPONSE        		= (byte) 0x15;
-	public static final byte GET_GYRO_CALIBRATION_COMMAND     		= (byte) 0x16;
+	public static final byte SET_GYRO_CALIBRATION_COMMAND 	  		= (byte) 0x14;//YYY-RMC-MPU-SensorClass
+	public static final byte GYRO_CALIBRATION_RESPONSE        		= (byte) 0x15;//YYY-RMC-MPU-SensorClass
+	public static final byte GET_GYRO_CALIBRATION_COMMAND     		= (byte) 0x16;//YYY-RMC-MPU-SensorClass
 	public static final byte SET_MAG_CALIBRATION_COMMAND      		= (byte) 0x17;//XXX-RS-LSM-SensorClass?
 	public static final byte MAG_CALIBRATION_RESPONSE         		= (byte) 0x18;//XXX-RS-LSM-SensorClass?
 	public static final byte GET_MAG_CALIBRATION_COMMAND      		= (byte) 0x19;//XXX-RS-LSM-SensorClass?
@@ -377,7 +377,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte SET_BLINK_LED                    		= (byte) 0x30;
 	public static final byte BLINK_LED_RESPONSE               		= (byte) 0x31;
 	public static final byte GET_BLINK_LED                    		= (byte) 0x32;
-	public static final byte SET_GYRO_TEMP_VREF_COMMAND       		= (byte) 0x33;
+	public static final byte SET_GYRO_TEMP_VREF_COMMAND       		= (byte) 0x33;//YYY-RMC-MPU-SensorClass
 	public static final byte SET_BUFFER_SIZE_COMMAND          		= (byte) 0x34;
 	public static final byte BUFFER_SIZE_RESPONSE             		= (byte) 0x35;
 	public static final byte GET_BUFFER_SIZE_COMMAND          		= (byte) 0x36;
@@ -396,12 +396,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte SET_LSM303DLHC_ACCEL_HRMODE_COMMAND	= (byte) 0x46;//XXX-RS-LSM-SensorClass?
 	public static final byte LSM303DLHC_ACCEL_HRMODE_RESPONSE		= (byte) 0x47;//XXX-RS-LSM-SensorClass?
 	public static final byte GET_LSM303DLHC_ACCEL_HRMODE_COMMAND 	= (byte) 0x48;//XXX-RS-LSM-SensorClass?
-	public static final byte SET_MPU9150_GYRO_RANGE_COMMAND 		= (byte) 0x49;
-	public static final byte MPU9150_GYRO_RANGE_RESPONSE 			= (byte) 0x4A;
-	public static final byte GET_MPU9150_GYRO_RANGE_COMMAND 		= (byte) 0x4B;
-	public static final byte SET_MPU9150_SAMPLING_RATE_COMMAND 		= (byte) 0x4C;
-	public static final byte MPU9150_SAMPLING_RATE_RESPONSE 		= (byte) 0x4D;
-	public static final byte GET_MPU9150_SAMPLING_RATE_COMMAND 		= (byte) 0x4E;
+	public static final byte SET_MPU9150_GYRO_RANGE_COMMAND 		= (byte) 0x49;//YYY-RMC-MPU-SensorClass
+	public static final byte MPU9150_GYRO_RANGE_RESPONSE 			= (byte) 0x4A;//YYY-RMC-MPU-SensorClass
+	public static final byte GET_MPU9150_GYRO_RANGE_COMMAND 		= (byte) 0x4B;//YYY-RMC-MPU-SensorClass;
+	public static final byte SET_MPU9150_SAMPLING_RATE_COMMAND 		= (byte) 0x4C;//YYY-RMC-MPU-SensorClass
+	public static final byte MPU9150_SAMPLING_RATE_RESPONSE 		= (byte) 0x4D;//YYY-RMC-MPU-SensorClass
+	public static final byte GET_MPU9150_SAMPLING_RATE_COMMAND 		= (byte) 0x4E;//YYY-RMC-MPU-SensorClass
 	public static final byte SET_BMP180_PRES_RESOLUTION_COMMAND 	= (byte) 0x52;
 	public static final byte BMP180_PRES_RESOLUTION_RESPONSE 		= (byte) 0x53;
 	public static final byte GET_BMP180_PRES_RESOLUTION_COMMAND 	= (byte) 0x54;
@@ -412,8 +412,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND = (byte) 0x59;
 	public static final byte RESET_TO_DEFAULT_CONFIGURATION_COMMAND = (byte) 0x5A;
 	public static final byte RESET_CALIBRATION_VALUE_COMMAND 		= (byte) 0x5B;
-	public static final byte MPU9150_MAG_SENS_ADJ_VALS_RESPONSE 	= (byte) 0x5C;
-	public static final byte GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND 	= (byte) 0x5D;
+	public static final byte MPU9150_MAG_SENS_ADJ_VALS_RESPONSE 	= (byte) 0x5C;//YYY-RMC-MPU-SensorClass
+	public static final byte GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND 	= (byte) 0x5D;//YYY-RMC-MPU-SensorClass
 	public static final byte SET_INTERNAL_EXP_POWER_ENABLE_COMMAND 	= (byte) 0x5E;
 	public static final byte INTERNAL_EXP_POWER_ENABLE_RESPONSE 	= (byte) 0x5F;
 	public static final byte GET_INTERNAL_EXP_POWER_ENABLE_COMMAND 	= (byte) 0x60;

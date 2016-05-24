@@ -13,6 +13,7 @@ import javax.vecmath.Vector3d;
 
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
+import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
@@ -292,10 +293,46 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public byte[] mGyroCalRawXParams  = new byte[22];
 	public byte[] mMagCalRawXParams  = new byte[22];
 	//--------- Sensor specific variables end --------------
-	
-	
+
 
 	//--------- Bluetooth commands start --------------
+	
+	public static final byte SET_GYRO_CALIBRATION_COMMAND 	  		= (byte) 0x14;
+	public static final byte GYRO_CALIBRATION_RESPONSE        		= (byte) 0x15;
+	public static final byte GET_GYRO_CALIBRATION_COMMAND     		= (byte) 0x16;
+	public static final byte SET_GYRO_TEMP_VREF_COMMAND       		= (byte) 0x33;
+	public static final byte SET_MPU9150_GYRO_RANGE_COMMAND 		= (byte) 0x49;
+	public static final byte MPU9150_GYRO_RANGE_RESPONSE 			= (byte) 0x4A;
+	public static final byte GET_MPU9150_GYRO_RANGE_COMMAND 		= (byte) 0x4B;
+	public static final byte SET_MPU9150_SAMPLING_RATE_COMMAND 		= (byte) 0x4C;
+	public static final byte MPU9150_SAMPLING_RATE_RESPONSE 		= (byte) 0x4D;
+	public static final byte GET_MPU9150_SAMPLING_RATE_COMMAND 		= (byte) 0x4E;
+	public static final byte MPU9150_MAG_SENS_ADJ_VALS_RESPONSE 	= (byte) 0x5C;
+	public static final byte GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND 	= (byte) 0x5D;
+	
+	
+	 public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+	    static {
+	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	        aMap.put(GET_GYRO_CALIBRATION_COMMAND, new BtCommandDetails(GET_GYRO_CALIBRATION_COMMAND, "GET_GYRO CALIBRATION_COMMAND", GYRO_CALIBRATION_RESPONSE));
+	        aMap.put(GET_MPU9150_GYRO_RANGE_COMMAND, new BtCommandDetails(GET_MPU9150_GYRO_RANGE_COMMAND, "GET_MPU9150 GYRO RANGE_COMMAND", MPU9150_GYRO_RANGE_RESPONSE));
+	        aMap.put(GET_MPU9150_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_MPU9150_SAMPLING_RATE_COMMAND, "GET_MPU9150_SAMPLING_RATE_COMMAND", MPU9150_SAMPLING_RATE_RESPONSE));
+	        aMap.put(GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND, new BtCommandDetails(GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND, "GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND", MPU9150_MAG_SENS_ADJ_VALS_RESPONSE));
+
+	        mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+	    static {
+	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	        aMap.put(SET_GYRO_CALIBRATION_COMMAND, new BtCommandDetails(SET_GYRO_CALIBRATION_COMMAND, "SET_GYRO_CALIBRATION_COMMAND"));
+	        aMap.put(SET_MPU9150_GYRO_RANGE_COMMAND, new BtCommandDetails(SET_MPU9150_GYRO_RANGE_COMMAND, "SET_MPU9150_GYRO_RANGE_COMMAND"));
+	        aMap.put(SET_MPU9150_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_MPU9150_SAMPLING_RATE_COMMAND, "SET_MPU9150_SAMPLING_RATE_COMMAND"));
+	        aMap.put(SET_GYRO_TEMP_VREF_COMMAND, new BtCommandDetails(SET_GYRO_TEMP_VREF_COMMAND, "SET_GYRO_TEMP_VREF_COMMAND"));
+	        mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+	    }
+	
+	
 	//--------- Bluetooth commands end --------------
 	
 	
@@ -1030,13 +1067,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 	}
 	
-	
-	
-
-
-
-
-			
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
 		mConfigOptionsMap.clear();
