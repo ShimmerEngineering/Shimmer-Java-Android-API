@@ -86,7 +86,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, AlgorithmDetails> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
 	/** for tile generation in GUI configuration */ 
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
-	
+
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
 
 	/** Used in UART command through the base/dock*/
@@ -2218,6 +2218,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public Map<String, List<String>> getAlgorithmGroupingMap() {
+		
+		
 		return mAlgorithmGroupingMap;
 	}
 	

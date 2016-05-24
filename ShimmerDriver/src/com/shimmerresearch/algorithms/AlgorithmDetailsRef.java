@@ -33,10 +33,11 @@ public class AlgorithmDetailsRef implements Serializable {
 		mUnits = units;
 	}
 
-	public AlgorithmDetailsRef(String algorithmName, long derivedSensorBitmapId, List<Integer> listOfRequiredSensors, String units){
+	public AlgorithmDetailsRef(String algorithmName,String groupName, long derivedSensorBitmapId, List<Integer> listOfRequiredSensors, String units){
 		this(listOfRequiredSensors, units);
 		mAlgorithmName = algorithmName;
 		mDerivedSensorBitmapID = derivedSensorBitmapId;
+		mGroupName = groupName;
 	}
 
 	//TODO this constructor is only used in the example -> remove?
@@ -45,13 +46,11 @@ public class AlgorithmDetailsRef implements Serializable {
 		mSensorCheckMethod = sensorCheckMethod;
 	}
 
-//	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units, String AlgorithmName,String groupName, boolean enabled){
-//		this(listOfRequiredSensors, units);
-//		//mSensorCheckMethod = sensorCheckMethod;
-//		mAlgorithmName = AlgorithmName;
-//		mGroupName = groupName;
-//		mEnabled = enabled;
-//	}
+	public AlgorithmDetailsRef(List<Integer> listOfRequiredSensors, String units, String AlgorithmName,String groupName){
+		this(listOfRequiredSensors, units);
+		mAlgorithmName = AlgorithmName;
+		mGroupName = groupName;
+	}
 //	
 //	public AlgorithmDetails(List<Integer> listOfRequiredSensors,SENSOR_CHECK_METHOD sensorCheckMethod, int configByte,String AlgorithmName,String groupName, boolean enabled){
 //		mListOfRequiredSensors = listOfRequiredSensors;
