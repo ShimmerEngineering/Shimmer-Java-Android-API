@@ -68,6 +68,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
+//import com.shimmerresearch.pluginalgo.ECGAdaptiveModule.ObjectClusterSensorName;
 import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorECGToHR;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -3306,52 +3307,57 @@ public class Configuration {
 	    }
 	
 	
-//	public static final Map<String, AlgorithmDetailsRef> mCompleteAlgorithmMap;
-//    static {
-//    	
-//        Map<String, AlgorithmDetailsRef> aMap = new LinkedHashMap<String, AlgorithmDetailsRef>();
-//		// Assemble the channel configuration options map
+	public static final Map<String, AlgorithmDetailsRef> mCompleteAlgorithmMap;
+    static {
+    	
+        Map<String, AlgorithmDetailsRef> aMap = new LinkedHashMap<String, AlgorithmDetailsRef>();
+		// Assemble the channel configuration options map
 //        aMap.putAll(ECGAdaptiveModule.mAlgorithmMapRef);
 //        aMap.putAll(PPGAlgorithmModule.mAlgorithmMapRef);
-//        
-////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,new AlgorithmDetails(
-////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
-////				BTStreamDerivedSensors.ECG2HR_CHIP1_CH1,Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,
-////				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));		
-////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,new AlgorithmDetails(
-////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
-////				BTStreamDerivedSensors.ECG2HR_CHIP1_CH2, Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,
-////				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
-////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,new AlgorithmDetails(
-////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),SENSOR_CHECK_METHOD.ANY,
-////				BTStreamDerivedSensors.ECG2HR_CHIP2_CH1, 
-////				Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL,
-////				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,false ));
-//
-////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A12,new AlgorithmDetailsNew(
-////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A12,
-////						Configuration.Shimmer3.SensorMapKey.PPG_A12),
-////				CHANNEL_UNITS.BEATS_PER_MINUTE,
-////				SENSOR_CHECK_METHOD.ANY));
-////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A13,new AlgorithmDetailsNew(
-////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A13,
-////						Configuration.Shimmer3.SensorMapKey.PPG_A13),
-////				CHANNEL_UNITS.BEATS_PER_MINUTE,
-////				SENSOR_CHECK_METHOD.ANY));
-////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A1,new AlgorithmDetailsNew(
-////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG2_A1),
-////				CHANNEL_UNITS.BEATS_PER_MINUTE));
-////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A14, PPGAlgorithmModule.algoPPGtoHR_A14);
-//        
-////		//TODO choose best method, PPG requires either sensor, quat will require all
-////		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,new AlgorithmDetailsNew(
-////				Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,
-////						Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO),
-////				CHANNEL_UNITS.BEATS_PER_MINUTE));  	
-//		
-//		mCompleteAlgorithmMap = Collections.unmodifiableMap(aMap);
-//
-//    }
+        
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LA_RA,new AlgorithmDetailsRef(
+				ObjectClusterSensorName.ECG_TO_HR_LA_RA,
+				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,
+				0,
+				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
+				CHANNEL_UNITS.BEATS_PER_MINUTE));		
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_LL_RA,new AlgorithmDetailsRef(
+				ObjectClusterSensorName.ECG_TO_HR_LL_RA,
+				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,
+				0,
+				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
+				CHANNEL_UNITS.BEATS_PER_MINUTE));
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_VX_RL, new AlgorithmDetailsRef(
+				ObjectClusterSensorName.ECG_TO_HR_VX_RL,
+				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ECG_TO_HR,
+				0,
+				Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
+				CHANNEL_UNITS.BEATS_PER_MINUTE));	
+
+//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A12,new AlgorithmDetailsNew(
+//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A12,
+//						Configuration.Shimmer3.SensorMapKey.PPG_A12),
+//				CHANNEL_UNITS.BEATS_PER_MINUTE,
+//				SENSOR_CHECK_METHOD.ANY));
+//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A13,new AlgorithmDetailsNew(
+//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG1_A13,
+//						Configuration.Shimmer3.SensorMapKey.PPG_A13),
+//				CHANNEL_UNITS.BEATS_PER_MINUTE,
+//				SENSOR_CHECK_METHOD.ANY));
+//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A1,new AlgorithmDetailsNew(
+//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.PPG2_A1),
+//				CHANNEL_UNITS.BEATS_PER_MINUTE));
+//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR_A14, PPGAlgorithmModule.algoPPGtoHR_A14);
+        
+//		//TODO choose best method, PPG requires either sensor, quat will require all
+//		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,new AlgorithmDetailsNew(
+//				Arrays.asList(Configuration.Shimmer3.SensorMapKey.A_ACCEL,
+//						Configuration.Shimmer3.SensorMapKey.MPU9150_GYRO),
+//				CHANNEL_UNITS.BEATS_PER_MINUTE));  	
+		
+		mCompleteAlgorithmMap = Collections.unmodifiableMap(aMap);
+
+    }
     
 }
 	

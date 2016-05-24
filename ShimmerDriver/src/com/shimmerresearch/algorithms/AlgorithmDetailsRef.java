@@ -46,7 +46,7 @@ public class AlgorithmDetailsRef implements Serializable {
 		mSensorCheckMethod = sensorCheckMethod;
 	}
 
-	public AlgorithmDetailsRef(List<Integer> listOfRequiredSensors, String units, String AlgorithmName,String groupName){
+	public AlgorithmDetailsRef(List<Integer> listOfRequiredSensors, String units, String AlgorithmName, String groupName){
 		this(listOfRequiredSensors, units);
 		mAlgorithmName = AlgorithmName;
 		mGroupName = groupName;

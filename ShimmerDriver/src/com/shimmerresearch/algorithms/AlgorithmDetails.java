@@ -1,8 +1,10 @@
 package com.shimmerresearch.algorithms;
 
+import java.io.Serializable;
+
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
-public class AlgorithmDetails {
+public class AlgorithmDetails implements Serializable {
 
 	public AlgorithmDetailsRef mAlgorithmDetailsRef = null;
 	public boolean mEnabled = false;
@@ -23,6 +25,11 @@ public class AlgorithmDetails {
 		signalStringArray[2] = CHANNEL_TYPE.CAL.toString(); //temp hard coded here
 		signalStringArray[3] = mAlgorithmDetailsRef.mUnits;
 		return signalStringArray;
+	}
+
+	public AlgorithmDetails(AlgorithmDetailsRef aDF, boolean enabled) {
+		mAlgorithmDetailsRef= aDF;
+		mEnabled= enabled;
 	}
 	
 }

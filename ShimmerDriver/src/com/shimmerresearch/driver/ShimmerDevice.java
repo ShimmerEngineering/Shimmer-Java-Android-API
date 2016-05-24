@@ -84,6 +84,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, AbstractAlgorithm> mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 	/** All supported channels based on hardware, expansion board and firmware */
 	protected Map<String, AlgorithmDetails> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+	protected Map<String, AlgorithmDetails> mSupportedAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+
+	//protected List<AlgorithmDetails> mSupportedAlgorithmChannelsList = new ArrayList< AlgorithmDetails>();
+
 	/** for tile generation in GUI configuration */ 
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 
@@ -2060,7 +2064,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public List<AlgorithmDetails> getListOfEnabledAlgorithms(){
 		List<AlgorithmDetails> listOfEnabledAlgorithms = new ArrayList<AlgorithmDetails>();
-		for(AlgorithmDetails aD:mAlgorithmChannelsMap.values()){
+		for(AlgorithmDetails aD:mSupportedAlgorithmChannelsMap.values()){
 			if(aD.isEnabled()){
 				listOfEnabledAlgorithms.add(aD);
 			}
@@ -2105,7 +2109,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setAlgorithmEnabled(String key, boolean state){
 		
-		AlgorithmDetails algoDetails = mAlgorithmChannelsMap.get(key);
+		AlgorithmDetails algoDetails = mSupportedAlgorithmChannelsMap.get(key);
 		if(algoDetails!=null){
 			algoDetails.mEnabled = state; 
 			
@@ -2126,7 +2130,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//to be called during sensor pane mouse press?
 	public void algorithmRequiredSensorCheck() {
 		// looping through algorithms to see which ones are enabled
-		for (AlgorithmDetails algoDetails:mAlgorithmChannelsMap.values()) {
+		for (AlgorithmDetails algoDetails:mSupportedAlgorithmChannelsMap.values()) {
 			if (algoDetails.isEnabled()) { // run check to see if accompanying s
 				for (Integer sensor : algoDetails.mAlgorithmDetailsRef.mListOfRequiredSensors) {
 					SensorDetails sensorDetails = mSensorMap.get(sensor);
@@ -2154,91 +2158,80 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mAlgorithmChannelsMap;
 	}
 
-	public List<AlgorithmDetails> getListOfSupportedAlgorithmChannels() {
-		
-		List<AlgorithmDetails> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetails>();
-		parentLoop:
-    	for(AlgorithmDetails algorithmDetails:mAlgorithmChannelsMap.values()) {
-    		if(algorithmDetails.mAlgorithmDetailsRef.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
-        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
-    				if(isSensorEnabled(sensorMapKey)){
-    					listOfSupportAlgorihmChannels.add(algorithmDetails);
-    					continue parentLoop;
-    				}
-        		}
-    		}
-    		else if(algorithmDetails.mAlgorithmDetailsRef.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
-        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
-        			if(!isSensorEnabled(sensorMapKey)){
-    					continue parentLoop;
-        			}
-//        			if(!mSensorMap.containsKey(sensorMapKey)){
+//	public List<AlgorithmDetails> getListOfSupportedAlgorithmChannels() {
+//		
+//		List<AlgorithmDetails> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetails>();
+//		parentLoop:
+//    	for(AlgorithmDetailsRef algorithmDetails:mSupportedAlgorithmChannelsMap) {
+//    		if(algorithmDetails.mAlgorithmDetailsRef.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
+//        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
+//    				if(isSensorEnabled(sensorMapKey)){
+//    					listOfSupportAlgorihmChannels.add(algorithmDetails);
+//    					continue parentLoop;
+//    				}
+//        		}
+//    		}
+//    		else if(algorithmDetails.mAlgorithmDetailsRef.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
+//        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
+//        			if(!isSensorEnabled(sensorMapKey)){
 //    					continue parentLoop;
 //        			}
-//        			else{
-//        				if(!mSensorMap.get(sensorMapKey).isEnabled()){
-//        					continue parentLoop;
-//        				}
+////        			if(!mSensorMap.containsKey(sensorMapKey)){
+////    					continue parentLoop;
+////        			}
+////        			else{
+////        				if(!mSensorMap.get(sensorMapKey).isEnabled()){
+////        					continue parentLoop;
+////        				}
+////        			}
+//        		
+//       			
+//      			//made it to past the last sensor
+//        			if(sensorMapKey==algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors.get(algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors.size()-1)){
+//    					listOfSupportAlgorihmChannels.add(algorithmDetails);
 //        			}
-        		
-       			
-      			//made it to past the last sensor
-        			if(sensorMapKey==algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors.get(algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors.size()-1)){
-    					listOfSupportAlgorihmChannels.add(algorithmDetails);
-        			}
-        		}
-		
-    		}	
-    	}
-
-		// TODO Auto-generated method stub
-		return listOfSupportAlgorihmChannels;
-	}
+//        		}
+//		
+//    		}	
+//    	}
+//
+//		// TODO Auto-generated method stub
+//		return listOfSupportAlgorihmChannels;
+//	}
 
 	
-	public List<AlgorithmDetails> getListOfCompatibleAlgorithmChannels() {
-		
-		//mMapOfSensorClasses
+	public void createMapOfSupportedAlgorithmChannels() {
 
-		//returns list of compatible algorithms based on Shimmer hardware 
-		List<AlgorithmDetails> listOfCompatibleAlgorithmChannels = new ArrayList<AlgorithmDetails>();
+		// returns list of compatible algorithms based on Shimmer hardware
 		parentLoop:
-    	for(AlgorithmDetails algorithmDetails:mAlgorithmChannelsMap.values()) {
-    		
-    		//if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
-        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
-        			if(mSensorMap.containsKey(sensorMapKey)){
-        					listOfCompatibleAlgorithmChannels.add(algorithmDetails);
-        			}
-        		}
-    	}
-
-		// TODO Auto-generated method stub
-		return listOfCompatibleAlgorithmChannels;
-	}
-
-	public Map<String, List<String>> getAlgorithmGroupingMap() {
-		
-		
-		return mAlgorithmGroupingMap;
-	}
-	
-	// TODO: finish. Similar approach to above in
-	// getListOfSupportedAlgorithmChannels()
-	public List<String> getListOfSupportedAlgorithmGroups() {
-
-		List<AlgorithmDetails> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetails>();
-		listOfSupportAlgorihmChannels = getListOfSupportedAlgorithmChannels();
-
-		List<String> listOfSupportAlgorihmGroups = new ArrayList<String>();
-
-		for (AlgorithmDetails algorithmDetails:listOfSupportAlgorihmChannels) {
-			String groupName = algorithmDetails.mAlgorithmDetailsRef.mGroupName;
-			if (!listOfSupportAlgorihmGroups.contains(groupName)) {
-				listOfSupportAlgorihmGroups.add(groupName);
+			for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
+			for (Integer sensorMapKey : aD.mAlgorithmDetailsRef.mListOfRequiredSensors) {
+				if (mSensorMap.containsKey(sensorMapKey)) {
+					mSupportedAlgorithmChannelsMap.put(aD.mAlgorithmDetailsRef.mAlgorithmName, aD);
+				}
 			}
 		}
-		return listOfSupportAlgorihmGroups;
+
+	}
+	
+	public Map<String, AlgorithmDetails> getSupportedAlgorithmChannels(){
+		return mSupportedAlgorithmChannelsMap;
+	}
+	
+	public Map<String, List<String>> getAlgorithmGroupingMap() {
+		//TODO
+//		 List<String> tempAlgorithmChannelNames = new ArrayList<String>();
+//		 String tempGroupName = mAlgorithmChannelsMap.get;
+//		 
+//		parentLoop:
+//	    	for(AlgorithmDetails algorithmDetails:mAlgorithmChannelsMap.values()) {
+//	    		if(algorithmDetails.mAlgorithmDetailsRef.mGroupName.contains(tempGroupName)){
+//	    		tempAlgorithmChannelNames.add(algorithmDetails.mAlgorithmDetailsRef.mAlgorithmName);
+//	    		tempGroupName = algorithmDetails.mAlgorithmDetailsRef.mGroupName;
+//	    		tempAlgorithmChannelNames.add(algorithmDetails);	    		
+//	    	}
+		
+		return mAlgorithmGroupingMap;
 	}
 
 	private boolean checkIfToEnableAlgo(AlgorithmDetailsRef algorithmDetails){

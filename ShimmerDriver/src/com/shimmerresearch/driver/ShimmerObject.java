@@ -6937,6 +6937,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
+
 		
 		if (getHardwareVersion() != -1){
 			if (getHardwareVersion() == HW_ID.SHIMMER_2R){
@@ -6951,6 +6952,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMapRef;
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMapRef;
+			
 				
 				generateMapOfAlgorithmModules();
 				generateAlgorithmChannelsMap();
@@ -6981,12 +6983,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-	private void generateAlgorithmChannelsMap(){
-//		mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
+	private void generateAlgorithmChannelsMap() {
+		// mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
 		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
-		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
-			mAlgorithmChannelsMap.putAll(aA.mAlgorithmChannelsMap);
+		for (AlgorithmDetailsRef aDF : Configuration.Shimmer3.mCompleteAlgorithmMap
+				.values()) {
+			mAlgorithmChannelsMap.put(aDF.mAlgorithmName, new AlgorithmDetails(
+					aDF, false));
 		}
+		createMapOfSupportedAlgorithmChannels();
 	}
 	
 	//TODO 2016-05-18 feed below into sensor map classes
