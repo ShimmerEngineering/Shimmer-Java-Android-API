@@ -2199,19 +2199,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	}
 
 	
-	public void createMapOfSupportedAlgorithmChannels() {
-
-		// returns list of compatible algorithms based on Shimmer hardware
-		parentLoop:
-			for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
-			for (Integer sensorMapKey : aD.mAlgorithmDetailsRef.mListOfRequiredSensors) {
-				if (mSensorMap.containsKey(sensorMapKey)) {
-					mAlgorithmChannelsMap.put(aD.mAlgorithmDetailsRef.mAlgorithmName, aD);
-				}
-			}
-		}
-
-	}
+//	public void createMapOfSupportedAlgorithmChannels() {
+//
+//		// returns list of compatible algorithms based on Shimmer hardware
+//		parentLoop:
+//			for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
+//			for (Integer sensorMapKey : aD.mAlgorithmDetailsRef.mListOfRequiredSensors) {
+//				if (mSensorMap.containsKey(sensorMapKey)) {
+//					mAlgorithmChannelsMap.put(aD.mAlgorithmDetailsRef.mAlgorithmName, aD);
+//				}
+//			}
+//		}
+//
+//	}
 	
 	public Map<String, AlgorithmDetails> getSupportedAlgorithmChannels(){
 		
