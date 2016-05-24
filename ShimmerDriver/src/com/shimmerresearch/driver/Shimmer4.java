@@ -19,6 +19,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -62,6 +63,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void sensorAndConfigMapsCreate() {
 //		if(UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 //				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ANY_VERSION, ANY_VERSION, ANY_VERSION)){
+		
 //			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
@@ -73,25 +75,28 @@ public class Shimmer4 extends ShimmerDevice {
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED
-				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+				){
 			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
 		}
 
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
-				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+				){
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 		}
 
 		//Commented out until PPG fully implemented
-//		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
-//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
-//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
-//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-//			if(isDerivedSensorsSupported()){
-//				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
-//			}
-//		}
+		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
+				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
+				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
+//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+				){
+			if(isDerivedSensorsSupported()){
+				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
+			}
+		}
 
 		generateSensorAndParserMaps();
 	}
@@ -192,24 +197,31 @@ public class Shimmer4 extends ShimmerDevice {
 		
 		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);
 		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.SD);
-		
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, true);
-		
+
+		//Override Shimmer4 sensors
+		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
+		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true);
+
 //		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.BLUETOOTH);
 		
-//		//For debugging
-//		for(SensorDetails sensorDetails:mSensorMap.values()){
-//			System.out.println("SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
-//		}
-//		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
-//			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
-//				System.out.println("ENABLED SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
-//			}
-//		}
+//		printSensorAndParserMaps();
 		
 		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
 		if(mShimmerRadioHWLiteProtocol!=null){
 			mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(expectedDataPacketSize);
+		}
+	}
+	
+	/** For use when debugging */
+	private void printSensorAndParserMaps(){
+		//For debugging
+		for(SensorDetails sensorDetails:mSensorMap.values()){
+			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+		}
+		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
+			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
+				System.out.println("ENABLED SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+			}
 		}
 	}
 
@@ -340,23 +352,27 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void eventNewPacket(byte[] packetByteArray) {
-				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH);
-				//JC: This is temp, should actually be set using the real Shimmer Clock cal time
-				objectCluster.mShimmerCalibratedTimeStamp = System.currentTimeMillis();
-				
-				if(mFirstPacketParsed) {
-					mFirstPacketParsed=false;
-					long systemTime = System.currentTimeMillis();
-					objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
-					byte[] bSystemTS = objectCluster.mSystemTimeStamp;
-					ByteBuffer bb = ByteBuffer.allocate(8);
-			    	bb.put(bSystemTS);
-			    	bb.flip();
-			    	long systemTimeStamp = bb.getLong();
-					mOffsetFirstTime = systemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
-				}
 				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
-				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime));
+
+				long pcTimestamp = System.currentTimeMillis();
+				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
+				
+//				//Hack for debugging
+//				//JC: This is temp, should actually be set using the real Shimmer Clock cal time
+//				objectCluster.mShimmerCalibratedTimeStamp = System.currentTimeMillis();
+//				if(mFirstPacketParsed) {
+//					mFirstPacketParsed=false;
+//					long systemTime = System.currentTimeMillis();
+//					objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
+//					byte[] bSystemTS = objectCluster.mSystemTimeStamp;
+//					ByteBuffer bb = ByteBuffer.allocate(8);
+//			    	bb.put(bSystemTS);
+//			    	bb.flip();
+//			    	long systemTimeStamp = bb.getLong();
+//					mOffsetFirstTime = systemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
+//				}
+//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime));
+				
 				dataHandler(objectCluster);
 			}
 

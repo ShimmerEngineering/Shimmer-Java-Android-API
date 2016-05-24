@@ -25,7 +25,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
-import com.shimmerresearch.sensors.SensorECGToHR;
+import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
@@ -559,13 +559,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHR(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHRFw(mShimmerVerObject));
 		} 
 		else {
 			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHR(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHRFw(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
 		}
 		
@@ -592,8 +592,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	 * drops
 	 */
 	@Override
-	public ObjectCluster buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType){
-		ObjectCluster objectCluster = super.buildMsg(packetByteArray, commType);
+	public ObjectCluster buildMsg(byte[] packetByteArray, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
+		ObjectCluster objectCluster = super.buildMsg(packetByteArray, commType, isTimeSyncEnabled, pcTimestamp);
 		super.mLastProcessedObjectCluster = objectCluster;
 		return objectCluster;
 	}

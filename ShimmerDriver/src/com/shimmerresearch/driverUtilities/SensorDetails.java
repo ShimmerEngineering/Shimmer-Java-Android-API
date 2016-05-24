@@ -33,7 +33,7 @@ public class SensorDetails implements Serializable{
 	public SensorDetailsRef mSensorDetailsRef;
 //	public List<String> mListOfChannels = new ArrayList<String>();
 	public List<ChannelDetails> mListOfChannels = new ArrayList<ChannelDetails>();
-	
+
 	public SensorDetails(){
 	}
 	
@@ -176,6 +176,10 @@ public class SensorDetails implements Serializable{
 			}
 		}
 		return count;
+	}
+
+	public boolean isApiSensor() {
+		return mSensorDetailsRef.mIsApiSensor ;
 	}
 	
 

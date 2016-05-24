@@ -28,7 +28,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
-public class SensorECGToHR extends AbstractSensor implements Serializable{
+public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 
 	/** * */
 	private static final long serialVersionUID = 4160314338085066414L;
@@ -87,7 +87,7 @@ public class SensorECGToHR extends AbstractSensor implements Serializable{
 	/** Constructor for this Sensor
 	 * @param svo
 	 */
-	public SensorECGToHR(ShimmerVerObject svo) {
+	public SensorECGToHRFw(ShimmerVerObject svo) {
 		super(svo);
 		setSensorName(SENSORS.ECG_TO_HR.toString());
 	}

@@ -69,7 +69,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.SensorBMP180;
-import com.shimmerresearch.sensors.SensorECGToHR;
+import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorKionixKXRB52042;
@@ -584,7 +584,7 @@ public class Configuration {
 		public class SensorMapKey{
 			
 			//Sensors channels originating from the Shimmer
-			public static final int TIMESTAMP = -1;
+			public static final int SHIMMER_TIMESTAMP = -1;
 			/** Shimmer3 Low-noise analog accelerometer */
 			//XXX-RS-AA-SensorClass?
 			public static final int SHIMMER_A_ACCEL = 0;
@@ -2655,7 +2655,7 @@ public class Configuration {
 // ----------------------------------------------------------------------------------------------
 			
 			// Algorithm Channels
-			aMap.putAll(SensorECGToHR.mChannelMapRef);
+			aMap.putAll(SensorECGToHRFw.mChannelMapRef);
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR, SensorECGToHR.channelEcgToHr);
 ////			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
 ////					new ChannelDetails(

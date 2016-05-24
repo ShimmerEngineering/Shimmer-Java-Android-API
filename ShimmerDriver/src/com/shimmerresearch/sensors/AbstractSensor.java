@@ -240,20 +240,16 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	
-	//TODO MN: under devel
 	public void updateStateFromEnabledSensorsVars(COMMUNICATION_TYPE commType, long enabledSensors, long derivedSensors) {
-//		TreeMap<Integer, SensorEnabledDetails> sensorMapForCommType = mSensorEnabledMap.get(commType);
-		
 		for(SensorDetails sensorDetails:mSensorMap.values()){
-			
-			//TODO remove below with a check as to whether the sensor originates from the Shimmer data packet or the API ()
-			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(SensorSystemTimeStamp.sensorSystemTimeStampRef.mGuiFriendlyLabel)){
+			//check as to whether the sensor originates from the Shimmer data packet or the API
+			if(sensorDetails.isApiSensor()){
 				continue;
 			}
 			
 			boolean state = false;
 			if(sensorDetails.isDerivedChannel()){
-				//TODO check enabledSensors aswell if required???
+				//TODO check enabledSensors as well if required???
 				state = (derivedSensors & sensorDetails.mDerivedSensorBitmapID)>0? true:false;
 			}
 			else {
@@ -261,7 +257,6 @@ public abstract class AbstractSensor implements Serializable{
 			}
 			sensorDetails.setIsEnabled(commType, state);
 		}
-		
 		
 //		//TODO: enabledSensors should be directed at channels coming from the Shimmer, derivedSensors at channels from the API 
 //		//TODO move to abstract or override in the extended sensor classes so complexities like EXG can be handled
@@ -334,7 +329,8 @@ public abstract class AbstractSensor implements Serializable{
 	}
 
 	public void updateSensorDetailsWithChannels(SensorDetails sensorDetails, Map<String, ChannelDetails> channelMapRef){
-		for(String channelKey:sensorDetails.mSensorDetailsRef.mListOfChannelsRef){
+		List<String> listOfChannelsRef = sensorDetails.mSensorDetailsRef.mListOfChannelsRef;
+		for(String channelKey:listOfChannelsRef){
 			ChannelDetails channelDetails = channelMapRef.get(channelKey);
 			if(channelDetails!=null){
 				sensorDetails.mListOfChannels.add(channelDetails);

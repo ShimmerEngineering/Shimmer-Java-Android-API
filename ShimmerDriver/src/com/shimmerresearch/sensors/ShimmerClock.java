@@ -12,7 +12,6 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -56,10 +55,13 @@ public class ShimmerClock extends AbstractSensor {
 
 	//--------- Sensor info start --------------
 	public static final SensorDetailsRef sensorSystemTimeStampRef = new SensorDetailsRef(
-			Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT));
+	{
+		sensorSystemTimeStampRef.mIsApiSensor = true;
+	}
 
 	public static final SensorDetailsRef sensorShimmerClock = new SensorDetailsRef(
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
@@ -67,40 +69,43 @@ public class ShimmerClock extends AbstractSensor {
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
 					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET));
+	{
+		sensorSystemTimeStampRef.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
+	}
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, ShimmerClock.sensorSystemTimeStampRef);
-        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, ShimmerClock.sensorShimmerClock);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, ShimmerClock.sensorShimmerClock);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
-	public static final ChannelDetails cDSystemTimestamp = new ChannelDetails(
-			Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-			Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+	public static final ChannelDetails channelSystemTimestamp = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 			DatabaseChannelHandles.TIMESTAMP_SYSTEM,
 //			CHANNEL_DATA_TYPE.UINT64, 8, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.MILLISECONDS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
-		cDSystemTimestamp.mChannelSource = CHANNEL_SOURCE.API;
-		cDSystemTimestamp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+		channelSystemTimestamp.mChannelSource = CHANNEL_SOURCE.API;
+//		channelSystemTimestamp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
 		
-	public static final ChannelDetails cDSystemTimestampPlot = new ChannelDetails(
-		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-		DatabaseChannelHandles.TIMESTAMP_SYSTEM,
+	public static final ChannelDetails channelSystemTimestampPlot = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+		"NOTAPPLICABLE",
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
-		cDSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
-		cDSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+		channelSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
+//		channelSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
     
 	public static final ChannelDetails channelShimmerClock3byte = new ChannelDetails(
@@ -161,14 +166,14 @@ public class ShimmerClock extends AbstractSensor {
 	public void generateSensorMap(ShimmerVerObject svo) {
 		Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
 		
-		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.cDSystemTimestamp);
-		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.cDSystemTimestampPlot);
+		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
+		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
 
 		if(svo.getFirmwareIdentifier()==FW_ID.GQ_802154){
 			//
 		}
 		else{
-			if(svo.getHardwareVersion()>=6){
+			if(svo.getFirmwareVersionCode()>=6){
 				channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 			}
 			else{
@@ -178,7 +183,6 @@ public class ShimmerClock extends AbstractSensor {
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
 		}
-		
 		
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 	}
@@ -196,187 +200,24 @@ public class ShimmerClock extends AbstractSensor {
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
-//		//TODO include in above
-//		int timeSync = 1;
-//		long pctimestamp = 0;
-		
-//		long systemTime = System.currentTimeMillis();
-//		if(commType==COMMUNICATION_TYPE.BLUETOOTH){
-//			systemTime = pctimestamp;
-//		}
-//		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
-//		objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime));
-
-		
-		
-		
-		
-//		//PARSE DATA
-////		long[] newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);
-//		//TODO replaces newPacketInt[iTimeStamp], need to parse from packetdata
-//		double newTimestamp = 0.0;
-//		//newPacketInt[iOffset]
-//		double newOffset = 0.0;
-//		
-//		
-//		
-//		
-//		if(mFirstTime && commType==COMMUNICATION_TYPE.SD){
-//			//this is to make sure the Raw starts from zero
-//			mFirstRawTS = newTimestamp;
-//			mFirstTime = false;
-//		}
-//		double calibratedTS = calibrateTimeStamp(newTimestamp);
-
-		
-		
-		
-//		if(commType==COMMUNICATION_TYPE.SD){
-////			//TIMESTAMP
-////			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
-////			double unwrappedRawTimestamp = calibratedTS*32768/1000;
-////			unwrappedRawTimestamp -= mFirstRawTS; //deduct this so it will start from 0
-////			
-////			long sdlogRawTimestamp = (long)mInitialTimeStamp + (long)unwrappedRawTimestamp;
-////			timestampUnCalToSave = (double)sdlogRawTimestamp;
-////			if (mEnableCalibration){
-////				double sdLogCalTimestamp = (double)sdlogRawTimestamp/32768*1000;
-////				timestampCalToSave = sdLogCalTimestamp; 
-////			}
-////			
-//////			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)sdlogRawTimestamp));
-//////			uncalibratedData[iTimeStamp] = (double)sdlogRawTimestamp;
-//////			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
-//////			sensorNames[iTimeStamp]= Shimmer3.ObjectClusterSensorName.TIMESTAMP;
-//////
-//////			if (mEnableCalibration){
-//////				double sdLogcalTimestamp = (double)sdlogRawTimestamp/32768*1000;
-//////				
-//////				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,sdLogcalTimestamp));
-//////				calibratedData[iTimeStamp] = sdLogcalTimestamp;
-//////				calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-//////			}
-//			
-//			
-////			//RAW RTC
-////			if(mRTCOffset!=0){
-////				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedRawTimestamp + mRTCOffset;
-////				double rtctimestampcal = Double.NaN;
-////				if (mEnableCalibration){
-////					rtctimestampcal = calibratedTS;
-////					if(mInitialTimeStamp!=0){
-////						rtctimestampcal += ((double)mInitialTimeStamp/32768.0*1000.0);
-////					}
-////					if(mRTCOffset!=0){
-////						rtctimestampcal += ((double)mRTCOffset/32768.0*1000.0);
-////					}
-////					if(mFirstRawTS!=0){
-////						rtctimestampcal -= (mFirstRawTS/32768.0*1000.0);
-////					}
-////				}
-////				objectCluster.addData(channelRealTimeClock, (double)rtctimestamp, rtctimestampcal);
-////				objectCluster.incrementIndexKeeper();
-////
-//////				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)rtctimestamp));
-//////				uncalibratedData[sensorNames.length-1] = (double)rtctimestamp;
-//////				uncalibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.CLOCK_UNIT;
-//////				sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
-//////				
-//////				if (mEnableCalibration){
-//////					double rtctimestampcal = calibratedTS;
-//////					if(mInitialTimeStamp!=0){
-//////						rtctimestampcal += ((double)mInitialTimeStamp/32768.0*1000.0);
-//////					}
-//////					if(mRTCOffset!=0){
-//////						rtctimestampcal += ((double)mRTCOffset/32768.0*1000.0);
-//////					}
-//////					if(mFirstRawTS!=0){
-//////						rtctimestampcal -= (mFirstRawTS/32768.0*1000.0);
-//////					}
-//////					
-//////					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,rtctimestampcal));
-//////					calibratedData[sensorNames.length-1] = rtctimestampcal;
-//////					calibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.MILLISECONDS;
-//////				}
-////			}
-//
-////			//OFFSET
-////			if(timeSync==1){
-////				double offsetValue = Double.NaN;
-////				if(((OFFSET_LENGTH==9)&&(newPacketInt[iOffset] != 1152921504606846975L))
-////						||(newPacketInt[iOffset] != 4294967295L)){ //this is 4 bytes
-////					offsetValue=(double)newPacketInt[iOffset];
-////				}
-////				objectCluster.addData(channelShimmerClockOffset, offsetValue, Double.NaN);
-////				objectCluster.incrementIndexKeeper();
-////				
-////				
-//////				int iOffset=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
-//////				double offsetValue = Double.NaN;
-//////				if (OFFSET_LENGTH==9){
-//////					if(newPacketInt[iOffset] != 1152921504606846975L){
-//////						offsetValue=(double)newPacketInt[iOffset];
-//////					}	
-//////				}
-//////				else{
-//////					if(newPacketInt[iOffset] != 4294967295L){ //this is 4 bytes
-//////						offsetValue=(double)newPacketInt[iOffset];
-//////					}
-//////				}
-//////				objectCluster.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue));
-//////				uncalibratedData[iOffset] = offsetValue;
-//////				calibratedData[iOffset] = Double.NaN;
-//////				uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
-//////				calibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
-////			} 
-//			
-//		} 
-//		else if(commType==COMMUNICATION_TYPE.BLUETOOTH){
-//			//TIMESTAMP
-//			timestampUnCalToSave = newTimestamp;
-//			if (mEnableCalibration){
-//				timestampCalToSave = calibratedTS; 
-//				objectCluster.mShimmerCalibratedTimeStamp = calibratedTS;
-//			}
-//			
-////			objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,newTimestamp));
-////			uncalibratedData[iTimeStamp] = newTimestamp;
-////			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
-////			if (mEnableCalibration){
-////				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS));
-////				calibratedData[iTimeStamp] = calibratedTS;
-////				calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-////				
-////				objectCluster.mShimmerCalibratedTimeStamp = calibratedTS;
-////			}
-//		}
-		
 		//TIMESTAMP
 		if(sensorDetails.isEnabled(commType)){
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
-////					if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
-//					//first process the data originating from the Shimmer sensor
-//					byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-//					System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//					objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
-//					objectCluster.incrementIndexKeeper();
-//					index=index+channelDetails.mDefaultNumBytes;
-////					}
-					
+				if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
 					long systemTime = pcTimestamp;
 					if(commType==COMMUNICATION_TYPE.SD){
 						systemTime = System.currentTimeMillis();
 					}
+					objectCluster.mShimmerCalibratedTimeStamp = systemTime;
 					objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 //					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime));
 					objectCluster.addData(channelDetails, Double.NaN, systemTime);
 					objectCluster.incrementIndexKeeper();
 				}
-				else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
 					//TODO: Hack -> just copying from elsewhere (forgotten where exactly)
 					double systemTime = 0;
-					FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
+					FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
 					if(f!=null){
 						systemTime = f.mData;
 					}
@@ -386,15 +227,18 @@ public class ShimmerClock extends AbstractSensor {
 					objectCluster.incrementIndexKeeper();
 				}
 				
-				else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.TIMESTAMP)){
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP)){
 					
 					//PARSE DATA
 //					long[] newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);
 					//TODO replaces newPacketInt[iTimeStamp], need to parse from packetdata
-					double newTimestamp = 0.0;
+//					double newTimestamp = 0.0;
 					//newPacketInt[iOffset]
 					double newOffset = 0.0;
 					
+					byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+					System.arraycopy(sensorByteArray, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+					double newTimestamp = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
 					
 					if(mFirstTime && commType==COMMUNICATION_TYPE.SD){
 						//this is to make sure the Raw starts from zero
@@ -418,7 +262,7 @@ public class ShimmerClock extends AbstractSensor {
 							double sdLogCalTimestamp = (double)sdlogRawTimestamp/32768*1000;
 							timestampCalToSave = sdLogCalTimestamp; 
 						}
-						
+
 //						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)sdlogRawTimestamp));
 //						uncalibratedData[iTimeStamp] = (double)sdlogRawTimestamp;
 //						uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
@@ -458,11 +302,11 @@ public class ShimmerClock extends AbstractSensor {
 					objectCluster.incrementIndexKeeper();
 				}
 				
-				else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK)){
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK)){
 					
 					if(commType==COMMUNICATION_TYPE.SD){
-						FormatCluster fUncal = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.UNCAL.toString());
-						FormatCluster fCal = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
+						FormatCluster fUncal = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.UNCAL.toString());
+						FormatCluster fCal = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
 						if(fUncal!=null && fCal!=null){
 							long timestampUncal = (long) fUncal.mData;
 							long timestampCal = (long) fUncal.mData;
@@ -514,40 +358,44 @@ public class ShimmerClock extends AbstractSensor {
 					
 				}
 
-//				else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET)){
-//					
-//					if(commType==COMMUNICATION_TYPE.SD){
-//						//OFFSET
-//						if(isTimeSyncEnabled){
-//							double offsetValue = Double.NaN;
-//							if(((OFFSET_LENGTH==9)&&(newPacketInt[iOffset] != 1152921504606846975L))
-//									||(newPacketInt[iOffset] != 4294967295L)){ //this is 4 bytes
-//								offsetValue=(double)newPacketInt[iOffset];
-//							}
-//							objectCluster.addData(channelShimmerClockOffset, offsetValue, Double.NaN);
-//							objectCluster.incrementIndexKeeper();
-//							
-//							
-//	//						int iOffset=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
-//	//						double offsetValue = Double.NaN;
-//	//						if (OFFSET_LENGTH==9){
-//	//							if(newPacketInt[iOffset] != 1152921504606846975L){
-//	//								offsetValue=(double)newPacketInt[iOffset];
-//	//							}	
-//	//						}
-//	//						else{
-//	//							if(newPacketInt[iOffset] != 4294967295L){ //this is 4 bytes
-//	//								offsetValue=(double)newPacketInt[iOffset];
-//	//							}
-//	//						}
-//	//						objectCluster.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue));
-//	//						uncalibratedData[iOffset] = offsetValue;
-//	//						calibratedData[iOffset] = Double.NaN;
-//	//						uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
-//	//						calibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
-//						} 
-//					}
-//				}
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET)){
+					
+					if(commType==COMMUNICATION_TYPE.SD){
+						//OFFSET
+						if(isTimeSyncEnabled){
+							double offsetValue = Double.NaN;
+							
+							//TODO parse offset
+							double newOffset = 0.0;
+
+							if(((OFFSET_LENGTH==9)&&(newOffset != 1152921504606846975L))
+									||(newOffset != 4294967295L)){ //this is 4 bytes
+								offsetValue=(double)newOffset;
+							}
+							objectCluster.addData(channelShimmerClockOffset, offsetValue, Double.NaN);
+							objectCluster.incrementIndexKeeper();
+							
+							
+	//						int iOffset=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
+	//						double offsetValue = Double.NaN;
+	//						if (OFFSET_LENGTH==9){
+	//							if(newPacketInt[iOffset] != 1152921504606846975L){
+	//								offsetValue=(double)newPacketInt[iOffset];
+	//							}	
+	//						}
+	//						else{
+	//							if(newPacketInt[iOffset] != 4294967295L){ //this is 4 bytes
+	//								offsetValue=(double)newPacketInt[iOffset];
+	//							}
+	//						}
+	//						objectCluster.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue));
+	//						uncalibratedData[iOffset] = offsetValue;
+	//						calibratedData[iOffset] = Double.NaN;
+	//						uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
+	//						calibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
+						} 
+					}
+				}
 
 			}
 		}
@@ -613,31 +461,36 @@ public class ShimmerClock extends AbstractSensor {
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
 		double calibratedTimeStamp=0;
-//		if (mLastReceivedTimeStamp>(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle))){ 
-//			mCurrentTimeStampCycle=mCurrentTimeStampCycle+1;
-//		}
-//
-//		mLastReceivedTimeStamp=(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
-//		calibratedTimeStamp=mLastReceivedTimeStamp/32768*1000;   // to convert into mS
-//		if (mFirstTimeCalTime){
-//			mFirstTimeCalTime=false;
-//			mCalTimeStart = calibratedTimeStamp;
-//		}
-//		if (mLastReceivedCalibratedTimeStamp!=-1){
-//			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
+		if (mLastReceivedTimeStamp>(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle))){ 
+			mCurrentTimeStampCycle=mCurrentTimeStampCycle+1;
+		}
+
+		mLastReceivedTimeStamp=(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
+		calibratedTimeStamp=mLastReceivedTimeStamp/32768*1000;   // to convert into mS
+		if (mFirstTimeCalTime){
+			mFirstTimeCalTime=false;
+			mCalTimeStart = calibratedTimeStamp;
+		}
+		if (mLastReceivedCalibratedTimeStamp!=-1){
+			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
+			//TODO don't use mMaxSetShimmerSamplingRate? base it on communication type?
 //			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
-//			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
-//			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
-//			if (timeDifference>expectedTimeDifferenceLimit){
-////				mPacketLossCount=mPacketLossCount+1;
-//				mPacketLossCount+= (long) (timeDifference/expectedTimeDifferenceLimit);
+			double expectedTimeDifference = (1/mMaxSetShimmerSamplingRate)*1000;
+			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
+			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
+			if (timeDifference>expectedTimeDifferenceLimit){
+//				mPacketLossCount=mPacketLossCount+1;
+				mPacketLossCount+= (long) (timeDifference/expectedTimeDifferenceLimit);
+				//TODO don't use mMaxSetShimmerSamplingRate? base it on communication type?
 //				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
-//
-//				mPacketReceptionRate = (double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100;
+				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/mMaxSetShimmerSamplingRate*1000));
+
+				mPacketReceptionRate = (double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100;
+				//TODO
 //				sendStatusMsgPacketLossDetected();
-//			}
-//		}	
-//		mLastReceivedCalibratedTimeStamp=calibratedTimeStamp;
+			}
+		}	
+		mLastReceivedCalibratedTimeStamp=calibratedTimeStamp;
 		return calibratedTimeStamp;
 	}
 }

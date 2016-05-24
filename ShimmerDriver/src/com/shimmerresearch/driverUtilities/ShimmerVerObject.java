@@ -224,4 +224,8 @@ public class ShimmerVerObject implements Serializable {
 		return mFirmwareVersionInternal;
 	}
 
+	public int getFirmwareVersionCode() {
+		return mFirmwareVersionCode;
+	}
+
 }

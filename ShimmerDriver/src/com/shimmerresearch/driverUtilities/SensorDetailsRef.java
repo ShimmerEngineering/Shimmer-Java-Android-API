@@ -37,6 +37,7 @@ public class SensorDetailsRef implements Serializable {
 	public List<String> mListOfChannelsRef = new ArrayList<String>();
 	
 	public boolean mIsDummySensor = false;
+	public boolean mIsApiSensor = false;
 
 	//Testing for GQ BLE
 	public String mHeaderFileLabel = "";

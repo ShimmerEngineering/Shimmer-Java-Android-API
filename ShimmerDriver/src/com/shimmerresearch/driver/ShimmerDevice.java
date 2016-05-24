@@ -258,7 +258,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void generateParserMap() {
-//		mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
+		mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
 		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
 			for(Entry<Integer, SensorDetails> sensorEntry:mSensorMap.entrySet()){
 				if(sensorEntry.getValue().isEnabled(commType)){
@@ -954,9 +954,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public ObjectCluster buildMsg(byte[] dataPacketFormat, byte[] packetByteArray,COMMUNICATION_TYPE commType){
+	public ObjectCluster buildMsg(byte[] dataPacketFormat, byte[] packetByteArray, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
 		interpretDataPacketFormat(dataPacketFormat, commType);
-		return buildMsg(packetByteArray, commType);
+		return buildMsg(packetByteArray, commType, isTimeSyncEnabled, pcTimestamp);
 	}
 	
 	/** The packet format can be changed by calling interpretpacketformat
@@ -964,11 +964,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param commType
 	 * @return
 	 */
-	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType){
-		
-		//TODO temp here
-		boolean isTimeSyncEnabled = false;
-		long pcTimestamp = 0;
+	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
 		
 		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
 		ojc.mRawData = newPacket;
@@ -980,18 +976,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			int index=0;
 			for (SensorDetails sensor:parserMapPerComm.values()){
 				int length = sensor.getExpectedPacketByteArray(commType);
+				byte[] sensorByteArray = new byte[length];
 				//TODO process API sensors, not just bytes from Shimmer packet 
 				if (length!=0){ //if length 0 means there are no channels to be processed
-					byte[] sensorByteArray = new byte[length];
 					if((index+sensorByteArray.length)<=newPacket.length){
 						System.arraycopy(newPacket, index, sensorByteArray, 0, sensorByteArray.length);
-						sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestamp);
 					}
 					else{
 						//TODO replace with consolePrintSystem
 //						System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetails.mGuiFriendlyLabel);
 					}
 				}
+				sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestamp);
+
 //				System.out.println(sensor.mSensorDetails.mGuiFriendlyLabel + "\texpectedPacketArraySize:" + length + "\tcurrentIndex:" + index);
 				index += length;
 			}
@@ -1004,6 +1001,37 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		processAlgorithmData(ojc);
 		
 		return ojc;
+	}
+	
+	//TODO get below working if even needed
+	/** Based on the SensorMap approach rather then legacy inquiry command */
+	protected void interpretDataPacketFormat(){
+//		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
+//		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
+//		
+//		int packetSize=0;//mTimeStampPacketByteSize; // Time stamp
+//
+//		int index = 0;
+//		for(SensorDetails sED:mSensorMap.values()) {
+//			if(sED.isEnabled() && !sED.isDerivedChannel()) {
+//				for(ChannelDetails channelDetails:sED.mListOfChannels){
+////				for(String channelDetailsName:sED.mListOfChannels){
+////					ChannelDetails channelDetails = mChannelMap.get(channelDetailsName);
+//					if(channelDetails.mDefaultNumBytes>0){
+//						signalNameArray[index] = channelDetails.mObjectClusterName;
+//						signalDataTypeArray[index] = channelDetails.mDefaultChannelDataType;
+//						packetSize += channelDetails.mDefaultNumBytes;
+//						
+//						System.out.println(channelDetails.mObjectClusterName + "\t" + channelDetails.mDefaultChannelDataType + "\t" + channelDetails.mDefaultNumBytes);
+//						index++;
+//					}
+//				}
+//			}
+//		}
+//		
+//		mSignalNameArray=signalNameArray;
+//		mSignalDataTypeArray=signalDataTypeArray;
+//		mPacketSize=packetSize;
 	}
 	
 	public int getExpectedDataPacketSize(COMMUNICATION_TYPE commsType){
@@ -1563,11 +1591,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			
 			sensorDetails.setIsEnabled(state);
 			
-//			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.TIMESTAMP){
-//				for(COMMUNICATION_TYPE commType: sensorDetails.mapOfIsEnabledPerCommsType.keySet()){
-//					System.out.println("0)Timestamp is enabled:\t" + sensorDetails.isEnabled(commType) + "\t" + commType);
-//				}
-//			}
+			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP){
+				for(COMMUNICATION_TYPE commType: sensorDetails.mapOfIsEnabledPerCommsType.keySet()){
+					System.out.println("0)Timestamp is enabled:\t" + sensorDetails.isEnabled(commType) + "\t" + commType);
+				}
+			}
 
 			sensorMapConflictCheckandCorrect(sensorMapKey);
 			setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
@@ -1590,7 +1618,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isTimestampEnabled(){
-		SensorDetails sensorDetails = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.TIMESTAMP);
+		SensorDetails sensorDetails = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP);
 		if(sensorDetails!=null){
 			return sensorDetails.isEnabled();
 		}
@@ -1645,7 +1673,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED
 	protected void sensorMapCheckandCorrectHwDependencies() {
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
@@ -1705,7 +1732,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
 		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
 			sensor.updateStateFromEnabledSensorsVars(commType, mEnabledSensors, mDerivedSensors);
-		}		
+		}
 	}
 	
 	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED AND NEEDS FURTHER WORK

@@ -91,12 +91,12 @@ public class ShimmerGQ_802154_SD extends ShimmerGQ_802154 {
 			}
 			ObjectCluster ojc = super.buildMsg(newPacket, COMMUNICATION_TYPE.SD,timeSync, -1);
 			//add offset if sync is on and there are no offsets available
-			if(mSyncWhenLogging==1 && !ojc.mSensorNames[0].equals("Offset")){
+			if(mSyncWhenLogging==1 && !ojc.mSensorNames[0].equals(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET)){
 				// add offset to signal name
 				String[] sensorNames = ojc.mSensorNames;
 				ojc.mSensorNames = new String[sensorNames.length+1];
 				System.arraycopy(sensorNames, 0,ojc.mSensorNames, 1, sensorNames.length);
-				ojc.mSensorNames[0]="Offset";
+				ojc.mSensorNames[0]=Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET;
 				
 				// add offset to uncalibrated data
 				double[] uncalData = ojc.mUncalData;

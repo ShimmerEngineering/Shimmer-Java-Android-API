@@ -822,12 +822,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @param newPacket
 	 * @param fwType
-	 * @param timeSync
-	 * @param pctimestamp this is only used by shimmerbluetooth, set to -1 if not using
+	 * @param isTimeSyncEnabled
+	 * @param pcTimestamp this is only used by shimmerbluetooth, set to -1 if not using
 	 * @return
 	 * @throws Exception
 	 */
-	protected ObjectCluster buildMsg(byte[] newPacket, int fwType, int timeSync, long pctimestamp) throws Exception {
+//	@Override //TODO replace "int fwType" with "COMMUNICATION_TYPE commType" so that the method can override the one in ShimmerDevice
+	protected ObjectCluster buildMsg(byte[] newPacket, int fwType, boolean isTimeSyncEnabled, long pcTimestamp) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
 		objectCluster.mMyName = mShimmerUserAssignedName;
 		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
@@ -835,7 +836,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		long systemTime = System.currentTimeMillis();
 		if(fwType == FW_TYPE_BT){
-			systemTime = pctimestamp;
+			systemTime = pcTimestamp;
 		}
 		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 		objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime));
@@ -972,7 +973,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//OFFSET
-			if(timeSync==1 && (fwType == FW_TYPE_SD)){
+			if(isTimeSyncEnabled && (fwType == FW_TYPE_SD)){
 				int iOffset=getSignalIndex(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
 				double offsetValue = Double.NaN;
 				if (OFFSET_LENGTH==9){
@@ -3351,45 +3352,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return iSignal;
 	}
 
-	//TODO get below working
-	/** Based on the SensorMap approach rather then legacy inquiry command */
-	protected void interpretDataPacketFormat(){
-		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
-		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
-		
-		int packetSize=0;//mTimeStampPacketByteSize; // Time stamp
-
-		int index = 0;
-		for(SensorDetails sED:mSensorMap.values()) {
-			if(sED.isEnabled() && !sED.isDerivedChannel()) {
-				for(ChannelDetails channelDetails:sED.mListOfChannels){
-//				for(String channelDetailsName:sED.mListOfChannels){
-//					ChannelDetails channelDetails = mChannelMap.get(channelDetailsName);
-					if(channelDetails.mDefaultNumBytes>0){
-						signalNameArray[index] = channelDetails.mObjectClusterName;
-						signalDataTypeArray[index] = channelDetails.mDefaultChannelDataType;
-						packetSize += channelDetails.mDefaultNumBytes;
-						
-						System.out.println(channelDetails.mObjectClusterName + "\t" + channelDetails.mDefaultChannelDataType + "\t" + channelDetails.mDefaultNumBytes);
-						index++;
-					}
-				}
-			}
-		}
-		
-		
-		//Handle 3-byte timestamp for new Shimmer firmware
-		//TODO move to where mChannelMap is initialised but then it can't be static
-		if (getFirmwareVersionCode()>=6){
-			packetSize += 1;
-		}
-		
-		mSignalNameArray=signalNameArray;
-		mSignalDataTypeArray=signalDataTypeArray;
-		mPacketSize=packetSize;
-	}
-
-	
 	/** Only for Bluetooth
 	 * @param numChannels
 	 * @param signalid
