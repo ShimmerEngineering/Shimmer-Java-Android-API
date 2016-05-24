@@ -182,9 +182,9 @@ public class Configuration {
 
 	public static class ShimmerGqBle{
 		public class SensorMapKey{
-			public static final int MPU9150_ACCEL = 17;
-			public static final int MPU9150_GYRO = 1;
-			public static final int MPU9150_MAG = 18;
+			public static final int MPU9150_ACCEL = 17; // SensorMPU9X50.SensorMapKey.MPU9150_ACCEL;
+			public static final int MPU9150_GYRO =  1; // SensorMPU9X50.SensorMapKey.MPU9150_GYRO;
+			public static final int MPU9150_MAG =  18; // SensorMPU9X50.SensorMapKey.MPU9150_MAG;
 			public static final int VBATT = 10;
 			public static final int LSM303DLHC_ACCEL = 11;  //XXX-RS-LSM-SensorClass?
 			public static final int PPG = 107;
@@ -206,11 +206,11 @@ public class Configuration {
 		public class GuiLabelSensors{
 			public static final String BATTERY = "Battery Voltage";
 			public static final String GSR = "GSR";
-			public static final String GYRO = "Gyroscope";
+			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO; //"Gyroscope";
 			public static final String ACCEL_WR = "Wide-Range Accelerometer";  //XXX-RS-LSM-SensorClass?
 			public static final String MAG = "Magnetometer"; 				//XXX-RS-LSM-SensorClass?
-			public static final String ACCEL_MPU = "Alternative Accel";
-			public static final String MAG_MPU = "Alternative Mag";
+			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU; //"Alternative Accel";
+			public static final String MAG_MPU = SensorMPU9X50.GuiLabelSensors.MAG_MPU; //"Alternative Mag";
 			public static final String PPG_TO_HR = "PPG To HR";
 			public static final String PPG = SensorPPG.GuiLabelSensors.PPG; //"PPG";
 			public static final String BEACON = "Beacon";
@@ -503,8 +503,8 @@ public class Configuration {
 		public static final String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
 		public static final String[] ListofAccelRange = SensorLSM303.ListofAccelRange;
 		public static final Integer[] ListofLSM303DLHCAccelRangeConfigValues = SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues;
-		public static final String[] ListofGyroRange = {"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"}; 
-		public static final Integer[] ListofMPU9150GyroRangeConfigValues = {0,1,2,3};
+		public static final String[] ListofGyroRange = SensorMPU9X50.ListofGyroRange; //{"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"}; 
+		public static final Integer[] ListofMPU9150GyroRangeConfigValues = SensorMPU9X50.ListofMPU9150GyroRangeConfigValues; //{0,1,2,3};
 		public static final String[] ListofMagRange = SensorLSM303.ListofMagRange;
 		public static final Integer[] ListofMagRangeConfigValues = SensorLSM303.ListofMagRangeConfigValues;
 		//TODO: switch reference to below variables to the relevant variables in SensorBMP180
@@ -571,17 +571,17 @@ public class Configuration {
 		public static final String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3.0Hz","7.5Hz","15.0Hz","30.0Hz","75.0Hz","220.0Hz"};
 		public static final Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
 
-		public static final String[] ListofMPU9150AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-		public static final Integer[] ListofMPU9150AccelRangeConfigValues={0,1,2,3};
-		public static final String[] ListofMPU9150MagRate={"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
-		public static final Integer[] ListofMPU9150MagRateConfigValues={0,1,2,3,4};
+		public static final String[] ListofMPU9150AccelRange= SensorMPU9X50.ListofMPU9150AccelRange; //{"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
+		public static final Integer[] ListofMPU9150AccelRangeConfigValues= SensorMPU9X50.ListofMPU9150AccelRangeConfigValues; // {0,1,2,3};
+		public static final String[] ListofMPU9150MagRate= SensorMPU9X50.ListofMPU9150MagRate; //{"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
+		public static final Integer[] ListofMPU9150MagRateConfigValues= SensorMPU9X50.ListofMPU9150MagRateConfigValues; //{0,1,2,3,4};
 
-		public static final String[] ListofMPU9150MplCalibrationOptions={"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
-		public static final Integer[] ListofMPU9150MplCalibrationOptionsConfigValues={0,1,2,3,4,5,6,7};
-		public static final String[] ListofMPU9150MplLpfOptions={"No LPF","188.0Hz","98.0Hz","42.0Hz","20.0Hz","10.0Hz","5.0Hz"};
-		public static final Integer[] ListofMPU9150MplLpfOptionsConfigValues={0,1,2,3,4,5,6};
-		public static final String[] ListofMPU9150MplRate={"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
-		public static final Integer[] ListofMPU9150MplRateConfigValues={0,1,2,3,4};
+		public static final String[] ListofMPU9150MplCalibrationOptions= SensorMPU9X50.ListofMPU9150MplCalibrationOptions; //{"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
+		public static final Integer[] ListofMPU9150MplCalibrationOptionsConfigValues= SensorMPU9X50.ListofMPU9150MplCalibrationOptionsConfigValues; //{0,1,2,3,4,5,6,7};
+		public static final String[] ListofMPU9150MplLpfOptions=SensorMPU9X50.ListofMPU9150MplLpfOptions; //{"No LPF","188.0Hz","98.0Hz","42.0Hz","20.0Hz","10.0Hz","5.0Hz"};
+		public static final Integer[] ListofMPU9150MplLpfOptionsConfigValues=SensorMPU9X50.ListofMPU9150MplLpfOptionsConfigValues; //{0,1,2,3,4,5,6};
+		public static final String[] ListofMPU9150MplRate=SensorMPU9X50.ListofMPU9150MplRate; //{"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
+		public static final Integer[] ListofMPU9150MplRateConfigValues=SensorMPU9X50.ListofMPU9150MplRateConfigValues; //{0,1,2,3,4};
 
 		public static final String[] ListOfOnOff={"On","Off"};
 		public static final Integer[] ListOfOnOffConfigValues={0x01,0x00};
@@ -594,7 +594,7 @@ public class Configuration {
 			//XXX-RS-AA-SensorClass?
 			public static final int SHIMMER_A_ACCEL = 0;
 			/** Shimmer3 Gyroscope */
-			public static final int SHIMMER_MPU9150_GYRO = 1;
+			public static final int SHIMMER_MPU9150_GYRO = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_GYRO; //1;
 			/** Shimmer3 Primary magnetometer */
 			public static final int SHIMMER_LSM303DLHC_MAG = 2;//XXX-RS-LSM-SensorClass?
 //			public static final int SHIMMER_EXG1_24BIT = 3;
@@ -614,29 +614,29 @@ public class Configuration {
 			public static final int SHIMMER_INT_EXP_ADC_A13 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A13; //15;
 			public static final int SHIMMER_INT_EXP_ADC_A14 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A14; //16;
 			/** Shimmer3 Alternative accelerometer */
-			public static final int SHIMMER_MPU9150_ACCEL = 17;
+			public static final int SHIMMER_MPU9150_ACCEL = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_ACCEL; //17;
 			/** Shimmer3 Alternative magnetometer */
-			public static final int SHIMMER_MPU9150_MAG = 18;
+			public static final int SHIMMER_MPU9150_MAG = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MAG; //18;
 //			public static final int SHIMMER_EXG1_16BIT = 19;
 //			public static final int SHIMMER_EXG2_16BIT = 21;
 			public static final int SHIMMER_BMP180_PRESSURE = 22;
 			//public static final int SHIMMER_BMP180_TEMPERATURE = 23; // not yet implemented
 			//public static final int SHIMMER_MSP430_TEMPERATURE = 24; // not yet implemented
-			public static final int SHIMMER_MPU9150_TEMP = 25;
+			public static final int SHIMMER_MPU9150_TEMP = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_TEMP; //25;
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = 27;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_9DOF = 28;
-			public static final int SHIMMER_MPU9150_MPL_EULER_6DOF = 29;
-			public static final int SHIMMER_MPU9150_MPL_EULER_9DOF = 30;
-			public static final int SHIMMER_MPU9150_MPL_HEADING = 31;
-			public static final int SHIMMER_MPU9150_MPL_PEDOMETER = 32;
-			public static final int SHIMMER_MPU9150_MPL_TAP = 33;
-			public static final int SHIMMER_MPU9150_MPL_MOTION_ORIENT = 34;
-			public static final int SHIMMER_MPU9150_MPL_GYRO = 35;
-			public static final int SHIMMER_MPU9150_MPL_ACCEL = 36;
-			public static final int SHIMMER_MPU9150_MPL_MAG = 37;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = 38;
+			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF; //27;
+			public static final int SHIMMER_MPU9150_MPL_QUAT_9DOF = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_9DOF; //28;
+			public static final int SHIMMER_MPU9150_MPL_EULER_6DOF = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_6DOF; //29;
+			public static final int SHIMMER_MPU9150_MPL_EULER_9DOF = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_9DOF; //30;
+			public static final int SHIMMER_MPU9150_MPL_HEADING = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_HEADING; //31;
+			public static final int SHIMMER_MPU9150_MPL_PEDOMETER = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_PEDOMETER; //32;
+			public static final int SHIMMER_MPU9150_MPL_TAP = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_TAP; //33;
+			public static final int SHIMMER_MPU9150_MPL_MOTION_ORIENT = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_MOTION_ORIENT; //34;
+			public static final int SHIMMER_MPU9150_MPL_GYRO = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO; //35;
+			public static final int SHIMMER_MPU9150_MPL_ACCEL = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL; //36;
+			public static final int SHIMMER_MPU9150_MPL_MAG = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_MAG; //37;
+			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW; //38;
 	
 			//Sensors channels modified or created on the host side
 			// Combination Channels
@@ -699,8 +699,8 @@ public class Configuration {
 			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE;
 			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE;
 			
-			public static final String MPU9150_GYRO_RANGE = "Gyro Range";
-			public static final String MPU9150_GYRO_RATE = "Gyro Sampling Rate";
+			public static final String MPU9150_GYRO_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE; //"Gyro Range";
+			public static final String MPU9150_GYRO_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE; //"Gyro Sampling Rate";
 			
 			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_MAG_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE;
@@ -721,25 +721,25 @@ public class Configuration {
 			public static final String EXG_RESPIRATION_DETECT_FREQ = "Respiration Detection Freq.";
 			public static final String EXG_RESPIRATION_DETECT_PHASE = "Respiration Detection Phase";
 
-			public static final String MPU9150_ACCEL_RANGE = "MPU Accel Range";
-			public static final String MPU9150_DMP_GYRO_CAL = "MPU Gyro Cal";
-			public static final String MPU9150_MPL_LPF = "MPU LPF";
-			public static final String MPU9150_MPL_RATE = "MPL Rate";
-			public static final String MPU9150_MAG_RATE = "MPU Mag Rate";
+			public static final String MPU9150_ACCEL_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE; //"MPU Accel Range";
+			public static final String MPU9150_DMP_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL; //"MPU Gyro Cal";
+			public static final String MPU9150_MPL_LPF = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF; //"MPU LPF";
+			public static final String MPU9150_MPL_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE; //"MPL Rate";
+			public static final String MPU9150_MAG_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE; //"MPU Mag Rate";
 
-			public static final String MPU9150_DMP = "DMP";
-			public static final String MPU9150_MPL = "MPL";
-			public static final String MPU9150_MPL_9DOF_SENSOR_FUSION = "9DOF Sensor Fusion";
-			public static final String MPU9150_MPL_GYRO_CAL = "Gyro Calibration";
-			public static final String MPU9150_MPL_VECTOR_CAL = "Vector Compensation Calibration";
-			public static final String MPU9150_MPL_MAG_CAL = "Magnetic Disturbance Calibration";
+			public static final String MPU9150_DMP = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP; //"DMP";
+			public static final String MPU9150_MPL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL; //"MPL";
+			public static final String MPU9150_MPL_9DOF_SENSOR_FUSION = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION; //"9DOF Sensor Fusion";
+			public static final String MPU9150_MPL_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL; //"Gyro Calibration";
+			public static final String MPU9150_MPL_VECTOR_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL; //"Vector Compensation Calibration";
+			public static final String MPU9150_MPL_MAG_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL; //"Magnetic Disturbance Calibration";
 
 			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
 			
 			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM;
 			
-			public static final String MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
+			public static final String MPU9150_GYRO_LPM = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM; //"Gyro Low-Power Mode";
 			
 			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_MAG_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM;
@@ -755,7 +755,7 @@ public class Configuration {
 			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB;
 			
-			public static final String MPU9150_GYRO_DEFAULT_CALIB = "Gyro Default Calibration";
+			public static final String MPU9150_GYRO_DEFAULT_CALIB = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_DEFAULT_CALIB; //"Gyro Default Calibration";
 			
 			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB;
@@ -791,8 +791,8 @@ public class Configuration {
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 			public static final String BRIDGE_AMPLIFIER_SUPP = Configuration.Shimmer3.GuiLabelSensors.SKIN_TEMP_PROBE;
 			public static final String HIGH_G_ACCEL = Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL;
-			public static final String MPU_ACCEL_GYRO_MAG = "MPU 9DoF";
-			public static final String MPU_OTHER = "MPU Other";
+			public static final String MPU_ACCEL_GYRO_MAG = SensorMPU9X50.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG; // "MPU 9DoF";
+			public static final String MPU_OTHER = SensorMPU9X50.GuiLabelSensorTiles.MPU_OTHER; //"MPU Other";
 			//public static final String GPS = "GPS";
 		}
 		
@@ -812,7 +812,7 @@ public class Configuration {
 			public static final String GSR = "GSR";
 			public static final String INT_EXP_A1 = "Int A1";
 			public static final String RESISTANCE_AMP = "Resistance Amp";
-			public static final String GYRO = "Gyroscope";
+			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO; //"Gyroscope";
 			
 			//XXX-RS-LSM-SensorClass?
 			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
@@ -826,20 +826,20 @@ public class Configuration {
 			public static final String ECG = "ECG";
 			public static final String EXG_TEST = "Test";
 			public static final String EXT_EXP_ADC = "External Expansion";
-			public static final String QUAT_MPL_6DOF = "MPU Quat 6DOF";
-			public static final String QUAT_MPL_9DOF = "MPU Quat 9DOF";
+			public static final String QUAT_MPL_6DOF = SensorMPU9X50.GuiLabelSensors.QUAT_MPL_6DOF; //"MPU Quat 6DOF";
+			public static final String QUAT_MPL_9DOF = SensorMPU9X50.GuiLabelSensors.QUAT_MPL_9DOF; //"MPU Quat 9DOF";
 			public static final String EULER_MPL_6DOF = "MPU Euler 6DOF";
 			public static final String EULER_MPL_9DOF = "MPU Euler 9DOF";
 			public static final String MPL_HEADING = "MPU Heading";
-			public static final String MPL_TEMPERATURE = "MPU Temp";
-			public static final String MPL_PEDOM_CNT = "MPL_Pedom_cnt"; // not currently supported
-			public static final String MPL_PEDOM_TIME = "MPL_Pedom_Time"; // not currently supported
-			public static final String MPL_TAPDIRANDTAPCNT = "TapDirAndTapCnt"; // not currently supported
-			public static final String MPL_MOTIONANDORIENT = "MotionAndOrient"; // not currently supported
-			public static final String GYRO_MPU_MPL = "MPU Gyro";
-			public static final String ACCEL_MPU_MPL = "MPU Accel";
-			public static final String MAG_MPU_MPL = "MPU Mag";
-			public static final String QUAT_DMP_6DOF = "MPU Quat 6DOF (from DMP)";
+			public static final String MPL_TEMPERATURE = SensorMPU9X50.GuiLabelSensors.MPL_TEMPERATURE; //"MPU Temp";
+			public static final String MPL_PEDOM_CNT = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_CNT; //"MPL_Pedom_cnt"; // not currently supported
+			public static final String MPL_PEDOM_TIME = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_TIME; //"MPL_Pedom_Time"; // not currently supported
+			public static final String MPL_TAPDIRANDTAPCNT = SensorMPU9X50.GuiLabelSensors.MPL_TAPDIRANDTAPCNT; //"TapDirAndTapCnt"; // not currently supported
+			public static final String MPL_MOTIONANDORIENT = SensorMPU9X50.GuiLabelSensors.MPL_MOTIONANDORIENT; //"MotionAndOrient"; // not currently supported
+			public static final String GYRO_MPU_MPL = SensorMPU9X50.GuiLabelSensors.GYRO_MPU_MPL; //"MPU Gyro";
+			public static final String ACCEL_MPU_MPL = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU_MPL; //"MPU Accel";
+			public static final String MAG_MPU_MPL = SensorMPU9X50.GuiLabelSensors.MAG_MPU_MPL; //"MPU Mag";
+			public static final String QUAT_DMP_6DOF = SensorMPU9X50.GuiLabelSensors.QUAT_DMP_6DOF; //"MPU Quat 6DOF (from DMP)";
 			public static final String ECG_TO_HR = "ECG To HR";
 			public static final String PPG_TO_HR = "PPG To HR";
 			
@@ -847,7 +847,7 @@ public class Configuration {
 			public static final String ORIENTATION_3D_6DOF = "3D Orientation (6DOF)"; 
 			public static final String ORIENTATION_3D_9DOF = "3D Orientation (9DOF)"; 
 			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)"; 
-			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)"; 
+			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";   // needed in both MPU and Algorithm???
 
 			public static final String HIGH_G_ACCEL = "200g Accel";
 
@@ -894,8 +894,8 @@ public class Configuration {
 			public static final String BATTERY = "F5437a_Int_A2_Battery";
 			public static final String GSR = "F5437a_Int_A1_GSR";
 			public static final String PRESSURE = SensorBMP180.DatabaseChannelHandles.PRESSURE; //"BMP180_Pressure";
-			public static final String MPU_HEADING = "MPU9150_MPL_Heading"; // not available but supported in FW
-			public static final String MPU_TEMP = "MPU9150_Temperature";
+			public static final String MPU_HEADING = SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING; //"MPU9150_MPL_Heading"; // not available but supported in FW
+			public static final String MPU_TEMP = SensorMPU9X50.DatabaseChannelHandles.MPU_TEMP; //"MPU9150_Temperature";
 
 			//XXX-RS-AA-SensorClass?
 			public static final String LN_ACC_X = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_X;
@@ -910,9 +910,9 @@ public class Configuration {
 			public static final String MAG_Y = SensorLSM303.DatabaseChannelHandles.MAG_Y;
 			public static final String MAG_Z = SensorLSM303.DatabaseChannelHandles.MAG_Z;
 			
-			public static final String GYRO_X = "MPU9150_GYRO_X";
-			public static final String GYRO_Y = "MPU9150_GYRO_Y";
-			public static final String GYRO_Z = "MPU9150_GYRO_Z";
+			public static final String GYRO_X = SensorMPU9X50.DatabaseChannelHandles.GYRO_X; //"MPU9150_GYRO_X";
+			public static final String GYRO_Y = SensorMPU9X50.DatabaseChannelHandles.GYRO_Y; //"MPU9150_GYRO_Y";
+			public static final String GYRO_Z = SensorMPU9X50.DatabaseChannelHandles.GYRO_Z; //"MPU9150_GYRO_Z";
 	//		public static final String BATTERY = "F5437a_INT_A2_BATTERY"; --> already define for the shimmerCongig Table
 	//		public static final String EXT_ADC_A7 = "F5437a_Ext_A7"; --> already define for the shimmerCongig Table
 	//		public static final String EXT_ADC_A6 = "F5437a_Ext_A6"; --> already define for the shimmerCongig Table
@@ -945,39 +945,39 @@ public class Configuration {
 			public static final String EXG2_CH2_16BITS = "ADS1292R_2_CH2_16BIT";
 			public static final String EXG1_STATUS = "ADS1292R_1_STATUS";
 			public static final String EXG2_STATUS = "ADS1292R_2_STATUS";
-			public static final String MPU_QUAT_6DOF_W = "MPU9150_MPL_QUAT_6DOF_W";
-			public static final String MPU_QUAT_6DOF_X = "MPU9150_MPL_QUAT_6DOF_X";
-			public static final String MPU_QUAT_6DOF_Y = "MPU9150_MPL_QUAT_6DOF_Y";
-			public static final String MPU_QUAT_6DOF_Z = "MPU9150_MPL_QUAT_6DOF_Z";
-			public static final String MPU_QUAT_9DOF_W = "MPU9150_MPL_QUAT_9DOF_W";
-			public static final String MPU_QUAT_9DOF_X = "MPU9150_MPL_QUAT_9DOF_X";
-			public static final String MPU_QUAT_9DOF_Y = "MPU9150_MPL_QUAT_9DOF_Y";
-			public static final String MPU_QUAT_9DOF_Z = "MPU9150_MPL_QUAT_9DOF_Z";
-			public static final String MPU_EULER_6DOF_X = "MPU9150_MPL_EULER_6DOF_X"; // not available but supported in FW
-			public static final String MPU_EULER_6DOF_Y = "MPU9150_MPL_EULER_6DOF_Y"; // not available but supported in FW
-			public static final String MPU_EULER_6DOF_Z = "MPU9150_MPL_EULER_6DOF_Z"; // not available but supported in FW
-			public static final String MPU_EULER_9DOF_X = "MPU9150_MPL_EULER_9DOF_X"; // not available but supported in FW
-			public static final String MPU_EULER_9DOF_Y = "MPU9150_MPL_EULER_9DOF_Y"; // not available but supported in FW
-			public static final String MPU_EULER_9DOF_Z = "MPU9150_MPL_EULER_9DOF_Z"; // not available but supported in FW
+			public static final String MPU_QUAT_6DOF_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_W; //"MPU9150_MPL_QUAT_6DOF_W";
+			public static final String MPU_QUAT_6DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_X; //"MPU9150_MPL_QUAT_6DOF_X";
+			public static final String MPU_QUAT_6DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Y; //"MPU9150_MPL_QUAT_6DOF_Y";
+			public static final String MPU_QUAT_6DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Z; //"MPU9150_MPL_QUAT_6DOF_Z";
+			public static final String MPU_QUAT_9DOF_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_W; //"MPU9150_MPL_QUAT_9DOF_W";
+			public static final String MPU_QUAT_9DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_X; //"MPU9150_MPL_QUAT_9DOF_X";
+			public static final String MPU_QUAT_9DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_Y; //"MPU9150_MPL_QUAT_9DOF_Y";
+			public static final String MPU_QUAT_9DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_Z; //"MPU9150_MPL_QUAT_9DOF_Z";
+			public static final String MPU_EULER_6DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_X; //"MPU9150_MPL_EULER_6DOF_X"; // not available but supported in FW
+			public static final String MPU_EULER_6DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Y; //"MPU9150_MPL_EULER_6DOF_Y"; // not available but supported in FW
+			public static final String MPU_EULER_6DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Z; //"MPU9150_MPL_EULER_6DOF_Z"; // not available but supported in FW
+			public static final String MPU_EULER_9DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_X; //"MPU9150_MPL_EULER_9DOF_X"; // not available but supported in FW
+			public static final String MPU_EULER_9DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_Y; //"MPU9150_MPL_EULER_9DOF_Y"; // not available but supported in FW
+			public static final String MPU_EULER_9DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_Z; //"MPU9150_MPL_EULER_9DOF_Z"; // not available but supported in FW
 	//		public static final String MPU_HEADING = "MPU9150_MPL_HEADING"; -> already define for the shimmerCongig Table
 	//		public static final String MPU_TEMP = "MPU9150_Temperature"; -> already define for the shimmerCongig Table
-			public static final String PEDOMETER_CNT = "MPU9150_MPL_PEDOM_CNT"; // not available but supported in FW
-			public static final String PEDOMETER_TIME = "MPU9150_MPL_PEDOM_TIME"; // not available but supported in FW
-			public static final String TAP_DIR_AND_CNT = "MPU9150_MPL_TAP"; // not available but supported in FW
-			public static final String MOTION_AND_ORIENT = "MPU9150_MPL_MOTION"; // not available but supported in FW
-			public static final String MPU_MPL_GYRO_X = "MPU9150_MPL_GYRO_X_CAL";
-			public static final String MPU_MPL_GYRO_Y = "MPU9150_MPL_GYRO_Y_CAL";
-			public static final String MPU_MPL_GYRO_Z = "MPU9150_MPL_GYRO_Z_CAL";
-			public static final String MPU_MPL_ACC_X = "MPU9150_MPL_ACC_X_CAL";
-			public static final String MPU_MPL_ACC_Y = "MPU9150_MPL_ACC_Y_CAL";
-			public static final String MPU_MPL_ACC_Z = "MPU9150_MPL_ACC_Z_CAL";
-			public static final String MPU_MPL_MAG_X = "MPU9150_MPL_MAG_X_CAL";
-			public static final String MPU_MPL_MAG_Y = "MPU9150_MPL_MAG_Y_CAL";
-			public static final String MPU_MPL_MAG_Z = "MPU9150_MPL_MAG_Z_CAL";
-			public static final String MPU_QUAT_6DOF_DMP_W = "MPU9150_QUAT_6DOF_W";
-			public static final String MPU_QUAT_6DOF_DMP_X = "MPU9150_QUAT_6DOF_X";
-			public static final String MPU_QUAT_6DOF_DMP_Y = "MPU9150_QUAT_6DOF_Y";
-			public static final String MPU_QUAT_6DOF_DMP_Z = "MPU9150_QUAT_6DOF_Z";
+			public static final String PEDOMETER_CNT = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_CNT; //"MPU9150_MPL_PEDOM_CNT"; // not available but supported in FW
+			public static final String PEDOMETER_TIME = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_TIME; //"MPU9150_MPL_PEDOM_TIME"; // not available but supported in FW
+			public static final String TAP_DIR_AND_CNT = SensorMPU9X50.DatabaseChannelHandles.TAP_DIR_AND_CNT; //"MPU9150_MPL_TAP"; // not available but supported in FW
+			public static final String MOTION_AND_ORIENT = SensorMPU9X50.DatabaseChannelHandles.MOTION_AND_ORIENT; //"MPU9150_MPL_MOTION"; // not available but supported in FW
+			public static final String MPU_MPL_GYRO_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_X; //"MPU9150_MPL_GYRO_X_CAL";
+			public static final String MPU_MPL_GYRO_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Y; //"MPU9150_MPL_GYRO_Y_CAL";
+			public static final String MPU_MPL_GYRO_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Z; //"MPU9150_MPL_GYRO_Z_CAL";
+			public static final String MPU_MPL_ACC_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_X; //"MPU9150_MPL_ACC_X_CAL";
+			public static final String MPU_MPL_ACC_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Y; //"MPU9150_MPL_ACC_Y_CAL";
+			public static final String MPU_MPL_ACC_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Z; //"MPU9150_MPL_ACC_Z_CAL";
+			public static final String MPU_MPL_MAG_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_X; //"MPU9150_MPL_MAG_X_CAL";
+			public static final String MPU_MPL_MAG_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Y; //"MPU9150_MPL_MAG_Y_CAL";
+			public static final String MPU_MPL_MAG_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Z; //"MPU9150_MPL_MAG_Z_CAL";
+			public static final String MPU_QUAT_6DOF_DMP_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W; //"MPU9150_QUAT_6DOF_W";
+			public static final String MPU_QUAT_6DOF_DMP_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X; //"MPU9150_QUAT_6DOF_X";
+			public static final String MPU_QUAT_6DOF_DMP_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y; //"MPU9150_QUAT_6DOF_Y";
+			public static final String MPU_QUAT_6DOF_DMP_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z; //"MPU9150_QUAT_6DOF_Z";
 			public static final String TIMESTAMP = "TimeStamp";
 			public static final String TIMESTAMP_EXPORT = "Timestamp";
 			public static final String OFFSET_TIMESTAMP = "Offset";
@@ -1051,9 +1051,9 @@ public class Configuration {
 			public static String GSR_CONDUCTANCE = "GSR_Conductance";
 			public static String INT_EXP_ADC_A1 = "Int_Exp_A1";
 			public static String RESISTANCE_AMP = "Resistance_Amp";
-			public static String GYRO_X = "Gyro_X";
-			public static String GYRO_Y = "Gyro_Y";
-			public static String GYRO_Z = "Gyro_Z";
+			public static String GYRO_X = SensorMPU9X50.ObjectClusterSensorName.GYRO_X; //"Gyro_X";
+			public static String GYRO_Y = SensorMPU9X50.ObjectClusterSensorName.GYRO_Y; //"Gyro_Y";
+			public static String GYRO_Z = SensorMPU9X50.ObjectClusterSensorName.GYRO_Z; //"Gyro_Z";
 			
 			//XXX-RS-LSM-SensorClass? 
 			public static String ACCEL_WR_X = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
@@ -1063,12 +1063,12 @@ public class Configuration {
 			public static String MAG_Y = SensorLSM303.ObjectClusterSensorName.MAG_Y;
 			public static String MAG_Z = SensorLSM303.ObjectClusterSensorName.MAG_Z;
 			
-			public static String ACCEL_MPU_X = "Accel_MPU_X";
-			public static String ACCEL_MPU_Y = "Accel_MPU_Y";
-			public static String ACCEL_MPU_Z = "Accel_MPU_Z";
-			public static String MAG_MPU_X = "Mag_MPU_X";
-			public static String MAG_MPU_Y = "Mag_MPU_Y";
-			public static String MAG_MPU_Z = "Mag_MPU_Z";
+			public static String ACCEL_MPU_X = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_X; //"Accel_MPU_X";
+			public static String ACCEL_MPU_Y = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Y; //"Accel_MPU_Y";
+			public static String ACCEL_MPU_Z = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Z; //"Accel_MPU_Z";
+			public static String MAG_MPU_X = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_X; //"Mag_MPU_X";
+			public static String MAG_MPU_Y = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_Y; //"Mag_MPU_Y";
+			public static String MAG_MPU_Z = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_Z; //"Mag_MPU_Z";
 			public static String TEMPERATURE_BMP180 = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180; //"Temperature_BMP180";
 			public static String PRESSURE_BMP180 =    SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;//"Pressure_BMP180";
 			public static String ECG_GQ = "ECG";
@@ -1108,39 +1108,39 @@ public class Configuration {
 			public static String EXG_TEST_CHIP1_CH2_16BIT = "Test_CHIP1_CH2_16BIT";
 			public static String EXG_TEST_CHIP2_CH1_16BIT = "Test_CHIP2_CH1_16BIT";
 			public static String EXG_TEST_CHIP2_CH2_16BIT = "Test_CHIP2_CH2_16BIT";
-			public static String QUAT_MPL_6DOF_W = "Quat_MPL_6DOF_W";
-			public static String QUAT_MPL_6DOF_X = "Quat_MPL_6DOF_X";
-			public static String QUAT_MPL_6DOF_Y = "Quat_MPL_6DOF_Y";
-			public static String QUAT_MPL_6DOF_Z = "Quat_MPL_6DOF_Z";
-			public static String QUAT_MPL_9DOF_W = "Quat_MPL_9DOF_W";
-			public static String QUAT_MPL_9DOF_X = "Quat_MPL_9DOF_X";
-			public static String QUAT_MPL_9DOF_Y = "Quat_MPL_9DOF_Y";
-			public static String QUAT_MPL_9DOF_Z = "Quat_MPL_9DOF_Z";
-			public static String EULER_MPL_6DOF_X = "Euler_MPL_6DOF_X";
-			public static String EULER_MPL_6DOF_Y = "Euler_MPL_6DOF_Y";
-			public static String EULER_MPL_6DOF_Z = "Euler_MPL_6DOF_Z";
-			public static String EULER_MPL_9DOF_X = "Euler_MPL_9DOF_X";
-			public static String EULER_MPL_9DOF_Y = "Euler_MPL_9DOF_Y";
-			public static String EULER_MPL_9DOF_Z = "Euler_MPL_9DOF_Z";
-			public static String MPL_HEADING = "MPL_heading";
-			public static String MPL_TEMPERATURE = "MPL_Temperature";
-			public static String MPL_PEDOM_CNT = "MPL_Pedom_cnt";
-			public static String MPL_PEDOM_TIME = "MPL_Pedom_Time";
-			public static String TAPDIRANDTAPCNT = "TapDirAndTapCnt";
-			public static String MOTIONANDORIENT = "MotionAndOrient";
-			public static String GYRO_MPU_MPL_X = "Gyro_MPU_MPL_X";
-			public static String GYRO_MPU_MPL_Y = "Gyro_MPU_MPL_Y";
-			public static String GYRO_MPU_MPL_Z = "Gyro_MPU_MPL_Z";
-			public static String ACCEL_MPU_MPL_X = "Accel_MPU_MPL_X";
-			public static String ACCEL_MPU_MPL_Y = "Accel_MPU_MPL_Y";
-			public static String ACCEL_MPU_MPL_Z = "Accel_MPU_MPL_Z";
-			public static String MAG_MPU_MPL_X = "Mag_MPU_MPL_X";
-			public static String MAG_MPU_MPL_Y = "Mag_MPU_MPL_Y";
-			public static String MAG_MPU_MPL_Z = "Mag_MPU_MPL_Z";
-			public static String QUAT_DMP_6DOF_W = "Quat_DMP_6DOF_W";
-			public static String QUAT_DMP_6DOF_X = "Quat_DMP_6DOF_X";
-			public static String QUAT_DMP_6DOF_Y = "Quat_DMP_6DOF_Y";
-			public static String QUAT_DMP_6DOF_Z = "Quat_DMP_6DOF_Z";
+			public static String QUAT_MPL_6DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_W; //"Quat_MPL_6DOF_W";
+			public static String QUAT_MPL_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_X; //"Quat_MPL_6DOF_X";
+			public static String QUAT_MPL_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Y; //"Quat_MPL_6DOF_Y";
+			public static String QUAT_MPL_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Z; //"Quat_MPL_6DOF_Z";
+			public static String QUAT_MPL_9DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_W; //"Quat_MPL_9DOF_W";
+			public static String QUAT_MPL_9DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_X; //"Quat_MPL_9DOF_X";
+			public static String QUAT_MPL_9DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_Y; //"Quat_MPL_9DOF_Y";
+			public static String QUAT_MPL_9DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_Z; //"Quat_MPL_9DOF_Z";
+			public static String EULER_MPL_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_X; // "Euler_MPL_6DOF_X";
+			public static String EULER_MPL_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Y; //"Euler_MPL_6DOF_Y";
+			public static String EULER_MPL_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Z; //"Euler_MPL_6DOF_Z";
+			public static String EULER_MPL_9DOF_X = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_X; //"Euler_MPL_9DOF_X";
+			public static String EULER_MPL_9DOF_Y = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_Y; //"Euler_MPL_9DOF_Y";
+			public static String EULER_MPL_9DOF_Z = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_Z; //"Euler_MPL_9DOF_Z";
+			public static String MPL_HEADING = SensorMPU9X50.ObjectClusterSensorName.MPL_HEADING; //"MPL_heading";
+			public static String MPL_TEMPERATURE = SensorMPU9X50.ObjectClusterSensorName.MPL_TEMPERATURE; //"MPL_Temperature";
+			public static String MPL_PEDOM_CNT = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_CNT; //"MPL_Pedom_cnt";
+			public static String MPL_PEDOM_TIME = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_TIME; //"MPL_Pedom_Time";
+			public static String TAPDIRANDTAPCNT = SensorMPU9X50.ObjectClusterSensorName.TAPDIRANDTAPCNT; //"TapDirAndTapCnt";
+			public static String MOTIONANDORIENT = SensorMPU9X50.ObjectClusterSensorName.MOTIONANDORIENT; //"MotionAndOrient";
+			public static String GYRO_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_X; //"Gyro_MPU_MPL_X";
+			public static String GYRO_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Y; //"Gyro_MPU_MPL_Y";
+			public static String GYRO_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Z; //"Gyro_MPU_MPL_Z";
+			public static String ACCEL_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_X; //"Accel_MPU_MPL_X";
+			public static String ACCEL_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Y; //"Accel_MPU_MPL_Y";
+			public static String ACCEL_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Z; //"Accel_MPU_MPL_Z";
+			public static String MAG_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_X; //"Mag_MPU_MPL_X";
+			public static String MAG_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Y; //"Mag_MPU_MPL_Y";
+			public static String MAG_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Z; //"Mag_MPU_MPL_Z";
+			public static String QUAT_DMP_6DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_W; //"Quat_DMP_6DOF_W";
+			public static String QUAT_DMP_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_X; //"Quat_DMP_6DOF_X";
+			public static String QUAT_DMP_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Y; //"Quat_DMP_6DOF_Y";
+			public static String QUAT_DMP_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z; //"Quat_DMP_6DOF_Z";
 
 			public static String SKIN_TEMPERATURE_PROBE = "Skin_Temperature";
 			public static String EVENT_MARKER = "Event_Marker";
