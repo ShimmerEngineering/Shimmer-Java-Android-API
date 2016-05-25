@@ -180,7 +180,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			//next process other data
 			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
 //				ObjectCluster objectCluster = (ObjectCluster) object;
-				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 				double p1=0,p2=0;
 				if (mGSRRange==4){

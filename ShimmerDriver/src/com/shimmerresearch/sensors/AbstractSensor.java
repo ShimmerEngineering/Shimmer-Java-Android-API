@@ -378,7 +378,7 @@ public abstract class AbstractSensor implements Serializable{
 		String textToPrint = "";
 		for(String[] channelOCN:listOfChannelOCNAndType){
 			textToPrint += channelOCN[0] + "_" + channelOCN[1] + ":";
-			FormatCluster formatCluster = (FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelOCN[0]), channelOCN[1]);
+			FormatCluster formatCluster = (FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelOCN[0]), channelOCN[1]);
 			if(formatCluster==null){
 				textToPrint += "null";
 			}

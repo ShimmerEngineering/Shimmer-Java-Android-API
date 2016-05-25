@@ -2226,7 +2226,7 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 			//Filter signals
 			if (highPassFilterEnabled || bandStopFilterEnabled){
 				for (int indexgnames=0;indexgnames<exgnames.length;indexgnames++){
-					Collection<FormatCluster> cf = objc.mPropertyCluster.get(exgnames[indexgnames]);
+					Collection<FormatCluster> cf = objc.getCollectionOfFormatClusters(exgnames[indexgnames]);
 					try {
 						if (cf.size()!=0){
 							double data =((FormatCluster)ObjectCluster.returnFormatCluster(cf,"CAL")).mData;
@@ -2413,7 +2413,7 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 			double heartRate = Double.NaN;
 
 			if (calculateHeartRate && chckbxEnablePPGtoHR.isSelected()) {
-				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
+				Collection<FormatCluster> adcFormats = objc.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
 				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
 				dataArrayPPG = format.mData;
 				try {
@@ -2424,21 +2424,21 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 					e.printStackTrace();
 				}
 				
-				Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				Collection<FormatCluster> formatTS = objc.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
 				double ppgTimeStamp = ts.mData;
 				heartRate = heartRateCalculation.ppgToHrConversion(dataArrayPPG, ppgTimeStamp);
 				if (heartRate == INVALID_RESULT){
 					heartRate = Double.NaN;
 				}
-				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
+				objc.addData("Heart Rate","CAL","beats per minute",heartRate);
 				if (chckbxHeartRate.isSelected()) {
 					chart.addTrace(traceHR);
 				}
 			}
 			
 			if (calculateHeartRate && chckbxEnableECGtoHR.isSelected()) {
-				Collection<FormatCluster> adcFormats = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+				Collection<FormatCluster> adcFormats = objc.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT);
 				FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats,"CAL")); // retrieve the calibrated data
 				dataArrayECG = format.mData;
 				try {
@@ -2450,7 +2450,7 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 					e.printStackTrace();
 				}
 				
-				Collection<FormatCluster> formatTS = objc.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
+				Collection<FormatCluster> formatTS = objc.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.TIMESTAMP);
 				FormatCluster ts = ObjectCluster.returnFormatCluster(formatTS,"CAL");
 				double ecgTimeStamp = ts.mData;
 				heartRate = heartRateCalculationECG.ecgToHrConversion(dataArrayECG, ecgTimeStamp);
@@ -2459,7 +2459,7 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 				} else {
 					//System.out.println("Heart Rate: " + heartRate);
 				}
-				objc.mPropertyCluster.put("Heart Rate",new FormatCluster("CAL","beats per minute",heartRate));
+				objc.addData("Heart Rate","CAL","beats per minute",heartRate);
 				if (chckbxHeartRate.isSelected()) {
 					chart.addTrace(traceHR);
 				}
@@ -2477,7 +2477,7 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 					chart.addTrace(traces[count]);
 					traces[count].setVisible(true);
 					traces[count].setName(selectedSensorSignals[count]);
-					formats[count] = objc.mPropertyCluster.get(selectedSensorSignals[count]);
+					formats[count] = objc.getCollectionOfFormatClusters(selectedSensorSignals[count]);
 					cal[count] = ((FormatCluster)ObjectCluster.returnFormatCluster(formats[count],"CAL"));
 					if (cal[count]!=null) {
 						if (calibrated[count]) {

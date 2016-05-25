@@ -348,26 +348,26 @@ public class SimpleExample9DoF extends BasicProcessWithCallBack {
 
 			if (objectCluster!=null){
 				if (objectCluster.mMyName.equals("ShimmerDevice")){
-					Collection<FormatCluster> accelXFormats = objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);  // first retrieve all the possible formats for the current sensor device
+					Collection<FormatCluster> accelXFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);  // first retrieve all the possible formats for the current sensor device
 					float q0 = 0,x = 0,y=0,z=0;
 					if (accelXFormats != null){
 						FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
 						q0 = (float) formatCluster.mData;
 						textFieldQW.setText(Double.toString(q0));
 					}
-					Collection<FormatCluster> accelYFormats = objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X);  // first retrieve all the possible formats for the current sensor device
+					Collection<FormatCluster> accelYFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X);  // first retrieve all the possible formats for the current sensor device
 					if (accelYFormats != null){
 						FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
 						x=(float) formatCluster.mData;
 						textFieldQX.setText(Double.toString(x));
 					}
-					Collection<FormatCluster> accelZFormats = objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y);  // first retrieve all the possible formats for the current sensor device
+					Collection<FormatCluster> accelZFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y);  // first retrieve all the possible formats for the current sensor device
 					if (accelZFormats != null){
 						FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
 						y=(float) formatCluster.mData;
 						textFieldQY.setText(Double.toString(y));
 					}
-					Collection<FormatCluster> aaFormats = objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z);  // first retrieve all the possible formats for the current sensor device
+					Collection<FormatCluster> aaFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z);  // first retrieve all the possible formats for the current sensor device
 					if (aaFormats != null){
 						FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(aaFormats,"CAL")); // retrieve the calibrated data
 						z=(float) formatCluster.mData;
@@ -389,26 +389,26 @@ public class SimpleExample9DoF extends BasicProcessWithCallBack {
 				
 
 				if (objectCluster.mMyName.equals("ShimmerDevice2")){
-					Collection<FormatCluster> accelXFormats = objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);  // first retrieve all the possible formats for the current sensor device
+					Collection<FormatCluster> accelXFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);  // first retrieve all the possible formats for the current sensor device
 					float q0 = 0,x = 0,y=0,z=0;
 					if (accelXFormats != null){
 						FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
 						q0 = (float) formatCluster.mData;
 						textField2QW.setText(Double.toString(q0));
 					}
-					Collection<FormatCluster> accelYFormats = objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X);  // first retrieve all the possible formats for the current sensor device
+					Collection<FormatCluster> accelYFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X);  // first retrieve all the possible formats for the current sensor device
 					if (accelYFormats != null){
 						FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
 						x=(float) formatCluster.mData;
 						textField2QX.setText(Double.toString(x));
 					}
-					Collection<FormatCluster> accelZFormats = objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y);  // first retrieve all the possible formats for the current sensor device
+					Collection<FormatCluster> accelZFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y);  // first retrieve all the possible formats for the current sensor device
 					if (accelZFormats != null){
 						FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
 						y=(float) formatCluster.mData;
 						textField2QY.setText(Double.toString(y));
 					}
-					Collection<FormatCluster> aaFormats = objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z);  // first retrieve all the possible formats for the current sensor device
+					Collection<FormatCluster> aaFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z);  // first retrieve all the possible formats for the current sensor device
 					if (aaFormats != null){
 						FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(aaFormats,"CAL")); // retrieve the calibrated data
 						z=(float) formatCluster.mData;

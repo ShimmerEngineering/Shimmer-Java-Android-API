@@ -2336,7 +2336,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public ObjectCluster processAlgorithmData(ObjectCluster ojc){
 		try {
 				//update to work with consensys 4.3 with time sync switched off
-				ojc.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN));
+				ojc.addData(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN);
 	    		String[] sensorNames = new String[ojc.mSensorNames.length+1];
 	    		String[] unitCal = new String[ojc.mUnitCal.length+1];
 	    		String[] unitUncal = new String[ojc.mUnitUncal.length+1];

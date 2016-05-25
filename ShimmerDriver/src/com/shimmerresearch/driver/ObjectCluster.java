@@ -50,10 +50,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
@@ -62,7 +65,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	/** * */
 	private static final long serialVersionUID = -7601464501144773539L;
 	
-	public Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
+	private Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
 	public String mMyName;
 	public String mBluetoothAddress;
 	public byte[] mRawData;
@@ -250,6 +253,29 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		addUncalData(channelDetails, uncalData, indexKeeper);
 	}
 
+	@Deprecated
+	public void addData(String channelName,String channelType, String units, double data){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data));
+		
+	}
+	
+	@Deprecated
+	public void addData(String channelName,String channelType, String units, List<Double> data){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data));
+		
+	}
+	
+	@Deprecated
+	public void addData(String channelName,String channelType, String units, double data,boolean defaultCal){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data,defaultCal));
+		
+	}
+	
+	@Deprecated
+	public void removeAll(String channelName){
+		mPropertyCluster.removeAll(channelName);
+	}
+	
 	public void addUncalData(ChannelDetails channelDetails, double uncalData, int index) {
 		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL, channelDetails.mDefaultUnit, uncalData, index);
 	}
@@ -294,5 +320,17 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public void setIndexKeeper(int indexKeeper) {
 		this.indexKeeper = indexKeeper;
 	}
+	
+	public Collection<FormatCluster> getCollectionOfFormatClusters(String channelName){
+		return mPropertyCluster.get(channelName);
+	}
 
+	public Set<String> getKeySet(){
+		return mPropertyCluster.keySet();
+	}
+	
+	public Multimap<String, FormatCluster> getPropertyCluster(){
+		return mPropertyCluster;
+	}
+	
 }

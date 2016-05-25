@@ -141,7 +141,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 				else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
 					//TODO: Hack -> just copying from elsewhere (forgotten where exactly)
 					double systemTime = 0;
-					FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
+					FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
 					if(f!=null){
 						systemTime = f.mData;
 					}

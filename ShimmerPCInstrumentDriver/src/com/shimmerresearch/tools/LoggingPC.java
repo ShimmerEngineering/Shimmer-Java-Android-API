@@ -121,7 +121,7 @@ public class LoggingPC {
 				writer = new BufferedWriter(new FileWriter(outputFile,true));
 				
 	    		//First retrieve all the unique keys from the objectClusterLog
-				Multimap<String, FormatCluster> m = objectClusterLog.mPropertyCluster;
+				Multimap<String, FormatCluster> m = objectClusterLog.getPropertyCluster();
 
 				int size = m.size();
 				System.out.print(size);
@@ -188,7 +188,7 @@ public class LoggingPC {
 			
 			//now print data
 			for (int r=0;r<mSensorNames.length;r++) {
-				Collection<FormatCluster> dataFormats = objectClusterLog.mPropertyCluster.get(mSensorNames[r]);  
+				Collection<FormatCluster> dataFormats = objectClusterLog.getCollectionOfFormatClusters(mSensorNames[r]);  
 				FormatCluster formatCluster = (FormatCluster) returnFormatCluster(dataFormats,mSensorFormats[r],mSensorUnits[r]);  // retrieve the calibrated data
 				writer.write(Double.toString(formatCluster.mData));
             	writer.write(mDelimiter);
@@ -216,7 +216,7 @@ public class LoggingPC {
 				writer = new BufferedWriter(new FileWriter(outputFile,true));
 				
 	    		//First retrieve all the unique keys from the objectClusterLog
-				Multimap<String, FormatCluster> m = objectClusterLog.mPropertyCluster;
+				Multimap<String, FormatCluster> m = objectClusterLog.getPropertyCluster();
 
 				int size = m.size();
 				System.out.print(size);
@@ -283,7 +283,7 @@ public class LoggingPC {
 			
 			//now print data
 			for (int r=0;r<mSensorNames.length;r++) {
-				Collection<FormatCluster> dataFormats = objectClusterLog.mPropertyCluster.get(mSensorNames[r]);  
+				Collection<FormatCluster> dataFormats = objectClusterLog.getCollectionOfFormatClusters(mSensorNames[r]);  
 				FormatCluster formatCluster = (FormatCluster) returnFormatCluster(dataFormats,mSensorFormats[r],mSensorUnits[r]);  // retrieve the calibrated data
 				
 				if (mSensorNames[r] == "EXG1 CH1" && mSensorFormats[r]=="CAL") {

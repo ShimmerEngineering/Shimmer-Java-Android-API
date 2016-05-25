@@ -217,7 +217,7 @@ public class ShimmerClock extends AbstractSensor {
 				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
 					//TODO: Hack -> just copying from elsewhere (forgotten where exactly)
 					double systemTime = 0;
-					FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
+					FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
 					if(f!=null){
 						systemTime = f.mData;
 					}
@@ -305,8 +305,8 @@ public class ShimmerClock extends AbstractSensor {
 				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK)){
 					
 					if(commType==COMMUNICATION_TYPE.SD){
-						FormatCluster fUncal = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.UNCAL.toString());
-						FormatCluster fCal = ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
+						FormatCluster fUncal = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.UNCAL.toString());
+						FormatCluster fCal = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
 						if(fUncal!=null && fCal!=null){
 							long timestampUncal = (long) fUncal.mData;
 							long timestampCal = (long) fUncal.mData;

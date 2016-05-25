@@ -116,7 +116,7 @@ public class Logging {
 				writer = new BufferedWriter(new FileWriter(outputFile,true));
 				
 	    		//First retrieve all the unique keys from the objectClusterLog
-				Multimap<String, FormatCluster> m = objectClusterLog.mPropertyCluster;
+				Multimap<String, FormatCluster> m = objectClusterLog.getPropertyCluster();
 
 				int size = m.size();
 				System.out.print(size);
@@ -184,7 +184,7 @@ public class Logging {
 			
 			//now write data
 			for (int r=0;r<mSensorNames.length;r++) {
-				Collection<FormatCluster> dataFormats = objectClusterLog.mPropertyCluster.get(mSensorNames[r]);  
+				Collection<FormatCluster> dataFormats = objectClusterLog.getCollectionOfFormatClusters(mSensorNames[r]);  
 				FormatCluster formatCluster = (FormatCluster) returnFormatCluster(dataFormats,mSensorFormats[r],mSensorUnits[r]);  // retrieve the calibrated data
 //				Log.d("Shimmer","Data : " +mSensorNames[r] + formatCluster.mData + " "+ formatCluster.mUnits);
 				writer.write(Double.toString(formatCluster.mData));
