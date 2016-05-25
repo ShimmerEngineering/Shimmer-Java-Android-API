@@ -66,8 +66,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	private static final long serialVersionUID = -7601464501144773539L;
 	
 	private Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
-	public String mMyName;
-	public String mBluetoothAddress;
+	private String mMyName;
+	private String mBluetoothAddress;
 	public byte[] mRawData;
 	public double[] mUncalData;
 	public double[] mCalData;
@@ -98,6 +98,22 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			OBJECTCLUSTER_TYPE.PROTOBUF);
 	
 	public ObjectCluster(){
+	}
+	
+	public String getShimmerName(){
+		return mMyName;
+	}
+	
+	public void setShimmerName(String name){
+		mMyName = name;
+	}
+	
+	public String getMacAddress(){
+		return mBluetoothAddress;
+	}
+	
+	public void setMacAddress(String macAddress){
+		mBluetoothAddress = macAddress;
 	}
 	
 	public ObjectCluster(String myName){
@@ -332,5 +348,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public Multimap<String, FormatCluster> getPropertyCluster(){
 		return mPropertyCluster;
 	}
+	
+	
 	
 }

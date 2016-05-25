@@ -153,7 +153,7 @@ public class LoggingPC {
 			writer = new BufferedWriter(new FileWriter(outputFile,false));
 			
 			for (int k=0;k<mSensorNames.length;k++) { 
-                writer.write(objectClusterLog.mMyName);
+                writer.write(objectClusterLog.getShimmerName());
             	writer.write(mDelimiter);
             }
 			writer.newLine(); // notepad recognized new lines as \r\n
@@ -248,7 +248,7 @@ public class LoggingPC {
 			writer = new BufferedWriter(new FileWriter(outputFile,false));
 			
 			for (int k=0;k<mSensorNames.length;k++) { 
-                writer.write(objectClusterLog.mMyName);
+                writer.write(objectClusterLog.getShimmerName());
             	writer.write(mDelimiter);
             }
 			writer.newLine(); // notepad recognized new lines as \r\n
