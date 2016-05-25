@@ -138,6 +138,7 @@ import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.UtilParseData;
 import com.shimmerresearch.algorithms.AlgorithmDetailsRef.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
+import com.shimmerresearch.biophysicalprocessing.ECGtoHRAdaptive;
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
@@ -6984,19 +6985,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	private void generateAlgorithmChannelsMap() {
-		// mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
-//		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
-//		for (AlgorithmDetailsRef aDF : Configuration.Shimmer3.mCompleteAlgorithmMap
-//				.values()) {
-//			mAlgorithmChannelsMap.put(aDF.mAlgorithmName, new AlgorithmDetails(
-//					aDF, false));
-//		}
-//		createMapOfSupportedAlgorithmChannels();
+		// createMapOfSupportedAlgorithmChannels();
 		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
-		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
+		for (AbstractAlgorithm aA : mMapOfAlgorithmModules.values()) {
 			mAlgorithmChannelsMap.putAll(aA.mAlgorithmChannelsMap);
-		}	
-		
+		}
+		// check if any algorithm has been previously enabled
+		for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
+			if ((mDerivedSensors & aD.mAlgorithmDetailsRef.mDerivedSensorBitmapID) > 0) {
+				aD.mEnabled = true;
+			} else {
+				aD.mEnabled = false;
+			}
+		}
 	}
 	
 	//TODO 2016-05-18 feed below into sensor map classes
