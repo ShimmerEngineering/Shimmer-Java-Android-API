@@ -35,6 +35,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
 
 public class SensorGSR extends AbstractSensor implements Serializable{
 
@@ -50,7 +51,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	 * //			CHANNEL_UNITS.MICROSIEMENS,
 	 * 
 	 * What is the story with the two options for GSR units?
-	*/
+	 *  - Add a method to toggle the unit?
+	 * 
+	 */
 	public static String calUnitToUse = Configuration.CHANNEL_UNITS.U_SIEMENS;
 //	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
 	
@@ -159,7 +162,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 //			CHANNEL_UNITS.MICROSIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
-		//XXX - RS (25/5/2016): Is this still relevant?s
+		
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelGsr.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelGsr.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
@@ -214,7 +217,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)));
 			mSensorGroupingMap.get(GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 		
-			//TODO - RS (25/5/2016) - Can this be removed?
+			//TODO - RS (25/5/2016) - Can this comment be removed?
 //			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
 		}
 		super.updateSensorGroupingMap();	
@@ -231,7 +234,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
 			
 			//next process other data
-			if (channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GSR)){
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR)){
 //				ObjectCluster objectCluster = (ObjectCluster) object;
 				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
@@ -326,26 +329,31 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			}
 			index = index + channelDetails.mDefaultNumBytes;
 		}
+		//Debugging
+		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+				new String[]{ObjectClusterSensorName.GSR_CONDUCTANCE, CHANNEL_TYPE.UNCAL.toString()},
+				new String[]{ObjectClusterSensorName.GSR, CHANNEL_TYPE.UNCAL.toString()})); 
+		
 		return objectCluster;
 	}
 	
 
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		//TODO: tidy
 		int idxConfigSetupByte3 =	9;
 		int bitShiftGSRRange =		1;
 		int maskGSRRange =			0x07;
+		
 		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
 	}
 
 	
 	@Override
 	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		//TODO: tidy
 		int idxConfigSetupByte3 =	9;
 		int bitShiftGSRRange =		1;
 		int maskGSRRange =			0x07;
+		
 		mGSRRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftGSRRange) & maskGSRRange;
 	}
 	
@@ -356,7 +364,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		int buf = 0;
 
 		switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+			case(GuiLabelConfig.GSR_RANGE):
 	    		setGSRRange((int)valueToSet);
 				returnValue = valueToSet;
 	        	break;
@@ -374,8 +382,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
 		switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
-				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
+			case(GuiLabelConfig.GSR_RANGE):
+				returnValue = getGSRRange(); //TODO: check with RM re firmware bug?? -> //RS (25/05/2016): Still relevant?
 		    	break;
 	        default:
 	        	break;
