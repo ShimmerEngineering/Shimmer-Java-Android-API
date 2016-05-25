@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
@@ -81,6 +82,23 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Sensor specific variables end --------------
 	
 	//--------- Bluetooth commands start --------------
+	public static final byte SET_GSR_RANGE_COMMAND			   		= (byte) 0x21;
+	public static final byte GSR_RANGE_RESPONSE			   			= (byte) 0x22;
+	public static final byte GET_GSR_RANGE_COMMAND			   		= (byte) 0x23;
+	
+	  public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+	    static {
+	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	        aMap.put(GET_GSR_RANGE_COMMAND, new BtCommandDetails(GET_GSR_RANGE_COMMAND, "GET_GSR_RANGE_COMMAND", GSR_RANGE_RESPONSE));
+	        mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+	    static {
+	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	        aMap.put(SET_GSR_RANGE_COMMAND, new BtCommandDetails(SET_GSR_RANGE_COMMAND, "SET_GSR_RANGE_COMMAND"));
+	        mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+	    }
 	//--------- Bluetooth commands end --------------
 
 	//--------- Configuration options start --------------
@@ -93,8 +111,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	public static final Integer[] ListofGSRRangeConfigValues = {0,1,2,3,4};
 
 	public static final SensorConfigOptionDetails configOptionGsrRange = new SensorConfigOptionDetails(
-			Configuration.Shimmer3.ListofGSRRange, 
-			Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+			ListofGSRRange, 
+			ListofGSRRangeConfigValues, 
 			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
 	//--------- Configuration options end --------------
@@ -103,7 +121,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	public static final SensorDetailsRef sensorGsrRef = new SensorDetailsRef(
 			0x04<<(0*8), 
 			0x04<<(0*8), 
-			Shimmer3.GuiLabelSensors.GSR,
+			GuiLabelSensors.GSR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
@@ -119,8 +137,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 //					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP),
-			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE),
-			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.GSR),
+			Arrays.asList(GuiLabelConfig.GSR_RANGE),
+			Arrays.asList(ObjectClusterSensorName.GSR),
 			true);
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
@@ -133,15 +151,15 @@ public class SensorGSR extends AbstractSensor implements Serializable{
     
 	//--------- Channel info start --------------
 	public static final ChannelDetails channelGsr = new ChannelDetails(
-			Configuration.Shimmer3.ObjectClusterSensorName.GSR,
-			Configuration.Shimmer3.ObjectClusterSensorName.GSR,
+			ObjectClusterSensorName.GSR,
+			ObjectClusterSensorName.GSR,
 			DatabaseChannelHandles.GSR,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.KOHMS,
 //			CHANNEL_UNITS.MICROSIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
-		//XXX - RS (25/5/2016): Is this still relevant?
+		//XXX - RS (25/5/2016): Is this still relevant?s
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelGsr.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelGsr.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
@@ -158,7 +176,6 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
     
 	//--------- Constructors for this class start --------------
-
 	/** Constructor for this Sensor
 	 * @param svo
 	 */
@@ -178,25 +195,26 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
+			mConfigOptionsMap.put(GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
 	}
 
 	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+			mSensorGroupingMap.put(GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
 								Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+			mSensorGroupingMap.get(GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 		}
 		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+			mSensorGroupingMap.put(GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)));
-			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
-			
+			mSensorGroupingMap.get(GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+		
+			//TODO - RS (25/5/2016) - Can this be removed?
 //			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
 		}
 		super.updateSensorGroupingMap();	

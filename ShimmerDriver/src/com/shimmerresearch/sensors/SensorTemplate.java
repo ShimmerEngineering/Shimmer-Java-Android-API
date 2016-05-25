@@ -50,6 +50,14 @@ public class SensorTemplate extends AbstractSensor{
 			 *  class GuiLabelSensorTiles      					-> class containing GUI sensor tile labels
 			 * 	class DatabaseChannelHandles   					-> class containing Database handles
 			 * 	class ObjectClusterSensorName  					-> class containing ObjectClusterSensorName (channel name)
+			 * 
+			 * What TODO with this in ShimmerObject? In Sensor Class?:
+			 * 	- SensorBitMap (for ID/Fw -> What does this mean?)
+			 * 	- SDLogHeader
+			 *  - SDLogHeaderDerivedSensors
+			 *  - BTStreamDerivedSensors
+			 *  - BTStream
+			 * 
 			 */
 	//--------- Sensor specific variables end --------------
 
