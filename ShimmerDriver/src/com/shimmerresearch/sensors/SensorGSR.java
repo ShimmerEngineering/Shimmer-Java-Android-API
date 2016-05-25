@@ -43,8 +43,41 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Sensor specific variables start --------------
 	public int mGSRRange = 4; 					// 4 = Auto
 	
+	/*XXX - RS (25/5/2016):
+	 * Like this in ChannelDetails channelGsr:
+	 * 			CHANNEL_UNITS.KOHMS,
+	 * //			CHANNEL_UNITS.MICROSIEMENS,
+	 * 
+	 * What is the story with the two options for GSR units?
+	*/
 	public static String calUnitToUse = Configuration.CHANNEL_UNITS.U_SIEMENS;
 //	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
+	
+	
+	public class GuiLabelConfig{
+		public static final String GSR_RANGE = "GSR Range";
+	}
+
+	
+	public class GuiLabelSensors{
+		public static final String GSR = "GSR";
+	}
+	
+	
+	public class GuiLabelSensorTiles{
+		public static final String GSR = "GSR+";
+	}
+	
+	
+	public static class DatabaseChannelHandles{
+		public static final String GSR = "F5437a_Int_A1_GSR";
+	}
+	
+	
+	public static class ObjectClusterSensorName{
+		public static String GSR = "GSR";
+		public static String GSR_CONDUCTANCE = "GSR_Conductance";
+	}	
 	//--------- Sensor specific variables end --------------
 	
 	//--------- Bluetooth commands start --------------
@@ -108,6 +141,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 //			CHANNEL_UNITS.MICROSIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
+		//XXX - RS (25/5/2016): Is this still relevant?
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelGsr.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelGsr.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
@@ -122,6 +156,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
     }
 	//--------- Channel info end --------------
 
+    
+	//--------- Constructors for this class start --------------
+
 	/** Constructor for this Sensor
 	 * @param svo
 	 */
@@ -129,14 +166,22 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		super(svo);
 		setSensorName(SENSORS.GSR.toString());
 	}
+	//--------- Constructors for this class end --------------
 
+	
+	//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		//TODO populate the other channels depending on firmware version
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 
+	
+	@Override
+	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
+	}
 
+	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
@@ -154,20 +199,10 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			
 //			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
 		}
+		super.updateSensorGroupingMap();	
 	}
 
-	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
-				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
-				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.LOGANDSTREAM
-				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154
-				) {
-			mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
-		}
-	}
-	
-	//TODO: include somewhere (SensorDetails/ChannelDetails??)
+
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
@@ -276,25 +311,86 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return objectCluster;
 	}
 	
-	public static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
-		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
-		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
-		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
-		//the following is the new linear method see user GSR user guide for further details
-		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
-		return gsrCalibratedData;  
+
+	@Override
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		//TODO: tidy
+		int idxConfigSetupByte3 =	9;
+		int bitShiftGSRRange =		1;
+		int maskGSRRange =			0x07;
+		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
 	}
 
-	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
-		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
-		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
-		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
-		//the following is the new linear method see user GSR user guide for further details
-		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
-		return gsrCalibratedData;  
+	
+	@Override
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+		//TODO: tidy
+		int idxConfigSetupByte3 =	9;
+		int bitShiftGSRRange =		1;
+		int maskGSRRange =			0x07;
+		mGSRRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftGSRRange) & maskGSRRange;
 	}
 	
 	
+	@Override
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+		Object returnValue = null;
+		int buf = 0;
+
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+	    		setGSRRange((int)valueToSet);
+				returnValue = valueToSet;
+	        	break;
+	        default:
+	        	break;
+		}
+
+		
+		// TODO Auto-generated method stub
+		return returnValue;
+	}
+
+	
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName) {
+		Object returnValue = null;
+		switch(componentName){
+			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
+		    	break;
+	        default:
+	        	break;
+		}
+
+		return returnValue;
+	}
+	
+	
+	@Override
+	public void setSensorSamplingRate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	@Override
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+		if(mSensorMap.containsKey(sensorMapKey)){
+			//TODO set defaults for particular sensor
+			return true;
+		}
+		return false;
+	}
+	
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -322,75 +418,17 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return actionSetting;
 
 	}
+	//--------- Abstract methods implemented end --------------
 
-	@Override
-	//TODO: Not sure yet whether store sensors infomem layout in Sensor class or in InfoMemLayout class
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		//TODO: tidy
-		int idxConfigSetupByte3 =	9;
-		int bitShiftGSRRange =		1;
-		int maskGSRRange =			0x07;
-		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
-	}
+	
+	
 
-	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		//TODO: tidy
-		int idxConfigSetupByte3 =	9;
-		int bitShiftGSRRange =		1;
-		int maskGSRRange =			0x07;
-		mGSRRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftGSRRange) & maskGSRRange;
-	}
 
-	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
-		Object returnValue = null;
-		int buf = 0;
-
-		switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
-	    		setGSRRange((int)valueToSet);
-				returnValue = valueToSet;
-	        	break;
-	        default:
-	        	break;
-		}
-
-		
-		// TODO Auto-generated method stub
-		return returnValue;
-	}
-
-	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
-		Object returnValue = null;
-		switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
-				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
-		    	break;
-	        default:
-	        	break;
-		}
-
-		return returnValue;
-	}
-
-	public int getGSRRange(){
-		return mGSRRange;
-	}
-
-	public void setGSRRange(int i){
-		mGSRRange = i;
-	}
-
-//	@Override
-//	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
-//		return mListOfConfigOptionKeysAssociated = Arrays.asList(
-//				Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE);
-//		
-//		
-//	}
-//
+/*TODO - RS (25/5/2016) -> [9:51:23 AM] Ruud Stolk: General question re. Sensor classes: 
+	- Are conflicting sensors handled inside the senors classes or in Configuration/ShimmerObject/ShimmerDevice?  (saw "generateListOfSensorMapKeysConflicting" commented out in GSR class)
+			[9:55:17 AM] Mark Nolan: conflicting sensor info is stored in the sensor classes but needs to be handled in ShimmerDevice
+			*/
+	
 //	@Override
 //	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
 //		return mListOfSensorMapKeysConflicting = Arrays.asList(
@@ -410,26 +448,37 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 //		
 //	}
 
-	@Override
-	public void setSensorSamplingRate() {
-		// TODO Auto-generated method stub
-		
+	
+
+
+	//--------- Sensor specific methods start --------------
+	public static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
+		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
+		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
+		//the following is the new linear method see user GSR user guide for further details
+		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
+		return gsrCalibratedData;  
 	}
 
-	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
-		if(mSensorMap.containsKey(sensorMapKey)){
-			//TODO set defaults for particular sensor
-			return true;
-		}
-		return false;
+	
+	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
+		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
+		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
+		//the following is the new linear method see user GSR user guide for further details
+		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
+		return gsrCalibratedData;  
 	}
-
-	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	
+	public void setGSRRange(int valueToSet){
+		mGSRRange = valueToSet;
 	}
-
-
+	
+	
+	public int getGSRRange(){
+		return mGSRRange;
+	}
+	//--------- Sensor specific methods end --------------
 }

@@ -119,7 +119,12 @@ public class SensorPPG extends AbstractSensor {
 	}
 	
 	
-	//GUISENSORs
+	public class GuiLabelSensorTiles{
+		//XXX - not sure if this is the only one -> Should we handle the PPG input of the GSR board in this class as well?
+		public static final String PROTO3_DELUXE_SUPP = "PPG";
+	}
+	
+	
 	public class GuiLabelSensors{
 		public static final String PPG = "PPG";
 		public static final String PPG_DUMMY = "PPG";
@@ -133,9 +138,16 @@ public class SensorPPG extends AbstractSensor {
 		public static final String PPG2_A14 = "PPG2 A14";
 	}
 
-	//XXX Add class GuiLabelSensorTiles 
 	
-	//XXX Add class DatabaseChannelHandles 
+	//XXX Added class DatabaseChannelHandles 
+	public static class DatabaseChannelHandles{
+		public static final String PPG_A12 = "F5437a_PPG_A12";
+		public static final String PPG_A13 = "F5437a_PPG_A13";
+		public static final String PPG1_A12 = "F5437a_PPG1_A12";
+		public static final String PPG1_A13 = "F5437a_PPG1_A13";
+		public static final String PPG2_A1 = "F5437a_PPG2_A1";
+		public static final String PPG2_A14 = "F5437a_PPG2_A14";
+	}
 	
 	public static class ObjectClusterSensorName{
 		public static  String PPG_A12 = "PPG_A12";
@@ -170,9 +182,13 @@ public class SensorPPG extends AbstractSensor {
     List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
   
 	
-	/* XXX only define the SensorConfigOptionDetails for each Config Option here, 
-	 * then later generate mConfigOptionsMap (instead of mConfigOptionsMapRef)
-	 *  in the abstract method generateConfigOptionsMap()
+	/* XXX
+	 * - Only define the SensorConfigOptionDetails for each Config Option here, 
+	 *   then later generate mConfigOptionsMap (instead of mConfigOptionsMapRef)
+	 *   in the abstract method generateConfigOptionsMap()
+	 *  
+	 * - Refer to SensorMapKey in Configuration -> SensorMapKey should not be in Sensor Class.
+	 *  
 	 */
     public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMapRef;
 	static {
@@ -717,13 +733,13 @@ public class SensorPPG extends AbstractSensor {
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
 		switch(componentName){
-		case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+		case(GuiLabelConfig.PPG_ADC_SELECTION):
 			returnValue = getPpgAdcSelectionGsrBoard();
 		break;
-		case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+		case(GuiLabelConfig.PPG1_ADC_SELECTION):
 			returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
 		break;
-		case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+		case(GuiLabelConfig.PPG2_ADC_SELECTION):
 			returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
 		break;
 		//XXX ShimmerGqBle can be ignored.
@@ -775,6 +791,7 @@ public class SensorPPG extends AbstractSensor {
 	
 	//--------- Sensor specific methods start --------------
 
+	//XXX SensorMapKey -> refer to Configuration
 	//XXX - is this old, can it be removed, or does it still need to be checked? 
 	//TODO Check if needed
 	public boolean checkIfSensorEnabled(int sensorMapKey){

@@ -708,7 +708,7 @@ public class Configuration {
 			
 			public static final String PRESSURE_RESOLUTION =  SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION; // "Pressure Resolution";
 			
-			public static final String GSR_RANGE = "GSR Range";
+			public static final String GSR_RANGE = SensorGSR.GuiLabelConfig.GSR_RANGE;
 			public static final String EXG_RESOLUTION = "Resolution";
 			public static final String EXG_GAIN = "Gain";
 			public static final String EXG_BYTES = "Bytes";
@@ -783,11 +783,11 @@ public class Configuration {
 			public static final String PRESSURE_TEMPERATURE = SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
 			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion ADCs";
 			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
-			public static final String GSR = "GSR+";
+			public static final String GSR = SensorGSR.GuiLabelSensorTiles.GSR;
 			public static final String EXG = "ECG/EMG";
 			public static final String PROTO3_MINI = "Proto Mini";
 			public static final String PROTO3_DELUXE = "Proto Deluxe";
-			public static final String PROTO3_DELUXE_SUPP = "PPG";
+			public static final String PROTO3_DELUXE_SUPP = SensorPPG.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP;
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 			public static final String BRIDGE_AMPLIFIER_SUPP = Configuration.Shimmer3.GuiLabelSensors.SKIN_TEMP_PROBE;
 			public static final String HIGH_G_ACCEL = Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL;
@@ -809,7 +809,7 @@ public class Configuration {
 			public static final String INT_EXP_A13 = "Int A13";
 			public static final String INT_EXP_A14 = "Int A14";
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amp";
-			public static final String GSR = "GSR";
+			public static final String GSR = SensorGSR.GuiLabelSensors.GSR;
 			public static final String INT_EXP_A1 = "Int A1";
 			public static final String RESISTANCE_AMP = "Resistance Amp";
 			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO; //"Gyroscope";
@@ -892,7 +892,7 @@ public class Configuration {
 			public static final String INT_ADC_A13 = "F5437a_Int_A13";
 			public static final String INT_ADC_A14 = "F5437a_Int_A14";
 			public static final String BATTERY = "F5437a_Int_A2_Battery";
-			public static final String GSR = "F5437a_Int_A1_GSR";
+			public static final String GSR = SensorGSR.DatabaseChannelHandles.GSR;
 			public static final String PRESSURE = SensorBMP180.DatabaseChannelHandles.PRESSURE; //"BMP180_Pressure";
 			public static final String MPU_HEADING = SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING; //"MPU9150_MPL_Heading"; // not available but supported in FW
 			public static final String MPU_TEMP = SensorMPU9X50.DatabaseChannelHandles.MPU_TEMP; //"MPU9150_Temperature";
@@ -982,12 +982,12 @@ public class Configuration {
 			public static final String TIMESTAMP_EXPORT = "Timestamp";
 			public static final String OFFSET_TIMESTAMP = "Offset";
 	//		public static final String REAL_TIME_CLOCK = "RealTime"; --> already define for the shimmerCongig Table
-			public static final String PPG_A12 = "F5437a_PPG_A12";
-			public static final String PPG_A13 = "F5437a_PPG_A13";
-			public static final String PPG1_A12 = "F5437a_PPG1_A12";
-			public static final String PPG1_A13 = "F5437a_PPG1_A13";
-			public static final String PPG2_A1 = "F5437a_PPG2_A1";
-			public static final String PPG2_A14 = "F5437a_PPG2_A14";
+			public static final String PPG_A12 = SensorPPG.DatabaseChannelHandles.PPG_A12;
+			public static final String PPG_A13 = SensorPPG.DatabaseChannelHandles.PPG_A13;
+			public static final String PPG1_A12 = SensorPPG.DatabaseChannelHandles.PPG1_A12;
+			public static final String PPG1_A13 = SensorPPG.DatabaseChannelHandles.PPG1_A13;
+			public static final String PPG2_A1 = SensorPPG.DatabaseChannelHandles.PPG2_A1;
+			public static final String PPG2_A14 = SensorPPG.DatabaseChannelHandles.PPG2_A14;
 			
 			/** Calibrated Data Table = Raw Data Table + some processed signals **/
 			public static final String TIMESTAMP_SYSTEM = "System_Timestamp";
@@ -1047,8 +1047,8 @@ public class Configuration {
 			public static String INT_EXP_ADC_A14 = "Int_Exp_A14";
 			public static String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
 			public static String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
-			public static String GSR = "GSR";
-			public static String GSR_CONDUCTANCE = "GSR_Conductance";
+			public static String GSR = SensorGSR.ObjectClusterSensorName.GSR;
+			public static String GSR_CONDUCTANCE = SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE;
 			public static String INT_EXP_ADC_A1 = "Int_Exp_A1";
 			public static String RESISTANCE_AMP = "Resistance_Amp";
 			public static String GYRO_X = SensorMPU9X50.ObjectClusterSensorName.GYRO_X; //"Gyro_X";
