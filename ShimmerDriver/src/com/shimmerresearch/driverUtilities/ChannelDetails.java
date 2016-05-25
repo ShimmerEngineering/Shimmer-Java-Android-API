@@ -21,30 +21,89 @@ public class ChannelDetails implements Serializable {
 	 */
 	private static final long serialVersionUID = -2662151922286820989L;
 
-	public static final class CHANNEL_DATA_TYPE {
-		public static final String UNKOWN = "";
-		public static final String UINT8 = "uint8";
-		public static final String UINT12 = "uint12";
-		public static final String UINT16 = "uint16";
-		public static final String UINT24 = "int24";
-		public static final String UINT32 = "uint32";
-		public static final String UINT32_SIGNED = "uint32Signed"; //??
-		public static final String INT8 = "int8";
-		public static final String INT12 = "int12";
-		public static final String INT16_to_12 = "int16to12"; //??
-		public static final String INT16 = "int16";
-		public static final String INT24 = "int24";
-		public static final String INT32 = "int32";
-		public static final String UINT64 = "uint64";
-		public static final String UINT72_SIGNED = "uint72Signed"; //??
-		public static final String UINT48 = "uint48";
+//	public static final class CHANNEL_DATA_TYPE {
+//		public static final String UNKOWN = "";
+//		public static final String UINT8 = "uint8";
+//		public static final String UINT12 = "uint12";
+//		public static final String UINT16 = "uint16";
+//		public static final String UINT24 = "int24";
+//		public static final String UINT32 = "uint32";
+//		public static final String UINT32_SIGNED = "uint32Signed"; //??
+//		public static final String INT8 = "int8";
+//		public static final String INT12 = "int12";
+//		public static final String INT16_to_12 = "int16to12"; //??
+//		public static final String INT16 = "int16";
+//		public static final String INT24 = "int24";
+//		public static final String INT32 = "int32";
+//		public static final String UINT64 = "uint64";
+//		public static final String UINT72_SIGNED = "uint72Signed"; //??
+//		public static final String UINT48 = "uint48";
+//	}
+
+	public enum CHANNEL_DATA_TYPE{
+		UNKOWN(0, false),
+		UINT8(8, false),
+		UINT12(2, false),
+		UINT16(2, false),
+		UINT24(3, false),
+		UINT32(4, false),
+//		UINT32_SIGNED(4, true),
+		UINT48(6, false),
+		UINT64(8, false),
+		
+		INT8(1, true),
+		INT12(2, true),
+		INT16_to_12(2, true),
+		INT16(2, true),
+		INT24(3, true),
+		INT32(4, true),
+		INT72_SIGNED(9, true);
+
+		private final int numBytes;
+		private final boolean isSigned;
+
+	    /**
+	     * @param text
+	     */
+	    private CHANNEL_DATA_TYPE(final int numBytes, boolean isSigned) {
+	        this.numBytes = numBytes;
+	        this.isSigned = isSigned;
+	    }
+
+//	    /* (non-Javadoc)
+//	     * @see java.lang.Enum#toString()
+//	     */
+//	    @Override
+//	    public String toString() {
+//	        return text;
+//	    }
+	    
+	    public int getNumBytes(){
+	    	return numBytes;
+	    }
+	    
+	    public boolean isSigned(){
+	    	return isSigned;
+	    }
+
 	}
 	
-	public static final class CHANNEL_DATA_ENDIAN {
-		public static final String UNKOWN = "";
-		public static final String LSB = "LSB";
-		public static final String MSB = "MSB";
+	public enum CHANNEL_DATA_ENDIAN{
+		UNKOWN,
+		LSB,
+		MSB
 	}
+	
+//	public static final class CHANNEL_DATA_ENDIAN {
+//		public static final String UNKOWN = "";
+//		public static final String LSB = "LSB";
+//		public static final String MSB = "MSB";
+//	}
+
+//	public enum CHANNEL_DATA_SIGN{
+//		UNSIGNED,
+//		SIGNED
+//	}
 	
 	public enum CHANNEL_TYPE{
 //		RAW("RAW"),
@@ -74,11 +133,12 @@ public class ChannelDetails implements Serializable {
 	public String mObjectClusterName = "";
 	public String mDatabaseChannelHandle = "";
 	public int mChannelId = -1;
-	public String mDefaultChannelDataType = CHANNEL_DATA_TYPE.UNKOWN;
 	public int mDefaultNumBytes = 0;
+	public CHANNEL_DATA_TYPE mDefaultChannelDataType = CHANNEL_DATA_TYPE.UNKOWN;
 	
-	//JC: default means the original signal this channel is derived form, it can be derived from a calibrated/noncalibrated/algorithm source.
-	public String mDefaultChannelDataEndian = CHANNEL_DATA_ENDIAN.UNKOWN;
+	// JC: default means the original signal this channel is derived form, it
+	// can be derived from a calibrated/noncalibrated/algorithm source.
+	public CHANNEL_DATA_ENDIAN mDefaultChannelDataEndian = CHANNEL_DATA_ENDIAN.UNKOWN;
 	public String mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
 	public String mDefaultCalibratedUnits = CHANNEL_UNITS.NO_UNITS; //deprecate this?
 	public List<CHANNEL_TYPE> mListOfChannelTypes = new ArrayList<CHANNEL_TYPE>();
@@ -156,9 +216,9 @@ public class ChannelDetails implements Serializable {
 	public ChannelDetails(String objectClusterName, 
 			String guiName, 
 			String databaseChannelHandle, 
-			String defaultChannelDataType, 
+			CHANNEL_DATA_TYPE defaultChannelDataType, 
 			int numBytes, 
-			String channelDataEndian, 
+			CHANNEL_DATA_ENDIAN channelDataEndian, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes){
 		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes, databaseChannelHandle);
@@ -173,9 +233,9 @@ public class ChannelDetails implements Serializable {
 	public ChannelDetails(String objectClusterName, 
 			String guiName, 
 			String databaseChannelHandle, 
-			String defaultChannelDataType, 
+			CHANNEL_DATA_TYPE defaultChannelDataType, 
 			int numBytes, 
-			String channelDataEndian, 
+			CHANNEL_DATA_ENDIAN channelDataEndian, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes, 
 			boolean showWhileStreaming, 
@@ -208,9 +268,9 @@ public class ChannelDetails implements Serializable {
 			String guiName, 
 			String databaseChannelHandle, 
 			int channelId, 
-			String defaultChannelDataType, 
+			CHANNEL_DATA_TYPE defaultChannelDataType, 
 			int numBytes, 
-			String channelDataEndian, 
+			CHANNEL_DATA_ENDIAN channelDataEndian, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes){
 		
