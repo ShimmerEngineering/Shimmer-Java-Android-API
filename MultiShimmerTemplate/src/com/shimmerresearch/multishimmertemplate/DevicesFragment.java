@@ -549,10 +549,10 @@ public class DevicesFragment extends Fragment{
     		       	 		
                         break;*/
                     case CONNECTED:
-                    	connectedShimmerAddresses.add(((ObjectCluster)msg.obj).mBluetoothAddress);
+                    	connectedShimmerAddresses.add(((ObjectCluster)msg.obj).getMacAddress());
                     	int indexFully=0;
 //		            	if(currentPosition==1){
-		            		String addressInitialized = ((ObjectCluster) msg.obj).mBluetoothAddress;
+		            		String addressInitialized = ((ObjectCluster) msg.obj).getMacAddress();
 			        		for(int i=0; i<deviceBluetoothAddresses.length; i++)
 			        			if(deviceBluetoothAddresses[i].equals(addressInitialized)){
 			        				indexFully=i;
@@ -576,7 +576,7 @@ public class DevicesFragment extends Fragment{
 
 		            	int indexConnecting=0;
 //			    		if(currentPosition==1){
-			    			String addressConnecting = ((ObjectCluster) msg.obj).mBluetoothAddress;
+			    			String addressConnecting = ((ObjectCluster) msg.obj).getMacAddress();
 			        		for(int i=0; i<deviceBluetoothAddresses.length; i++)
 			        			if(deviceBluetoothAddresses[i].equals(addressConnecting)){
 			        				indexConnecting=i;
@@ -599,7 +599,7 @@ public class DevicesFragment extends Fragment{
                     case STREAMING:
                     	int indexStreaming=0;
 		            	if(currentPosition==1){
-		            		String addressStreaming = ((ObjectCluster) msg.obj).mBluetoothAddress;
+		            		String addressStreaming = ((ObjectCluster) msg.obj).getMacAddress();
 			        		for(int i=0; i<deviceBluetoothAddresses.length; i++)
 			        			if(deviceBluetoothAddresses[i].equals(addressStreaming)){
 			        				indexStreaming=i;
@@ -609,7 +609,7 @@ public class DevicesFragment extends Fragment{
 		            	else
 		            		indexStreaming=currentPosition;
 			           	Log.d("ShimmerCA","Streaming");
-			           	streamingShimmerAddresses.add(((ObjectCluster)msg.obj).mBluetoothAddress);
+			           	streamingShimmerAddresses.add(((ObjectCluster)msg.obj).getMacAddress());
 			           	devicesStates[indexStreaming] = ((ObjectCluster)msg.obj).mState;
 			           	mAdapter.notifyDataSetChanged();
                     	break;
@@ -621,7 +621,7 @@ public class DevicesFragment extends Fragment{
 
 		            	int indexNone=0;
 //		            	if(currentPosition==1){
-		            		String addressNone = ((ObjectCluster) msg.obj).mBluetoothAddress;
+		            		String addressNone = ((ObjectCluster) msg.obj).getMacAddress();
 			        		for(int i=0; i<deviceBluetoothAddresses.length; i++)
 			        			if(deviceBluetoothAddresses[i].equals(addressNone)){
 			        				indexNone=i;
@@ -632,8 +632,8 @@ public class DevicesFragment extends Fragment{
 //		            		indexNone=deviceBluetoothAddresses.length-1;
 //		            	else
 //		            		indexNone=currentPosition;
-		            connectedShimmerAddresses.remove(((ObjectCluster)msg.obj).mBluetoothAddress);
-		           	Log.d("Shimmer","NO_State" + ((ObjectCluster)msg.obj).mBluetoothAddress);
+		            connectedShimmerAddresses.remove(((ObjectCluster)msg.obj).getMacAddress());
+		           	Log.d("Shimmer","NO_State" + ((ObjectCluster)msg.obj).getMacAddress());
 		           	devicesStates[indexNone] = BT_STATE.DISCONNECTED;
 		           	fully_initialized[indexNone] = false;
 		            mActivity.runOnUiThread(new Runnable() {

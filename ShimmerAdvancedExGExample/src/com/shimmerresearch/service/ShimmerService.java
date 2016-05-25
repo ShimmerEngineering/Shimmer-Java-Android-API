@@ -181,20 +181,20 @@ public class ShimmerService extends Service {
 	            	if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
 	            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
 	            	   if (mEnableLogging==true){
-		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.mBluetoothAddress);
+		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.getMacAddress());
 		            	   if (shimmerLog1!=null){
 		            		   shimmerLog1.logData(objectCluster);
 		            	   } else {
-		            			char[] bA=objectCluster.mBluetoothAddress.toCharArray();
+		            			char[] bA=objectCluster.getMacAddress().toCharArray();
 		            			Logging shimmerLog;
 		            			if (mLogFileName.equals("Default")){
 		            				shimmerLog=new Logging(fromMilisecToDate(System.currentTimeMillis()) + " Device" + bA[12] + bA[13] + bA[15] + bA[16],"\t", "ShimmerCapture");
 		            			} else {
 		            				shimmerLog=new Logging(fromMilisecToDate(System.currentTimeMillis()) + mLogFileName,"\t", "ShimmerCapture");
 		            			}
-		            			mLogShimmer.remove(objectCluster.mBluetoothAddress);
-		            			if (mLogShimmer.get(objectCluster.mBluetoothAddress)==null){
-		            				mLogShimmer.put(objectCluster.mBluetoothAddress,shimmerLog); 
+		            			mLogShimmer.remove(objectCluster.getMacAddress());
+		            			if (mLogShimmer.get(objectCluster.getMacAddress())==null){
+		            				mLogShimmer.put(objectCluster.getMacAddress(),shimmerLog); 
 		            			}
 		            	   }
 	            	   }
@@ -220,10 +220,10 @@ public class ShimmerService extends Service {
 	            		   mHandlerGraph.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, msg.arg1, -1, msg.obj).sendToTarget();
 	                       switch (((ObjectCluster)msg.obj).mState) {
 	                       case CONNECTED:
-	                    	   Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
+	                    	   Log.d("Shimmer",((ObjectCluster) msg.obj).getMacAddress() + "  " + ((ObjectCluster) msg.obj).getShimmerName());
 
-	                    	   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	                    	   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	                    	   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+	                    	   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 	                    	   intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
 	                    	   sendBroadcast(intent);
 	                           break;
@@ -231,8 +231,8 @@ public class ShimmerService extends Service {
 	                    	   
 	                           break;*/
 	                       case CONNECTING:
-	                    	  	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	                    	  	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 		                    	 intent.putExtra("ShimmerState",BT_STATE.CONNECTING);	    
 	                           break;
 	                       case STREAMING:
@@ -242,8 +242,8 @@ public class ShimmerService extends Service {
 	                       case SDLOGGING:
 	                      	 break;
 	                       case DISCONNECTED:
-	                         	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	                         	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+		                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 		                    	 intent.putExtra("ShimmerState",BT_STATE.DISCONNECTED);
 		                    	 sendBroadcast(intent);
 	                           break;

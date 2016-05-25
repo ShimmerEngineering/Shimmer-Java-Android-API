@@ -19,11 +19,11 @@ public class TCPClientTX
 		DataOutputStream dOut = new DataOutputStream(clientSocket.getOutputStream());
 
 		ObjectCluster ojc = new ObjectCluster();
-		ojc.mBluetoothAddress="Shimmer:Research";
-		ojc.mMyName = "ShimmerDev1";
-		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,new FormatCluster("CAL",CHANNEL_UNITS.NO_UNITS,9.81));
-		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,new FormatCluster("CAL",CHANNEL_UNITS.NO_UNITS,0.81));
-		ojc.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,new FormatCluster("CAL",CHANNEL_UNITS.NO_UNITS,0.1));
+		ojc.setMacAddress("Shimmer:Research");
+		ojc.setShimmerName("ShimmerDev1");
+		ojc.addData(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,"CAL",CHANNEL_UNITS.NO_UNITS,9.81);
+		ojc.addData(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,"CAL",CHANNEL_UNITS.NO_UNITS,0.81);
+		ojc.addData(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,"CAL",CHANNEL_UNITS.NO_UNITS,0.1);
 		byte[] dataByte = ojc.serialize();
 		while (true)
 		{

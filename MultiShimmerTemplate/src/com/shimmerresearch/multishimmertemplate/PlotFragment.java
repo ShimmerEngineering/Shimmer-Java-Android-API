@@ -512,9 +512,9 @@ public class PlotFragment extends Fragment {
 	            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
 	            		//log data
 	            	    if(enableHeartRate){
-	            	    	if(objectCluster.mBluetoothAddress.equals(mBluetoothAddressToHeartRate)){
+	            	    	if(objectCluster.getMacAddress().equals(mBluetoothAddressToHeartRate)){
 		            	    	if(heartRateCont==heartRateRefresh){
-			            	    	Collection<FormatCluster> ofFormatstemp = objectCluster.mPropertyCluster.get("Heart Rate");  // first retrieve all the possible formats for the current sensor device
+			            	    	Collection<FormatCluster> ofFormatstemp = objectCluster.getCollectionOfFormatClusters("Heart Rate");  // first retrieve all the possible formats for the current sensor device
 						 	    	FormatCluster formatClustertemp = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormatstemp,"CAL"));
 						 	    	if (formatClustertemp != null) {
 						 	    		int bmp = (int) formatClustertemp.mData;
@@ -536,11 +536,11 @@ public class PlotFragment extends Fragment {
 	            	    	//if it is the corresponding datapacket
 		            	    if (!mBluetoothAddressforPlot[i].equals("")){
 		            	    	// for every bluetooth address look through the sensors if it is the correct packet
-		            	    	if (objectCluster.mBluetoothAddress.equals(mBluetoothAddressforPlot[i])) {
+		            	    	if (objectCluster.getMacAddress().equals(mBluetoothAddressforPlot[i])) {
 		            	    	for (int k=0;k<mSensorsforPlot[0].length;k++){
 		            	    		if (!mSensorsforPlot[i][k].equals("")){
 //		            	    			Log.d("ShimmerPLOT",mSensorsforPlot[i][k]);
-		            	    			Collection<FormatCluster> ofFormats = objectCluster.mPropertyCluster.get(mSensorsforPlot[i][k]);  // first retrieve all the possible formats for the current sensor device
+		            	    			Collection<FormatCluster> ofFormats = objectCluster.getCollectionOfFormatClusters(mSensorsforPlot[i][k]);  // first retrieve all the possible formats for the current sensor device
 //		            	    			Log.d("ShimmerPLOT",mSensorsforPlotFormat[i][k]);
 		            	    			FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,mSensorsforPlotFormat[i][k])); 
 		            		 	    	if (formatCluster != null) {

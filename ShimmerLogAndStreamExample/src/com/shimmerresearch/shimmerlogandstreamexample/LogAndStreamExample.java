@@ -262,7 +262,7 @@ public class LogAndStreamExample extends Activity{
                 switch (((ObjectCluster)msg.obj).mState) {
                 case CONNECTED:
                 	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
-                    mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress; 
+                    mBluetoothAddress=((ObjectCluster)msg.obj).getMacAddress(); 
                     deviceState = "Connected";
                     textDeviceName.setText(mBluetoothAddress);
                     textDeviceState.setText(deviceState);

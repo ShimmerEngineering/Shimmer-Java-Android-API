@@ -400,14 +400,14 @@ public class MultiShimmerTemplateService extends Service {
 //							}
 	            	    	
 	            	    	double dataPPG = 0;
-		            		Collection<FormatCluster> formatCluster = objectCluster.mPropertyCluster.get(mSensortoHR);
+		            		Collection<FormatCluster> formatCluster = objectCluster.getCollectionOfFormatClusters(mSensortoHR);
 		            		FormatCluster cal = ((FormatCluster)ObjectCluster.returnFormatCluster(formatCluster,"CAL"));
 		            		if (cal!=null) {
 		            			dataPPG = ((FormatCluster)ObjectCluster.returnFormatCluster(formatCluster,"CAL")).mData;
 		            		}
 		            		
 		            		double timeStampPPG = 0;
-		            		Collection<FormatCluster> formatClusterTimeStamp = objectCluster.mPropertyCluster.get("Timestamp");
+		            		Collection<FormatCluster> formatClusterTimeStamp = objectCluster.getCollectionOfFormatClusters("Timestamp");
 		            		FormatCluster timeStampCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(formatClusterTimeStamp,"CAL"));
 		            		if (timeStampCluster!=null) {
 		            			timeStampPPG = ((FormatCluster)ObjectCluster.returnFormatCluster(formatClusterTimeStamp,"CAL")).mData;
@@ -434,7 +434,7 @@ public class MultiShimmerTemplateService extends Service {
 		            			}
 		            			
 		            		}
-		            		objectCluster.mPropertyCluster.put("Heart Rate", new FormatCluster("CAL", "bpm", heartRate));
+		            		objectCluster.addData("Heart Rate","CAL", "bpm", heartRate);
 	            	    }
 	            	    
 	            	    if(mEnableHeartRateECG){
@@ -445,14 +445,14 @@ public class MultiShimmerTemplateService extends Service {
 //							}
 	            	    	
 	            	    	double dataECG = 0;
-		            		Collection<FormatCluster> formatCluster = objectCluster.mPropertyCluster.get(mSensortoHR);
+		            		Collection<FormatCluster> formatCluster = objectCluster.getCollectionOfFormatClusters(mSensortoHR);
 		            		FormatCluster cal = ((FormatCluster)ObjectCluster.returnFormatCluster(formatCluster,"CAL"));
 		            		if (cal!=null) {
 		            			dataECG = ((FormatCluster)ObjectCluster.returnFormatCluster(formatCluster,"CAL")).mData;
 		            		}
 		            		
 		            		double timeStampECG = 0;
-		            		Collection<FormatCluster> formatClusterTimeStamp = objectCluster.mPropertyCluster.get("Timestamp");
+		            		Collection<FormatCluster> formatClusterTimeStamp = objectCluster.getCollectionOfFormatClusters("Timestamp");
 		            		FormatCluster timeStampCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(formatClusterTimeStamp,"CAL"));
 		            		if (timeStampCluster!=null) {
 		            			timeStampECG = ((FormatCluster)ObjectCluster.returnFormatCluster(formatClusterTimeStamp,"CAL")).mData;
@@ -480,27 +480,27 @@ public class MultiShimmerTemplateService extends Service {
 		            		}
 
 		            
-		            		objectCluster.mPropertyCluster.put("Heart Rate", new FormatCluster("CAL", "bpm", heartRate));
+		            		objectCluster.addData("Heart Rate","CAL", "bpm", heartRate);
 	            	    }
 	            	    
 	            	    
-	            	   if (mGraphing==true && (objectCluster.mBluetoothAddress.equals(mGraphBluetoothAddress) || mGraphBluetoothAddress.equals(""))){
+	            	   if (mGraphing==true && (objectCluster.getMacAddress().equals(mGraphBluetoothAddress) || mGraphBluetoothAddress.equals(""))){
 	            		   mHandlerGraph.obtainMessage(Shimmer.MESSAGE_READ, objectCluster).sendToTarget();
 	            		   
 	            	   } 
 	            	   if (mWriting==true){
-		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.mBluetoothAddress);
+		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.getMacAddress());
 		            	   if (shimmerLog1!=null){
 		            		   shimmerLog1.logData(objectCluster);
 		            		   
 		            	   } else{
-		            			char[] bA=objectCluster.mBluetoothAddress.toCharArray();
+		            			char[] bA=objectCluster.getMacAddress().toCharArray();
 		            			String device = "Device " + bA[12] + bA[13] + bA[15] + bA[16];
 		            			Logging shimmerLog;
 		            			shimmerLog=new Logging(fromMilisecToDate(System.currentTimeMillis()) + mLogFileName + device,"\t", "MultiShimmerTemplate");
-		            			mLogShimmer.remove(objectCluster.mBluetoothAddress);
-		            			if (mLogShimmer.get(objectCluster.mBluetoothAddress)==null){
-		            				mLogShimmer.put(objectCluster.mBluetoothAddress,shimmerLog); 
+		            			mLogShimmer.remove(objectCluster.getMacAddress());
+		            			if (mLogShimmer.get(objectCluster.getMacAddress())==null){
+		            				mLogShimmer.put(objectCluster.getMacAddress(),shimmerLog); 
 		            			}
 		            	   }
 	            	   }
@@ -548,9 +548,9 @@ public class MultiShimmerTemplateService extends Service {
 	                    	 MultiShimmerTemplateService service = mService.get();
 	                    	 for (int i=0;i<service.mShimmerConfigurationList.size();i++){
 	 				           	ShimmerConfiguration sc = service.mShimmerConfigurationList.get(i);
-	 				           	if (sc.getBluetoothAddress().equals(((ObjectCluster)msg.obj).mBluetoothAddress)){
-	 					           	sc.setShimmerVersion(service.getShimmerVersion(((ObjectCluster)msg.obj).mBluetoothAddress));
-	 					           	Shimmer shimmer = service.getShimmer(((ObjectCluster)msg.obj).mBluetoothAddress);
+	 				           	if (sc.getBluetoothAddress().equals(((ObjectCluster)msg.obj).getMacAddress())){
+	 					           	sc.setShimmerVersion(service.getShimmerVersion(((ObjectCluster)msg.obj).getMacAddress()));
+	 					           	Shimmer shimmer = service.getShimmer(((ObjectCluster)msg.obj).getMacAddress());
 	 					           	if(shimmer.getShimmerVersion()==ShimmerVerDetails.HW_ID.SHIMMER_3){
 	 					           		sc.setEnabledSensors(shimmer.getEnabledSensors());
 	 					           		sc.setShimmerVersion(shimmer.getShimmerVersion());
@@ -589,8 +589,8 @@ public class MultiShimmerTemplateService extends Service {
 	                    	 break;
 	                     case DISCONNECTED:
 
-	                    	 Log.d("Shimmer","NO_State" + ((ObjectCluster)msg.obj).mBluetoothAddress);
-	                    	 mMultiShimmer.remove(((ObjectCluster)msg.obj).mBluetoothAddress);
+	                    	 Log.d("Shimmer","NO_State" + ((ObjectCluster)msg.obj).getMacAddress());
+	                    	 mMultiShimmer.remove(((ObjectCluster)msg.obj).getMacAddress());
 	                    	 
 	                    	 
 	                    	 if (mBluetoothAddresstoConnect.size()!=0){

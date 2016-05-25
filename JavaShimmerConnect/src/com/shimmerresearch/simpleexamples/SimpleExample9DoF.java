@@ -347,7 +347,7 @@ public class SimpleExample9DoF extends BasicProcessWithCallBack {
 			ObjectCluster objectCluster = (ObjectCluster)object;
 
 			if (objectCluster!=null){
-				if (objectCluster.mMyName.equals("ShimmerDevice")){
+				if (objectCluster.getShimmerName().equals("ShimmerDevice")){
 					Collection<FormatCluster> accelXFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);  // first retrieve all the possible formats for the current sensor device
 					float q0 = 0,x = 0,y=0,z=0;
 					if (accelXFormats != null){
@@ -388,7 +388,7 @@ public class SimpleExample9DoF extends BasicProcessWithCallBack {
 				}
 				
 
-				if (objectCluster.mMyName.equals("ShimmerDevice2")){
+				if (objectCluster.getShimmerName().equals("ShimmerDevice2")){
 					Collection<FormatCluster> accelXFormats = objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);  // first retrieve all the possible formats for the current sensor device
 					float q0 = 0,x = 0,y=0,z=0;
 					if (accelXFormats != null){

@@ -160,25 +160,25 @@ public class MultiShimmerPlayService extends Service {
 	            	if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
 	            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
 	            	   if (mEnableLogging==true){
-		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.mBluetoothAddress);
+		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.getMacAddress());
 		            	   if (shimmerLog1!=null){
 		            		   shimmerLog1.logData(objectCluster);
 		            	   } else {
-		            			char[] bA=objectCluster.mBluetoothAddress.toCharArray();
+		            			char[] bA=objectCluster.getMacAddress().toCharArray();
 		            			Logging shimmerLog;
 		            			if (mLogFileName.equals("Default")){
 		            				shimmerLog=new Logging(Long.toString(System.currentTimeMillis()) + " Device" + bA[12] + bA[13] + bA[15] + bA[16],"\t");
 		            			} else {
 		            				shimmerLog=new Logging(Long.toString(System.currentTimeMillis()) + mLogFileName,"\t");
 		            			}
-		            			mLogShimmer.remove(objectCluster.mBluetoothAddress);
-		            			if (mLogShimmer.get(objectCluster.mBluetoothAddress)==null){
-		            				mLogShimmer.put(objectCluster.mBluetoothAddress,shimmerLog); 
+		            			mLogShimmer.remove(objectCluster.getMacAddress());
+		            			if (mLogShimmer.get(objectCluster.getMacAddress())==null){
+		            				mLogShimmer.put(objectCluster.getMacAddress(),shimmerLog); 
 		            			}
 		            	   }
 	            	   }
 	            	   
-	            	   if (mGraphing==true && objectCluster.mBluetoothAddress.equals(mGraphBluetoothAddress)){
+	            	   if (mGraphing==true && objectCluster.getMacAddress().equals(mGraphBluetoothAddress)){
 	            		   Log.d("ShimmerGraph","Sending");
 	            		   mHandlerGraph.obtainMessage(Shimmer.MESSAGE_READ, objectCluster)
                	        .sendToTarget();
@@ -186,14 +186,14 @@ public class MultiShimmerPlayService extends Service {
 	            	   
 	            	   
 	            	   //start sound playing here
-	            	   Log.d("ShimmerPlay",objectCluster.mMyName);
+	            	   Log.d("ShimmerPlay",objectCluster.getShimmerName());
 	            	   
 	            	   //first get the position
-	            	   int mPosition = Integer.parseInt(objectCluster.mMyName);
-	            	   long enabledSensors = getEnabledSensors(objectCluster.mBluetoothAddress);
+	            	   int mPosition = Integer.parseInt(objectCluster.getShimmerName());
+	            	   long enabledSensors = getEnabledSensors(objectCluster.getMacAddress());
 	            	   //Multiset<String> listofKeys = objectCluster.mPropertyCluster.keys();
 	            	   if ((enabledSensors & Shimmer.SENSOR_GYRO) >0){
-	            	   Collection<FormatCluster> ofFormats = objectCluster.mPropertyCluster.get(mActivatedSensorNamesArray[mPosition][0]);  // first retrieve all the possible formats for the current sensor device
+	            	   Collection<FormatCluster> ofFormats = objectCluster.getCollectionOfFormatClusters(mActivatedSensorNamesArray[mPosition][0]);  // first retrieve all the possible formats for the current sensor device
 	            	   FormatCluster formatCluster;
 	            	   int maxData = 600; 
 	            	   int dataLimit = 200;
@@ -236,7 +236,7 @@ public class MultiShimmerPlayService extends Service {
 						}
 	            	   
 	            	   
-	            	   ofFormats = objectCluster.mPropertyCluster.get(mActivatedSensorNamesArray[mPosition][1]);  // first retrieve all the possible formats for the current sensor device
+	            	   ofFormats = objectCluster.getCollectionOfFormatClusters(mActivatedSensorNamesArray[mPosition][1]);  // first retrieve all the possible formats for the current sensor device
 	            	   if (ofFormats != null) { 
 	            	   formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")); 
 	            	   if (formatCluster!=null){
@@ -275,7 +275,7 @@ public class MultiShimmerPlayService extends Service {
 							        
 								}
 							
-							ofFormats = objectCluster.mPropertyCluster.get(mActivatedSensorNamesArray[mPosition][2]);  // first retrieve all the possible formats for the current sensor device
+							ofFormats = objectCluster.getCollectionOfFormatClusters(mActivatedSensorNamesArray[mPosition][2]);  // first retrieve all the possible formats for the current sensor device
 			            	   if (ofFormats != null) { 
 			            		   formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")); 
 			            		   if (formatCluster!=null){
@@ -308,7 +308,7 @@ public class MultiShimmerPlayService extends Service {
 				    								if ((enabledSensors & Shimmer.SENSOR_MAG) ==0){
 				    									mSoundIDStreamArray[mPosition][2] = mSoundPool.play(mSoundIDArray[mPosition][2], (float)0.75, 0.75f, 1, 0, 1);
 				    								} else {
-				    									Collection<FormatCluster> ofFormatsMag = objectCluster.mPropertyCluster.get("Magnetometer Z");
+				    									Collection<FormatCluster> ofFormatsMag = objectCluster.getCollectionOfFormatClusters("Magnetometer Z");
 				    									formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormatsMag,"CAL"));
 				    									if (formatCluster.mData<0){
 				    										mSoundIDStreamArray[mPosition][2] = mSoundPool.play(mSoundIDArray[mPosition][2], (float)0.75, 0.75f, 1, 0, 1);
@@ -328,7 +328,7 @@ public class MultiShimmerPlayService extends Service {
 	            	   }
 	            	   }
 	            	   } else if ((enabledSensors & Shimmer.SENSOR_GSR) >0) {
-	            		   Collection<FormatCluster> ofFormats = objectCluster.mPropertyCluster.get(mActivatedSensorNamesArray[mPosition][0]);  // first retrieve all the possible formats for the current sensor device
+	            		   Collection<FormatCluster> ofFormats = objectCluster.getCollectionOfFormatClusters(mActivatedSensorNamesArray[mPosition][0]);  // first retrieve all the possible formats for the current sensor device
 		            	   FormatCluster formatCluster;
 		            	   if (ofFormats != null) { 
 			            	   formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")); 
@@ -380,9 +380,9 @@ public class MultiShimmerPlayService extends Service {
 	            		 }
 	                     switch (((ObjectCluster)msg.obj).mState) {
 	                     case CONNECTED:
-	                    	 Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
-	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	                    	 Log.d("Shimmer",((ObjectCluster) msg.obj).getMacAddress() + "  " + ((ObjectCluster) msg.obj).getShimmerName());
+	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 	                    	 intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
 	                    	 sendBroadcast(intent);
 	                         break;
@@ -390,8 +390,8 @@ public class MultiShimmerPlayService extends Service {
 	      
 	                         break;*/
 	                     case CONNECTING:
-	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 	                    	 intent.putExtra("ShimmerState",BT_STATE.CONNECTING);	      
 	                         break;
 	                     case STREAMING:
@@ -402,8 +402,8 @@ public class MultiShimmerPlayService extends Service {
 	                    	 break;
 	                     case DISCONNECTED:
 
-	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	                    	 intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+	                    	 intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 	                    	 intent.putExtra("ShimmerState",BT_STATE.DISCONNECTED);
 	                    	 sendBroadcast(intent);
 	                         break;

@@ -265,7 +265,7 @@ public class ShimmerService extends Service {
 	            	    //Filter Signal
 	            	    //PPG to HR
 	            	    if (mPPGtoHREnabled){
-	            	    	Collection<FormatCluster> dataFormats = objectCluster.mPropertyCluster.get(mPPGtoHRSignalName);  // first retrieve all the possible formats for the current sensor device
+	            	    	Collection<FormatCluster> dataFormats = objectCluster.getCollectionOfFormatClusters(mPPGtoHRSignalName);  // first retrieve all the possible formats for the current sensor device
 	            			FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormats,CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
 	            			if (formatCluster!=null){
 	            				double ppgdata = formatCluster.mData;
@@ -277,14 +277,14 @@ public class ShimmerService extends Service {
 	            					e.printStackTrace();
 	            				}
 
-	            				dataFormats = objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP);  // first retrieve all the possible formats for the current sensor device
+	            				dataFormats = objectCluster.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP);  // first retrieve all the possible formats for the current sensor device
 	            				formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormats,CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
 
 	            				double calts = formatCluster.mData;
 
 	            				double hr = mPPGtoHR.ppgToHrConversion(ppgdata, calts);
 	            				System.out.print("Heart Rate: " + Integer.toString((int)hr) + "\n");
-	            				objectCluster.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),Configuration.CHANNEL_UNITS.BEATS_PER_MINUTE,hr));
+	            				objectCluster.addData(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR,CHANNEL_TYPE.CAL.toString(),Configuration.CHANNEL_UNITS.BEATS_PER_MINUTE,hr);
 
 	            			}
 	            		
@@ -294,7 +294,7 @@ public class ShimmerService extends Service {
 	            	    //Filter Signal
 	            	    //ECG to HR
 	            	    if (mECGtoHREnabled){
-	            	    	Collection<FormatCluster> dataFormats = objectCluster.mPropertyCluster.get(mECGtoHRSignalName);  // first retrieve all the possible formats for the current sensor device
+	            	    	Collection<FormatCluster> dataFormats = objectCluster.getCollectionOfFormatClusters(mECGtoHRSignalName);  // first retrieve all the possible formats for the current sensor device
 	            			FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormats,CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
 	            			if (formatCluster!=null){
 	            				double ecgdata = formatCluster.mData;
@@ -307,53 +307,53 @@ public class ShimmerService extends Service {
 	            					e.printStackTrace();
 	            				}
 
-	            				dataFormats = objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP);  // first retrieve all the possible formats for the current sensor device
+	            				dataFormats = objectCluster.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP);  // first retrieve all the possible formats for the current sensor device
 	            				formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormats,CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
 
 	            				double calts = formatCluster.mData;
 
 	            				double hr = mECGtoHR.ecgToHrConversion(ecgdata, calts);
 	            				System.out.print("Heart Rate: " + Integer.toString((int)hr) + "\n");
-	            				objectCluster.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),Configuration.CHANNEL_UNITS.BEATS_PER_MINUTE,hr));
+	            				objectCluster.addData(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,CHANNEL_TYPE.CAL.toString(),Configuration.CHANNEL_UNITS.BEATS_PER_MINUTE,hr);
 	            			}
 	            	    }
 	            	    
 	            	    //PPG to HR
 	            	    
 	            		if (mConvertGSRtoSiemens){
-            				Collection<FormatCluster> dataFormatsGSR = objectCluster.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.GSR);  // first retrieve all the possible formats for the current sensor device
+            				Collection<FormatCluster> dataFormatsGSR = objectCluster.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.GSR);  // first retrieve all the possible formats for the current sensor device
 	            			FormatCluster formatClusterGSR = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormatsGSR,CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
 	            			if (formatClusterGSR!=null){
 	            				double gsrdata = formatClusterGSR.mData * 1000; //in ohms
 	            				double conductance = 1/gsrdata;
 	            				conductance = conductance * 1000000; //convert to microSiemens
 	            				//objectCluster.mPropertyCluster.remove(Configuration.Shimmer3.ObjectClusterSensorName.GSR, formatClusterGSR);
-	            				objectCluster.mPropertyCluster.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE,new FormatCluster(CHANNEL_TYPE.CAL.toString(),"microSiemens",conductance));
+	            				objectCluster.addData(Configuration.Shimmer3.ObjectClusterSensorName.GSR_CONDUCTANCE,CHANNEL_TYPE.CAL.toString(),"microSiemens",conductance);
 	            			}
 	            				
             			}
 	            		
-	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE);
-	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT);
-	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL);
-	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT);
-	            		objectCluster.mPropertyCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP);
+	            		objectCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE);
+	            		objectCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT);
+	            		objectCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL);
+	            		objectCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT);
+	            		objectCluster.removeAll(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP);
 	            		
 	            	   if (mEnableLogging==true){
-		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.mBluetoothAddress);
+		            	   shimmerLog1= (Logging)mLogShimmer.get(objectCluster.getMacAddress());
 		            	   if (shimmerLog1!=null){
 		            		   shimmerLog1.logData(objectCluster);
 		            	   } else {
-		            			char[] bA=objectCluster.mBluetoothAddress.toCharArray();
+		            			char[] bA=objectCluster.getMacAddress().toCharArray();
 		            			Logging shimmerLog;
 		            			if (mLogFileName.equals("Default")){
 		            				shimmerLog=new Logging(fromMilisecToDate(System.currentTimeMillis()) + " Device" + bA[12] + bA[13] + bA[15] + bA[16],"\t", "ShimmerCapture");
 		            			} else {
 		            				shimmerLog=new Logging(fromMilisecToDate(System.currentTimeMillis()) + mLogFileName,"\t", "ShimmerCapture");
 		            			}
-		            			mLogShimmer.remove(objectCluster.mBluetoothAddress);
-		            			if (mLogShimmer.get(objectCluster.mBluetoothAddress)==null){
-		            				mLogShimmer.put(objectCluster.mBluetoothAddress,shimmerLog); 
+		            			mLogShimmer.remove(objectCluster.getMacAddress());
+		            			if (mLogShimmer.get(objectCluster.getMacAddress())==null){
+		            				mLogShimmer.put(objectCluster.getMacAddress(),shimmerLog); 
 		            			}
 		            	   }
 	            	   }
@@ -378,20 +378,20 @@ public class ShimmerService extends Service {
 	                	 Log.d("ShimmerGraph","Sending");
 	            		   mHandlerGraph.obtainMessage(Shimmer.MESSAGE_STATE_CHANGE, msg.arg1, -1, msg.obj).sendToTarget();
 	            		   if(msg.arg1==Shimmer.MSG_STATE_STOP_STREAMING){
-	            			     closeAndRemoveFile(((ObjectCluster)msg.obj).mBluetoothAddress);
+	            			     closeAndRemoveFile(((ObjectCluster)msg.obj).getMacAddress());
 	            		   } else {
 	            			   switch (((ObjectCluster)msg.obj).mState) {
 	            			   case CONNECTED:
-	            				   Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
+	            				   Log.d("Shimmer",((ObjectCluster) msg.obj).getMacAddress() + "  " + ((ObjectCluster) msg.obj).getShimmerName());
 
-	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 	            				   intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
 	            				   sendBroadcast(intent);
 	            				   break;
 	            			   case CONNECTING:
-	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 	            				   intent.putExtra("ShimmerState",BT_STATE.CONNECTING);	
 	            				   break;
 	            			   case STREAMING:
@@ -399,16 +399,16 @@ public class ShimmerService extends Service {
 	            			   case STREAMING_AND_SDLOGGING:
 	            				   break;
 	            			   case SDLOGGING:
-	            				   Log.d("Shimmer",((ObjectCluster) msg.obj).mBluetoothAddress + "  " + ((ObjectCluster) msg.obj).mMyName);
+	            				   Log.d("Shimmer",((ObjectCluster) msg.obj).getMacAddress() + "  " + ((ObjectCluster) msg.obj).getShimmerName());
 
-	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 	            				   intent.putExtra("ShimmerState",BT_STATE.CONNECTED);
 	            				   sendBroadcast(intent);
 	            				   break;
 	            			   case DISCONNECTED:
-	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).mBluetoothAddress );
-	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).mMyName );
+	            				   intent.putExtra("ShimmerBluetoothAddress", ((ObjectCluster) msg.obj).getMacAddress() );
+	            				   intent.putExtra("ShimmerDeviceName", ((ObjectCluster) msg.obj).getShimmerName() );
 	            				   intent.putExtra("ShimmerState",BT_STATE.DISCONNECTED);
 	            				   sendBroadcast(intent);
 	            				   break;
