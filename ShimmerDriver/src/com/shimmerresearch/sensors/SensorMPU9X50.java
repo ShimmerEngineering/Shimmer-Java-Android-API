@@ -628,6 +628,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, SensorMPU9X50.sensorMpu9150GyroRef);
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL, SensorMPU9X50.sensorMpu9150AccelRef);
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG,SensorMPU9X50.sensorMpu9150MagRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, SensorMPU9X50.sensorMpu9150MplGyro);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, SensorMPU9X50.sensorMpu9150MplAccel);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, SensorMPU9X50.sensorMpu9150MplMag);
 
 		//TODO decide what to do with below -> update, I can't remember why I added this message
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
@@ -640,10 +643,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_PEDOMETER, SensorMPU9X50.sensorMpu9150MplPedometer);
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_TAP, SensorMPU9X50.sensorMpu9150MplTap);
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MOTION_ORIENT, SensorMPU9X50.sensorMpu9150MplMotion);
-		
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, SensorMPU9X50.sensorMpu9150MplGyro);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, SensorMPU9X50.sensorMpu9150MplAccel);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, SensorMPU9X50.sensorMpu9150MplMag);
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW, SensorMPU9X50.sensorMpu9150MplQuat6DofRaw);
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
@@ -652,72 +651,73 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
     
 	//--------- Channel info start --------------
 	// MPU9150 Gyro
-	public static final ChannelDetails channelGyroX = new ChannelDetails(
-					ObjectClusterSensorName.GYRO_X,
-					ObjectClusterSensorName.GYRO_X,
-					DatabaseChannelHandles.GYRO_X,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.DEGREES_PER_SECOND,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	public static final ChannelDetails channelGyroY = new ChannelDetails(
-					ObjectClusterSensorName.GYRO_Y,
-					ObjectClusterSensorName.GYRO_Y,
-					DatabaseChannelHandles.GYRO_Y,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.DEGREES_PER_SECOND,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	public static final ChannelDetails channelGyroZ = new ChannelDetails(
-					ObjectClusterSensorName.GYRO_Z,
-					ObjectClusterSensorName.GYRO_Z,
-					DatabaseChannelHandles.GYRO_Z,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.DEGREES_PER_SECOND,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    public static final ChannelDetails channelGyroX = new ChannelDetails(
+    		ObjectClusterSensorName.GYRO_X,
+    		ObjectClusterSensorName.GYRO_X,
+    		DatabaseChannelHandles.GYRO_X,
+    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.DEGREES_PER_SECOND,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    public static final ChannelDetails channelGyroY = new ChannelDetails(
+    		ObjectClusterSensorName.GYRO_Y,
+    		ObjectClusterSensorName.GYRO_Y,
+    		DatabaseChannelHandles.GYRO_Y,
+    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.DEGREES_PER_SECOND,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    public static final ChannelDetails channelGyroZ = new ChannelDetails(
+    		ObjectClusterSensorName.GYRO_Z,
+    		ObjectClusterSensorName.GYRO_Z,
+    		DatabaseChannelHandles.GYRO_Z,
+    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.DEGREES_PER_SECOND,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+// MPU Accel
+	public static final ChannelDetails channelAccelX = new ChannelDetails(
+			ObjectClusterSensorName.ACCEL_MPU_X,
+			ObjectClusterSensorName.ACCEL_MPU_X,
+			DatabaseChannelHandles.ALTERNATIVE_ACC_X,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	public static final ChannelDetails channelAccelY = new ChannelDetails(
+			ObjectClusterSensorName.ACCEL_MPU_Y,
+			ObjectClusterSensorName.ACCEL_MPU_Y,
+			DatabaseChannelHandles.ALTERNATIVE_ACC_Y,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
+	public static final ChannelDetails channelAccelZ = new ChannelDetails(
+			ObjectClusterSensorName.ACCEL_MPU_Z,
+			ObjectClusterSensorName.ACCEL_MPU_Z,
+			DatabaseChannelHandles.ALTERNATIVE_ACC_Z,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	
-	public static final ChannelDetails channelMpuMplX = new ChannelDetails(
-					ObjectClusterSensorName.ACCEL_MPU_MPL_X,
-					ObjectClusterSensorName.ACCEL_MPU_MPL_X,
-					DatabaseChannelHandles.ALTERNATIVE_ACC_X,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	public static final ChannelDetails channelMpuMplY = new ChannelDetails(
-					ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
-					ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
-					DatabaseChannelHandles.ALTERNATIVE_ACC_Y,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	public static final ChannelDetails channelMpuMplZ = new ChannelDetails(
-					ObjectClusterSensorName.ACCEL_MPU_MPL_Z,
-					ObjectClusterSensorName.ACCEL_MPU_MPL_Z,
-					DatabaseChannelHandles.ALTERNATIVE_ACC_Z,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	//MPU MAG
+	public static final ChannelDetails channelMagX = new ChannelDetails(
+			ObjectClusterSensorName.MAG_MPU_X,
+			ObjectClusterSensorName.MAG_MPU_X,
+			DatabaseChannelHandles.ALTERNATIVE_MAG_X,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	public static final ChannelDetails channelMagY = new ChannelDetails(
+			ObjectClusterSensorName.MAG_MPU_Y,
+			ObjectClusterSensorName.MAG_MPU_Y,
+			DatabaseChannelHandles.ALTERNATIVE_MAG_Y,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
+	public static final ChannelDetails channelMagZ = new ChannelDetails(
+			ObjectClusterSensorName.MAG_MPU_Z,
+			ObjectClusterSensorName.MAG_MPU_Z,
+			DatabaseChannelHandles.ALTERNATIVE_MAG_Z,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
-	public static final ChannelDetails channelMagMpuX = new ChannelDetails(
-					ObjectClusterSensorName.MAG_MPU_X,
-					ObjectClusterSensorName.MAG_MPU_X,
-					DatabaseChannelHandles.ALTERNATIVE_MAG_X,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-					CHANNEL_UNITS.LOCAL_FLUX,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	public static final ChannelDetails channelMagMpuY = new ChannelDetails(
-					ObjectClusterSensorName.MAG_MPU_Y,
-					ObjectClusterSensorName.MAG_MPU_Y,
-					DatabaseChannelHandles.ALTERNATIVE_MAG_Y,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-					CHANNEL_UNITS.LOCAL_FLUX,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	public static final ChannelDetails channelMagMpuZ = new ChannelDetails(
-					ObjectClusterSensorName.MAG_MPU_Z,
-					ObjectClusterSensorName.MAG_MPU_Z,
-					DatabaseChannelHandles.ALTERNATIVE_MAG_Z,
-					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-					CHANNEL_UNITS.LOCAL_FLUX,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	
 	// MPL Quaternions 6DOF
 	public static final ChannelDetails channelQuatMpl6DofW = new ChannelDetails(
 					ObjectClusterSensorName.QUAT_MPL_6DOF_W,
@@ -882,114 +882,114 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	
+
 	// MPL Motion Orient
 	public static final ChannelDetails channelMplMotionAndOrient = new ChannelDetails(
-					ObjectClusterSensorName.MOTIONANDORIENT,
-					ObjectClusterSensorName.MOTIONANDORIENT,
-					DatabaseChannelHandles.MOTION_AND_ORIENT,
-					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.MOTIONANDORIENT,
+			ObjectClusterSensorName.MOTIONANDORIENT,
+			DatabaseChannelHandles.MOTION_AND_ORIENT,
+			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
 	// MPL Gyro Calibrated
 	public static final ChannelDetails channelGyroMpuMplX = new ChannelDetails(
-					ObjectClusterSensorName.GYRO_MPU_MPL_X,
-					ObjectClusterSensorName.GYRO_MPU_MPL_X,
-					DatabaseChannelHandles.MPU_MPL_GYRO_X,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.DEGREES_PER_SECOND,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.GYRO_MPU_MPL_X,
+			ObjectClusterSensorName.GYRO_MPU_MPL_X,
+			DatabaseChannelHandles.MPU_MPL_GYRO_X,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelGyroMpuMplY = new ChannelDetails(
-					ObjectClusterSensorName.GYRO_MPU_MPL_Y,
-					ObjectClusterSensorName.GYRO_MPU_MPL_Y,
-					DatabaseChannelHandles.MPU_MPL_GYRO_Y,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.DEGREES_PER_SECOND,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.GYRO_MPU_MPL_Y,
+			ObjectClusterSensorName.GYRO_MPU_MPL_Y,
+			DatabaseChannelHandles.MPU_MPL_GYRO_Y,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelGyroMpuMplZ = new ChannelDetails(
-					ObjectClusterSensorName.GYRO_MPU_MPL_Z,
-					ObjectClusterSensorName.GYRO_MPU_MPL_Z,
-					DatabaseChannelHandles.MPU_MPL_GYRO_Z,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.DEGREES_PER_SECOND,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.GYRO_MPU_MPL_Z,
+			ObjectClusterSensorName.GYRO_MPU_MPL_Z,
+			DatabaseChannelHandles.MPU_MPL_GYRO_Z,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
-	// MPL Accelerometer Calibrated
+	// MPL MPU Accelerometer Calibrated
 	public static final ChannelDetails channelAccelMpuMplX = new ChannelDetails(
-					ObjectClusterSensorName.ACCEL_MPU_MPL_X,
-					ObjectClusterSensorName.ACCEL_MPU_MPL_X,
-					DatabaseChannelHandles.MPU_MPL_ACC_X,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.GRAVITY,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.ACCEL_MPU_MPL_X,
+			ObjectClusterSensorName.ACCEL_MPU_MPL_X,
+			DatabaseChannelHandles.MPU_MPL_ACC_X,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.GRAVITY,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelAccelMpuMplY = new ChannelDetails(
-					ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
-					ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
-					DatabaseChannelHandles.MPU_MPL_ACC_Y,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.GRAVITY,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
+			ObjectClusterSensorName.ACCEL_MPU_MPL_Y,
+			DatabaseChannelHandles.MPU_MPL_ACC_Y,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.GRAVITY,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelAccelMpuMplZ = new ChannelDetails(
-					ObjectClusterSensorName.ACCEL_MPU_MPL_Z,
-					ObjectClusterSensorName.ACCEL_MPU_MPL_Z,
-					DatabaseChannelHandles.MPU_MPL_ACC_Z,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.GRAVITY,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.ACCEL_MPU_MPL_Z,
+			ObjectClusterSensorName.ACCEL_MPU_MPL_Z,
+			DatabaseChannelHandles.MPU_MPL_ACC_Z,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.GRAVITY,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
 	// MPL Magnetometer Calibrated
 	public static final ChannelDetails channelMagMpuMplX = new ChannelDetails(
-					ObjectClusterSensorName.MAG_MPU_MPL_X,
-					ObjectClusterSensorName.MAG_MPU_MPL_X,
-					DatabaseChannelHandles.MPU_MPL_MAG_X,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.U_TESLA,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.MAG_MPU_MPL_X,
+			ObjectClusterSensorName.MAG_MPU_MPL_X,
+			DatabaseChannelHandles.MPU_MPL_MAG_X,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.U_TESLA,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelMagMpuMplY = new ChannelDetails(
-					ObjectClusterSensorName.MAG_MPU_MPL_Y,
-					ObjectClusterSensorName.MAG_MPU_MPL_Y,
-					DatabaseChannelHandles.MPU_MPL_MAG_Y,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.U_TESLA,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.MAG_MPU_MPL_Y,
+			ObjectClusterSensorName.MAG_MPU_MPL_Y,
+			DatabaseChannelHandles.MPU_MPL_MAG_Y,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.U_TESLA,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelMagMpuMplZ = new ChannelDetails(
-					ObjectClusterSensorName.MAG_MPU_MPL_Z,
-					ObjectClusterSensorName.MAG_MPU_MPL_Z,
-					DatabaseChannelHandles.MPU_MPL_MAG_Z,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.U_TESLA,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-	
+			ObjectClusterSensorName.MAG_MPU_MPL_Z,
+			ObjectClusterSensorName.MAG_MPU_MPL_Z,
+			DatabaseChannelHandles.MPU_MPL_MAG_Z,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.U_TESLA,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+
 	// Raw 6DOF Quaterian's from the DMP hardware module of the MPU9150
 	public static final ChannelDetails channelQuatDmp6DofW = new ChannelDetails(
-					ObjectClusterSensorName.QUAT_DMP_6DOF_W,
-					ObjectClusterSensorName.QUAT_DMP_6DOF_W,
-					DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.QUAT_DMP_6DOF_W,
+			ObjectClusterSensorName.QUAT_DMP_6DOF_W,
+			DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelQuatDmp6DofX = new ChannelDetails(
-					ObjectClusterSensorName.QUAT_DMP_6DOF_X,
-					ObjectClusterSensorName.QUAT_DMP_6DOF_X,
-					DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.QUAT_DMP_6DOF_X,
+			ObjectClusterSensorName.QUAT_DMP_6DOF_X,
+			DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelQuatDmp6DofY = new ChannelDetails(
-					ObjectClusterSensorName.QUAT_DMP_6DOF_Y,
-					ObjectClusterSensorName.QUAT_DMP_6DOF_Y,
-					DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.QUAT_DMP_6DOF_Y,
+			ObjectClusterSensorName.QUAT_DMP_6DOF_Y,
+			DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelQuatDmp6DofZ = new ChannelDetails(
-					ObjectClusterSensorName.QUAT_DMP_6DOF_Z,
-					ObjectClusterSensorName.QUAT_DMP_6DOF_Z,
-					DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z,
-					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			ObjectClusterSensorName.QUAT_DMP_6DOF_Z,
+			ObjectClusterSensorName.QUAT_DMP_6DOF_Z,
+			DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
@@ -998,14 +998,30 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		aMap.put(ObjectClusterSensorName.GYRO_X, SensorMPU9X50.channelGyroX);
 		aMap.put(ObjectClusterSensorName.GYRO_Y, SensorMPU9X50.channelGyroY);
 		aMap.put(ObjectClusterSensorName.GYRO_Z, SensorMPU9X50.channelGyroZ);
+		// MPU9150 Accel
+		aMap.put(ObjectClusterSensorName.ACCEL_MPU_X, SensorMPU9X50.channelAccelX);
+		aMap.put(ObjectClusterSensorName.ACCEL_MPU_Y, SensorMPU9X50.channelAccelY);
+		aMap.put(ObjectClusterSensorName.ACCEL_MPU_Z, SensorMPU9X50.channelAccelZ);
+		// MPU9150 Mag
+		aMap.put(ObjectClusterSensorName.MAG_MPU_X, SensorMPU9X50.channelMagX);
+		aMap.put(ObjectClusterSensorName.MAG_MPU_Y, SensorMPU9X50.channelMagY);
+		aMap.put(ObjectClusterSensorName.MAG_MPU_Z, SensorMPU9X50.channelMagZ);
 		
-		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_X, SensorMPU9X50.channelMpuMplX);
-		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_Y, SensorMPU9X50.channelMpuMplY);
-		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_Z, SensorMPU9X50.channelMpuMplZ);
+		// MPL Gyro Calibrated
+		aMap.put(ObjectClusterSensorName.GYRO_MPU_MPL_X, SensorMPU9X50.channelGyroMpuMplX);
+		aMap.put(ObjectClusterSensorName.GYRO_MPU_MPL_Y, SensorMPU9X50.channelGyroMpuMplY);
+		aMap.put(ObjectClusterSensorName.GYRO_MPU_MPL_Z, SensorMPU9X50.channelGyroMpuMplZ);
 
-		aMap.put(ObjectClusterSensorName.MAG_MPU_X, SensorMPU9X50.channelMagMpuX);
-		aMap.put(ObjectClusterSensorName.MAG_MPU_Y, SensorMPU9X50.channelMagMpuY);
-		aMap.put(ObjectClusterSensorName.MAG_MPU_Z, SensorMPU9X50.channelMagMpuZ);
+		// MPL Accelerometer Calibrated
+		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_X, SensorMPU9X50.channelAccelMpuMplX);
+		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_Y, SensorMPU9X50.channelAccelMpuMplY);
+		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_Z, SensorMPU9X50.channelAccelMpuMplZ);
+				
+		// MPL Magnetometer Calibrated
+		aMap.put(ObjectClusterSensorName.MAG_MPU_MPL_X, SensorMPU9X50.channelMagMpuMplX);
+		aMap.put(ObjectClusterSensorName.MAG_MPU_MPL_Y, SensorMPU9X50.channelMagMpuMplY);
+		aMap.put(ObjectClusterSensorName.MAG_MPU_MPL_Z, SensorMPU9X50.channelMagMpuMplZ);
+		
 
 		// MPL Quaternions 6DOF
 		aMap.put(ObjectClusterSensorName.QUAT_MPL_6DOF_W, SensorMPU9X50.channelQuatMpl6DofW);
@@ -1048,21 +1064,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		// MPL Motion Orient
 		aMap.put(ObjectClusterSensorName.MOTIONANDORIENT, SensorMPU9X50.channelMplMotionAndOrient);
 
-		// MPL Gyro Calibrated
-		aMap.put(ObjectClusterSensorName.GYRO_MPU_MPL_X, SensorMPU9X50.channelGyroMpuMplX);
-		aMap.put(ObjectClusterSensorName.GYRO_MPU_MPL_Y, SensorMPU9X50.channelGyroMpuMplY);
-		aMap.put(ObjectClusterSensorName.GYRO_MPU_MPL_Z, SensorMPU9X50.channelGyroMpuMplZ);
-
-		// MPL Accelerometer Calibrated
-		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_X, SensorMPU9X50.channelAccelMpuMplX);
-		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_Y, SensorMPU9X50.channelAccelMpuMplY);
-		aMap.put(ObjectClusterSensorName.ACCEL_MPU_MPL_Z, SensorMPU9X50.channelAccelMpuMplZ);
-
-		// MPL Magnetometer Calibrated
-		aMap.put(ObjectClusterSensorName.MAG_MPU_MPL_X, SensorMPU9X50.channelMagMpuMplX);
-		aMap.put(ObjectClusterSensorName.MAG_MPU_MPL_Y, SensorMPU9X50.channelMagMpuMplY);
-		aMap.put(ObjectClusterSensorName.MAG_MPU_MPL_Z, SensorMPU9X50.channelMagMpuMplZ);
-		
 		// Raw 6DOF Quaterian's from the DMP hardware module of the MPU9150
 		aMap.put(ObjectClusterSensorName.QUAT_DMP_6DOF_W, SensorMPU9X50.channelQuatDmp6DofW);
 		aMap.put(ObjectClusterSensorName.QUAT_DMP_6DOF_X, SensorMPU9X50.channelQuatDmp6DofX);
@@ -1086,7 +1087,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		//TODO populate the other channels depending on firmware version
-		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 	
 	@Override
@@ -1152,7 +1153,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //		double[] unCalibratedMplTemperatureData = new double[1];
 //		double[] unCalibratedMplPedometerData = new double[2];
 //		double[]unCalibratedMplHeadingData = new double[1];	
-		double[] unCalibratedMplTapData = new double[1];
+//		double[] unCalibratedMplTapData = new double[1];
 		double[] unCalibratedMplMotionOrientData = new double[1];
 		Vector3d gyroscope = new Vector3d();
 		
@@ -1360,7 +1361,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					}
 				}
 			}
-			//TODO: separate out tap dir and cnt to two channels 
+			//separate out tap dir and cnt to two channels 
 			//Bits 7-5 - Direction,	Bits 4-0 - Count
 			//Uncalibrated MPL_TAP_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MPL_TAPDIRANDTAPCNT)){
@@ -1427,103 +1428,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 						}
 					}
 				}
-		
-		// Check for required Matrices		
-		double[] CalibratedAccelData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
-		double[] CalibratedMagData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
-     
-		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_MPU)){
-			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_X)){
-					objectCluster.addCalData(channelDetails, CalibratedAccelData[0]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_Y)){
-					objectCluster.addCalData(channelDetails, CalibratedAccelData[1]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_Z)){
-					objectCluster.addCalData(channelDetails, CalibratedAccelData[2]);
-					objectCluster.incrementIndexKeeper();
-				}
-			}
-		}
-		
-		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MAG_MPU)){
-			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_X)){
-					objectCluster.addCalData(channelDetails, CalibratedMagData[0]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_Y)){
-					objectCluster.addCalData(channelDetails, CalibratedMagData[1]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_Z)){
-					objectCluster.addCalData(channelDetails, CalibratedMagData[2]);
-					objectCluster.incrementIndexKeeper();
-				}
-			}
-		}
-			
-		
-		// ------------------ Alternative  MPUMPL Calibration - Check --------------------------
-		
-//		double[] calibratedGyroMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroMpuMplData, AlignmentMatrixMPLGyro, SensitivityMatrixMPLGyro, OffsetVectorMPLGyro);
-//		double[] calibratedAccelMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelMpuMplData, AlignmentMatrixMPLAccel, SensitivityMatrixMPLAccel, OffsetVectorMPLAccel);
-//		double[] calibratedMagMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedMagMpuMplData, AlignmentMatrixMPLMag, SensitivityMatrixMPLMag, OffsetVectorMPLMag);
-
-//		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO_MPU_MPL)){
-//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-//				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_X)){
-//					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[0]);
-//					objectCluster.incrementIndexKeeper();
-//				}
-//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_Y)){
-//					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[1]);
-//					objectCluster.incrementIndexKeeper();
-//				}
-//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_Z)){
-//					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[2]);
-//					objectCluster.incrementIndexKeeper();
-//				}
-//			}
-//		}
-//		
-//		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_MPU_MPL)){
-//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-//				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_X)){
-//					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[0]);
-//					objectCluster.incrementIndexKeeper();
-//				}
-//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_Y)){
-//					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[1]);
-//					objectCluster.incrementIndexKeeper();
-//				}
-//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_Z)){
-//					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[2]);
-//					objectCluster.incrementIndexKeeper();
-//				}
-//			}
-//		}
-//		
-//		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_MPU_MPL)){
-//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-//				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_X)){
-//					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[0]);
-//					objectCluster.incrementIndexKeeper();
-//				}
-//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_Y)){
-//					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[1]);
-//					objectCluster.incrementIndexKeeper();
-//				}
-//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_Z)){
-//					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[2]);
-//					objectCluster.incrementIndexKeeper();
-//
-//				}
-//			}
-//		}
 				//Debugging
 				super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 						new String[]{ObjectClusterSensorName.GYRO_X, CHANNEL_TYPE.UNCAL.toString()}, 
@@ -1555,6 +1459,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		ansdata[2]=data2d[2][0];
 		return ansdata;
 	}
+	
 	private static double[][] matrixmultiplication(double[][] a, double[][] b) {
 
 		int aRows = a.length,
