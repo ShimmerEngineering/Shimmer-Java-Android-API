@@ -378,70 +378,85 @@ public class SensorLSM303 extends AbstractSensor{
 		int index = 0;
 		double[] unCalibratedAccelWrData = new double[3];
 		double[] unCalibratedMagData = new double[3];
-
+		
+		// process data originating from the Shimmer
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
-			
-			//Uncalibrated Accelerometer data
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
-				unCalibratedAccelWrData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			}
-			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
-				unCalibratedAccelWrData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			}
-			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
-				unCalibratedAccelWrData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			}
-			
-			//Uncalibrated Magnetometer data
-			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
-				unCalibratedMagData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			}
-			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
-				unCalibratedMagData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			}
-			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
-				unCalibratedMagData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			}	
 		}
-			
+		
+		// get uncalibrated data for each (sub)sensor
+		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_WR)){
+			for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				//Uncalibrated Accelerometer data
+				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
+					unCalibratedAccelWrData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
+					unCalibratedAccelWrData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
+					unCalibratedAccelWrData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}
+			}
+		}
+		else if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MAG)){
+			for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				//Uncalibrated Magnetometer data
+				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
+					unCalibratedMagData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
+					unCalibratedMagData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
+					unCalibratedMagData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}	
+			}
+		}
+	
 		//Calibration
 		double[] calibratedAccelWrData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelWrData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
 		double[] calibratedMagData = UtilCalibration.calibrateInertialSensorData(unCalibratedMagData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
 
-		//Add calibrated data to Object cluster
-		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
-				objectCluster.addCalData(channelDetails, calibratedAccelWrData[0]);
-				objectCluster.incrementIndexKeeper();
+		//Add calibrated data to Object cluster for each (sub)sensor
+		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_WR)){	
+			for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
+					objectCluster.addCalData(channelDetails, calibratedAccelWrData[0]);
+					objectCluster.incrementIndexKeeper();
+				}
+				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
+					objectCluster.addCalData(channelDetails, calibratedAccelWrData[1]);
+					objectCluster.incrementIndexKeeper();
+				}
+				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
+					objectCluster.addCalData(channelDetails, calibratedAccelWrData[2]);
+					objectCluster.incrementIndexKeeper();
+				}
+				index = index + channelDetails.mDefaultNumBytes;
 			}
-			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
-				objectCluster.addCalData(channelDetails, calibratedAccelWrData[1]);
-				objectCluster.incrementIndexKeeper();
-			}
-			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
-				objectCluster.addCalData(channelDetails, calibratedAccelWrData[2]);
-				objectCluster.incrementIndexKeeper();
-			}
-			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
-				objectCluster.addCalData(channelDetails, calibratedMagData[0]);
-				objectCluster.incrementIndexKeeper();
-			}
-			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
-				objectCluster.addCalData(channelDetails, calibratedMagData[1]);
-				objectCluster.incrementIndexKeeper();
-			}
-			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
-				objectCluster.addCalData(channelDetails, calibratedMagData[2]);
-				objectCluster.incrementIndexKeeper();
-			}
-
-			index = index + channelDetails.mDefaultNumBytes;
 		}
-		
+		else if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MAG)){
+			for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
+					objectCluster.addCalData(channelDetails, calibratedMagData[0]);
+					objectCluster.incrementIndexKeeper();
+				}
+				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
+					objectCluster.addCalData(channelDetails, calibratedMagData[1]);
+					objectCluster.incrementIndexKeeper();
+				}
+				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
+					objectCluster.addCalData(channelDetails, calibratedMagData[2]);
+					objectCluster.incrementIndexKeeper();
+				}
+				index = index + channelDetails.mDefaultNumBytes;
+			}
+		}
+
 		//Debugging
 		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 				new String[]{ObjectClusterSensorName.ACCEL_WR_X, CHANNEL_TYPE.UNCAL.toString()}, 
