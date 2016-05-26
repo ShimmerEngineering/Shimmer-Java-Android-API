@@ -361,7 +361,6 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	@Override
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		Object returnValue = null;
-		int buf = 0;
 
 		switch(componentName){
 			case(GuiLabelConfig.GSR_RANGE):
@@ -403,7 +402,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//TODO set defaults for particular sensor
+			//default auto range
+			setGSRRange(4);
 			return true;
 		}
 		return false;
@@ -412,7 +412,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	@Override
 	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
+		if(mConfigOptionsMap.containsKey(stringKey)){
+			return true;
+		}
 		return false;
 	}
 
@@ -445,36 +447,6 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	}
 	//--------- Abstract methods implemented end --------------
-
-	
-	
-
-
-/*TODO - RS (25/5/2016) -> [9:51:23 AM] Ruud Stolk: General question re. Sensor classes: 
-	- Are conflicting sensors handled inside the senors classes or in Configuration/ShimmerObject/ShimmerDevice?  (saw "generateListOfSensorMapKeysConflicting" commented out in GSR class)
-			[9:55:17 AM] Mark Nolan: conflicting sensor info is stored in the sensor classes but needs to be handled in ShimmerDevice
-			*/
-	
-//	@Override
-//	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-//		return mListOfSensorMapKeysConflicting = Arrays.asList(
-//				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-//				Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-//				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-//				Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-//				Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-//				Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-//				Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-////				Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-////				Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-////				Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-////				Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
-//				Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-//				Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP);
-//		
-//	}
-
-	
 
 
 	//--------- Sensor specific methods start --------------

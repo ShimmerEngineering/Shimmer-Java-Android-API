@@ -285,7 +285,7 @@ public class Shimmer4 extends ShimmerDevice {
 		
 		if(generateForWritingToShimmer) {
 			// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
-			// (already set to 0xFF at start of method but just incase)
+			// (already set to 0xFF at start of method but just in case)
 			System.arraycopy(infoMemLayout.invalidMacId, 0, mInfoMemBytes, infoMemLayout.idxMacAddress, infoMemLayout.lengthMacIdBytes);
 
 			//TODO only temporarily here to deal with fake Shimmer4 (i.e., a Shimmer3)

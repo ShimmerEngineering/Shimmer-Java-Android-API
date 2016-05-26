@@ -219,8 +219,7 @@ public class SensorPPG extends AbstractSensor {
 	//--------- Configuration options end --------------
 	
 
-	//--------- Sensor info start --------------
-	
+	//--------- Sensor info start --------------	
 	public static final SensorDetailsRef sensorPPG = new SensorDetailsRef(
 			0x04<<(2*8), // check   //XXX what needs to be checked here? Old comment?
 			0x04<<(2*8), 
@@ -1136,10 +1135,10 @@ public class SensorPPG extends AbstractSensor {
 			if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled())) {
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(true);
 				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled()) {
-					mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
+					mPpgAdcSelectionGsrBoard = ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
 				}
 				else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled()) {
-					mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
+					mPpgAdcSelectionGsrBoard = ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
 
 				}
 			}
@@ -1153,10 +1152,10 @@ public class SensorPPG extends AbstractSensor {
 			if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled())) {
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(true);
 				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled()) {
-					mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
+					mPpg1AdcSelectionProto3DeluxeBoard = ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
 				}
 				else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled()) {
-					mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
+					mPpg1AdcSelectionProto3DeluxeBoard = ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
 				}
 			}
 			else {
@@ -1168,10 +1167,10 @@ public class SensorPPG extends AbstractSensor {
 			if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled())) {
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(true);
 				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled()) {
-					mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
+					mPpg2AdcSelectionProto3DeluxeBoard = ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
 				}
 				else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled()) {
-					mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
+					mPpg2AdcSelectionProto3DeluxeBoard = ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
 				}
 			}
 			else {
