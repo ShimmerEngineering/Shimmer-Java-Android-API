@@ -167,10 +167,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)"; 
 		public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";
 		public static final String MPL_HEADING = "MPU Heading";
-		public static final String MPL_PEDOMETER = "MPL_Pedometer"; // not currently supported
-		public static final String MPL_PEDOM_CNT = "MPL_Pedom_cnt"; // not currently supported
-		public static final String MPL_PEDOM_TIME = "MPL_Pedom_Time"; // not currently supported
+		public static final String MPL_PEDOMETER = "MPL_Pedometer"; 		// not currently supported
+		public static final String MPL_PEDOM_CNT = "MPL_Pedom_cnt"; 		// not currently supported
+		public static final String MPL_PEDOM_TIME = "MPL_Pedom_Time"; 		// not currently supported
 		public static final String MPL_TAPDIRANDTAPCNT = "TapDirAndTapCnt"; // not currently supported
+		public static final String MPL_TAPDIR = "TapDir";                   // not currently supported
+		public static final String MPL_TAPCNT = "TapCnt"; 					// not currently supported
 		public static final String MPL_MOTIONANDORIENT = "MotionAndOrient"; // not currently supported
 	}
 	
@@ -215,6 +217,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String PEDOMETER_CNT = "MPU9150_MPL_PEDOM_CNT"; // not available but supported in FW
 		public static final String PEDOMETER_TIME = "MPU9150_MPL_PEDOM_TIME"; // not available but supported in FW
 		public static final String TAP_DIR_AND_CNT = "MPU9150_MPL_TAP"; // not available but supported in FW
+		public static final String TAP_DIR = "MPU9150_MPL_TAP_DIR"; // not available but supported in FW
+		public static final String TAP_CNT = "MPU9150_MPL_TAP_CNT"; // not available but supported in FW
 		public static final String MOTION_AND_ORIENT = "MPU9150_MPL_MOTION"; // not available but supported in FW
 		public static final String MPU_MPL_GYRO_X = "MPU9150_MPL_GYRO_X_CAL";
 		public static final String MPU_MPL_GYRO_Y = "MPU9150_MPL_GYRO_Y_CAL";
@@ -244,6 +248,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static String MAG_MPU_Z = "Mag_MPU_Z";
 		
 		public static String TAPDIRANDTAPCNT = "TapDirAndTapCnt";
+		public static String TAPDIR = "Tap_Dirirection";
+		public static String TAPCNT = "Tap_Count";
 		public static String MOTIONANDORIENT = "MotionAndOrient";
 		
 		public static String MPL_TEMPERATURE = "MPL_Temperature";
@@ -554,7 +560,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_TAP),
 			Arrays.asList(GuiLabelConfig.MPU9150_MPL_RATE),
 			Arrays.asList(
-					ObjectClusterSensorName.TAPDIRANDTAPCNT),
+					ObjectClusterSensorName.TAPDIR,
+					ObjectClusterSensorName.TAPCNT),
 			false);
 	
 	public static final SensorDetailsRef sensorMpu9150MplMotion = new SensorDetailsRef((long)0, (long)0x01<<(3*8), GuiLabelSensors.MPL_MOTIONANDORIENT,
@@ -562,7 +569,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MOTION_ORIENT),
 			Arrays.asList(GuiLabelConfig.MPU9150_MPL_RATE),
 			Arrays.asList(
-					ObjectClusterSensorName.TAPDIRANDTAPCNT),
+					ObjectClusterSensorName.MOTIONANDORIENT),
 			false);
 
 	//MPL calibrated sensors
@@ -850,15 +857,32 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					CHANNEL_UNITS.NO_UNITS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
-	// MPL Tap
-	public static final ChannelDetails channelMplTapDirAndTapCnt = new ChannelDetails(
-					ObjectClusterSensorName.TAPDIRANDTAPCNT,
-					ObjectClusterSensorName.TAPDIRANDTAPCNT,
-					DatabaseChannelHandles.TAP_DIR_AND_CNT,
-					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+//	// MPL Tap
+//	public static final ChannelDetails channelMplTapDirAndTapCnt = new ChannelDetails(
+//					ObjectClusterSensorName.TAPDIRANDTAPCNT,
+//					ObjectClusterSensorName.TAPDIRANDTAPCNT,
+//					DatabaseChannelHandles.TAP_DIR_AND_CNT,
+//					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
+//					CHANNEL_UNITS.NO_UNITS,
+//					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	// MPL Tap Direction
+	public static final ChannelDetails channelMplTapDir = new ChannelDetails(
+			ObjectClusterSensorName.TAPDIR,
+			ObjectClusterSensorName.TAPDIR,
+			DatabaseChannelHandles.TAP_DIR,
+			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
+	//MPL Tap Count
+	public static final ChannelDetails channelMplTapCnt = new ChannelDetails(
+			ObjectClusterSensorName.TAPCNT,
+			ObjectClusterSensorName.TAPCNT,
+			DatabaseChannelHandles.TAP_CNT,
+			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	
 	// MPL Motion Orient
 	public static final ChannelDetails channelMplMotionAndOrient = new ChannelDetails(
 					ObjectClusterSensorName.MOTIONANDORIENT,
@@ -1014,9 +1038,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		aMap.put(ObjectClusterSensorName.MPL_PEDOM_CNT, SensorMPU9X50.channelMplPedomCount);
 		aMap.put(ObjectClusterSensorName.MPL_PEDOM_TIME, SensorMPU9X50.channelMplPedomTime);
 
-		// MPL Tap
-		aMap.put(ObjectClusterSensorName.TAPDIRANDTAPCNT, SensorMPU9X50.channelMplTapDirAndTapCnt);
-
+//		// MPL Tap
+//		aMap.put(ObjectClusterSensorName.TAPDIRANDTAPCNT, SensorMPU9X50.channelMplTapDirAndTapCnt);
+		// MPL Tap Direction
+		aMap.put(ObjectClusterSensorName.TAPDIR, SensorMPU9X50.channelMplTapDir);
+		// MPL Tap Count
+		aMap.put(ObjectClusterSensorName.TAPCNT, SensorMPU9X50.channelMplTapCnt);
+		
 		// MPL Motion Orient
 		aMap.put(ObjectClusterSensorName.MOTIONANDORIENT, SensorMPU9X50.channelMplMotionAndOrient);
 
@@ -1337,8 +1365,15 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			//Uncalibrated MPL_TAP_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MPL_TAPDIRANDTAPCNT)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TAPDIRANDTAPCNT)){
-						unCalibratedMplTapData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TAPDIR)){
+						double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
+					}
+					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TAPCNT)){
+						double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();	
 					}
 				}
 			}
