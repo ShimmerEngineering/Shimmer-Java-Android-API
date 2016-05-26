@@ -175,8 +175,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String GYRO = GuiLabelSensors.GYRO;
 		public static final String MPU_ACCEL_GYRO_MAG = "MPU 9DoF";
 		public static final String MPU_OTHER = "MPU Other";
-		
-		
 	}
 	
 	public static class DatabaseChannelHandles{
