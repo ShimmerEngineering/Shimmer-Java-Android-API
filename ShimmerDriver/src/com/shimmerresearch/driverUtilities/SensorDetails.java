@@ -47,17 +47,29 @@ public class SensorDetails implements Serializable{
 //		}
 	}
 
-	public ObjectCluster processShimmerChannelData(byte[] rawData, ObjectCluster objectCluster) {
-		for(ChannelDetails channelDetails:mListOfChannels){
+	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+		int index = 0;
+		for (ChannelDetails channelDetails:mListOfChannels){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
-			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
-			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
+			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			objectCluster = processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+			index += channelDetails.mDefaultNumBytes;
 		}
 		return objectCluster;
 	}
+
+//	public ObjectCluster processShimmerChannelData(byte[] rawData, ObjectCluster objectCluster) {
+//		int index = 0;
+//		for(ChannelDetails channelDetails:mListOfChannels){
+//			//first process the data originating from the Shimmer sensor
+//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+//			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+//			objectCluster = processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+//			index += channelDetails.mDefaultNumBytes;
+//		}
+//		return objectCluster;
+//	}
 	
 	/** To process data originating from the Shimmer device
 	 * @param channelByteArray The byte array packet, or byte array sd log
@@ -66,24 +78,11 @@ public class SensorDetails implements Serializable{
 	 * @return
 	 */
 	public static ObjectCluster processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, ObjectCluster objectCluster){
-//		if(channelDetails.mIsEnabled){
-			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
-			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
-//		}
-
+		long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
+		objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
 		return objectCluster;
 	}
-
-	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
-		int index = 0;
-		for (ChannelDetails channelDetails:mListOfChannels){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = processShimmerChannelData(rawData, channelDetails, objectCluster);
-		}
-		return objectCluster;
-	}
+	
 	
 	public void updateSensorDetailsWithCommsTypes(List<COMMUNICATION_TYPE> listOfSupportedCommsTypes) {
 //		mapOfIsEnabledPerCommsType = new HashMap<COMMUNICATION_TYPE, Boolean>();
