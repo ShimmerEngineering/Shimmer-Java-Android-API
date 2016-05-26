@@ -1129,9 +1129,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			index = index + channelDetails.mDefaultNumBytes;
 		}
-		
-			//Uncalibrated Gyro data
+		//Uncalibrated Gyro data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_X)){
@@ -1145,92 +1145,161 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					}
 				}
 			}
-			//Uncalibrated Gyro_Mpu_Mpl_data
+			//UnCal + Cal Gyro_Mpu_Mpl_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO_MPU_MPL)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_X)){
-						unCalibratedGyroMpuMplData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedGyroMpuMplData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_Y)){
-						unCalibratedGyroMpuMplData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedGyroMpuMplData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_Z)){
-						unCalibratedGyroMpuMplData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedGyroMpuMplData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 				}
 			}
-			//Uncalibrated Accel_Mpu_Mpl_data
+			// UnCal + Cal Accel_Mpu_Mpl_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_MPU_MPL)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_X)){
-						unCalibratedAccelMpuMplData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-					}
+//						unCalibratedAccelMpuMplData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_Y)){
-						unCalibratedAccelMpuMplData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedAccelMpuMplData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_Z)){
-						unCalibratedAccelMpuMplData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedAccelMpuMplData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 				}
 			}
-			//Uncalibrated Mag_Mpu_Mpl_data
+			//UnCal + Cal Mag_Mpu_Mpl_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MAG_MPU_MPL)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_X)){
-						unCalibratedMagMpuMplData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMagMpuMplData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_Y)){
-						unCalibratedMagMpuMplData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMagMpuMplData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_Z)){
-						unCalibratedMagMpuMplData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMagMpuMplData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 				}
 			}
-			//Uncalibrated Quat_Mpl_6DOF_data
+			//Uncal + Cal Quat_Mpl_6DOF_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.QUAT_DMP_6DOF)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.QUAT_MPL_6DOF_W)){
-						unCalibratedMplQuat6DOFData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMplQuat6DOFData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 30);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.QUAT_MPL_6DOF_X)){
-						unCalibratedMplQuat6DOFData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMplQuat6DOFData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 30);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.QUAT_MPL_6DOF_Y)){
-						unCalibratedMplQuat6DOFData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMplQuat6DOFData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 30);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.QUAT_MPL_6DOF_Z)){
-						unCalibratedMplQuat6DOFData[3]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMplQuat6DOFData[3]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 30);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
+					
 				}
 			}
-			//Uncalibrated MPL_Temperature_Data
+			//Unca + Cal MPL_Temperature_Data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MPL_TEMPERATURE)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MPL_TEMPERATURE)){
-						unCalibratedMplTemperatureData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();					
 					}
 				}
 			}
-			//Uncalibrated MPL_Pedometer_Data
+			//Uncal + Cal MPL_Pedometer_Data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MPL_PEDOMETER)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MPL_PEDOM_CNT)){
-						unCalibratedMplPedometerData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMplPedometerData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MPL_PEDOM_TIME)){
-						unCalibratedMplPedometerData[1] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMplPedometerData[1] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 				}
 			}
-			//Uncalibrated MPL_HEADING_data
+			
+			
+			//Uncal + Cal MPL_HEADING_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MPL_HEADING)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MPL_HEADING)){
-						unCalibratedMplHeadingData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//						unCalibratedMplHeadingData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						double calData = unCalData/Math.pow(2, 16);
+						objectCluster.addCalData(channelDetails, calData);
+						objectCluster.incrementIndexKeeper();
 					}
 				}
 			}
+			//TODO: separate out tap dir and cnt to two channels 
+			//Bits 7-5 - Direction,	Bits 4-0 - Count
 			//Uncalibrated MPL_TAP_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MPL_TAPDIRANDTAPCNT)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -1239,6 +1308,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					}
 				}
 			}
+			
+			//TODO: separate out motion and orientation to two channels
+			//Bit 7 - Motion/No motion,	Bits 5-4 - Display Orientation,	Bits 3-1 - Orientation,	Bit 0 - Flip indicator
 			//Uncalibrated MPL_MOTION_ORIENT_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MPL_MOTIONANDORIENT)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -1247,7 +1319,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					}
 				}
 			}
-//--------------Calibration Start--------------
+//	-----------------------Calibration Start----------------------------------
 		
 		double[] CalibratedGyroData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 		if (mEnableCalibration){
@@ -1269,84 +1341,79 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				}
 			}
 		
-		double[] calibratedGyroMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroMpuMplData, AlignmentMatrixMPLGyro, SensitivityMatrixMPLGyro, OffsetVectorMPLGyro);
-		double[] calibratedAccelMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelMpuMplData, AlignmentMatrixMPLAccel, SensitivityMatrixMPLAccel, OffsetVectorMPLAccel);
-		double[] calibratedMagMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedMagMpuMplData, AlignmentMatrixMPLMag, SensitivityMatrixMPLMag, OffsetVectorMPLMag);
-		
-
 		//Add calibrated data to Object cluster
-		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO)){
-			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_X)){
-					objectCluster.addCalData(channelDetails, CalibratedGyroData[0]);
-					objectCluster.incrementIndexKeeper();
+				if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO)){
+					for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+						if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_X)){
+							objectCluster.addCalData(channelDetails, CalibratedGyroData[0]);
+							objectCluster.incrementIndexKeeper();
+						}
+						else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_Y)){
+							objectCluster.addCalData(channelDetails, CalibratedGyroData[1]);
+							objectCluster.incrementIndexKeeper();
+						}
+						else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_Z)){
+							objectCluster.addCalData(channelDetails, CalibratedGyroData[2]);
+							objectCluster.incrementIndexKeeper();
+						}
+					}
 				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_Y)){
-					objectCluster.addCalData(channelDetails, CalibratedGyroData[1]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_Z)){
-					objectCluster.addCalData(channelDetails, CalibratedGyroData[2]);
-					objectCluster.incrementIndexKeeper();
-				}
-				index = index + channelDetails.mDefaultNumBytes;
-			}
-		}
 		
-		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO_MPU_MPL)){
-			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_X)){
-					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[0]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_Y)){
-					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[1]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_Z)){
-					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[2]);
-					objectCluster.incrementIndexKeeper();
-				}
-				index = index + channelDetails.mDefaultNumBytes;
-			}
-		}
-		
-		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_MPU_MPL)){
-			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_X)){
-					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[0]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_Y)){
-					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[1]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_Z)){
-					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[2]);
-					objectCluster.incrementIndexKeeper();
-				}
-				index = index + channelDetails.mDefaultNumBytes;
-			}
-		}
-		
-		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_MPU_MPL)){
-			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_X)){
-					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[0]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_Y)){
-					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[1]);
-					objectCluster.incrementIndexKeeper();
-				}
-				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_Z)){
-					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[2]);
-					objectCluster.incrementIndexKeeper();
+//		double[] calibratedGyroMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroMpuMplData, AlignmentMatrixMPLGyro, SensitivityMatrixMPLGyro, OffsetVectorMPLGyro);
+//		double[] calibratedAccelMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelMpuMplData, AlignmentMatrixMPLAccel, SensitivityMatrixMPLAccel, OffsetVectorMPLAccel);
+//		double[] calibratedMagMpuMplData = UtilCalibration.calibrateInertialSensorData(unCalibratedMagMpuMplData, AlignmentMatrixMPLMag, SensitivityMatrixMPLMag, OffsetVectorMPLMag);
 
-				}
-				index = index + channelDetails.mDefaultNumBytes;
-			}
-		}
+//		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO_MPU_MPL)){
+//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+//				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_X)){
+//					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[0]);
+//					objectCluster.incrementIndexKeeper();
+//				}
+//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_Y)){
+//					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[1]);
+//					objectCluster.incrementIndexKeeper();
+//				}
+//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_MPU_MPL_Z)){
+//					objectCluster.addCalData(channelDetails, calibratedGyroMpuMplData[2]);
+//					objectCluster.incrementIndexKeeper();
+//				}
+//			}
+//		}
+//		
+//		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_MPU_MPL)){
+//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+//				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_X)){
+//					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[0]);
+//					objectCluster.incrementIndexKeeper();
+//				}
+//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_Y)){
+//					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[1]);
+//					objectCluster.incrementIndexKeeper();
+//				}
+//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_MPU_MPL_Z)){
+//					objectCluster.addCalData(channelDetails, calibratedAccelMpuMplData[2]);
+//					objectCluster.incrementIndexKeeper();
+//				}
+//			}
+//		}
+//		
+//		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_MPU_MPL)){
+//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+//				if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_X)){
+//					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[0]);
+//					objectCluster.incrementIndexKeeper();
+//				}
+//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_Y)){
+//					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[1]);
+//					objectCluster.incrementIndexKeeper();
+//				}
+//				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_MPL_Z)){
+//					objectCluster.addCalData(channelDetails, calibratedMagMpuMplData[2]);
+//					objectCluster.incrementIndexKeeper();
+//
+//				}
+//			}
+//		}
 				//Debugging
 				super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 						new String[]{ObjectClusterSensorName.GYRO_X, CHANNEL_TYPE.UNCAL.toString()}, 
