@@ -2523,7 +2523,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					checkBattery();
 				}
 			}
-			
+			 processAlgorithmData(objectCluster);	
 		}
 		else{
 			throw new Exception("The Hardware version is not compatible");

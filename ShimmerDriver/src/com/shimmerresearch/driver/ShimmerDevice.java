@@ -1004,8 +1004,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		//add in algorithm processing
 		// TO  TEST
-		processAlgorithmData(ojc);
-		
+		ojc = processAlgorithmData(ojc);
 		return ojc;
 	}
 	
@@ -2310,48 +2309,55 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		}
 //	}
 	
-	public ObjectCluster processAlgorithmData(ObjectCluster ojc){
+	public ObjectCluster processAlgorithmData(ObjectCluster ojc) {
 		try {
-				//update to work with consensys 4.3 with time sync switched off
-				ojc.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN));
-	    		String[] sensorNames = new String[ojc.mSensorNames.length+1];
-	    		String[] unitCal = new String[ojc.mUnitCal.length+1];
-	    		String[] unitUncal = new String[ojc.mUnitUncal.length+1];
-	    		double[] uncalData = new double[ojc.mUncalData.length+1];
-	    		double[] calData = new double[ojc.mCalData.length+1];
-	    		System.arraycopy(ojc.mSensorNames, 0, sensorNames, 0, ojc.mSensorNames.length);
-	    		System.arraycopy(ojc.mUnitCal, 0, unitCal, 0, ojc.mUnitCal.length);
-	    		System.arraycopy(ojc.mUnitUncal, 0, unitUncal, 0, ojc.mUnitUncal.length);
-	    		System.arraycopy(ojc.mUncalData, 0, uncalData, 0, ojc.mUncalData.length);
-	    		System.arraycopy(ojc.mCalData, 0, calData, 0, ojc.mCalData.length);
-	    		sensorNames[sensorNames.length-1] = Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;
-	    		unitCal[unitCal.length-1] = CHANNEL_UNITS.MILLISECONDS;
-	    		unitUncal[unitUncal.length-1] = "";
-	    		uncalData[uncalData.length-1] = Double.NaN;
-	    		calData[calData.length-1] = Double.NaN;
-	    		ojc.mSensorNames = sensorNames;
-	    		ojc.mUnitCal = unitCal;
-	    		ojc.mUnitUncal = unitUncal;
-	    		ojc.mUncalData = uncalData;
-	    		ojc.mCalData = calData;
+			// update to work with consensys 4.3 with time sync switched off
+			ojc.mPropertyCluster.put(
+					Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+					new FormatCluster(CHANNEL_TYPE.CAL.toString(),
+							CHANNEL_UNITS.MILLISECONDS, Double.NaN));
+			String[] sensorNames = new String[ojc.mSensorNames.length + 1];
+			String[] unitCal = new String[ojc.mUnitCal.length + 1];
+			String[] unitUncal = new String[ojc.mUnitUncal.length + 1];
+			double[] uncalData = new double[ojc.mUncalData.length + 1];
+			double[] calData = new double[ojc.mCalData.length + 1];
+			System.arraycopy(ojc.mSensorNames, 0, sensorNames, 0,
+					ojc.mSensorNames.length);
+			System.arraycopy(ojc.mUnitCal, 0, unitCal, 0, ojc.mUnitCal.length);
+			System.arraycopy(ojc.mUnitUncal, 0, unitUncal, 0,
+					ojc.mUnitUncal.length);
+			System.arraycopy(ojc.mUncalData, 0, uncalData, 0,
+					ojc.mUncalData.length);
+			System.arraycopy(ojc.mCalData, 0, calData, 0, ojc.mCalData.length);
+			sensorNames[sensorNames.length - 1] = Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;
+			unitCal[unitCal.length - 1] = CHANNEL_UNITS.MILLISECONDS;
+			unitUncal[unitUncal.length - 1] = "";
+			uncalData[uncalData.length - 1] = Double.NaN;
+			calData[calData.length - 1] = Double.NaN;
+			ojc.mSensorNames = sensorNames;
+			ojc.mUnitCal = unitCal;
+			ojc.mUnitUncal = unitUncal;
+			ojc.mUncalData = uncalData;
+			ojc.mCalData = calData;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// create new functions
-		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
-			try {
-				ojc = (ObjectCluster)((AlgorithmResultObject) aA.processDataRealTime(ojc)).mResult;
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		for (AbstractAlgorithm aA : mMapOfAlgorithmModules.values()) {
+			if (mAlgorithmChannelsMap.get(aA).mEnabled) {
+				try {
+					ojc = (ObjectCluster) ((AlgorithmResultObject) aA
+							.processDataRealTime(ojc)).mResult;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
-		
 		return ojc;
 	}
-	
 
 	public boolean doesAlgorithmAlreadyExist(AbstractAlgorithm obj){
 		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values())
