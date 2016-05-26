@@ -317,11 +317,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public String getTrialName(){
 		return mTrialName;
 	}
-	
-	public static boolean isCompatibleWith(ShimmerVerObject mShimmerVerObject) {
-		// TODO search through mListSVO
-		return true;
-	}
+
 
 	
 }

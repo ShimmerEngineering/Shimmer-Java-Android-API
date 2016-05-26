@@ -138,6 +138,7 @@ import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.UtilParseData;
 import com.shimmerresearch.algorithms.AlgorithmDetailsRef.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
+import com.shimmerresearch.biophysicalprocessing.ECGtoHRAdaptive;
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
@@ -2524,7 +2525,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					checkBattery();
 				}
 			}
-			
+			 processAlgorithmData(objectCluster);	
 		}
 		else{
 			throw new Exception("The Hardware version is not compatible");
@@ -6900,6 +6901,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
+
 		
 		if (getHardwareVersion() != -1){
 			if (getHardwareVersion() == HW_ID.SHIMMER_2R){
@@ -6914,6 +6916,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
 				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMapRef;
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMapRef;
+			
 				
 				generateMapOfAlgorithmModules();
 				generateAlgorithmChannelsMap();
@@ -6944,11 +6947,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-	private void generateAlgorithmChannelsMap(){
-//		mAlgorithmChannelsMap = Configuration.Shimmer3.mCompleteAlgorithmMap;
+	private void generateAlgorithmChannelsMap() {
+		// createMapOfSupportedAlgorithmChannels();
 		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
-		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
+		for (AbstractAlgorithm aA : mMapOfAlgorithmModules.values()) {
 			mAlgorithmChannelsMap.putAll(aA.mAlgorithmChannelsMap);
+		}
+		// check if any algorithm has been previously enabled
+		for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
+			if ((mDerivedSensors & aD.mAlgorithmDetailsRef.mDerivedSensorBitmapID) > 0) {
+				aD.mEnabled = true;
+			} else {
+				aD.mEnabled = false;
+			}
 		}
 	}
 	

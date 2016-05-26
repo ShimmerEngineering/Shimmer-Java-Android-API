@@ -254,7 +254,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	@Deprecated
-	public void addData(String channelName,String channelType, String units, double data){
+	public void addData(String channelName, String channelType, String units, double data){
 		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data));
 		
 	}

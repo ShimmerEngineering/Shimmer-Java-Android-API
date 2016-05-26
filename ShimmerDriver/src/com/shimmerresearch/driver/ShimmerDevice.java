@@ -84,6 +84,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, AbstractAlgorithm> mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 	/** All supported channels based on hardware, expansion board and firmware */
 	protected Map<String, AlgorithmDetails> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+	//protected List<AlgorithmDetails> mSupportedAlgorithmChannelsList = new ArrayList< AlgorithmDetails>();
+
 	/** for tile generation in GUI configuration */ 
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 
@@ -998,8 +1000,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		//add in algorithm processing
 		// TO  TEST
-		processAlgorithmData(ojc);
-		
+		ojc = processAlgorithmData(ojc);
 		return ojc;
 	}
 	
@@ -2181,91 +2182,91 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mAlgorithmChannelsMap;
 	}
 
-	public List<AlgorithmDetails> getListOfSupportedAlgorithmChannels() {
-		
-		List<AlgorithmDetails> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetails>();
-		parentLoop:
-    	for(AlgorithmDetails algorithmDetails:mAlgorithmChannelsMap.values()) {
-    		if(algorithmDetails.mAlgorithmDetailsRef.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
-        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
-    				if(isSensorEnabled(sensorMapKey)){
-    					listOfSupportAlgorihmChannels.add(algorithmDetails);
-    					continue parentLoop;
-    				}
-        		}
-    		}
-    		else if(algorithmDetails.mAlgorithmDetailsRef.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
-        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
-        			if(!isSensorEnabled(sensorMapKey)){
-    					continue parentLoop;
-        			}
-//        			if(!mSensorMap.containsKey(sensorMapKey)){
+//	public List<AlgorithmDetails> getListOfSupportedAlgorithmChannels() {
+//		
+//		List<AlgorithmDetails> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetails>();
+//		parentLoop:
+//    	for(AlgorithmDetailsRef algorithmDetails:mSupportedAlgorithmChannelsMap) {
+//    		if(algorithmDetails.mAlgorithmDetailsRef.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
+//        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
+//    				if(isSensorEnabled(sensorMapKey)){
+//    					listOfSupportAlgorihmChannels.add(algorithmDetails);
+//    					continue parentLoop;
+//    				}
+//        		}
+//    		}
+//    		else if(algorithmDetails.mAlgorithmDetailsRef.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
+//        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
+//        			if(!isSensorEnabled(sensorMapKey)){
 //    					continue parentLoop;
 //        			}
-//        			else{
-//        				if(!mSensorMap.get(sensorMapKey).isEnabled()){
-//        					continue parentLoop;
-//        				}
+////        			if(!mSensorMap.containsKey(sensorMapKey)){
+////    					continue parentLoop;
+////        			}
+////        			else{
+////        				if(!mSensorMap.get(sensorMapKey).isEnabled()){
+////        					continue parentLoop;
+////        				}
+////        			}
+//        		
+//       			
+//      			//made it to past the last sensor
+//        			if(sensorMapKey==algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors.get(algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors.size()-1)){
+//    					listOfSupportAlgorihmChannels.add(algorithmDetails);
 //        			}
-        		
-       			
-      			//made it to past the last sensor
-        			if(sensorMapKey==algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors.get(algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors.size()-1)){
-    					listOfSupportAlgorihmChannels.add(algorithmDetails);
-        			}
-        		}
-		
-    		}	
-    	}
-
-		// TODO Auto-generated method stub
-		return listOfSupportAlgorihmChannels;
-	}
+//        		}
+//		
+//    		}	
+//    	}
+//
+//		// TODO Auto-generated method stub
+//		return listOfSupportAlgorihmChannels;
+//	}
 
 	
-	public List<AlgorithmDetails> getListOfCompatibleAlgorithmChannels() {
+//	public void createMapOfSupportedAlgorithmChannels() {
+//
+//		// returns list of compatible algorithms based on Shimmer hardware
+//		parentLoop:
+//			for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
+//			for (Integer sensorMapKey : aD.mAlgorithmDetailsRef.mListOfRequiredSensors) {
+//				if (mSensorMap.containsKey(sensorMapKey)) {
+//					mAlgorithmChannelsMap.put(aD.mAlgorithmDetailsRef.mAlgorithmName, aD);
+//				}
+//			}
+//		}
+//
+//	}
+	
+	public Map<String, AlgorithmDetails> getSupportedAlgorithmChannels(){
 		
-		//mMapOfSensorClasses
-
-		//returns list of compatible algorithms based on Shimmer hardware 
-		List<AlgorithmDetails> listOfCompatibleAlgorithmChannels = new ArrayList<AlgorithmDetails>();
+	Map<String, AlgorithmDetails> mSupportedAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+		// returns list of compatible algorithms based on Shimmer hardware
 		parentLoop:
-    	for(AlgorithmDetails algorithmDetails:mAlgorithmChannelsMap.values()) {
-    		
-    		//if(algorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
-        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetailsRef.mListOfRequiredSensors){
-        			if(mSensorMap.containsKey(sensorMapKey)){
-        					listOfCompatibleAlgorithmChannels.add(algorithmDetails);
-        			}
-        		}
-    	}
-
-		// TODO Auto-generated method stub
-		return listOfCompatibleAlgorithmChannels;
+			for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
+			for (Integer sensorMapKey : aD.mAlgorithmDetailsRef.mListOfRequiredSensors) {
+				if (mSensorMap.containsKey(sensorMapKey)) {
+					mSupportedAlgorithmChannelsMap.put(aD.mAlgorithmDetailsRef.mAlgorithmName, aD);
+				}
+			}
+		}		
+		return mSupportedAlgorithmChannelsMap;
 	}
-
+	
 	public Map<String, List<String>> getAlgorithmGroupingMap() {
-		
+		//TODO
+//		 List<String> tempAlgorithmChannelNames = new ArrayList<String>();
+//		 String tempGroupName = mAlgorithmChannelsMap.get;
+//		 
+//		parentLoop:
+//	    	for(AlgorithmDetails algorithmDetails:mAlgorithmChannelsMap.values()) {
+//	    		if(algorithmDetails.mAlgorithmDetailsRef.mGroupName.contains(tempGroupName)){
+//	    		tempAlgorithmChannelNames.add(algorithmDetails.mAlgorithmDetailsRef.mAlgorithmName);
+//	    		tempGroupName = algorithmDetails.mAlgorithmDetailsRef.mGroupName;
+//	    		tempAlgorithmChannelNames.add(algorithmDetails);	    		
+//	    	}
 		
 		return mAlgorithmGroupingMap;
-	}
-	
-	// TODO: finish. Similar approach to above in
-	// getListOfSupportedAlgorithmChannels()
-	public List<String> getListOfSupportedAlgorithmGroups() {
-
-		List<AlgorithmDetails> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetails>();
-		listOfSupportAlgorihmChannels = getListOfSupportedAlgorithmChannels();
-
-		List<String> listOfSupportAlgorihmGroups = new ArrayList<String>();
-
-		for (AlgorithmDetails algorithmDetails:listOfSupportAlgorihmChannels) {
-			String groupName = algorithmDetails.mAlgorithmDetailsRef.mGroupName;
-			if (!listOfSupportAlgorihmGroups.contains(groupName)) {
-				listOfSupportAlgorihmGroups.add(groupName);
-			}
-		}
-		return listOfSupportAlgorihmGroups;
 	}
 
 	private boolean checkIfToEnableAlgo(AlgorithmDetailsRef algorithmDetails){
@@ -2287,6 +2288,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return true;
 	}
 	
+	//
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 		/*
@@ -2333,48 +2335,49 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		}
 //	}
 	
-	public ObjectCluster processAlgorithmData(ObjectCluster ojc){
+	public ObjectCluster processAlgorithmData(ObjectCluster ojc) {
 		try {
-				//update to work with consensys 4.3 with time sync switched off
-				ojc.addData(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN);
-	    		String[] sensorNames = new String[ojc.mSensorNames.length+1];
-	    		String[] unitCal = new String[ojc.mUnitCal.length+1];
-	    		String[] unitUncal = new String[ojc.mUnitUncal.length+1];
-	    		double[] uncalData = new double[ojc.mUncalData.length+1];
-	    		double[] calData = new double[ojc.mCalData.length+1];
-	    		System.arraycopy(ojc.mSensorNames, 0, sensorNames, 0, ojc.mSensorNames.length);
-	    		System.arraycopy(ojc.mUnitCal, 0, unitCal, 0, ojc.mUnitCal.length);
-	    		System.arraycopy(ojc.mUnitUncal, 0, unitUncal, 0, ojc.mUnitUncal.length);
-	    		System.arraycopy(ojc.mUncalData, 0, uncalData, 0, ojc.mUncalData.length);
-	    		System.arraycopy(ojc.mCalData, 0, calData, 0, ojc.mCalData.length);
-	    		sensorNames[sensorNames.length-1] = Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;
-	    		unitCal[unitCal.length-1] = CHANNEL_UNITS.MILLISECONDS;
-	    		unitUncal[unitUncal.length-1] = "";
-	    		uncalData[uncalData.length-1] = Double.NaN;
-	    		calData[calData.length-1] = Double.NaN;
-	    		ojc.mSensorNames = sensorNames;
-	    		ojc.mUnitCal = unitCal;
-	    		ojc.mUnitUncal = unitUncal;
-	    		ojc.mUncalData = uncalData;
-	    		ojc.mCalData = calData;
+			// update to work with consensys 4.3 with time sync switched off
+			ojc.addData(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN);
+			String[] sensorNames = new String[ojc.mSensorNames.length + 1];
+			String[] unitCal = new String[ojc.mUnitCal.length + 1];
+			String[] unitUncal = new String[ojc.mUnitUncal.length + 1];
+			double[] uncalData = new double[ojc.mUncalData.length + 1];
+			double[] calData = new double[ojc.mCalData.length + 1];
+			System.arraycopy(ojc.mSensorNames, 0, sensorNames, 0, ojc.mSensorNames.length);
+			System.arraycopy(ojc.mUnitCal, 0, unitCal, 0, ojc.mUnitCal.length);
+			System.arraycopy(ojc.mUnitUncal, 0, unitUncal, 0, ojc.mUnitUncal.length);
+			System.arraycopy(ojc.mUncalData, 0, uncalData, 0, ojc.mUncalData.length);
+			System.arraycopy(ojc.mCalData, 0, calData, 0, ojc.mCalData.length);
+			sensorNames[sensorNames.length - 1] = Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;
+			unitCal[unitCal.length - 1] = CHANNEL_UNITS.MILLISECONDS;
+			unitUncal[unitUncal.length - 1] = "";
+			uncalData[uncalData.length - 1] = Double.NaN;
+			calData[calData.length - 1] = Double.NaN;
+			ojc.mSensorNames = sensorNames;
+			ojc.mUnitCal = unitCal;
+			ojc.mUnitUncal = unitUncal;
+			ojc.mUncalData = uncalData;
+			ojc.mCalData = calData;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// create new functions
-		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
-			try {
-				ojc = (ObjectCluster)((AlgorithmResultObject) aA.processDataRealTime(ojc)).mResult;
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		for (AbstractAlgorithm aA : mMapOfAlgorithmModules.values()) {
+			if (mAlgorithmChannelsMap.get(aA).mEnabled) {
+				try {
+					ojc = (ObjectCluster) ((AlgorithmResultObject) aA
+							.processDataRealTime(ojc)).mResult;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
-		
 		return ojc;
 	}
-	
 
 	public boolean doesAlgorithmAlreadyExist(AbstractAlgorithm obj){
 		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values())
