@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.collections.map.UnmodifiableMap;
+
+import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
@@ -82,11 +85,25 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}	
 	//--------- Sensor specific variables end --------------
 	
-	
+
 	//--------- Bluetooth commands start --------------
 	public static final byte SET_ACCEL_CALIBRATION_COMMAND			= (byte) 0x11;
 	public static final byte ACCEL_CALIBRATION_RESPONSE       		= (byte) 0x12;
 	public static final byte GET_ACCEL_CALIBRATION_COMMAND    		= (byte) 0x13;
+
+	public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+	static {
+		Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+		aMap.put(GET_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(GET_ACCEL_CALIBRATION_COMMAND,"GET_ACCEL_CALIBRATION_COMMAND",ACCEL_CALIBRATION_RESPONSE));
+		mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+	}
+
+	public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+	static {
+		Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+		aMap.put(SET_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(SET_ACCEL_CALIBRATION_COMMAND, "SET_ACCEL_CALIBRATION_COMMAND"));
+		mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+	}
 	//--------- Bluetooth commands end --------------
 
 	

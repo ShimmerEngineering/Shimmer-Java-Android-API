@@ -79,7 +79,6 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
 	
-//	public abstract void handleSpecCasesAfterSensorMapUpdate();
 	// --------------- Abstract methods end ----------------	
 
 	protected String mSensorName = "";

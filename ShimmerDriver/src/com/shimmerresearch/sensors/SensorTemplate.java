@@ -1,10 +1,18 @@
 package com.shimmerresearch.sensors;
 
+import java.util.Arrays;
+
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
+import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensorTiles;
 
 /** 
  * @author Ruud Stolk 
@@ -42,6 +50,14 @@ public class SensorTemplate extends AbstractSensor{
 			 *  class GuiLabelSensorTiles      					-> class containing GUI sensor tile labels
 			 * 	class DatabaseChannelHandles   					-> class containing Database handles
 			 * 	class ObjectClusterSensorName  					-> class containing ObjectClusterSensorName (channel name)
+			 * 
+			 * What TODO with this in ShimmerObject? In Sensor Class?:
+			 * 	- SensorBitMap (for ID/Fw -> What does this mean?)
+			 * 	- SDLogHeader
+			 *  - SDLogHeaderDerivedSensors
+			 *  - BTStreamDerivedSensors
+			 *  - BTStream
+			 * 
 			 */
 	//--------- Sensor specific variables end --------------
 
@@ -129,14 +145,32 @@ public class SensorTemplate extends AbstractSensor{
 		
 			@Override
 			public void generateConfigOptionsMap(ShimmerVerObject svo) {
-				// TODO Auto-generated method stub
+			/**
+			 *  put all the Config Options on mConfigOptionsMap:
+			 *  
+			 *  	mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, configOptionAccelRange);
+			 *  
+			 */
 				
 			}
 		
 			@Override
 			public void generateSensorGroupMapping(ShimmerVerObject svo) {
-				// TODO Auto-generated method stub
-				
+			/**
+			 *  put all the Sensor Grouping Details on mSensorGroupingMap and call updateSensorGroupingMap() :
+			 *  
+			 *  		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			 *				mSensorGroupingMap.put(GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(
+			 *						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
+			 *						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			 *				mSensorGroupingMap.put(GuiLabelSensorTiles.MAG, new SensorGroupingDetails(
+			 *						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG),
+			 *						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			 *			}
+			 *			super.updateSensorGroupingMap();	
+			 *  
+			 */
+				super.updateSensorGroupingMap();	
 			}
 		
 			@Override
@@ -177,13 +211,19 @@ public class SensorTemplate extends AbstractSensor{
 		
 			@Override
 			public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
-				// TODO Auto-generated method stub
+				if(mSensorMap.containsKey(sensorMapKey)){
+					//Set defaults for particular sensor here if applicable
+					return true;
+				}
 				return false;
 			}
 		
 			@Override
 			public boolean checkConfigOptionValues(String stringKey) {
-				// TODO Auto-generated method stub
+				if(mConfigOptionsMap.containsKey(stringKey)){
+					//Set values for particular Config Option here if applicable
+					return true;
+				}
 				return false;
 			}
 		

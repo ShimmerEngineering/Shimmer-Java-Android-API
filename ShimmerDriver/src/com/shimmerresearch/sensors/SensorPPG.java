@@ -79,6 +79,10 @@ public class SensorPPG extends AbstractSensor {
 //		}
 //	}
 	
+	//XXX public class SensorBitmap missing here, but we keep that in Configuration.java for now. 
+
+	
+	//XXX - We keep the SensorMapkey in Configuration
 	public static class SensorMapKey{
 		// Derived Channels - GSR Board
 		public static final int SHIMMER_GSR = 5;
@@ -106,7 +110,21 @@ public class SensorPPG extends AbstractSensor {
 		public static final int HOST_EXG_RESPIRATION = 103;
 		public static final int HOST_EXG_CUSTOM = 116;
 		}
-	//GUI SENSORs
+	
+	public class GuiLabelConfig{
+		public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
+		public static final String PPG_ADC_SELECTION = "PPG Channel";
+		public static final String PPG1_ADC_SELECTION = "Channel1";
+		public static final String PPG2_ADC_SELECTION = "Channel2";
+	}
+	
+	
+	public class GuiLabelSensorTiles{
+		//XXX - not sure if this is the only one -> Should we handle the PPG input of the GSR board in this class as well?
+		public static final String PROTO3_DELUXE_SUPP = "PPG";
+	}
+	
+	
 	public class GuiLabelSensors{
 		public static final String PPG = "PPG";
 		public static final String PPG_DUMMY = "PPG";
@@ -119,11 +137,16 @@ public class SensorPPG extends AbstractSensor {
 		public static final String PPG2_A1 = "PPG2 A1";
 		public static final String PPG2_A14 = "PPG2 A14";
 	}
-	public class GuiLabelConfig{
-		public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
-		public static final String PPG_ADC_SELECTION = "PPG Channel";
-		public static final String PPG1_ADC_SELECTION = "Channel1";
-		public static final String PPG2_ADC_SELECTION = "Channel2";
+
+	
+	//XXX Added class DatabaseChannelHandles 
+	public static class DatabaseChannelHandles{
+		public static final String PPG_A12 = "F5437a_PPG_A12";
+		public static final String PPG_A13 = "F5437a_PPG_A13";
+		public static final String PPG1_A12 = "F5437a_PPG1_A12";
+		public static final String PPG1_A13 = "F5437a_PPG1_A13";
+		public static final String PPG2_A1 = "F5437a_PPG2_A1";
+		public static final String PPG2_A14 = "F5437a_PPG2_A14";
 	}
 	
 	public static class ObjectClusterSensorName{
@@ -134,10 +157,14 @@ public class SensorPPG extends AbstractSensor {
 		public static  String PPG2_A1 = "PPG2_A1";
 		public static  String PPG2_A14 = "PPG2_A14";
 	}
+	//--------- Sensor specific variables start --------------
+
 	
 	//--------- Bluetooth commands start --------------
 	// Check 
+	//XXX - TODO RMC, or how is this handled for PPG?
 	//--------- Bluetooth commands end --------------
+	
 	
 	//--------- Configuration options start --------------
 	
@@ -155,8 +182,15 @@ public class SensorPPG extends AbstractSensor {
     List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
   
 	
-	
-	public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMapRef;
+	/* XXX
+	 * - Only define the SensorConfigOptionDetails for each Config Option here, 
+	 *   then later generate mConfigOptionsMap (instead of mConfigOptionsMapRef)
+	 *   in the abstract method generateConfigOptionsMap()
+	 *  
+	 * - Refer to SensorMapKey in Configuration -> SensorMapKey should not be in Sensor Class.
+	 *  
+	 */
+    public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMapRef;
 	static {
 		Map<String, SensorConfigOptionDetails> aConfigMap = new LinkedHashMap<String, SensorConfigOptionDetails>(); 
 		aConfigMap.put(GuiLabelConfig.PPG_ADC_SELECTION, 
@@ -182,11 +216,13 @@ public class SensorPPG extends AbstractSensor {
 
 		mConfigOptionsMapRef = Collections.unmodifiableMap(aConfigMap);
 	}
+	//--------- Configuration options end --------------
 	
+
 	//--------- Sensor info start --------------
 	
 	public static final SensorDetailsRef sensorPPG = new SensorDetailsRef(
-			0x04<<(2*8), // check
+			0x04<<(2*8), // check   //XXX what needs to be checked here? Old comment?
 			0x04<<(2*8), 
 			GuiLabelSensors.PPG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
@@ -528,7 +564,9 @@ public class SensorPPG extends AbstractSensor {
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
         
     }
-        
+	//--------- Sensor info end --------------
+    
+    
     //--------- Channel info start --------------
 	 // PPG - Using GSR+ board
 	public static final ChannelDetails channelPPG_A12 = new ChannelDetails(
@@ -600,6 +638,9 @@ public class SensorPPG extends AbstractSensor {
 	}
 	
 // --------------------------- Channel info end ----------------------------------------
+	
+	
+//--------- Constructors for this class start --------------	
 	/** Constructor for this Sensor
 	 * @param svo
 	 */
@@ -607,7 +648,10 @@ public class SensorPPG extends AbstractSensor {
 		super(svo);
 		setSensorName(SENSORS.PPG.toString());
 	}
-	
+//--------- Constructors for this class end --------------
+
+
+//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		if(ShimmerDevice.isDerivedSensorsSupported(svo)){
@@ -615,6 +659,8 @@ public class SensorPPG extends AbstractSensor {
 		}
 	}
 
+	
+	//XXX see my comment at mConfigOptionsMapRef 
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
 
@@ -630,7 +676,7 @@ public class SensorPPG extends AbstractSensor {
 //		}
 	}
 
-	//--------- Abstract methods implemented start --------------
+	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
 		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
@@ -647,19 +693,20 @@ public class SensorPPG extends AbstractSensor {
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
-		
+		//XXX What about this?
 	}
 
 	@Override
 	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
-		
+		//XXX What about this?
 	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(String componentName,
 			Object valueToSet) {
+		////XXX What about this? Are the newly introduced method handling the commented out stuff below?
 //		
 //		Object returnValue = null;
 //		int buf = 0;
@@ -681,19 +728,21 @@ public class SensorPPG extends AbstractSensor {
 		return null;
 	}
 
+	//XXX references to Configuration -> refer to GuiLabelConfig class inside SensorPPG.java
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
 		switch(componentName){
-		case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+		case(GuiLabelConfig.PPG_ADC_SELECTION):
 			returnValue = getPpgAdcSelectionGsrBoard();
 		break;
-		case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+		case(GuiLabelConfig.PPG1_ADC_SELECTION):
 			returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
 		break;
-		case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+		case(GuiLabelConfig.PPG2_ADC_SELECTION):
 			returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
 		break;
+		//XXX ShimmerGqBle can be ignored.
 		case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
 			returnValue = getSamplingDividerPpg();
 		break;
@@ -718,7 +767,10 @@ public class SensorPPG extends AbstractSensor {
 
 	@Override
 	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
+		// XXX added the if + return true, nothing happen further
+		if(mConfigOptionsMap.containsKey(stringKey)){
+			return true;
+		}
 		return false;
 	}
 
@@ -734,7 +786,13 @@ public class SensorPPG extends AbstractSensor {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	//--------- Abstract methods implemented end --------------
+
 	
+	//--------- Sensor specific methods start --------------
+
+	//XXX SensorMapKey -> refer to Configuration
+	//XXX - is this old, can it be removed, or does it still need to be checked? 
 	//TODO Check if needed
 	public boolean checkIfSensorEnabled(int sensorMapKey){
 		if (getHardwareVersion() == HW_ID.SHIMMER_3) {
@@ -762,7 +820,8 @@ public class SensorPPG extends AbstractSensor {
 		}
 		return false;
 	}
-	
+
+	//XXX is this old, can it be removed, or does it still need to be checked? 
 //	/**
 //	 * Used to convert from the enabledSensors long variable read from the
 //	 * Shimmer to the set enabled status of the relative entries in the Sensor
