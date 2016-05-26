@@ -45,6 +45,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,6 +56,10 @@ import java.util.Set;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2;
+import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.Builder;
+import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2;
+import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -74,6 +79,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public String[] mSensorNames;
 	public String[] mUnitCal;
 	public String[] mUnitUncal;
+	private Builder mObjectClusterBuilder = ObjectCluster2.newBuilder();
 	
 	private int indexKeeper = 0;
 	
@@ -98,6 +104,19 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			OBJECTCLUSTER_TYPE.PROTOBUF);
 	
 	public ObjectCluster(){
+	}
+	
+	public ObjectCluster(ObjectCluster2 ojc2){
+		ojc2.getDataMap().get("");
+		for (String channelName:ojc2.getDataMap().keySet()){
+			FormatCluster2 fc=ojc2.getDataMap().get(channelName);
+			for (String formatName:fc.getFormatMap().keySet()){
+				DataCluster2 data = fc.getFormatMap().get(formatName);
+				addData(channelName,formatName,data.getUnit(),data.getData(),data.getDataArrayList());
+			}
+		}
+		mBluetoothAddress = ojc2.getBluetoothAddress();
+		mMyName = ojc2.getName();
 	}
 	
 	public String getShimmerName(){
@@ -272,13 +291,17 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	@Deprecated
 	public void addData(String channelName,String channelType, String units, double data){
 		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data));
-		
 	}
 	
 	@Deprecated
 	public void addData(String channelName,String channelType, String units, List<Double> data){
 		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data));
 		
+	}
+	
+	@Deprecated
+	public void addData(String channelName,String channelType, String units, double data, List<Double> dataArray){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data,dataArray));
 	}
 	
 	@Deprecated
@@ -315,7 +338,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)){
-			mPropertyCluster.put(objectClusterName, new FormatCluster(channelType.toString(), units, data));
+			addData(objectClusterName,channelType.toString(), units, data);
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.PROTOBUF)){
@@ -349,6 +372,33 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		return mPropertyCluster;
 	}
 	
+	public ObjectCluster2 buildProtoBufMsg(){
+		mObjectClusterBuilder = ObjectCluster2.newBuilder();
+		for (String channelName:mPropertyCluster.keys()){
+			Collection<FormatCluster> fcs = mPropertyCluster.get(channelName);
+			FormatCluster2.Builder fcb = FormatCluster2.newBuilder();
+			for(FormatCluster fc:fcs){
+				DataCluster2.Builder dcb = DataCluster2.newBuilder();
+				if (fc.mData!=Double.NaN){
+					dcb.setData(fc.mData);	
+				}
+				if (fc.mDataObject.size()>0){
+					dcb.addAllDataArray(fc.mDataObject);
+				}
+				fcb.getMutableFormatMap().put(fc.mFormat, dcb.build());
+			}
+			mObjectClusterBuilder.getMutableDataMap().put(channelName, fcb.build());
+			mObjectClusterBuilder.setBluetoothAddress(mBluetoothAddress);
+			mObjectClusterBuilder.setName(mMyName);
+			mObjectClusterBuilder.setCalibratedTimeStamp(mShimmerCalibratedTimeStamp);
+			ByteBuffer bb = ByteBuffer.allocate(8);
+	    	bb.put(mSystemTimeStamp);
+	    	bb.flip();
+	    	long systemTimeStamp = bb.getLong();
+			mObjectClusterBuilder.setSystemTime(systemTimeStamp);
+		}
+		return mObjectClusterBuilder.build();
+	}
 	
 	
 }

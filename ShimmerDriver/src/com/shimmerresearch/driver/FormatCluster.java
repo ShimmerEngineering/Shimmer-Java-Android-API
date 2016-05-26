@@ -46,7 +46,7 @@ public class FormatCluster  implements Serializable{
 	
 	public String mFormat;
 	public String mUnits;
-	public double mData;
+	public double mData = Double.NaN;
 	public List<Double> mDataObject = new ArrayList<Double>();
 	public boolean mIsUsingDefaultCalibration = false;
 
@@ -61,6 +61,13 @@ public class FormatCluster  implements Serializable{
 //		mUnits = units;
 //		double[] mData = data;
 //	}
+	
+	public FormatCluster(String format, String units, double data, List<Double> dataObject){
+		mFormat = format;
+		mUnits = units;
+		mDataObject = dataObject;
+		mData = data;
+	}
 	
 	public FormatCluster(String format, String units, List<Double> dataObject){
 		mFormat = format;
