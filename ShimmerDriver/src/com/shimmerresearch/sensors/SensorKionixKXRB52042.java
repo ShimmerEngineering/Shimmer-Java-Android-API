@@ -224,6 +224,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
 				unCalibratedAccelData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}	
+			
+			index = index + channelDetails.mDefaultNumBytes;
 		}
 			
 		//Calibration
@@ -243,7 +245,6 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 				objectCluster.addCalData(channelDetails, calibratedAccelData[2]);
 				objectCluster.incrementIndexKeeper();
 			}
-			index = index + channelDetails.mDefaultNumBytes;
 		}
 		
 		//Debugging

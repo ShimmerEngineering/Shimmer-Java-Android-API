@@ -275,6 +275,13 @@ public class Shimmer4 extends ShimmerDevice {
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 
+		/*XXX - RS (26/5/2016):
+		 * 
+		 * Undocking after write config -> enabled sensors not enabled when docking again.
+		 * MN: Set this flag to 1.
+		 * 
+		 * */ 
+		mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] = 1;
 		
 		if(generateForWritingToShimmer) {
 			// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver

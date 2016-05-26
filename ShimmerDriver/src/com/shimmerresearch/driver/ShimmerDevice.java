@@ -1178,7 +1178,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet){
 		Object returnValue = null;
-		int buf = 0;
 
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 			returnValue = abstractSensor.setConfigValueUsingConfigLabel(componentName, valueToSet);
