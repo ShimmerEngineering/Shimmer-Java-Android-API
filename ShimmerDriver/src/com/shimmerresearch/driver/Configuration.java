@@ -594,7 +594,7 @@ public class Configuration {
 			//XXX-RS-AA-SensorClass?
 			public static final int SHIMMER_A_ACCEL = 0;
 			/** Shimmer3 Gyroscope */
-			public static final int SHIMMER_MPU9150_GYRO = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_GYRO; //1;
+			public static final int SHIMMER_MPU9150_GYRO = 1;
 			/** Shimmer3 Primary magnetometer */
 			public static final int SHIMMER_LSM303DLHC_MAG = 2;//XXX-RS-LSM-SensorClass?
 //			public static final int SHIMMER_EXG1_24BIT = 3;
@@ -614,29 +614,29 @@ public class Configuration {
 			public static final int SHIMMER_INT_EXP_ADC_A13 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A13; //15;
 			public static final int SHIMMER_INT_EXP_ADC_A14 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A14; //16;
 			/** Shimmer3 Alternative accelerometer */
-			public static final int SHIMMER_MPU9150_ACCEL = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_ACCEL; //17;
+			public static final int SHIMMER_MPU9150_ACCEL = 17;
 			/** Shimmer3 Alternative magnetometer */
-			public static final int SHIMMER_MPU9150_MAG = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MAG; //18;
+			public static final int SHIMMER_MPU9150_MAG = 18;
 //			public static final int SHIMMER_EXG1_16BIT = 19;
 //			public static final int SHIMMER_EXG2_16BIT = 21;
 			public static final int SHIMMER_BMP180_PRESSURE = 22;
 			//public static final int SHIMMER_BMP180_TEMPERATURE = 23; // not yet implemented
 			//public static final int SHIMMER_MSP430_TEMPERATURE = 24; // not yet implemented
-			public static final int SHIMMER_MPU9150_TEMP = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_TEMP; //25;
+			public static final int SHIMMER_MPU9150_TEMP = 25;
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF; //27;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_9DOF = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_9DOF; //28;
-			public static final int SHIMMER_MPU9150_MPL_EULER_6DOF = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_6DOF; //29;
-			public static final int SHIMMER_MPU9150_MPL_EULER_9DOF = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_9DOF; //30;
-			public static final int SHIMMER_MPU9150_MPL_HEADING = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_HEADING; //31;
-			public static final int SHIMMER_MPU9150_MPL_PEDOMETER = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_PEDOMETER; //32;
-			public static final int SHIMMER_MPU9150_MPL_TAP = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_TAP; //33;
-			public static final int SHIMMER_MPU9150_MPL_MOTION_ORIENT = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_MOTION_ORIENT; //34;
-			public static final int SHIMMER_MPU9150_MPL_GYRO = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO; //35;
-			public static final int SHIMMER_MPU9150_MPL_ACCEL = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL; //36;
-			public static final int SHIMMER_MPU9150_MPL_MAG = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_MAG; //37;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = SensorMPU9X50.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW; //38;
+			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = 27;
+			public static final int SHIMMER_MPU9150_MPL_QUAT_9DOF = 28;
+			public static final int SHIMMER_MPU9150_MPL_EULER_6DOF = 29;
+			public static final int SHIMMER_MPU9150_MPL_EULER_9DOF = 30;
+			public static final int SHIMMER_MPU9150_MPL_HEADING = 31;
+			public static final int SHIMMER_MPU9150_MPL_PEDOMETER = 32;
+			public static final int SHIMMER_MPU9150_MPL_TAP = 33;
+			public static final int SHIMMER_MPU9150_MPL_MOTION_ORIENT = 34;
+			public static final int SHIMMER_MPU9150_MPL_GYRO = 35;
+			public static final int SHIMMER_MPU9150_MPL_ACCEL = 36;
+			public static final int SHIMMER_MPU9150_MPL_MAG = 37;
+			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = 38;
 	
 			//Sensors channels modified or created on the host side
 			// Combination Channels

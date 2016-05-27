@@ -385,6 +385,7 @@ public class SensorLSM303 extends AbstractSensor{
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			index = index + channelDetails.mDefaultNumBytes;
 		}
 		
 		// get uncalibrated data for each (sub)sensor
@@ -436,7 +437,6 @@ public class SensorLSM303 extends AbstractSensor{
 					objectCluster.addCalData(channelDetails, calibratedAccelWrData[2]);
 					objectCluster.incrementIndexKeeper();
 				}
-				index = index + channelDetails.mDefaultNumBytes;
 			}
 		}
 		else if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MAG)){
@@ -453,7 +453,6 @@ public class SensorLSM303 extends AbstractSensor{
 					objectCluster.addCalData(channelDetails, calibratedMagData[2]);
 					objectCluster.incrementIndexKeeper();
 				}
-				index = index + channelDetails.mDefaultNumBytes;
 			}
 		}
 
