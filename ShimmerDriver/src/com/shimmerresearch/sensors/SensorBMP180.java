@@ -55,7 +55,7 @@ public class SensorBMP180 extends AbstractSensor {
 	protected byte[] mPressureRawParams  = new byte[23];
 	public static final String PRESSURE_TEMPERATURE = "Pressure & Temperature";
 //	public static final int SHIMMER_BMP180_PRESSURE = 22;
-	public int mPressureResolution = 0;
+	private int mPressureResolution = 0;
 	
 	public static class ObjectClusterSensorName{
 		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
@@ -245,7 +245,8 @@ public class SensorBMP180 extends AbstractSensor {
 		int idxConfigSetupByte3 = 9;
 		int bitShiftBMP180PressureResolution = 4;
 		int maskBMP180PressureResolution = 0x03;
-		mPressureResolution = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution;
+		setPressureResolution((mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution);
+		System.out.println("Pressure resolution:" + mPressureResolution);
 	}
 
 	@Override
@@ -361,11 +362,12 @@ public class SensorBMP180 extends AbstractSensor {
 
 
 	//--------- Sensor specific methods start --------------
-	public void setPressureResolution(int i){
+	private void setPressureResolution(int i){
+		System.err.println("New resolution:\t" + ListofPressureResolution[i]);
 		mPressureResolution = i;
 	}
 	
-	public int getPressureResolution(){
+	private int getPressureResolution(){
 		return mPressureResolution;
 	}
 	

@@ -410,7 +410,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		// Send msg fully initialized, send notification message,  
 		// Do something here
         mIsInitialised = true;
-        prepareAllAfterConfigRead();
+//        prepareAllAfterConfigRead();
 
         if (mSendProgressReport){
         	finishOperation(BT_STATE.CONNECTING);

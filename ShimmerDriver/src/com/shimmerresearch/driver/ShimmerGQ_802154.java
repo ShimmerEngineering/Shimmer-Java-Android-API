@@ -433,12 +433,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			mInfoMemBytes = infoMemBytes;
 		}
 		else {
+			mInfoMemBytes = infoMemBytes;
+			
 			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154) mInfoMemLayout;
 
 			//TODO
 //			mShimmerUsingConfigFromInfoMem = true;
 
-			mInfoMemBytes = infoMemBytes;
 			createInfoMemLayoutObjectIfNeeded();
 			
 			// Sampling Rate

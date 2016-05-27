@@ -129,13 +129,12 @@ public class Shimmer4 extends ShimmerDevice {
 			mInfoMemBytes = infoMemBytes;
 		}
 		else {
+			mInfoMemBytes = infoMemBytes;
+
 			//TODO create for Shimmer4 or use Shimmer3?
 			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3) mInfoMemLayout;
 
-			// Configuration from each Sensor settings
-			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
-			}
+			createInfoMemLayoutObjectIfNeeded();
 
 			// Sensors
 			mEnabledSensors = ((long)infoMemBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
@@ -187,6 +186,12 @@ public class Shimmer4 extends ShimmerDevice {
 			}
 			
 			prepareAllAfterConfigRead();
+			
+			// Configuration from each Sensor settings
+			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
+			}
+
 		}
 		checkAndCorrectShimmerName(shimmerName);
 	}
