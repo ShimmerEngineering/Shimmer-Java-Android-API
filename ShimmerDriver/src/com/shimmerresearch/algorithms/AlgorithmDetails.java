@@ -13,7 +13,8 @@ public class AlgorithmDetails implements Serializable {
 	/** * */
 	private static final long serialVersionUID = 1L;
 	
-	public String mObjectClusterName = "";
+	/** AKA ObjectClusterName */
+	public String mAlgorithmName = "";
 	//TODO implement mGuiFriendlyName below across algorithms
 	public String mGuiFriendlyName = "";
 	public String mDatabaseChannelHandle = "";
@@ -41,7 +42,7 @@ public class AlgorithmDetails implements Serializable {
 		this(listOfRequiredSensors, units);
 		mGuiFriendlyName = guiFriendlyName;
 		mListOfAssociatedSensors = listOfAssociatedSensors;
-		mObjectClusterName = objectClusterName;
+		mAlgorithmName = objectClusterName;
 		mDerivedSensorBitmapID = derivedSensorBitmapId;
 		mGroupName = groupName;
 	}
@@ -54,7 +55,7 @@ public class AlgorithmDetails implements Serializable {
 
 	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units, String AlgorithmName, String groupName){
 		this(listOfRequiredSensors, units);
-		mObjectClusterName = AlgorithmName;
+		mAlgorithmName = AlgorithmName;
 		mGroupName = groupName;
 	}
 	
@@ -75,7 +76,7 @@ public class AlgorithmDetails implements Serializable {
 	public String[] getSignalStringArray() {
 		String[] signalStringArray = new String[4];
 		signalStringArray[0] = "TEMP_SHIMMER_NAME";
-		signalStringArray[1] = mObjectClusterName;
+		signalStringArray[1] = mAlgorithmName;
 		signalStringArray[2] = mChannelType.toString();
 		signalStringArray[3] = mUnits;
 		return signalStringArray;
@@ -83,7 +84,7 @@ public class AlgorithmDetails implements Serializable {
 
 	public ChannelDetails getChannelDetails() {
 		ChannelDetails cD = new ChannelDetails(
-				mObjectClusterName,
+				mAlgorithmName,
 				mGuiFriendlyName,
 				mDatabaseChannelHandle,
 				mUnits,

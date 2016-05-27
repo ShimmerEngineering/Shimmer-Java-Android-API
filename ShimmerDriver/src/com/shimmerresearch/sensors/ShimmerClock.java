@@ -10,6 +10,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
@@ -198,8 +199,10 @@ public class ShimmerClock extends AbstractSensor {
 	}
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
+		System.out.print("timestamp bytes\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rawData));
+
 		//TIMESTAMP
 		if(sensorDetails.isEnabled(commType)){
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -237,7 +240,7 @@ public class ShimmerClock extends AbstractSensor {
 					double newOffset = 0.0;
 					
 					byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-					System.arraycopy(sensorByteArray, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+					System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 					double newTimestamp = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
 					
 					if(mFirstTime && commType==COMMUNICATION_TYPE.SD){

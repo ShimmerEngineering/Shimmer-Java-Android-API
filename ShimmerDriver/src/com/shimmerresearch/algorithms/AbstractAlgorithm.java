@@ -81,6 +81,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	//This identifies what inputs are required for the signal, and the corresponding gui option (e.g. checkbox, textbox)
+	/** AKA ObjectClusterName */
 	protected String mAlgorithmName;
 	protected String mAlgorithmGroupingName;
 	protected String mTrialName;

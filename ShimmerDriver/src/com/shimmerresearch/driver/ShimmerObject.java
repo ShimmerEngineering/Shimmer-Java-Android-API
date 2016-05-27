@@ -317,11 +317,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	
 	protected Map<String, ChannelDetails> mChannelMap = new LinkedHashMap<String, ChannelDetails>(); 
-	//protected Map<String, AlgorithmDetailsNew> mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetailsNew>();
-	// moved to Shimmer Device by E.N.
-	//protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
-	//protected Map<String, List<String>> mCompleteAlgorithmMap = new LinkedHashMap<String, List<String>>();
-
 	
 	//Constants describing the packet type
 	public static final byte DATA_PACKET                      		= (byte) 0x00;

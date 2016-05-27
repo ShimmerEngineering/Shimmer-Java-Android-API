@@ -68,7 +68,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected Map<String, AbstractAlgorithm> mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 	/** All supported channels based on hardware, expansion board and firmware */
 //	protected Map<String, AlgorithmDetails> mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
-
 	/** for tile generation in GUI configuration */ 
 	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 
