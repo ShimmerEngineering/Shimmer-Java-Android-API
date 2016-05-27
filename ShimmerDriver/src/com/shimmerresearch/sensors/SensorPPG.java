@@ -73,7 +73,6 @@ public class SensorPPG extends AbstractSensor {
 		public final static int PPG_12_13 = 1<<2;
 	}
 	
-	//XXX public class SensorBitmap missing here, but we keep that in Configuration.java for now. 
 
 	public class GuiLabelConfig{
 		public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
@@ -166,7 +165,7 @@ public class SensorPPG extends AbstractSensor {
 
 	//--------- Sensor info start --------------	
 	public static final SensorDetailsRef sensorPPG = new SensorDetailsRef(
-			0x04<<(2*8), // check   //XXX what needs to be checked here? Old comment?
+			0x04<<(2*8), 
 			0x04<<(2*8), 
 			GuiLabelSensors.PPG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
@@ -309,26 +308,7 @@ public class SensorPPG extends AbstractSensor {
 	{
 		sensorPpgHostPPG2_A14.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
 	}
-//	public SensorDetailsRef(
-//			long sensorBitmapIDStreaming, 
-//			long sensorBitmapIDSDLogHeader, 
-//			String guiFriendlyLabel, 
-//			List<ShimmerVerObject> listOfCompatibleVersionInfo, 
-//			List<Integer> listOfSensorMapKeysConflicting, 
-//			List<String> listOfConfigOptionKeysAssociated, 
-//			List<String> listOfChannelsRef,
-//			boolean intExpBoardPowerRequired) {
-	
-//	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
-//	static {
-//		Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-//		aMap.put(SensorMapKey.PPG, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG));
-//		aMap.get(SensorMapKey.PPG).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
-//		// Associated config options for each channel (currently used for the ChannelTileMap)
-//		aMap.get(Configuration.ShimmerGqBle.SensorMapKey.PPG).mListOfConfigOptionKeysAssociated = Arrays.asList(
-//				 Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG);
-//		mSensorMapRef = Collections.unmodifiableMap(aMap);
-//	}
+
 	    
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -679,10 +659,6 @@ public class SensorPPG extends AbstractSensor {
 		case(GuiLabelConfig.PPG2_ADC_SELECTION):
 			returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
 		break;
-		//XXX ShimmerGqBle can be ignored.
-		case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
-			returnValue = getSamplingDividerPpg();
-		break;
 		}
 		return returnValue;
 	}
@@ -728,7 +704,7 @@ public class SensorPPG extends AbstractSensor {
 	
 	//--------- Sensor specific methods start --------------
 
-	//XXX SensorMapKey -> refer to Configuration
+	
 	//XXX - is this old, can it be removed, or does it still need to be checked? 
 	//TODO Check if needed
 	public boolean checkIfSensorEnabled(int sensorMapKey){

@@ -261,9 +261,11 @@ public class SensorBMP180 extends AbstractSensor {
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
 				objectCluster.addCalData(channelDetails, bmp180caldata[0], objectCluster.getIndexKeeper()-2);
+				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				objectCluster.addCalData(channelDetails, bmp180caldata[1], objectCluster.getIndexKeeper()-1);
+				objectCluster.incrementIndexKeeper();
 			}
 		}
 		//Debugging
