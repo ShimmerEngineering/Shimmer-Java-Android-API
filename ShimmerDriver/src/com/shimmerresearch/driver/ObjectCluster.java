@@ -49,6 +49,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -204,6 +205,67 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			listofSignals.add(channel);
 		}
 		
+		return listofSignals;
+	}
+	
+	public List<String[]> generateArrayOfChannelsSorted(){
+		List<String[]> listofSignals = new ArrayList<String[]>();
+		int size=0;
+		for (String fckey : getKeySet() ) {
+			size++;
+		}
+		
+		//arrange the properties
+		String[] properties = new String[size];
+		int y=0;
+		for (String fckey : getKeySet() ) {
+			properties[y]=fckey;
+			y++;
+		}
+		
+		Arrays.sort(properties);
+		
+		// now need to try arrange the formats
+		int index=0;
+		String property;
+		for (int k=0;k<size;k++){
+			property = properties[k];
+			Collection<FormatCluster> ofFormatstemp = getCollectionOfFormatClusters(property);
+			// the iterator does not have the same order
+			int tempSize=0;
+			for (FormatCluster fctemp:ofFormatstemp){
+				tempSize++;
+			}
+			
+			String[] formats = new String[tempSize];
+			String[] units = new String[tempSize];
+			int p=0;
+			//sort the formats
+			for (FormatCluster fctemp:ofFormatstemp){
+				formats[p]=fctemp.mFormat;
+				p++;
+			
+			}
+			
+			Arrays.sort(formats);
+			for (int u=0;u<formats.length;u++){
+				for (FormatCluster fctemp:ofFormatstemp){
+					if (fctemp.mFormat.equals(formats[u])){
+						units[u]=fctemp.mUnits;
+					}
+				}
+			}
+			
+			for (int u=0;u<formats.length;u++){
+				String[] channel = {mMyName,property,formats[u],units[u]};
+				listofSignals.add(channel);
+				//System.out.println(":::" + address + property + fc.mFormat);		
+				System.out.println("Index" + index); 
+				
+			}
+			
+		
+		}
 		return listofSignals;
 	}
 	
