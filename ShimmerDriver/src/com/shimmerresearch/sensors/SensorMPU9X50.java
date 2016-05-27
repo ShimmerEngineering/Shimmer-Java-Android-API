@@ -672,7 +672,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
     		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
     		CHANNEL_UNITS.DEGREES_PER_SECOND,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-// MPU Accel
+    // MPU Accel
 	public static final ChannelDetails channelAccelX = new ChannelDetails(
 			ObjectClusterSensorName.ACCEL_MPU_X,
 			ObjectClusterSensorName.ACCEL_MPU_X,
