@@ -83,7 +83,6 @@ public class SensorPPG extends AbstractSensor {
 	}
 	
 	public class GuiLabelSensorTiles{
-		//XXX - not sure if this is the only one -> Should we handle the PPG input of the GSR board in this class as well?
 		public static final String PROTO3_DELUXE_SUPP = "PPG";
 	}
 
@@ -101,7 +100,7 @@ public class SensorPPG extends AbstractSensor {
 		public static final String PPG2_A14 = "PPG2 A14";
 	}
 
-	//XXX Added class DatabaseChannelHandles 
+	 
 	public static class DatabaseChannelHandles{
 		public static final String PPG_A12 = "F5437a_PPG_A12";
 		public static final String PPG_A13 = "F5437a_PPG_A13";
@@ -123,8 +122,9 @@ public class SensorPPG extends AbstractSensor {
 
 	
 	//--------- Bluetooth commands start --------------
-	// Check 
-	//XXX - TODO RMC, or how is this handled for PPG?
+	
+	//			Not in this class
+	
 	//--------- Bluetooth commands end --------------
 	
 	
@@ -142,42 +142,25 @@ public class SensorPPG extends AbstractSensor {
 		Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP};
 
     List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
-  
-	
-	/* XXX
-	 * - Only define the SensorConfigOptionDetails for each Config Option here, 
-	 *   then later generate mConfigOptionsMap (instead of mConfigOptionsMapRef)
-	 *   in the abstract method generateConfigOptionsMap()
-	 *  
-	 * - Refer to SensorMapKey in Configuration -> SensorMapKey should not be in Sensor Class.
-	 *  
-	 */
-    public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMapRef;
-	static {
-		Map<String, SensorConfigOptionDetails> aConfigMap = new LinkedHashMap<String, SensorConfigOptionDetails>(); 
-		aConfigMap.put(GuiLabelConfig.PPG_ADC_SELECTION, 
-				new SensorConfigOptionDetails(
-						ListOfPpgAdcSelection, 
-						ListOfPpgAdcSelectionConfigValues, 
-						SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
-		
-		aConfigMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, 
-				new SensorConfigOptionDetails(
-						ListOfPpg1AdcSelection, 
-						ListOfPpg1AdcSelectionConfigValues, 
-						SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
-		
-		aConfigMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, 
-				new SensorConfigOptionDetails(
-						ListOfPpg2AdcSelection, 
-						ListOfPpg2AdcSelectionConfigValues, 
-						SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
-
-		mConfigOptionsMapRef = Collections.unmodifiableMap(aConfigMap);
-	}
+    
+    public static final SensorConfigOptionDetails configOptionPpgAdcSelection = new SensorConfigOptionDetails(
+    		ListOfPpgAdcSelection, 
+			ListOfPpgAdcSelectionConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
+    
+    public static final SensorConfigOptionDetails configOptionPpg1AdcSelection = new SensorConfigOptionDetails(
+    		ListOfPpg1AdcSelection, 
+			ListOfPpg1AdcSelectionConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
+    
+    public static final SensorConfigOptionDetails configOptionPpg2AdcSelection = new SensorConfigOptionDetails(
+    		ListOfPpg2AdcSelection, 
+			ListOfPpg2AdcSelectionConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
+    
 	//--------- Configuration options end --------------
 	
 
@@ -616,25 +599,18 @@ public class SensorPPG extends AbstractSensor {
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		if(ShimmerDevice.isDerivedSensorsSupported(svo)){
-			super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		}
 	}
 
-	
-	//XXX see my comment at mConfigOptionsMapRef 
+	 
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
 
-//		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
-//				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
-//				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.LOGANDSTREAM
-//				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154
-//				) {
-			mConfigOptionsMap.put(GuiLabelConfig.PPG_ADC_SELECTION , mConfigOptionsMapRef.get(GuiLabelConfig.PPG_ADC_SELECTION )); 
-			mConfigOptionsMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, mConfigOptionsMapRef.get(GuiLabelConfig.PPG1_ADC_SELECTION)); 
-			mConfigOptionsMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, mConfigOptionsMapRef.get(GuiLabelConfig.PPG2_ADC_SELECTION)); 
-			mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
-//		}
+			mConfigOptionsMap.put(GuiLabelConfig.PPG_ADC_SELECTION , configOptionPpgAdcSelection); 
+			mConfigOptionsMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, configOptionPpg1AdcSelection); 
+			mConfigOptionsMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, configOptionPpgAdcSelection); 
+//			mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
 	}
 
 	
