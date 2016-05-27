@@ -5,12 +5,15 @@ import java.util.Arrays;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorKionixKXRB52042.ObjectClusterSensorName;
 import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
 import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensorTiles;
 
@@ -138,8 +141,9 @@ public class SensorTemplate extends AbstractSensor{
 			 *  call one of the two methods:
 			 *  
 			 *  1) super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
+			 *  	- SensorDetails.processData() is called.
 			 *  2) super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
-			 *
+			 *		- SensorDetails.processData() is overwritten by AbstractSensor.processDataCustom().
 			 */
 			}
 		
@@ -175,8 +179,55 @@ public class SensorTemplate extends AbstractSensor{
 		
 			@Override
 			public ObjectCluster processDataCustom(SensorDetails sensorDetails,	byte[] sensorByteArray, COMMUNICATION_TYPE commType,ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
-				// TODO Auto-generated method stub
-				return null;
+				int index = 0;
+				for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					// first process the data originating from the Shimmer sensor
+					byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+					System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+					objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+					
+					/**
+					 *  Get the uncalibrated data from the ObjectCluster if calibration is needed. Example - SensorKionixKXRB52042:
+					 * 
+					 * 		//Uncalibrated Accelerometer data
+					 *		if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
+					 *		unCalibratedAccelData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					 *		}
+					 *		else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
+					 *			unCalibratedAccelData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					 *		}
+					 *		else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
+					 *			unCalibratedAccelData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					 *		}	
+					 */
+					
+					index = index + channelDetails.mDefaultNumBytes;
+				}
+				
+				/**
+				 *  Perform calibration and add the calibrated data to the ObjectCluster. Example - SensorKionixKXRB52042:
+				 *  //Calibration
+				 *	double[] calibratedAccelData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+			     *
+				 *	//Add calibrated data to Object cluster
+				 *	for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				 *		if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
+				 *			objectCluster.addCalData(channelDetails, calibratedAccelData[0]);
+				 *			objectCluster.incrementIndexKeeper();
+				 *		}
+				 *		else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
+				 *			objectCluster.addCalData(channelDetails, calibratedAccelData[1]);
+				 *			objectCluster.incrementIndexKeeper();
+				 *		}
+				 *		else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
+				 *			objectCluster.addCalData(channelDetails, calibratedAccelData[2]);
+				 *			objectCluster.incrementIndexKeeper();
+				 *		}
+				 *	}
+				 *
+				 */
+				
+				return objectCluster;
 			}
 		
 			@Override

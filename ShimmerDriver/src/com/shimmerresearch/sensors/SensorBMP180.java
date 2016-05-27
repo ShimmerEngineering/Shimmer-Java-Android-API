@@ -229,7 +229,7 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
 		double rawDataUP = 0;
 		double rawDataUT = 0;
@@ -237,7 +237,7 @@ public class SensorBMP180 extends AbstractSensor {
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			
 			System.out.println("BMP180 bytes\t" + channelDetails.mObjectClusterName + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(channelByteArray));
 
