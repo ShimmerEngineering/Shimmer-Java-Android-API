@@ -192,7 +192,8 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	//TODO improve flow of below, move to ShimmerDevice also?
-	private void prepareAllAfterConfigRead() {
+	@Override
+	public void prepareAllAfterConfigRead() {
 		sensorAndConfigMapsCreate();
 		
 		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);

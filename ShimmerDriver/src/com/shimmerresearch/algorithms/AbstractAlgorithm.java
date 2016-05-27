@@ -11,11 +11,8 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
 public abstract class AbstractAlgorithm extends BasicProcessWithCallBack implements Serializable{
 	
@@ -89,11 +86,17 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	protected String mTrialName;
 	
 	//This are the core variables every algorithm should have
+	
+	@Deprecated
+	/** this is the objectClusterName of the Signal that the algorithm is calculated on */
 	protected String mSignalName[]; // an array because you might use multiple signals for an algorithm, note for now only single signal supported but this should be fwd compatible
+	@Deprecated
 	protected String mSignalFormat[];
 	protected String mTimeStampName="";
 	protected String mTimeStampFormat="";
 	protected boolean mInitialized = false;
+	protected boolean mIsEnabled = false;
+	public AlgorithmDetails mAlgorithmDetails;
 	
 	/**
      * @deprecated
@@ -134,7 +137,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	 * @return
 	 * @throws Exception
 	 */
-	public abstract AlgorithmResultObject processDataRealTime(Object object) throws Exception;
+	public abstract AlgorithmResultObject processDataRealTime(ObjectCluster object) throws Exception;
 	
 	public abstract AlgorithmResultObject processDataPostCapture(Object object) throws Exception;
 	
@@ -150,7 +153,6 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	
 	public String getAlgorithmName() {
-		// TODO Auto-generated method stub
 		return mAlgorithmName;
 	}
 	
@@ -223,6 +225,13 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return mInitialized;
 	}
 	
+	public boolean isEnabled() {
+		return mIsEnabled;
+	}
+	
+	public void setIsEnabled(boolean isEnabled) {
+		mIsEnabled = isEnabled;
+	}
 	
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
 	 * @return
@@ -317,6 +326,21 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public String getTrialName(){
 		return mTrialName;
 	}
+	
+	
+	//TODO fix below if needed
+	public AlgorithmResultObject processDataRealTime(List<ObjectCluster> objectClusterArray) {
+		for(ObjectCluster ojc:objectClusterArray){
+			try {
+				return processDataRealTime(ojc);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
 
 
 	

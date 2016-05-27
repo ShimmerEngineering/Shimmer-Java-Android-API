@@ -534,7 +534,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 	
 	//TODO improve flow of below, move to ShimmerDevice also?
-	private void prepareAllAfterConfigRead() {
+	@Override
+	public void prepareAllAfterConfigRead() {
 		//TODO add in below when ready
 //		sensorAndConfigMapsCreate();
 		generateSensorAndParserMaps();

@@ -108,8 +108,6 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
-import com.shimmerresearch.algorithms.AlgorithmDetails;
-import com.shimmerresearch.algorithms.AlgorithmDetailsRef;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
@@ -136,10 +134,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.UtilParseData;
-import com.shimmerresearch.algorithms.AlgorithmDetailsRef.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
-import com.shimmerresearch.biophysicalprocessing.ECGtoHRAdaptive;
-import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
 
@@ -230,6 +225,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
+		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
 // ----------- Now implemented in SensorPPG -------------------------
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
@@ -243,6 +239,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
+		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
 // ----------- Now implemented in SensorPPG -------------------------		
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
@@ -2218,6 +2215,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			objectCluster.mUnitUncal = uncalibratedDataUnits;
 			objectCluster.mSensorNames = sensorNames;
 
+//			 processAlgorithmData(objectCluster);	
+
 		} 
 		else if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 			 //start of Shimmer2
@@ -2525,7 +2524,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					checkBattery();
 				}
 			}
-			 processAlgorithmData(objectCluster);	
 		}
 		else{
 			throw new Exception("The Hardware version is not compatible");
@@ -6457,16 +6455,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		checkAndCorrectShimmerName(shimmerName);
 	}
 	
-	//TODO improve flow of below, move to ShimmerDevice also?
-	private void prepareAllAfterConfigRead() {
-		//TODO Complete and tidy below
-		sensorAndConfigMapsCreate();
-		sensorMapUpdateFromEnabledSensorsVars();
-		
-//		sensorMapCheckandCorrectSensorDependencies();
-	}
-
-	
 	/**
 	 * Generate the Shimmer's Information Memory byte array based on the
 	 * settings stored in ShimmerObject. These bytes can then be written to the
@@ -6897,12 +6885,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
 		mMapOfAlgorithmModules = new LinkedHashMap<String, AbstractAlgorithm>();
-		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
+//		mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
 		mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
 
-		
 		if (getHardwareVersion() != -1){
 			if (getHardwareVersion() == HW_ID.SHIMMER_2R){
 				Map<Integer,SensorDetailsRef> sensorMapRef = Configuration.Shimmer2.mSensorMapRef;
@@ -6919,7 +6906,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 				
 				generateMapOfAlgorithmModules();
-				generateAlgorithmChannelsMap();
+//				initializeDerivedSensors();
+//				generateAlgorithmChannelsMap();
 				mAlgorithmGroupingMap = Configuration.Shimmer3.mAlgorithmGroupingMapRef;
 			}
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
@@ -6945,24 +6933,62 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
+		
+		handleSpecialCasesAfterSensorMapCreate();
 	}
 	
-	private void generateAlgorithmChannelsMap() {
-		// createMapOfSupportedAlgorithmChannels();
-		mAlgorithmChannelsMap = new LinkedHashMap<String, AlgorithmDetails>();
-		for (AbstractAlgorithm aA : mMapOfAlgorithmModules.values()) {
-			mAlgorithmChannelsMap.putAll(aA.mAlgorithmChannelsMap);
-		}
-		// check if any algorithm has been previously enabled
-		for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
-			if ((mDerivedSensors & aD.mAlgorithmDetailsRef.mDerivedSensorBitmapID) > 0) {
-				aD.mEnabled = true;
-			} else {
-				aD.mEnabled = false;
+	private void handleSpecialCasesAfterSensorMapCreate() {
+		
+		//Special cases for ExG 24-bit vs. 16-bit
+		List<Integer> listOfSensorMapKeys = Arrays.asList(
+				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
+				Configuration.Shimmer3.SensorMapKey.HOST_EMG,
+				Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+				Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
+				Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST);
+		
+		for(Integer sensorMapKey:listOfSensorMapKeys){
+			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+			if(sensorDetails!=null){
+				Iterator<ChannelDetails> iterator = sensorDetails.mListOfChannels.iterator();
+				while (iterator.hasNext()) {
+					ChannelDetails channelDetails = iterator.next();
+					String channelName = channelDetails.mObjectClusterName;
+//			   		System.out.println("getExGResolution(): " +getExGResolution());
+			   		
+					if((getExGResolution()==1)
+							&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
+	    				||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
+						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
+						    iterator.remove();
+					}
+					else if((getExGResolution()==0)
+							&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
+	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
+					    iterator.remove();
+					}
+			   	}
 			}
 		}
 	}
-	
+
 	//TODO 2016-05-18 feed below into sensor map classes
 	private void createSensorMapShimmer3(){
 		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
@@ -7003,51 +7029,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 					
 				mSensorMap.put(key, new SensorDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
-				
-				//Special cases for ExG 24-bit vs. 16-bit
-				if((key==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
-						||(key==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
-						||(key==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)
-						||(key==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
-						||(key==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)){
-
-					Iterator<ChannelDetails> i = mSensorMap.get(key).mListOfChannels.iterator();
-//					Iterator<String> i = mSensorEnabledMap.get(key).mListOfChannels.iterator();
-					while (i.hasNext()) {
-						ChannelDetails channelName = i.next();
-//						String channelName = i.next();
-				   		//System.out.println("getExGResolution(): " +getExGResolution());
-				   		
-	    				if((getExGResolution()==1)
-	    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
-		    				||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
-							    i.remove();
-						}
-	    				else if((getExGResolution()==0)
-	    						&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
-		    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
-						    i.remove();
-						}
-				   	}
-				}					
 			}
 			
 		}
@@ -7209,22 +7190,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 					// Process remaining channels
 					if(!skipKey) {
-						mSensorMap.get(sensorMapKey).setIsEnabled(false);
+						SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+						sensorDetails.setIsEnabled(false);
 						// Check if this sensor is a derived sensor
-						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+						if(sensorDetails.isDerivedChannel()) {
 							//Check if associated derived channels are enabled 
-							if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
+							if((mDerivedSensors&sensorDetails.mDerivedSensorBitmapID) == sensorDetails.mDerivedSensorBitmapID) {
 								//TODO add comment
-								if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-									mSensorMap.get(sensorMapKey).setIsEnabled(true);
+								if((mEnabledSensors&sensorDetails.mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == sensorDetails.mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
+									sensorDetails.setIsEnabled(true);
 								}
 							}
 						}
 						// This is not a derived sensor
 						else {
 							//Check if sensor's bit in sensor bitmap is enabled
-							if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-								mSensorMap.get(sensorMapKey).setIsEnabled(true);
+							if((mEnabledSensors&sensorDetails.mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == sensorDetails.mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
+								sensorDetails.setIsEnabled(true);
 							}
 						}
 					}
