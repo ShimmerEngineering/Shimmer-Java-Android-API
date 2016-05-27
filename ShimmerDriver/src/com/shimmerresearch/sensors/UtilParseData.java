@@ -1,5 +1,6 @@
 package com.shimmerresearch.sensors;
 
+import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
@@ -13,23 +14,27 @@ public class UtilParseData {
 	 */
 	public static long parseData(byte[] data, CHANNEL_DATA_TYPE dataType, CHANNEL_DATA_ENDIAN dataEndian){
 		long formattedData=0;
-		
+
+		consolePrintLnDebugging("Parsing:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(data) + "\twith\t" + dataType + "\t&\t" + dataEndian);
+
 		if(data.length<dataType.getNumBytes()){
-			System.out.println("Parsing error, not enough bytes");
+			consolePrintLnDebugging("Parsing error, not enough bytes");
 			return formattedData;
 		}
 		
 		//1) an if statement to change the order of the bytes if required
 		if(dataEndian==CHANNEL_DATA_ENDIAN.LSB){
 			reverse(data);
+			consolePrintLnDebugging("Reversed data:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(data));
 		}
 		
 		//2) a single for loop looping over the required number of bytes
 		long maskToApply = 0;
 		for(int i=0;i<dataType.getNumBytes();i++){
-			formattedData += data[i] << (i*8);
-			maskToApply = (maskToApply << (i*8)) | 0xFF;
+			formattedData = (formattedData << 8)  + data[i];
+			maskToApply = (maskToApply << 8) | 0xFF;
 		}
+		consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
 		formattedData &= maskToApply;
 		
 		//3) an if statement to calculate the twos complement if required
@@ -42,7 +47,13 @@ public class UtilParseData {
 			formattedData=formattedData>>4; // shift right by 4 bits
 		}
 
+		consolePrintLnDebugging("Parsing result:\t" + formattedData);
+
 		return formattedData;
+	}
+	
+	public static void consolePrintLnDebugging(String stringToPrint){
+		System.out.println(stringToPrint);
 	}
 	
 	/**

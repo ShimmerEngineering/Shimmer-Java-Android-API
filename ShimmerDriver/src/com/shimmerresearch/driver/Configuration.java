@@ -1391,7 +1391,7 @@ public class Configuration {
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT, new SensorDetailsRef(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG1_16BIT));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT, new SensorDetailsRef(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_16BIT));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, new SensorDetailsRef(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180));
-	        aMap.put(SensorBMP180.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
 			//shimmerChannels.put(SENSOR_SHIMMER3_MSP430_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented

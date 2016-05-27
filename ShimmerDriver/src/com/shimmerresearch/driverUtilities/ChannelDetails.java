@@ -210,21 +210,21 @@ public class ChannelDetails implements Serializable {
 	 * 
 	 * @param guiName the String name to assign to the channel 
 	 * @param defaultChannelDataType the ChannelDataType of the channel
-	 * @param numBytes the number of bytes the channel takes up in a data packet
+	 * @param defaultNumBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
 	public ChannelDetails(String objectClusterName, 
 			String guiName, 
 			String databaseChannelHandle, 
 			CHANNEL_DATA_TYPE defaultChannelDataType, 
-			int numBytes, 
+			int defaultNumBytes, 
 			CHANNEL_DATA_ENDIAN channelDataEndian, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes){
 		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes, databaseChannelHandle);
 
 		mDefaultChannelDataType = defaultChannelDataType;
-		mDefaultNumBytes = numBytes;
+		mDefaultNumBytes = defaultNumBytes;
 		mDefaultChannelDataEndian = channelDataEndian;
 		
 		checkDatabaseChannelHandle();
@@ -234,7 +234,7 @@ public class ChannelDetails implements Serializable {
 			String guiName, 
 			String databaseChannelHandle, 
 			CHANNEL_DATA_TYPE defaultChannelDataType, 
-			int numBytes, 
+			int defaultNumBytes, 
 			CHANNEL_DATA_ENDIAN channelDataEndian, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes, 
@@ -245,7 +245,7 @@ public class ChannelDetails implements Serializable {
 			guiName,
 			databaseChannelHandle,
 			defaultChannelDataType,
-			numBytes,
+			defaultNumBytes,
 			channelDataEndian, 
 			defaultCalibratedUnits,
 			listOfChannelTypes);
@@ -261,7 +261,7 @@ public class ChannelDetails implements Serializable {
 	 * 
 	 * @param guiName the String name to assign to the channel 
 	 * @param channelDataType the ChannelDataType of the channel
-	 * @param numBytes the number of bytes the channel takes up in a data packet
+	 * @param defaultNumBytes the number of bytes the channel takes up in a data packet
 	 * @param channelDataEndian the endianness of the byte order in a data packet
 	 */
 	public ChannelDetails(String objectClusterName, 
@@ -269,7 +269,7 @@ public class ChannelDetails implements Serializable {
 			String databaseChannelHandle, 
 			int channelId, 
 			CHANNEL_DATA_TYPE defaultChannelDataType, 
-			int numBytes, 
+			int defaultNumBytes, 
 			CHANNEL_DATA_ENDIAN channelDataEndian, 
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes){
@@ -278,7 +278,7 @@ public class ChannelDetails implements Serializable {
 				guiName,
 				databaseChannelHandle,
 				defaultChannelDataType,
-				numBytes,
+				defaultNumBytes,
 				channelDataEndian, 
 				defaultCalibratedUnits,
 				listOfChannelTypes);

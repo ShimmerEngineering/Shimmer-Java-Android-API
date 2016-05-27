@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
@@ -53,7 +54,7 @@ public class SensorBMP180 extends AbstractSensor {
 	protected byte[] mPressureCalRawParams = new byte[23];
 	protected byte[] mPressureRawParams  = new byte[23];
 	public static final String PRESSURE_TEMPERATURE = "Pressure & Temperature";
-	public static final int SHIMMER_BMP180_PRESSURE = 22;
+//	public static final int SHIMMER_BMP180_PRESSURE = 22;
 	public int mPressureResolution = 0;
 	
 	public static class ObjectClusterSensorName{
@@ -125,7 +126,7 @@ public class SensorBMP180 extends AbstractSensor {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(SensorBMP180.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -186,8 +187,6 @@ public class SensorBMP180 extends AbstractSensor {
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
-		System.out.print("BMP180 bytes\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rawData));
-		
 		double rawDataUP = 0;
 		double rawDataUT = 0;
 		int index = 0;
@@ -195,6 +194,9 @@ public class SensorBMP180 extends AbstractSensor {
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+			
+			System.out.println("BMP180 bytes\t" + channelDetails.mObjectClusterName + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(channelByteArray));
+
 			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
 			objectCluster.incrementIndexKeeper();
 			index = index + channelDetails.mDefaultNumBytes;
@@ -208,11 +210,12 @@ public class SensorBMP180 extends AbstractSensor {
 			}
 		}
 
-		double[] bmp180caldata= calibratePressureSensorData(rawDataUP,rawDataUT);
-
+		double[] bmp180caldata = calibratePressureSensorData(rawDataUP, rawDataUT);
+		bmp180caldata[0] = bmp180caldata[0]/1000;
+		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
-				objectCluster.addCalData(channelDetails, bmp180caldata[0], objectCluster.getIndexKeeper()-2);
+				objectCluster.addCalData(channelDetails, bmp180caldata[0]/1000, objectCluster.getIndexKeeper()-2);
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				objectCluster.addCalData(channelDetails, bmp180caldata[1], objectCluster.getIndexKeeper()-1);
@@ -349,7 +352,7 @@ public class SensorBMP180 extends AbstractSensor {
 		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(PRESSURE_TEMPERATURE, new SensorGroupingDetails(
-					Arrays.asList(SHIMMER_BMP180_PRESSURE),
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
 		}
 		super.updateSensorGroupingMap();

@@ -201,7 +201,11 @@ public class ShimmerClock extends AbstractSensor {
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
-		System.out.print("timestamp bytes\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rawData));
+		String byteString = "";
+		if(rawData.length>0){
+			byteString = UtilShimmer.bytesToHexStringWithSpacesFormatted(rawData); 
+		}
+		System.out.println("timestamp bytes\t" +( (byteString.isEmpty())? "EMPTY BYTES":byteString));
 
 		//TIMESTAMP
 		if(sensorDetails.isEnabled(commType)){
