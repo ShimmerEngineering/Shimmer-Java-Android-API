@@ -356,7 +356,7 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
                     switch (((ObjectCluster)msg.obj).mState) {
                     case CONNECTED:
                     	Log.d("ShimmerActivity","Message Fully Initialized Received from Shimmer driver");
-	                    mBluetoothAddress=((ObjectCluster)msg.obj).mBluetoothAddress; 
+	                    mBluetoothAddress=((ObjectCluster)msg.obj).getMacAddress(); 
 	                    mService.enableGraphingHandler(true);
 	                    deviceState = "Connected";
 	                    textDeviceName.setText(mBluetoothAddress);
@@ -428,8 +428,8 @@ public class ShimmerAdvancedExGExample extends ServiceActivity{
 
 	            	if ((msg.obj instanceof ObjectCluster)){
 	            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj;   
-	            	    FormatCluster fc1 = objectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get("EXG1 STATUS"), CHANNEL_TYPE.UNCAL.toString());
-	            	    FormatCluster fc2 = objectCluster.returnFormatCluster(objectCluster.mPropertyCluster.get("EXG2 STATUS"), CHANNEL_TYPE.UNCAL.toString());
+	            	    FormatCluster fc1 = objectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters("EXG1 STATUS"), CHANNEL_TYPE.UNCAL.toString());
+	            	    FormatCluster fc2 = objectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters("EXG2 STATUS"), CHANNEL_TYPE.UNCAL.toString());
 	            	    
 	            	    if(fc1!=null && fc2!=null){
 	            	    	int statusChip1 = (int) fc1.mData;

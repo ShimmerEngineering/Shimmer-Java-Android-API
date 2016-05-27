@@ -625,14 +625,14 @@ public class HomeFragment extends Fragment{
 	        			units="i16";
 	        		}
 	        		
-	        		String deviceName = objectCluster.mMyName;
+	        		String deviceName = objectCluster.getShimmerName();
 	        		Collection<FormatCluster> ofFormats;
 	        		FormatCluster formatCluster;
 
 	        		//log data
 	            		//if (deviceName=="Shimmer" && sensorName.length!=0){  // Device 1 is the assigned user id, see constructor of the Shimmer
 	        		if (sensorName.length!=0){  // Device 1 is the assigned user id, see constructor of the Shimmer
-	        			ofFormats = objectCluster.mPropertyCluster.get(sensorName[0]);  // first retrieve all the possible formats for the current sensor device
+	        			ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[0]);  // first retrieve all the possible formats for the current sensor device
 
 	        			if (RadioButtonListActivity.mRadioButtonPlotFormatPosition==0) formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())); 
 	        			else formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.CAL.toString()));
@@ -649,7 +649,7 @@ public class HomeFragment extends Fragment{
 	        				data1.add(dataArray[0]); //Obtain data for graph
 	        			}
 
-	        			ofFormats = objectCluster.mPropertyCluster.get(sensorName[1]);  // first retrieve all the possible formats for the current sensor device
+	        			ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[1]);  // first retrieve all the possible formats for the current sensor device
 
 	        			if (RadioButtonListActivity.mRadioButtonPlotFormatPosition==0) formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString()));
 	        			else formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.CAL.toString()));
@@ -664,7 +664,7 @@ public class HomeFragment extends Fragment{
 	        				data2.add(dataArray[1]); //Obtain data for graph
 	        			}
 
-	        			ofFormats = objectCluster.mPropertyCluster.get(sensorName[2]);  // first retrieve all the possible formats for the current sensor device
+	        			ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[2]);  // first retrieve all the possible formats for the current sensor device
 
 	        			if (RadioButtonListActivity.mRadioButtonPlotFormatPosition==0) formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString()));
 	        			else formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.CAL.toString())); 

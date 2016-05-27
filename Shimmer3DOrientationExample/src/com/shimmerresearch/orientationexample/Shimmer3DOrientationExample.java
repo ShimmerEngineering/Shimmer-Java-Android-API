@@ -133,24 +133,24 @@ public class Shimmer3DOrientationExample extends Activity {
 	            case Shimmer.MESSAGE_READ:
 	            	if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
 	            	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
-	            	    if (objectCluster.mMyName=="RightArm"){
-	                	    Collection<FormatCluster> accelXFormats = objectCluster.mPropertyCluster.get("Axis Angle A");  // first retrieve all the possible formats for the current sensor device
+	            	    if (objectCluster.getShimmerName()=="RightArm"){
+	                	    Collection<FormatCluster> accelXFormats = objectCluster.getCollectionOfFormatClusters("Axis Angle A");  // first retrieve all the possible formats for the current sensor device
 				 	    	float angle = 0,x = 0,y=0,z=0;
 	                	    if (accelXFormats != null){
 				 	    		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
 				 	    		angle = (float) formatCluster.mData;
 				 	    	}
-				 	    	Collection<FormatCluster> accelYFormats = objectCluster.mPropertyCluster.get("Axis Angle X");  // first retrieve all the possible formats for the current sensor device
+				 	    	Collection<FormatCluster> accelYFormats = objectCluster.getCollectionOfFormatClusters("Axis Angle X");  // first retrieve all the possible formats for the current sensor device
 				 	    	if (accelYFormats != null){
 				 	    		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
 				 	    		x=(float) formatCluster.mData;
 				 	    	}
-				 	    	Collection<FormatCluster> accelZFormats = objectCluster.mPropertyCluster.get("Axis Angle Y");  // first retrieve all the possible formats for the current sensor device
+				 	    	Collection<FormatCluster> accelZFormats = objectCluster.getCollectionOfFormatClusters("Axis Angle Y");  // first retrieve all the possible formats for the current sensor device
 				 	    	if (accelZFormats != null){
 				 	    		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
 				 	    		y=(float) formatCluster.mData;
 				 	    	}
-				 	    	Collection<FormatCluster> aaFormats = objectCluster.mPropertyCluster.get("Axis Angle Z");  // first retrieve all the possible formats for the current sensor device
+				 	    	Collection<FormatCluster> aaFormats = objectCluster.getCollectionOfFormatClusters("Axis Angle Z");  // first retrieve all the possible formats for the current sensor device
 				 	    	if (aaFormats != null){
 				 	    		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(aaFormats,"CAL")); // retrieve the calibrated data
 				 	    		z=(float) formatCluster.mData;

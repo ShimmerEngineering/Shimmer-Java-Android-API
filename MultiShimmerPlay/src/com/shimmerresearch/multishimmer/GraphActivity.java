@@ -238,13 +238,13 @@ public class GraphActivity extends Activity{
 						sensorName[0] = "Timestamp";
 					}
 
-					String deviceName = objectCluster.mBluetoothAddress;
+					String deviceName = objectCluster.getMacAddress();
 					//log data
 
 					if (sensorName.length!=0){  // Device 1 is the assigned user id, see constructor of the Shimmer
 						if (sensorName.length>0){
 							Log.d("ShimmerGraph","Received2");
-							Collection<FormatCluster> ofFormats = objectCluster.mPropertyCluster.get(sensorName[0]);  // first retrieve all the possible formats for the current sensor device
+							Collection<FormatCluster> ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[0]);  // first retrieve all the possible formats for the current sensor device
 							FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")); 
 							if (formatCluster != null) {
 								//Obtain data for text view
@@ -262,7 +262,7 @@ public class GraphActivity extends Activity{
 							}
 						}
 						if (sensorName.length>1) {
-							Collection<FormatCluster> ofFormats = objectCluster.mPropertyCluster.get(sensorName[1]);  // first retrieve all the possible formats for the current sensor device
+							Collection<FormatCluster> ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[1]);  // first retrieve all the possible formats for the current sensor device
 							FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL"));
 							if (formatCluster != null ) {
 								calibratedDataArray[1] = formatCluster.mData;
@@ -276,7 +276,7 @@ public class GraphActivity extends Activity{
 						}
 						if (sensorName.length>2){
 
-							Collection<FormatCluster> ofFormats = objectCluster.mPropertyCluster.get(sensorName[2]);  // first retrieve all the possible formats for the current sensor device
+							Collection<FormatCluster> ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[2]);  // first retrieve all the possible formats for the current sensor device
 							FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")); 
 							if (formatCluster != null) {
 								calibratedDataArray[2] = formatCluster.mData;

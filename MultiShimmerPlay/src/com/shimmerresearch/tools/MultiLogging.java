@@ -54,7 +54,7 @@ public class MultiLogging {
 				writer = new BufferedWriter(new FileWriter(outputFile, true));
 
 				// First retrieve all the unique keys from the objectClusterLog
-				Multimap<String, FormatCluster> m = objectClusterLog.mPropertyCluster;
+				Multimap<String, FormatCluster> m = objectClusterLog.getPropertyCluster();
 
 				int size = m.size();
 				System.out.print(size);
@@ -86,7 +86,7 @@ public class MultiLogging {
 				writer = new BufferedWriter(new FileWriter(outputFile, false));
 
 				for (int k = 0; k < mSensorNames.length; k++) {
-					writer.write(objectClusterLog.mMyName);
+					writer.write(objectClusterLog.getShimmerName());
 					writer.write(mDelimiter);
 				}
 				writer.newLine(); // notepad recognized new lines as \r\n
@@ -130,7 +130,7 @@ public class MultiLogging {
 
 			// now print data
 			for (int r = 0; r < mSensorNames.length; r++) {
-				Collection<FormatCluster> dataFormats = objectClusterLog.mPropertyCluster
+				Collection<FormatCluster> dataFormats = objectClusterLog.getPropertyCluster()
 						.get(mSensorNames[r]);
 				FormatCluster formatCluster = (FormatCluster) returnFormatCluster(
 						dataFormats, mSensorFormats[r], mSensorUnits[r]); // retrieve

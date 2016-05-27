@@ -349,27 +349,27 @@ public static final Handler mHandler = new Handler() {
           case Shimmer.MESSAGE_READ:
           	if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
           	    ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
-          	    if (objectCluster.mMyName=="RightArm"){
-              	    Collection<FormatCluster> GyroXFormats = objectCluster.mPropertyCluster.get("Gyroscope X");  // first retrieve all the possible formats for the current sensor device
+          	    if (objectCluster.getShimmerName()=="RightArm"){
+              	    Collection<FormatCluster> GyroXFormats = objectCluster.getCollectionOfFormatClusters("Gyroscope X");  // first retrieve all the possible formats for the current sensor device
               	    int[] data=new int[3];
 			 	    		FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(GyroXFormats,"CAL")); // retrieve the Calibrated data
 			 	    	if (formatCluster != null){
 			 	    		//Log.d("CalibratedData","GyroX: " + formatCluster.mData + " "+ formatCluster.mUnits);
 			 	    		data[0]=(int)formatCluster.mData;
 			 	    	}
-			 	    	Collection<FormatCluster> GyroYFormats = objectCluster.mPropertyCluster.get("Gyroscope Y");  // first retrieve all the possible formats for the current sensor device
+			 	    	Collection<FormatCluster> GyroYFormats = objectCluster.getCollectionOfFormatClusters("Gyroscope Y");  // first retrieve all the possible formats for the current sensor device
 			 	    	formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(GyroYFormats,"CAL")); // retrieve the Calibrated data
 		 	    		if (formatCluster != null){
 				 	    	//Log.d("CalibratedData","GyroY: " + formatCluster.mData + " "+formatCluster.mUnits);
 				 	    	data[1]=(int)formatCluster.mData;
 		 	    		}
-			 	    	Collection<FormatCluster> GyroZFormats = objectCluster.mPropertyCluster.get("Gyroscope Z");  // first retrieve all the possible formats for the current sensor device
+			 	    	Collection<FormatCluster> GyroZFormats = objectCluster.getCollectionOfFormatClusters("Gyroscope Z");  // first retrieve all the possible formats for the current sensor device
 			 	    	formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(GyroZFormats,"CAL")); // retrieve the Calibrated data
 				 	    if (formatCluster != null){
 				 			//Log.d("CalibratedData","GyroZ: " + formatCluster.mData + " "+formatCluster.mUnits);
 				 			data[2]=(int)formatCluster.mData;
 			 	    	}
-				 		mGraph.setDataWithAdjustment(data,"Shimmer : " + objectCluster.mMyName,"800");
+				 		mGraph.setDataWithAdjustment(data,"Shimmer : " + objectCluster.getShimmerName(),"800");
 				 		
 				 		
 				 		//only start pushing data if the shimmer device has been stationary for 200ms

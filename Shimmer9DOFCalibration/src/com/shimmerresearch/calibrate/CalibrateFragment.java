@@ -947,7 +947,7 @@ public class CalibrateFragment extends Fragment {
         		
         		//int[] mCalibrateDataArray = new int[mCalibrationSampleSize];
         		
-        		String deviceName = objectCluster.mMyName;
+        		String deviceName = objectCluster.getShimmerName();
         		Collection<FormatCluster> ofFormats = null;
         		FormatCluster formatCluster;
 
@@ -960,13 +960,13 @@ public class CalibrateFragment extends Fragment {
    		     				
    		     				if(counter<sampleSize){
    		     				
-   		     					ofFormats = objectCluster.mPropertyCluster.get(sensorName[0]);  // first retrieve all the possible formats for the current sensor device
+   		     					ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[0]);  // first retrieve all the possible formats for the current sensor device
    		     					//formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")); 
    		     					
    		     					timestampData[0] = (double)((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.CAL.toString())).mData;			
    		     					if(timestampData[0]!=0) mTimestampArray[counter] = timestampData[0]/1000; // convert timestamp data to seconds
 					 	    			
-					 	    	ofFormats = objectCluster.mPropertyCluster.get(sensorName[1]);  // first retrieve all the possible formats for the current sensor device
+					 	    	ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[1]);  // first retrieve all the possible formats for the current sensor device
 					 	    	//formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL"));
 					 	    	data[0] = (int) ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mData; 
 					 	    	if(data[0]!=0){
@@ -982,7 +982,7 @@ public class CalibrateFragment extends Fragment {
 					 	    			
 					 	    	}
 					 	    	
-					 	    	ofFormats = objectCluster.mPropertyCluster.get(sensorName[2]);  // first retrieve all the possible formats for the current sensor device
+					 	    	ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[2]);  // first retrieve all the possible formats for the current sensor device
 					 	    	//formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,"CAL")); 
 				 	    		data[1] =(int) ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mData; 	
 				 	    		if(data[1]!=0){
@@ -997,7 +997,7 @@ public class CalibrateFragment extends Fragment {
 				 	    			else mDataValueY += data[1]; 
 				 	    		}
 				 	    		
-				 	    		ofFormats = objectCluster.mPropertyCluster.get(sensorName[3]);
+				 	    		ofFormats = objectCluster.getCollectionOfFormatClusters(sensorName[3]);
 				 	    		data[2] =(int) ((FormatCluster)ObjectCluster.returnFormatCluster(ofFormats,CHANNEL_TYPE.UNCAL.toString())).mData; 	
 				 	    		if(data[2]!=0){
 				 	    			if (mNavDrawerItemPosition==3){

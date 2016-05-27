@@ -96,37 +96,37 @@ public class ShimmerLogExampleActivity extends Activity {
         		if ((msg.obj instanceof ObjectCluster)){	// within each msg an object can be include, objectclusters are used to represent the data structure of the shimmer device
         			ObjectCluster objectCluster =  (ObjectCluster) msg.obj; 
         			log.logData(objectCluster);
-        			Collection<FormatCluster> accelXFormats = objectCluster.mPropertyCluster.get("Accelerometer X");  // first retrieve all the possible formats for the current sensor device
+        			Collection<FormatCluster> accelXFormats = objectCluster.getCollectionOfFormatClusters("Accelerometer X");  // first retrieve all the possible formats for the current sensor device
         			FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
         			if (formatCluster!=null){
-        				Log.d("CalibratedData",objectCluster.mMyName + " AccelX: " + formatCluster.mData + " "+ formatCluster.mUnits);
+        				Log.d("CalibratedData",objectCluster.getShimmerName() + " AccelX: " + formatCluster.mData + " "+ formatCluster.mUnits);
         			}
-        			Collection<FormatCluster> accelYFormats = objectCluster.mPropertyCluster.get("Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
+        			Collection<FormatCluster> accelYFormats = objectCluster.getCollectionOfFormatClusters("Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
         			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
         			if (formatCluster!=null){
-        				Log.d("CalibratedData",objectCluster.mMyName + " AccelY: " + formatCluster.mData + " "+formatCluster.mUnits);
+        				Log.d("CalibratedData",objectCluster.getShimmerName() + " AccelY: " + formatCluster.mData + " "+formatCluster.mUnits);
         			}
-        			Collection<FormatCluster> accelZFormats = objectCluster.mPropertyCluster.get("Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
+        			Collection<FormatCluster> accelZFormats = objectCluster.getCollectionOfFormatClusters("Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
         			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
         			if (formatCluster!=null){
-        				Log.d("CalibratedData",objectCluster.mMyName + " AccelZ: " + formatCluster.mData + " "+formatCluster.mUnits);
+        				Log.d("CalibratedData",objectCluster.getShimmerName() + " AccelZ: " + formatCluster.mData + " "+formatCluster.mUnits);
         			}
 
 
-        			accelXFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer X");  // first retrieve all the possible formats for the current sensor device
+        			accelXFormats = objectCluster.getCollectionOfFormatClusters("Low Noise Accelerometer X");  // first retrieve all the possible formats for the current sensor device
         			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); // retrieve the calibrated data
         			if (formatCluster!=null){
-        				Log.d("CalibratedData",objectCluster.mMyName + " AccelLNX: " + formatCluster.mData + " "+ formatCluster.mUnits);
+        				Log.d("CalibratedData",objectCluster.getShimmerName() + " AccelLNX: " + formatCluster.mData + " "+ formatCluster.mUnits);
         			}
-        			accelYFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
+        			accelYFormats = objectCluster.getCollectionOfFormatClusters("Low Noise Accelerometer Y");  // first retrieve all the possible formats for the current sensor device
         			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); // retrieve the calibrated data
         			if (formatCluster!=null){
-        				Log.d("CalibratedData",objectCluster.mMyName + " AccelLNY: " + formatCluster.mData + " "+formatCluster.mUnits);
+        				Log.d("CalibratedData",objectCluster.getShimmerName() + " AccelLNY: " + formatCluster.mData + " "+formatCluster.mUnits);
         			}
-        			accelZFormats = objectCluster.mPropertyCluster.get("Low Noise Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
+        			accelZFormats = objectCluster.getCollectionOfFormatClusters("Low Noise Accelerometer Z");  // first retrieve all the possible formats for the current sensor device
         			formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); // retrieve the calibrated data
         			if (formatCluster!=null){
-        				Log.d("CalibratedData",objectCluster.mMyName + " AccelLNZ: " + formatCluster.mData + " "+formatCluster.mUnits);
+        				Log.d("CalibratedData",objectCluster.getShimmerName() + " AccelLNZ: " + formatCluster.mData + " "+formatCluster.mUnits);
         			}
 
         		}

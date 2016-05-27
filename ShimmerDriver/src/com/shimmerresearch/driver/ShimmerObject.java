@@ -823,8 +823,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //	@Override //TODO replace "int fwType" with "COMMUNICATION_TYPE commType" so that the method can override the one in ShimmerDevice
 	protected ObjectCluster buildMsg(byte[] newPacket, int fwType, boolean isTimeSyncEnabled, long pcTimestamp) throws Exception {
 		ObjectCluster objectCluster = new ObjectCluster();
-		objectCluster.mMyName = mShimmerUserAssignedName;
-		objectCluster.mBluetoothAddress = mMyBluetoothAddress;
+		objectCluster.setShimmerName(mShimmerUserAssignedName);
+		objectCluster.setMacAddress(mMyBluetoothAddress);
 		objectCluster.mRawData = newPacket;
 		
 		long systemTime = System.currentTimeMillis();

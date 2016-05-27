@@ -34,16 +34,16 @@ class TCPServer
 							ObjectInputStream ois = new ObjectInputStream(bais);
 							ObjectCluster rxojc =  (ObjectCluster) ois.readObject();
 							
-							Collection<FormatCluster> accelXFormats = rxojc.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X);
+							Collection<FormatCluster> accelXFormats = rxojc.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X);
 							FormatCluster formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelXFormats,"CAL")); 
 							double x=formatCluster.mData;
-							Collection<FormatCluster> accelYFormats = rxojc.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y);
+							Collection<FormatCluster> accelYFormats = rxojc.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y);
 							formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelYFormats,"CAL")); 
 							double y=formatCluster.mData;
-							Collection<FormatCluster> accelZFormats = rxojc.mPropertyCluster.get(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z);
+							Collection<FormatCluster> accelZFormats = rxojc.getCollectionOfFormatClusters(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z);
 							formatCluster = ((FormatCluster)ObjectCluster.returnFormatCluster(accelZFormats,"CAL")); 
 							double z=formatCluster.mData;
-							System.out.print(rxojc.mMyName + "\t"+ Double.toString(x) + "\t"+ Double.toString(y) + "\t"+ Double.toString(z) + "\n");
+							System.out.print(rxojc.getShimmerName() + "\t"+ Double.toString(x) + "\t"+ Double.toString(y) + "\t"+ Double.toString(z) + "\n");
 							
 						}
 
