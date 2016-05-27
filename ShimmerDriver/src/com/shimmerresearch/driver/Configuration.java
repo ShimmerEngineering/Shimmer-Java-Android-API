@@ -605,10 +605,10 @@ public class Configuration {
 			/** Shimmer3 Wide-range digital accelerometer */
 			public static final int SHIMMER_LSM303DLHC_ACCEL = 11;//XXX-RS-LSM-SensorClass?
 			public static final int SHIMMER_EXT_EXP_ADC_A15 = 12;
-			public static final int SHIMMER_INT_EXP_ADC_A1 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A1; //13;
-			public static final int SHIMMER_INT_EXP_ADC_A12 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A12; //14;
-			public static final int SHIMMER_INT_EXP_ADC_A13 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A13; //15;
-			public static final int SHIMMER_INT_EXP_ADC_A14 = SensorPPG.SensorMapKey.SHIMMER_INT_EXP_ADC_A14; //16;
+			public static final int SHIMMER_INT_EXP_ADC_A1 = 13;
+			public static final int SHIMMER_INT_EXP_ADC_A12 = 14;
+			public static final int SHIMMER_INT_EXP_ADC_A13 = 15;
+			public static final int SHIMMER_INT_EXP_ADC_A14 = 16;
 			/** Shimmer3 Alternative accelerometer */
 			public static final int SHIMMER_MPU9150_ACCEL = 17;
 			/** Shimmer3 Alternative magnetometer */
@@ -646,22 +646,22 @@ public class Configuration {
 			public static final int HOST_SKIN_TEMPERATURE_PROBE = 104;
 	
 			// Derived Channels - GSR Board
-			public static final int HOST_PPG_A12 = SensorPPG.SensorMapKey.HOST_PPG_A12; //106;
-			public static final int HOST_PPG_A13 = SensorPPG.SensorMapKey.HOST_PPG_A13; //107;
+			public static final int HOST_PPG_A12 = 106;
+			public static final int HOST_PPG_A13 = 107;
 			
 			// Derived Channels - Proto3 Deluxe Board
-			public static final int HOST_PPG1_A12 = SensorPPG.SensorMapKey.HOST_PPG1_A12; //111;
-			public static final int HOST_PPG1_A13 = SensorPPG.SensorMapKey.HOST_PPG1_A13; //112;
-			public static final int HOST_PPG2_A1 = SensorPPG.SensorMapKey.HOST_PPG2_A1;   //114;
-			public static final int HOST_PPG2_A14 = SensorPPG.SensorMapKey.HOST_PPG2_A14; //115;
+			public static final int HOST_PPG1_A12 = 111;
+			public static final int HOST_PPG1_A13 = 112;
+			public static final int HOST_PPG2_A1 = 114;
+			public static final int HOST_PPG2_A14 = 115;
 			
 			public static final int HOST_TIMESTAMP_SYNC = 151;
 			public static final int HOST_REAL_TIME_CLOCK = 152;
 			public static final int HOST_REAL_TIME_CLOCK_SYNC = 153;
 
-			public static final int HOST_PPG_DUMMY = SensorPPG.SensorMapKey.HOST_PPG_DUMMY;   //105;
-			public static final int HOST_PPG1_DUMMY = SensorPPG.SensorMapKey.HOST_PPG1_DUMMY; //110;
-			public static final int HOST_PPG2_DUMMY = SensorPPG.SensorMapKey.HOST_PPG2_DUMMY; //113;
+			public static final int HOST_PPG_DUMMY = 105;
+			public static final int HOST_PPG1_DUMMY = 110;
+			public static final int HOST_PPG2_DUMMY = 113;
 			
 			public static final int HOST_SHIMMER_STREAMING_PROPERTIES = 200;
 			//TODO below should be merged with HOST_REAL_TIME_CLOCK?

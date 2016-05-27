@@ -174,6 +174,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String MPL_TAPDIR = "TapDir";                   // not currently supported
 		public static final String MPL_TAPCNT = "TapCnt"; 					// not currently supported
 		public static final String MPL_MOTIONANDORIENT = "MotionAndOrient"; // not currently supported
+		public static final String MPL_MOTION = "Motion"; // not currently supported
+		public static final String MPL_ORIENT = "Orient"; // not currently supported
 	}
 	
 	public class GuiLabelSensorTiles{
@@ -219,7 +221,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String TAP_DIR_AND_CNT = "MPU9150_MPL_TAP"; // not available but supported in FW
 		public static final String TAP_DIR = "MPU9150_MPL_TAP_DIR"; // not available but supported in FW
 		public static final String TAP_CNT = "MPU9150_MPL_TAP_CNT"; // not available but supported in FW
-		public static final String MOTION_AND_ORIENT = "MPU9150_MPL_MOTION"; // not available but supported in FW
+		public static final String MOTION_AND_ORIENT = "MPU9150_MPL_MOTION_AND_ORIENT"; // not available but supported in FW
+		public static final String MOTION = "MPU9150_MPL_MOTION"; // not available but supported in FW
+		public static final String ORIENT = "MPU9150_MPL_ORIENT"; // not available but supported in FW
+
 		public static final String MPU_MPL_GYRO_X = "MPU9150_MPL_GYRO_X_CAL";
 		public static final String MPU_MPL_GYRO_Y = "MPU9150_MPL_GYRO_Y_CAL";
 		public static final String MPU_MPL_GYRO_Z = "MPU9150_MPL_GYRO_Z_CAL";
@@ -251,6 +256,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static String TAPDIR = "Tap_Dirirection";
 		public static String TAPCNT = "Tap_Count";
 		public static String MOTIONANDORIENT = "MotionAndOrient";
+		public static String MOTION = "Motion";
+		public static String ORIENT = "Orient";
 		
 		public static String MPL_TEMPERATURE = "MPL_Temperature";
 		
@@ -569,7 +576,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MOTION_ORIENT),
 			Arrays.asList(GuiLabelConfig.MPU9150_MPL_RATE),
 			Arrays.asList(
-					ObjectClusterSensorName.MOTIONANDORIENT),
+					ObjectClusterSensorName.MOTION,
+					ObjectClusterSensorName.ORIENT),
 			false);
 
 	//MPL calibrated sensors
@@ -891,7 +899,23 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
-
+	// MPL Motion 
+	public static final ChannelDetails channelMplMotion = new ChannelDetails(
+			ObjectClusterSensorName.MOTION,
+			ObjectClusterSensorName.MOTION,
+			DatabaseChannelHandles.MOTION,
+			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	// MPL Orient
+	public static final ChannelDetails channelMplOrient = new ChannelDetails(
+			ObjectClusterSensorName.ORIENT,
+			ObjectClusterSensorName.ORIENT,
+			DatabaseChannelHandles.ORIENT,
+			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	
 	// MPL Gyro Calibrated
 	public static final ChannelDetails channelGyroMpuMplX = new ChannelDetails(
 			ObjectClusterSensorName.GYRO_MPU_MPL_X,
@@ -1063,7 +1087,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		
 		// MPL Motion Orient
 		aMap.put(ObjectClusterSensorName.MOTIONANDORIENT, SensorMPU9X50.channelMplMotionAndOrient);
-
+		aMap.put(ObjectClusterSensorName.MOTION, SensorMPU9X50.channelMplMotion);
+		aMap.put(ObjectClusterSensorName.ORIENT, SensorMPU9X50.channelMplOrient);
 		// Raw 6DOF Quaterian's from the DMP hardware module of the MPU9150
 		aMap.put(ObjectClusterSensorName.QUAT_DMP_6DOF_W, SensorMPU9X50.channelQuatDmp6DofW);
 		aMap.put(ObjectClusterSensorName.QUAT_DMP_6DOF_X, SensorMPU9X50.channelQuatDmp6DofX);
@@ -1379,13 +1404,22 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				}
 			}
 			
-			//TODO: separate out motion and orientation to two channels
+			
 			//Bit 7 - Motion/No motion,	Bits 5-4 - Display Orientation,	Bits 3-1 - Orientation,	Bit 0 - Flip indicator
 			//Uncalibrated MPL_MOTION_ORIENT_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MPL_MOTIONANDORIENT)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MOTIONANDORIENT)){
-						unCalibratedMplMotionOrientData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MOTIONANDORIENT)){
+//						unCalibratedMplMotionOrientData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MOTION)){
+						double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+	                    objectCluster.addCalData(channelDetails, calData);
+	                    objectCluster.incrementIndexKeeper();
+					}
+					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ORIENT)){
+						double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						objectCluster.addCalData(channelDetails, calData);
+	                    objectCluster.incrementIndexKeeper();
 					}
 				}
 			}
