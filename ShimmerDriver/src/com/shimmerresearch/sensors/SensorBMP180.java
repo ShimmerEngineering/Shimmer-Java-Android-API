@@ -39,17 +39,30 @@ public class SensorBMP180 extends AbstractSensor {
 	private static final long serialVersionUID = 4559709230029277863L;
 	
 	//--------- Sensor specific variables start --------------
-	public double pressTempAC1 = 408;
-	public double pressTempAC2 = -72;
-	public double pressTempAC3 = -14383;
-	public double pressTempAC4 = 332741;
-	public double pressTempAC5 = 32757;
-	public double pressTempAC6 = 23153;
-	public double pressTempB1 = 6190;
-	public double pressTempB2 = 4;
-	public double pressTempMB = -32767;
-	public double pressTempMC = -8711;
-	public double pressTempMD = 2868;
+//	public double pressTempAC1 = 408;
+//	public double pressTempAC2 = -72;
+//	public double pressTempAC3 = -14383;
+//	public double pressTempAC4 = 332741;
+//	public double pressTempAC5 = 32757;
+//	public double pressTempAC6 = 23153;
+//	public double pressTempB1 = 6190;
+//	public double pressTempB2 = 4;
+//	public double pressTempMB = -32767;
+//	public double pressTempMC = -8711;
+//	public double pressTempMD = 2868;
+//	
+	//JC HACK
+	public double pressTempAC1 = 8489;
+	public double pressTempAC2 = -1302;
+	public double pressTempAC3 = -14539;
+	public double pressTempAC4 = 34333;
+	public double pressTempAC5 = 25111;
+	public double pressTempAC6 = 14686;
+	public double pressTempB1 = 6515;
+	public double pressTempB2 = 56;
+	public double pressTempMB = -32768;
+	public double pressTempMC = -11786;
+	public double pressTempMD = 2752;
 	
 	protected byte[] mPressureCalRawParams = new byte[23];
 	protected byte[] mPressureRawParams  = new byte[23];
@@ -120,8 +133,8 @@ public class SensorBMP180 extends AbstractSensor {
 			GuiLabelSensors.PRESS_TEMP_BMP180,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(GuiLabelConfig.PRESSURE_RESOLUTION),
-			Arrays.asList(ObjectClusterSensorName.PRESSURE_BMP180,
-					ObjectClusterSensorName.TEMPERATURE_BMP180));
+			Arrays.asList(ObjectClusterSensorName.TEMPERATURE_BMP180,
+					ObjectClusterSensorName.PRESSURE_BMP180));
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -215,7 +228,7 @@ public class SensorBMP180 extends AbstractSensor {
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
-				objectCluster.addCalData(channelDetails, bmp180caldata[0]/1000, objectCluster.getIndexKeeper()-2);
+				objectCluster.addCalData(channelDetails, bmp180caldata[0], objectCluster.getIndexKeeper()-2);
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				objectCluster.addCalData(channelDetails, bmp180caldata[1], objectCluster.getIndexKeeper()-1);
