@@ -1199,7 +1199,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet){
 		Object returnValue = null;
-		int buf = 0;
 
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 			returnValue = abstractSensor.setConfigValueUsingConfigLabel(componentName, valueToSet);
@@ -1608,7 +1607,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
-	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED
 	/**
 	 * @param originalSensorMapkey This takes in a single sensor map key to check for conflicts and correct
 	 * @return enabledSensors This returns the new set of enabled sensors, where any sensors which conflicts with sensorToCheck is disabled on the bitmap, so sensorToCheck can be accomodated (e.g. for Shimmer2 using ECG will disable EMG,GSR,..basically any daughter board)
@@ -1671,8 +1669,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED
-	//TODO unfinished/untested - in the process of being copied from ShimmerObject
 	protected void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 			if(abstractSensor.setDefaultConfigForSensor(sensorMapKey, state)){
@@ -1681,8 +1677,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 	}
-	
-	
 	
 	//TODO update sensor map with enabledSensors
 	public void setEnabledSensors(long mEnabledSensors) {

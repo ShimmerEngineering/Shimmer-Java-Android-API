@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.collections.map.UnmodifiableMap;
+
+import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
@@ -22,6 +25,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorBMP180.ObjectClusterSensorName;
 
 /** 
  * @author Ruud Stolk
@@ -57,15 +61,15 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 	
 	
-	public class GuiLabelSensorTiles{
-		public static final String LOW_NOISE_ACCEL = Configuration.Shimmer3.GuiLabelSensors.ACCEL_LN;
-	}
-	
-	
 	public class GuiLabelSensors{
 		public static final String ACCEL_LN = "Low-Noise Accelerometer";
 	}
 	
+	
+	public class GuiLabelSensorTiles{
+		public static final String LOW_NOISE_ACCEL = GuiLabelSensors.ACCEL_LN;
+	}
+
 	
 	public static class DatabaseChannelHandles{
 		public static final String LN_ACC_X = "KXRB8_2042_X";
@@ -81,11 +85,25 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}	
 	//--------- Sensor specific variables end --------------
 	
-	
+
 	//--------- Bluetooth commands start --------------
 	public static final byte SET_ACCEL_CALIBRATION_COMMAND			= (byte) 0x11;
 	public static final byte ACCEL_CALIBRATION_RESPONSE       		= (byte) 0x12;
 	public static final byte GET_ACCEL_CALIBRATION_COMMAND    		= (byte) 0x13;
+
+	public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+	static {
+		Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+		aMap.put(GET_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(GET_ACCEL_CALIBRATION_COMMAND,"GET_ACCEL_CALIBRATION_COMMAND",ACCEL_CALIBRATION_RESPONSE));
+		mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+	}
+
+	public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+	static {
+		Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+		aMap.put(SET_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(SET_ACCEL_CALIBRATION_COMMAND, "SET_ACCEL_CALIBRATION_COMMAND"));
+		mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+	}
 	//--------- Bluetooth commands end --------------
 
 	
@@ -163,7 +181,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);		
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);		
 	}
 
 	
@@ -194,7 +212,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
 			
 			//Uncalibrated Accelerometer data
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
@@ -206,6 +224,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
 				unCalibratedAccelData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 			}	
+			
+			index = index + channelDetails.mDefaultNumBytes;
 		}
 			
 		//Calibration
@@ -225,8 +245,17 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 				objectCluster.addCalData(channelDetails, calibratedAccelData[2]);
 				objectCluster.incrementIndexKeeper();
 			}
-			index = index + channelDetails.mDefaultNumBytes;
 		}
+		
+		//Debugging
+		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+				new String[]{ObjectClusterSensorName.ACCEL_LN_X, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_LN_Y, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_LN_Z, CHANNEL_TYPE.UNCAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_LN_X, CHANNEL_TYPE.CAL.toString()}, 
+				new String[]{ObjectClusterSensorName.ACCEL_LN_Y, CHANNEL_TYPE.CAL.toString()},
+				new String[]{ObjectClusterSensorName.ACCEL_LN_Z, CHANNEL_TYPE.CAL.toString()}));
+
 		return objectCluster;
 	}
 	

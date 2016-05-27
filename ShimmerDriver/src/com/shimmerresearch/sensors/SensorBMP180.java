@@ -12,6 +12,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -27,6 +28,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
 
 /**
  * @author Ronan McCormack
@@ -57,19 +59,27 @@ public class SensorBMP180 extends AbstractSensor {
 //	public static final int SHIMMER_BMP180_PRESSURE = 22;
 	private int mPressureResolution = 0;
 	
-	public static class ObjectClusterSensorName{
-		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
-		public static String PRESSURE_BMP180 = "Pressure_BMP180";
-	}
+
 	public class GuiLabelConfig{
 		public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
 	}
+	
 	public class GuiLabelSensors{
 		public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
 	}
+	
+	public class GuiLabelSensorTiles{
+		public static final String PRESSURE_TEMPERATURE = GuiLabelSensors.PRESS_TEMP_BMP180;
+	}
+	
 	public static class DatabaseChannelHandles{
 		public static final String PRESSURE = "BMP180_Pressure";
 		public static final String TEMPERATURE = "BMP180_Temperature";
+	}
+	
+	public static class ObjectClusterSensorName{
+		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
+		public static String PRESSURE_BMP180 = "Pressure_BMP180";
 	}
 	//--------- Sensor specific variables end --------------
 
@@ -169,7 +179,7 @@ public class SensorBMP180 extends AbstractSensor {
     }
 	//--------- Channel info end --------------
     
-	
+	//--------- Constructors for this class start --------------
 	/** Constructor for this Sensor
 	 * @param svo
 	 */
@@ -177,13 +187,34 @@ public class SensorBMP180 extends AbstractSensor {
 		super(svo);
 		setSensorName(SENSORS.BMP180.toString());
 	}
+	//--------- Constructors for this class end --------------
 	
+
+	//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
-
-	//--------- Abstract methods implemented start --------------
+	
+	
+	@Override
+	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolution); 
+	}
+	
+	
+	@Override
+	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			mSensorGroupingMap.put(PRESSURE_TEMPERATURE, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
+		}
+		super.updateSensorGroupingMap();
+	}
+	
+	
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
@@ -210,6 +241,7 @@ public class SensorBMP180 extends AbstractSensor {
 			}
 		}
 
+		//Calibration
 		double[] bmp180caldata = calibratePressureSensorData(rawDataUP, rawDataUT);
 		bmp180caldata[0] = bmp180caldata[0]/1000;
 		
@@ -221,7 +253,6 @@ public class SensorBMP180 extends AbstractSensor {
 				objectCluster.addCalData(channelDetails, bmp180caldata[1], objectCluster.getIndexKeeper()-1);
 			}
 		}
-		
 		//Debugging
 		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 				new String[]{ObjectClusterSensorName.PRESSURE_BMP180, CHANNEL_TYPE.UNCAL.toString()}, 
@@ -282,15 +313,26 @@ public class SensorBMP180 extends AbstractSensor {
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//TODO set defaults for particular sensor
+			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE) {
+				setDefaultBmp180PressureSensorConfig(state);
+				return true;
+				}
+		  }
+	  return false;
+	}
+	
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
+		if(mConfigOptionsMap.containsKey(stringKey)){
 			return true;
 		}
 		return false;
 	}
 	
+	
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -307,70 +349,16 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 //	@Override
-//	public LinkedHashMap<Integer, ChannelDetails> generateChannelDetailsMap(ShimmerVerObject svo) {
-//		LinkedHashMap<Integer, ChannelDetails> mapOfChannelDetails = new LinkedHashMap<Integer, ChannelDetails>();
-//		int index = 0;
-//		mapOfChannelDetails.put(index++, cdBmp180Temp);
-//		mapOfChannelDetails.put(index++, cdBmp180Press);					  
-//
-////		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.SD, mapOfChannelDetails);
-////		mMapOfCommTypetoChannel.put(COMMUNICATION_TYPE.BLUETOOTH, mapOfChannelDetails);
-//		mMapOfChannelDetails = mapOfChannelDetails;
-//		
-//		return mMapOfChannelDetails;
-//	}
-
-	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolution); 
-	}
-
-//	@Override
-//	public List<Integer> generateListOfSensorMapKeysConflicting(ShimmerVerObject svo) {
-//		
-//		return null;
-//	}
-//
-//	@Override
 //	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
 //		return mListOfConfigOptionKeysAssociated = Arrays.asList(
 //				Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION);
 //	}
 
 
-//	@Override
-//	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-//		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
-//		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-//			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
-//					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
-//					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
-//		}
-//		super.updateSensorGroupingMap();
-//	}
-	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(PRESSURE_TEMPERATURE, new SensorGroupingDetails(
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
-		}
-		super.updateSensorGroupingMap();
-	}
 	//--------- Abstract methods implemented end --------------
 
 
 	//--------- Sensor specific methods start --------------
-	private void setPressureResolution(int i){
-		System.err.println("New resolution:\t" + ListofPressureResolution[i]);
-		mPressureResolution = i;
-	}
-	
-	private int getPressureResolution(){
-		return mPressureResolution;
-	}
-	
 	public double[] calibratePressureSensorData(double UP, double UT){
 		double X1 = (UT - pressTempAC6) * pressTempAC5 / 32768;
 		double X2 = (pressTempMC * 2048 / (X1 + pressTempMD));
@@ -420,7 +408,7 @@ public class SensorBMP180 extends AbstractSensor {
 		}
 	}
 	
-	//TODO Check if needed 
+
 	public byte[] getRawCalibrationParameters(ShimmerVerObject svo){        
 		byte[] rawcal=new byte[1];
 		if (svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
@@ -442,6 +430,24 @@ public class SensorBMP180 extends AbstractSensor {
 		}
 		return rawcal;
 	}
+	
+	private void setPressureResolution(int i){
+		System.err.println("New resolution:\t" + ListofPressureResolution[i]);
+		mPressureResolution = i;
+	}
+	
+	private int getPressureResolution(){
+		return mPressureResolution;
+	}
+
+	private void setDefaultBmp180PressureSensorConfig(boolean state) {
+		if(state) {
+		}
+		else {
+			mPressureResolution = 0;
+		}
+	}
+	
 	
 	public double getPressTempAC1(){
 		return pressTempAC1;
@@ -487,12 +493,6 @@ public class SensorBMP180 extends AbstractSensor {
 		return pressTempMD;
 	}
 	//--------- Sensor specific methods end --------------
-
-	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 
 }

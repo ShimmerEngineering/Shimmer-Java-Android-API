@@ -400,7 +400,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)){
-			addData(objectClusterName,channelType.toString(), units, data);
+			addData(objectClusterName, channelType.toString(), units, data);
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.PROTOBUF)){
