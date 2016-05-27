@@ -1186,7 +1186,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = SensorDetails.processShimmerChannelData(sensorByteArray, channelDetails, objectCluster);
+			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
 			index = index + channelDetails.mDefaultNumBytes;
 		}
 		//Uncalibrated Gyro data
