@@ -199,12 +199,12 @@ public class ShimmerClock extends AbstractSensor {
 	}
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
 		if(sensorDetails.getExpectedDataPacketSize()>0){
 			String byteString = "";
-			if(rawData.length>0){
-				byteString = UtilShimmer.bytesToHexStringWithSpacesFormatted(rawData); 
+			if(sensorByteArray.length>0){
+				byteString = UtilShimmer.bytesToHexStringWithSpacesFormatted(sensorByteArray); 
 			}
 			System.out.println(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + " bytes\t" +( (byteString.isEmpty())? "EMPTY BYTES":byteString));
 		}
@@ -246,7 +246,7 @@ public class ShimmerClock extends AbstractSensor {
 					double newOffset = 0.0;
 					
 					byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-					System.arraycopy(rawData, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+					System.arraycopy(sensorByteArray, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 					double newTimestamp = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
 					
 					if(mFirstTime && commType==COMMUNICATION_TYPE.SD){

@@ -73,7 +73,6 @@ public class SensorPPG extends AbstractSensor {
 		public final static int PPG_12_13 = 1<<2;
 	}
 	
-	//XXX public class SensorBitmap missing here, but we keep that in Configuration.java for now. 
 
 	public class GuiLabelConfig{
 		public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
@@ -83,7 +82,6 @@ public class SensorPPG extends AbstractSensor {
 	}
 	
 	public class GuiLabelSensorTiles{
-		//XXX - not sure if this is the only one -> Should we handle the PPG input of the GSR board in this class as well?
 		public static final String PROTO3_DELUXE_SUPP = "PPG";
 	}
 
@@ -101,7 +99,7 @@ public class SensorPPG extends AbstractSensor {
 		public static final String PPG2_A14 = "PPG2 A14";
 	}
 
-	//XXX Added class DatabaseChannelHandles 
+	 
 	public static class DatabaseChannelHandles{
 		public static final String PPG_A12 = "F5437a_PPG_A12";
 		public static final String PPG_A13 = "F5437a_PPG_A13";
@@ -123,8 +121,9 @@ public class SensorPPG extends AbstractSensor {
 
 	
 	//--------- Bluetooth commands start --------------
-	// Check 
-	//XXX - TODO RMC, or how is this handled for PPG?
+	
+	//			Not in this class
+	
 	//--------- Bluetooth commands end --------------
 	
 	
@@ -142,48 +141,31 @@ public class SensorPPG extends AbstractSensor {
 		Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP};
 
     List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
-  
-	
-	/* XXX
-	 * - Only define the SensorConfigOptionDetails for each Config Option here, 
-	 *   then later generate mConfigOptionsMap (instead of mConfigOptionsMapRef)
-	 *   in the abstract method generateConfigOptionsMap()
-	 *  
-	 * - Refer to SensorMapKey in Configuration -> SensorMapKey should not be in Sensor Class.
-	 *  
-	 */
-    public static final Map<String, SensorConfigOptionDetails> mConfigOptionsMapRef;
-	static {
-		Map<String, SensorConfigOptionDetails> aConfigMap = new LinkedHashMap<String, SensorConfigOptionDetails>(); 
-		aConfigMap.put(GuiLabelConfig.PPG_ADC_SELECTION, 
-				new SensorConfigOptionDetails(
-						ListOfPpgAdcSelection, 
-						ListOfPpgAdcSelectionConfigValues, 
-						SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
-		
-		aConfigMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, 
-				new SensorConfigOptionDetails(
-						ListOfPpg1AdcSelection, 
-						ListOfPpg1AdcSelectionConfigValues, 
-						SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
-		
-		aConfigMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, 
-				new SensorConfigOptionDetails(
-						ListOfPpg2AdcSelection, 
-						ListOfPpg2AdcSelectionConfigValues, 
-						SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
-
-		mConfigOptionsMapRef = Collections.unmodifiableMap(aConfigMap);
-	}
+    
+    public static final SensorConfigOptionDetails configOptionPpgAdcSelection = new SensorConfigOptionDetails(
+    		ListOfPpgAdcSelection, 
+			ListOfPpgAdcSelectionConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
+    
+    public static final SensorConfigOptionDetails configOptionPpg1AdcSelection = new SensorConfigOptionDetails(
+    		ListOfPpg1AdcSelection, 
+			ListOfPpg1AdcSelectionConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
+    
+    public static final SensorConfigOptionDetails configOptionPpg2AdcSelection = new SensorConfigOptionDetails(
+    		ListOfPpg2AdcSelection, 
+			ListOfPpg2AdcSelectionConfigValues, 
+			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
+    
 	//--------- Configuration options end --------------
 	
 
 	//--------- Sensor info start --------------	
 	public static final SensorDetailsRef sensorPPG = new SensorDetailsRef(
-			0x04<<(2*8), // check   //XXX what needs to be checked here? Old comment?
+			0x04<<(2*8), 
 			0x04<<(2*8), 
 			GuiLabelSensors.PPG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
@@ -326,26 +308,7 @@ public class SensorPPG extends AbstractSensor {
 	{
 		sensorPpgHostPPG2_A14.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
 	}
-//	public SensorDetailsRef(
-//			long sensorBitmapIDStreaming, 
-//			long sensorBitmapIDSDLogHeader, 
-//			String guiFriendlyLabel, 
-//			List<ShimmerVerObject> listOfCompatibleVersionInfo, 
-//			List<Integer> listOfSensorMapKeysConflicting, 
-//			List<String> listOfConfigOptionKeysAssociated, 
-//			List<String> listOfChannelsRef,
-//			boolean intExpBoardPowerRequired) {
-	
-//	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
-//	static {
-//		Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-//		aMap.put(SensorMapKey.PPG, new SensorDetailsRef(0, 0, GuiLabelSensors.PPG));
-//		aMap.get(SensorMapKey.PPG).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
-//		// Associated config options for each channel (currently used for the ChannelTileMap)
-//		aMap.get(Configuration.ShimmerGqBle.SensorMapKey.PPG).mListOfConfigOptionKeysAssociated = Arrays.asList(
-//				 Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG);
-//		mSensorMapRef = Collections.unmodifiableMap(aMap);
-//	}
+
 	    
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -616,25 +579,18 @@ public class SensorPPG extends AbstractSensor {
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		if(ShimmerDevice.isDerivedSensorsSupported(svo)){
-			super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		}
 	}
 
-	
-	//XXX see my comment at mConfigOptionsMapRef 
+	 
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
 
-//		if (svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.BTSTREAM 
-//				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.SDLOG
-//				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.LOGANDSTREAM
-//				|| svo.mFirmwareIdentifier == ShimmerVerDetails.FW_ID.GQ_802154
-//				) {
-			mConfigOptionsMap.put(GuiLabelConfig.PPG_ADC_SELECTION , mConfigOptionsMapRef.get(GuiLabelConfig.PPG_ADC_SELECTION )); 
-			mConfigOptionsMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, mConfigOptionsMapRef.get(GuiLabelConfig.PPG1_ADC_SELECTION)); 
-			mConfigOptionsMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, mConfigOptionsMapRef.get(GuiLabelConfig.PPG2_ADC_SELECTION)); 
-			mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
-//		}
+			mConfigOptionsMap.put(GuiLabelConfig.PPG_ADC_SELECTION , configOptionPpgAdcSelection); 
+			mConfigOptionsMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, configOptionPpg1AdcSelection); 
+			mConfigOptionsMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, configOptionPpgAdcSelection); 
+//			mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
 	}
 
 	
@@ -703,10 +659,6 @@ public class SensorPPG extends AbstractSensor {
 		case(GuiLabelConfig.PPG2_ADC_SELECTION):
 			returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
 		break;
-		//XXX ShimmerGqBle can be ignored.
-		case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
-			returnValue = getSamplingDividerPpg();
-		break;
 		}
 		return returnValue;
 	}
@@ -752,7 +704,7 @@ public class SensorPPG extends AbstractSensor {
 	
 	//--------- Sensor specific methods start --------------
 
-	//XXX SensorMapKey -> refer to Configuration
+	
 	//XXX - is this old, can it be removed, or does it still need to be checked? 
 	//TODO Check if needed
 	public boolean checkIfSensorEnabled(int sensorMapKey){
