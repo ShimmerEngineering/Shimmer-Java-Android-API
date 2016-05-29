@@ -210,6 +210,12 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		return false;
 	}
 
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

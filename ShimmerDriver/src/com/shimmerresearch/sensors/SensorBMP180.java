@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -41,30 +42,30 @@ public class SensorBMP180 extends AbstractSensor {
 	private static final long serialVersionUID = 4559709230029277863L;
 	
 	//--------- Sensor specific variables start --------------
-//	public double pressTempAC1 = 408;
-//	public double pressTempAC2 = -72;
-//	public double pressTempAC3 = -14383;
-//	public double pressTempAC4 = 332741;
-//	public double pressTempAC5 = 32757;
-//	public double pressTempAC6 = 23153;
-//	public double pressTempB1 = 6190;
-//	public double pressTempB2 = 4;
-//	public double pressTempMB = -32767;
-//	public double pressTempMC = -8711;
-//	public double pressTempMD = 2868;
-//	
+	public double pressTempAC1 = 408;
+	public double pressTempAC2 = -72;
+	public double pressTempAC3 = -14383;
+	public double pressTempAC4 = 332741;
+	public double pressTempAC5 = 32757;
+	public double pressTempAC6 = 23153;
+	public double pressTempB1 = 6190;
+	public double pressTempB2 = 4;
+	public double pressTempMB = -32767;
+	public double pressTempMC = -8711;
+	public double pressTempMD = 2868;
+	
 	//JC HACK
-	public double pressTempAC1 = 8489;
-	public double pressTempAC2 = -1302;
-	public double pressTempAC3 = -14539;
-	public double pressTempAC4 = 34333;
-	public double pressTempAC5 = 25111;
-	public double pressTempAC6 = 14686;
-	public double pressTempB1 = 6515;
-	public double pressTempB2 = 56;
-	public double pressTempMB = -32768;
-	public double pressTempMC = -11786;
-	public double pressTempMD = 2752;
+//	public double pressTempAC1 = 8489;
+//	public double pressTempAC2 = -1302;
+//	public double pressTempAC3 = -14539;
+//	public double pressTempAC4 = 34333;
+//	public double pressTempAC5 = 25111;
+//	public double pressTempAC6 = 14686;
+//	public double pressTempB1 = 6515;
+//	public double pressTempB2 = 56;
+//	public double pressTempMB = -32768;
+//	public double pressTempMC = -11786;
+//	public double pressTempMD = 2752;
 	
 	protected byte[] mPressureCalRawParams = new byte[23];
 	protected byte[] mPressureRawParams  = new byte[23];
@@ -508,6 +509,20 @@ public class SensorBMP180 extends AbstractSensor {
 		return pressTempMD;
 	}
 	//--------- Sensor specific methods end --------------
+
+
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		if (commType==COMMUNICATION_TYPE.BLUETOOTH){
+			byte[] responseBytes = (byte[])obj;
+			if(responseBytes[0]!=LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
+				byte[] pressureResoRes = new byte[22]; 
+				System.arraycopy(responseBytes, 1, pressureResoRes, 0, 22);
+				retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseBytes[0]);
+			}
+		}
+	}
 
 
 }

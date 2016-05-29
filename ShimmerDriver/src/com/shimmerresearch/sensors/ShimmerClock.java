@@ -502,4 +502,10 @@ public class ShimmerClock extends AbstractSensor {
 		mLastReceivedCalibratedTimeStamp=calibratedTimeStamp;
 		return calibratedTimeStamp;
 	}
+
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
 }

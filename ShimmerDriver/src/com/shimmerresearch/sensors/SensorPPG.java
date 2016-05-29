@@ -1092,5 +1092,12 @@ public class SensorPPG extends AbstractSensor {
 			}
 		}
 	}
+
+
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

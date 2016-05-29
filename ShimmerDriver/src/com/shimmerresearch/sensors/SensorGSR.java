@@ -479,4 +479,11 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return mGSRRange;
 	}
 	//--------- Sensor specific methods end --------------
+
+
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
 }

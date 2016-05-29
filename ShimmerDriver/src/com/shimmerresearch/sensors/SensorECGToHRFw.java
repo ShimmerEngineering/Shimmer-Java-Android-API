@@ -184,6 +184,12 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 		return null;
 	}
 
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

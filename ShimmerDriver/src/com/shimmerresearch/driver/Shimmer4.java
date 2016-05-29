@@ -407,6 +407,8 @@ public class Shimmer4 extends ShimmerDevice {
 					System.out.println("Shimmer Version Response Received. HW Code: " + getHardwareVersion());
 					createInfoMemLayout();
 					readInfoMem();
+					byte[] instructionBuffer = {(byte) LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE};
+					mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionBuffer);
 				} else if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
 					// Get data length to read
 					int lengthToRead = responseBytes.length-1;
@@ -425,6 +427,11 @@ public class Shimmer4 extends ShimmerDevice {
 						setBluetoothRadioState(BT_STATE.CONNECTED);
 						CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_FULLY_INITIALIZED, mMacIdFromUart, comPort);
 						sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+					}
+				} else{
+					System.out.println("POSSIBLE_SENSOR_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseBytes));
+					for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+						abstractSensor.processResponse(responseBytes, COMMUNICATION_TYPE.BLUETOOTH);
 					}
 				}
 				

@@ -290,6 +290,14 @@ public class SensorTemplate extends AbstractSensor{
 				return null;
 			}
 			//--------- Abstract methods implemented end --------------
+
+
+
+			@Override
+			public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+				// TODO Auto-generated method stub
+				
+			}
 			
 	
 			
