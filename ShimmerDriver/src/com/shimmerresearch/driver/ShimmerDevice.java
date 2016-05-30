@@ -2020,7 +2020,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	public boolean isChannelUsingDefaultCal(int sensorMapKey) {
+	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			SensorDetails sensorDetails = abstractSensor.mSensorMap.get(sensorMapKey);
+			if(sensorDetails!=null){
+				return abstractSensor.isSensorUsingDefaultCal(sensorMapKey);
+			}
+		}
 		return false;
 	}
 	

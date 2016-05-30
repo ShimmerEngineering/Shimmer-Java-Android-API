@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -394,7 +395,24 @@ public abstract class AbstractSensor implements Serializable{
 		//TODO use the consolePrintLn system 
 		System.out.println(textToPrint);
 	}
-
+	
+	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+		// TODO move to sensor classes
+		
+//		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL){
+//			return isUsingDefaultLNAccelParam();
+//		}
+//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+//			return isUsingDefaultWRAccelParam();
+//		}
+//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+//			return isUsingDefaultGyroParam();
+//		}
+//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+//			return isUsingDefaultMagParam();
+//		}
+		return false;
+	}
 
 
 }

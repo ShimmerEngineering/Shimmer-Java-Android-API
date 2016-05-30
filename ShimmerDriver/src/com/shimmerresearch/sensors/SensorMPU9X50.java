@@ -714,12 +714,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			Arrays.asList(CHANNEL_TYPE.UNCAL));
 	
 	//MPU MAG
-	//Mag is actually 13-bit
+	//Mag is actually 13-bit, signed and LSB
+	//refer to https://github.com/kriswiner/MPU-9150/blob/master/MPU9150BasicAHRS.ino for calibration
 	public static final ChannelDetails channelMagX = new ChannelDetails(
 			ObjectClusterSensorName.MAG_MPU_X,
 			ObjectClusterSensorName.MAG_MPU_X,
 			DatabaseChannelHandles.ALTERNATIVE_MAG_X,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.DEGREES_PER_SECOND,
 			// no CAL channel currently as calibration parameters are not stored anywhere
 			Arrays.asList(CHANNEL_TYPE.UNCAL));
@@ -727,7 +728,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ObjectClusterSensorName.MAG_MPU_Y,
 			ObjectClusterSensorName.MAG_MPU_Y,
 			DatabaseChannelHandles.ALTERNATIVE_MAG_Y,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.DEGREES_PER_SECOND,
 			// no CAL channel currently as calibration parameters are not stored anywhere
 			Arrays.asList(CHANNEL_TYPE.UNCAL));	
@@ -735,7 +736,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ObjectClusterSensorName.MAG_MPU_Z,
 			ObjectClusterSensorName.MAG_MPU_Z,
 			DatabaseChannelHandles.ALTERNATIVE_MAG_Z,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.DEGREES_PER_SECOND,
 			// no CAL channel currently as calibration parameters are not stored anywhere
 			Arrays.asList(CHANNEL_TYPE.UNCAL));
