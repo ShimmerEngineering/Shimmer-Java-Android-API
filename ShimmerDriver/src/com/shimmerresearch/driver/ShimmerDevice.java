@@ -1761,6 +1761,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	
 	public List<SensorDetails> getListOfEnabledSensors(){
 		List<SensorDetails> listOfEnabledSensors = new ArrayList<SensorDetails>();
 		for (SensorDetails sED : mSensorMap.values()) {

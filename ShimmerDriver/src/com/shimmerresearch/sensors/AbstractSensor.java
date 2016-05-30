@@ -111,9 +111,11 @@ public abstract class AbstractSensor implements Serializable{
     	return false;
     }
 	public void handleSpecCasesAfterSensorMapUpdate() {
-		//NOT IN THIS CLASS
+		//NOT USED IN THIS CLASS
 	}
-
+	public void handleSpecialCaseRefreshEnabledSensorsFromSensorMap(){
+	    // NOT USED IN THIS CLASS
+	}
 	
 	public AbstractSensor(ShimmerVerObject svo){
 		mShimmerVerObject = svo;
