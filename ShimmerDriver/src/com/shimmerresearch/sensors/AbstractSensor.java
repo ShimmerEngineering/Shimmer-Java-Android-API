@@ -105,15 +105,6 @@ public abstract class AbstractSensor implements Serializable{
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
     public LinkedHashMap<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
     
-    
-    public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
-    	//NOT USED IN THIS CLASS
-    	return false;
-    }
-	public void handleSpecCasesAfterSensorMapUpdate() {
-		//NOT IN THIS CLASS
-	}
-
 	
 	public AbstractSensor(ShimmerVerObject svo){
 		mShimmerVerObject = svo;
@@ -390,6 +381,31 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		//TODO use the consolePrintLn system 
 		System.out.println(textToPrint);
+	}
+	
+	
+    public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
+    	//NOT USED IN THIS CLASS
+    	//USED in {SensorPPG, SensorEXG}
+    	return false;
+    }
+    
+    
+	public void handleSpecCasesAfterSensorMapUpdate() {
+		//NOT IN THIS CLASS
+		//USED in {SensorPPG, SensorEXG}
+	}
+
+	
+	public void handleSpecCasesUpdateEnabledSensors(long enabledSensors) {
+		//TODO Auto-generated method stub
+		//USED in {SensorEXG}
+	}
+	
+	
+	public void handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
+		//NOT USED IN THIS CLASS
+    	//USED in {SensorPPG}		
 	}
 
 

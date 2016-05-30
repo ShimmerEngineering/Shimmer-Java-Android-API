@@ -6713,18 +6713,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						}
 					}
 				}
-				updateEnabledSensorsFromExgResolution();
-				
 				// add in algorithm map compatible with device
 				updateDerivedSensors();
 				
-				// //TODO 2016-05-04 Special case for EXG - best to do by
-				// cycling through SensorClasses for any special conditions?
-				// AbstractSensor abstractSensor =
-				// mMapOfSensorClasses.get(SENSORS.EXG);
-				// if(abstractSensor!=null){
-				// ((SensorEXG)abstractSensor).updateEnabledSensorsFromExgResolution();
-				// }
+				updateEnabledSensorsFromExgResolution();
 			}
 		}
 	}

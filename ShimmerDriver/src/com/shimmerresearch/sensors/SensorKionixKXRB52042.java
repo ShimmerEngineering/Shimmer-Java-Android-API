@@ -335,6 +335,13 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		//TODO RS - Implement rest of this method.		
 		return actionsetting;
 	}
+	
+	
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
 	//--------- Abstract methods implemented end --------------
 
 
@@ -455,9 +462,5 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	//--------- Sensor specific methods end --------------
 
 
-	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

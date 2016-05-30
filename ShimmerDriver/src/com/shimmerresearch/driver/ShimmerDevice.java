@@ -1526,6 +1526,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 			
+			//RS (30/5/2016) - added special case (at the moment only relevant for PPG) 
+			handleSpecCasesBeforeSetSensorState(sensorMapKey,state);			
+			//Replaces this:
 //			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 //				
 //				// Special case for Dummy entries in the Sensor Map
@@ -1596,6 +1599,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		else {
 			return false;
+		}
+	}
+	
+	
+	private void handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.handleSpecCasesBeforeSetSensorState(sensorMapKey, state);
 		}
 	}
 	
@@ -1678,7 +1690,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	//TODO update sensor map with enabledSensors
+
+	//TODO update sensor map with enabledSensors 
 	public void setEnabledSensors(long mEnabledSensors) {
 		this.mEnabledSensors = mEnabledSensors;
 //		sensorMapUpdateFromEnabledSensorsVars();
@@ -1687,6 +1700,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long getEnabledSensors() {
 		return mEnabledSensors;
 	}
+
 
 	//TODO update sensor map with derivedSensors
 	public void setDerivedSensors(long mDerivedSensors) {
@@ -1749,6 +1763,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				// add in algorithm map compatible with device
 				updateDerivedSensors();
 				
+				handleSpecCasesUpdateEnabledSensors();
+				
+
+				
+				
 				// //TODO 2016-05-04 Special case for EXG - best to do by
 				// cycling through SensorClasses for any special conditions?
 				// AbstractSensor abstractSensor =
@@ -1758,6 +1777,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				// }
 
 			}
+		}
+	}
+	
+	//RS (30/5/2016) - added special case for EXG - comment of 2016-05-04 can go?
+	private void handleSpecCasesUpdateEnabledSensors() {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.handleSpecCasesUpdateEnabledSensors(mEnabledSensors);
 		}
 	}
 	
@@ -2113,7 +2141,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //			// all algorithm has been switched on for testing
 //		}		
 //		
-//		// looping through algorthims to see which ones are enabled
+//		// looping through algorithms to see which ones are enabled
 //		for (AlgorithmDetails algoDetails:algorithmGuiData) {
 //			if (algoDetails.isEnabled()) { // an algorithm has been switched on
 //				// configure byte

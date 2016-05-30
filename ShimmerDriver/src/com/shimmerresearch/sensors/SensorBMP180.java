@@ -364,6 +364,21 @@ public class SensorBMP180 extends AbstractSensor {
 		return actionSetting;
 	}
 
+	
+
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		if (commType==COMMUNICATION_TYPE.BLUETOOTH){
+			byte[] responseBytes = (byte[])obj;
+			if(responseBytes[0]!=LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
+				byte[] pressureResoRes = new byte[22]; 
+				System.arraycopy(responseBytes, 1, pressureResoRes, 0, 22);
+				retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseBytes[0]);
+			}
+		}
+	}
+	
 //	@Override
 //	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
 //		return mListOfConfigOptionKeysAssociated = Arrays.asList(
@@ -512,18 +527,6 @@ public class SensorBMP180 extends AbstractSensor {
 	//--------- Sensor specific methods end --------------
 
 
-	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		if (commType==COMMUNICATION_TYPE.BLUETOOTH){
-			byte[] responseBytes = (byte[])obj;
-			if(responseBytes[0]!=LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
-				byte[] pressureResoRes = new byte[22]; 
-				System.arraycopy(responseBytes, 1, pressureResoRes, 0, 22);
-				retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseBytes[0]);
-			}
-		}
-	}
 
 
 }

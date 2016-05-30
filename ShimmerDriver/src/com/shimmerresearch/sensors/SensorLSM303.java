@@ -809,6 +809,13 @@ public class SensorLSM303 extends AbstractSensor{
 		return actionsetting;
 		
 	}
+	
+	
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
 	//--------- Abstract methods implemented end --------------
 
 
@@ -1285,11 +1292,7 @@ public class SensorLSM303 extends AbstractSensor{
 	//--------- Sensor specific methods end --------------
 
 
-	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	
 	//--------- Abstract methods not implemented start --------------

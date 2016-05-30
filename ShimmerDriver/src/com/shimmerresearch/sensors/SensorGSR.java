@@ -445,6 +445,13 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return actionSetting;
 
 	}
+	
+	
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}	
 	//--------- Abstract methods implemented end --------------
 
 
@@ -491,9 +498,5 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Sensor specific methods end --------------
 
 
-	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }
