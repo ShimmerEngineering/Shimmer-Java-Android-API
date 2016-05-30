@@ -1634,7 +1634,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		sensorMapCheckandCorrectHwDependencies();
 	}
 	
-	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED
+
 	protected void sensorMapCheckandCorrectSensorDependencies() {
 		//Cycle through any required sensors and update sensorMap channel enable values
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
@@ -1721,7 +1721,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		initializeAlgorithms();
 	}
 	
-	//TODO improve flow of below, move to ShimmerDevice also?
+
 	public void prepareAllAfterConfigRead() {
 		//TODO Complete and tidy below
 		sensorAndConfigMapsCreate();
@@ -1744,6 +1744,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //						mDerivedSensors |= sED.mDerivedSensorBitmapID;
 //					}
 				}
+				
 				
 				// add in algorithm map compatible with device
 				updateDerivedSensors();
