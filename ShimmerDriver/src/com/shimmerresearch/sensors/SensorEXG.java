@@ -2349,7 +2349,24 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 
-
+	@Override
+	public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
+		if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
+			
+			mSensorMap.get(sensorMapKey).setIsEnabled(false);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void handleSpecCasesAfterSensorMapUpdate() {
+		internalCheckExgModeAndUpdateSensorMap();
+	}
 
 	//-------------------- ExG End -----------------------------------	
 }
