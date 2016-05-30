@@ -304,9 +304,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//XXX Return true if mSensorMap contains sensorMapKey regardless of the fact there a no configuration options?
 			return true;
 		}
 		return false;

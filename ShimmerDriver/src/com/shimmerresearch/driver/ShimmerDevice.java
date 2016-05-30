@@ -1669,9 +1669,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	protected void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	protected void setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			if(abstractSensor.setDefaultConfigForSensor(sensorMapKey, state)){
+			if(abstractSensor.setDefaultConfigForSensor(sensorMapKey, isSensorEnabled)){
 				//Sensor found, break
 				break;
 			}

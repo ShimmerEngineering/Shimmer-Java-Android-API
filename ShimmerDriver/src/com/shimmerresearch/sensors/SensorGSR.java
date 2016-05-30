@@ -400,10 +400,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//default auto range
-			setGSRRange(4);
+			setDefaultGsrSensorConfig(isSensorEnabled);
 			return true;
 		}
 		return false;
@@ -467,6 +466,17 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		//the following is the new linear method see user GSR user guide for further details
 		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
 		return gsrCalibratedData;  
+	}
+	
+	
+	
+	private void setDefaultGsrSensorConfig(boolean isSensorEnabled) {
+		//RS (30/5/2016): from ShimmerObject
+		if(isSensorEnabled) {
+		}
+		else{
+			mGSRRange=4;
+		}
 	}
 	
 	

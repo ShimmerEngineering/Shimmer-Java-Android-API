@@ -327,10 +327,10 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE) {
-				setDefaultBmp180PressureSensorConfig(state);
+				setDefaultBmp180PressureSensorConfig(isSensorEnabled);
 				return true;
 				}
 		  }
@@ -456,10 +456,11 @@ public class SensorBMP180 extends AbstractSensor {
 		return mPressureResolution;
 	}
 
-	private void setDefaultBmp180PressureSensorConfig(boolean state) {
-		if(state) {
+	private void setDefaultBmp180PressureSensorConfig(boolean isSensorEnabled) {
+		//RS (30/5/2016) - from ShimmerObject:
+		if(isSensorEnabled) {
 		}
-		else {
+		else{
 			mPressureResolution = 0;
 		}
 	}

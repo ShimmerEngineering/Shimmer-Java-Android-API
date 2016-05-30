@@ -130,7 +130,7 @@ public class SensorTemplate extends AbstractSensor{
 			 *	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
 			 *	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 			 *	public abstract void setSensorSamplingRate();
-			 *	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean state);
+			 *	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled);
 			 *	public abstract boolean checkConfigOptionValues(String stringKey);
 			 *	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
 			 *	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
@@ -261,9 +261,12 @@ public class SensorTemplate extends AbstractSensor{
 			}
 		
 			@Override
-			public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+			public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 				if(mSensorMap.containsKey(sensorMapKey)){
-					//Set defaults for particular sensor here if applicable
+					/** Set defaults for particular sensor here if applicable. 
+					 *  Original means that if the sensor has just been enabled, leave the resolution the way it is.
+					 *  However, if it is disabled, reset the resolution to default  
+					 */
 					return true;
 				}
 				return false;
