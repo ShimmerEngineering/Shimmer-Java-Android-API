@@ -1528,7 +1528,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			
 			//RS (30/5/2016) - added special case (at the moment only relevant for PPG) 
 			handleSpecCasesBeforeSetSensorState(sensorMapKey,state);			
-			//Replaces this:
+			//RS (30/5/2016) - replaces this:
 //			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 //				
 //				// Special case for Dummy entries in the Sensor Map
@@ -1560,13 +1560,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //					}
 //				}		
 //				
-//				// Automatically handle required channels for each sensor
-//				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetails.mListOfSensorMapKeysRequired;
-//				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
-//					for(Integer i:listOfRequiredKeys) {
-//						mSensorMap.get(i).setIsEnabled(state);
-//					}
-//				}
+			
+				//Automatically handle required channels for each sensor
+				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
+				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
+					for(Integer i:listOfRequiredKeys) {
+						mSensorMap.get(i).setIsEnabled(state);
+					}
+				}
 //				
 //			}
 //			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
