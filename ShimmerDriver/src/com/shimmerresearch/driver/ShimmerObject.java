@@ -133,7 +133,9 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorMPU9X50;
+import com.shimmerresearch.sensors.UtilCalibration;
 import com.shimmerresearch.sensors.UtilParseData;
+import com.shimmerresearch.sensors.SensorMPU9X50.GuiLabelConfig;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
@@ -1021,7 +1023,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				if (mEnableCalibration){
 					double[] accelCalibratedData;
-					accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+					accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -1085,7 +1087,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				if (mEnableCalibration){
 					double[] accelCalibratedData;
-					accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
+					accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -1151,7 +1153,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iGyroY]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iGyroZ]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					double[] gyroCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+					double[] gyroCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 					calibratedData[iGyroX]=gyroCalibratedData[0];
 					calibratedData[iGyroY]=gyroCalibratedData[1];
 					calibratedData[iGyroZ]=gyroCalibratedData[2];
@@ -1225,7 +1227,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iMagZ]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
 					double[] magCalibratedData;
-					magCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+					magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
 					calibratedData[iMagX]=magCalibratedData[0];
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
@@ -1447,7 +1449,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (mOrientationAlgo==null){
 						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
-					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);					double theta, Rx, Ry, Rz, rho;
+					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
+					double theta, Rx, Ry, Rz, rho;
 					rho = Math.acos(q.q1);
 					theta = rho * 2;
 					Rx = q.q2 / Math.sin(rho);
@@ -2242,7 +2245,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					tempData[0]=(double)newPacketInt[iAccelX];
 					tempData[1]=(double)newPacketInt[iAccelY];
 					tempData[2]=(double)newPacketInt[iAccelZ];
-					double[] accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+					double[] accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -2276,7 +2279,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					tempData[0]=(double)newPacketInt[iGyroX];
 					tempData[1]=(double)newPacketInt[iGyroY];
 					tempData[2]=(double)newPacketInt[iGyroZ];
-					double[] gyroCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+					double[] gyroCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 					calibratedData[iGyroX]=gyroCalibratedData[0];
 					calibratedData[iGyroY]=gyroCalibratedData[1];
 					calibratedData[iGyroZ]=gyroCalibratedData[2];
@@ -2321,7 +2324,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					tempData[0]=(double)newPacketInt[iMagX];
 					tempData[1]=(double)newPacketInt[iMagY];
 					tempData[2]=(double)newPacketInt[iMagZ];
-					double[] magCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+					double[] magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
 					calibratedData[iMagX]=magCalibratedData[0];
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
@@ -2564,7 +2567,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				if (mEnableCalibration){
 					double[] accelCalibratedData;
-					accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+					accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -2603,7 +2606,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				if (mEnableCalibration){
 					double[] accelCalibratedData;
-					accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
+					accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -2643,7 +2646,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.addData("Gyroscope Z",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iGyroZ]);
 
 				if (mEnableCalibration){
-					double[] gyroCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+					double[] gyroCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 					calibratedData[iGyroX]=gyroCalibratedData[0];
 					calibratedData[iGyroY]=gyroCalibratedData[1];
 					calibratedData[iGyroZ]=gyroCalibratedData[2];
@@ -2689,7 +2692,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.addData("Magnetometer Y",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iMagY]);
 				objectCluster.addData("Magnetometer Z",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iMagZ]);
 				if (mEnableCalibration){
-					double[] magCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+					double[] magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
 					calibratedData[iMagX]=magCalibratedData[0];
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
@@ -3041,7 +3044,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					tempData[0]=(double)newPacketInt[iAccelX];
 					tempData[1]=(double)newPacketInt[iAccelY];
 					tempData[2]=(double)newPacketInt[iAccelZ];
-					double[] accelCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+					double[] accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -3075,7 +3078,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					tempData[0]=(double)newPacketInt[iGyroX];
 					tempData[1]=(double)newPacketInt[iGyroY];
 					tempData[2]=(double)newPacketInt[iGyroZ];
-					double[] gyroCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+					double[] gyroCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 					calibratedData[iGyroX]=gyroCalibratedData[0];
 					calibratedData[iGyroY]=gyroCalibratedData[1];
 					calibratedData[iGyroZ]=gyroCalibratedData[2];
@@ -3120,7 +3123,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					tempData[0]=(double)newPacketInt[iMagX];
 					tempData[1]=(double)newPacketInt[iMagY];
 					tempData[2]=(double)newPacketInt[iMagZ];
-					double[] magCalibratedData=calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+					double[] magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
 					calibratedData[iMagX]=magCalibratedData[0];
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
@@ -4581,75 +4584,101 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag8p1GaShimmer3);
 		}
 	}
+	
+//	//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
+//	protected static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
+//		/*  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
+//           in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
+//           C = [R^(-1)] .[K^(-1)] .([U]-[B])
+//			where.....
+//			[C] -> [3 x n] Calibrated Data Matrix 
+//			[U] -> [3 x n] Uncalibrated Data Matrix
+//			[B] ->  [3 x n] Replicated Sensor Offset Vector Matrix 
+//			[R^(-1)] -> [3 x 3] Inverse Alignment Matrix
+//			[K^(-1)] -> [3 x 3] Inverse Sensitivity Matrix
+//			n = Number of Samples
+//		 */
+//		double [][] data2d=new double [3][1];
+//		data2d[0][0]=data[0];
+//		data2d[1][0]=data[1];
+//		data2d[2][0]=data[2];
+//		data2d= matrixmultiplication(matrixmultiplication(matrixinverse3x3(AM),matrixinverse3x3(SM)),matrixminus(data2d,OV));
+//		double[] ansdata=new double[3];
+//		ansdata[0]=data2d[0][0];
+//		ansdata[1]=data2d[1][0];
+//		ansdata[2]=data2d[2][0];
+//		return ansdata;
+//	}
+//
+//	private static double[][] matrixinverse3x3(double[][] data) {
+//		double a,b,c,d,e,f,g,h,i;
+//		a=data[0][0];
+//		b=data[0][1];
+//		c=data[0][2];
+//		d=data[1][0];
+//		e=data[1][1];
+//		f=data[1][2];
+//		g=data[2][0];
+//		h=data[2][1];
+//		i=data[2][2];
+//		//
+//		double deter=a*e*i+b*f*g+c*d*h-c*e*g-b*d*i-a*f*h;
+//		double[][] answer=new double[3][3];
+//		answer[0][0]=(1/deter)*(e*i-f*h);
+//
+//		answer[0][1]=(1/deter)*(c*h-b*i);
+//		answer[0][2]=(1/deter)*(b*f-c*e);
+//		answer[1][0]=(1/deter)*(f*g-d*i);
+//		answer[1][1]=(1/deter)*(a*i-c*g);
+//		answer[1][2]=(1/deter)*(c*d-a*f);
+//		answer[2][0]=(1/deter)*(d*h-e*g);
+//		answer[2][1]=(1/deter)*(g*b-a*h);
+//		answer[2][2]=(1/deter)*(a*e-b*d);
+//		return answer;
+//	}
+//	private static double[][] matrixminus(double[][] a ,double[][] b) {
+//		int aRows = a.length,
+//				aColumns = a[0].length,
+//				bRows = b.length,
+//				bColumns = b[0].length;
+//		if (( aColumns != bColumns )&&( aRows != bRows )) {
+//			throw new IllegalArgumentException(" Matrix did not match");
+//		}
+//		double[][] resultant = new double[aRows][bColumns];
+//		for(int i = 0; i < aRows; i++) { // aRow
+//			for(int k = 0; k < aColumns; k++) { // aColumn
+//
+//				resultant[i][k]=a[i][k]-b[i][k];
+//
+//			}
+//		}
+//		return resultant;
+//	}
+//
+//	private static double[][] matrixmultiplication(double[][] a, double[][] b) {
+//
+//		int aRows = a.length,
+//				aColumns = a[0].length,
+//				bRows = b.length,
+//				bColumns = b[0].length;
+//
+//		if ( aColumns != bRows ) {
+//			throw new IllegalArgumentException("A:Rows: " + aColumns + " did not match B:Columns " + bRows + ".");
+//		}
+//
+//		double[][] resultant = new double[aRows][bColumns];
+//
+//		for(int i = 0; i < aRows; i++) { // aRow
+//			for(int j = 0; j < bColumns; j++) { // bColumn
+//				for(int k = 0; k < aColumns; k++) { // aColumn
+//					resultant[i][j] += a[i][k] * b[k][j];
+//				}
+//			}
+//		}
+//
+//		return resultant;
+//	}
 
-	private static double[][] matrixinverse3x3(double[][] data) {
-		double a,b,c,d,e,f,g,h,i;
-		a=data[0][0];
-		b=data[0][1];
-		c=data[0][2];
-		d=data[1][0];
-		e=data[1][1];
-		f=data[1][2];
-		g=data[2][0];
-		h=data[2][1];
-		i=data[2][2];
-		//
-		double deter=a*e*i+b*f*g+c*d*h-c*e*g-b*d*i-a*f*h;
-		double[][] answer=new double[3][3];
-		answer[0][0]=(1/deter)*(e*i-f*h);
-
-		answer[0][1]=(1/deter)*(c*h-b*i);
-		answer[0][2]=(1/deter)*(b*f-c*e);
-		answer[1][0]=(1/deter)*(f*g-d*i);
-		answer[1][1]=(1/deter)*(a*i-c*g);
-		answer[1][2]=(1/deter)*(c*d-a*f);
-		answer[2][0]=(1/deter)*(d*h-e*g);
-		answer[2][1]=(1/deter)*(g*b-a*h);
-		answer[2][2]=(1/deter)*(a*e-b*d);
-		return answer;
-	}
-	private static double[][] matrixminus(double[][] a ,double[][] b) {
-		int aRows = a.length,
-				aColumns = a[0].length,
-				bRows = b.length,
-				bColumns = b[0].length;
-		if (( aColumns != bColumns )&&( aRows != bRows )) {
-			throw new IllegalArgumentException(" Matrix did not match");
-		}
-		double[][] resultant = new double[aRows][bColumns];
-		for(int i = 0; i < aRows; i++) { // aRow
-			for(int k = 0; k < aColumns; k++) { // aColumn
-
-				resultant[i][k]=a[i][k]-b[i][k];
-
-			}
-		}
-		return resultant;
-	}
-
-	private static double[][] matrixmultiplication(double[][] a, double[][] b) {
-
-		int aRows = a.length,
-				aColumns = a[0].length,
-				bRows = b.length,
-				bColumns = b[0].length;
-
-		if ( aColumns != bRows ) {
-			throw new IllegalArgumentException("A:Rows: " + aColumns + " did not match B:Columns " + bRows + ".");
-		}
-
-		double[][] resultant = new double[aRows][bColumns];
-
-		for(int i = 0; i < aRows; i++) { // aRow
-			for(int j = 0; j < bColumns; j++) { // bColumn
-				for(int k = 0; k < aColumns; k++) { // aColumn
-					resultant[i][j] += a[i][k] * b[k][j];
-				}
-			}
-		}
-
-		return resultant;
-	}
 	
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
@@ -4685,31 +4714,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	//protected abstract void sendStatusMsgPacketLossDetected();
 	protected void sendStatusMsgPacketLossDetected() {
-	}
-
-	//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
-	protected static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
-		/*  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
-           in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
-           C = [R^(-1)] .[K^(-1)] .([U]-[B])
-			where.....
-			[C] -> [3 x n] Calibrated Data Matrix 
-			[U] -> [3 x n] Uncalibrated Data Matrix
-			[B] ->  [3 x n] Replicated Sensor Offset Vector Matrix 
-			[R^(-1)] -> [3 x 3] Inverse Alignment Matrix
-			[K^(-1)] -> [3 x 3] Inverse Sensitivity Matrix
-			n = Number of Samples
-		 */
-		double [][] data2d=new double [3][1];
-		data2d[0][0]=data[0];
-		data2d[1][0]=data[1];
-		data2d[2][0]=data[2];
-		data2d= matrixmultiplication(matrixmultiplication(matrixinverse3x3(AM),matrixinverse3x3(SM)),matrixminus(data2d,OV));
-		double[] ansdata=new double[3];
-		ansdata[0]=data2d[0][0];
-		ansdata[1]=data2d[1][0];
-		ansdata[2]=data2d[2][0];
-		return ansdata;
 	}
 
 	protected double[] calibratePressureSensorData(double UP, double UT){
@@ -4785,15 +4789,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		return gsrCalibratedData;  
 //	}
 
-	public double getSamplingRateShimmer(){
-		return getSamplingRateShimmer(COMMUNICATION_TYPE.SD); 
-	}
-	
-	public void setSamplingRateShimmer(double samplingRate){
-		//In Shimmer3 the SD and BT have the same sampling rate 
-		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, samplingRate);
-		setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
-	}
+//	public double getSamplingRateShimmer(){
+//		return getSamplingRateShimmer(COMMUNICATION_TYPE.SD); 
+//	}
+//	
+//	public void setSamplingRateShimmer(double samplingRate){
+//		//In Shimmer3 the SD and BT have the same sampling rate 
+//		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, samplingRate);
+//		setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, samplingRate);
+//	}
 
 
 	public int getPressureResolution(){
@@ -5916,54 +5920,37 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mPressureCalRawParams;
 	}
 	
-	/**
-	 * Computes the closest compatible sampling rate for the Shimmer based on
-	 * the passed in 'rate' variable. Also computes the next highest available
-	 * sampling rate for the Shimmer's sensors (dependent on pre-set low-power
-	 * modes).
-	 * 
-	 * @param rate
+	
+	/* (non-Javadoc)
+	 * @see com.shimmerresearch.driver.ShimmerDevice#calcMaxSamplingRate()
 	 */
-	public void setShimmerAndSensorsSamplingRate(double rate){
-		
+	@Override
+	protected double calcMaxSamplingRate() {
 		double maxGUISamplingRate = 2048.0;
-		double maxShimmerSamplingRate = 32768.0;
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R) {
 			maxGUISamplingRate = 1024.0;
 		} else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			//check if an MPL channel is enabled - limit rate to 51.2Hz
-			if(checkIfAnyMplChannelEnabled() && getFirmwareIdentifier() == ShimmerVerDetails.FW_ID.SDLOG){
-				rate = 51.2;
+			if(checkIfAnyMplChannelEnabled() && getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.SDLOG){
+//				rate = 51.2;
+				maxGUISamplingRate = 51.2;
 			}
-		}		
-    	// don't let sampling rate < 0 OR > maxRate
-    	if(rate < 1) {
-    		rate = 1.0;
-    	}
-    	else if (rate > maxGUISamplingRate) {
-    		rate = maxGUISamplingRate;
-    	}
-    	
-    	// RM: get Shimmer compatible sampling rate (use ceil or floor depending on which is appropriate to the user entered sampling rate)
-    	Double actualSamplingRate;
-    	if((Math.ceil(maxShimmerSamplingRate/rate) - maxShimmerSamplingRate/rate) < 0.05){
-           	actualSamplingRate = maxShimmerSamplingRate/Math.ceil(maxShimmerSamplingRate/rate);
-    	}
-    	else{
-        	actualSamplingRate = maxShimmerSamplingRate/Math.floor(maxShimmerSamplingRate/rate);
-    	}
-    	
-    	 // round sampling rate to two decimal places
-    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
-		setSamplingRateShimmer(actualSamplingRate);
-		
+		}	
+		return maxGUISamplingRate;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.shimmerresearch.driver.ShimmerDevice#setSamplingRateSensors(double)
+	 */
+	@Override
+	protected void setSamplingRateSensors(double samplingRateShimmer) {
 		if(getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R) {
 			if(!mLowPowerMag){
-				if(rate<=10) {
+				if(samplingRateShimmer<=10) {
 					mShimmer2MagRate = 4;
 				} 
-				else if (rate<=20) {
+				else if (samplingRateShimmer<=20) {
 					mShimmer2MagRate = 5;
 				} 
 				else {
@@ -5975,22 +5962,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		} 
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
-			setLSM303MagRateFromFreq(getSamplingRateShimmer());//XXX-RS-LSM-SensorClass?
-			setLSM303AccelRateFromFreq(getSamplingRateShimmer());//XXX-RS-LSM-SensorClass?
-			setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
-			setExGRateFromFreq(getSamplingRateShimmer());
+			setLSM303MagRateFromFreq(samplingRateShimmer);
+			setLSM303AccelRateFromFreq(samplingRateShimmer);
+			setMPU9150GyroAccelRateFromFreq(samplingRateShimmer);
+			setExGRateFromFreq(samplingRateShimmer);
 			
 			if(getFirmwareIdentifier()==FW_ID.SDLOG){
-				setMPU9150MagRateFromFreq(getSamplingRateShimmer());
-				setMPU9150MplRateFromFreq(getSamplingRateShimmer());
+				setMPU9150MagRateFromFreq(samplingRateShimmer);
+				setMPU9150MplRateFromFreq(samplingRateShimmer);
 			}
-
 		}
 	}
-	
-	
 
-	
 	/**
 	 * Checks to see if the MPU9150 gyro is in low power mode. As determined by
 	 * the sensor's sampling rate being set to the lowest possible value and not
@@ -10648,6 +10631,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
 //    		    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
 	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE_HZ):
+				returnValue = getMPU9150GyroAccelRateInHz();
+				break;
 	        	
 ////List<Byte[]>
 //    					case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
@@ -10845,19 +10831,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
 //				setTrialName((String)valueToSet);
 //	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
-	          	// don't let sampling rate be empty
-	          	Double enteredSamplingRate;
-	          	if(((String)valueToSet).isEmpty()) {
-	          		enteredSamplingRate = 1.0;
-	          	}            	
-	          	else {
-	          		enteredSamplingRate = Double.parseDouble((String)valueToSet);
-	          	}
-	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
-	      		
-	      		returnValue = Double.toString(getSamplingRateShimmer());
-	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+//	          	// don't let sampling rate be empty
+//	          	Double enteredSamplingRate;
+//	          	if(((String)valueToSet).isEmpty()) {
+//	          		enteredSamplingRate = 1.0;
+//	          	}            	
+//	          	else {
+//	          		enteredSamplingRate = Double.parseDouble((String)valueToSet);
+//	          	}
+//	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
+//	      		
+//	      		returnValue = Double.toString(getSamplingRateShimmer());
+//	        	break;
 //			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
 //	        	break;
 //			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):

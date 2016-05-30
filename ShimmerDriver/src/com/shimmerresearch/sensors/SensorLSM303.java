@@ -667,12 +667,11 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 	@Override 
-	public void setSensorSamplingRate() {
+	public void setSensorSamplingRate(double samplingRateHz) {
 		//set sampling rate of the sensors as close to the Shimmer sampling rate as possible (sensor sampling rate >= shimmer sampling rate) 
-		setLSM303AccelRateFromFreq(mMaxSetShimmerSamplingRate);
-		setLSM303MagRateFromFreq(mMaxSetShimmerSamplingRate);
+		setLSM303AccelRateFromFreq(samplingRateHz);
+		setLSM303MagRateFromFreq(samplingRateHz);
 	}
-
 	
 	@Override 
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {

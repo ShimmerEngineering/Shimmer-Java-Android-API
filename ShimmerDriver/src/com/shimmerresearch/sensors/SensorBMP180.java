@@ -321,7 +321,7 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 	@Override
-	public void setSensorSamplingRate() {
+	public void setSensorSamplingRate(double samplingRateHz) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -448,7 +448,7 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 	
 	private void setPressureResolution(int i){
-		System.err.println("New resolution:\t" + ListofPressureResolution[i]);
+//		System.err.println("New resolution:\t" + ListofPressureResolution[i]);
 		mPressureResolution = i;
 	}
 	

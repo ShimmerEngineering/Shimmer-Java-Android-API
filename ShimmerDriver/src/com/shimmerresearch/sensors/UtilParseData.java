@@ -5,6 +5,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public class UtilParseData {
+	
+	private static boolean mIsDebugEnabled = false;
 
 	/**
 	 * Converts the raw packet byte values, into the corresponding calibrated and uncalibrated sensor values, the Instruction String determines the output 
@@ -53,7 +55,9 @@ public class UtilParseData {
 	}
 	
 	public static void consolePrintLnDebugging(String stringToPrint){
-		System.out.println(stringToPrint);
+		if(mIsDebugEnabled){
+			System.out.println(stringToPrint);
+		}
 	}
 	
 	/**

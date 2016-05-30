@@ -255,7 +255,7 @@ public class SensorTemplate extends AbstractSensor{
 			}
 		
 			@Override
-			public void setSensorSamplingRate() {
+			public void setSensorSamplingRate(double samplingRateHz) {
 				// TODO Auto-generated method stub
 				
 			}

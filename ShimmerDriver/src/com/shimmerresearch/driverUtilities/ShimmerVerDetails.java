@@ -123,6 +123,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int GPIO_TEST = 6;
 		public static final int GQ_802154 = 9;
 		public static final int SPAN = 11;
+		public static final int SHIMMER4_SDK_STOCK = 12;
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
@@ -135,6 +136,7 @@ public class ShimmerVerDetails implements Serializable {
 	        aMap.put(GPIO_TEST, "GPIO_TEST");
 	        aMap.put(GQ_802154, "GQ_802154");
 	        aMap.put(SPAN, "SPAN");
+	        aMap.put(SHIMMER4_SDK_STOCK, "Shimmer4SDK");
 	        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
 	    }
 

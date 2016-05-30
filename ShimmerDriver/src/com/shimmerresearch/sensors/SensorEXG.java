@@ -2322,9 +2322,8 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
-	public void setSensorSamplingRate() {
-		// TODO Auto-generated method stub
-		
+	public void setSensorSamplingRate(double samplingRateHz) {
+		setExGRateFromFreq(samplingRateHz);
 	}
 
 	@Override

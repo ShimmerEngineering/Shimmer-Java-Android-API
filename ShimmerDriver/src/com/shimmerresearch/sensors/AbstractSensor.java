@@ -70,7 +70,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 
-	public abstract void setSensorSamplingRate();
+	public abstract void setSensorSamplingRate(double samplingRateHz);
 	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean state);
 	/** TODO populate in individual AbstractSensor classes the relevant entries from ShimmerObject */
 	public abstract boolean checkConfigOptionValues(String stringKey);
@@ -87,12 +87,12 @@ public abstract class AbstractSensor implements Serializable{
 	
 	protected static boolean mEnableCalibration = true;
 	
-	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-	protected String[] mSignalOutputNameArray;
-	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-	protected String[] mSignalOutputFormatArray;
-	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-	protected String[] mSignalOutputUnitArray;
+//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+//	protected String[] mSignalOutputNameArray;
+//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+//	protected String[] mSignalOutputFormatArray;
+//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+//	protected String[] mSignalOutputUnitArray;
 	
 	protected Double mMaxSetShimmerSamplingRate = 51.2;
 	
@@ -157,41 +157,41 @@ public abstract class AbstractSensor implements Serializable{
 //	}
 	
 	
-	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-	/**
-	 * This returns a String array of the output signal name, the sequence of
-	 * the format array MUST MATCH the array returned by the method
-	 * returnSignalOutputFormatArray
-	 * 
-	 * @return mSignalOutputNameArray
-	 */
-	public String[] getSignalOutputNameArray() {
-		return mSignalOutputNameArray;
-	}
-
-	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-	/**
-	 * This returns a String array of the output signal format, the sequence of
-	 * the format array MUST MATCH the array returned by the method
-	 * returnSignalOutputNameArray
-	 * 
-	 * @return mSignalOutputFormatArray
-	 */
-	public String[] getSignalOutputFormatArray() {
-		return mSignalOutputFormatArray;
-	}
-
-	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-	/**
-	 * This returns a String array of the output signal format, the sequence of
-	 * the format array MUST MATCH the array returned by the method
-	 * returnSignalOutputNameArray
-	 * 
-	 * @return mSignalOutputUnitArray
-	 */
-	public String[] getSignalOutputUnitArray() {
-		return mSignalOutputUnitArray;
-	}
+//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+//	/**
+//	 * This returns a String array of the output signal name, the sequence of
+//	 * the format array MUST MATCH the array returned by the method
+//	 * returnSignalOutputFormatArray
+//	 * 
+//	 * @return mSignalOutputNameArray
+//	 */
+//	public String[] getSignalOutputNameArray() {
+//		return mSignalOutputNameArray;
+//	}
+//
+//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+//	/**
+//	 * This returns a String array of the output signal format, the sequence of
+//	 * the format array MUST MATCH the array returned by the method
+//	 * returnSignalOutputNameArray
+//	 * 
+//	 * @return mSignalOutputFormatArray
+//	 */
+//	public String[] getSignalOutputFormatArray() {
+//		return mSignalOutputFormatArray;
+//	}
+//
+//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
+//	/**
+//	 * This returns a String array of the output signal format, the sequence of
+//	 * the format array MUST MATCH the array returned by the method
+//	 * returnSignalOutputNameArray
+//	 * 
+//	 * @return mSignalOutputUnitArray
+//	 */
+//	public String[] getSignalOutputUnitArray() {
+//		return mSignalOutputUnitArray;
+//	}
 	
 	
 	public HashMap<String, SensorConfigOptionDetails> getConfigMap() {
@@ -281,6 +281,8 @@ public abstract class AbstractSensor implements Serializable{
 						}
 					}
 				}
+				
+				//TODO handle mListOfCompatibleVersionInfo here
 			}
 		}
 	}
@@ -356,8 +358,9 @@ public abstract class AbstractSensor implements Serializable{
 		return false;
 	}
 	
-	public void setMaxSetShimmerSamplingRate(double maxSetRate) {
+	public void setSamplingRateFromShimmer(double maxSetRate) {
 		mMaxSetShimmerSamplingRate = maxSetRate;
+		setSensorSamplingRate(mMaxSetShimmerSamplingRate);
 	}
 	
 	public int getHardwareVersion() {

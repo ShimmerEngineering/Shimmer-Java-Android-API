@@ -436,7 +436,7 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public void setSensorSamplingRate() {
+	public void setSensorSamplingRate(double samplingRateHz) {
 		//NOT USED IN THIS CLASS
 	}
 

@@ -139,11 +139,12 @@ public class Configuration {
 	}	
 	
 	public enum COMMUNICATION_TYPE{
+//		ALL,
 		DOCK,
 		BLUETOOTH,
 		IEEE802154,
 		SD,
-		CLASS //this is to read the value of the class for clones etc. e.g. if you do a getsettings(accelRange,CLASS) and getsettings(accelRange,Bluetooth), the results are different. One returns the value in the object while the other should generate a read command to be sent to the shimmer device
+		CLASS, //this is to read the value of the class for clones etc. e.g. if you do a getsettings(accelRange,CLASS) and getsettings(accelRange,Bluetooth), the results are different. One returns the value in the object while the other should generate a read command to be sent to the shimmer device
 	}
 	
 	public enum COMMUNICATION_ACTION{
@@ -697,6 +698,7 @@ public class Configuration {
 			
 			public static final String MPU9150_GYRO_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE; //"Gyro Range";
 			public static final String MPU9150_GYRO_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE; //"Gyro Sampling Rate";
+			public static final String MPU9150_GYRO_RATE_HZ = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE_HZ;
 			
 			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_MAG_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE;

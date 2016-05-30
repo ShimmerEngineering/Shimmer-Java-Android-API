@@ -27,18 +27,14 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.SensorBMP180.ObjectClusterSensorName;
 
-/** 
- * @author Ruud Stolk
+/** Sensorclass for KionixKXRB52042 - analog/low-noise accelerometer
  * 
+ * @author Ruud Stolk
  */
 public class SensorKionixKXRB52042 extends AbstractSensor{
 
-	/** Sensorclass for KionixKXRB52042 - analog/low-noise accelerometer
-	 *
-	 *  @param svo
-	 * */
+	/** * */
 	private static final long serialVersionUID = -5027305280613145453L;
-
 	
 	//--------- Sensor specific variables start --------------
 	protected boolean mDefaultCalibrationParametersAccel = true;
@@ -298,7 +294,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	
 	@Override
-	public void setSensorSamplingRate() {
+	public void setSensorSamplingRate(double samplingRateHz) {
 		// No data rate setting.
 	}
 	

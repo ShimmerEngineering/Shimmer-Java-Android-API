@@ -870,27 +870,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return false;
 	}
+
 	
-	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
-		return mMapOfSamplingRatesShimmer.get(communicationType); 
-	}
-	
-	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double samplingRate){
-		mMapOfSamplingRatesShimmer.put(communicationType, samplingRate);
-		updateSamplingRateInSensorClasses();
-	}
-
-//	public void setShimmerSamplingRate(double samplingRate){
-//		mSamplingRateShimmer = samplingRate;
-//	}
-
-	private void updateSamplingRateInSensorClasses() {
-		double maxSetRate = getMaxSetShimmerSamplingRate();
-		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			abstractSensor.setMaxSetShimmerSamplingRate(maxSetRate);
-		}
-	}
-
 	public InfoMemLayout getInfoMemLayout(){
 		createInfoMemLayoutObjectIfNeeded();
 		return mInfoMemLayout;
@@ -1217,6 +1198,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
         		setTrialName((String)valueToSet);
 	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+	          	// don't let sampling rate be empty
+	          	Double enteredSamplingRate;
+	          	if(((String)valueToSet).isEmpty()) {
+	          		enteredSamplingRate = 1.0;
+	          	}            	
+	          	else {
+	          		enteredSamplingRate = Double.parseDouble((String)valueToSet);
+	          	}
+	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
+	      		
+	      		returnValue = Double.toString(getSamplingRateShimmer());
 	        default:
 	        	break;
 		}
@@ -1494,15 +1487,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 
-	public Double getMaxSetShimmerSamplingRate(){
-		double maxSetRate = 0.001;
-		for(Double rate:mMapOfSamplingRatesShimmer.values()){
-			maxSetRate = Math.max(maxSetRate, rate);
-		}
-		return maxSetRate;
-	}
-
-	
 	//SensorMap related - Copied from ShimmerObject
 	
 	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED
@@ -1573,9 +1557,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			//Set sensor state
 			sensorDetails.setIsEnabled(state);
 			
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP){
+			// for debugging
+			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 				for(COMMUNICATION_TYPE commType: sensorDetails.mapOfIsEnabledPerCommsType.keySet()){
-					System.out.println("0)Timestamp is enabled:\t" + sensorDetails.isEnabled(commType) + "\t" + commType);
+					System.out.println("setSensorEnabledState:\tGyro is enabled:\t" + sensorDetails.isEnabled(commType) + "\t" + commType);
 				}
 			}
 
@@ -1756,6 +1741,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				// ((SensorEXG)abstractSensor).updateEnabledSensorsFromExgResolution();
 				// }
 
+			}
+		}
+	}
+	
+	/** For use when debugging */
+	protected void printSensorAndParserMaps(){
+		//For debugging
+		for(SensorDetails sensorDetails:mSensorMap.values()){
+			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+		}
+		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
+			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
+				System.out.println("ENABLED SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
 			}
 		}
 	}
@@ -2417,7 +2415,112 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mMapOfAlgorithmModules;
 	}
 	// ------------- Algorithm Code end -----------------------
+
 	
+	/**
+	 * Computes the closest compatible sampling rate for the Shimmer based on
+	 * the passed in 'rate' variable. Also computes the next highest available
+	 * sampling rate for the Shimmer's sensors (dependent on pre-set low-power
+	 * modes).
+	 * 
+	 * @param rate
+	 */
+	public void setShimmerAndSensorsSamplingRate(double rate){
+		double maxSamplingRateHz = calcMaxSamplingRate();
+		double maxShimmerSamplingRateTicks = 32768.0;
+		
+    	// don't let sampling rate < 0 OR > maxRate
+    	if(rate < 1) {
+    		rate = 1.0;
+    	}
+    	else if (rate > maxSamplingRateHz) {
+    		rate = maxSamplingRateHz;
+    	}
+    	
+    	// RM: get Shimmer compatible sampling rate (use ceil or floor depending on which is appropriate to the user entered sampling rate)
+    	Double actualSamplingRate;
+    	if((Math.ceil(maxShimmerSamplingRateTicks/rate) - maxShimmerSamplingRateTicks/rate) < 0.05){
+           	actualSamplingRate = maxShimmerSamplingRateTicks/Math.ceil(maxShimmerSamplingRateTicks/rate);
+    	}
+    	else{
+        	actualSamplingRate = maxShimmerSamplingRateTicks/Math.floor(maxShimmerSamplingRateTicks/rate);
+    	}
+    	
+    	 // round sampling rate to two decimal places
+    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
+		setSamplingRateShimmer(actualSamplingRate);
+		
+		setSamplingRateSensors(getSamplingRateShimmer());
+	}
+
+	/**
+	 * Returns the maximum allowed sampling rate for the Shimmer. This is can be
+	 * overridden for a particular version of hardware inside it's respective
+	 * extended class (e.g., as done in ShimmerObject)
+	 * 
+	 * @return
+	 */
+	protected double calcMaxSamplingRate() {
+		return 2048.0;
+	}
+
+	/**
+	 * Sets the sampling rate settings for each of the sensors based on a single
+	 * passed in variable (normally the configured Shimmer sampling rate)
+	 * 
+	 * @param samplingRateShimmer
+	 */
+	protected void setSamplingRateSensors(double samplingRateShimmer) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.setSamplingRateFromShimmer(samplingRateShimmer);
+		}
+	}
 	
+	public void setSamplingRateShimmer(double samplingRate){
+		Iterator<COMMUNICATION_TYPE> iterator = mMapOfSamplingRatesShimmer.keySet().iterator();
+		while(iterator.hasNext()){
+			setSamplingRateShimmer(iterator.next(), samplingRate);
+		}
+	}
+
+	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double samplingRate){
+		mMapOfSamplingRatesShimmer.put(communicationType, samplingRate);
+		setSamplingRateSensors(samplingRate);
+	}
+
+	public double getSamplingRateShimmer() {
+		//return the first value
+		Iterator<Double> iterator = mMapOfSamplingRatesShimmer.values().iterator();
+		while(iterator.hasNext()){
+			double samplingRate = iterator.next();
+			if(!Double.isNaN(samplingRate)){
+				return samplingRate;
+			}
+		}
+		return 0.0;
+	}
+
+	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
+		double samplingRate = mMapOfSamplingRatesShimmer.get(communicationType);
+		if(!Double.isNaN(samplingRate)){
+			return samplingRate;
+		}
+		else {
+			return 0.0;
+		}
+	}
+
+	//TODO revise
+	public Double getMaxSetShimmerSamplingRate(){
+		double maxSetRate = 0.001;
+		Iterator<Double> iterator = mMapOfSamplingRatesShimmer.values().iterator();
+		while(iterator.hasNext()){
+			double samplingRate = iterator.next();
+			maxSetRate = Math.max(maxSetRate, samplingRate);
+		}
+		return maxSetRate;
+	}
 	
 }

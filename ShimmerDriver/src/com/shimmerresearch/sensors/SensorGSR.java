@@ -393,7 +393,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	
 	@Override
-	public void setSensorSamplingRate() {
+	public void setSensorSamplingRate(double samplingRateHz) {
 		// TODO Auto-generated method stub
 		
 	}

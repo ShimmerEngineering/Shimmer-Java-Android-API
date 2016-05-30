@@ -1,23 +1,23 @@
 package com.shimmerresearch.sensors;
 /** 
  * @author Ruud Stolk
+ * @author Mark Nolan
  * 
  */
 public class UtilCalibration {
 	
-	
+	/**  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
+    in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
+    C = [R^(-1)] .[K^(-1)] .([U]-[B])
+		where.....
+		[C] -> [3 x n] Calibrated Data Matrix 
+		[U] -> [3 x n] Uncalibrated Data Matrix
+		[B] ->  [3 x n] Replicated Sensor Offset Vector Matrix 
+		[R^(-1)] -> [3 x 3] Inverse Alignment Matrix
+		[K^(-1)] -> [3 x 3] Inverse Sensitivity Matrix
+		n = Number of Samples
+	 */
 	public static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
-		/*  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
-           in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
-           C = [R^(-1)] .[K^(-1)] .([U]-[B])
-			where.....
-			[C] -> [3 x n] Calibrated Data Matrix 
-			[U] -> [3 x n] Uncalibrated Data Matrix
-			[B] ->  [3 x n] Replicated Sensor Offset Vector Matrix 
-			[R^(-1)] -> [3 x 3] Inverse Alignment Matrix
-			[K^(-1)] -> [3 x 3] Inverse Sensitivity Matrix
-			n = Number of Samples
-		 */
 		double [][] data2d=new double [3][1];
 		data2d[0][0]=data[0];
 		data2d[1][0]=data[1];
@@ -27,6 +27,11 @@ public class UtilCalibration {
 		ansdata[0]=data2d[0][0];
 		ansdata[1]=data2d[1][0];
 		ansdata[2]=data2d[2][0];
+		
+		if(Double.isNaN(ansdata[0]) || Double.isNaN(ansdata[1]) || Double.isNaN(ansdata[2])){
+			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in calibrated data");
+		}
+		
 		return ansdata;
 	}
 	
@@ -80,7 +85,6 @@ public class UtilCalibration {
 
 	
 	public static double[][] matrixmultiplication(double[][] a, double[][] b) {
-
 		int aRows = a.length,
 				aColumns = a[0].length,
 				bRows = b.length,
@@ -99,7 +103,6 @@ public class UtilCalibration {
 				}
 			}
 		}
-
 		return resultant;
 	}
 }

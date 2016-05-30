@@ -57,6 +57,10 @@ public class Shimmer4 extends ShimmerDevice {
 		addCommunicationRoute(communicationType);
     	setSamplingRateShimmer(communicationType, 128);
     	setMacIdFromUart(macId);
+    	
+    	//TODO HACK!!!!!
+    	setSamplingRateShimmer(COMMUNICATION_TYPE.SD, 128.0);
+    	setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, 128.0);
 	}
 	
 	@Override
@@ -136,11 +140,17 @@ public class Shimmer4 extends ShimmerDevice {
 
 			createInfoMemLayoutObjectIfNeeded();
 
+			setSamplingRateShimmer((32768/(double)((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
+					+ ((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8))));
+
 			// Sensors
 			mEnabledSensors = ((long)infoMemBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
 			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
 			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors2] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors2;
 	
+			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors3] & 0xFF) << infoMemLayoutCast.bitShiftSensors3;
+			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors4] & 0xFF) << infoMemLayoutCast.bitShiftSensors4;
+			
 			mDerivedSensors = (long)0;
 			// Check if compatible and not equal to 0xFF
 			if((infoMemLayoutCast.idxDerivedSensors0>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors0]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)
@@ -196,41 +206,6 @@ public class Shimmer4 extends ShimmerDevice {
 		checkAndCorrectShimmerName(shimmerName);
 	}
 
-	//TODO improve flow of below, move to ShimmerDevice also?
-	@Override
-	public void prepareAllAfterConfigRead() {
-		sensorAndConfigMapsCreate();
-		
-		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);
-		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.SD);
-
-		//Override Shimmer4 sensors
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true);
-
-//		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.BLUETOOTH);
-		
-//		printSensorAndParserMaps();
-		
-		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
-		if(mShimmerRadioHWLiteProtocol!=null){
-			mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(expectedDataPacketSize);
-		}
-	}
-	
-	/** For use when debugging */
-	private void printSensorAndParserMaps(){
-		//For debugging
-		for(SensorDetails sensorDetails:mSensorMap.values()){
-			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
-		}
-		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
-			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
-				System.out.println("ENABLED SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
-			}
-		}
-	}
-
 	// TODO need to move common infomem related activity to ShimmerDevice. Not
 	// have duplicates in ShimmerObject, ShimmerGQ and Shimmer4. Some items only
 	// copied here for example/testing purposes
@@ -249,9 +224,18 @@ public class Shimmer4 extends ShimmerDevice {
 		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
 		
 		refreshEnabledSensorsFromSensorMap();
+		
+		int samplingRate = (int)(32768 / getSamplingRateShimmer());
+		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
+		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
+
+		
 		mInfoMemBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
 		mInfoMemBytes[infoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors1) & infoMemLayout.maskSensors);
 		mInfoMemBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
+
+		mInfoMemBytes[infoMemLayout.idxSensors3] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors3) & 0xFF);
+		mInfoMemBytes[infoMemLayout.idxSensors4] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors4) & 0xFF);
 
 		// Derived Sensors
 		if((infoMemLayout.idxDerivedSensors0>0)&&(infoMemLayout.idxDerivedSensors1>0)) { // Check if compatible
@@ -312,7 +296,31 @@ public class Shimmer4 extends ShimmerDevice {
 		
 		return mInfoMemBytes;
 	}
+	
+	//TODO improve flow of below, move to ShimmerDevice also?
+	@Override
+	public void prepareAllAfterConfigRead() {
+		sensorAndConfigMapsCreate();
+		
+//		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.ALL);
+		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);
+		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.SD);
 
+		//Override Shimmer4 sensors
+		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
+		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true);
+
+//		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.BLUETOOTH);
+		
+//		printSensorAndParserMaps();
+		
+		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
+//		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.ALL);
+		if(mShimmerRadioHWLiteProtocol!=null){
+			mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(expectedDataPacketSize);
+		}
+	}
+	
 	@Override
 	public Shimmer4 deepClone() {
 		try {
@@ -598,4 +606,5 @@ public class Shimmer4 extends ShimmerDevice {
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET, ojc);
 	}
 	
+
 }
