@@ -70,7 +70,7 @@ public class GradDes3DOrientation {
 	 * @param mz Magnetometer X in local
 	 * @return Calculated Quaternion value
 	 */
-	public Quaternion update(double ax,double ay,double az,double gx, double gy, double gz, double mx, double my, double mz) {
+	public Orientation3DObject update(double ax,double ay,double az,double gx, double gy, double gz, double mx, double my, double mz) {
 	    double norm;
 	    double hx, hy, _2bx, _2bz;
 	    double s1, s2, s3, s4;
@@ -154,21 +154,6 @@ public class GradDes3DOrientation {
 	    q4 = q4 * norm;
 
 	    
-	    return new Quaternion(q1,q2,q3,q4);
+	    return new Orientation3DObject(q1,q2,q3,q4);
     }
-	
-
-    public class Quaternion{
-        public double q1, q2, q3, q4;
-
-        public Quaternion(double q1, double q2, double q3, double q4){
-            this.q1 = q1;
-            this.q2 = q2;
-            this.q3 = q3;
-            this.q4 = q4;
-        }
-    }
-	
-	
-	
 }
