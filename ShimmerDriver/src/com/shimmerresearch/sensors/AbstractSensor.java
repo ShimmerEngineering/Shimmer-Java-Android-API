@@ -407,6 +407,11 @@ public abstract class AbstractSensor implements Serializable{
 		//NOT USED IN THIS CLASS
     	//USED in {SensorPPG}		
 	}
+	
+	
+	public void handleSpecialCaseRefreshEnabledSensorsFromSensorMap(){
+	    // NOT USED IN THIS CLASS
+	}
 
 
 
