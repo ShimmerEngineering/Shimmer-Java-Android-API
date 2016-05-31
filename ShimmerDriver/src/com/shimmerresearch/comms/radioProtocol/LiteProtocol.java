@@ -418,7 +418,8 @@ public class LiteProtocol extends ByteLevelProtocol{
 					
 					
 					//region --------- Process LogAndStream INSTREAM_CMD_RESPONSE while not streaming --------- 
-					if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
+					if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
+							||getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)
 							&& !mWaitForAck 
 							&& !mWaitForResponse 
 							&& mShimmerRadio.bytesAvailableToBeRead()) {
@@ -497,7 +498,9 @@ public class LiteProtocol extends ByteLevelProtocol{
 								}
 								
 								//this is for LogAndStream support, command is transmitted and ack received
-								else if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && bufferTemp[mPacketSize+2]==LiteProtocolInstructionSet.InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){ 
+								else if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
+										||getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)
+										&& bufferTemp[mPacketSize+2]==LiteProtocolInstructionSet.InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){ 
 									printLogDataForDebugging("COMMAND TXed and ACK RECEIVED IN STREAM");
 									printLogDataForDebugging("INS CMD RESP");
 
@@ -760,7 +763,8 @@ public class LiteProtocol extends ByteLevelProtocol{
 	 * 
 	 */
 	public void writeRealTimeClock(){
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
+				||getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK){
 			//Just fill empty bytes here for RTC, set them just before writing to Shimmer
 		    byte[] bytearraycommand= new byte[9];
 			bytearraycommand[0]=(byte) LiteProtocolInstructionSet.InstructionsSet.SET_RWC_COMMAND_VALUE;
@@ -775,6 +779,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 		mByteArrayOutputStream.reset();
 		mListofPCTimeStamps.clear();
 	}
+	
 	/**
 	 * 
 	 */
