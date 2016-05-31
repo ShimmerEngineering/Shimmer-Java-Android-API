@@ -59,6 +59,10 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack {
 		mRadioProtocol.writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE});
 	}
 	
+	public void startSDLogging(){
+		
+	}
+	
 	//Core radio functions to be implemented by native radio libs , jssc, android .. etc.
 	/*
 	protected abstract boolean bytesAvailableToBeRead();
