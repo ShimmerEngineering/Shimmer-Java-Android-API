@@ -379,7 +379,8 @@ public class SensorLSM303 extends AbstractSensor{
 	@Override 
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
-		objectCluster = sensorDetails.processDataAction(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		// process data originating from the Shimmer
+		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 
 //		// process data originating from the Shimmer
 //		int index = 0;

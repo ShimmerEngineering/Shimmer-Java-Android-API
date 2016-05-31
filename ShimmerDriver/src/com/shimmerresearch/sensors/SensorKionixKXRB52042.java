@@ -202,7 +202,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 	
-		objectCluster = sensorDetails.processDataAction(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 
 //		int index = 0;
 //		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){

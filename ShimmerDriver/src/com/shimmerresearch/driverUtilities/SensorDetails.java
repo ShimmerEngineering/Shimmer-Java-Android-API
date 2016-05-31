@@ -29,7 +29,6 @@ public class SensorDetails implements Serializable{
 	
 	public long mDerivedSensorBitmapID = 0;
 	public SensorDetailsRef mSensorDetailsRef;
-//	public List<String> mListOfChannels = new ArrayList<String>();
 	public List<ChannelDetails> mListOfChannels = new ArrayList<ChannelDetails>();
 
 	public SensorDetails(){
@@ -39,17 +38,13 @@ public class SensorDetails implements Serializable{
 		setIsEnabled(isEnabled);
 		mDerivedSensorBitmapID = derivedSensorBitmapID;
 		mSensorDetailsRef = sensorDetailsRef;
-		
-//		for(String channelName:sensorDetails.mListOfChannelsRef){
-//			mListOfChannels.add(channelName);
-//		}
 	}
 
 	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
-		return processDataAction(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		return processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 	}
 	
-	public ObjectCluster processDataAction(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCommon(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
 		for (ChannelDetails channelDetails:mListOfChannels){
 			//first process the data originating from the Shimmer sensor
@@ -61,18 +56,6 @@ public class SensorDetails implements Serializable{
 		}
 		return objectCluster;
 	}
-
-//	public ObjectCluster processShimmerChannelData(byte[] rawData, ObjectCluster objectCluster) {
-//		int index = 0;
-//		for(ChannelDetails channelDetails:mListOfChannels){
-//			//first process the data originating from the Shimmer sensor
-//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-//			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//			objectCluster = processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
-//			index += channelDetails.mDefaultNumBytes;
-//		}
-//		return objectCluster;
-//	}
 	
 	/** To process data originating from the Shimmer device
 	 * @param channelByteArray The byte array packet, or byte array sd log
