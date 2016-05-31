@@ -498,5 +498,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Sensor specific methods end --------------
 
 
+	//--------- Optional methods to override in Sensor Class start --------
+	//--------- Optional methods to override in Sensor Class end --------
 
 }

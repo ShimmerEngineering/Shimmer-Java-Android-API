@@ -2420,6 +2420,8 @@ public class SensorEXG extends AbstractSensor{
 		return false;
 	}
 
+	
+	//--------- Optional methods to override in Sensor Class start --------
 	@Override
 	public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
 		if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
@@ -2444,6 +2446,8 @@ public class SensorEXG extends AbstractSensor{
 	public void handleSpecCasesUpdateEnabledSensors(long enabledSensors){
 		updateEnabledSensorsFromExgResolution(enabledSensors);
 	}
+	//--------- Optional methods to override in Sensor Class end --------
 
+	
 	//-------------------- ExG End -----------------------------------	
 }

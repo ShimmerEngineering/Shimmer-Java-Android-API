@@ -17,30 +17,28 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042.ObjectClusterSensorName
 import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
 import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensorTiles;
 
-/** 
- * @author Ruud Stolk 
+/**
+ * <b>SensorTemplate</b> is a template for adding classes for new sensors.
+ *  A Sensor Class needs to extend AbstractSensor, hence all abstract methods need to be implemented.
+ *  Put the variables and methods in the pre-defined environments:
+ *  <br />
+ *  	<li>Sensor specific variables<br />
+ *  	 <li>Bluetooth commands<br />
+ *  	 <li>Configuration options<br />
+ *  	 <li>Sensor info<br />
+ *  	 <li>Channel info<br />  
+ *  	 <li>Constructor<br />
+ *  	 <li>Abstract methods<br />
+ *  	 <li>Sensor specific methods<br />
+ *       <li>Optional methods to override in Sensor Class<br />
+
+ *  
+ *  The environments are further specified below with examples/explanation below/on the right-hand side of the specifications.
  * 
+ * @author Ruud Stolk 
  */
 public class SensorTemplate extends AbstractSensor{
-	/**
-	 * SensorTemplate is a template for sensor classes for new sensors.
-	 *  
-	 *  - Sensor classes need to extend AbstractSensor, hence all abstract methods need to be implemented.
-	 *  - Put the variables and methods in the pre-defined environments:
-	 *  
-	 *  	 Sensor specific variables;
-	 *  	 Bluetooth commands;
-	 *  	 Configuration options; 
-	 *  	 Sensor info;
-	 *  	 Channel info;  
-	 *  	 Constructor;
-	 *  	 Abstract methods;
-	 *  	 Sensor specific methods;
-	 *  
-	 *  further specified below with examples/explanation below/on the right-hand side of the specifications.
-	 * 
-	 * @param svo
-	 */
+
 	private static final long serialVersionUID = -1313629173441403991L;
 
 	//--------- Sensor specific variables start --------------
@@ -318,16 +316,12 @@ public class SensorTemplate extends AbstractSensor{
 
 
 			
-			//--------- Optional methods to override in sensor class start --------
+			//--------- Optional methods to override in Sensor Class start --------
+			/**
+			 * Used, for example, in SensorLSM303, SensorMPU9X50 and
+			 * SensorKionixKXRB52042
+			 */			
+			//--------- Optional methods to override in Sensor Class end --------
 			
-			/* (non-Javadoc)
-			 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
-			 */
-//			@Override
-//			public boolean isSensorUsingDefaultCal(int sensorMapKey) {
-//				return false;
-//			}
-			
-			//--------- Optional methods to override in sensor class end --------
-			
+		
 }

@@ -1011,7 +1011,7 @@ public class SensorPPG extends AbstractSensor {
 		return mSamplingDividerPpg;
 	}
 
-	
+	//--------- Optional methods to override in Sensor Class start --------	
 	@Override
 	public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
 		if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
@@ -1025,6 +1025,7 @@ public class SensorPPG extends AbstractSensor {
 		return false;
 	}
 
+	
 	@Override
 	public void handleSpecCasesAfterSensorMapUpdate() {
 		//Used for Shimmer GSR hardware
@@ -1081,5 +1082,6 @@ public class SensorPPG extends AbstractSensor {
 	public void handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
 		handleDummyEntriesInSensorMap(sensorMapKey, state);
 	}
+	//--------- Optional methods to override in Sensor Class end --------
 
 }

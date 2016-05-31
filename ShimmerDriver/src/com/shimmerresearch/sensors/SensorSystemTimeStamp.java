@@ -216,6 +216,8 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		
 	}
 
+	//--------- Optional methods to override in Sensor Class start --------
+	//--------- Optional methods to override in Sensor Class end --------
 
 
 }

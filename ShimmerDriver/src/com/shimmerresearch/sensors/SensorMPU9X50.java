@@ -2606,8 +2606,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		
 	}
 	
-	//--------- Optional methods to override in sensor class start --------
-	
+	//--------- Optional methods to override in Sensor Class start --------	
 	/* (non-Javadoc)
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
 	 */
@@ -2618,8 +2617,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 		return false;
 	}
-	
-	//--------- Optional methods to override in sensor class end -------- 
+	//--------- Optional methods to override in Sensor Class end -------- 
 
 }
 	
