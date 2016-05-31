@@ -72,7 +72,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 
 	public abstract void setSensorSamplingRate(double samplingRateHz);
-	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean state);
+	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled);
 	/** TODO populate in individual AbstractSensor classes the relevant entries from ShimmerObject */
 	public abstract boolean checkConfigOptionValues(String stringKey);
 
@@ -106,15 +106,6 @@ public abstract class AbstractSensor implements Serializable{
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
     public LinkedHashMap<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
     
-    
-    public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
-    	//NOT USED IN THIS CLASS
-    	return false;
-    }
-	public void handleSpecCasesAfterSensorMapUpdate() {
-		//NOT IN THIS CLASS
-	}
-
 	
 	public AbstractSensor(ShimmerVerObject svo){
 		mShimmerVerObject = svo;
@@ -412,7 +403,37 @@ public abstract class AbstractSensor implements Serializable{
 		return false;
 	}
 	
+    public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
+    	//NOT USED IN THIS CLASS
+    	//USED in {SensorPPG, SensorEXG}
+    	return false;
+    }
+    
+    
+	public void handleSpecCasesAfterSensorMapUpdate() {
+		//NOT IN THIS CLASS
+		//USED in {SensorPPG, SensorEXG}
+	}
+
+	
+	public void handleSpecCasesUpdateEnabledSensors(long enabledSensors) {
+		//TODO Auto-generated method stub
+		//USED in {SensorEXG}
+	}
+	
+	
+	public void handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
+		//NOT USED IN THIS CLASS
+    	//USED in {SensorPPG}		
+	}
+	
+	
+	public void handleSpecialCaseRefreshEnabledSensorsFromSensorMap(){
+	    // NOT USED IN THIS CLASS
+	}
+	
 	//--------- Optional methods to override in sensor class end -------- 
+	
 
 
 }

@@ -400,10 +400,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//default auto range
-			setGSRRange(4);
+			setDefaultGsrSensorConfig(isSensorEnabled);
 			return true;
 		}
 		return false;
@@ -446,6 +445,13 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return actionSetting;
 
 	}
+	
+	
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}	
 	//--------- Abstract methods implemented end --------------
 
 
@@ -470,6 +476,17 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	}
 	
 	
+	
+	private void setDefaultGsrSensorConfig(boolean isSensorEnabled) {
+		//RS (30/5/2016): from ShimmerObject
+		if(isSensorEnabled) {
+		}
+		else{
+			mGSRRange=4;
+		}
+	}
+	
+	
 	public void setGSRRange(int valueToSet){
 		mGSRRange = valueToSet;
 	}
@@ -481,9 +498,5 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Sensor specific methods end --------------
 
 
-	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }

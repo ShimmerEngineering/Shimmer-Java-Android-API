@@ -6696,18 +6696,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						}
 					}
 				}
-				updateEnabledSensorsFromExgResolution();
-				
 				// add in algorithm map compatible with device
 				updateDerivedSensors();
 				
-				// //TODO 2016-05-04 Special case for EXG - best to do by
-				// cycling through SensorClasses for any special conditions?
-				// AbstractSensor abstractSensor =
-				// mMapOfSensorClasses.get(SENSORS.EXG);
-				// if(abstractSensor!=null){
-				// ((SensorEXG)abstractSensor).updateEnabledSensorsFromExgResolution();
-				// }
+				updateEnabledSensorsFromExgResolution();
 			}
 		}
 	}
@@ -7104,8 +7096,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	//TODO 2016-05-18 feed below into sensor map classes
-// -------------Copied to Sensor PPG----------------------------------	
+
+// -------------Copied to Sensor PPG + EXG + ShimmerDevice----------------------------------	
 	/**
 	 * Used to convert from the enabledSensors long variable read from the
 	 * Shimmer to the set enabled status of the relative entries in the Sensor
@@ -7500,12 +7492,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//TODO set defaults when ").setIsEnabled(false))" is set manually in the code
 	@Override
 	protected void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	//RS (30/5/2016) - fed into SensorLSM303
 		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {//XXX-RS-LSM-SensorClass?
 			setDefaultLsm303dlhcAccelSensorConfig(state);
 		}
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG) {//XXX-RS-LSM-SensorClass?
 			setDefaultLsm303dlhcMagSensorConfig(state);
 		}
+		
+	//RS (30/5/2016) - fed into SensorMPU9X50
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 			setDefaultMpu9150GyroSensorConfig(state);
 		}
@@ -7522,6 +7517,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR) {
 			setDefaultGsrSensorConfig(state);
 		}
+		//RS (30/5/2016) - fed into SensorEXG
 		else if((sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)
 				|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_ECG)
 				|| (sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EMG)
@@ -7555,6 +7551,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
+	//RS (30/5/2016) - fed into SensorMPU9X50
 		else if(SensorMPU9X50.mListOfMplChannels.contains(sensorMapKey)){
 //		else if(mListOfMplChannels.contains(sensorMapKey)){
 			if(!checkIfAnyOtherMplChannelEnabled(sensorMapKey)) {
@@ -8782,6 +8779,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
+	//RS (30/5/2016) - fed into SensorEXG
 	private boolean checkIfOtherExgChannelEnabled(Map<Integer,SensorDetails> sensorEnabledMap) {
 		for(Integer sensorMapKey:sensorEnabledMap.keySet()) {
 			if(sensorEnabledMap.get(sensorMapKey).isEnabled()) {

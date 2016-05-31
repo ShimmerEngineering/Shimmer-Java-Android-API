@@ -1977,19 +1977,24 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//TODO set defaults for particular sensor
-			
+			//RS (30/5/2016) - commented in ShimmerObject			
 			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-				setDefaultMpu9150AccelSensorConfig(state);
+				setDefaultMpu9150AccelSensorConfig(isSensorEnabled);
 			}
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-				setDefaultMpu9150GyroSensorConfig(state);
+				setDefaultMpu9150GyroSensorConfig(isSensorEnabled);
 			}
-//			else if(sensorMapKey==SensorMapKey.SHIMMER_MPU9150_){
-//				setDefaultMpu9150MplSensorConfig(state);
-//			}
+			else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG){
+		//		setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+				setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
+			}
+			else if(SensorMPU9X50.mListOfMplChannels.contains(sensorMapKey)){ //RS (30/5/2016) - Why is a default config set if only one MPL sensor is enabled? 
+				if(!checkIfAnyOtherMplChannelEnabled(sensorMapKey)) {
+					setDefaultMpu9150MplSensorConfig(isSensorEnabled);
+				}
+			}
 			
 			return true;
 		}
@@ -2110,10 +2115,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return mMPU9150MPLSamplingRate;
 	}
 	
-	private void setDefaultMpu9150GyroSensorConfig(boolean state) {
+	private void setDefaultMpu9150GyroSensorConfig(boolean isSensorEnabled) {
 		if(!checkIfAnyMplChannelEnabled()) {
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)) {
-				if(state) {
+				if(isSensorEnabled) {
 					setLowPowerGyro(false);
 				}
 				else {
@@ -2131,10 +2136,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 	}
 	
-	private void setDefaultMpu9150AccelSensorConfig(boolean state) {
+	private void setDefaultMpu9150AccelSensorConfig(boolean isSensorEnabled) {
 		if(!checkIfAnyMplChannelEnabled()) {
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)) {
-				if(state) {
+				if(isSensorEnabled) {
 					setLowPowerGyro(false);
 				}
 				else {
@@ -2142,7 +2147,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				}
 			}
 			
-			if(!state){
+			if(!isSensorEnabled){
 				mMPU9150AccelRange = 0; //=2g
 			}
 		}
@@ -2151,8 +2156,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 	}
 	
-	private void setDefaultMpu9150MplSensorConfig(boolean state) {
-		if(state){
+	private void setDefaultMpu9150MplSensorConfig(boolean isSensorEnabled) {
+		if(isSensorEnabled){
 			mMPU9150DMP = 1;
 			mMPLEnable = 1;
 			mMPU9150LPF = 1; // 188Hz

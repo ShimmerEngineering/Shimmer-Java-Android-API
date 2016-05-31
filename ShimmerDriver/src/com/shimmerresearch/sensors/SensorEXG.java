@@ -1063,6 +1063,11 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	//-------------------- ExG Start -----------------------------------
 	
@@ -1552,11 +1557,14 @@ public class SensorEXG extends AbstractSensor{
 //		}
 //	}
 
-//	private void updateEnabledSensorsFromExgResolution(long enabledSensors){
+	private void updateEnabledSensorsFromExgResolution(long enabledSensors){
+		//RS (30/5/2016) - commented:
 //		InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mInfoMemLayout;
-//
+
 //		//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
-//		
+		
+
+		//RS (30/5/2016) - commented:
 //		enabledSensors &= ~infoMemLayoutCast.maskExg1_24bitFlag;
 //		enabledSensors |= (mIsExg1_24bitEnabled? infoMemLayoutCast.maskExg1_24bitFlag:0);
 //		
@@ -1568,7 +1576,25 @@ public class SensorEXG extends AbstractSensor{
 //		
 //		enabledSensors &= ~infoMemLayoutCast.maskExg2_16bitFlag;
 //		enabledSensors |= (mIsExg2_16bitEnabled? infoMemLayoutCast.maskExg2_16bitFlag:0);
-//	}
+		
+		//RS (30/5/2016) - locally declared:
+		int maskExg1_24bitFlag =			0x10<<(0*8); 
+		int maskExg2_24bitFlag =			0x08<<(0*8); 
+		int maskExg1_16bitFlag =			0x10<<(2*8); 
+		int maskExg2_16bitFlag =			0x08<<(2*8);
+		
+		enabledSensors &= ~maskExg1_24bitFlag;
+		enabledSensors |= (mIsExg1_24bitEnabled? maskExg1_24bitFlag:0);
+		
+		enabledSensors &= ~maskExg2_24bitFlag;
+		enabledSensors |= (mIsExg2_24bitEnabled? maskExg2_24bitFlag:0);
+		
+		enabledSensors &= ~maskExg1_16bitFlag;
+		enabledSensors |= (mIsExg1_16bitEnabled? maskExg1_16bitFlag:0);
+		
+		enabledSensors &= ~maskExg2_16bitFlag;
+		enabledSensors |= (mIsExg2_16bitEnabled? maskExg2_16bitFlag:0);
+	}
 	
 	private void setExgChannelBitsPerMode(int sensorMapKey){
 		mIsExg1_24bitEnabled = false;
@@ -2327,9 +2353,40 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//TODO set defaults for particular sensor
+			//RS (30/5/2016) - copied from ShimmerObject, commented in ShimmerObject
+			if(isSensorEnabled) { 
+				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION) {
+//					setDefaultRespirationConfiguration(getSamplingRateShimmer());
+					setDefaultRespirationConfiguration(mMaxSetShimmerSamplingRate);
+				}
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_ECG) {
+//					System.err.println("SET ECG CHANNEL");
+//					setDefaultECGConfiguration(getSamplingRateShimmer());
+					setDefaultECGConfiguration(mMaxSetShimmerSamplingRate);
+				}
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EMG) {
+//					setDefaultEMGConfiguration(getSamplingRateShimmer());
+					setDefaultEMGConfiguration(mMaxSetShimmerSamplingRate);
+
+				}
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST) {
+//					setEXGTestSignal(getSamplingRateShimmer());
+					setEXGTestSignal(mMaxSetShimmerSamplingRate);
+				}
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM) {
+//					setEXGCustom(getSamplingRateShimmer());
+					setEXGCustom(mMaxSetShimmerSamplingRate);
+				}
+			}
+			else {
+				if(!checkIfOtherExgChannelEnabled(mSensorMap)) {
+//					System.err.println("CLEAR EXG CHANNEL");
+					clearExgConfig();
+				}
+			}
+			
 			return true;
 		}
 		return false;
@@ -2341,14 +2398,52 @@ public class SensorEXG extends AbstractSensor{
 		return false;
 	}
 
-	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
+
+
+	//RS (30/5/2016) - copied from ShimmerObject
+	private boolean checkIfOtherExgChannelEnabled(Map<Integer,SensorDetails> sensorEnabledMap) {
+		for(Integer sensorMapKey:sensorEnabledMap.keySet()) {
+			if(sensorEnabledMap.get(sensorMapKey).isEnabled()) {
+				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
+					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION) ){
+//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
+//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)
+//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
+//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
-
-
+	@Override
+	public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
+		if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
+				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
+			
+			mSensorMap.get(sensorMapKey).setIsEnabled(false);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void handleSpecCasesAfterSensorMapUpdate() {
+		internalCheckExgModeAndUpdateSensorMap();
+	}
+	
+	
+	@Override
+	public void handleSpecCasesUpdateEnabledSensors(long enabledSensors){
+		updateEnabledSensorsFromExgResolution(enabledSensors);
+	}
 
 	//-------------------- ExG End -----------------------------------	
 }

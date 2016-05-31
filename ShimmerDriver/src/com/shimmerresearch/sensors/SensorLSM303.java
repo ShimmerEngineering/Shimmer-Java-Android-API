@@ -674,13 +674,13 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	@Override 
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
-				setDefaultLsm303dlhcAccelSensorConfig(state);		
+				setDefaultLsm303dlhcAccelSensorConfig(isSensorEnabled);		
 			}
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG) {
-				setDefaultLsm303dlhcMagSensorConfig(state);
+				setDefaultLsm303dlhcMagSensorConfig(isSensorEnabled);
 			}
 			return true;
 		}
@@ -806,6 +806,13 @@ public class SensorLSM303 extends AbstractSensor{
 //		}
 		
 		return actionsetting;
+		
+	}
+	
+	
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
 		
 	}
 	//--------- Abstract methods implemented end --------------
@@ -1155,8 +1162,8 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	
-	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
-		if(state) {
+	private void setDefaultLsm303dlhcMagSensorConfig(boolean isSensorEnabled) {
+		if(isSensorEnabled) {
 			setLowPowerMag(false);
 		}
 		else {
@@ -1166,8 +1173,8 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 
 	
-	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
-		if(state) {
+	private void setDefaultLsm303dlhcAccelSensorConfig(boolean isSensorEnabled) {
+		if(isSensorEnabled) {
 			setLowPowerAccelWR(false);
 		}
 		else {
@@ -1284,11 +1291,7 @@ public class SensorLSM303 extends AbstractSensor{
 	//--------- Sensor specific methods end --------------
 
 
-	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	//--------- Optional methods to override in sensor class start --------
 	

@@ -670,7 +670,7 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean state) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
 			//TODO set defaults for particular sensor
 			return true;
@@ -699,11 +699,20 @@ public class SensorPPG extends AbstractSensor {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+	@Override
+	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
 	//--------- Abstract methods implemented end --------------
 
 	
 	//--------- Sensor specific methods start --------------
 
+	
+	
 	
 	//XXX - is this old, can it be removed, or does it still need to be checked? 
 	//TODO Check if needed
@@ -897,44 +906,42 @@ public class SensorPPG extends AbstractSensor {
 //	}
 //	
 	
-//	@Override
-//	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
-//		
-//		if(mSensorMap!=null) {
-//			
-//			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
-//			
-//			if (getHardwareVersion() == HW_ID.SHIMMER_3){
-//				
-//				// Special case for Dummy entries in the Sensor Map
-//				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
-//					sensorDetails.setIsEnabled(state);
-//					if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
-//					}
-//					else {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13;
-//					}
-//				}		
-//				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
-//					sensorDetails.setIsEnabled(state);
-//					if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
-//					}
-//					else {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13;
-//					}
-//				}		
-//				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
-//					sensorDetails.setIsEnabled(state);
-//					if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
-//					}
-//					else {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1;
-//					}
-//				}		
-//				
+
+	public void handleDummyEntriesInSensorMap(int sensorMapKey, boolean state) {
+
+		if(mSensorMap!=null) {
+
+			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+
+				// Special case for Dummy entries in the Sensor Map
+				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
+					sensorDetails.setIsEnabled(state);
+					if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
+						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
+					}
+					else {
+						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13;
+					}
+				}		
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
+					sensorDetails.setIsEnabled(state);
+					if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
+						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
+					}
+					else {
+						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13;
+					}
+				}		
+				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
+					sensorDetails.setIsEnabled(state);
+					if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
+						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
+					}
+					else {
+						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1;
+					}
+				}		
+
 //				// Automatically handle required channels for each sensor
 //				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
 //				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
@@ -942,32 +949,8 @@ public class SensorPPG extends AbstractSensor {
 //						mSensorMap.get(i).setIsEnabled(state);
 //					}
 //				}
-//				
-//			}
-//			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
-//				
-//			}
-//			
-//			//Set sensor state
-//			sensorDetails.setIsEnabled(state);
-//
-//			sensorMapConflictCheckandCorrect(sensorMapKey);
-//			setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
-//
-//			// Automatically control internal expansion board power
-//			checkIfInternalExpBrdPowerIsNeeded();
-//			
-//			refreshEnabledSensorsFromSensorMap();
-//
-//			boolean result = sensorDetails.isEnabled();
-//			
-//			return (result==state? true:false);
-//			
-//		}
-//		else {
-//			return false;
-//		}
-//	}
+			}
+	}
 	
 	//TODO 2016-05-18 feed below into sensor map classes
 		/**Automatically control internal expansion board power based on sensor map
@@ -1093,11 +1076,10 @@ public class SensorPPG extends AbstractSensor {
 		}
 	}
 
-
-	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
 	
+	@Override
+	public void handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
+		handleDummyEntriesInSensorMap(sensorMapKey, state);
+	}
+
 }
