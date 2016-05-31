@@ -49,14 +49,16 @@ public class AlgorithmDetails implements Serializable {
 		mListOfChannelDetails.add(generateChannelDetails());
 	}
 	
-	public AlgorithmDetails(String objectClusterName, List<ChannelDetails> listOfAlgortihmChannels, String guiFriendlyName, List<String> listOfAssociatedSensors, String groupName, long derivedSensorBitmapId, List<Integer> listOfRequiredSensors, String units){
-		this(listOfRequiredSensors, units);
-		mGuiFriendlyName = guiFriendlyName;
-		mListOfAssociatedSensors = listOfAssociatedSensors;
-		mAlgorithmName = objectClusterName;
+	public AlgorithmDetails(String objectClusterName, 
+			List<ChannelDetails> listOfAlgortihmChannels, 
+			String guiFriendlyName, 
+			List<String> listOfAssociatedSensors, 
+			String groupName, 
+			long derivedSensorBitmapId, 
+			List<Integer> listOfRequiredSensors, 
+			String units){
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
-		mDerivedSensorBitmapID = derivedSensorBitmapId;
-		mGroupName = groupName;
 	}
 
 	//TODO this constructor is only used in the example -> remove?
