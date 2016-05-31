@@ -1,21 +1,11 @@
 package com.shimmerresearch.sensors;
 
-import java.util.Arrays;
-
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
-import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.SensorKionixKXRB52042.ObjectClusterSensorName;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensorTiles;
 
 /** 
  * @author Ruud Stolk 

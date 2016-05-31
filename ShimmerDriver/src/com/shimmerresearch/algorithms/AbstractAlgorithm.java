@@ -128,6 +128,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public HashMap<String,AlgorithmConfigOptionDetails> mConfigOptionsMap = new HashMap<String,AlgorithmConfigOptionDetails>();//Define the gui to be generated
 	public HashMap<String, AlgorithmDetails> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetails>();//Defines algorithm requirements
 	
+	//TODO remove?
 	public Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	public abstract Object getSettings(String componentName);
 	public abstract Object getDefaultSettings(String componentName);
