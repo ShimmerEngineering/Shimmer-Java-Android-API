@@ -7423,13 +7423,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
 					setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 				}
+				//YYY-BMP-Class
 				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
 					setDefaultBmp180PressureSensorConfig(false);
 				}
-				//YYY-MPU-Class
+				//YYY-GSR-Class
 				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)) {
 					setDefaultGsrSensorConfig(false);
 				}
+				//YYY-EXG-Class
 				if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
 						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
 						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
