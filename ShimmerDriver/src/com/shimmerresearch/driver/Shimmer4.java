@@ -43,7 +43,7 @@ public class Shimmer4 extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 6916261534384275804L;
 	
-	public transient ShimmerRadioProtocol mShimmerRadioHWLiteProtocol = null;
+	public ShimmerRadioProtocol mShimmerRadioHWLiteProtocol = null;
 
 	byte[] mInfoMemBuffer;
 	private int mCurrentInfoMemAddress = 0;
@@ -468,6 +468,8 @@ public class Shimmer4 extends ShimmerDevice {
 					setBluetoothRadioState(BT_STATE.CONNECTED);
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
 					
+				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.SET_SENSORS_COMMAND_VALUE){
+					readInfoMem();
 				}
 			}
 
@@ -604,6 +606,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void writeEnabledSensors(long enabledSensors) {
 		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
 //			mShimmerRadioHWLiteProtocol.
+			mShimmerRadioHWLiteProtocol.writeEnabledSensors(enabledSensors);
 		}
 	}
 

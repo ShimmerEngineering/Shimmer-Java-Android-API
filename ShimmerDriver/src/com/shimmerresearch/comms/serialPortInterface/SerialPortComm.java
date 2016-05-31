@@ -1,16 +1,17 @@
 package com.shimmerresearch.comms.serialPortInterface;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.shimmerresearch.driver.DeviceException;
 
-public abstract class SerialPortComm implements ByteLevelDataComm {
+public abstract class SerialPortComm implements ByteLevelDataComm, Serializable {
 	//the timeout value for connecting with the port
     public int SERIAL_PORT_TIMEOUT = 500; // was 2000
     public String mAddress="";
     
-	private List<ByteLevelDataCommListener> mByteLevelDataCommListener = new ArrayList<ByteLevelDataCommListener>();
+	transient private List<ByteLevelDataCommListener> mByteLevelDataCommListener = new ArrayList<ByteLevelDataCommListener>();
     
 	public void clearByteLevelDataCommListener(){
 		mByteLevelDataCommListener.clear();
