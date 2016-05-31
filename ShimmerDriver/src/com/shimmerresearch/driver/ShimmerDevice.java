@@ -18,6 +18,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
+import com.shimmerresearch.algorithms.OrientationModule;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -2333,13 +2334,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
-		/*
-		 * Handle open source algorithms here
-		 *  
-		 * */
+		
+		double samplingRate = getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedPpgToHrCh = OrientationModule.getMapOfSupportedAlgorithms(mShimmerVerObject);
+		for (AlgorithmDetails algorithmDetails:mapOfSupportedPpgToHrCh.values()) {
+			OrientationModule orientationModule = new OrientationModule(algorithmDetails, samplingRate);
+			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule);
+		}
 		
 		// TODO load algorithm modules automatically from any included algorithm
-		// jars depending on licence
+		// jars depending on licence?
 	}
 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithms(){
