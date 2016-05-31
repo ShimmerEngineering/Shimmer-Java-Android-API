@@ -1487,9 +1487,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 
-	//SensorMap related - Copied from ShimmerObject
+
 	
-	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED
+	
 	/**
 	 * Used to changed the enabled state of a sensor in the sensormap. This is
 	 * only used in Consensys for dynamic configuration of a Shimmer. This
@@ -1730,7 +1730,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		sensorMapCheckandCorrectSensorDependencies();
 	}
 	
-	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED AND NEEDS FURTHER WORK
+
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
 			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
@@ -1740,9 +1740,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				List<SensorDetails> listOfEnabledSensors  = getListOfEnabledSensors();
 				for (SensorDetails sED:listOfEnabledSensors) {
 					mEnabledSensors |= sED.mSensorDetailsRef.mSensorBitmapIDSDLogHeader;
-//					if (sED.isDerivedChannel()) {
-//						mDerivedSensors |= sED.mDerivedSensorBitmapID;
-//					}
+
 				}
 				
 				
@@ -1750,17 +1748,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				updateDerivedSensors();
 				
 				handleSpecCasesUpdateEnabledSensors();
-				
-
-				
-				
-				// //TODO 2016-05-04 Special case for EXG - best to do by
-				// cycling through SensorClasses for any special conditions?
-				// AbstractSensor abstractSensor =
-				// mMapOfSensorClasses.get(SENSORS.EXG);
-				// if(abstractSensor!=null){
-				// ((SensorEXG)abstractSensor).updateEnabledSensorsFromExgResolution();
-				// }
 
 			}
 		}
@@ -1779,7 +1766,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	//RS (30/5/2016) - added special case for EXG - comment of 2016-05-04 can go?
+	//RS (30/5/2016) - added special case for EXG
 	private void handleSpecCasesUpdateEnabledSensors() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
@@ -1799,7 +1786,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledSensors;
 	}
 	
-	//TODO COPIED FROM SHIMMEROBJECT 2016-05-04 - UNTESTED AND NEEDS FURTHER WORK
+	
 	/**
 	 * Used to convert from the enabledSensors long variable read from the
 	 * Shimmer to the set enabled status of the relative entries in the Sensor
@@ -1807,70 +1794,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * 
 	 */
 	public void sensorMapUpdateFromEnabledSensorsVars() {
-
-////		//TODO 2016-05-04 Special case for EXG - best to do by cycling through SensorClasses for any special conditions? 
-////		checkExgResolutionFromEnabledSensorsVar();
-//		AbstractSensor sensorExg = mMapOfSensorClasses.get(SENSORS.EXG);
-//		if(sensorExg!=null){
-//			((SensorEXG)sensorExg).checkExgResolutionFromEnabledSensorsVar();
-//		}
-		
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
 		}
-
 		if(mSensorMap!=null) {
-
-//			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
-
-				for(Integer sensorMapKey:mSensorMap.keySet()) {
-					
-					if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
-						continue;
-					}
-					
+			for(Integer sensorMapKey:mSensorMap.keySet()) {
+				if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
+					continue;
+				}
 					boolean skipKey = false;
-
-//					// Skip if ExG channels here -> handle them after for loop.
-//					if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
-//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
-//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
-//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
-//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) {
-//						mSensorMap.get(sensorMapKey).setIsEnabled(false);
-//						skipKey = true;
-//					}
-//					// Handle derived sensors based on int adc channels (e.g. PPG vs. A12/A13)
-//					else if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
-//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
-//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
-//							||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14))){
-//
-//						//Check if a derived channel is enabled, if it is ignore disable and skip 
-//						innerloop:
-//							for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
-//								if(mSensorMap.get(conflictKey).isDerivedChannel()) {
-//									if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
-//										mSensorMap.get(sensorMapKey).setIsEnabled(false);
-//										skipKey = true;
-//										break innerloop;
-//									}
-//								}
-//							}
-//					}
-//					//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
-//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
-//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK
-//					//							|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.REAL_TIME_CLOCK_SYNC){
-//					//						mSensorMap.get(sensorMapKey).setIsEnabled(false);
-//					//						skipKey = true;
-//					//					}
-//					//					else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES){
-//					//						mSensorMap.get(sensorMapKey).setIsEnabled(true);
-//					//						skipKey = true;
-//					//					}
-
-
+					
 					// Process remaining channels
 					if(!skipKey) {
 						mSensorMap.get(sensorMapKey).setIsEnabled(false);
@@ -1904,7 +1837,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				// what type of signal the ExG is configured for or what derived
 				// channel is enabled like whether PPG is on ADC12 or ADC13
 				
-//				//TODO 2016-05-04 Special case for EXG - best to do by cycling through SensorClasses for any special conditions? 
+//				
 //
 //				//Handle ExG sensors
 //				internalCheckExgModeAndUpdateSensorMap(mSensorMap);

@@ -6679,7 +6679,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mConfigFileCreationFlag = state;
 	}
 	
-	//TODO 2016-05-18 feed below into sensor map classes
+	
 	@Override
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
@@ -6961,7 +6961,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	//TODO 2016-05-18 feed below into sensor map classes
+	
 	private void createSensorMapShimmer3(){
 		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 		
