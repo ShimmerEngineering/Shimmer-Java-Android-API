@@ -42,8 +42,6 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
         	
 			throw(e);
         }
-		
-		
 	};
 	
 	public void disconnect() throws DeviceException{
@@ -55,9 +53,6 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
         	
 			throw(e);
         }
-		
-		
-		
 	};
 
 	public void stopStreaming(){
