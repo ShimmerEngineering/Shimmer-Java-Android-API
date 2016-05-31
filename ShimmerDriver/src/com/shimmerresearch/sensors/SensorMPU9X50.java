@@ -472,7 +472,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			false);
 	
 	public static final SensorDetailsRef sensorMpu9150AccelRef = new SensorDetailsRef(0x40<<(2*8), 0x40<<(2*8), GuiLabelSensors.ACCEL_MPU,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer4,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL), 
 			Arrays.asList(GuiLabelConfig.MPU9150_ACCEL_RANGE),
 			Arrays.asList(
@@ -482,7 +482,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			false);
 
 	public static final SensorDetailsRef sensorMpu9150MagRef = new SensorDetailsRef(0x20<<(2*8), 0x20<<(2*8), GuiLabelSensors.MAG_MPU,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer4,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG),
 			Arrays.asList(GuiLabelConfig.MPU9150_MAG_RATE),
 			Arrays.asList(
