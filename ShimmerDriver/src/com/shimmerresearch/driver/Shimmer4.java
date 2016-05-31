@@ -57,7 +57,15 @@ public class Shimmer4 extends ShimmerDevice {
 	private static final int DELAY_AFTER_INFOMEM_WRITE = 500;
 	
 	
+	//TODO consider where to handle the below -> carried over from ShimmerObject
+	protected boolean mButtonStart = true;
+	protected boolean mShowRtcErrorLeds = true;
+	protected boolean mConfigFileCreationFlag = true;
+	protected boolean mCalibFileCreationFlag = false;
+	private boolean isOverrideShowRwcErrorLeds = true;
+	
 	private int mNumOfInfoMemSetCmds;
+
 	public Shimmer4() {
 		// TODO Auto-generated constructor stub
 	}
@@ -205,6 +213,10 @@ public class Shimmer4 extends ShimmerDevice {
 				bitShift -= 8;
 			}
 			
+			mButtonStart = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftButtonStart) & infoMemLayoutCast.maskButtonStart)>0? true:false;
+			mShowRtcErrorLeds = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowRwcErrorLeds) & infoMemLayoutCast.maskShowRwcErrorLeds)>0? true:false;
+
+			
 			prepareAllAfterConfigRead();
 			
 			// Configuration from each Sensor settings
@@ -287,13 +299,32 @@ public class Shimmer4 extends ShimmerDevice {
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 
-		/*XXX - RS (26/5/2016):
-		 * 
-		 * Undocking after write config -> enabled sensors not enabled when docking again.
-		 * MN: Set this flag to 1.
-		 * 
-		 * */ 
-		mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] = 1;
+		
+		mInfoMemBytes[infoMemLayout.idxSDExperimentConfig0] = (byte) ((mButtonStart? infoMemLayout.maskButtonStart:0) << infoMemLayout.bitShiftButtonStart);
+		if(this.isOverrideShowRwcErrorLeds){
+			mInfoMemBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((infoMemLayout.maskShowRwcErrorLeds) << infoMemLayout.bitShiftShowRwcErrorLeds);
+		}
+		else {
+			mInfoMemBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mShowRtcErrorLeds? infoMemLayout.maskShowRwcErrorLeds:0) << infoMemLayout.bitShiftShowRwcErrorLeds);
+		}
+
+		if(generateForWritingToShimmer) {
+			// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
+			// (already set to 0xFF at start of method but just incase)
+			System.arraycopy(infoMemLayout.invalidMacId, 0, mInfoMemBytes, infoMemLayout.idxMacAddress, infoMemLayout.lengthMacIdBytes);
+
+			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] = 0;
+			// Tells the Shimmer to create a new config file on undock/power cycle
+			//TODO RM enabled the two lines below (MN had the below two lines commented out.. but need them to write config successfully over UART)
+			byte configFileWriteBit = (byte) (mConfigFileCreationFlag? (infoMemLayout.maskSDCfgFileWriteFlag << infoMemLayout.bitShiftSDCfgFileWriteFlag):0x00);
+			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
+
+			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
+
+			 // Tells the Shimmer to create a new calibration files on undock/power cycle
+			byte calibFileWriteBit = (byte) (mCalibFileCreationFlag? (infoMemLayout.maskSDCalibFileWriteFlag << infoMemLayout.bitShiftSDCalibFileWriteFlag):0x00);
+			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= calibFileWriteBit;
+		}
 		
 		if(generateForWritingToShimmer) {
 			// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
@@ -303,6 +334,7 @@ public class Shimmer4 extends ShimmerDevice {
 			//TODO only temporarily here to deal with fake Shimmer4 (i.e., a Shimmer3)
 			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
 		}
+		
 		
 		return mInfoMemBytes;
 	}
@@ -751,6 +783,60 @@ public class Shimmer4 extends ShimmerDevice {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * @return the mButtonStart
+	 */
+	public boolean isButtonStart() {
+		return mButtonStart;
+	}
+
+
+	/**
+	 * @param state the mButtonStart state to set
+	 */
+	public void setButtonStart(boolean state) {
+		mButtonStart = state;
+	}
+	
+	@Override
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+		Object returnValue = null;
+		int buf = 0;
+
+		switch(componentName){
+//Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
+				setButtonStart((boolean)valueToSet);
+				break;
+//Integers
+//Strings
+	        default:
+	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+	        	break;
+		}
+	
+		return returnValue;
+	}
+	
+	@Override
+	public Object getConfigValueUsingConfigLabel(String componentName) {
+		Object returnValue = null;
+		switch(componentName){
+//Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
+				returnValue = isButtonStart();
+				break;
+//Integers
+//Strings
+	        default:
+	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
+	        	break;
+		}
+		
+		return returnValue;
+
 	}
 	
 }

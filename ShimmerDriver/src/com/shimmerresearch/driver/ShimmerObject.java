@@ -4248,7 +4248,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mSensitivityMatrixAnalogAccel = SensitivityMatrix;
 			} 
 			else if(packetType==ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
-				if (getHardwareVersion()!=3){
+				if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 					mDefaultCalibrationParametersAccel = true;
 					mAlignmentMatrixAnalogAccel = AlignmentMatrixAccelShimmer2;
 					mOffsetVectorAnalogAccel = OffsetVectorAccelShimmer2;
@@ -4301,7 +4301,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			} 
 			else if(packetType==GYRO_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
-				if(getHardwareVersion()!=3){
+				if(getHardwareVersion()!=HW_ID.SHIMMER_3){
 					mDefaultCalibrationParametersGyro = true;
 					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
 					mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
@@ -4326,7 +4326,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if(packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
 				mDefaultCalibrationParametersMag = true;
-				if (getHardwareVersion()!=3){
+				if (getHardwareVersion()!=HW_ID.SHIMMER_3){
 					mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer2;
 					mOffsetVectorMagnetometer = OffsetVectorMagShimmer2;
 					if (mMagRange==0){

@@ -760,7 +760,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				
 				if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
 					if(getExpansionBoardId()!=compatibleVersionInfo.mShimmerExpansionBoardId) {
-						return false;
+//						return false;
+						continue;
 					}
 				}
 

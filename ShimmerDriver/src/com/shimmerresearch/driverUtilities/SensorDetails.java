@@ -46,6 +46,10 @@ public class SensorDetails implements Serializable{
 	}
 
 	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+		return processDataAction(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+	}
+	
+	public ObjectCluster processDataAction(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
 		for (ChannelDetails channelDetails:mListOfChannels){
 			//first process the data originating from the Shimmer sensor
@@ -53,6 +57,7 @@ public class SensorDetails implements Serializable{
 			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
 			objectCluster = processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
 			index += channelDetails.mDefaultNumBytes;
+			objectCluster.incrementIndexKeeper();
 		}
 		return objectCluster;
 	}

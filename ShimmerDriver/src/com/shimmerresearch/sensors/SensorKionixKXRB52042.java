@@ -200,47 +200,50 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
-		int index = 0;
-		double[] unCalibratedAccelData = new double[3];
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	
+		objectCluster = sensorDetails.processDataAction(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 
-		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
-			
+//		int index = 0;
+//		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+//			//first process the data originating from the Shimmer sensor
+//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+//			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+//			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+//			index = index + channelDetails.mDefaultNumBytes;
+//			objectCluster.incrementIndexKeeper();
+//		}
+		
+		if(mEnableCalibration){
 			//Uncalibrated Accelerometer data
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
-				unCalibratedAccelData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+			double[] unCalibratedAccelData = new double[3];
+			for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
+					unCalibratedAccelData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
+					unCalibratedAccelData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
+					unCalibratedAccelData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				}	
 			}
-			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
-				unCalibratedAccelData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			}
-			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
-				unCalibratedAccelData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			}	
-			
-			index = index + channelDetails.mDefaultNumBytes;
-		}
-			
-		//Calibration
-		double[] calibratedAccelData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+				
+			//Calibration
+			double[] calibratedAccelData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelData, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
 
-		//Add calibrated data to Object cluster
-		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
-				objectCluster.addCalData(channelDetails, calibratedAccelData[0]);
-				objectCluster.incrementIndexKeeper();
-			}
-			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
-				objectCluster.addCalData(channelDetails, calibratedAccelData[1]);
-				objectCluster.incrementIndexKeeper();
-			}
-			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
-				objectCluster.addCalData(channelDetails, calibratedAccelData[2]);
-				objectCluster.incrementIndexKeeper();
-			}
+			//Add calibrated data to Object cluster
+			for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_X)){
+					objectCluster.addCalData(channelDetails, calibratedAccelData[0], objectCluster.getIndexKeeper()-3);
+				}
+				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Y)){
+					objectCluster.addCalData(channelDetails, calibratedAccelData[1], objectCluster.getIndexKeeper()-2);
+				}
+				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_LN_Z)){
+					objectCluster.addCalData(channelDetails, calibratedAccelData[2], objectCluster.getIndexKeeper()-1);
+				}
+			}			
 		}
 		
 		//Debugging
@@ -269,8 +272,11 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	@Override
 	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
-		int idxAnalogAccelCalibration = 31;
+//		int idxAnalogAccelCalibration = 31;
+		//fix for newer firmware -> see InfomemLayoutShimmer3
+		int idxAnalogAccelCalibration =		34;
 		int lengthGeneralCalibrationBytes = 21;
+
 		
 		//Accel Calibration Parameters
 		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
