@@ -294,7 +294,27 @@ public class UtilShimmer implements Serializable {
 	public static String convertByteToUnsignedIntegerString(byte b) {
 		return Integer.toString(b&0x00FF);
 	}
-	
+
+	/**Returns true if FW ID and HW_ID are the same and "this" version is greater or equal then comparison version
+	 * @param thisFwIdent
+	 * @param thisMajor
+	 * @param thisMinor
+	 * @param thisInternal
+	 * @param compFwIdent
+	 * @param compMajor
+	 * @param compMinor
+	 * @param compInternal
+	 * @return
+	 */
+	public static boolean compareVersions(int thisHwIdent, int thisFwIdent, int thisMajor, int thisMinor, int thisInternal,
+			int compHwIdent, int compFwIdent, int compMajor, int compMinor, int compInternal) {
+
+		if (thisHwIdent==compHwIdent){
+			return compareVersions(thisFwIdent, thisMajor, thisMinor, thisInternal, compFwIdent, compMajor, compMinor, compInternal);
+		}
+		return false; // if less or not the same FW_ID and HW_ID
+	}
+
 	
 	/**Returns true if FW ID is the same and "this" version is greater or equal then comparison version
 	 * @param thisFwIdent
@@ -334,30 +354,6 @@ public class UtilShimmer implements Serializable {
 			return true; // if FW ID is the same and version is greater or equal 
 		}
 		return false; // if less or not the same FW ID
-	}
-	
-	/**Returns true if FW ID and HW_ID are the same and "this" version is greater or equal then comparison version
-	 * @param thisFwIdent
-	 * @param thisMajor
-	 * @param thisMinor
-	 * @param thisInternal
-	 * @param compFwIdent
-	 * @param compMajor
-	 * @param compMinor
-	 * @param compInternal
-	 * @return
-	 */
-	public static boolean compareVersions(int thisHwIdent, int thisFwIdent, int thisMajor, int thisMinor, int thisInternal,
-			int compHwIdent, int compFwIdent, int compMajor, int compMinor, int compInternal) {
-
-		if ((thisHwIdent==compHwIdent)&&(thisFwIdent==compFwIdent)){
-			if ((thisMajor>compMajor)
-					||(thisMajor==compMajor && thisMinor>compMinor)
-					||(thisMajor==compMajor && thisMinor==compMinor && thisInternal>=compInternal)){
-				return true; // if FW_ID and HW_ID are the same and version is greater or equal 
-			}
-		}
-		return false; // if less or not the same FW_ID and HW_ID
 	}
 	
 	public static String convertDuration(int duration){
