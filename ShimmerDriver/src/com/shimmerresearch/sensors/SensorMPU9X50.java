@@ -1122,7 +1122,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		super(svo);
 		setSensorName(SENSORS.MPU9X50.toString());
 	}
-
+	
+	
+	//--------- Abstract methods implemented start --------------
+	
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		//TODO populate the other channels depending on firmware version
@@ -1750,137 +1753,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return returnValue;
 	}
 	
-	public byte[] generateCalParamGyroscope(){
-		// MPU9150 Gyroscope Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[21];
-		// offsetVector -> buffer offset = 0
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
-		}
-		// sensitivityMatrix -> buffer offset = 6
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
-		}
-		// alignmentMatrix -> buffer offset = 12
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
-		}
-		return bufferCalibrationParameters;
-	}
-	private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-		
-		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer3;
-		double[][] sensitivityVectorToCompare = mSensitivityMatrixGyroscope;
-		double[][] alignmentVectorToCompare = mAlignmentMatrixGyroscope;
-		
-		if(getHardwareVersion()==HW_ID.SHIMMER_3){
-			if (mGyroRange==0){
-				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
 
-			} else if (mGyroRange==1){
-				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
-
-			} else if (mGyroRange==2){
-				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
-
-			} else if (mGyroRange==3){
-				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-			}
-			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
-			offsetVectorToCompare = OffsetVectorGyroShimmer3;
-		}
-		for(int i=0;i<=2;i++){
-			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
-		}
-		
-		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
-		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
-		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
-		
-		if(alignmentPass&&offsetPass&&sensitivityPass){
-			return true;
-		}
-		return false;
-	}
-	
-	private void setDefaultCalibrationShimmer3Gyro() {
-		mDefaultCalibrationParametersGyro = true;
-		if (mGyroRange==0){
-			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
-
-		} else if (mGyroRange==1){
-			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
-
-		} else if (mGyroRange==2){
-			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
-
-		} else if (mGyroRange==3){
-			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-		}
-		mAlignmentMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixGyroShimmer3);
-		mOffsetVectorGyroscope = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorGyroShimmer3);
-	}
-//	************** Check if needed ****************
-//	protected void interpretInqResponse(byte[] bufferInquiry){
-//		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
-//			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
-//			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
-//			
-//			mAccelRange = bufferInquiry[1];
-//			mConfigByte0 = bufferInquiry[2] & 0xFF; //convert the byte to unsigned integer
-//			mNChannels = bufferInquiry[3];
-//			mBufferSize = bufferInquiry[4];
-//			byte[] signalIdArray = new byte[mNChannels];
-//			System.arraycopy(bufferInquiry, 5, signalIdArray, 0, mNChannels);
-//			updateEnabledSensorsFromChannels(signalIdArray);
-//			interpretDataPacketFormat(mNChannels,signalIdArray);
-//			mInquiryResponseBytes = new byte[5+mNChannels];
-//			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-//		} 
-//		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
-//			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
-//			setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
-//			mNChannels = bufferInquiry[6];
-//			mBufferSize = bufferInquiry[7];
-//			mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
-//			mAccelRange = ((int)(mConfigByte0 & 0xC))>>2;
-//			mGyroRange = ((int)(mConfigByte0 & 196608))>>16;
-//			mMagRange = ((int)(mConfigByte0 & 14680064))>>21;
-//			
-//			mMPU9150GyroAccelRate = ((int)(mConfigByte0 & 65280))>>8;
-//			
-//			mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
-//			mInquiryResponseBytes = new byte[8+mNChannels];
-//			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-//			
-//			if ((mMPU9150GyroAccelRate==0xFF && getSamplingRateShimmer()>10)){
-//				mLowPowerGyro = true;
-//			}
-//			if ((mLSM303MagRate==4 && getSamplingRateShimmer()>10)){
-//				mLowPowerMag = true;
-//			}
-//			byte[] signalIdArray = new byte[mNChannels];
-//			System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
-//			updateEnabledSensorsFromChannels(signalIdArray);
-//			interpretDataPacketFormat(mNChannels,signalIdArray);
-//			checkExgResolutionFromEnabledSensorsVar();
-//		} 
-//		else if (getHardwareVersion()==HW_ID.SHIMMER_SR30) {
-//			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
-//			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
-//			mAccelRange = bufferInquiry[1];
-//			mNChannels = bufferInquiry[2];
-//			mBufferSize = bufferInquiry[3];
-//			byte[] signalIdArray = new byte[mNChannels];
-//			System.arraycopy(bufferInquiry, 4, signalIdArray, 0, mNChannels); // this is 4 because there is no config byte
-//			interpretDataPacketFormat(mNChannels,signalIdArray);
-//
-//		}
-//	}
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
@@ -2201,6 +2074,138 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			setMPU9150MplRateFromFreq(mMaxSetShimmerSamplingRate);
 		}
 	}
+	
+	public byte[] generateCalParamGyroscope(){
+		// MPU9150 Gyroscope Calibration Parameters
+		byte[] bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
+		}
+		return bufferCalibrationParameters;
+	}
+	private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
+		
+		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer3;
+		double[][] sensitivityVectorToCompare = mSensitivityMatrixGyroscope;
+		double[][] alignmentVectorToCompare = mAlignmentMatrixGyroscope;
+		
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if (mGyroRange==0){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
+
+			} else if (mGyroRange==1){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
+
+			} else if (mGyroRange==2){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
+
+			} else if (mGyroRange==3){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
+			}
+			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
+			offsetVectorToCompare = OffsetVectorGyroShimmer3;
+		}
+		for(int i=0;i<=2;i++){
+			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
+		}
+		
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+		
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
+	}
+	
+	private void setDefaultCalibrationShimmer3Gyro() {
+		mDefaultCalibrationParametersGyro = true;
+		if (mGyroRange==0){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
+
+		} else if (mGyroRange==1){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
+
+		} else if (mGyroRange==2){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
+
+		} else if (mGyroRange==3){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
+		}
+		mAlignmentMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixGyroShimmer3);
+		mOffsetVectorGyroscope = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorGyroShimmer3);
+	}
+//	************** Check if needed ****************
+//	protected void interpretInqResponse(byte[] bufferInquiry){
+//		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
+//			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
+//			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
+//			
+//			mAccelRange = bufferInquiry[1];
+//			mConfigByte0 = bufferInquiry[2] & 0xFF; //convert the byte to unsigned integer
+//			mNChannels = bufferInquiry[3];
+//			mBufferSize = bufferInquiry[4];
+//			byte[] signalIdArray = new byte[mNChannels];
+//			System.arraycopy(bufferInquiry, 5, signalIdArray, 0, mNChannels);
+//			updateEnabledSensorsFromChannels(signalIdArray);
+//			interpretDataPacketFormat(mNChannels,signalIdArray);
+//			mInquiryResponseBytes = new byte[5+mNChannels];
+//			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
+//		} 
+//		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
+//			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
+//			setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
+//			mNChannels = bufferInquiry[6];
+//			mBufferSize = bufferInquiry[7];
+//			mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
+//			mAccelRange = ((int)(mConfigByte0 & 0xC))>>2;
+//			mGyroRange = ((int)(mConfigByte0 & 196608))>>16;
+//			mMagRange = ((int)(mConfigByte0 & 14680064))>>21;
+//			
+//			mMPU9150GyroAccelRate = ((int)(mConfigByte0 & 65280))>>8;
+//			
+//			mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
+//			mInquiryResponseBytes = new byte[8+mNChannels];
+//			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
+//			
+//			if ((mMPU9150GyroAccelRate==0xFF && getSamplingRateShimmer()>10)){
+//				mLowPowerGyro = true;
+//			}
+//			if ((mLSM303MagRate==4 && getSamplingRateShimmer()>10)){
+//				mLowPowerMag = true;
+//			}
+//			byte[] signalIdArray = new byte[mNChannels];
+//			System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
+//			updateEnabledSensorsFromChannels(signalIdArray);
+//			interpretDataPacketFormat(mNChannels,signalIdArray);
+//			checkExgResolutionFromEnabledSensorsVar();
+//		} 
+//		else if (getHardwareVersion()==HW_ID.SHIMMER_SR30) {
+//			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
+//			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
+//			mAccelRange = bufferInquiry[1];
+//			mNChannels = bufferInquiry[2];
+//			mBufferSize = bufferInquiry[3];
+//			byte[] signalIdArray = new byte[mNChannels];
+//			System.arraycopy(bufferInquiry, 4, signalIdArray, 0, mNChannels); // this is 4 because there is no config byte
+//			interpretDataPacketFormat(mNChannels,signalIdArray);
+//
+//		}
+//	}
 	
 	private boolean checkIfAMpuGyroOrAccelEnabled(){
 		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)) {
