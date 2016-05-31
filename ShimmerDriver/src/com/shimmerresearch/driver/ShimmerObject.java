@@ -138,6 +138,10 @@ import com.shimmerresearch.sensors.UtilParseData;
 import com.shimmerresearch.sensors.SensorMPU9X50.GuiLabelConfig;
 import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
 
+/**
+ * @author mnolan
+ *
+ */
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
 
 	/** * */
@@ -4193,8 +4197,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return enabledSignals;
 	}	
 
-	protected void retrievebiophysicalcalibrationparametersfrompacket(byte[] bufferCalibrationParameters, int packetType)
-	{
+	
+	/** Shimmer2r only
+	 * @param bufferCalibrationParameters
+	 * @param packetType
+	 */
+	protected void retrieveBiophysicalCalibrationParametersFromPacket(byte[] bufferCalibrationParameters, int packetType){
 		if (packetType == ECG_CALIBRATION_RESPONSE){
 			if (bufferCalibrationParameters[0]==-1 && bufferCalibrationParameters[1] == -1 && bufferCalibrationParameters[2] == -1 && bufferCalibrationParameters[3]==-1){
 				mDefaultCalibrationParametersECG = true;
@@ -4220,6 +4228,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	}
 
+	/**
+	 * @param bufferCalibrationParameters
+	 * @param packetType
+	 */
 	public void retrieveKinematicCalibrationParametersFromPacket(byte[] bufferCalibrationParameters, int packetType) {
 		
 		if (packetType==ACCEL_CALIBRATION_RESPONSE || packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE || packetType==GYRO_CALIBRATION_RESPONSE || packetType==MAG_CALIBRATION_RESPONSE ){
@@ -7732,6 +7744,26 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
     //region --------- IS+something FUNCTIONS --------- 
     
+	/* (non-Javadoc)
+	 * @see com.shimmerresearch.driver.ShimmerDevice#isSensorUsingDefaultCal(int)
+	 */
+	@Override
+	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL){
+			return isUsingDefaultLNAccelParam();
+		}
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+			return isUsingDefaultWRAccelParam();
+		}
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+			return isUsingDefaultGyroParam();
+		}
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+			return isUsingDefaultMagParam();
+		}
+		return false;
+	}
+	
     public boolean isGyroOnTheFlyCalEnabled(){
 		return mEnableOntheFlyGyroOVCal;
 	}

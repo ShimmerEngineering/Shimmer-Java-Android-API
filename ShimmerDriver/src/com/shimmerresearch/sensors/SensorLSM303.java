@@ -1290,6 +1290,23 @@ public class SensorLSM303 extends AbstractSensor{
 		
 	}
 
+	//--------- Optional methods to override in sensor class start --------
+	
+	/* (non-Javadoc)
+	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
+	 */
+	@Override
+	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+			return isUsingDefaultWRAccelParam();
+		}
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+			return isUsingDefaultMagParam();
+		}
+		return false;
+	}
+	
+	//--------- Optional methods to override in sensor class end --------
 	
 	//--------- Abstract methods not implemented start --------------
 	//--------- Abstract methods not implemented end --------------

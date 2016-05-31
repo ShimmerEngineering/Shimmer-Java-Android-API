@@ -2588,10 +2588,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					setDefaultCalibrationShimmer3Gyro();
 				}
 			} 
-
-
-
-
+	}
+	
+	public boolean isUsingDefaultGyroParam(){
+		return mDefaultCalibrationParametersGyro;
 	}
 
 
@@ -2600,6 +2600,21 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	//--------- Optional methods to override in sensor class start --------
+	
+	/* (non-Javadoc)
+	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
+	 */
+	@Override
+	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+			return isUsingDefaultGyroParam();
+		}
+		return false;
+	}
+	
+	//--------- Optional methods to override in sensor class end -------- 
 
 }
 	

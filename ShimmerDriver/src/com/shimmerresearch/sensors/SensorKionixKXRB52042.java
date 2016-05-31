@@ -457,4 +457,19 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	//--------- Optional methods to override in sensor class start --------
+	
+	/* (non-Javadoc)
+	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
+	 */
+	@Override
+	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL){
+			return isUsingDefaultLNAccelParam();
+		}
+		return false;
+	}
+	
+	//--------- Optional methods to override in sensor class end -------- 
 }

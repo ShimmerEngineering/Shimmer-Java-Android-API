@@ -1885,7 +1885,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mECGCalRawParams = new byte[9];
 		System.arraycopy(bufferCalibrationParameters, 0, mECGCalRawParams, 1, 8);
 		mECGCalRawParams[0] = ECG_CALIBRATION_RESPONSE;
-		retrievebiophysicalcalibrationparametersfrompacket( bufferCalibrationParameters,ECG_CALIBRATION_RESPONSE);
+		retrieveBiophysicalCalibrationParametersFromPacket( bufferCalibrationParameters,ECG_CALIBRATION_RESPONSE);
 	} 
 	
 	/**get EMG
@@ -1897,7 +1897,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mEMGCalRawParams = new byte[5];
 		System.arraycopy(bufferCalibrationParameters, 0, mEMGCalRawParams, 1, 4);
 		mEMGCalRawParams[0] = EMG_CALIBRATION_RESPONSE;
-		retrievebiophysicalcalibrationparametersfrompacket( bufferCalibrationParameters,EMG_CALIBRATION_RESPONSE);
+		retrieveBiophysicalCalibrationParametersFromPacket( bufferCalibrationParameters,EMG_CALIBRATION_RESPONSE);
 	}
 	
 	

@@ -314,4 +314,17 @@ public class SensorTemplate extends AbstractSensor{
 			//--------- Sensor specific methods end --------------
 
 
+			
+			//--------- Optional methods to override in sensor class start --------
+			
+			/* (non-Javadoc)
+			 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
+			 */
+//			@Override
+//			public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+//				return false;
+//			}
+			
+			//--------- Optional methods to override in sensor class end --------
+			
 }

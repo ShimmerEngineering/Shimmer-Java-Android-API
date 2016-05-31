@@ -2020,6 +2020,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
+	/**
+	 * Checks a specific sensor class to see if it is using it's default
+	 * calibration parameters. Used, for example, in SensorLSM, SensorMPU and
+	 * SensorKionix.
+	 * 
+	 * @param sensorMapKey
+	 * @return boolean indicating that the sensor is using default calibration
+	 *         parameters.
+	 */
 	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
