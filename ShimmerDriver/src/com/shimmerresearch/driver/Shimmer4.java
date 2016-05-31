@@ -491,6 +491,8 @@ public class Shimmer4 extends ShimmerDevice {
 					readInfoMem();
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.SET_INFOMEM_COMMAND_VALUE){
 					mNumOfInfoMemSetCmds -= 1;
+					int numofIns = mShimmerRadioHWLiteProtocol.mRadioProtocol.getListofInstructions().size();
+					sendProgressReport(new BluetoothProgressReportPerCmd(0, numofIns, getMacId(), getComPort()));
 					if(mNumOfInfoMemSetCmds==0){
 						delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
 						readInfoMem();
@@ -666,6 +668,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
 		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
 //			mShimmerRadioHWLiteProtocol.
+			startOperation(BT_STATE.CONNECTED,mNumberOfInfoMemReadsRequired);
 			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes);
 		}
 	}
