@@ -1332,7 +1332,10 @@ public class Configuration {
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
 					baseHighGAccelSdLog,baseHighGAccelBtStream,baseHighGAccelLogAndStream);
 			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl,baseShimmer4); //TODO Shimmer4 temp here
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl);//,baseShimmer4); //TODO Shimmer4 temp here
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(baseShimmer4);
+			
 		}
 
 

@@ -2,26 +2,17 @@ package com.shimmerresearch.sensors;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.vecmath.Vector3d;
 
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
-import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.driver.ShimmerObject.BTStream;
-import com.shimmerresearch.driver.ShimmerObject.SDLogHeader;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
@@ -31,7 +22,6 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -39,9 +29,6 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.UtilShimmer;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
-import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
 
 /**
  * @author Ronan McCormack
@@ -96,7 +83,14 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public double[][] mAlignmentMatrixGyroscope = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	public double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
 	public double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};
-	
+
+	//MPU Mag (AK8975A) - obtained from: 
+	// http://www.akm.com/akm/en/file/datasheet/AK8975.pdf
+	// https://github.com/kriswiner/MPU-9150/blob/master/MPU9150BasicAHRS.ino
+	public double[][] mAlignmentMatrixMagnetometer = AlignmentMatrixMPLMag; 				
+	public double[][] mSensitivityMatrixMagnetometer = {{0.3,0,0},{0,0.3,0},{0,0,0.3}}; 		
+	public double[][] mOffsetVectorMagnetometer = {{-5.0},{-95.0},{-260.0}};
+
 	//Default values Shimmer2
 	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
@@ -478,7 +472,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			false);
 	
 	public static final SensorDetailsRef sensorMpu9150AccelRef = new SensorDetailsRef(0x40<<(2*8), 0x40<<(2*8), GuiLabelSensors.ACCEL_MPU,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer4,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL), 
 			Arrays.asList(GuiLabelConfig.MPU9150_ACCEL_RANGE),
 			Arrays.asList(
@@ -488,7 +482,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			false);
 
 	public static final SensorDetailsRef sensorMpu9150MagRef = new SensorDetailsRef(0x20<<(2*8), 0x20<<(2*8), GuiLabelSensors.MAG_MPU,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer4,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG),
 			Arrays.asList(GuiLabelConfig.MPU9150_MAG_RATE),
 			Arrays.asList(
@@ -693,7 +687,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ObjectClusterSensorName.ACCEL_MPU_X,
 			DatabaseChannelHandles.ALTERNATIVE_ACC_X,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			// no CAL channel currently as calibration parameters are not stored anywhere
 			Arrays.asList(CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelAccelY = new ChannelDetails(
@@ -701,7 +695,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ObjectClusterSensorName.ACCEL_MPU_Y,
 			DatabaseChannelHandles.ALTERNATIVE_ACC_Y,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			// no CAL channel currently as calibration parameters are not stored anywhere
 			Arrays.asList(CHANNEL_TYPE.UNCAL));	
 	public static final ChannelDetails channelAccelZ = new ChannelDetails(
@@ -709,7 +703,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ObjectClusterSensorName.ACCEL_MPU_Z,
 			DatabaseChannelHandles.ALTERNATIVE_ACC_Z,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-			CHANNEL_UNITS.DEGREES_PER_SECOND,
+			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			// no CAL channel currently as calibration parameters are not stored anywhere
 			Arrays.asList(CHANNEL_TYPE.UNCAL));
 	
@@ -721,25 +715,22 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ObjectClusterSensorName.MAG_MPU_X,
 			DatabaseChannelHandles.ALTERNATIVE_MAG_X,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-			CHANNEL_UNITS.DEGREES_PER_SECOND,
-			// no CAL channel currently as calibration parameters are not stored anywhere
-			Arrays.asList(CHANNEL_TYPE.UNCAL));
+			CHANNEL_UNITS.U_TESLA,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelMagY = new ChannelDetails(
 			ObjectClusterSensorName.MAG_MPU_Y,
 			ObjectClusterSensorName.MAG_MPU_Y,
 			DatabaseChannelHandles.ALTERNATIVE_MAG_Y,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-			CHANNEL_UNITS.DEGREES_PER_SECOND,
-			// no CAL channel currently as calibration parameters are not stored anywhere
-			Arrays.asList(CHANNEL_TYPE.UNCAL));	
+			CHANNEL_UNITS.U_TESLA,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails channelMagZ = new ChannelDetails(
 			ObjectClusterSensorName.MAG_MPU_Z,
 			ObjectClusterSensorName.MAG_MPU_Z,
 			DatabaseChannelHandles.ALTERNATIVE_MAG_Z,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-			CHANNEL_UNITS.DEGREES_PER_SECOND,
-			// no CAL channel currently as calibration parameters are not stored anywhere
-			Arrays.asList(CHANNEL_TYPE.UNCAL));
+			CHANNEL_UNITS.U_TESLA,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
 	// MPL Quaternions 6DOF
 	public static final ChannelDetails channelQuatMpl6DofW = new ChannelDetails(
@@ -1195,9 +1186,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 
-		//TODO Vector3d belongs in 6DOF/9DOF algorithm class?
-//		Vector3d gyroscope = new Vector3d();
-		
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			//first process the data originating from the Shimmer sensor
@@ -1231,11 +1219,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				//for testing
 //				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3);
 				
-//				//TODO Vector3d belongs in 6DOF/9DOF algorithm class?
-//				gyroscope.x=gyroCalibratedData[0]*Math.PI/180;
-//				gyroscope.y=gyroCalibratedData[1]*Math.PI/180;
-//				gyroscope.z=gyroCalibratedData[2]*Math.PI/180;
-	
 				if (mEnableOntheFlyGyroOVCal){
 					mGyroXX.addValue(gyroCalibratedData[0]);
 					mGyroXY.addValue(gyroCalibratedData[1]);
@@ -1293,7 +1276,22 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 						unCalibratedMagData[2] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 					}
 				}
+				
+				double[] calData = UtilCalibration.calibrateInertialSensorData(unCalibratedMagData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+				//Add calibrated data to Object cluster
+				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_X)){
+						objectCluster.addCalData(channelDetails, calData[0], objectCluster.getIndexKeeper()-3);
+					}
+					else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_Y)){
+						objectCluster.addCalData(channelDetails, calData[1], objectCluster.getIndexKeeper()-2);
+					}
+					else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_MPU_Z)){
+						objectCluster.addCalData(channelDetails, calData[2], objectCluster.getIndexKeeper()-2);
+					}
+				}
 			}
+			
 			//UnCal + Cal Gyro_Mpu_Mpl_data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO_MPU_MPL)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -1771,8 +1769,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 		return bufferCalibrationParameters;
 	}
+	
 	private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-		
 		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer3;
 		double[][] sensitivityVectorToCompare = mSensitivityMatrixGyroscope;
 		double[][] alignmentVectorToCompare = mAlignmentMatrixGyroscope;
@@ -2561,8 +2559,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			double[][] AlignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
 			double[][] SensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
 			double[][] OffsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-			
-			
 			
 			if(packetType==GYRO_CALIBRATION_RESPONSE && checkIfDefaulGyroCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
 				mDefaultCalibrationParametersGyro = true;

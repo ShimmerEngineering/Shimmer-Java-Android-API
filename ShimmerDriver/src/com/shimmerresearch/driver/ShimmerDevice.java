@@ -2327,28 +2327,25 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return true;
 	}
 	
-	/** Method can be overwritten - as done in ShimmerPCMSS */
+	/**
+	 * Load general algorithm modules here. Method can be overwritten in order
+	 * to load paid-for algorithms - as done in ShimmerPCMSS
+	 */
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 		/*
 		 * Handle open source algorithms here
 		 *  
 		 * */
+		
+		// TODO load algorithm modules automatically from any included algorithm
+		// jars depending on licence
 	}
 
-//	//@Override
-//	protected void initializeDerivedSensors(){
-//		//insert map of algorithms here 
-//		generateMapOfAlgorithmModules();
-//			
-//		try {
-//			initializeAlgorithms();
-//		} catch (Exception e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//	}
-	
+	public Map<String,AbstractAlgorithm> getMapOfAlgorithms(){
+		return mMapOfAlgorithmModules;
+	}
+
 	protected void initializeAlgorithms() {
 		for (AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
 			try {
@@ -2367,7 +2364,52 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 	}
+
+	@Deprecated
+	public boolean doesAlgorithmAlreadyExist(AbstractAlgorithm obj){
+		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values())
+		{
+			if (aA.getAlgorithmName().equals(obj.getAlgorithmName())){
+				return true;
+			}
+		}
+		return false;
+	}
 	
+	@Deprecated
+	public void removeAlgorithm(AbstractAlgorithm aobj){
+		mMapOfAlgorithmModules.remove(aobj);
+	}
+	
+	@Deprecated
+	public void removeAlgorithm(String algoName){
+		int index=0;
+		int keepIndex=-1;
+		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
+			if (aA.getAlgorithmName().equals(algoName)){
+				keepIndex = index;
+			}
+			index++;
+		}
+		
+		if (keepIndex>=0){
+			mMapOfAlgorithmModules.remove(keepIndex);
+		}
+	}
+	
+//	//@Override
+//	protected void initializeDerivedSensors(){
+//		//insert map of algorithms here 
+//		generateMapOfAlgorithmModules();
+//			
+//		try {
+//			initializeAlgorithms();
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//	}
+//	
 //	protected void initializeAlgorithms() throws Exception{
 //		clearExtraSignalProperties();
 //		for (AbstractAlgorithm aa:mMapOfAlgorithms.values()){
@@ -2430,38 +2472,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		return ojc;
 //	}
 
-	public boolean doesAlgorithmAlreadyExist(AbstractAlgorithm obj){
-		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values())
-		{
-			if (aA.getAlgorithmName().equals(obj.getAlgorithmName())){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public void removeAlgorithm(AbstractAlgorithm aobj){
-		mMapOfAlgorithmModules.remove(aobj);
-	}
-	
-	public void removeAlgorithm(String algoName){
-		int index=0;
-		int keepIndex=-1;
-		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
-			if (aA.getAlgorithmName().equals(algoName)){
-				keepIndex = index;
-			}
-			index++;
-		}
-		
-		if (keepIndex>=0){
-			mMapOfAlgorithmModules.remove(keepIndex);
-		}
-	}
-	
-	public Map<String,AbstractAlgorithm> getMapOfAlgorithms(){
-		return mMapOfAlgorithmModules;
-	}
 	// ------------- Algorithm Code end -----------------------
 
 	

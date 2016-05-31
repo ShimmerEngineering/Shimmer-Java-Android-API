@@ -90,9 +90,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	@Deprecated
 	/** this is the objectClusterName of the Signal that the algorithm is calculated on */
-	protected String mSignalName[]; // an array because you might use multiple signals for an algorithm, note for now only single signal supported but this should be fwd compatible
+	protected String[] mSignalName = new String[1]; // an array because you might use multiple signals for an algorithm, note for now only single signal supported but this should be fwd compatible
 	@Deprecated
-	protected String mSignalFormat[];
+	protected String[] mSignalFormat = new String[1];
 	protected String mTimeStampName="";
 	protected String mTimeStampFormat="";
 	protected boolean mInitialized = false;
@@ -128,6 +128,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public HashMap<String,AlgorithmConfigOptionDetails> mConfigOptionsMap = new HashMap<String,AlgorithmConfigOptionDetails>();//Define the gui to be generated
 	public HashMap<String, AlgorithmDetails> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetails>();//Defines algorithm requirements
 	
+	//TODO remove?
 	public Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
 	public abstract Object getSettings(String componentName);
 	public abstract Object getDefaultSettings(String componentName);
