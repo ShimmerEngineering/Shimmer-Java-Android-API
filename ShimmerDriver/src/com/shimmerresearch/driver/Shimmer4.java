@@ -668,7 +668,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
 		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
 //			mShimmerRadioHWLiteProtocol.
-			startOperation(BT_STATE.CONNECTED,mNumberOfInfoMemReadsRequired);
+			startOperation(BT_STATE.CONNECTED,mNumberOfInfoMemReadsRequired-1); //minus 1 cause no read pressure
 			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes);
 		}
 	}
