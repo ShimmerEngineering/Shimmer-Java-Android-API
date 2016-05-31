@@ -136,7 +136,7 @@ import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.UtilCalibration;
 import com.shimmerresearch.sensors.UtilParseData;
 import com.shimmerresearch.sensors.SensorMPU9X50.GuiLabelConfig;
-import com.shimmerresearch.algorithms.GradDes3DOrientation.Quaternion;
+import com.shimmerresearch.algorithms.Orientation3DObject;
 
 /**
  * @author mnolan
@@ -232,6 +232,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
 		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
+// ------------------------------------------------------------------
+		public final static int ORIENTATION_9DOF = 1<<9;
+		public final static int ORIENTATION_6DOF = 1<<8;
 // ----------- Now implemented in SensorPPG -------------------------
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
@@ -246,6 +249,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
 		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
+// ------------------------------------------------------------------
+		public final static int ORIENTATION_9DOF = 1<<9;
+		public final static int ORIENTATION_6DOF = 1<<8;
 // ----------- Now implemented in SensorPPG -------------------------		
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
@@ -1443,31 +1449,30 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			//((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.ACCEL_WR) > 0) 
 			//|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0)
-
-
-
-			//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 			if (((fwType == FW_TYPE_BT)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && mOrientationEnabled )
 					||((fwType == FW_TYPE_SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && mOrientationEnabled )){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
 						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
-					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
+					//New 2016-05-31
+					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
+					//Old 2016-05-31
+//					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
 					double theta, Rx, Ry, Rz, rho;
-					rho = Math.acos(q.q1);
-					theta = rho * 2;
-					Rx = q.q2 / Math.sin(rho);
-					Ry = q.q3 / Math.sin(rho);
-					Rz = q.q4 / Math.sin(rho);
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,theta);
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Rx);
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Ry);
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Rz);
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q1);
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q2);
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q3);
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q4);
+//					rho = Math.acos(q.q1);
+//					theta = rho * 2;
+//					Rx = q.q2 / Math.sin(rho);
+//					Ry = q.q3 / Math.sin(rho);
+//					Rz = q.q4 / Math.sin(rho);
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleX());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleY());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleZ());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionW());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionX());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionY());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionZ());
 				}
 			}
 
@@ -2356,21 +2361,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (mOrientationAlgo==null){
 						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
-					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
-					double theta, Rx, Ry, Rz, rho;
-					rho = Math.acos(q.q1);
-					theta = rho * 2;
-					Rx = q.q2 / Math.sin(rho);
-					Ry = q.q3 / Math.sin(rho);
-					Rz = q.q4 / Math.sin(rho);
-					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,theta);
-					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Rx);
-					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Ry);
-					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Rz);
-					objectCluster.addData(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q1);
-					objectCluster.addData(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q2);
-					objectCluster.addData(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q3);
-					objectCluster.addData(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q4);
+					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
+					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
+					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleX());
+					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleY());
+					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleZ());
+					objectCluster.addData(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionW());
+					objectCluster.addData(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionX());
+					objectCluster.addData(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionY());
+					objectCluster.addData(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionZ());
 				}
 			}
 
@@ -2797,20 +2796,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (mOrientationAlgo==null){
 						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
-					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);					double theta, Rx, Ry, Rz, rho;
-					rho = Math.acos(q.q1);
-					theta = rho * 2;
-					Rx = q.q2 / Math.sin(rho);
-					Ry = q.q3 / Math.sin(rho);
-					Rz = q.q4 / Math.sin(rho);
-					objectCluster.addData("Axis Angle A",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,theta);
-					objectCluster.addData("Axis Angle X",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Rx);
-					objectCluster.addData("Axis Angle Y",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Ry);
-					objectCluster.addData("Axis Angle Z",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Rz);
-					objectCluster.addData("Quaternion 0",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q1);
-					objectCluster.addData("Quaternion 1",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q2);
-					objectCluster.addData("Quaternion 2",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q3);
-					objectCluster.addData("Quaternion 3",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q4);
+					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);					double theta, Rx, Ry, Rz, rho;
+					objectCluster.addData("Axis Angle A",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
+					objectCluster.addData("Axis Angle X",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleX());
+					objectCluster.addData("Axis Angle Y",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleY());
+					objectCluster.addData("Axis Angle Z",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleZ());
+					objectCluster.addData("Quaternion 0",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionW());
+					objectCluster.addData("Quaternion 1",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionX());
+					objectCluster.addData("Quaternion 2",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionY());
+					objectCluster.addData("Quaternion 3",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionZ());
 				}
 			}
 
@@ -3155,21 +3149,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (mOrientationAlgo==null){
 						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
-					Quaternion q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
-					double theta, Rx, Ry, Rz, rho;
-					rho = Math.acos(q.q1);
-					theta = rho * 2;
-					Rx = q.q2 / Math.sin(rho);
-					Ry = q.q3 / Math.sin(rho);
-					Rz = q.q4 / Math.sin(rho);
-					objectCluster.addData("Axis Angle A",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,theta);
-					objectCluster.addData("Axis Angle X",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Rx);
-					objectCluster.addData("Axis Angle Y",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Ry);
-					objectCluster.addData("Axis Angle Z",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,Rz);
-					objectCluster.addData("Quaternion 0",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q1);
-					objectCluster.addData("Quaternion 1",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q2);
-					objectCluster.addData("Quaternion 2",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q3);
-					objectCluster.addData("Quaternion 3",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.q4);
+					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
+					objectCluster.addData("Axis Angle A",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
+					objectCluster.addData("Axis Angle X",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleX());
+					objectCluster.addData("Axis Angle Y",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleY());
+					objectCluster.addData("Axis Angle Z",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleZ());
+					objectCluster.addData("Quaternion 0",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionW());
+					objectCluster.addData("Quaternion 1",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionX());
+					objectCluster.addData("Quaternion 2",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionY());
+					objectCluster.addData("Quaternion 3",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionZ());
 				}
 			}
 

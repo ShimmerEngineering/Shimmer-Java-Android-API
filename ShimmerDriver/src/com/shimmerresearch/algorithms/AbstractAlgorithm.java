@@ -118,12 +118,12 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	@Deprecated
 	protected String[] mSignalOutputUnitArray;
 	
-	protected List<ChannelDetails> mListofChannelDetails;
-	protected List<String> mOutputChannels; // list of all output channels - can be used for extracting specific metrics after processing
-	protected FILTERING_OPTION mFilteringOptions = FILTERING_OPTION.NONE;
-	protected ALGORITHM_TYPE mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
-	protected ALGORITHM_RESULT_TYPE mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
-	protected ALGORITHM_INPUT_TYPE mAlgorithmInputType = ALGORITHM_INPUT_TYPE.ALGORITHM_INPUT_TYPE_SINGLE_OBJECT_CLUSTER;
+//	public List<ChannelDetails> mListofChannelDetails;
+	public List<String> mOutputChannels; // list of all output channels - can be used for extracting specific metrics after processing
+	public FILTERING_OPTION mFilteringOptions = FILTERING_OPTION.NONE;
+	public ALGORITHM_TYPE mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
+	public ALGORITHM_RESULT_TYPE mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
+	public ALGORITHM_INPUT_TYPE mAlgorithmInputType = ALGORITHM_INPUT_TYPE.ALGORITHM_INPUT_TYPE_SINGLE_OBJECT_CLUSTER;
 		
 	public HashMap<String,AlgorithmConfigOptionDetails> mConfigOptionsMap = new HashMap<String,AlgorithmConfigOptionDetails>();//Define the gui to be generated
 	public HashMap<String, AlgorithmDetails> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetails>();//Defines algorithm requirements
@@ -271,7 +271,10 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	public List<ChannelDetails> getChannelDetails(){
-		return mListofChannelDetails;
+		if(mAlgorithmDetails!=null){
+			return mAlgorithmDetails.getChannelDetails();
+		}
+		return null;
 	}
 
 	/**
