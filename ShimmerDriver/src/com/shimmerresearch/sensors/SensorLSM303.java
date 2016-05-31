@@ -815,6 +815,23 @@ public class SensorLSM303 extends AbstractSensor{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+//		// If Shimmer name is default, update with MAC ID if available.
+//		if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
+//			setDefaultShimmerName();
+//		}
+
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
+			setDefaultLsm303dlhcAccelSensorConfig(false);
+		}
+		
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
+			setDefaultLsm303dlhcMagSensorConfig(false);
+		}
+		
+	}
 	//--------- Abstract methods implemented end --------------
 
 
@@ -1308,6 +1325,9 @@ public class SensorLSM303 extends AbstractSensor{
 		return false;
 	}	
 	//--------- Optional methods to override in Sensor Class end --------
+
+
+
 	
 	//--------- Abstract methods not implemented start --------------
 	//--------- Abstract methods not implemented end --------------

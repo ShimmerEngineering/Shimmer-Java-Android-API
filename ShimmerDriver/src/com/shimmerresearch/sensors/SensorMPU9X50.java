@@ -2606,6 +2606,27 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		
 	}
 	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		// If Shimmer name is default, update with MAC ID if available.
+//		if(ShimmerDevice.mShimmerUserAssignedName.equals(ShimmerDevice.DEFAULT_SHIMMER_NAME)){
+//			setDefaultShimmerName();
+//			}
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
+			setDefaultMpu9150GyroSensorConfig(false);
+		}
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)){
+			setDefaultMpu9150AccelSensorConfig(false);
+		}
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
+//			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+			setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
+		}
+		if(!checkIfAnyMplChannelEnabled()) {
+			setDefaultMpu9150MplSensorConfig(false);
+		}
+	}
+	
 	//--------- Optional methods to override in Sensor Class start --------	
 	/* (non-Javadoc)
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
@@ -2618,6 +2639,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return false;
 	}
 	//--------- Optional methods to override in Sensor Class end -------- 
+
 
 }
 	

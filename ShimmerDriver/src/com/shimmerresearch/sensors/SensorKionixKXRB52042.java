@@ -338,6 +338,12 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		// TODO Auto-generated method stub
+		
+	}
 	//--------- Abstract methods implemented end --------------
 
 
@@ -472,6 +478,9 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		}
 		return false;
 	}
+
+
+
 	
 	//--------- Optional methods to override in Sensor Class end --------
 }

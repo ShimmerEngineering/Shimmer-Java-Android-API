@@ -706,6 +706,12 @@ public class SensorPPG extends AbstractSensor {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		// TODO Auto-generated method stub
+		
+	}
 	//--------- Abstract methods implemented end --------------
 
 	
@@ -951,39 +957,6 @@ public class SensorPPG extends AbstractSensor {
 //				}
 			}
 	}
-	
-	//TODO 2016-05-18 feed below into sensor map classes
-		/**Automatically control internal expansion board power based on sensor map
-		 */
-////		@Override
-//		protected boolean checkIfInternalExpBrdPowerIsNeeded(){
-//
-//			if (getHardwareVersion() == HW_ID.SHIMMER_3){
-//				for(Integer channelKey:mSensorMap.keySet()) {
-//					if(mSensorMap.get(channelKey).isEnabled() && mSensorMap.get(channelKey).mSensorDetailsRef.mIntExpBoardPowerRequired) {
-//						mInternalExpPower = 1;
-//						break;
-//					}
-//					else {
-//						// Exception for Int ADC sensors 
-//						//TODO need to check HW version??
-//						if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
-//							||isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
-//							||isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
-//							||isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14)){
-//							
-//						}
-//						else {
-//							mInternalExpPower = 0;
-//						}
-//					}
-//				}
-//			}
-//			return (mInternalExpPower > 0)? true:false;
-//		}
-	
-	
-	
 	/**
 	 * @return the mPpgAdcSelectionGsrBoard
 	 */
@@ -1083,5 +1056,6 @@ public class SensorPPG extends AbstractSensor {
 		handleDummyEntriesInSensorMap(sensorMapKey, state);
 	}
 	//--------- Optional methods to override in Sensor Class end --------
+
 
 }

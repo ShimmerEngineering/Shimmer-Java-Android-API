@@ -508,6 +508,12 @@ public class ShimmerClock extends AbstractSensor {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	//--------- Optional methods to override in Sensor Class start --------
 	//--------- Optional methods to override in Sensor Class end --------

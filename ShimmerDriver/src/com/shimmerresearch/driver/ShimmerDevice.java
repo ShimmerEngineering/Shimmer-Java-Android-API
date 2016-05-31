@@ -1066,6 +1066,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			this.mTrialName = trialName;
 	}
 	
+	/**
+	 * @param mConfigTime the trialConfigTime to set
+	 */
 	public void setConfigTime(long trialConfigTime) {
 		mConfigTime = trialConfigTime;
 	}
@@ -1953,6 +1956,27 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			return listOfChannelConflicts;
 		}
 	}
+	
+	/**
+	 * Method to set force defaults for disabled sensors. Need to ensure
+	 * consistency across all configured Shimmers. Without the below, if a
+	 * Shimmer is read from and then configured without changing any of the
+	 * configuration, the configuration will not be checked. Another application
+	 * could have saved incorrect configuration to the Shimmer.
+	 * 
+	 */
+	public void checkShimmerConfigBeforeConfiguring() {
+		//1) call checkShimmerConfigBeforeConfiguring in each AbstractSensor
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.checkShimmerConfigBeforeConfiguring();
+		}
+		
+		//2) 
+		checkIfInternalExpBrdPowerIsNeeded();
+	}
+
 	
 	/**
 	 * @return a refreshed version of the current mShimmerInfoMemBytes

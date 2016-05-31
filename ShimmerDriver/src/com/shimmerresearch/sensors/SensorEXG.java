@@ -1068,6 +1068,31 @@ public class SensorEXG extends AbstractSensor{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+//		// If Shimmer name is default, update with MAC ID if available.
+//		if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
+//			setDefaultShimmerName();
+//			}
+		if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
+				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
+				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
+				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM))
+				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) ){
+			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
+			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
+			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
+			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
+			//				if(!checkIfOtherExgChannelEnabled()) {
+			
+			
+			
+//			setDefaultECGConfiguration(getSamplingRateShimmer());
+			setDefaultECGConfiguration(mMaxSetShimmerSamplingRate);
+			//				}
+		}
+	}
 
 	//-------------------- ExG Start -----------------------------------
 	
@@ -2447,6 +2472,8 @@ public class SensorEXG extends AbstractSensor{
 		updateEnabledSensorsFromExgResolution(enabledSensors);
 	}
 	//--------- Optional methods to override in Sensor Class end --------
+
+
 
 	
 	//-------------------- ExG End -----------------------------------	

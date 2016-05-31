@@ -190,6 +190,12 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 		
 	}
 
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }
