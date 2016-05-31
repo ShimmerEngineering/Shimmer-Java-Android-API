@@ -90,9 +90,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	@Deprecated
 	/** this is the objectClusterName of the Signal that the algorithm is calculated on */
-	protected String mSignalName[]; // an array because you might use multiple signals for an algorithm, note for now only single signal supported but this should be fwd compatible
+	protected String[] mSignalName = new String[1]; // an array because you might use multiple signals for an algorithm, note for now only single signal supported but this should be fwd compatible
 	@Deprecated
-	protected String mSignalFormat[];
+	protected String[] mSignalFormat = new String[1];
 	protected String mTimeStampName="";
 	protected String mTimeStampFormat="";
 	protected boolean mInitialized = false;
