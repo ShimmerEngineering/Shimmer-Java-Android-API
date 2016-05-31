@@ -17,10 +17,13 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.AbstractAlgorithm.FILTERING_OPTION;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
+import com.shimmerresearch.algorithms.OrientationModule;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
@@ -31,6 +34,7 @@ import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -2330,10 +2334,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** Method can be overwritten - as done in ShimmerPCMSS */
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
-		/*
-		 * Handle open source algorithms here
-		 *  
-		 * */
+		
+		double samplingRate = getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedPpgToHrCh = OrientationModule.getMapOfSupportedAlgorithms(mShimmerVerObject);
+		for (AlgorithmDetails algorithmDetails:mapOfSupportedPpgToHrCh.values()) {
+			OrientationModule orientationModule = new OrientationModule(algorithmDetails, samplingRate);
+			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule);
+		}
 	}
 
 //	//@Override
