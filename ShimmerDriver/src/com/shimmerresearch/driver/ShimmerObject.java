@@ -6679,7 +6679,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mConfigFileCreationFlag = state;
 	}
 	
-	//TODO 2016-05-18 feed below into sensor map classes
+	
 	@Override
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
@@ -6961,7 +6961,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	//TODO 2016-05-18 feed below into sensor map classes
+	
 	private void createSensorMapShimmer3(){
 		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 		
@@ -7390,65 +7390,68 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //--------------------------------------------------------------------------------
 	
 	//TODO 2016-05-18 feed below into sensor map classes
-	/**
-	 * Method to set force defaults for disabled sensors. Need to ensure
-	 * consistency across all configured Shimmers. Without the below, if a
-	 * Shimmer is read from and then configured without changing any of the
-	 * configuration, the configuration will not be checked. Another application
-	 * could have saved incorrect configuration to the Shimmer.
-	 * 
+	/* (non-Javadoc)
+	 * @see com.shimmerresearch.driver.ShimmerDevice#checkShimmerConfigBeforeConfiguring()
 	 */
+	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		
+
 		if (getHardwareVersion() == HW_ID.SHIMMER_3){
-			
+
 			// If Shimmer name is default, update with MAC ID if available.
 			if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
 				setDefaultShimmerName();
 			}
-			
-			//XXX-RS-LSM-SensorClass?
+
+			//XXX-RS-LSM-SensorClass
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
 				setDefaultLsm303dlhcAccelSensorConfig(false);
-			}
-			//XXX-RS-LSM-SensorClass?
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
-				setDefaultLsm303dlhcMagSensorConfig(false);
-			}
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
-				setDefaultMpu9150GyroSensorConfig(false);
-			}
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)){
-				setDefaultMpu9150AccelSensorConfig(false);
-			}
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
-				setMPU9150MagRateFromFreq(getSamplingRateShimmer());
-			}
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
-				setDefaultBmp180PressureSensorConfig(false);
-			}
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)) {
-				setDefaultGsrSensorConfig(false);
-			}
-			if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
-					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
-					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
-					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM))
-					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) ){
-//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
-//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
-//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
-//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
-//				if(!checkIfOtherExgChannelEnabled()) {
+
+				//XXX-RS-LSM-SensorClass
+				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
+					setDefaultLsm303dlhcMagSensorConfig(false);
+				}
+				//YYY-MPU-Class
+				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){ 
+					setDefaultMpu9150GyroSensorConfig(false);
+				}
+				//YYY-MPU-Class
+				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)){
+					setDefaultMpu9150AccelSensorConfig(false);
+				}
+				//YYY-MPU-Class
+				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
+					setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+				}
+				//YYY-BMP-Class
+				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
+					setDefaultBmp180PressureSensorConfig(false);
+				}
+				//YYY-GSR-Class
+				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)) {
+					setDefaultGsrSensorConfig(false);
+				}
+				//YYY-EXG-Class
+				if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
+						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
+						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
+						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM))
+						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) ){
+					//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
+					//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
+					//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
+					//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
+					//				if(!checkIfOtherExgChannelEnabled()) {
 					setDefaultECGConfiguration(getSamplingRateShimmer());
-//				}
+					//				}
+				}
+				if(!checkIfAnyMplChannelEnabled()) {
+					setDefaultMpu9150MplSensorConfig(false);
+				}
+
+				checkIfInternalExpBrdPowerIsNeeded();
+				//			checkIfMPLandDMPIsNeeded();
 			}
-			if(!checkIfAnyMplChannelEnabled()) {
-				setDefaultMpu9150MplSensorConfig(false);
-			}
-			
-			checkIfInternalExpBrdPowerIsNeeded();
-//			checkIfMPLandDMPIsNeeded();
 		}
 		
 	}
@@ -8013,12 +8016,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	
-	/**
-	 * @param mConfigTime the mConfigTime to set
-	 */
-	public void setConfigTime(long mConfigTime) {
-		this.mConfigTime = mConfigTime;
-	}
+//	/**
+//	 * @param mConfigTime the mConfigTime to set
+//	 */
+//	public void setConfigTime(long mConfigTime) {
+//		this.mConfigTime = mConfigTime;
+//	}
 
 	
 	/**

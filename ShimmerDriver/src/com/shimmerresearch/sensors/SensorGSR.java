@@ -452,6 +452,17 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		// TODO Auto-generated method stub
 		
 	}	
+	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		// If Shimmer name is default, update with MAC ID if available.
+//		if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
+//			setDefaultShimmerName();
+//		}
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)) {
+			setDefaultGsrSensorConfig(false);
+		}
+	}
 	//--------- Abstract methods implemented end --------------
 
 

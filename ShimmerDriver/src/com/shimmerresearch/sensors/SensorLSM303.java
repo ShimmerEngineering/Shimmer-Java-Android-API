@@ -487,8 +487,11 @@ public class SensorLSM303 extends AbstractSensor{
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {//XXX - What is "ShimmerDevice shimmerDevice" doing here? 
 		int idxConfigSetupByte0 =              		6; 
 		int idxConfigSetupByte2 =              		8;
-		int idxLSM303DLHCAccelCalibration =    	   94; //TODO In InfoMemLayoutShimmer3 there is a comment: "94->114" --> Should this be 114 instead?
-		int idxLSM303DLHCMagCalibration =          73;
+//		int idxLSM303DLHCAccelCalibration =    	   94; 
+//		int idxLSM303DLHCMagCalibration =          73;
+		//fix for newer firmware -> see InfomemLayoutShimmer3
+		int idxLSM303DLHCMagCalibration =   76;
+		int idxLSM303DLHCAccelCalibration = 97;
 		int bitShiftLSM303DLHCAccelSamplingRate =   4;
 		int bitShiftLSM303DLHCAccelRange =          2;
 		int bitShiftLSM303DLHCAccelLPM =            1;
@@ -820,6 +823,23 @@ public class SensorLSM303 extends AbstractSensor{
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+//		// If Shimmer name is default, update with MAC ID if available.
+//		if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
+//			setDefaultShimmerName();
+//		}
+
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
+			setDefaultLsm303dlhcAccelSensorConfig(false);
+		}
+		
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
+			setDefaultLsm303dlhcMagSensorConfig(false);
+		}
 		
 	}
 	//--------- Abstract methods implemented end --------------
@@ -1315,6 +1335,9 @@ public class SensorLSM303 extends AbstractSensor{
 		return false;
 	}	
 	//--------- Optional methods to override in Sensor Class end --------
+
+
+
 	
 	//--------- Abstract methods not implemented start --------------
 	//--------- Abstract methods not implemented end --------------

@@ -1113,7 +1113,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		super(svo);
 		setSensorName(SENSORS.MPU9X50.toString());
 	}
-
+	
+	
+	//--------- Abstract methods implemented start --------------
+	
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		//TODO populate the other channels depending on firmware version
@@ -1184,17 +1187,18 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 
-		int index = 0;
-		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
-			objectCluster.incrementIndexKeeper();
-			index = index + channelDetails.mDefaultNumBytes;
-		}
+		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+//		int index = 0;
+//		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+//			//first process the data originating from the Shimmer sensor
+//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+//			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+//			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+//			objectCluster.incrementIndexKeeper();
+//			index = index + channelDetails.mDefaultNumBytes;
+//		}
 		
 //		-----------------------Calibration Start----------------------------------
 		
@@ -1495,7 +1499,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		int idxConfigSetupByte1 = 7;
 		int idxConfigSetupByte2 = 8;
 		int idxConfigSetupByte3 = 9;
-		int idxMPU9150GyroCalibration = 52;
+//		int idxMPU9150GyroCalibration = 52;
+		//fix for newer firmware -> see InfomemLayoutShimmer3
+		int idxMPU9150GyroCalibration =     55;
 		//Config Byte1
 		int bitShiftMPU9150AccelGyroSamplingRate =	0;
 		int maskMPU9150AccelGyroSamplingRate = 0xFF;
@@ -1752,81 +1758,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return returnValue;
 	}
 	
-	public byte[] generateCalParamGyroscope(){
-		// MPU9150 Gyroscope Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[21];
-		// offsetVector -> buffer offset = 0
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
-		}
-		// sensitivityMatrix -> buffer offset = 6
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
-		}
-		// alignmentMatrix -> buffer offset = 12
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
-		}
-		return bufferCalibrationParameters;
-	}
 	
-	private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer3;
-		double[][] sensitivityVectorToCompare = mSensitivityMatrixGyroscope;
-		double[][] alignmentVectorToCompare = mAlignmentMatrixGyroscope;
-		
-		if(getHardwareVersion()==HW_ID.SHIMMER_3){
-			if (mGyroRange==0){
-				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
-
-			} else if (mGyroRange==1){
-				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
-
-			} else if (mGyroRange==2){
-				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
-
-			} else if (mGyroRange==3){
-				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-			}
-			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
-			offsetVectorToCompare = OffsetVectorGyroShimmer3;
-		}
-		for(int i=0;i<=2;i++){
-			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
-		}
-		
-		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
-		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
-		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
-		
-		if(alignmentPass&&offsetPass&&sensitivityPass){
-			return true;
-		}
-		return false;
-	}
-	
-	private void setDefaultCalibrationShimmer3Gyro() {
-		mDefaultCalibrationParametersGyro = true;
-		if (mGyroRange==0){
-			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
-
-		} else if (mGyroRange==1){
-			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
-
-		} else if (mGyroRange==2){
-			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
-
-		} else if (mGyroRange==3){
-			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-		}
-		mAlignmentMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixGyroShimmer3);
-		mOffsetVectorGyroscope = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorGyroShimmer3);
-	}
-
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
@@ -2148,6 +2080,81 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 	}
 	
+	public byte[] generateCalParamGyroscope(){
+		// MPU9150 Gyroscope Calibration Parameters
+		byte[] bufferCalibrationParameters = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
+			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
+			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
+			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
+		}
+		return bufferCalibrationParameters;
+	}
+	
+	private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
+		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer3;
+		double[][] sensitivityVectorToCompare = mSensitivityMatrixGyroscope;
+		double[][] alignmentVectorToCompare = mAlignmentMatrixGyroscope;
+		
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if (mGyroRange==0){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
+
+			} else if (mGyroRange==1){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
+
+			} else if (mGyroRange==2){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
+
+			} else if (mGyroRange==3){
+				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
+			}
+			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
+			offsetVectorToCompare = OffsetVectorGyroShimmer3;
+		}
+		for(int i=0;i<=2;i++){
+			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
+		}
+		
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+		
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
+	}
+	
+	private void setDefaultCalibrationShimmer3Gyro() {
+		mDefaultCalibrationParametersGyro = true;
+		if (mGyroRange==0){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
+
+		} else if (mGyroRange==1){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
+
+		} else if (mGyroRange==2){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
+
+		} else if (mGyroRange==3){
+			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
+		}
+		mAlignmentMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixGyroShimmer3);
+		mOffsetVectorGyroscope = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorGyroShimmer3);
+	}
+	
 	private boolean checkIfAMpuGyroOrAccelEnabled(){
 		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)) {
 			return true;
@@ -2164,7 +2171,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}	
 	
 	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
-		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
+		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 
+				|| mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorMap.keySet().size()>0){
 				
 				for(int key:SensorMPU9X50.mListOfMplChannels){
@@ -2182,7 +2190,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 			
 	protected boolean checkIfAnyMplChannelEnabled(){
-		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
+		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 
+				|| mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorMap.keySet().size()>0){
 				
 				for(int key:SensorMPU9X50.mListOfMplChannels){
@@ -2551,6 +2560,27 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		
 	}
 	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		// If Shimmer name is default, update with MAC ID if available.
+//		if(ShimmerDevice.mShimmerUserAssignedName.equals(ShimmerDevice.DEFAULT_SHIMMER_NAME)){
+//			setDefaultShimmerName();
+//			}
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
+			setDefaultMpu9150GyroSensorConfig(false);
+		}
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)){
+			setDefaultMpu9150AccelSensorConfig(false);
+		}
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
+//			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+			setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
+		}
+		if(!checkIfAnyMplChannelEnabled()) {
+			setDefaultMpu9150MplSensorConfig(false);
+		}
+	}
+	
 	//--------- Optional methods to override in Sensor Class start --------	
 	/* (non-Javadoc)
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
@@ -2563,6 +2593,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return false;
 	}
 	//--------- Optional methods to override in Sensor Class end -------- 
+
 
 }
 	

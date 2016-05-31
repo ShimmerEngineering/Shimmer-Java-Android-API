@@ -379,6 +379,18 @@ public class SensorBMP180 extends AbstractSensor {
 		}
 	}
 	
+
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+//		// If Shimmer name is default, update with MAC ID if available.
+//		if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
+//			setDefaultShimmerName();
+//		}	
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
+			setDefaultBmp180PressureSensorConfig(false);
+		}
+	}
+	
 //	@Override
 //	public List<String> generateListOfConfigOptionKeysAssociated(ShimmerVerObject svo) {
 //		return mListOfConfigOptionKeysAssociated = Arrays.asList(
@@ -525,6 +537,8 @@ public class SensorBMP180 extends AbstractSensor {
 		return pressTempMD;
 	}
 	//--------- Sensor specific methods end --------------
+
+
 
 
 

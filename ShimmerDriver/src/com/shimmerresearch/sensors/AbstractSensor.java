@@ -61,6 +61,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void generateSensorMap(ShimmerVerObject svo);
 	public abstract void generateConfigOptionsMap(ShimmerVerObject svo);
 	public abstract void generateSensorGroupMapping(ShimmerVerObject svo);
+	public abstract void checkShimmerConfigBeforeConfiguring();
 
 	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
 	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimestamp);

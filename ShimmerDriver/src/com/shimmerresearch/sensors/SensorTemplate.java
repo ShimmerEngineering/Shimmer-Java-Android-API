@@ -289,6 +289,14 @@ public class SensorTemplate extends AbstractSensor{
 				// TODO Auto-generated method stub
 				
 			}
+
+
+
+			@Override
+			public void checkShimmerConfigBeforeConfiguring() {
+				// TODO Auto-generated method stub
+				
+			}
 			
 	
 			

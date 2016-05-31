@@ -261,7 +261,9 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
-		int idxAnalogAccelCalibration = 31;
+//		int idxAnalogAccelCalibration = 31;
+		//fix for newer firmware -> see InfomemLayoutShimmer3
+		int idxAnalogAccelCalibration =		34;
 		int lengthGeneralCalibrationBytes = 21;
 		
 		//Accel Calibration Parameters
@@ -341,6 +343,12 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -478,6 +486,9 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		}
 		return false;
 	}
+
+
+
 	
 	//--------- Optional methods to override in Sensor Class end --------
 }

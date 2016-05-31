@@ -216,6 +216,12 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		
 	}
 
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	//--------- Optional methods to override in Sensor Class start --------
 	//--------- Optional methods to override in Sensor Class end --------
 
