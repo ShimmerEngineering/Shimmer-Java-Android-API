@@ -720,6 +720,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 				
 				if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE 
 						|| currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_SDBT_COMMAND_VALUE) {
+					mByteArrayOutputStream.reset();
 					mIsStreaming=true;
 					if(currentCommand==LiteProtocolInstructionSet.InstructionsSet.START_SDBT_COMMAND_VALUE){
 						mIsSDLogging = true;
@@ -735,7 +736,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 						mIsSDLogging=false;
 						//logAndStreamStatusChanged();
 					}
-					
+					mByteArrayOutputStream = new ByteArrayOutputStream();
 					byteStack.clear();
 
 					try {

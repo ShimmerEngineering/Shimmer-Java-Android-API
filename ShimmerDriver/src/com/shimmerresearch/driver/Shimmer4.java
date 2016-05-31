@@ -428,8 +428,6 @@ public class Shimmer4 extends ShimmerDevice {
 					createInfoMemLayout();
 					setBluetoothRadioState(BT_STATE.CONNECTING);
 					readInfoMem();
-					byte[] instructionBuffer = {(byte) LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE};
-					mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionBuffer);
 				} else if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
 					// Get data length to read
 					int lengthToRead = responseBytes.length-1;
@@ -596,6 +594,9 @@ public class Shimmer4 extends ShimmerDevice {
 			}
 //			utilDock.consolePrintLn(mDockID + " - InfoMem Configuration Read = SUCCESS");
 		}
+		//since current infomem doesnt have pressure coefficient auto read it
+		byte[] instructionBuffer = {(byte) LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE};
+		mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionBuffer);
 	}
 	
 	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
