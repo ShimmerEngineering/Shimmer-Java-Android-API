@@ -1,8 +1,11 @@
 package com.shimmerresearch.bluetooth;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.comms.radioProtocol.ProtocolListener;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
@@ -66,6 +69,29 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 	}
 	
 	public void startSDLogging(){
+		
+	}
+	
+	/**Could be used by InfoMem or Expansion board memory
+	 * @param command
+	 * @param address
+	 * @param infoMemBytes
+	 */
+	public void writeMemCommand(int command, int address, byte[] infoMemBytes) {
+			
+			byte[] memLengthToWrite = new byte[]{(byte) infoMemBytes.length};
+			byte[] memAddressToWrite = ByteBuffer.allocate(2).putShort((short)(address&0xFFFF)).array();
+			ArrayUtils.reverse(memAddressToWrite);
+
+			// TODO check I'm not missing the last two bytes here because the mem
+			// address length is not being included in the length field
+			byte[] instructionBuffer = new byte[1 + memLengthToWrite.length + memAddressToWrite.length + infoMemBytes.length];
+	    	instructionBuffer[0] = (byte)command;
+			System.arraycopy(memLengthToWrite, 0, instructionBuffer, 1, memLengthToWrite.length);
+			System.arraycopy(memAddressToWrite, 0, instructionBuffer, 1 + memLengthToWrite.length, memAddressToWrite.length);
+			System.arraycopy(infoMemBytes, 0, instructionBuffer, 1 + memLengthToWrite.length + memAddressToWrite.length, infoMemBytes.length);
+			
+			mRadioProtocol.writeInstruction(instructionBuffer);
 		
 	}
 	

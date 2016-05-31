@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -52,6 +53,16 @@ public class Shimmer4 extends ShimmerDevice {
 	private boolean mFirstPacketParsed;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	private int mNumberOfInfoMemReadsRequired = 3;
+	/**
+	 * LogAndStream will try to recreate the SD config. file for each block of
+	 * InfoMem that is written - need to give it time to do so.
+	 */
+	private static final int DELAY_BETWEEN_INFOMEM_WRITES = 100;
+	/** Delay to allow LogAndStream to create SD config. file and reinitialise */
+	private static final int DELAY_AFTER_INFOMEM_WRITE = 500;
+	
+	
+	private int mNumOfInfoMemSetCmds;
 	public Shimmer4() {
 		// TODO Auto-generated constructor stub
 	}
@@ -470,6 +481,15 @@ public class Shimmer4 extends ShimmerDevice {
 					
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.SET_SENSORS_COMMAND_VALUE){
 					readInfoMem();
+				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.SET_INFOMEM_COMMAND_VALUE){
+					mNumOfInfoMemSetCmds -= 1;
+					if(mNumOfInfoMemSetCmds==0){
+						delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
+						readInfoMem();
+					}
+					else {
+						delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
+					}
 				}
 			}
 
@@ -489,6 +509,44 @@ public class Shimmer4 extends ShimmerDevice {
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
 			//mShimmerRadio.actionSettingResolver(actionSetting);
 		}
+	}
+	
+	public void writeInfoMem(int startAddress, byte[] buf){
+		this.mNumOfInfoMemSetCmds  = 0;
+		
+		if(this.getFirmwareVersionCode()>=6){
+			int address = startAddress;
+			if (buf.length > (mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
+//				err = ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE;
+//				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_SET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE);
+//				throw(de);
+			} 
+			else {
+				int currentStartAddr = startAddress;
+				int currentPacketNumBytes;
+				int numBytesRemaining = buf.length;
+				int currentBytePointer = 0;
+				int maxPacketSize = 128;
+
+				while (numBytesRemaining > 0) {
+					if (numBytesRemaining > maxPacketSize) {
+						currentPacketNumBytes = maxPacketSize;
+					} else {
+						currentPacketNumBytes = numBytesRemaining;
+					}
+
+					byte[] infoSegBuf = Arrays.copyOfRange(buf, currentBytePointer, currentBytePointer + currentPacketNumBytes);
+
+					mShimmerRadioHWLiteProtocol.writeMemCommand((byte)LiteProtocolInstructionSet.InstructionsSet.SET_INFOMEM_COMMAND_VALUE, currentStartAddr, infoSegBuf);
+					mNumOfInfoMemSetCmds += 1;
+
+					currentStartAddr += currentPacketNumBytes;
+					numBytesRemaining -= currentPacketNumBytes;
+					currentBytePointer += currentPacketNumBytes;
+				}
+			}
+		}
+		
 	}
 	
 	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
@@ -600,6 +658,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
 		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
 //			mShimmerRadioHWLiteProtocol.
+			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes);
 		}
 	}
 
@@ -670,6 +729,19 @@ public class Shimmer4 extends ShimmerDevice {
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject2);
 		if (getBluetoothRadioState()==BT_STATE.CONNECTING){
 			setBluetoothRadioState(BT_STATE.CONNECTED);
+		}
+	}
+	
+	/**
+	 * Due to the nature of the Bluetooth SPP stack a delay has been added to
+	 * ensure the buffer is filled before it is read
+	 * 
+	 */
+	private void delayForBtResponse(long millis){
+		try {
+			Thread.sleep(millis);	
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }
