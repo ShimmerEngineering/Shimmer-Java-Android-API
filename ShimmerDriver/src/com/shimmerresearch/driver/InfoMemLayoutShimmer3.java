@@ -508,7 +508,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,8,68))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,3,17))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.BTSTREAM,0,6,0))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,-1,-1,-1))) {
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,FW_ID.ANY_VERSION,FW_ID.ANY_VERSION,FW_ID.ANY_VERSION))) {
 			idxDerivedSensors0 =		    31;
 			idxDerivedSensors1 =		    32;
 			idxDerivedSensors2 =		    33;
@@ -520,14 +520,14 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 
 		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,11,3))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,5,12))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,-1,-1,-1))) {
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,FW_ID.ANY_VERSION,FW_ID.ANY_VERSION,FW_ID.ANY_VERSION))) {
 			maskShowRwcErrorLeds =	 		0x01;
 		}
 		
 		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,11,5))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,5,16))
 				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.BTSTREAM,0,7,4))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,-1,-1,-1))) {
+				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,FW_ID.ANY_VERSION,FW_ID.ANY_VERSION,FW_ID.ANY_VERSION))) {
 
 			MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
 			MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
