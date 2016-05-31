@@ -36,8 +36,8 @@ public class OrientationModule extends AbstractAlgorithm{
 	private Vector3d gyroValues;
 	private Vector3d magValues;
 	
-	public static final String ORIENTATION_9DOF = "9DoF Orientation"; //move to configuration??
-	public static final String ORIENTATION_6DOF = "6DoF Orientation"; //move to configuration??
+//	public static final String ORIENTATION_9DOF = "9DoF Orientation"; //move to configuration??
+//	public static final String ORIENTATION_6DOF = "6DoF Orientation"; //move to configuration??
 	
 	public static final String ORIENTATION_9DOF_LN = "LN_Acc_9DoF"; //move to configuration??
 	public static final String ORIENTATION_6DOF_LN = "LN_Acc_6DoF"; //move to configuration??
@@ -53,9 +53,7 @@ public class OrientationModule extends AbstractAlgorithm{
 //	public static AlgorithmDetails algo6DoFOrientation_WR_Acc;
 	public static List<ShimmerVerObject> mListSVO = new ArrayList<ShimmerVerObject>(); 
 	
-	GradDes3DOrientation orientation9DoFAlgorirthm;
-	GradDes3DOrientation6DoF orientation6DoFAlgorithm;
-	Object orientationAlgorithm;
+	transient Object orientationAlgorithm;
 	
 	double sampleRate;
 	String accelerometerSensor;
@@ -148,7 +146,7 @@ public class OrientationModule extends AbstractAlgorithm{
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-						ORIENTATION_9DOF, 
+						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
 						BTStreamDerivedSensors.ORIENTATION_9DOF, 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
@@ -166,7 +164,7 @@ public class OrientationModule extends AbstractAlgorithm{
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-						ORIENTATION_9DOF, 
+						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
 						BTStreamDerivedSensors.ORIENTATION_9DOF, 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
@@ -181,7 +179,7 @@ public class OrientationModule extends AbstractAlgorithm{
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-						ORIENTATION_6DOF, 
+						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
 						BTStreamDerivedSensors.ORIENTATION_6DOF, 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
@@ -195,7 +193,7 @@ public class OrientationModule extends AbstractAlgorithm{
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-						ORIENTATION_6DOF, 
+						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
 						BTStreamDerivedSensors.ORIENTATION_6DOF, 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
