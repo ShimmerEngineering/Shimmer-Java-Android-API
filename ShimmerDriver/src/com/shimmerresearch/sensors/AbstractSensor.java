@@ -388,8 +388,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	
-	//--------- Optional methods to override in sensor class start --------
-	
+	//--------- Optional methods to override in Sensor Class start --------
 	/**
 	 * Checks a specific sensor class to see if it is using it's default
 	 * calibration parameters. Used, for example, in SensorLSM, SensorMPU and
@@ -426,13 +425,7 @@ public abstract class AbstractSensor implements Serializable{
 		//NOT USED IN THIS CLASS
     	//USED in {SensorPPG}		
 	}
-	
-	
-	public void handleSpecialCaseRefreshEnabledSensorsFromSensorMap(){
-	    // NOT USED IN THIS CLASS
-	}
-	
-	//--------- Optional methods to override in sensor class end -------- 
+	//--------- Optional methods to override in Sensor Class end -------- 
 	
 
 

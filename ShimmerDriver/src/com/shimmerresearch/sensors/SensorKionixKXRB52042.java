@@ -460,7 +460,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 
 	
-	//--------- Optional methods to override in sensor class start --------
+	//--------- Optional methods to override in Sensor Class start --------
 	
 	/* (non-Javadoc)
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
@@ -473,5 +473,5 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		return false;
 	}
 	
-	//--------- Optional methods to override in sensor class end -------- 
+	//--------- Optional methods to override in Sensor Class end --------
 }

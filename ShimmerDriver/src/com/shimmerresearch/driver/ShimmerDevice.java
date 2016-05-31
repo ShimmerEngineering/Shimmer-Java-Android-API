@@ -733,144 +733,197 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	// --------------- Get/Set Methods End --------------------------
 
 	public boolean checkIfVersionCompatible(List<ShimmerVerObject> listOfCompatibleVersionInfo) {
-		
-		//TODO new way below isn't working
-//		if(listOfCompatibleVersionInfo == null) {
-//			return true;
-//		}
-//		
-//		for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo) {
-//			
-////			int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
-////			int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
-////
-////			if(hwIdToUse==ANY_VERSION ^ fwIdToUse==ANY_VERSION){
-////				if(hwIdToUse==ANY_VERSION){
-////					hwIdToUse = getHardwareVersion();
-////				}
-////				else if(fwIdToUse==ANY_VERSION){
-////					fwIdToUse = getFirmwareIdentifier();
-////				}
-////			}
-//
-//			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
-//				if(getExpansionBoardId()!=compatibleVersionInfo.mShimmerExpansionBoardId) {
-//					return false;
-//				}
-//			}
-//			
-//			if(isThisVerCompatibleWith( 
-//					compatibleVersionInfo.mHardwareVersion,
-//					compatibleVersionInfo.mFirmwareIdentifier, 
-//					compatibleVersionInfo.mFirmwareVersionMajor, 
-//					compatibleVersionInfo.mFirmwareVersionMinor, 
-//					compatibleVersionInfo.mFirmwareVersionInternal)){
-//				return true;
-//			}
-//		}
-//		return false;
-		
-		if(listOfCompatibleVersionInfo == null) {
-			return true;
-		}
-		
-		for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo) {
 
-			boolean compatible = true;
-			
-			boolean checkHardwareVersion = false;
-			boolean checkExpansionBoardId = false;
-			boolean checkFirmwareIdentifier = false;
-			boolean checkFirmwareVersionMajor = false;
-			boolean checkFirmwareVersionMinor = false;
-			boolean checkFirmwareVersionInternal = false;
-			
-			if(compatibleVersionInfo.mHardwareVersion!=ANY_VERSION) {
-				checkHardwareVersion = true;
-			}
-			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
-				checkExpansionBoardId = true;
-			}
-			if(compatibleVersionInfo.mFirmwareIdentifier!=ANY_VERSION) {
-				checkFirmwareIdentifier = true;
-			}
-			if(compatibleVersionInfo.mFirmwareVersionMajor!=ANY_VERSION) {
-				checkFirmwareVersionMajor = true;
-			}
-			if(compatibleVersionInfo.mFirmwareVersionMinor!=ANY_VERSION) {
-				checkFirmwareVersionMinor = true;
-			}
-			if(compatibleVersionInfo.mFirmwareVersionInternal!=ANY_VERSION) {
-				checkFirmwareVersionInternal = true;
-			}
-			
-			if((compatible)&&(checkHardwareVersion)) {
-				if(getHardwareVersion() != compatibleVersionInfo.mHardwareVersion) {
-					compatible = false;
-				}
-			}
-			if((compatible)&&(checkExpansionBoardId)) {
-				if(getExpansionBoardId() != compatibleVersionInfo.mShimmerExpansionBoardId) {
-					compatible = false;
-				}
-			}
-//			if((compatible)&&(checkFirmwareIdentifier)) {
-//				if(getFirmwareIdentifier() != compatibleVersionInfo.getFirmwareIdentifier()) {
-//					compatible = false;
-//				}
-//			}
-			
-//			if((compatible)&&(checkFirmwareVersionMajor)) {
-//				if(getFirmwareVersionMajor() < compatibleVersionInfo.getFirmwareVersionMajor()) {
-//					compatible = false;
-//				}
-//				if((compatible)&&(checkFirmwareVersionMinor)) {
-//					if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
-//						compatible = false;
-//					}
-//				}
-//				if((compatible)&&(checkFirmwareVersionInternal)) {
-//					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-//						compatible = false;
-//					}
-//				}
-//			}
-//			else if((compatible)&&(checkFirmwareVersionMinor)) {
-//				if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
-//					compatible = false;
-//				}
-//				if((compatible)&&(checkFirmwareVersionInternal)) {
-//					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-//						compatible = false;
-//					}
-//				}
-//			}
-//			else if((compatible)&&(checkFirmwareVersionInternal)) {
-//				if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
-//					compatible = false;
-//				}
-//			}
-			
-			if(checkFirmwareVersionMajor){
-				// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored
-				if((compatible)&&(!UtilShimmer.compareVersions(getFirmwareIdentifier(), 
-						getFirmwareVersionMajor(), 
-						getFirmwareVersionMinor(), 
-						getFirmwareVersionInternal(), 
-						compatibleVersionInfo.mFirmwareIdentifier, 
-						compatibleVersionInfo.mFirmwareVersionMajor, 
-						compatibleVersionInfo.mFirmwareVersionMinor, 
-						compatibleVersionInfo.mFirmwareVersionInternal))){
-					compatible = false;
-				}
-			}
-			
-			if(compatible) {
+		boolean newWay = true;
+
+		//RS (31/5/2016) - trying new way
+		if(newWay){
+
+			if(listOfCompatibleVersionInfo == null) {
 				return true;
 			}
+
+			//RS (31/5/2016) - trying new way
+			for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo){
+				int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
+				int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
+
+//				if(hwIdToUse==ANY_VERSION ^ fwIdToUse==ANY_VERSION){
+					if(hwIdToUse==ANY_VERSION){
+						hwIdToUse = getHardwareVersion();
+					}
+					if(fwIdToUse==ANY_VERSION){
+						fwIdToUse = getFirmwareIdentifier();
+					}
+//				}
+
+				
+				if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
+					if(getExpansionBoardId()!=compatibleVersionInfo.mShimmerExpansionBoardId) {
+						return false;
+					}
+				}
+
+				if(isThisVerCompatibleWith( 
+						hwIdToUse,
+						fwIdToUse, 
+						compatibleVersionInfo.mFirmwareVersionMajor, 
+						compatibleVersionInfo.mFirmwareVersionMinor, 
+						compatibleVersionInfo.mFirmwareVersionInternal)){
+					return true;
+				}
+			}
+			return false;
 		}
-		return false;
+
+		//RS (30/5/2016) - old way
+		else{
+			//TODO new way below isn't working
+			//			if(listOfCompatibleVersionInfo == null) {
+			//				return true;
+			//			}
+			//			
+			//			for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo) {
+			//				
+			////				int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
+			////				int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
+			////
+			////				if(hwIdToUse==ANY_VERSION ^ fwIdToUse==ANY_VERSION){
+			////					if(hwIdToUse==ANY_VERSION){
+			////						hwIdToUse = getHardwareVersion();
+			////					}
+			////					else if(fwIdToUse==ANY_VERSION){
+			////						fwIdToUse = getFirmwareIdentifier();
+			////					}
+			////				}
+			//
+			//				if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
+			//					if(getExpansionBoardId()!=compatibleVersionInfo.mShimmerExpansionBoardId) {
+			//						return false;
+			//					}
+			//				}
+			//				
+			//				if(isThisVerCompatibleWith( 
+			//						compatibleVersionInfo.mHardwareVersion,
+			//						compatibleVersionInfo.mFirmwareIdentifier, 
+			//						compatibleVersionInfo.mFirmwareVersionMajor, 
+			//						compatibleVersionInfo.mFirmwareVersionMinor, 
+			//						compatibleVersionInfo.mFirmwareVersionInternal)){
+			//					return true;
+			//				}
+			//			}
+			//			return false;
+
+
+			if(listOfCompatibleVersionInfo == null) {
+				return true;
+			}
+
+			for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo) {
+
+				boolean compatible = true;
+
+				boolean checkHardwareVersion = false;
+				boolean checkExpansionBoardId = false;
+				boolean checkFirmwareIdentifier = false;
+				boolean checkFirmwareVersionMajor = false;
+				boolean checkFirmwareVersionMinor = false;
+				boolean checkFirmwareVersionInternal = false;
+
+				if(compatibleVersionInfo.mHardwareVersion!=ANY_VERSION) {
+					checkHardwareVersion = true;
+				}
+				if(compatibleVersionInfo.mShimmerExpansionBoardId!=ANY_VERSION) {
+					checkExpansionBoardId = true;
+				}
+				if(compatibleVersionInfo.mFirmwareIdentifier!=ANY_VERSION) {
+					checkFirmwareIdentifier = true;
+				}
+				if(compatibleVersionInfo.mFirmwareVersionMajor!=ANY_VERSION) {
+					checkFirmwareVersionMajor = true;
+				}
+				if(compatibleVersionInfo.mFirmwareVersionMinor!=ANY_VERSION) {
+					checkFirmwareVersionMinor = true;
+				}
+				if(compatibleVersionInfo.mFirmwareVersionInternal!=ANY_VERSION) {
+					checkFirmwareVersionInternal = true;
+				}
+
+				if((compatible)&&(checkHardwareVersion)) {
+					if(getHardwareVersion() != compatibleVersionInfo.mHardwareVersion) {
+						compatible = false;
+					}
+				}
+				if((compatible)&&(checkExpansionBoardId)) {
+					if(getExpansionBoardId() != compatibleVersionInfo.mShimmerExpansionBoardId) {
+						compatible = false;
+					}
+				}
+				//				if((compatible)&&(checkFirmwareIdentifier)) {
+				//					if(getFirmwareIdentifier() != compatibleVersionInfo.getFirmwareIdentifier()) {
+				//						compatible = false;
+				//					}
+				//				}
+
+				//				if((compatible)&&(checkFirmwareVersionMajor)) {
+				//					if(getFirmwareVersionMajor() < compatibleVersionInfo.getFirmwareVersionMajor()) {
+				//						compatible = false;
+				//					}
+				//					if((compatible)&&(checkFirmwareVersionMinor)) {
+				//						if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
+				//							compatible = false;
+				//						}
+				//					}
+				//					if((compatible)&&(checkFirmwareVersionInternal)) {
+				//						if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
+				//							compatible = false;
+				//						}
+				//					}
+				//				}
+				//				else if((compatible)&&(checkFirmwareVersionMinor)) {
+				//					if(getFirmwareVersionMinor() < compatibleVersionInfo.getFirmwareVersionMinor()) {
+				//						compatible = false;
+				//					}
+				//					if((compatible)&&(checkFirmwareVersionInternal)) {
+				//						if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
+				//							compatible = false;
+				//						}
+				//					}
+				//				}
+				//				else if((compatible)&&(checkFirmwareVersionInternal)) {
+				//					if(getFirmwareVersionInternal() < compatibleVersionInfo.getFirmwareVersionInternal()) {
+				//						compatible = false;
+				//					}
+				//				}
+
+				if(checkFirmwareVersionMajor){
+					// Using the tree structure below each of the FW Major, Minor or Internal Release variables can be ignored
+					if((compatible)&&(!UtilShimmer.compareVersions(getFirmwareIdentifier(), 
+							getFirmwareVersionMajor(), 
+							getFirmwareVersionMinor(), 
+							getFirmwareVersionInternal(), 
+							compatibleVersionInfo.mFirmwareIdentifier, 
+							compatibleVersionInfo.mFirmwareVersionMajor, 
+							compatibleVersionInfo.mFirmwareVersionMinor, 
+							compatibleVersionInfo.mFirmwareVersionInternal))){
+						compatible = false;
+					}
+				}
+
+				if(compatible) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 	}
+		
+
+
+		
+		
+
 
 	
 	public InfoMemLayout getInfoMemLayout(){

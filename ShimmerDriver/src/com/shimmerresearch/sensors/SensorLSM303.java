@@ -1292,8 +1292,7 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 
-	//--------- Optional methods to override in sensor class start --------
-	
+	//--------- Optional methods to override in Sensor Class start --------
 	/* (non-Javadoc)
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
 	 */
@@ -1306,9 +1305,8 @@ public class SensorLSM303 extends AbstractSensor{
 			return isUsingDefaultMagParam();
 		}
 		return false;
-	}
-	
-	//--------- Optional methods to override in sensor class end --------
+	}	
+	//--------- Optional methods to override in Sensor Class end --------
 	
 	//--------- Abstract methods not implemented start --------------
 	//--------- Abstract methods not implemented end --------------
