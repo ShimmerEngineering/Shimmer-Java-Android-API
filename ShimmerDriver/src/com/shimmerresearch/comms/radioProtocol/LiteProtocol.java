@@ -541,6 +541,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 				//endregion --------- Process while streaming --------- 
 				} catch (DeviceException e) {
 					// TODO Auto-generated catch block
+					stop=true;
 					e.printStackTrace();
 				}
 			} //End While loop

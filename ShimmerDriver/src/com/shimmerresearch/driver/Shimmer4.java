@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
@@ -20,6 +23,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -40,14 +44,25 @@ public class Shimmer4 extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 6916261534384275804L;
 	
-	public transient ShimmerRadioProtocol mShimmerRadioHWLiteProtocol = null;
+	public ShimmerRadioProtocol mShimmerRadioHWLiteProtocol = null;
 
 	byte[] mInfoMemBuffer;
 	private int mCurrentInfoMemAddress = 0;
 	private int mCurrentInfoMemLengthToRead = 0;
 	private double mOffsetFirstTime;
 	private boolean mFirstPacketParsed;
+	public BluetoothProgressReportPerDevice progressReportPerDevice;
+	private int mNumberOfInfoMemReadsRequired = 3;
+	/**
+	 * LogAndStream will try to recreate the SD config. file for each block of
+	 * InfoMem that is written - need to give it time to do so.
+	 */
+	private static final int DELAY_BETWEEN_INFOMEM_WRITES = 100;
+	/** Delay to allow LogAndStream to create SD config. file and reinitialise */
+	private static final int DELAY_AFTER_INFOMEM_WRITE = 500;
 	
+	
+	private int mNumOfInfoMemSetCmds;
 	public Shimmer4() {
 		// TODO Auto-generated constructor stub
 	}
@@ -352,12 +367,12 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	private void initializeRadio(){
+		mIsInitialised = false;
 		if (mShimmerRadioHWLiteProtocol!=null){ // the radio instance should be declared on a higher level and not in this class
 			mShimmerRadioHWLiteProtocol.setRadioListener(new RadioListener(){
 
 			@Override
 			public void connected() {
-				setBluetoothRadioState(BT_STATE.CONNECTING);
 				// TODO Auto-generated method stub
 				byte[] instructionFW = {LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
@@ -407,13 +422,16 @@ public class Shimmer4 extends ShimmerDevice {
 					int firmwareVersionInternal=(int)(responseBytes[6]&0xFF);
 					ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 					setShimmerVersionObject(shimmerVerObject);
-					
+					if (firmwareIdentifier==FW_ID.LOGANDSTREAM){
+						mNumberOfInfoMemReadsRequired = 4;
+					}
 					System.out.println("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
 					System.out.println("FW Version Response Received: " + getFirmwareVersionParsed());
 				} else if ((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE){
 					setHardwareVersion(responseBytes[1]);
 					System.out.println("Shimmer Version Response Received. HW Code: " + getHardwareVersion());
 					createInfoMemLayout();
+					setBluetoothRadioState(BT_STATE.CONNECTING);
 					readInfoMem();
 					byte[] instructionBuffer = {(byte) LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE};
 					mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionBuffer);
@@ -430,13 +448,21 @@ public class Shimmer4 extends ShimmerDevice {
 					if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 						setShimmerInfoMemBytes(mInfoMemBuffer);
 						infoMemByteArrayParse(mInfoMemBuffer);
-						String comPort = getComPort();
-						mIsInitialised = true;
-						setBluetoothRadioState(BT_STATE.CONNECTED);
-						CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_FULLY_INITIALIZED, mMacIdFromUart, comPort);
-						sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+						if (getBluetoothRadioState()==BT_STATE.CONNECTED){
+							isReadyForStreaming();
+						}
+					}
+					if (getBluetoothRadioState()==BT_STATE.CONNECTING){
+						int numofIns = mShimmerRadioHWLiteProtocol.mRadioProtocol.getListofInstructions().size();
+						sendProgressReport(new BluetoothProgressReportPerCmd(0, numofIns, getMacId(), getComPort()));
 					}
 				} else{
+					if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE) {
+						if (getBluetoothRadioState()==BT_STATE.CONNECTING){
+							int numofIns = mShimmerRadioHWLiteProtocol.mRadioProtocol.getListofInstructions().size();
+							sendProgressReport(new BluetoothProgressReportPerCmd(0, numofIns, getMacId(), getComPort()));
+						}
+					}
 					System.out.println("POSSIBLE_SENSOR_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseBytes));
 					for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 						abstractSensor.processResponse(responseBytes, COMMUNICATION_TYPE.BLUETOOTH);
@@ -450,6 +476,7 @@ public class Shimmer4 extends ShimmerDevice {
 			public void eventAckReceived(byte[] instructionSent) {
 				// TODO Auto-generated method stub
 				if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsGet.GET_INFOMEM_COMMAND_VALUE){
+					
 					// store current address/InfoMem segment
 					mCurrentInfoMemAddress = ((instructionSent[3]&0xFF)<<8)+(instructionSent[2]&0xFF);
 					mCurrentInfoMemLengthToRead = (instructionSent[1]&0xFF);
@@ -458,6 +485,19 @@ public class Shimmer4 extends ShimmerDevice {
 					setBluetoothRadioState(BT_STATE.STREAMING);
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE){
 					setBluetoothRadioState(BT_STATE.CONNECTED);
+				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
+					
+				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.SET_SENSORS_COMMAND_VALUE){
+					readInfoMem();
+				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.SET_INFOMEM_COMMAND_VALUE){
+					mNumOfInfoMemSetCmds -= 1;
+					if(mNumOfInfoMemSetCmds==0){
+						delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
+						readInfoMem();
+					}
+					else {
+						delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
+					}
 				}
 			}
 
@@ -477,6 +517,44 @@ public class Shimmer4 extends ShimmerDevice {
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
 			//mShimmerRadio.actionSettingResolver(actionSetting);
 		}
+	}
+	
+	public void writeInfoMem(int startAddress, byte[] buf){
+		this.mNumOfInfoMemSetCmds  = 0;
+		
+		if(this.getFirmwareVersionCode()>=6){
+			int address = startAddress;
+			if (buf.length > (mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS - address + 1)) {
+//				err = ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE;
+//				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_SET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_WRITE_BUFFER_EXCEEDS_INFO_RANGE);
+//				throw(de);
+			} 
+			else {
+				int currentStartAddr = startAddress;
+				int currentPacketNumBytes;
+				int numBytesRemaining = buf.length;
+				int currentBytePointer = 0;
+				int maxPacketSize = 128;
+
+				while (numBytesRemaining > 0) {
+					if (numBytesRemaining > maxPacketSize) {
+						currentPacketNumBytes = maxPacketSize;
+					} else {
+						currentPacketNumBytes = numBytesRemaining;
+					}
+
+					byte[] infoSegBuf = Arrays.copyOfRange(buf, currentBytePointer, currentBytePointer + currentPacketNumBytes);
+
+					mShimmerRadioHWLiteProtocol.writeMemCommand((byte)LiteProtocolInstructionSet.InstructionsSet.SET_INFOMEM_COMMAND_VALUE, currentStartAddr, infoSegBuf);
+					mNumOfInfoMemSetCmds += 1;
+
+					currentStartAddr += currentPacketNumBytes;
+					numBytesRemaining -= currentPacketNumBytes;
+					currentBytePointer += currentPacketNumBytes;
+				}
+			}
+		}
+		
 	}
 	
 	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
@@ -543,6 +621,8 @@ public class Shimmer4 extends ShimmerDevice {
 			mIsStreaming = true;
 		} else if (state.equals(BT_STATE.CONNECTING)){
 			mIsConnected = true;
+			mIsInitialised = false;
+			startOperation(BT_STATE.CONNECTING,mNumberOfInfoMemReadsRequired);
 		}
 		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE,state, getMacIdFromUart(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject2);
@@ -586,12 +666,14 @@ public class Shimmer4 extends ShimmerDevice {
 	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
 		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
 //			mShimmerRadioHWLiteProtocol.
+			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes);
 		}
 	}
 
 	public void writeEnabledSensors(long enabledSensors) {
 		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
 //			mShimmerRadioHWLiteProtocol.
+			mShimmerRadioHWLiteProtocol.writeEnabledSensors(enabledSensors);
 		}
 	}
 
@@ -607,4 +689,68 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 
+	protected void sendProgressReport(BluetoothProgressReportPerCmd pRPC) {
+		if(progressReportPerDevice!=null){
+			progressReportPerDevice.updateProgress(pRPC);
+			int progress = progressReportPerDevice.mProgressPercentageComplete;
+			CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
+			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+			
+//			consolePrintLn("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
+			
+			if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
+				isReadyForStreaming();
+			}
+		}
+	}
+	
+	public void startOperation(BT_STATE currentOperation, int totalNumOfCmds){
+		consolePrintLn(currentOperation + " START");
+
+		progressReportPerDevice = new BluetoothProgressReportPerDevice(this, currentOperation, totalNumOfCmds);
+		progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.INPROGRESS;
+		
+		CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, this.getMacId(), getComPort(), progressReportPerDevice);
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+	}
+	
+	public void finishOperation(BT_STATE btState){
+		consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + btState);
+		
+		if(progressReportPerDevice.mCurrentOperationBtState == btState){
+
+			progressReportPerDevice.finishOperation();
+			progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.SUCCESS;
+			//JC: moved operationFinished to is ready for streaming, seems to be called before the inquiry response is received
+			CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
+			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+			
+		}
+
+	}
+	
+	public void isReadyForStreaming(){
+		mIsInitialised = true;
+		if (getBluetoothRadioState()==BT_STATE.CONNECTING){
+			finishOperation(progressReportPerDevice.mCurrentOperationBtState);
+		}
+		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_FULLY_INITIALIZED, mMacIdFromUart, getComPort());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject2);
+		if (getBluetoothRadioState()==BT_STATE.CONNECTING){
+			setBluetoothRadioState(BT_STATE.CONNECTED);
+		}
+	}
+	
+	/**
+	 * Due to the nature of the Bluetooth SPP stack a delay has been added to
+	 * ensure the buffer is filled before it is read
+	 * 
+	 */
+	private void delayForBtResponse(long millis){
+		try {
+			Thread.sleep(millis);	
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }
