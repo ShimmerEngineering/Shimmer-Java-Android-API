@@ -1260,7 +1260,6 @@ public class Configuration {
 			private static final ShimmerVerObject baseHighGAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 			private static final ShimmerVerObject baseHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 
-			private static final ShimmerVerObject baseShimmer4LogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_4_SDK,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject baseShimmer4Stock = 			new ShimmerVerObject(HW_ID.SHIMMER_4_SDK,FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
@@ -1272,15 +1271,16 @@ public class Configuration {
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(baseAnyIntExpBoardAndFw);
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
 					baseAnyIntExpBoardAndSdlog,baseAnyIntExpBoardAndBtStream,baseAnyIntExpBoardAndLogAndStream, 
-					baseShimmer4LogAndStream, baseShimmer4Stock); //TODO Shimmer4 temp here
+					baseShimmer4Stock); 
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGqBle,
 					baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
-					baseGsrUnifiedGqBle, baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq);
+					baseGsrUnifiedGqBle, baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq,
+					baseShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP180 = Arrays.asList(
-					baseShimmer4LogAndStream, baseShimmer4Stock); // May need to add more compatible versions  
+					baseShimmer4Stock);  
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					baseBrAmpSdLog, baseBrAmpBtStream, baseBrAmpLogAndStream,  
@@ -1332,7 +1332,7 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(baseSdLogMpl);//,baseShimmer4); //TODO Shimmer4 temp here
 			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(baseShimmer4LogAndStream, baseShimmer4Stock);
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(baseShimmer4Stock);
 			
 		}
 

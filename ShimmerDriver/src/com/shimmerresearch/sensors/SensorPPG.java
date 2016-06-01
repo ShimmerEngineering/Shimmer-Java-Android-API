@@ -403,9 +403,7 @@ public class SensorPPG extends AbstractSensor {
 //--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		if(ShimmerDevice.isDerivedSensorsSupported(svo)){
-			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
-		}
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 
 	 

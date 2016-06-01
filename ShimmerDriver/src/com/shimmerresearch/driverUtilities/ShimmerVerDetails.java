@@ -38,9 +38,9 @@ public class ShimmerVerDetails implements Serializable {
 //		public static final int BIOSENSICS = 6;
 		public static final int SPAN = 7;
 		public static final int SHIMMER_2R_GQ = 9; // Used for testing GQ
-		public static final int SHIMMER_GQ_802154_LR = 56; // Long Range
-		public static final int SHIMMER_GQ_802154_NR = 57; // Normal Range
-		public static final int SHIMMER_4_SDK = 58;
+		public static final int SHIMMER_GQ_802154_LR = HW_ID_SR_CODES.SHIMMER_GQ_802154_LR; // Long Range
+		public static final int SHIMMER_GQ_802154_NR = HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
+		public static final int SHIMMER_4_SDK = HW_ID_SR_CODES.SHIMMER_4_SDK;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;
@@ -77,6 +77,7 @@ public class ShimmerVerDetails implements Serializable {
 		
 		public static final int SHIMMER_GQ_802154_LR = 56;
 		public static final int SHIMMER_GQ_802154_NR = 57;
+		public static final int SHIMMER_4_SDK = 58;
 		
 		public static final int SHIMMER3 = 31;
 		public static final int BASE15U = 41;
