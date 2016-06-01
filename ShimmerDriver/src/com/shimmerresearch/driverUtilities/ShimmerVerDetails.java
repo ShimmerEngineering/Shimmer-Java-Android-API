@@ -114,7 +114,6 @@ public class ShimmerVerDetails implements Serializable {
 		 * on the same microcontroller in the Shimmmer3)
 		 */
 		public static final int UNKNOWN = -1;
-		public static final int ANY_VERSION = -1;
 		public static final int BOILER_PLATE = 0;
 		public static final int BTSTREAM = 1;
 		public static final int SDLOG = 2;
