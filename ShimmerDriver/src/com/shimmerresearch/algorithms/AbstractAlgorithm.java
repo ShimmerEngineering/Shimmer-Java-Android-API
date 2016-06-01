@@ -146,6 +146,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public abstract void reset() throws Exception;
 	public abstract void initialize() throws Exception;
 	public abstract String printBatchMetrics();
+	public abstract void setIsEnabled(boolean isEnabled, long derivedSensorBitmapID);
 	
 	/** For event driven algorithm implementation. Event Driven Algorithm is best to be used for algorithms whose processing duration is longer than the Shimmer's sampling rate. It can also be used for algorithms which do not require real time results.
 	 *  Once processing is done use sendProcessingResultMsg method to send your results back as an event to be handled.

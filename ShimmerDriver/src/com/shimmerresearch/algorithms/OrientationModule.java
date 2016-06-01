@@ -29,15 +29,9 @@ public class OrientationModule extends AbstractAlgorithm{
 	private final double Q3 = 1;
 	private final double Q4 = 1;
 	
-//	private double accX, accY, accZ;
-//	private double magX, magY, magZ;
-//	private double gyroX, gyroY, gyroZ;
 	private Vector3d accValues;
 	private Vector3d gyroValues;
 	private Vector3d magValues;
-	
-//	public static final String ORIENTATION_9DOF = "9DoF Orientation"; //move to configuration??
-//	public static final String ORIENTATION_6DOF = "6DoF Orientation"; //move to configuration??
 	
 	public static final String ORIENTATION_9DOF_LN = "LN_Acc_9DoF"; //move to configuration??
 	public static final String ORIENTATION_6DOF_LN = "LN_Acc_6DoF"; //move to configuration??
@@ -46,24 +40,30 @@ public class OrientationModule extends AbstractAlgorithm{
 	
 	public static final String SAMPLING_RATE = "Sampling Rate";
 	public static final String ACCELEROMETER = "Accelerometer";
+	public static final String ALGO_TYPE = "AlgortihmType";
+//	public static final String ALGO_OUTPUT = "AlgorithmOutput";
 	
-//	public static AlgorithmDetails algo9DoFOrientation_LN_Acc;
-//	public static AlgorithmDetails algo9DoFOrientation_WR_Acc;
-//	public static AlgorithmDetails algo6DoFOrientation_LN_Acc;
-//	public static AlgorithmDetails algo6DoFOrientation_WR_Acc;
 	public static List<ShimmerVerObject> mListSVO = new ArrayList<ShimmerVerObject>(); 
 	
 	transient Object orientationAlgorithm;
 	
 	double sampleRate;
 	String accelerometerSensor;
-	ORIENTATION_ALGORTIHM algorithmType;
+	boolean quaternionOutput;
+	boolean eulerOutput;
+	ORIENTATION_TYPE orientationType;
+//	ORIENTATION_OUTPUT algorithmOutput;
 	
-	
-	public enum ORIENTATION_ALGORTIHM {
+	public enum ORIENTATION_TYPE {
 		NINE_DOF,
 		SIX_DOF;
 	}
+	
+//	public enum ORIENTATION_OUTPUT {
+//		QUATERNION,
+//		ANGLES,
+//		BOTH
+//	}
 	
 	{
 		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
@@ -147,7 +147,8 @@ public class OrientationModule extends AbstractAlgorithm{
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
-						BTStreamDerivedSensors.ORIENTATION_9DOF, 
+						Arrays.asList(BTStreamDerivedSensors.ORIENTATION_9DOF_LN_QUAT,
+								BTStreamDerivedSensors.ORIENTATION_9DOF_LN_EULER), 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
@@ -165,7 +166,8 @@ public class OrientationModule extends AbstractAlgorithm{
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
-						BTStreamDerivedSensors.ORIENTATION_9DOF, 
+						Arrays.asList(BTStreamDerivedSensors.ORIENTATION_9DOF_WR_QUAT,
+								BTStreamDerivedSensors.ORIENTATION_9DOF_WR_EULER), 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
@@ -180,7 +182,8 @@ public class OrientationModule extends AbstractAlgorithm{
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
-						BTStreamDerivedSensors.ORIENTATION_6DOF, 
+						Arrays.asList(BTStreamDerivedSensors.ORIENTATION_6DOF_LN_QUAT,
+								BTStreamDerivedSensors.ORIENTATION_6DOF_LN_EULER), 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
 						,CHANNEL_UNITS.LOCAL);
@@ -194,7 +197,8 @@ public class OrientationModule extends AbstractAlgorithm{
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
-						BTStreamDerivedSensors.ORIENTATION_6DOF, 
+						Arrays.asList(BTStreamDerivedSensors.ORIENTATION_6DOF_WR_QUAT,
+								BTStreamDerivedSensors.ORIENTATION_6DOF_WR_EULER), 
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
 						,CHANNEL_UNITS.LOCAL);
@@ -211,27 +215,12 @@ public class OrientationModule extends AbstractAlgorithm{
     }
 	
 	
-//	{
-//		mAlgorithmName = "ECG to HR Algorithm";
-//		mSignalName = new String[1]; // an array because you might use multiple signals for an algorithm, note for now only single signal supported but this should be fwd compatible
-//		mSignalFormat = new String[1];
-//		mSignalOutputNameArray = new String[1];
-//		mSignalOutputNameArray[0] = ""; //temp value
-//		mSignalOutputFormatArray = new String[1];
-//		mSignalOutputFormatArray[0] = CHANNEL_TYPE.CAL.toString();
-//		mSignalOutputUnitArray = new String[1];
-//		mSignalOutputUnitArray[0] = CHANNEL_UNITS.NO_UNITS;
-//		
-//		mFilteringOptions = FILTERING_OPTION.NONE;
-//	}
-	
 	public OrientationModule(AlgorithmDetails algorithmDetails, double samplingRate) {
 		mAlgorithmDetails = algorithmDetails;
 		mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
 		mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
 		mAlgorithmName = algorithmDetails.mAlgorithmName;
 		mAlgorithmGroupingName = algorithmDetails.mAlgorithmName;
-//		setSignalFormat(CHANNEL_TYPE.CAL.toString());
 		
 		this.sampleRate = samplingRate;
 		try {
@@ -248,10 +237,16 @@ public class OrientationModule extends AbstractAlgorithm{
 
 			case(SAMPLING_RATE):
 				returnValue = getSamplingRate();
-				break;
+			break;
 			case(ACCELEROMETER):
 				returnValue = getAccelerometer();
-				break;
+			break;
+			case(ALGO_TYPE):
+				returnValue = getOrientationType();
+			break;
+//			case(ALGO_OUTPUT):
+//				returnValue = getAlgorithmOutput();
+//			break;
 		}
 		return returnValue;
 	}
@@ -262,10 +257,16 @@ public class OrientationModule extends AbstractAlgorithm{
 		switch(componentName){
 			case(SAMPLING_RATE):
 				returnValue = 512;
-				break;
+			break;
 			case(ACCELEROMETER):
 				returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-				break;
+			break;
+			case(ALGO_TYPE):
+				returnValue = ORIENTATION_TYPE.NINE_DOF;
+			break;
+//			case(ALGO_OUTPUT):
+//				returnValue = ORIENTATION_OUTPUT.QUATERNION;
+//			break;
 		}
 		return returnValue;
 	}
@@ -277,10 +278,16 @@ public class OrientationModule extends AbstractAlgorithm{
 		switch(componentName){
 			case(SAMPLING_RATE):
 				setSamplingRate(Double.parseDouble((String) valueToSet));
-				break;
+			break;
 			case(ACCELEROMETER):
 				setAccelerometer((String) valueToSet);
-				break;
+			break;
+			case(ALGO_TYPE):
+				setOrientationType((ORIENTATION_TYPE) valueToSet);
+			break;
+//			case(ALGO_OUTPUT):
+//				setAlgorithmOutput((ORIENTATION_OUTPUT) valueToSet);
+//			break;
 		}
 	}
 
@@ -350,36 +357,29 @@ public class OrientationModule extends AbstractAlgorithm{
 	
 	private ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster){
 		
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getTheta());
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleX());
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleY());
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleZ());
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionW());
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionX());
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionY());
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionZ());
-		
-//		String[] sensorNames = objectCluster.mSensorNames;
-//		if(objectCluster.mSensorNames!=null){
-//			objectCluster.mSensorNames = new String[sensorNames.length + mSignalOutputNameArray.length];
-//			System.arraycopy(sensorNames, 0,objectCluster.mSensorNames, 0, sensorNames.length);
-//			System.arraycopy(mSignalOutputNameArray, 0,objectCluster.mSensorNames, sensorNames.length, mSignalOutputNameArray.length);
-
-			// add uncal data
-//			double[] uncalData = objectCluster.mUncalData;
-//			objectCluster.mUncalData = new double[uncalData.length + mSignalOutputNameArray.length];
-//			System.arraycopy(uncalData, 0,objectCluster.mUncalData, 0, uncalData.length);
-//			double[] temp = new double[mSignalOutputNameArray.length];
-//			Arrays.fill(temp, Double.NaN);
-//			System.arraycopy(temp, 0, objectCluster.mUncalData, uncalData.length, temp.length);
-//			objectCluster.mUncalData[objectCluster.mUncalData.length-1] = Double.NaN;
-//
-//			// add calibrated data
-//			double[] calData = objectCluster.mCalData;
-//			objectCluster.mCalData = new double[calData.length + mSignalOutputNameArray.length];
-//			System.arraycopy(calData, 0,objectCluster.mCalData, 0, calData.length);
-//			objectCluster.mCalData[calData.length] = (double)hr;
+//		if(algorithmOutput == ORIENTATION_OUTPUT.BOTH){
+//			objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getTheta());
+//			objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleX());
+//			objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleY());
+//			objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleZ());
+//			objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionW());
+//			objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionX());
+//			objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionY());
+//			objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionZ());
 //		}
+		if(eulerOutput){
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getTheta());
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleX());
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleY());
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getAngleZ());
+		}
+		
+		if(quaternionOutput){
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionW());
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionX());
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionY());
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL,CHANNEL_UNITS.LOCAL,quaternion.getQuaternionZ());
+		}
 		
 		return objectCluster;
 	}
@@ -387,7 +387,7 @@ public class OrientationModule extends AbstractAlgorithm{
 	private Orientation3DObject applyOrientationAlgorithm(){
 		
 		Orientation3DObject quaternion;
-		if(algorithmType == ORIENTATION_ALGORTIHM.NINE_DOF){
+		if(orientationType == ORIENTATION_TYPE.NINE_DOF){
 			quaternion = ((GradDes3DOrientation) orientationAlgorithm).update(
 					accValues.x, accValues.y, accValues.z, 
 					gyroValues.x, gyroValues.y, gyroValues.z
@@ -411,7 +411,6 @@ public class OrientationModule extends AbstractAlgorithm{
 
 	@Override
 	public void reset() throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -421,7 +420,7 @@ public class OrientationModule extends AbstractAlgorithm{
 		double samplingPeriod = 1/sampleRate;
 		
 		if(mAlgorithmName.contains("9")){
-			algorithmType = ORIENTATION_ALGORTIHM.NINE_DOF;
+			orientationType = ORIENTATION_TYPE.NINE_DOF;
 			orientationAlgorithm = new GradDes3DOrientation(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
 			if(mAlgorithmName.contains("LN")){
 				accelerometerSensor = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
@@ -431,7 +430,7 @@ public class OrientationModule extends AbstractAlgorithm{
 			}
 		}
 		else{
-			algorithmType = ORIENTATION_ALGORTIHM.SIX_DOF;
+			orientationType = ORIENTATION_TYPE.SIX_DOF;
 			orientationAlgorithm = new GradDes3DOrientation6DoF(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
 			if(mAlgorithmName.contains("LN")){
 				accelerometerSensor = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
@@ -468,12 +467,20 @@ public class OrientationModule extends AbstractAlgorithm{
 		this.accelerometerSensor = accelerometerName;
 	}
 	
-//	public ORIENTATION_ALGORTIHM getAlgorithmType() {
-//		return algorithmType;
+//	public ORIENTATION_OUTPUT getAlgorithmOutput() {
+//		return algorithmOutput;
 //	}
+//
+//	public void setAlgorithmOutput(ORIENTATION_OUTPUT algorithmOutput) {
+//		this.algorithmOutput = algorithmOutput;
+//	}
+	
+	public ORIENTATION_TYPE getOrientationType(){
+		return orientationType;
+	}
 
-	public void setAlgorithmType(ORIENTATION_ALGORTIHM algorithmType) {
-		this.algorithmType = algorithmType;
+	public void setOrientationType(ORIENTATION_TYPE algorithmType) {
+		this.orientationType = algorithmType;
 	}
 	
 	public static LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject mShimmerVerObject) {
@@ -481,6 +488,36 @@ public class OrientationModule extends AbstractAlgorithm{
 		//TODO Filter here depending on Shimmer version
 		mapOfSupportedAlgorithms.putAll(mAlgorithmMapRef);
 		return mapOfSupportedAlgorithms;
+	}
+
+	@Override
+	public void setIsEnabled(boolean isEnabled, long derivedSensorBitmapID) {
+		if(mIsEnabled){
+			mIsEnabled &= isEnabled;
+		}
+		else{
+			mIsEnabled |= isEnabled;
+		}
+		
+		updateModuleOutput(derivedSensorBitmapID);
+	}
+	
+	private void updateModuleOutput(long derivedSensorBitmapID){
+		if(mIsEnabled){
+			if(derivedSensorBitmapID == BTStreamDerivedSensors.ORIENTATION_9DOF_LN_QUAT ||
+					derivedSensorBitmapID == BTStreamDerivedSensors.ORIENTATION_6DOF_LN_QUAT ){
+				quaternionOutput = true;
+			}
+			
+			if(derivedSensorBitmapID == BTStreamDerivedSensors.ORIENTATION_9DOF_LN_EULER ||
+					derivedSensorBitmapID == BTStreamDerivedSensors.ORIENTATION_6DOF_LN_EULER ){
+				eulerOutput = true;
+			}
+		}
+		else{
+			quaternionOutput = false;
+			eulerOutput = false;
+		}
 	}
 
 }

@@ -1773,8 +1773,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void algorithmMapUpdateFromEnabledSensorsVars() {
 		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
-			boolean isEnabled = ((mDerivedSensors&aA.mAlgorithmDetails.mDerivedSensorBitmapID)>0)? true:false;
-			aA.setIsEnabled(isEnabled);
+			for(Integer derivedSensorBit: aA.mAlgorithmDetails.mDerivedSensorBitmapID){
+				boolean isEnabled = ((mDerivedSensors&derivedSensorBit)>0)? true:false;
+				aA.setIsEnabled(isEnabled, derivedSensorBit);
+//				boolean isEnabled = ((mDerivedSensors&aA.mAlgorithmDetails.mDerivedSensorBitmapID)>0)? true:false;
+	//			aA.setIsEnabled(isEnabled);
+			}
 		}
 		initializeAlgorithms();
 	}
@@ -2134,7 +2138,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	private void updateDerivedSensorsFromAlgorithmMap(){
 		List<AlgorithmDetails> listOfEnabledAlgorithms = getListOfEnabledAlgorithms();
 		for(AlgorithmDetails aD:listOfEnabledAlgorithms){
-			mDerivedSensors |= aD.mDerivedSensorBitmapID;
+//			mDerivedSensors |= aD.mDerivedSensorBitmapID;
+			for(Integer derivedSensorBit: aD.mDerivedSensorBitmapID){
+				mDerivedSensors |= derivedSensorBit;
+			}
 		}
 	}
 	
