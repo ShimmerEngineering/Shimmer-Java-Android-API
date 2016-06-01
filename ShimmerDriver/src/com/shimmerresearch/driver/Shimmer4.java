@@ -20,6 +20,7 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensors.AbstractSensor;
@@ -104,7 +105,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
-//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
 				){
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 		}
@@ -113,7 +114,7 @@ public class Shimmer4 extends ShimmerDevice {
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
-//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
 				){
 			if(isDerivedSensorsSupported()){
 				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));

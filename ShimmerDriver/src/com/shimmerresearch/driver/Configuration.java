@@ -1277,7 +1277,8 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, baseGsrGqBle,
 					baseGsrUnifiedSdLog,  baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
-					baseGsrUnifiedGqBle, baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq);
+					baseGsrUnifiedGqBle, baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq,
+					baseShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP180 = Arrays.asList(
 					baseShimmer4LogAndStream, baseShimmer4Stock); // May need to add more compatible versions  
