@@ -4805,5 +4805,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	protected void initializeDerivedSensors(){
 		sensorMapUpdateFromEnabledSensorsVars();
+		algorithmMapUpdateFromEnabledSensorsVars();
 	}
 }
