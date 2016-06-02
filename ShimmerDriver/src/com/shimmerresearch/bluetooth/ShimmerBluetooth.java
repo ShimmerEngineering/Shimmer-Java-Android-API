@@ -1063,7 +1063,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			printLogDataForDebugging("Inquiry Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferInquiry));
 			
 			interpretInqResponse(bufferInquiry);
-			initializeDerivedSensors();
+			prepareAllAfterConfigRead();
 			inquiryDone();
 		} 
 
@@ -1146,7 +1146,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			byte[] byteArray = readBytes(3);
 			mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
 			if (mEnabledSensors!=0){
-				initializeDerivedSensors();
+				prepareAllAfterConfigRead();
 				inquiryDone();
 			}
 		}
@@ -1715,7 +1715,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] instruction = getListofInstructions().get(0);
 					mDerivedSensors = (long)(((instruction[3]&0xFF)<<16) + ((instruction[2]&0xFF)<<8) + (instruction[1]&0xFF));
 					if (mEnabledSensors!=0){
-						initializeDerivedSensors();
+						prepareAllAfterConfigRead();
 						inquiryDone();
 					}
 				}
@@ -4803,8 +4803,4 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mComPort = comport;
 	}
 	
-	protected void initializeDerivedSensors(){
-		sensorMapUpdateFromEnabledSensorsVars();
-		algorithmMapUpdateFromEnabledSensorsVars();
-	}
 }
