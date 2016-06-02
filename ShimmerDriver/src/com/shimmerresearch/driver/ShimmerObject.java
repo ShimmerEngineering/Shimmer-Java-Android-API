@@ -228,13 +228,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public class SDLogHeaderDerivedSensors{
+		public final static int ORIENTATION_9DOF_WR_QUAT = 1<<16;
+		public final static int ORIENTATION_9DOF_WR_EULER = 1<<17;
+		public final static int ORIENTATION_6DOF_WR_QUAT = 1<<18;
+		public final static int ORIENTATION_6DOF_WR_EULER = 1<<19;
+		public final static int ORIENTATION_9DOF_LN_QUAT = 1<<20;
+		public final static int ORIENTATION_9DOF_LN_EULER = 1<<21;
+		public final static int ORIENTATION_6DOF_LN_QUAT = 1<<22;
+		public final static int ORIENTATION_6DOF_LN_EULER = 1<<23;
+// ------------------------------------------------------------------
 		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
 		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
-// ------------------------------------------------------------------
-		public final static int ORIENTATION_9DOF = 1<<9;
-		public final static int ORIENTATION_6DOF = 1<<8;
 // ----------- Now implemented in SensorPPG -------------------------
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
@@ -245,13 +251,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public class BTStreamDerivedSensors{
+		public final static int ORIENTATION_9DOF_WR_QUAT = 1<<16;
+		public final static int ORIENTATION_9DOF_WR_EULER = 1<<17;
+		public final static int ORIENTATION_6DOF_WR_QUAT = 1<<18;
+		public final static int ORIENTATION_6DOF_WR_EULER = 1<<19;
+		public final static int ORIENTATION_9DOF_LN_QUAT = 1<<20;
+		public final static int ORIENTATION_9DOF_LN_EULER = 1<<21;
+		public final static int ORIENTATION_6DOF_LN_QUAT = 1<<22;
+		public final static int ORIENTATION_6DOF_LN_EULER = 1<<23;
+// ------------------------------------------------------------------
 		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
 		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
-// ------------------------------------------------------------------
-		public final static int ORIENTATION_9DOF = 1<<9;
-		public final static int ORIENTATION_6DOF = 1<<8;
 // ----------- Now implemented in SensorPPG -------------------------		
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;

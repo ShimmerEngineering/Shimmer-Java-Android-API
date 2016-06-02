@@ -23,7 +23,7 @@ public class AlgorithmDetails implements Serializable {
 	public String mGroupName = "";
 	public String mUnits = "";
 	public CHANNEL_TYPE mChannelType = CHANNEL_TYPE.CAL;
-	public long mDerivedSensorBitmapID = 0; 
+	public List<Integer> mDerivedSensorBitmapID = new ArrayList<Integer>(); 
 
 	public List<Integer> mListOfRequiredSensors = new ArrayList<Integer>();
 	public List<String> mListOfAssociatedSensors = new ArrayList<String>();
@@ -39,12 +39,12 @@ public class AlgorithmDetails implements Serializable {
 		mUnits = units;
 	}
 
-	public AlgorithmDetails(String objectClusterName, String guiFriendlyName, List<String> listOfAssociatedSensors, String groupName, long derivedSensorBitmapId, List<Integer> listOfRequiredSensors, String units){
+	public AlgorithmDetails(String objectClusterName, String guiFriendlyName, List<String> listOfAssociatedSensors, String groupName, List<Integer> listOfDerivedSensorBitmapId, List<Integer> listOfRequiredSensors, String units){
 		this(listOfRequiredSensors, units);
 		mGuiFriendlyName = guiFriendlyName;
 		mListOfAssociatedSensors = listOfAssociatedSensors;
 		mAlgorithmName = objectClusterName;
-		mDerivedSensorBitmapID = derivedSensorBitmapId;
+		mDerivedSensorBitmapID.addAll(listOfDerivedSensorBitmapId);
 		mGroupName = groupName;
 		mListOfChannelDetails.add(generateChannelDetails());
 	}
@@ -54,10 +54,10 @@ public class AlgorithmDetails implements Serializable {
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
 			String groupName, 
-			long derivedSensorBitmapId, 
+			List<Integer> listOfDerivedSensorBitmapId, 
 			List<Integer> listOfRequiredSensors, 
 			String units){
-		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, listOfDerivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
 	}
 
