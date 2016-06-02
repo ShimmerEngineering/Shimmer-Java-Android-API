@@ -18,6 +18,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerObject.BTStreamDerivedSensors;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -35,10 +36,15 @@ public class OrientationModule extends AbstractAlgorithm{
 	private Vector3d gyroValues;
 	private Vector3d magValues;
 	
-	private  String[] QUATERNION_OPTIONS = {"Quaternion On", "Quaternion Off"};
-	private  String[] EULER_OPTIONS = {"Euler On", "Euler Off"};
+	private String[] QUATERNION_OPTIONS = {"Quaternion On", "Quaternion Off"};
+	private String[] EULER_OPTIONS = {"Euler On", "Euler Off"};
 	
-	private static final ShimmerVerObject baseSh3Module = new ShimmerVerObject(HW_ID.SHIMMER_3,Configuration.Shimmer3.CompatibilityInfoForMaps.ANY_VERSION,Configuration.Shimmer3.CompatibilityInfoForMaps.ANY_VERSION,Configuration.ShimmerGqBle.CompatibilityInfoForMaps.ANY_VERSION,Configuration.Shimmer3.CompatibilityInfoForMaps.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_EXG);
+	private static final ShimmerVerObject baseSh3Module = new ShimmerVerObject(
+			HW_ID.SHIMMER_3,ShimmerVerDetails.ANY_VERSION,
+			ShimmerVerDetails.ANY_VERSION,
+			ShimmerVerDetails.ANY_VERSION,
+			ShimmerVerDetails.ANY_VERSION,
+			HW_ID_SR_CODES.EXP_BRD_EXG);
 	
 	public static final String ORIENTATION_9DOF_LN = "LN_Acc_9DoF"; //move to configuration??
 	public static final String ORIENTATION_6DOF_LN = "LN_Acc_6DoF"; //move to configuration??
