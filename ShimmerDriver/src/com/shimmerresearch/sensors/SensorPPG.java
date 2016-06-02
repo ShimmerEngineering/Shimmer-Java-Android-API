@@ -177,8 +177,12 @@ public class SensorPPG extends AbstractSensor {
 			0, 
 			GuiLabelSensors.PPG_A12,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM
 					),
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG_A12),

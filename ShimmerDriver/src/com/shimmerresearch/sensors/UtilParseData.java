@@ -33,12 +33,12 @@ public class UtilParseData {
 		//2) a single for loop looping over the required number of bytes
 		long maskToApply = 0;
 		for(int i=0;i<dataType.getNumBytes();i++){
-			//Old -> not working properly
+			//based on old parseData approach -> seems to be working
+			formattedData = (int)((int)(data[i] & 0xFF) | ((int)formattedData << 8));
+			//new -> not working properly
 //			formattedData = (formattedData << 8)  + data[i];
-			//New based on old parseData approach -> seems to be working
-//			formattedData = (int)((int)(data[i] & 0xFF) | ((int)formattedData << 8));
-			//new -> seems to be working
-			formattedData = (formattedData << 8)  | (data[i]&0xFF);
+			//new new -> seems to be working?
+//			formattedData = (formattedData << 8)  | (data[i]&0xFF);
 
 			maskToApply = (maskToApply << 8) | 0xFF;
 		}
