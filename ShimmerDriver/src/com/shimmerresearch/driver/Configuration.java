@@ -68,6 +68,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.sensors.SensorADC;
 //import com.shimmerresearch.pluginalgo.ECGAdaptiveModule.ObjectClusterSensorName;
 import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
@@ -744,9 +745,9 @@ public class Configuration {
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 			
-			public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION; //"PPG Channel";
-			public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";
-			public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION; // "Channel2";
+			public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION; //"PPG Channel"; //YYY
+			public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";   //YYY
+			public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION; // "Channel2";  //YYY
 			
 			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB;
@@ -777,8 +778,8 @@ public class Configuration {
 			public static final String WIDE_RANGE_ACCEL = SensorLSM303.GuiLabelSensors.ACCEL_WR;
 			
 			public static final String PRESSURE_TEMPERATURE = SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
-			public static final String EXTERNAL_EXPANSION_ADC = "External Expansion ADCs";
-			public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
+			public static final String EXTERNAL_EXPANSION_ADC = SensorADC.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC; //"External Expansion ADCs"; //YYY
+			public static final String INTERNAL_EXPANSION_ADC = SensorADC.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC; //"Internal Expansion ADCs"; //YYY
 			public static final String GSR = SensorGSR.GuiLabelSensorTiles.GSR;
 			public static final String EXG = "ECG/EMG";
 			public static final String PROTO3_MINI = "Proto Mini";
@@ -798,15 +799,15 @@ public class Configuration {
 			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
 			
 			public static final String BATTERY = "Battery Voltage";
-			public static final String EXT_EXP_A7 = "Ext A7";
-			public static final String EXT_EXP_A6 = "Ext A6";
-			public static final String EXT_EXP_A15 = "Ext A15";
-			public static final String INT_EXP_A12 = "Int A12";
-			public static final String INT_EXP_A13 = "Int A13";
-			public static final String INT_EXP_A14 = "Int A14";
+			public static final String EXT_EXP_A7 = SensorADC.GuiLabelSensors.EXT_EXP_A7; //"Ext A7"; //YYY
+			public static final String EXT_EXP_A6 = SensorADC.GuiLabelSensors.EXT_EXP_A6; //"Ext A6"; //YYY
+			public static final String EXT_EXP_A15 = SensorADC.GuiLabelSensors.EXT_EXP_A15; //Ext A15"; //YYY
+			public static final String INT_EXP_A12 = SensorADC.GuiLabelSensors.INT_EXP_A12; //"Int A12"; //YYY
+			public static final String INT_EXP_A13 = SensorADC.GuiLabelSensors.INT_EXP_A13; // "Int A13"; //YYY
+			public static final String INT_EXP_A14 = SensorADC.GuiLabelSensors.INT_EXP_A14; //"Int A14"; //YYY
 			public static final String BRIDGE_AMPLIFIER = "Bridge Amp";
 			public static final String GSR = SensorGSR.GuiLabelSensors.GSR;
-			public static final String INT_EXP_A1 = "Int A1";
+			public static final String INT_EXP_A1 = SensorADC.GuiLabelSensors.INT_EXP_A1; //"Int A1"; //YYY
 			public static final String RESISTANCE_AMP = "Resistance Amp";
 			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO; //"Gyroscope";
 			
@@ -814,19 +815,19 @@ public class Configuration {
 			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
 			public static final String MAG = SensorLSM303.GuiLabelSensors.MAG;
 			
-			public static final String ACCEL_MPU = "Alternative Accel";
-			public static final String BMP_180 = "BMP180";
-			public static final String MAG_MPU = "Alternative Mag";
+			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU; //"Alternative Accel";
+			public static final String BMP_180 = SensorBMP180.GuiLabelSensors.BMP_180; //"BMP180";
+			public static final String MAG_MPU = SensorMPU9X50.GuiLabelSensors.MAG_MPU; //"Alternative Mag";
 			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180; //"Pressure & Temperature";
 			public static final String EMG = "EMG";
 			public static final String ECG = "ECG";
 			public static final String EXG_TEST = "Test";
-			public static final String EXT_EXP_ADC = "External Expansion";
+			public static final String EXT_EXP_ADC = SensorADC.GuiLabelSensorTiles.EXT_EXP_ADC; //"External Expansion";
 			public static final String QUAT_MPL_6DOF = SensorMPU9X50.GuiLabelSensors.QUAT_MPL_6DOF; //"MPU Quat 6DOF";
 			public static final String QUAT_MPL_9DOF = SensorMPU9X50.GuiLabelSensors.QUAT_MPL_9DOF; //"MPU Quat 9DOF";
-			public static final String EULER_MPL_6DOF = "MPU Euler 6DOF";
-			public static final String EULER_MPL_9DOF = "MPU Euler 9DOF";
-			public static final String MPL_HEADING = "MPU Heading";
+			public static final String EULER_MPL_6DOF = SensorMPU9X50.GuiLabelSensors.EULER_ANGLES_6DOF; //"MPU Euler 6DOF";
+			public static final String EULER_MPL_9DOF = SensorMPU9X50.GuiLabelSensors.EULER_ANGLES_9DOF; //"MPU Euler 9DOF";
+			public static final String MPL_HEADING = SensorMPU9X50.GuiLabelSensors.MPL_HEADING; //"MPU Heading";
 			public static final String MPL_TEMPERATURE = SensorMPU9X50.GuiLabelSensors.MPL_TEMPERATURE; //"MPU Temp";
 			public static final String MPL_PEDOM_CNT = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_CNT; //"MPL_Pedom_cnt"; // not currently supported
 			public static final String MPL_PEDOM_TIME = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_TIME; //"MPL_Pedom_Time"; // not currently supported
@@ -880,13 +881,13 @@ public class Configuration {
 
 		//DATABASE NAMES
 		public static class DatabaseChannelHandles{
-			public static final String EXT_ADC_A7 = "F5437a_Ext_A7";
-			public static final String EXT_ADC_A6 = "F5437a_Ext_A6";
-			public static final String EXT_ADC_A15 = "F5437a_Ext_A15";
-			public static final String INT_ADC_A1 = "F5437a_Int_A1";
-			public static final String INT_ADC_A12 = "F5437a_Int_A12";
-			public static final String INT_ADC_A13 = "F5437a_Int_A13";
-			public static final String INT_ADC_A14 = "F5437a_Int_A14";
+			public static final String EXT_ADC_A7 = SensorADC.DatabaseChannelHandles.EXT_ADC_A7;  //"F5437a_Ext_A7";
+			public static final String EXT_ADC_A6 = SensorADC.DatabaseChannelHandles.EXT_ADC_A6;  //"F5437a_Ext_A6";
+			public static final String EXT_ADC_A15 = SensorADC.DatabaseChannelHandles.EXT_ADC_A15; //"F5437a_Ext_A15";
+			public static final String INT_ADC_A1 = SensorADC.DatabaseChannelHandles.INT_ADC_A1; //"F5437a_Int_A1";
+			public static final String INT_ADC_A12 = SensorADC.DatabaseChannelHandles.INT_ADC_A12; //"F5437a_Int_A12";
+			public static final String INT_ADC_A13 = SensorADC.DatabaseChannelHandles.INT_ADC_A13; //"F5437a_Int_A13";
+			public static final String INT_ADC_A14 = SensorADC.DatabaseChannelHandles.INT_ADC_A14; //"F5437a_Int_A14";
 			public static final String BATTERY = "F5437a_Int_A2_Battery";
 			public static final String GSR = SensorGSR.DatabaseChannelHandles.GSR;
 			public static final String PRESSURE = SensorBMP180.DatabaseChannelHandles.PRESSURE; //"BMP180_Pressure";
@@ -1035,17 +1036,17 @@ public class Configuration {
 			public static String ACCEL_LN_Z = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Z;
 			
 			public static String BATTERY = "Battery";
-			public static String EXT_EXP_ADC_A7 = "Ext_Exp_A7";
-			public static String EXT_EXP_ADC_A6 = "Ext_Exp_A6";
-			public static String EXT_EXP_ADC_A15 = "Ext_Exp_A15";
-			public static String INT_EXP_ADC_A12 = "Int_Exp_A12";
-			public static String INT_EXP_ADC_A13 = "Int_Exp_A13";
-			public static String INT_EXP_ADC_A14 = "Int_Exp_A14";
+			public static String EXT_EXP_ADC_A7 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A7; //"Ext_Exp_A7";
+			public static String EXT_EXP_ADC_A6 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A6; //"Ext_Exp_A6";
+			public static String EXT_EXP_ADC_A15 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A15; //"Ext_Exp_A15";
+			public static String INT_EXP_ADC_A1 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A1; //"Int_Exp_A1";
+			public static String INT_EXP_ADC_A12 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A12; //"Int_Exp_A12";
+			public static String INT_EXP_ADC_A13 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A13; //"Int_Exp_A13";
+			public static String INT_EXP_ADC_A14 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A14; //"Int_Exp_A14";
 			public static String BRIDGE_AMP_HIGH = "Bridge_Amp_High";
 			public static String BRIDGE_AMP_LOW = "Bridge_Amp_Low";
 			public static String GSR = SensorGSR.ObjectClusterSensorName.GSR;
 			public static String GSR_CONDUCTANCE = SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE;
-			public static String INT_EXP_ADC_A1 = "Int_Exp_A1";
 			public static String RESISTANCE_AMP = "Resistance_Amp";
 			public static String GYRO_X = SensorMPU9X50.ObjectClusterSensorName.GYRO_X; //"Gyro_X";
 			public static String GYRO_Y = SensorMPU9X50.ObjectClusterSensorName.GYRO_Y; //"Gyro_Y";
@@ -1293,19 +1294,19 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoProto3Deluxe = Arrays.asList(
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream);
 			
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
 			
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA12 = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA12 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
 					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream,
 					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
 			
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA13 = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA13 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
@@ -1313,7 +1314,7 @@ public class Configuration {
 					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream 
 					);
 
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream 
@@ -1369,8 +1370,8 @@ public class Configuration {
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT, new SensorDetailsRef(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_24BIT));
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR, SensorGSR.sensorGsrRef);
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR, new SensorDetailsRef(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.GSR));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7, new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A7));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6, new SensorDetailsRef(0x01<<(streamingByteIndex*8), 0x01<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A6));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7, SensorADC.sensorADC_EXT_EXP_ADC_A7Ref);
+			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6, SensorADC.sensorADC_EXT_EXP_ADC_A6Ref);
 			
 			// NV_SENSORS1
 			streamingByteIndex = 1;
@@ -1379,15 +1380,15 @@ public class Configuration {
 			//shimmerChannels.put(, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), "")); // unused? - new PPG bit might be here now
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, new SensorDetailsRef(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.BATTERY));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, new SensorDetailsRef(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_WR));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15, new SensorDetailsRef(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A15));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1, new SensorDetailsRef(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A1));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A12));
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13, new SensorDetailsRef(0x01<<(streamingByteIndex*8), 0x01<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A13));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15, SensorADC.sensorADC_EXT_EXP_ADC_A15Ref);
+			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1, SensorADC.sensorADC_INT_EXP_ADC_A1Ref);
+			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, SensorADC.sensorADC_INT_EXP_ADC_A12Ref);
+			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13, SensorADC.sensorADC_INT_EXP_ADC_A13Ref);
 
 			// NV_SENSORS2
 			streamingByteIndex = 2;
 			logHeaderByteIndex = 2;
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14, new SensorDetailsRef(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.INT_EXP_A14));
+			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14, SensorADC.sensorADC_INT_EXP_ADC_A14Ref);
 ////			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL, new SensorDetailsRef(0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_MPU));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL, SensorMPU9X50.sensorMpu9150AccelRef);
 ////			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG, new SensorDetailsRef(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MAG_MPU));
