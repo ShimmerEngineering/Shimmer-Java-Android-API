@@ -1235,6 +1235,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void setAlgorithmSettings(String algortihmGroupName, String componentName, Object valueToSet) throws Exception{
+		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
+			if(abstractAlgorithm.mAlgorithmDetails.mGroupName.equals(algortihmGroupName)){
+				abstractAlgorithm.setSettings(componentName, valueToSet);
+				return;
+			}
+		}
+	}
 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet){
 		Object returnValue = null;

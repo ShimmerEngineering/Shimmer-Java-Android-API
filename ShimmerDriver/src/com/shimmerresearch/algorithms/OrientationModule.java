@@ -20,6 +20,8 @@ import com.shimmerresearch.driver.ShimmerObject.BTStreamDerivedSensors;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 public class OrientationModule extends AbstractAlgorithm{
 
@@ -33,6 +35,11 @@ public class OrientationModule extends AbstractAlgorithm{
 	private Vector3d gyroValues;
 	private Vector3d magValues;
 	
+	private  String[] QUATERNION_OPTIONS = {"Quaternion On", "Quaternion Off"};
+	private  String[] EULER_OPTIONS = {"Euler On", "Euler Off"};
+	
+	private static final ShimmerVerObject baseSh3Module = new ShimmerVerObject(HW_ID.SHIMMER_3,Configuration.Shimmer3.CompatibilityInfoForMaps.ANY_VERSION,Configuration.Shimmer3.CompatibilityInfoForMaps.ANY_VERSION,Configuration.ShimmerGqBle.CompatibilityInfoForMaps.ANY_VERSION,Configuration.Shimmer3.CompatibilityInfoForMaps.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_EXG);
+	
 	public static final String ORIENTATION_9DOF_LN = "LN_Acc_9DoF"; //move to configuration??
 	public static final String ORIENTATION_6DOF_LN = "LN_Acc_6DoF"; //move to configuration??
 	public static final String ORIENTATION_9DOF_WR = "WR_Acc_9DoF"; //move to configuration??
@@ -40,10 +47,11 @@ public class OrientationModule extends AbstractAlgorithm{
 	
 	public static final String SAMPLING_RATE = "Sampling Rate";
 	public static final String ACCELEROMETER = "Accelerometer";
-	public static final String ALGO_TYPE = "AlgortihmType";
-//	public static final String ALGO_OUTPUT = "AlgorithmOutput";
+	public static final String QUATERNION_OUTPUT = "QuaternionOutput";
+	public static final String EULER_OUTPUT = "EulerOutput";
 	
 	public static List<ShimmerVerObject> mListSVO = new ArrayList<ShimmerVerObject>(); 
+	
 	
 	transient Object orientationAlgorithm;
 	
@@ -52,25 +60,23 @@ public class OrientationModule extends AbstractAlgorithm{
 	boolean quaternionOutput;
 	boolean eulerOutput;
 	ORIENTATION_TYPE orientationType;
-//	ORIENTATION_OUTPUT algorithmOutput;
 	
 	public enum ORIENTATION_TYPE {
 		NINE_DOF,
 		SIX_DOF;
 	}
 	
-//	public enum ORIENTATION_OUTPUT {
-//		QUATERNION,
-//		ANGLES,
-//		BOTH
-//	}
 	
 	{
-		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
-		String[] accSensors = new String[2];
-		accSensors[0]=Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
-		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
+		mListSVO.add(baseSh3Module);
+		
+//		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
+//		String[] accSensors = new String[2];
+//		accSensors[0]=Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
+//		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
+//		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
+		mConfigOptionsMap.put(QUATERNION_OUTPUT, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, QUATERNION_OPTIONS));
+		mConfigOptionsMap.put(EULER_OUTPUT, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, EULER_OPTIONS));
 		
 	}
 	
@@ -241,12 +247,12 @@ public class OrientationModule extends AbstractAlgorithm{
 			case(ACCELEROMETER):
 				returnValue = getAccelerometer();
 			break;
-			case(ALGO_TYPE):
-				returnValue = getOrientationType();
+			case(QUATERNION_OUTPUT):
+				returnValue = isQuaternionOutput();
 			break;
-//			case(ALGO_OUTPUT):
-//				returnValue = getAlgorithmOutput();
-//			break;
+			case(EULER_OUTPUT):
+				returnValue = isEulerOutput();
+			break;
 		}
 		return returnValue;
 	}
@@ -261,12 +267,12 @@ public class OrientationModule extends AbstractAlgorithm{
 			case(ACCELEROMETER):
 				returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
 			break;
-			case(ALGO_TYPE):
-				returnValue = ORIENTATION_TYPE.NINE_DOF;
+			case(QUATERNION_OUTPUT):
+				returnValue = true;
 			break;
-//			case(ALGO_OUTPUT):
-//				returnValue = ORIENTATION_OUTPUT.QUATERNION;
-//			break;
+			case(EULER_OUTPUT):
+				returnValue = false;
+			break;
 		}
 		return returnValue;
 	}
@@ -282,12 +288,12 @@ public class OrientationModule extends AbstractAlgorithm{
 			case(ACCELEROMETER):
 				setAccelerometer((String) valueToSet);
 			break;
-			case(ALGO_TYPE):
-				setOrientationType((ORIENTATION_TYPE) valueToSet);
+			case(QUATERNION_OUTPUT):
+				setQuaternionOutput((boolean) valueToSet);;
 			break;
-//			case(ALGO_OUTPUT):
-//				setAlgorithmOutput((ORIENTATION_OUTPUT) valueToSet);
-//			break;
+			case(EULER_OUTPUT):
+				setEulerOutput((boolean) valueToSet);
+			break;
 		}
 	}
 
@@ -467,13 +473,21 @@ public class OrientationModule extends AbstractAlgorithm{
 		this.accelerometerSensor = accelerometerName;
 	}
 	
-//	public ORIENTATION_OUTPUT getAlgorithmOutput() {
-//		return algorithmOutput;
-//	}
-//
-//	public void setAlgorithmOutput(ORIENTATION_OUTPUT algorithmOutput) {
-//		this.algorithmOutput = algorithmOutput;
-//	}
+	public boolean isEulerOutput() {
+		return eulerOutput;
+	}
+
+	public void setEulerOutput(boolean eulerOutput) {
+		this.eulerOutput = eulerOutput;
+	}
+	
+	public boolean isQuaternionOutput() {
+		return quaternionOutput;
+	}
+
+	public void setQuaternionOutput(boolean quaternionOutput) {
+		this.quaternionOutput = quaternionOutput;
+	}
 	
 	public ORIENTATION_TYPE getOrientationType(){
 		return orientationType;
