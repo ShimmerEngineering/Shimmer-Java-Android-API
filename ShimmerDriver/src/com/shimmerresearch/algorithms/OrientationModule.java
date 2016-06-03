@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.vecmath.Vector3d;
 
+import com.shimmerresearch.algorithms.AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -37,7 +38,9 @@ public class OrientationModule extends AbstractAlgorithm{
 	private Vector3d magValues;
 	
 	private String[] QUATERNION_OPTIONS = {"Quaternion On", "Quaternion Off"};
+	private Integer[] QUATERNION_OPTIONS_VALUES = {1, 0};
 	private String[] EULER_OPTIONS = {"Euler On", "Euler Off"};
+	private Integer[] EULER_OPTIONS_VALUES = {1, 0};
 	
 	private static final ShimmerVerObject baseSh3Module = new ShimmerVerObject(
 			HW_ID.SHIMMER_3,ShimmerVerDetails.ANY_VERSION,
@@ -81,9 +84,9 @@ public class OrientationModule extends AbstractAlgorithm{
 //		accSensors[0]=Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
 //		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
 //		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
-		mConfigOptionsMap.put(QUATERNION_OUTPUT, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, QUATERNION_OPTIONS));
-		mConfigOptionsMap.put(EULER_OUTPUT, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, EULER_OPTIONS));
 		
+		mConfigOptionsMap.put(QUATERNION_OUTPUT, new AlgorithmConfigOptionDetails(QUATERNION_OPTIONS, QUATERNION_OPTIONS_VALUES, AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+		mConfigOptionsMap.put(EULER_OUTPUT, new AlgorithmConfigOptionDetails(EULER_OPTIONS, EULER_OPTIONS_VALUES, AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
 	}
 	
 		
