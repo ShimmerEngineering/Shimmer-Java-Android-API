@@ -60,7 +60,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param guiComponentType
 	 */
 	public SensorConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType) {
-		super(guiComponentType, null);
+		super(guiComponentType);
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param guiComponentType
 	 */
 	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType) {
-		super(guiValues, configValues, guiComponentType, null);
+		super(guiValues, configValues, guiComponentType);
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param guiComponentType
 	 */
 	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, COMMUNICATION_TYPE commType) {
-		this(guiValues, configValues, guiComponentType);
+		super(guiValues, configValues, guiComponentType);
 		mCommunicationType = commType;
 	}
 	
@@ -136,8 +136,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param guiComponentType
 	 */
 	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE commType) {
-		this(guiValues, configValues, guiComponentType);
-		mCompatibleVersionInfo = compatibleVersionInfo;
+		super(guiValues, configValues, guiComponentType, compatibleVersionInfo);
 		setmCommunicationType(commType);
 	}
 	

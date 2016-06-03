@@ -1,11 +1,8 @@
 package com.shimmerresearch.algorithms;
 
-
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 
-import com.shimmerresearch.algorithms.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /**
