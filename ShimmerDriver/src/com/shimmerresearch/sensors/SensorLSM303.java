@@ -266,9 +266,10 @@ public class SensorLSM303 extends AbstractSensor{
 			GuiLabelSensors.MAG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(GuiLabelConfig.LSM303DLHC_MAG_RANGE,GuiLabelConfig.LSM303DLHC_MAG_RATE),
+			//MAG channel order is XZY instead of XYZ
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
-					ObjectClusterSensorName.MAG_Y,
-					ObjectClusterSensorName.MAG_Z));
+					ObjectClusterSensorName.MAG_Z,
+					ObjectClusterSensorName.MAG_Y));
 	
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -336,8 +337,8 @@ public class SensorLSM303 extends AbstractSensor{
         aMap.put(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y, SensorLSM303.channelLSM303AccelY);
         aMap.put(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z, SensorLSM303.channelLSM303AccelZ);
         aMap.put(SensorLSM303.ObjectClusterSensorName.MAG_X, SensorLSM303.channelLSM303MagX);
-        aMap.put(SensorLSM303.ObjectClusterSensorName.MAG_Y, SensorLSM303.channelLSM303MagY);
         aMap.put(SensorLSM303.ObjectClusterSensorName.MAG_Z, SensorLSM303.channelLSM303MagZ);
+        aMap.put(SensorLSM303.ObjectClusterSensorName.MAG_Y, SensorLSM303.channelLSM303MagY);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Channel info end --------------
