@@ -2433,7 +2433,7 @@ public class Configuration {
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
 
 			// External ADCs
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7, //YYY in ADC Class
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,
 							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,
@@ -2441,7 +2441,7 @@ public class Configuration {
 							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 							CHANNEL_UNITS.MILLIVOLTS,
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,   //YYY in ADC Class
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,
 							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,
@@ -2449,7 +2449,7 @@ public class Configuration {
 							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 							CHANNEL_UNITS.MILLIVOLTS,
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,   //YYY in ADC Class
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,
 							Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,
@@ -2459,7 +2459,7 @@ public class Configuration {
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
 
 			// Internal ADCs
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1,
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1,  //YYY in ADC Class
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1,
 							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1,
@@ -2467,23 +2467,23 @@ public class Configuration {
 							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 							CHANNEL_UNITS.MILLIVOLTS,
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,          //YYY in ADC Class
 					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,
+							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,   
 							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,
 							DatabaseChannelHandles.INT_ADC_A12,
 							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 							CHANNEL_UNITS.MILLIVOLTS,
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,          //YYY in ADC Class
 					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,
+							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,   
 							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,
 							DatabaseChannelHandles.INT_ADC_A13,
 							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 							CHANNEL_UNITS.MILLIVOLTS,
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,          //YYY in ADC Class
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,
 							Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,
