@@ -592,7 +592,12 @@ public class Configuration {
 			/** Shimmer3 Gyroscope */
 			public static final int SHIMMER_MPU9150_GYRO = 1;
 			/** Shimmer3 Primary magnetometer */
-			public static final int SHIMMER_LSM303DLHC_MAG = 2;//XXX-RS-LSM-SensorClass?
+			
+			//RS (03/06/2016) - bugfix: LSM303 SensorMapKey for MAG and ACCEL exchanged
+			public static final int SHIMMER_LSM303DLHC_MAG = 11;
+			public static final int SHIMMER_LSM303DLHC_ACCEL = 2;
+			
+			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
 			public static final int SHIMMER_GSR = 5;
@@ -603,7 +608,6 @@ public class Configuration {
 			//public static final int SHIMMER_HR = 9;
 			public static final int SHIMMER_VBATT = 10;
 			/** Shimmer3 Wide-range digital accelerometer */
-			public static final int SHIMMER_LSM303DLHC_ACCEL = 11;//XXX-RS-LSM-SensorClass?
 			public static final int SHIMMER_EXT_EXP_ADC_A15 = 12;
 			public static final int SHIMMER_INT_EXP_ADC_A1 = 13;
 			public static final int SHIMMER_INT_EXP_ADC_A12 = 14;
