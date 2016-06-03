@@ -19,6 +19,7 @@ public class ChannelDetails implements Serializable {
 	/** * */
 	private static final long serialVersionUID = -2662151922286820989L;
 
+	/* Channels are Right bit justified unless otherwise stated */
 	public enum CHANNEL_DATA_TYPE{
 		UNKOWN(0, false),
 		UINT8(8, false),
@@ -32,7 +33,7 @@ public class ChannelDetails implements Serializable {
 		
 		INT8(1, true),
 		INT12(2, true),
-		INT16_to_12(2, true),
+		INT12_LBJ(2, true), //Left bit justified
 		INT16(2, true),
 		INT24(3, true),
 		INT32(4, true),

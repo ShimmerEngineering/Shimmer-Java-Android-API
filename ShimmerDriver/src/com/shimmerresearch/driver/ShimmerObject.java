@@ -227,43 +227,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		// 1<<32
 	}
 	
-	public class SDLogHeaderDerivedSensors{
-		public final static int ORIENTATION_9DOF_WR_QUAT = 1<<16;
-		public final static int ORIENTATION_9DOF_WR_EULER = 1<<17;
-		public final static int ORIENTATION_6DOF_WR_QUAT = 1<<18;
-		public final static int ORIENTATION_6DOF_WR_EULER = 1<<19;
-		public final static int ORIENTATION_9DOF_LN_QUAT = 1<<20;
-		public final static int ORIENTATION_9DOF_LN_EULER = 1<<21;
-		public final static int ORIENTATION_6DOF_LN_QUAT = 1<<22;
+	public class DerivedSensorsBitMask{
 		public final static int ORIENTATION_6DOF_LN_EULER = 1<<23;
+		public final static int ORIENTATION_6DOF_LN_QUAT = 1<<22;
+		public final static int ORIENTATION_9DOF_LN_EULER = 1<<21;
+		public final static int ORIENTATION_9DOF_LN_QUAT = 1<<20;
+		public final static int ORIENTATION_6DOF_WR_EULER = 1<<19;
+		public final static int ORIENTATION_6DOF_WR_QUAT = 1<<18;
+		public final static int ORIENTATION_9DOF_WR_EULER = 1<<17;
+		public final static int ORIENTATION_9DOF_WR_QUAT = 1<<16;
 // ------------------------------------------------------------------
 		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
 		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
 		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
 		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
-// ----------- Now implemented in SensorPPG -------------------------
-		public final static int PPG2_1_14 = 1<<4;
-		public final static int PPG1_12_13 = 1<<3;
-		public final static int PPG_12_13 = 1<<2;
-// ------------------------------------------------------------------		
-		public final static int SKIN_TEMP = 1<<1;
-		public final static int RES_AMP = 1<<0;
-	}
-	
-	public class BTStreamDerivedSensors{
-		public final static int ORIENTATION_9DOF_WR_QUAT = 1<<16;
-		public final static int ORIENTATION_9DOF_WR_EULER = 1<<17;
-		public final static int ORIENTATION_6DOF_WR_QUAT = 1<<18;
-		public final static int ORIENTATION_6DOF_WR_EULER = 1<<19;
-		public final static int ORIENTATION_9DOF_LN_QUAT = 1<<20;
-		public final static int ORIENTATION_9DOF_LN_EULER = 1<<21;
-		public final static int ORIENTATION_6DOF_LN_QUAT = 1<<22;
-		public final static int ORIENTATION_6DOF_LN_EULER = 1<<23;
-// ------------------------------------------------------------------
-		public final static int ECG2HR_CHIP1_CH1 = 1<<15;
-		public final static int ECG2HR_CHIP1_CH2 = 1<<14;
-		public final static int ECG2HR_CHIP2_CH1 = 1<<13;
-		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
+		public final static int ECG2HR_HRV_TIME_DOMAIN = 1<<11;
+		public final static int ECG2HR_HRV_FREQ_DOMAIN = 1<<10;
 // ----------- Now implemented in SensorPPG -------------------------		
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
@@ -1357,11 +1336,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					//to Support derived sensor renaming
 					if (isDerivedSensorsSupported()){
 						//change name based on derived sensor value
-						if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG2_1_14)>0){
+						if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_1_14)>0){
 							sensorName = Shimmer3.ObjectClusterSensorName.PPG2_A1;
-						}else if ((mDerivedSensors & SDLogHeaderDerivedSensors.RES_AMP)>0){
+						}else if ((mDerivedSensors & DerivedSensorsBitMask.RES_AMP)>0){
 							sensorName = Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP;
-						}else if((mDerivedSensors & SDLogHeaderDerivedSensors.SKIN_TEMP)>0){
+						}else if((mDerivedSensors & DerivedSensorsBitMask.SKIN_TEMP)>0){
 							sensorName = Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE;
 						}
 						
@@ -1371,7 +1350,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					uncalibratedData[iA1]=(double)newPacketInt[iA1];
 					uncalibratedDataUnits[iA1]=CHANNEL_UNITS.NO_UNITS;
 					if (mEnableCalibration){
-						if((mDerivedSensors & SDLogHeaderDerivedSensors.SKIN_TEMP)>0){
+						if((mDerivedSensors & DerivedSensorsBitMask.SKIN_TEMP)>0){
 							calibratedData[iA1]=calibratePhillipsSkinTemperatureData(tempData[0]);
 							calibratedDataUnits[iA1] = CHANNEL_UNITS.DEGREES_CELSUIS;
 							objectCluster.addData(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,calibratedData[iA1]);
@@ -1392,9 +1371,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//to Support derived sensor renaming
 				if (isDerivedSensorsSupported()){
 					//change name based on derived sensor value
-					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
+					if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG_A12;
-					} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG1_12_13)>0){
+					} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_12_13)>0){
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG1_A12;
 					}
 				}
@@ -1419,9 +1398,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//to Support derived sensor renaming
 				if (isDerivedSensorsSupported()){
 					//change name based on derived sensor value
-					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
+					if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG_A13;
-					} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG1_12_13)>0){
+					} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_12_13)>0){
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG1_A13;
 					}
 				}
@@ -1445,7 +1424,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//to Support derived sensor renaming
 				if (isDerivedSensorsSupported()){
 					//change name based on derived sensor value
-					if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG2_1_14)>0){
+					if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_1_14)>0){
 						sensorName = Shimmer3.ObjectClusterSensorName.PPG2_A14;
 					}
 				}
@@ -5529,9 +5508,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A12) > 0) {
 				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12;
-				if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
+				if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
 					sensorName = Shimmer3.ObjectClusterSensorName.PPG_A12;
-				} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG1_12_13)>0){
+				} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_12_13)>0){
 					sensorName = Shimmer3.ObjectClusterSensorName.PPG1_A12;
 				}
 				channel = new String[]{mShimmerUserAssignedName,sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS};
@@ -5541,9 +5520,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			if (((mEnabledSensors & 0xFFFFFF)& SENSOR_INT_ADC_A13) > 0) {
 				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
-				if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG_12_13)>0){
+				if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
 					sensorName = Shimmer3.ObjectClusterSensorName.PPG_A13;
-				} else if ((mDerivedSensors & SDLogHeaderDerivedSensors.PPG1_12_13)>0){
+				} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_12_13)>0){
 					sensorName = Shimmer3.ObjectClusterSensorName.PPG1_A13;
 				}
 				

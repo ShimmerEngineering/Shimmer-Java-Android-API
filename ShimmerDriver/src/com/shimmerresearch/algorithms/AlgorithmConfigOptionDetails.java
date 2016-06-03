@@ -66,7 +66,11 @@ public class AlgorithmConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public AlgorithmConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+	public AlgorithmConfigOptionDetails(
+			String[] guiValues, 
+			Integer[] configValues, 
+			GUI_COMPONENT_TYPE guiComponentType, 
+			List<ShimmerVerObject> compatibleVersionInfo) {
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 		mGuiComponentType = guiComponentType;

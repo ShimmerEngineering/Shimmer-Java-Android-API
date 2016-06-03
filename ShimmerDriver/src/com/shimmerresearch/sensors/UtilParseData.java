@@ -44,16 +44,17 @@ public class UtilParseData {
 		}
 		consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
 		formattedData &= maskToApply;
-		
+
 		//3) an if statement to calculate the twos complement if required
 		if(dataType.isSigned()){
 			formattedData=calculatetwoscomplement(formattedData,data.length*8);
 		}
-			
+
 		//4) handle special cases like bit shifting for the LSM303
-		if(dataType==CHANNEL_DATA_TYPE.INT16_to_12){
-			formattedData=formattedData>>4; // shift right by 4 bits
-		}
+//		if(dataType==CHANNEL_DATA_TYPE.INT12_LBJ){
+//			formattedData=formattedData>>4; // shift right by 4 bits
+//			formattedData &= 0x0FFF;
+//		}
 
 		consolePrintLnDebugging("Parsing result:\t" + formattedData);
 

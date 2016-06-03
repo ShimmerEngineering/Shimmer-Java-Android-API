@@ -16,7 +16,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
-import com.shimmerresearch.driver.ShimmerObject.BTStreamDerivedSensors;
+import com.shimmerresearch.driver.ShimmerObject.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -87,133 +87,133 @@ public class OrientationModule extends AbstractAlgorithm{
 	}
 	
 		
-		static ChannelDetails angleADetails = new ChannelDetails(
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A, //database name
-				CHANNEL_UNITS.LOCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		
-		static ChannelDetails angleXDetails = new ChannelDetails(
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X, //database name
-				CHANNEL_UNITS.LOCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		
-		static ChannelDetails angleYDetails = new ChannelDetails(
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y, //database name
-				CHANNEL_UNITS.LOCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		
-		static ChannelDetails angleZDetails = new ChannelDetails(
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
-				Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z, //database name
-				CHANNEL_UNITS.LOCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		
-		static ChannelDetails quatWDetails = new ChannelDetails(
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W, //database name
-				CHANNEL_UNITS.LOCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		
-		static ChannelDetails quatXDetails = new ChannelDetails(
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X, //database name
-				CHANNEL_UNITS.LOCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		
-		static ChannelDetails quatYDetails = new ChannelDetails(
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y, //database name
-				CHANNEL_UNITS.LOCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		
-		static ChannelDetails quatZDetails = new ChannelDetails(
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
-				Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z, //database name
-				CHANNEL_UNITS.LOCAL,
-				Arrays.asList(CHANNEL_TYPE.CAL));
-		
-		static List<ChannelDetails> listChannels = Arrays.asList(
-				angleADetails, angleXDetails, angleYDetails, angleZDetails,
-				quatWDetails, quatXDetails, quatYDetails, quatZDetails);
-		
-		public static final AlgorithmDetails algo9DoFOrientation_LN_Acc = new AlgorithmDetails(ORIENTATION_9DOF_LN, 
-				listChannels, ORIENTATION_9DOF_LN, 
-				Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
-						Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
-						Arrays.asList(BTStreamDerivedSensors.ORIENTATION_9DOF_LN_QUAT,
-								BTStreamDerivedSensors.ORIENTATION_9DOF_LN_EULER), 
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
-						,CHANNEL_UNITS.LOCAL);
-		
-		public static final AlgorithmDetails algo9DoFOrientation_WR_Acc = new AlgorithmDetails(ORIENTATION_9DOF_WR, 
-				listChannels, ORIENTATION_9DOF_WR, 
-				Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
-						Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
-						Arrays.asList(BTStreamDerivedSensors.ORIENTATION_9DOF_WR_QUAT,
-								BTStreamDerivedSensors.ORIENTATION_9DOF_WR_EULER), 
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
-						,CHANNEL_UNITS.LOCAL);
-		
-		public static final AlgorithmDetails algo6DoFOrientation_LN_Acc = new AlgorithmDetails(ORIENTATION_6DOF_LN, 
-				listChannels, ORIENTATION_6DOF_LN, 
-				Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
-						Arrays.asList(BTStreamDerivedSensors.ORIENTATION_6DOF_LN_QUAT,
-								BTStreamDerivedSensors.ORIENTATION_6DOF_LN_EULER), 
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
-						,CHANNEL_UNITS.LOCAL);
-		
-		public static final AlgorithmDetails algo6DoFOrientation_WR_Acc = new AlgorithmDetails(ORIENTATION_6DOF_WR, 
-				listChannels, ORIENTATION_6DOF_WR, 
-				Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
-						Arrays.asList(BTStreamDerivedSensors.ORIENTATION_6DOF_WR_QUAT,
-								BTStreamDerivedSensors.ORIENTATION_6DOF_WR_EULER), 
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
-						,CHANNEL_UNITS.LOCAL);
+	static ChannelDetails angleADetails = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails angleXDetails = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails angleYDetails = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails angleZDetails = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails quatWDetails = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails quatXDetails = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails quatYDetails = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails quatZDetails = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static List<ChannelDetails> listChannels = Arrays.asList(
+			angleADetails, angleXDetails, angleYDetails, angleZDetails,
+			quatWDetails, quatXDetails, quatYDetails, quatZDetails);
+	
+	public static final AlgorithmDetails algo9DoFOrientation_LN_Acc = new AlgorithmDetails(ORIENTATION_9DOF_LN, 
+			listChannels, ORIENTATION_9DOF_LN, 
+			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
+					Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
+					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
+					Arrays.asList(DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT,
+							DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER), 
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
+					,CHANNEL_UNITS.LOCAL);
+	
+	public static final AlgorithmDetails algo9DoFOrientation_WR_Acc = new AlgorithmDetails(ORIENTATION_9DOF_WR, 
+			listChannels, ORIENTATION_9DOF_WR, 
+			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
+					Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
+					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
+					Arrays.asList(DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT,
+							DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER), 
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
+					,CHANNEL_UNITS.LOCAL);
+	
+	public static final AlgorithmDetails algo6DoFOrientation_LN_Acc = new AlgorithmDetails(ORIENTATION_6DOF_LN, 
+			listChannels, ORIENTATION_6DOF_LN, 
+			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
+					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
+					Arrays.asList(DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT,
+							DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER), 
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
+					,CHANNEL_UNITS.LOCAL);
+	
+	public static final AlgorithmDetails algo6DoFOrientation_WR_Acc = new AlgorithmDetails(ORIENTATION_6DOF_WR, 
+			listChannels, ORIENTATION_6DOF_WR, 
+			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
+					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
+					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
+					Arrays.asList(DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT,
+							DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER), 
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)
+					,CHANNEL_UNITS.LOCAL);
 		
 	
 	public static final Map<String, AlgorithmDetails> mAlgorithmMapRef;
@@ -503,7 +503,7 @@ public class OrientationModule extends AbstractAlgorithm{
 		this.orientationType = algorithmType;
 	}
 	
-	public static LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject mShimmerVerObject) {
+	public static LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject shimmerVerObject) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
 		//TODO Filter here depending on Shimmer version
 		mapOfSupportedAlgorithms.putAll(mAlgorithmMapRef);
@@ -519,18 +519,21 @@ public class OrientationModule extends AbstractAlgorithm{
 			mIsEnabled |= isEnabled;
 		}
 		
+		//TODO MN: ask Alex if below line is better? :)
+//		mIsEnabled = isEnabled;
+		
 		updateModuleOutput(derivedSensorBitmapID);
 	}
 	
 	private void updateModuleOutput(long derivedSensorBitmapID){
 		if(mIsEnabled){
-			if(derivedSensorBitmapID == BTStreamDerivedSensors.ORIENTATION_9DOF_LN_QUAT ||
-					derivedSensorBitmapID == BTStreamDerivedSensors.ORIENTATION_6DOF_LN_QUAT ){
+			if(derivedSensorBitmapID == DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT 
+					|| derivedSensorBitmapID == DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT ){
 				quaternionOutput = true;
 			}
 			
-			if(derivedSensorBitmapID == BTStreamDerivedSensors.ORIENTATION_9DOF_LN_EULER ||
-					derivedSensorBitmapID == BTStreamDerivedSensors.ORIENTATION_6DOF_LN_EULER ){
+			if(derivedSensorBitmapID == DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER 
+					|| derivedSensorBitmapID == DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER ){
 				eulerOutput = true;
 			}
 		}
