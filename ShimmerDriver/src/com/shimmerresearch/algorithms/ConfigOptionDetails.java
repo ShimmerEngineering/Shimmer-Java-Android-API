@@ -83,6 +83,17 @@ public class ConfigOptionDetails {
 		this(guiValues, configValues, guiComponentType, null);
 	}
 	
+	public ConfigOptionDetails(
+			String[] guiValues,
+			GUI_COMPONENT_TYPE guiComponentType, 
+			List<ShimmerVerObject> listSVO) {
+		mGuiValues = guiValues;
+		mConfigValues = new Integer[guiValues.length];
+		for(int i=0;i<mConfigValues.length;i++){
+			mConfigValues[i] = i;
+		}
+		mCompatibleVersionInfo = listSVO;
+	}
 
 
 

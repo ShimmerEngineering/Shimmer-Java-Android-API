@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
+import com.shimmerresearch.algorithms.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /**
@@ -85,5 +86,13 @@ public class AlgorithmConfigOptionDetails extends ConfigOptionDetails implements
 			GUI_COMPONENT_TYPE guiComponentType) {
 		super(guiValues, configValues, guiComponentType, null);
 	}
+
+	public AlgorithmConfigOptionDetails(
+			String[] guiValues,
+			GUI_COMPONENT_TYPE guiComponentType, 
+			List<ShimmerVerObject> compatibleVersionInfo) {
+		super(guiValues, guiComponentType, compatibleVersionInfo);
+	}
+
 
 }
