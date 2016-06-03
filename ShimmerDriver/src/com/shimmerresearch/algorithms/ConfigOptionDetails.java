@@ -1,10 +1,11 @@
 package com.shimmerresearch.algorithms;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class ConfigOptionDetails {
+public class ConfigOptionDetails implements Serializable {
 	
 	public static enum GUI_COMPONENT_TYPE {
 		COMBOBOX,
