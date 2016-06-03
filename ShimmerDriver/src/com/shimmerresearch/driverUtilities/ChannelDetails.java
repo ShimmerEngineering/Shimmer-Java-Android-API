@@ -33,7 +33,7 @@ public class ChannelDetails implements Serializable {
 		
 		INT8(1, true),
 		INT12(2, true),
-		INT12_LBJ(2, true), //Left bit justified
+//		INT12_LBJ(2, true), //Left bit justified 
 		INT16(2, true),
 		INT24(3, true),
 		INT32(4, true),

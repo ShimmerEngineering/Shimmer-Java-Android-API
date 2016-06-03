@@ -29,8 +29,8 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
  * Sensor class for the LSM303DLHC combined Accelerometer and Magnetometer 
  * (commonly referred to as the wide-range accel in Shimmer literature)
  * 
- * Accelerometer: one 12-bit reading (left-justified) per axis. 
- * Magnetometer: one 12-bit reading (right-justified) per axis.
+ * Accelerometer: one 12-bit reading (left-justified) per axis, LSB. 
+ * Magnetometer: one 12-bit reading (right-justified) per axis, MSB.
  * 
  * @author Ruud Stolk
  * @author Mark Nolan
@@ -266,16 +266,16 @@ public class SensorLSM303 extends AbstractSensor{
 			GuiLabelSensors.MAG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(GuiLabelConfig.LSM303DLHC_MAG_RANGE,GuiLabelConfig.LSM303DLHC_MAG_RATE),
+			//MAG channel order is XZY instead of XYZ
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
-					ObjectClusterSensorName.MAG_Y,
-					ObjectClusterSensorName.MAG_Z));
+					ObjectClusterSensorName.MAG_Z,
+					ObjectClusterSensorName.MAG_Y));
 	
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, SensorLSM303.sensorLSM303DLHCAccel);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, SensorLSM303.sensorLSM303DLHCAccel);  
         aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, SensorLSM303.sensorLSM303DLHCMag);	
-
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -286,7 +286,7 @@ public class SensorLSM303 extends AbstractSensor{
 			ObjectClusterSensorName.ACCEL_WR_X,
 			ObjectClusterSensorName.ACCEL_WR_X,
 			DatabaseChannelHandles.WR_ACC_X,
-			CHANNEL_DATA_TYPE.INT12, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
     
@@ -294,7 +294,7 @@ public class SensorLSM303 extends AbstractSensor{
 			ObjectClusterSensorName.ACCEL_WR_Y,
 			ObjectClusterSensorName.ACCEL_WR_Y,
 			DatabaseChannelHandles.WR_ACC_Y,
-			CHANNEL_DATA_TYPE.INT12, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
     
@@ -302,7 +302,7 @@ public class SensorLSM303 extends AbstractSensor{
 			ObjectClusterSensorName.ACCEL_WR_Z,
 			ObjectClusterSensorName.ACCEL_WR_Z,
 			DatabaseChannelHandles.WR_ACC_Z,
-			CHANNEL_DATA_TYPE.INT12, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
     
@@ -310,8 +310,7 @@ public class SensorLSM303 extends AbstractSensor{
 			ObjectClusterSensorName.MAG_X,
 			ObjectClusterSensorName.MAG_X,
 			DatabaseChannelHandles.MAG_X,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-//			CHANNEL_DATA_TYPE.INT12_LBJ, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	
@@ -319,8 +318,7 @@ public class SensorLSM303 extends AbstractSensor{
 			ObjectClusterSensorName.MAG_Y,
 			ObjectClusterSensorName.MAG_Y,
 			DatabaseChannelHandles.MAG_Y,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-//			CHANNEL_DATA_TYPE.INT12_LBJ, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	
@@ -328,8 +326,7 @@ public class SensorLSM303 extends AbstractSensor{
 			ObjectClusterSensorName.MAG_Z,
 			ObjectClusterSensorName.MAG_Z,
 			DatabaseChannelHandles.MAG_Z,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
-//			CHANNEL_DATA_TYPE.INT12_LBJ, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
     
@@ -340,8 +337,8 @@ public class SensorLSM303 extends AbstractSensor{
         aMap.put(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y, SensorLSM303.channelLSM303AccelY);
         aMap.put(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z, SensorLSM303.channelLSM303AccelZ);
         aMap.put(SensorLSM303.ObjectClusterSensorName.MAG_X, SensorLSM303.channelLSM303MagX);
-        aMap.put(SensorLSM303.ObjectClusterSensorName.MAG_Y, SensorLSM303.channelLSM303MagY);
         aMap.put(SensorLSM303.ObjectClusterSensorName.MAG_Z, SensorLSM303.channelLSM303MagZ);
+        aMap.put(SensorLSM303.ObjectClusterSensorName.MAG_Y, SensorLSM303.channelLSM303MagY);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Channel info end --------------
@@ -391,17 +388,6 @@ public class SensorLSM303 extends AbstractSensor{
 		
 		// process data originating from the Shimmer
 		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
-
-//		// process data originating from the Shimmer
-//		int index = 0;
-//		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-//			//first process the data originating from the Shimmer sensor
-//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-//			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-//			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
-//			objectCluster.incrementIndexKeeper();
-//			index = index + channelDetails.mDefaultNumBytes;
-//		}
 		
 		//Calibration
 		if(mEnableCalibration){
