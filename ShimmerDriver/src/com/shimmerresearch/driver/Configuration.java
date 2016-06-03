@@ -873,8 +873,8 @@ public class Configuration {
 		public class GuiLabelAlgorithmGrouping{
 			public static final String ECG_TO_HR = "ECG-to-HR";
 			public static final String PPG_TO_HR = "PPG-to-HR";
+			public static final String HRV_ECG = "HRV";
 			
-			//XXX-RS-LSM-SensorClass? (Nope -> algorithm class.)
 			public static final String ORIENTATION_9DOF = "9DOF";  
 			public static final String ORIENTATION_6DOF = "6DOF";  
 		}

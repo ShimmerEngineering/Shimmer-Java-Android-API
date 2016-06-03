@@ -307,7 +307,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 
 	public String[] getComboBoxOptions(String key){
-		return mConfigOptionsMap.get(key).mArrayofComboBoxOptions;
+		return mConfigOptionsMap.get(key).mGuiValues;
 	}
 	
 	/** To be used when the algorithm is requires a seperate thread for data processing

@@ -39,7 +39,14 @@ public class AlgorithmDetails implements Serializable {
 		mUnits = units;
 	}
 
-	public AlgorithmDetails(String objectClusterName, String guiFriendlyName, List<String> listOfAssociatedSensors, String groupName, List<Integer> listOfDerivedSensorBitmapId, List<Integer> listOfRequiredSensors, String units){
+	public AlgorithmDetails(
+			String objectClusterName, 
+			String guiFriendlyName, 
+			List<String> listOfAssociatedSensors, 
+			String groupName, 
+			List<Integer> listOfDerivedSensorBitmapId, 
+			List<Integer> listOfRequiredSensors, 
+			String units){
 		this(listOfRequiredSensors, units);
 		mGuiFriendlyName = guiFriendlyName;
 		mListOfAssociatedSensors = listOfAssociatedSensors;
@@ -49,7 +56,8 @@ public class AlgorithmDetails implements Serializable {
 		mListOfChannelDetails.add(generateChannelDetails());
 	}
 	
-	public AlgorithmDetails(String objectClusterName, 
+	public AlgorithmDetails(
+			String objectClusterName, 
 			List<ChannelDetails> listOfAlgortihmChannels, 
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
@@ -62,12 +70,19 @@ public class AlgorithmDetails implements Serializable {
 	}
 
 	//TODO this constructor is only used in the example -> remove?
-	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units, SENSOR_CHECK_METHOD sensorCheckMethod){
+	public AlgorithmDetails(
+			List<Integer> listOfRequiredSensors, 
+			String units, 
+			SENSOR_CHECK_METHOD sensorCheckMethod){
 		this(listOfRequiredSensors, units);
 		mSensorCheckMethod = sensorCheckMethod;
 	}
 
-	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units, String AlgorithmName, String groupName){
+	public AlgorithmDetails(
+			List<Integer> listOfRequiredSensors, 
+			String units, 
+			String AlgorithmName, 
+			String groupName){
 		this(listOfRequiredSensors, units);
 		mAlgorithmName = AlgorithmName;
 		mGroupName = groupName;
