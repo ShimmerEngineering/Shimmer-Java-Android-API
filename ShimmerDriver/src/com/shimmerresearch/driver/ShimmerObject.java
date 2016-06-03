@@ -651,7 +651,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] SensitivityMatrixMag5p6GaShimmer2 = {{330,0,0},{0,330,0},{0,0,330}};
 	protected static final double[][] SensitivityMatrixMag8p1GaShimmer2 = {{230,0,0},{0,230,0},{0,0,230}};
 
-	// ----------- Now implemented in SensorBMP180 -------------------------
+	//YYY ----------- Now implemented in SensorBMP180 -------------------------
 	protected double pressTempAC1 = 408;          
 	protected double pressTempAC2 = -72;
 	protected double pressTempAC3 = -14383;
@@ -741,7 +741,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
 	protected int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
 	
-	// ----------- MPU9X50 options start -------------------------
+	//YYY ----------- MPU9X50 options start -------------------------
 //	protected int mMPU9150GyroRate = 0;
 //	protected int mMPUAccelRange = 0;
 
