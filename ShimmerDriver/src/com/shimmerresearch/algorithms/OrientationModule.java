@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.vecmath.Vector3d;
 
-import com.shimmerresearch.algorithms.AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE;
+import com.shimmerresearch.algorithms.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -85,8 +85,14 @@ public class OrientationModule extends AbstractAlgorithm{
 //		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
 //		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
 		
-		mConfigOptionsMap.put(QUATERNION_OUTPUT, new AlgorithmConfigOptionDetails(QUATERNION_OPTIONS, QUATERNION_OPTIONS_VALUES, AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
-		mConfigOptionsMap.put(EULER_OUTPUT, new AlgorithmConfigOptionDetails(EULER_OPTIONS, EULER_OPTIONS_VALUES, AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX));
+		mConfigOptionsMap.put(QUATERNION_OUTPUT, new AlgorithmConfigOptionDetails(
+				QUATERNION_OPTIONS, 
+				QUATERNION_OPTIONS_VALUES, 
+				GUI_COMPONENT_TYPE.COMBOBOX));
+		mConfigOptionsMap.put(EULER_OUTPUT, new AlgorithmConfigOptionDetails(
+				EULER_OPTIONS, 
+				EULER_OPTIONS_VALUES, 
+				GUI_COMPONENT_TYPE.COMBOBOX));
 	}
 	
 		

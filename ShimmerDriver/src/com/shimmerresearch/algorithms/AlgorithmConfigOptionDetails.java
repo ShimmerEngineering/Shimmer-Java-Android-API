@@ -16,9 +16,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  */
 public class AlgorithmConfigOptionDetails extends ConfigOptionDetails implements Serializable {
 
-	//Remove below
-//	public String[] mArrayofComboBoxOptions;
-
 	/** * */
 	private static final long serialVersionUID = 1146776013155535579L;
 
@@ -88,20 +85,5 @@ public class AlgorithmConfigOptionDetails extends ConfigOptionDetails implements
 			GUI_COMPONENT_TYPE guiComponentType) {
 		super(guiValues, configValues, guiComponentType, null);
 	}
-	
-//	/**
-//	 * Used in Consensys to hold Shimmer configuration GUI information for
-//	 * each configuration option to allow for dynamic GUI creation based on
-//	 * compatible HW&FW version checking.
-//	 * 
-//	 * This constructor = CheckBox (with compatible HW, FW, and Expansion Board information)
-//	 * 
-//	 * @param guiValues
-//	 * @param configValues
-//	 * @param guiComponentType
-//	 */
-//	public AlgorithmConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,String[] comboBoxOptions) {
-//		this(guiComponentType, compatibleVersionInfo);
-//		mArrayofComboBoxOptions = comboBoxOptions;
-//	}
+
 }
