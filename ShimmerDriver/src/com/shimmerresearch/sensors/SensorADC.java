@@ -14,6 +14,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -30,6 +31,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensorTiles;
 import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
 import com.shimmerresearch.sensors.SensorMPU9X50.GuiLabelConfig;
 import com.shimmerresearch.sensors.SensorMPU9X50.ObjectClusterSensorName;
@@ -44,24 +47,8 @@ public class SensorADC extends AbstractSensor {
 	
 	private static final long serialVersionUID = -1313629173441403991L; // check for correct value
 	//--------- Sensor specific variables start --------------
-	/**	
-	 * 	initialise boolean variables   					-> e.g. mLowPowerAccelWR = false;
-	 * 	initialise other variables       					-> e.g. mMagRange = 1;
-	 * 	calibration matrices           					-> alignment, sensitivity, offset matrices for each range for each (sub)sensor
-	 * 	class GuiLabelConfig           					-> class containing GUI configuration labels 
-	 * 	class GuiLabelSensors		   					-> class containing GUI sensor labels
-	 *  class GuiLabelSensorTiles      					-> class containing GUI sensor tile labels
-	 * 	class DatabaseChannelHandles   					-> class containing Database handles
-	 * 	class ObjectClusterSensorName  					-> class containing ObjectClusterSensorName (channel name)
-	 * 
-	 * What TODO with this in ShimmerObject? In Sensor Class?:
-	 * 	- SensorBitMap (for ID/Fw -> What does this mean?)
-	 * 	- SDLogHeader
-	 *  - SDLogHeaderDerivedSensors
-	 *  - BTStreamDerivedSensors
-	 *  - BTStream
-	 * 
-	 */
+
+	
 	public class GuiLabelConfig{
 		public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION; //"PPG Channel";
 		public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";
@@ -121,13 +108,7 @@ public class SensorADC extends AbstractSensor {
 	
 	
 	//--------- Bluetooth commands start --------------
-	/**
-	 *  Bluetooth commands related to the sensor 		-> public static final byte SET_ACCEL_SENSITIVITY_COMMAND    		= (byte) 0x09;
-	 *													-> public static final byte ACCEL_SENSITIVITY_RESPONSE       		= (byte) 0x0A;
-	 *													-> public static final byte GET_ACCEL_SENSITIVITY_COMMAND    		= (byte) 0x0B;
-	 *  mBtGetCommandMap - LinkedHashmap<K,V>  			-> with for get command:  K=command's byte value, V=BtCommandDetails
-	 *  mBtSetCommandMap - LinkedHashmap<K,V>  			-> with for set command:  K=command's byte value, V=BtCommandDetails
-	 */
+	
 //--------- Bluetooth commands end --------------
 	
 	//--------- Configuration options start --------------
@@ -209,14 +190,89 @@ public class SensorADC extends AbstractSensor {
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	
+    //------------------Channel Details----------------------
+  
+    	//External Channels
+   public static final ChannelDetails channel_EXT_EXP_ADC_A7 = new ChannelDetails(
+    		ObjectClusterSensorName.EXT_EXP_ADC_A7,
+    		ObjectClusterSensorName.EXT_EXP_ADC_A7,
+    		DatabaseChannelHandles.EXT_ADC_A7,
+    		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					
+	public static final ChannelDetails channel_EXT_EXP_ADC_A6 = new ChannelDetails(
+					Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,
+					Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,
+					DatabaseChannelHandles.EXT_ADC_A6,
+					CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+					CHANNEL_UNITS.MILLIVOLTS,
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					
+					
+  public static final ChannelDetails channel_EXT_EXP_ADC_A15 = new ChannelDetails(
+					Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,
+					Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,
+					DatabaseChannelHandles.EXT_ADC_A15,
+					CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+					CHANNEL_UNITS.MILLIVOLTS,
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+
+	// Internal ADCs
+  public static final ChannelDetails channel_INT_EXP_ADC_A1 = new ChannelDetails(
+					Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1,
+					Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1,
+					DatabaseChannelHandles.INT_ADC_A1,
+					CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+					CHANNEL_UNITS.MILLIVOLTS,
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	
-	//--------- Sensor info end --------------
+	
+  public static final ChannelDetails channel_INT_EXP_ADC_A12 = new ChannelDetails(
+					Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,
+					Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12,
+					DatabaseChannelHandles.INT_ADC_A12,
+					CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+					CHANNEL_UNITS.MILLIVOLTS,
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+  
+  
+  public static final ChannelDetails channel_INT_EXP_ADC_A13 = new ChannelDetails(
+					Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,
+					Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13,
+					DatabaseChannelHandles.INT_ADC_A13,
+					CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+					CHANNEL_UNITS.MILLIVOLTS,
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					
+  public static final ChannelDetails channel_INT_EXP_ADC_A14 = new ChannelDetails(
+					Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,
+					Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,
+					DatabaseChannelHandles.INT_ADC_A14,
+					CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+					CHANNEL_UNITS.MILLIVOLTS,
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+  
+  public static final Map<String, ChannelDetails> mChannelMapRef;
+  static {
+      Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+      aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A1,  channel_INT_EXP_ADC_A1);
+      aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A12, channel_INT_EXP_ADC_A12);
+      aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A13, channel_INT_EXP_ADC_A13);
+      aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A14, channel_INT_EXP_ADC_A14);
+      aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A6,  channel_EXT_EXP_ADC_A6);
+      aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A7,  channel_EXT_EXP_ADC_A7);
+      aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A15, channel_EXT_EXP_ADC_A15);
+		mChannelMapRef = Collections.unmodifiableMap(aMap);
+  }
+
+    //--------- Sensor info end --------------
 	
 	
 	//--------- Constructors for this class start --------------
 	public SensorADC(ShimmerVerObject svo) {
 		super(svo);
-		// TODO Auto-generated constructor stub
+		setSensorName(SENSORS.MPU9X50.toString());
 	}
 	
 	//--------- Constructors for this class end --------------
@@ -225,36 +281,73 @@ public class SensorADC extends AbstractSensor {
 	//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		
 	}
 
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
+		// Not in this class
 		
 	}
 
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
 		
+		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+//		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			
+			mSensorGroupingMap.put(GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15),
+							CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			
+			mSensorGroupingMap.put(GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
+							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
+							CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+//		}
+		super.updateSensorGroupingMap();	
 	}
+		
+		
+
+	
 
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		// TODO Auto-generated method stub
+		// Not In This Class
 		
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails,
-			byte[] rawData, COMMUNICATION_TYPE commType,
-			ObjectCluster objectCluster, boolean isTimeSyncEnabled,
-			long pctimestamp) {
-		// TODO Auto-generated method stub
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType,
+			ObjectCluster objectCluster, boolean isTimeSyncEnabled,long pcTimestamp) {
+		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		double offset = 0; double vRefP = 3; double gain = 1; 
+		if(mEnableCalibration){
+			
+		int index = sensorDetails.mListOfChannels.size()-1;
+			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.INT_EXP_ADC_A1)){
+					double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
+					index--;
+				}
+				else {
+					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					double calData = calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
+					index--;
+					}
+			}
+		}
 		return null;
 	}
+	
 
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
@@ -322,5 +415,13 @@ public class SensorADC extends AbstractSensor {
 	}
 	
 	//--------- Abstract methods implemented end --------------
+	//--------- Sensor specific methods start --------------
+	protected static double calibrateU12AdcValue(double uncalibratedData,double offset,double vRefP,double gain){
+		double calibratedData=(uncalibratedData-offset)*(((vRefP*1000)/gain)/4095);
+		return calibratedData;
+	}
+	//--------- Sensor specific methods end --------------
+	
+	
 	
 }
