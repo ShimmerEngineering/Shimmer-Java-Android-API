@@ -18,15 +18,13 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	/** * */
 	private static final long serialVersionUID = 1L;
-	
-//	public final int FILTERING_OPTION_NONE = 0;
-//	public final int FILTERING_OPTION_DEFAULT = 1;
+
+	public static final double mVersion=1.0;
+
 	public enum FILTERING_OPTION{
 		NONE,
 		DEFAULT
 	};
-	
-	public static final double mVersion=1.0;
 	
 	public enum ALGORITHM_TYPE{
 		ALGORITHM_TYPE_CONTINUOUS("ALGORITHM TYPE CONTINUOUS"),
