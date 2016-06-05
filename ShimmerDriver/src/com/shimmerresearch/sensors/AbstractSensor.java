@@ -10,12 +10,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -89,18 +87,9 @@ public abstract class AbstractSensor implements Serializable{
 	
 	protected static boolean mEnableCalibration = true;
 	
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	protected String[] mSignalOutputNameArray;
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	protected String[] mSignalOutputFormatArray;
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	protected String[] mSignalOutputUnitArray;
-	
 	protected Double mMaxSetShimmerSamplingRate = 51.2;
 	
-	//TODO remove below?
-	protected int mFirmwareType;
-//	protected int mHardwareID;
+	//TODO implement below?
 //	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor
 	
 	public TreeMap<Integer, SensorDetails> mSensorMap = new TreeMap<Integer, SensorDetails>();
@@ -115,78 +104,6 @@ public abstract class AbstractSensor implements Serializable{
 		generateSensorGroupMapping(svo);
 	}
 
-//	/** To process data originating from the Shimmer device
-//	 * @param channelByteArray The byte array packet, or byte array sd log
-//	 * @param commType The communication type
-//	 * @param object The packet/objectCluster to append the data to
-//	 * @return
-//	 */
-//	public static ObjectCluster processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, ObjectCluster objectCluster){
-//
-////		if (channelDetails.mIsEnabled){
-////			//byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-////			long rawData = parsedData(channelByteArray,channelDetails.mDefaultChannelDataType,channelDetails.mDefaultChannelDataEndian);
-////			ObjectCluster objectCluster = (ObjectCluster) object;
-////			objectCluster.mPropertyCluster.put(channelDetails.mObjectClusterName,new FormatCluster(channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString(),channelDetails.mDefaultUnit,(double)rawData));
-////			objectCluster.mSensorNames[objectCluster.indexKeeper] = channelDetails.mObjectClusterName;
-////			if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.UNCAL){
-////				objectCluster.mUncalData[objectCluster.indexKeeper]=(double)rawData;
-////				objectCluster.mUnitUncal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;	
-////			} else if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.CAL){
-////				objectCluster.mCalData[objectCluster.indexKeeper]=(double)rawData;
-////				objectCluster.mUnitCal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;
-////			}
-////			
-////		}
-//
-//		if(channelDetails.mIsEnabled){
-//			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
-//			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
-//		}
-//
-//		return objectCluster;
-////		return object;
-//	
-//	}
-	
-	
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	/**
-//	 * This returns a String array of the output signal name, the sequence of
-//	 * the format array MUST MATCH the array returned by the method
-//	 * returnSignalOutputFormatArray
-//	 * 
-//	 * @return mSignalOutputNameArray
-//	 */
-//	public String[] getSignalOutputNameArray() {
-//		return mSignalOutputNameArray;
-//	}
-//
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	/**
-//	 * This returns a String array of the output signal format, the sequence of
-//	 * the format array MUST MATCH the array returned by the method
-//	 * returnSignalOutputNameArray
-//	 * 
-//	 * @return mSignalOutputFormatArray
-//	 */
-//	public String[] getSignalOutputFormatArray() {
-//		return mSignalOutputFormatArray;
-//	}
-//
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	/**
-//	 * This returns a String array of the output signal format, the sequence of
-//	 * the format array MUST MATCH the array returned by the method
-//	 * returnSignalOutputNameArray
-//	 * 
-//	 * @return mSignalOutputUnitArray
-//	 */
-//	public String[] getSignalOutputUnitArray() {
-//		return mSignalOutputUnitArray;
-//	}
-	
-	
 	public HashMap<String, SensorConfigOptionDetails> getConfigMap() {
 		return mConfigOptionsMap;
 	}

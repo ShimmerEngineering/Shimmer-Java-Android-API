@@ -207,6 +207,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 
 				|| svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					GuiLabelSensorTiles.GSR,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
 								Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY)));
 			mSensorGroupingMap.get(GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
@@ -215,6 +216,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
 			mSensorGroupingMap.put(GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+					GuiLabelSensorTiles.GSR,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)));
 			mSensorGroupingMap.get(GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 		

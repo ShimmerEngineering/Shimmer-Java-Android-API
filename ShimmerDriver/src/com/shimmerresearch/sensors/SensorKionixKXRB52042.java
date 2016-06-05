@@ -192,6 +192,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(GuiLabelSensorTiles.LOW_NOISE_ACCEL, new SensorGroupingDetails(
+					GuiLabelSensorTiles.LOW_NOISE_ACCEL,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 		}

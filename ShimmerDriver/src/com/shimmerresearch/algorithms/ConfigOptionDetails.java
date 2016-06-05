@@ -96,6 +96,14 @@ public class ConfigOptionDetails implements Serializable {
 		mCompatibleVersionInfo = listSVO;
 	}
 
+	public String[] getGuiValues() {
+		return mGuiValues;
+	}
+
+	public Integer[] getConfigValues() {
+		return mConfigValues;
+	}
+
 
 
 }

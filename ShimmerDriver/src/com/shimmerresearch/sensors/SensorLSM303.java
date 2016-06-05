@@ -373,9 +373,11 @@ public class SensorLSM303 extends AbstractSensor{
 		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(
+					GuiLabelSensorTiles.WIDE_RANGE_ACCEL,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			mSensorGroupingMap.put(GuiLabelSensorTiles.MAG, new SensorGroupingDetails(
+					GuiLabelSensorTiles.MAG,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 		}

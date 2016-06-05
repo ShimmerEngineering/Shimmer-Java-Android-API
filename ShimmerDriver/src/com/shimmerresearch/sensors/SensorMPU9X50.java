@@ -1154,6 +1154,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			
 			if(svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 				mSensorGroupingMap.put(GuiLabelSensorTiles.MPU, new SensorGroupingDetails(
+						GuiLabelSensorTiles.MPU,
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)));
@@ -1161,17 +1162,20 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			}
 			else {
 				mSensorGroupingMap.put(GuiLabelSensorTiles.GYRO, new SensorGroupingDetails(
+						GuiLabelSensorTiles.GYRO,
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)));
 				mSensorGroupingMap.get(GuiLabelSensorTiles.GYRO).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			}
 
 			mSensorGroupingMap.put(GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG, new SensorGroupingDetails(
+					GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG)));
 			mSensorGroupingMap.get(GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
 			
 			mSensorGroupingMap.put(GuiLabelSensorTiles.MPU_OTHER, new SensorGroupingDetails(
+					GuiLabelSensorTiles.MPU_OTHER,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF)));
 			mSensorGroupingMap.get(GuiLabelSensorTiles.MPU_OTHER).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;

@@ -145,6 +145,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	/**
 	 * @return the mGuiValues
 	 */
+	@Override
 	public String[] getGuiValues() {
 		if(mIndexValuesToUse==1){
 			return mGuiValuesAlt1;
@@ -166,6 +167,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	/**
 	 * @return the mConfigValues
 	 */
+	@Override
 	public Integer[] getConfigValues() {
 		if(mIndexValuesToUse==1){
 			return mConfigValuesAlt1;

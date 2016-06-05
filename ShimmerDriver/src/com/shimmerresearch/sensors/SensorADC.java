@@ -298,12 +298,14 @@ public class SensorADC extends AbstractSensor {
 //		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			
 			mSensorGroupingMap.put(GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
+					GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, 
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15),
 							CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			
 			mSensorGroupingMap.put(GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
+					GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, 
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,

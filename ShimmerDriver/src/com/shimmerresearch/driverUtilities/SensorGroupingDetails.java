@@ -17,6 +17,7 @@ public class SensorGroupingDetails implements Serializable {
 	/** *  */
 	private static final long serialVersionUID = 4373658361698230203L;
 	
+	public String mGroupName = "";
 	public List<Integer> mListOfSensorMapKeysAssociated = new ArrayList<Integer>();
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 	
@@ -28,7 +29,8 @@ public class SensorGroupingDetails implements Serializable {
 	 * 
 	 * @param listOfSensorMapKeysAssociated
 	 */
-	public SensorGroupingDetails(List<Integer> listOfSensorMapKeysAssociated) {
+	public SensorGroupingDetails(String groupName, List<Integer> listOfSensorMapKeysAssociated) {
+		mGroupName = groupName;
 		mListOfSensorMapKeysAssociated = listOfSensorMapKeysAssociated;
 	}
 
@@ -39,8 +41,8 @@ public class SensorGroupingDetails implements Serializable {
 	 * @param listOfChannelMapKeysAssociated
 	 * @param listOfCompatibleVersionInfo
 	 */
-	public SensorGroupingDetails(List<Integer> listOfChannelMapKeysAssociated, List<ShimmerVerObject> listOfCompatibleVersionInfo) {
-		this(listOfChannelMapKeysAssociated);
+	public SensorGroupingDetails(String groupName, List<Integer> listOfChannelMapKeysAssociated, List<ShimmerVerObject> listOfCompatibleVersionInfo) {
+		this(groupName, listOfChannelMapKeysAssociated);
 		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}
 	

@@ -620,6 +620,7 @@ public class SensorEXG extends AbstractSensor{
 		
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
+					Configuration.Shimmer3.GuiLabelSensorTiles.EXG,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG,
 								Configuration.Shimmer3.SensorMapKey.HOST_EMG,
 								Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
@@ -631,6 +632,7 @@ public class SensorEXG extends AbstractSensor{
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXG, new SensorGroupingDetails(
+					Configuration.Shimmer3.GuiLabelSensorTiles.EXG,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG)));
 			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
 		}
