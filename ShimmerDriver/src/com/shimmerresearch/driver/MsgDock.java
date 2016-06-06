@@ -1,18 +1,15 @@
 package com.shimmerresearch.driver;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.shimmerresearch.comms.wiredProtocol.DockException;
 import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
 import com.shimmerresearch.driver.DeviceException.ExceptionLevel;
 import com.shimmerresearch.driverUtilities.DockJobDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_STATE;
-import com.sun.xml.internal.ws.wsdl.parser.MexEntityResolver;
+
 
 /**
  * @author JC, Mark Nolan
