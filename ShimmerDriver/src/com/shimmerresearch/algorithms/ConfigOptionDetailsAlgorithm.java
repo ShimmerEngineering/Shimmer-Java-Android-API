@@ -3,6 +3,7 @@ package com.shimmerresearch.algorithms;
 import java.io.Serializable;
 import java.util.List;
 
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /**
@@ -12,7 +13,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  * 
  * @author Mark Nolan & Jong Chern
  */
-public class AlgorithmConfigOptionDetails extends ConfigOptionDetails implements Serializable {
+public class ConfigOptionDetailsAlgorithm extends ConfigOptionDetails implements Serializable {
 
 	/** * */
 	private static final long serialVersionUID = 1146776013155535579L;
@@ -28,7 +29,7 @@ public class AlgorithmConfigOptionDetails extends ConfigOptionDetails implements
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public AlgorithmConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+	public ConfigOptionDetailsAlgorithm(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
 		super(guiComponentType, compatibleVersionInfo);
 	}
 	
@@ -43,7 +44,7 @@ public class AlgorithmConfigOptionDetails extends ConfigOptionDetails implements
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public AlgorithmConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType) {
+	public ConfigOptionDetailsAlgorithm(GUI_COMPONENT_TYPE guiComponentType) {
 		super(guiComponentType, null);
 	}
 
@@ -58,7 +59,7 @@ public class AlgorithmConfigOptionDetails extends ConfigOptionDetails implements
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public AlgorithmConfigOptionDetails(
+	public ConfigOptionDetailsAlgorithm(
 			String[] guiValues, 
 			Integer[] configValues, 
 			GUI_COMPONENT_TYPE guiComponentType, 
@@ -77,14 +78,14 @@ public class AlgorithmConfigOptionDetails extends ConfigOptionDetails implements
 	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
 	 * @param guiComponentType
 	 */
-	public AlgorithmConfigOptionDetails(
+	public ConfigOptionDetailsAlgorithm(
 			String[] guiValues, 
 			Integer[] configValues, 
 			GUI_COMPONENT_TYPE guiComponentType) {
 		super(guiValues, configValues, guiComponentType, null);
 	}
 
-	public AlgorithmConfigOptionDetails(
+	public ConfigOptionDetailsAlgorithm(
 			String[] guiValues,
 			GUI_COMPONENT_TYPE guiComponentType, 
 			List<ShimmerVerObject> compatibleVersionInfo) {

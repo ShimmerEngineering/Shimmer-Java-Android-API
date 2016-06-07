@@ -15,7 +15,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -385,72 +385,72 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG,
 			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW);
 
-	public static final SensorConfigOptionDetails configOptionMpu9150GyroRange = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionMpu9150GyroRange = new ConfigOptionDetailsSensor(
 			ListofGyroRange, 
 			ListofMPU9150GyroRangeConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	//MPL Options
-	public static final SensorConfigOptionDetails configOptionMpu9150AccelRange = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionMpu9150AccelRange = new ConfigOptionDetailsSensor(
 			ListofMPU9150AccelRange, 
 			ListofMPU9150AccelRangeConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	
-	public static final SensorConfigOptionDetails configOptionMpu9150DmpGyroCal = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionMpu9150DmpGyroCal = new ConfigOptionDetailsSensor(
 			ListofMPU9150MplCalibrationOptions, 
 			ListofMPU9150MplCalibrationOptionsConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	
-	public static final SensorConfigOptionDetails configOptionMpu9150MplLpf = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionMpu9150MplLpf = new ConfigOptionDetailsSensor(
 			ListofMPU9150MplLpfOptions, 
 			ListofMPU9150MplLpfOptionsConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	
-	public static final SensorConfigOptionDetails configOptionMpu9150MplRate = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionMpu9150MplRate = new ConfigOptionDetailsSensor(
 			ListofMPU9150MplRate, 
 			ListofMPU9150MplRateConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	
-	public static final SensorConfigOptionDetails configOptionMpu9150MagRate = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionMpu9150MagRate = new ConfigOptionDetailsSensor(
 			ListofMPU9150MagRate, 
 			ListofMPU9150MagRateConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	//MPL CheckBoxes
-	public static final SensorConfigOptionDetails configOptionMpu9150Dmp = new SensorConfigOptionDetails(
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,
+	public static final ConfigOptionDetailsSensor configOptionMpu9150Dmp = new ConfigOptionDetailsSensor(
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	
-	public static final SensorConfigOptionDetails configOptionMpu9150Mpl = new SensorConfigOptionDetails(
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,
+	public static final ConfigOptionDetailsSensor configOptionMpu9150Mpl = new ConfigOptionDetailsSensor(
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	
-	public static final SensorConfigOptionDetails configOptionMpu9150Mpl9DofSensorFusion = new SensorConfigOptionDetails(
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,
+	public static final ConfigOptionDetailsSensor configOptionMpu9150Mpl9DofSensorFusion = new ConfigOptionDetailsSensor(
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 
-	public static final SensorConfigOptionDetails configOptionMpu9150MplGyroCal = new SensorConfigOptionDetails(
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,
+	public static final ConfigOptionDetailsSensor configOptionMpu9150MplGyroCal = new ConfigOptionDetailsSensor(
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 
-	public static final SensorConfigOptionDetails configOptionMpu9150MplVectorCal = new SensorConfigOptionDetails(
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,
+	public static final ConfigOptionDetailsSensor configOptionMpu9150MplVectorCal = new ConfigOptionDetailsSensor(
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 
-	public static final SensorConfigOptionDetails configOptionMpu9150MplMagCal = new SensorConfigOptionDetails(
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,
+	public static final ConfigOptionDetailsSensor configOptionMpu9150MplMagCal = new ConfigOptionDetailsSensor(
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	//General Config
-	public static final SensorConfigOptionDetails configOptionMpu9150GyroRate = new SensorConfigOptionDetails(
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,
+	public static final ConfigOptionDetailsSensor configOptionMpu9150GyroRate = new ConfigOptionDetailsSensor(
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 
-	public static final SensorConfigOptionDetails configOptionMpu9150GyroLpm = new SensorConfigOptionDetails(
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.CHECKBOX,
+	public static final ConfigOptionDetailsSensor configOptionMpu9150GyroLpm = new ConfigOptionDetailsSensor(
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 
 	//--------- Configuration options end --------------

@@ -14,7 +14,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
@@ -127,22 +127,22 @@ public class SensorPPG extends AbstractSensor {
 
     List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
     
-    public static final SensorConfigOptionDetails configOptionPpgAdcSelection = new SensorConfigOptionDetails(
+    public static final ConfigOptionDetailsSensor configOptionPpgAdcSelection = new ConfigOptionDetailsSensor(
     		ListOfPpgAdcSelection, 
 			ListOfPpgAdcSelectionConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
     
-    public static final SensorConfigOptionDetails configOptionPpg1AdcSelection = new SensorConfigOptionDetails(
+    public static final ConfigOptionDetailsSensor configOptionPpg1AdcSelection = new ConfigOptionDetailsSensor(
     		ListOfPpg1AdcSelection, 
 			ListOfPpg1AdcSelectionConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
     
-    public static final SensorConfigOptionDetails configOptionPpg2AdcSelection = new SensorConfigOptionDetails(
+    public static final ConfigOptionDetailsSensor configOptionPpg2AdcSelection = new ConfigOptionDetailsSensor(
     		ListOfPpg2AdcSelection, 
 			ListOfPpg2AdcSelectionConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
     
 	//--------- Configuration options end --------------
@@ -575,49 +575,40 @@ public class SensorPPG extends AbstractSensor {
 		return false;
 	}
 
-	public void handleDummyEntriesInSensorMap(int sensorMapKey, boolean state) {
-
+	public int handleDummyEntriesInSensorMap(int sensorMapKey, boolean state) {
 		if(mSensorMap!=null) {
-
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 
-				// Special case for Dummy entries in the Sensor Map
-				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
-					sensorDetails.setIsEnabled(state);
-					if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
-						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
-					}
-					else {
-						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13;
-					}
-				}		
-				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
-					sensorDetails.setIsEnabled(state);
-					if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
-						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
-					}
-					else {
-						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13;
-					}
-				}		
-				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
-					sensorDetails.setIsEnabled(state);
-					if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
-						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
-					}
-					else {
-						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1;
-					}
-				}		
-
-//				// Automatically handle required channels for each sensor
-//				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
-//				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
-//					for(Integer i:listOfRequiredKeys) {
-//						mSensorMap.get(i).setIsEnabled(state);
-//					}
-//				}
-			}
+			// Special case for Dummy entries in the Sensor Map
+			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
+				sensorDetails.setIsEnabled(state);
+				if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
+					return Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
+				}
+				else {
+					return Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13;
+				}
+			}		
+			else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
+				sensorDetails.setIsEnabled(state);
+				if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
+					return Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
+				}
+				else {
+					return Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13;
+				}
+			}		
+			else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
+				sensorDetails.setIsEnabled(state);
+				if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
+					return Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
+				}
+				else {
+					return Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1;
+				}
+			}		
+		}
+		return sensorMapKey;
 	}
 	/**
 	 * @return the mPpgAdcSelectionGsrBoard
@@ -714,8 +705,8 @@ public class SensorPPG extends AbstractSensor {
 
 	
 	@Override
-	public void handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
-		handleDummyEntriesInSensorMap(sensorMapKey, state);
+	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
+		return handleDummyEntriesInSensorMap(sensorMapKey, state);
 	}
 	//--------- Optional methods to override in Sensor Class end --------
 

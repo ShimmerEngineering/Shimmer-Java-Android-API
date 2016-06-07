@@ -14,7 +14,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -93,7 +93,7 @@ public abstract class AbstractSensor implements Serializable{
 //	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor
 	
 	public TreeMap<Integer, SensorDetails> mSensorMap = new TreeMap<Integer, SensorDetails>();
-	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
+	public HashMap<String,ConfigOptionDetailsSensor> mConfigOptionsMap = new HashMap<String,ConfigOptionDetailsSensor>();
     public LinkedHashMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
     
 	
@@ -104,7 +104,7 @@ public abstract class AbstractSensor implements Serializable{
 		generateSensorGroupMapping(svo);
 	}
 
-	public HashMap<String, SensorConfigOptionDetails> getConfigMap() {
+	public HashMap<String, ConfigOptionDetailsSensor> getConfigMap() {
 		return mConfigOptionsMap;
 	}
 	
@@ -250,7 +250,7 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
-	public HashMap<String, SensorConfigOptionDetails> getConfigOptionsMap() {
+	public HashMap<String, ConfigOptionDetailsSensor> getConfigOptionsMap() {
 		return mConfigOptionsMap;
 	}
 	
@@ -339,9 +339,10 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	
-	public void handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
+	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
 		//NOT USED IN THIS CLASS
-    	//USED in {SensorPPG}		
+    	//USED in {SensorPPG}	
+		return sensorMapKey;
 	}
 	//--------- Optional methods to override in Sensor Class end -------- 
 	

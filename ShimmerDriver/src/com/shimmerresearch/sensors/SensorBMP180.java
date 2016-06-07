@@ -20,7 +20,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -131,10 +131,10 @@ public class SensorBMP180 extends AbstractSensor {
 	public static final String[] ListofPressureResolution = {"Low","Standard","High","Very High"};
 	public static final Integer[] ListofPressureResolutionConfigValues = {0,1,2,3};
 
-	public static final SensorConfigOptionDetails configOptionPressureResolution = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionPressureResolution = new ConfigOptionDetailsSensor(
 			ListofPressureResolution, 
 			ListofPressureResolutionConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 //			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	//--------- Configuration options end --------------

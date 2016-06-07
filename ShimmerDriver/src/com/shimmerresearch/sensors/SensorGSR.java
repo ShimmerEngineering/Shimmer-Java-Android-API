@@ -20,7 +20,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -113,10 +113,10 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		"Auto"};
 	public static final Integer[] ListofGSRRangeConfigValues = {0,1,2,3,4};
 
-	public static final SensorConfigOptionDetails configOptionGsrRange = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionGsrRange = new ConfigOptionDetailsSensor(
 			ListofGSRRange, 
 			ListofGSRRangeConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
 	//--------- Configuration options end --------------
 

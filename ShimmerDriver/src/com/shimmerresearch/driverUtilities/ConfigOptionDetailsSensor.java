@@ -3,7 +3,6 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 import java.util.List;
 
-import com.shimmerresearch.algorithms.ConfigOptionDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 
@@ -14,7 +13,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
  * 
  * @author Mark Nolan
  */
-public class SensorConfigOptionDetails extends ConfigOptionDetails implements Serializable {
+public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Serializable {
 
 	/** * */
 	private static final long serialVersionUID = -8894717489924237791L;
@@ -59,7 +58,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public SensorConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType) {
+	public ConfigOptionDetailsSensor(GUI_COMPONENT_TYPE guiComponentType) {
 		super(guiComponentType);
 	}
 	
@@ -74,7 +73,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public SensorConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+	public ConfigOptionDetailsSensor(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
 		super(guiComponentType, compatibleVersionInfo);
 	}
 
@@ -89,7 +88,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
 	 * @param guiComponentType
 	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType) {
+	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType) {
 		super(guiValues, configValues, guiComponentType);
 	}
 	
@@ -104,7 +103,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
 		super(guiValues, configValues, guiComponentType, compatibleVersionInfo);
 	}
 	
@@ -119,7 +118,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
 	 * @param guiComponentType
 	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, COMMUNICATION_TYPE commType) {
+	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, COMMUNICATION_TYPE commType) {
 		super(guiValues, configValues, guiComponentType);
 		mCommunicationType = commType;
 	}
@@ -135,7 +134,7 @@ public class SensorConfigOptionDetails extends ConfigOptionDetails implements Se
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE commType) {
+	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE commType) {
 		super(guiValues, configValues, guiComponentType, compatibleVersionInfo);
 		setmCommunicationType(commType);
 	}

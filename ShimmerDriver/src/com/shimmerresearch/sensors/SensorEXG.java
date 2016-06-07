@@ -20,7 +20,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -649,67 +649,67 @@ public class SensorEXG extends AbstractSensor{
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
 		mConfigOptionsMap.clear();
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGGain, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGGain, 
 										Configuration.Shimmer3.ListOfExGGainConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGResolutions, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGResolutions, 
 										Configuration.Shimmer3.ListOfExGResolutionsConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 
 		//Advanced ExG		
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfECGReferenceElectrode, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfECGReferenceElectrode, 
 										Configuration.Shimmer3.ListOfECGReferenceElectrodeConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, Configuration.Shimmer3.ListOfEMGReferenceElectrode);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, Configuration.Shimmer3.ListOfExGReferenceElectrodeAll);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, Configuration.Shimmer3.ListOfExGReferenceElectrodeConfigValuesAll);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, Configuration.Shimmer3.ListOfRespReferenceElectrode);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, Configuration.Shimmer3.ListOfRespReferenceElectrodeConfigValues);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, Configuration.Shimmer3.ListOfTestReferenceElectrode);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, Configuration.Shimmer3.ListOfTestReferenceElectrodeConfigValues);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, Configuration.Shimmer3.ListOfEMGReferenceElectrode);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, Configuration.Shimmer3.ListOfEMGReferenceElectrodeConfigValues);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, Configuration.Shimmer3.ListOfExGReferenceElectrodeAll);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, Configuration.Shimmer3.ListOfExGReferenceElectrodeConfigValuesAll);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, Configuration.Shimmer3.ListOfRespReferenceElectrode);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, Configuration.Shimmer3.ListOfRespReferenceElectrodeConfigValues);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, Configuration.Shimmer3.ListOfTestReferenceElectrode);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, Configuration.Shimmer3.ListOfTestReferenceElectrodeConfigValues);
 		
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES, 
-				new SensorConfigOptionDetails(SensorConfigOptionDetails.GUI_COMPONENT_TYPE.JPANEL,
+				new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.JPANEL,
 										CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGRate, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGRate, 
 										Configuration.Shimmer3.ListOfExGRateConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffDetection, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGLeadOffDetection, 
 										Configuration.Shimmer3.ListOfExGLeadOffDetectionConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffCurrent, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGLeadOffCurrent, 
 										Configuration.Shimmer3.ListOfExGLeadOffCurrentConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGLeadOffComparator, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGLeadOffComparator, 
 										Configuration.Shimmer3.ListOfExGLeadOffComparatorConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGRespirationDetectFreq, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGRespirationDetectFreq, 
 										Configuration.Shimmer3.ListOfExGRespirationDetectFreqConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										Configuration.Shimmer3.CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration));
 		mConfigOptionsMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE, 
-				new SensorConfigOptionDetails(Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khz, 
+				new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khz, 
 										Configuration.Shimmer3.ListOfExGRespirationDetectPhase32khzConfigValues, 
-										SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+										ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 										Configuration.Shimmer3.CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration));
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setGuiValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khz);
-		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setConfigValues(SensorConfigOptionDetails.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khzConfigValues);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khz);
+		mConfigOptionsMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khzConfigValues);
 	}
 
 	@Override

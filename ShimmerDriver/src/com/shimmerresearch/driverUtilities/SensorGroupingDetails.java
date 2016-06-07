@@ -62,9 +62,15 @@ public class SensorGroupingDetails implements Serializable {
 	 */
 	public SensorGroupingDetails(String groupName,
 			List<AlgorithmDetails> listOfAlgorithmDetails,
-			Integer x) {
+			List<String> listOfConfigOptionKeysAssociated,
+			Integer doesNothing) {
 		mGroupName = groupName;
+		
 		mListOfAlgorithmDetails = listOfAlgorithmDetails;
+		
+		if(listOfConfigOptionKeysAssociated!=null){
+			mListOfConfigOptionKeysAssociated = listOfConfigOptionKeysAssociated;
+		}
 	}
 	
 }

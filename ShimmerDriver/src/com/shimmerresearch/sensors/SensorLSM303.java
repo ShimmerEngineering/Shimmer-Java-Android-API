@@ -15,7 +15,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -217,34 +217,34 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
 	public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
 	
-	public static final SensorConfigOptionDetails configOptionAccelRange = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionAccelRange = new ConfigOptionDetailsSensor(
 			ListofAccelRange, 
 			ListofLSM303DLHCAccelRangeConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	
-	public static final SensorConfigOptionDetails configOptionMagRange = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
 			ListofMagRange, 
 			ListofMagRangeConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	
-	public static final SensorConfigOptionDetails configOptionAccelRate = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionAccelRate = new ConfigOptionDetailsSensor(
 			ListofLSM303DLHCAccelRate, 
 			ListofLSM303DLHCAccelRateConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	
-	public static final SensorConfigOptionDetails configOptionMagRate = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
 			ListofLSM303DLHCMagRate, 
 			ListofLSM303DLHCMagRateConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	
-	public static final SensorConfigOptionDetails configOptionAccelRateLpm = new SensorConfigOptionDetails(
+	public static final ConfigOptionDetailsSensor configOptionAccelRateLpm = new ConfigOptionDetailsSensor(
 			ListofLSM303DLHCAccelRateLpm, 
 			ListofLSM303DLHCAccelRateLpmConfigValues, 
-			SensorConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	//--------- Configuration options end --------------
 	
@@ -701,10 +701,10 @@ public class SensorLSM303 extends AbstractSensor{
 		if(mConfigOptionsMap.containsKey(stringKey)){
 			if(stringKey==GuiLabelConfig.LSM303DLHC_ACCEL_RATE){
 				if(isLSM303DigitalAccelLPM()) {
-					mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM);
+					mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM);
 				}
 				else {
-					mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(SensorConfigOptionDetails.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.NOT_LPM);
+					mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.NOT_LPM);
 					// double check that rate is compatible with LPM (8 not compatible so set to higher rate) 
 					setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
 				}

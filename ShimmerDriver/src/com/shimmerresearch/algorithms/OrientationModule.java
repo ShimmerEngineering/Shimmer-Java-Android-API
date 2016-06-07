@@ -10,7 +10,6 @@ import java.util.Map;
 
 import javax.vecmath.Vector3d;
 
-import com.shimmerresearch.algorithms.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -19,14 +18,19 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerObject.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 public class OrientationModule extends AbstractAlgorithm{
 
+	/** * */
+	private static final long serialVersionUID = -4174847826978293223L;
+	
 	private final double BETA = 1;
 	private final double Q1 = 1;
 	private final double Q2 = 1;
@@ -37,10 +41,10 @@ public class OrientationModule extends AbstractAlgorithm{
 	private Vector3d gyroValues;
 	private Vector3d magValues;
 	
-	private String[] QUATERNION_OPTIONS = {"Quaternion On", "Quaternion Off"};
-	private Integer[] QUATERNION_OPTIONS_VALUES = {1, 0};
-	private String[] EULER_OPTIONS = {"Euler On", "Euler Off"};
-	private Integer[] EULER_OPTIONS_VALUES = {1, 0};
+	private static final String[] QUATERNION_OPTIONS = {"Quaternion Off", "Quaternion On"};
+//	private Integer[] QUATERNION_OPTIONS_VALUES = {1, 0};
+	private static final String[] EULER_OPTIONS = {"Euler Off", "Euler On"};
+//	private Integer[] EULER_OPTIONS_VALUES = {1, 0};
 	
 	private static final ShimmerVerObject baseSh3Module = new ShimmerVerObject(
 			HW_ID.SHIMMER_3,ShimmerVerDetails.ANY_VERSION,
@@ -79,56 +83,56 @@ public class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	
-	static ChannelDetails angleADetails = new ChannelDetails(
+	static ChannelDetails channelAngleA = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails angleXDetails = new ChannelDetails(
+	static ChannelDetails channelAngleX = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails angleYDetails = new ChannelDetails(
+	static ChannelDetails channelAngleY = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails angleZDetails = new ChannelDetails(
+	static ChannelDetails channelAngleZ = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails quatWDetails = new ChannelDetails(
+	static ChannelDetails channelQuatW = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails quatXDetails = new ChannelDetails(
+	static ChannelDetails channelQuatX = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails quatYDetails = new ChannelDetails(
+	static ChannelDetails channelQuatY = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails quatZDetails = new ChannelDetails(
+	static ChannelDetails channelQuatZ = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z, //database name
@@ -136,8 +140,8 @@ public class OrientationModule extends AbstractAlgorithm{
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
 	static List<ChannelDetails> listChannels = Arrays.asList(
-			angleADetails, angleXDetails, angleYDetails, angleZDetails,
-			quatWDetails, quatXDetails, quatYDetails, quatZDetails);
+			channelAngleA, channelAngleX, channelAngleY, channelAngleZ,
+			channelQuatW, channelQuatX, channelQuatY, channelQuatZ);
 	
 	public static final AlgorithmDetails algo9DoFOrientation_LN_Acc = new AlgorithmDetails(
 			AlgorithmName.ORIENTATION_9DOF_LN, 
@@ -225,7 +229,35 @@ public class OrientationModule extends AbstractAlgorithm{
         aMap.put(algo6DoFOrientation_WR_Acc.mAlgorithmName, algo6DoFOrientation_WR_Acc);
 		mAlgorithmMapRef = Collections.unmodifiableMap(aMap);
     }
+    
+	// ------------------- Algorithms grouping map start -----------------------
+	private static final SensorGroupingDetails sGD9Dof = new SensorGroupingDetails(
+			Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(), 
+			Arrays.asList(OrientationModule.algo9DoFOrientation_LN_Acc,
+					OrientationModule.algo9DoFOrientation_WR_Acc),
+			Arrays.asList(OrientationModule.QUATERNION_OUTPUT,
+					OrientationModule.EULER_OUTPUT),
+			0);
+	public static final SensorGroupingDetails sGD6Dof = new SensorGroupingDetails(
+			Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.getTileText(), 
+			Arrays.asList(OrientationModule.algo6DoFOrientation_LN_Acc,
+					OrientationModule.algo6DoFOrientation_WR_Acc),
+			Arrays.asList(OrientationModule.QUATERNION_OUTPUT,
+					OrientationModule.EULER_OUTPUT),
+			0);
+	// ------------------- Algorithms grouping map end -----------------------
+
 	
+	public static final ConfigOptionDetailsAlgorithm configOptionQuatOutput = new ConfigOptionDetailsAlgorithm(
+			QUATERNION_OPTIONS, 
+			GUI_COMPONENT_TYPE.COMBOBOX,
+			null);
+
+	public static final ConfigOptionDetailsAlgorithm configOptionEulerOutput = new ConfigOptionDetailsAlgorithm(
+			EULER_OPTIONS, 
+			GUI_COMPONENT_TYPE.COMBOBOX,
+			null);
+
 	{
 		mListSVO.add(baseSh3Module);
 		
@@ -235,14 +267,12 @@ public class OrientationModule extends AbstractAlgorithm{
 //		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
 //		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
 		
-		mConfigOptionsMap.put(QUATERNION_OUTPUT, new AlgorithmConfigOptionDetails(
-				QUATERNION_OPTIONS, 
-				QUATERNION_OPTIONS_VALUES, 
-				GUI_COMPONENT_TYPE.COMBOBOX));
-		mConfigOptionsMap.put(EULER_OUTPUT, new AlgorithmConfigOptionDetails(
-				EULER_OPTIONS, 
-				EULER_OPTIONS_VALUES, 
-				GUI_COMPONENT_TYPE.COMBOBOX));
+		mConfigOptionsMap.put(QUATERNION_OUTPUT, configOptionQuatOutput);
+		mConfigOptionsMap.put(EULER_OUTPUT, configOptionEulerOutput);
+		
+		mAlgorithmGroupingMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.ordinal(), sGD9Dof);
+		mAlgorithmGroupingMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.ordinal(), sGD6Dof);
+
 	}
 	
 	public OrientationModule(AlgorithmDetails algorithmDetails, double samplingRate) {

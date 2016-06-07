@@ -1,9 +1,7 @@
-package com.shimmerresearch.algorithms;
+package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public class ConfigOptionDetails implements Serializable {
 	
@@ -93,7 +91,10 @@ public class ConfigOptionDetails implements Serializable {
 		for(int i=0;i<mConfigValues.length;i++){
 			mConfigValues[i] = i;
 		}
-		mCompatibleVersionInfo = listSVO;
+		
+		if(listSVO!=null){
+			mCompatibleVersionInfo = listSVO;
+		}
 	}
 
 	public String[] getGuiValues() {

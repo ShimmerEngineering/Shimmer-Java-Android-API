@@ -22,7 +22,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -129,54 +129,54 @@ public class SensorADC extends AbstractSensor {
 	
 	
 	//--------- Sensor info start --------------
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A1Ref = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.INT_EXP_A1,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA1,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1),
-			null,  //GuiLabelConfig.PPG1_ADC_SELECTION
-			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A1), 
-			false);
-	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A12Ref = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.INT_EXP_A12,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA12,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12),
-			null,
-			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A12), 
-			false);
-	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A13Ref = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.INT_EXP_A13,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA13,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
-			null,
-			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A13), 
-			false);
-	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A14Ref = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.INT_EXP_A14,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA14,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
-			null,
-			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A14), 
-			false);
-	
-	
-	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A7Ref = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.EXT_EXP_A7,
+	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A7Ref = new SensorDetailsRef(0x02<<(0*8), 0x02<<(0*8), GuiLabelSensors.EXT_EXP_A7,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7),
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A7), 
 			false);
 	
-	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A6Ref = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.EXT_EXP_A6,
+	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A6Ref = new SensorDetailsRef(0x01<<(0*8), 0x01<<(0*8), GuiLabelSensors.EXT_EXP_A6,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6),
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A6), 
 			false);
-	
-	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A15Ref = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.EXT_EXP_A15,
+
+
+	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A15Ref = new SensorDetailsRef(0x08<<(1*8), 0x08<<(1*8), GuiLabelSensors.EXT_EXP_A15,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15),
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A15), 
+			false);
+	
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A1Ref = new SensorDetailsRef(0x04<<(1*8), 0x04<<(1*8), GuiLabelSensors.INT_EXP_A1,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA1,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1),
+			null,  //GuiLabelConfig.PPG1_ADC_SELECTION
+			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A1), 
+			false);
+	
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A12Ref = new SensorDetailsRef(0x02<<(1*8), 0x02<<(1*8), GuiLabelSensors.INT_EXP_A12,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA12,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12),
+			null,
+			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A12), 
+			false);
+	
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A13Ref = new SensorDetailsRef(0x01<<(1*8), 0x01<<(1*8), GuiLabelSensors.INT_EXP_A13,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA13,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
+			null,
+			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A13), 
+			false);
+	
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A14Ref = new SensorDetailsRef(0x80<<(2*8), 0x80<<(2*8), GuiLabelSensors.INT_EXP_A14,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA14,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
+			null,
+			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A14), 
 			false);
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;

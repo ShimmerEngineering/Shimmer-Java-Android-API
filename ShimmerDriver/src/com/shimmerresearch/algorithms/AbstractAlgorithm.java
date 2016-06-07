@@ -125,7 +125,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public ALGORITHM_RESULT_TYPE mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
 	public ALGORITHM_INPUT_TYPE mAlgorithmInputType = ALGORITHM_INPUT_TYPE.ALGORITHM_INPUT_TYPE_SINGLE_OBJECT_CLUSTER;
 		
-	public HashMap<String,AlgorithmConfigOptionDetails> mConfigOptionsMap = new HashMap<String,AlgorithmConfigOptionDetails>();//Define the gui to be generated
+	public HashMap<String,ConfigOptionDetailsAlgorithm> mConfigOptionsMap = new HashMap<String,ConfigOptionDetailsAlgorithm>();//Define the gui to be generated
 	public HashMap<String, AlgorithmDetails> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetails>();//Defines algorithm requirements
 	
 	public TreeMap<Integer, SensorGroupingDetails> mAlgorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
@@ -218,8 +218,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return mTimeStampFormat;
 	}
 
-	public HashMap<String, AlgorithmConfigOptionDetails> getConfigMap() {
-		// TODO Auto-generated method stub
+	public HashMap<String, ConfigOptionDetailsAlgorithm> getConfigOptionsMap() {
 		return mConfigOptionsMap;
 	}
 	

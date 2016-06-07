@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
+import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.OrientationModule;
@@ -23,9 +24,10 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
-import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
@@ -63,7 +65,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected LinkedHashMap<Integer, SensorDetails> mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 	/** The contents of Parser are kept in a fixed order based on the SensorMapKey */ 
 	protected HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>> mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
-	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
+	protected Map<String, ConfigOptionDetailsSensor> mConfigOptionsMap = new HashMap<String, ConfigOptionDetailsSensor>();
 	protected TreeMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
 	
 	/** Contains all loaded Algorithm modules */
@@ -72,6 +74,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	protected Map<String, AlgorithmDetails> mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
 	/** for tile generation in GUI configuration */ 
 	protected TreeMap<Integer, SensorGroupingDetails> mAlgorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
+	protected Map<String, ConfigOptionDetailsAlgorithm> mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
 
@@ -258,13 +261,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void generateConfigOptionsMap() {
-		mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
+		mConfigOptionsMap = new HashMap<String, ConfigOptionDetailsSensor>();
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			HashMap<String, SensorConfigOptionDetails> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
-			if(configOptionsMapPerSensor!=null){
-				if(configOptionsMapPerSensor.keySet().size()>0){
-					mConfigOptionsMap.putAll(configOptionsMapPerSensor);
-				}
+			HashMap<String, ConfigOptionDetailsSensor> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
+			if(configOptionsMapPerSensor!=null && configOptionsMapPerSensor.keySet().size()>0){
+				mConfigOptionsMap.putAll(configOptionsMapPerSensor);
 			}
 		}
 	}
@@ -290,8 +291,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** 
 	 * @return the mConfigOptionsMap
 	 */
-	public Map<String, SensorConfigOptionDetails> getConfigOptionsMap() {
+	public Map<String, ConfigOptionDetailsSensor> getConfigOptionsMap() {
 		return mConfigOptionsMap;
+	}
+	
+	/** 
+	 * @return the mConfigOptionsMap
+	 */
+	public Map<String, ConfigOptionDetailsAlgorithm> getConfigOptionsMapAlorithms() {
+		return mConfigOptionsMapAlgorithms;
 	}
 	
 	/** If the device instance is already created use this to add a dock communication type to the instance
@@ -962,8 +970,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isSensorEnabled(int sensorMapKey){
-		if((mSensorMap!=null)&&(mSensorMap!=null)) {
-			if(mSensorMap.containsKey(sensorMapKey)){
+		if(mSensorMap!=null) {
+			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+			if(sensorDetails!=null){
 				return mSensorMap.get(sensorMapKey).isEnabled();
 			}
 		}		
@@ -976,14 +985,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			return sensorDetails.isEnabled(commType);
 		}
 	    return false;
-	}
-	
-	public boolean isChannelEnabled(int sensorKey) {
-		SensorDetails sensorDetails = mSensorMap.get(sensorKey);
-		if(sensorDetails!=null){
-			return sensorDetails.isEnabled();
-		}
-		return false;
 	}
 
 	public String getChannelLabel(int sensorKey) {
@@ -1361,22 +1362,22 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 
 		for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo){
-			int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
-			int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
-
-			if(hwIdToUse==ShimmerVerDetails.ANY_VERSION){
-				hwIdToUse = getHardwareVersion();
-			}
-			if(fwIdToUse==ShimmerVerDetails.ANY_VERSION){
-				fwIdToUse = getFirmwareIdentifier();
-			}
-			
 			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ShimmerVerDetails.ANY_VERSION) {
 				if(getExpansionBoardId()!=compatibleVersionInfo.mShimmerExpansionBoardId) {
 					continue;
 				}
 			}
-
+			
+			int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
+			if(hwIdToUse==ShimmerVerDetails.ANY_VERSION){
+				hwIdToUse = getHardwareVersion();
+			}
+			
+			int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
+			if(fwIdToUse==ShimmerVerDetails.ANY_VERSION){
+				fwIdToUse = getFirmwareIdentifier();
+			}
+			
 			if(isThisVerCompatibleWith( 
 					hwIdToUse,
 					fwIdToUse, 
@@ -1428,9 +1429,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 			
 			//RS (30/5/2016) - added special case (at the moment only relevant for PPG) 
-			handleSpecCasesBeforeSetSensorState(sensorMapKey,state);			
 			//RS (30/5/2016) - replaces this:
-//			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+				sensorDetails = mSensorMap.get(handleSpecCasesBeforeSetSensorState(sensorMapKey,state));			
 //				
 //				// Special case for Dummy entries in the Sensor Map
 //				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
@@ -1470,7 +1471,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					}
 				}
 //				
-//			}
+			}
 //			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 //				
 //			}
@@ -1478,16 +1479,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			//Set sensor state
 			sensorDetails.setIsEnabled(state);
 			
-			// for debugging
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-				for(COMMUNICATION_TYPE commType: sensorDetails.mapOfIsEnabledPerCommsType.keySet()){
-					System.out.println("setSensorEnabledState:\tGyro is enabled:\t" + sensorDetails.isEnabled(commType) + "\t" + commType);
-				}
-			}
-
 			sensorMapConflictCheckandCorrect(sensorMapKey);
 			setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
-
+			
 			// Automatically control internal expansion board power
 			checkIfInternalExpBrdPowerIsNeeded();
 
@@ -1497,21 +1491,22 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			//refresh algorithms
 			algorithmRequiredSensorCheck();
 
-			return ((sensorDetails.isEnabled()==state)? true:false);
-			
+			boolean result = sensorDetails.isEnabled();
+			return (result==state? true:false);
 		}
 		else {
+			System.out.println("setSensorEnabledState:\t SensorMap=null");
 			return false;
 		}
 	}
 	
 	
-	private void handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
-		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
-		while(iterator.hasNext()){
-			AbstractSensor abstractSensor = iterator.next();
-			abstractSensor.handleSpecCasesBeforeSetSensorState(sensorMapKey, state);
+	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
+		AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
+		if(abstractSensor!=null){
+			return abstractSensor.handleSpecCasesBeforeSetSensorState(sensorMapKey, state);
 		}
+		return sensorMapKey;
 	}
 	
 	public boolean isTimestampEnabled(){
@@ -1649,6 +1644,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		sensorMapUpdateFromEnabledSensorsVars();
 		algorithmMapUpdateFromEnabledSensorsVars();
 //		sensorMapCheckandCorrectSensorDependencies();
+		
+		printSensorAndParserMaps();
+
 	}
 	
 
@@ -1661,9 +1659,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				List<SensorDetails> listOfEnabledSensors  = getListOfEnabledSensors();
 				for (SensorDetails sED:listOfEnabledSensors) {
 					mEnabledSensors |= sED.mSensorDetailsRef.mSensorBitmapIDSDLogHeader;
-
 				}
-				
 				
 				// add in algorithm map compatible with device
 				updateDerivedSensors();
@@ -1678,17 +1674,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void printSensorAndParserMaps(){
 		//For debugging
 		for(SensorDetails sensorDetails:mSensorMap.values()){
-			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
 		}
 		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
-				System.out.println("ENABLED SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+				System.out.println("PARSER SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
 			}
 		}
 	}
 	
 	//RS (30/5/2016) - added special case for EXG
-	private void handleSpecCasesUpdateEnabledSensors() {
+	public void handleSpecCasesUpdateEnabledSensors() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
@@ -1719,117 +1715,49 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			sensorAndConfigMapsCreate();
 		}
 		if(mSensorMap!=null) {
+			mapLoop:
 			for(Integer sensorMapKey:mSensorMap.keySet()) {
 				if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
-					continue;
+					continue mapLoop;
 				}
-					boolean skipKey = false;
 					
-					// Process remaining channels
-					if(!skipKey) {
-						mSensorMap.get(sensorMapKey).setIsEnabled(false);
-						// Check if this sensor is a derived sensor
-						if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
-							//Check if associated derived channels are enabled 
-							if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
-								//TODO add comment
-								if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-									mSensorMap.get(sensorMapKey).setIsEnabled(true);
-								}
-							}
-						}
-						// This is not a derived sensor
-						else {
-							//Check if sensor's bit in sensor bitmap is enabled
-							if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-								mSensorMap.get(sensorMapKey).setIsEnabled(true);
-							}
+				// Process remaining channels
+				mSensorMap.get(sensorMapKey).setIsEnabled(false);
+				// Check if this sensor is a derived sensor
+				if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+					//Check if associated derived channels are enabled 
+					if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
+						//TODO add comment
+						if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
+							mSensorMap.get(sensorMapKey).setIsEnabled(true);
 						}
 					}
 				}
+				// This is not a derived sensor
+				else {
+					//Check if sensor's bit in sensor bitmap is enabled
+					if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
+						mSensorMap.get(sensorMapKey).setIsEnabled(true);
+					}
+				}
+			}
 				
-				handleSpecCasesAfterSensorMapUpdate();
-
-				
-//			}
-				
-				// Now that all main sensor channels have been parsed, deal with
-				// sensor channels that have special conditions. E.g. deciding
-				// what type of signal the ExG is configured for or what derived
-				// channel is enabled like whether PPG is on ADC12 or ADC13
-				
-//				
-//
-//				//Handle ExG sensors
-//				internalCheckExgModeAndUpdateSensorMap(mSensorMap);
-//
-//				// Handle PPG sensors so that it appears in Consensys as a
-//				// single PPG channel with a selectable ADC based on different
-//				// hardware versions.
-//				
-//				//Used for Shimmer GSR hardware
-//				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12)!=null){
-//				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled())) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(true);
-//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled()) {
-//						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
-//					}
-//					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled()) {
-//						mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
-//
-//					}
-//				}
-//				else {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(false);
-//
-//				}
-//				}
-//				//Used for Shimmer Proto3 Deluxe hardware
-//				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12)!=null){
-//				if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled())) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(true);
-//					if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled()) {
-//						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
-//					}
-//					else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled()) {
-//						mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
-//					}
-//				}
-//				else {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(false);
-//				}
-//				}
-//				//Used for Shimmer Proto3 Deluxe hardware
-//				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1)!=null){
-//					if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled())) {
-//						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(true);
-//						if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled()) {
-//							mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
-//						}
-//						else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled()) {
-//							mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
-//						}
-//					}
-//					else {
-//						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
-//					}
-//				}
-//			}
-//			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
-//				
-//			}
-	
+			// Now that all main sensor channels have been parsed, deal with
+			// sensor channels that have special conditions. E.g. deciding
+			// what type of signal the ExG is configured for or what derived
+			// channel is enabled like whether PPG is on ADC12 or ADC13
+			handleSpecCasesAfterSensorMapUpdate();
 		}
 		
 		//Debugging
-//		for(SensorEnabledDetails sED:mSensorEnabledMap.values()){
-//			if(sED.mIsEnabled){
-//				System.out.println("SENSOR enabled:\t"+ sED.mSensorDetails.mGuiFriendlyLabel);
-//			}
-//		}
+		for(SensorDetails sED:mSensorMap.values()){
+			if(sED.isEnabled()){
+				System.out.println("SENSOR enabled:\t"+ sED.mSensorDetailsRef.mGuiFriendlyLabel);
+			}
+		}
 	}
 	
-	private boolean handleSpecCasesBeforeSensorMapUpdate(Integer sensorMapKey) {
+	public boolean handleSpecCasesBeforeSensorMapUpdate(Integer sensorMapKey) {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
@@ -1840,7 +1768,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 
-	private void handleSpecCasesAfterSensorMapUpdate() {
+	public void handleSpecCasesAfterSensorMapUpdate() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
@@ -1848,8 +1776,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
-
-	
 
 
 	public List<Integer> sensorMapConflictCheck(Integer key){
@@ -2198,9 +2124,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return true;
 	}
 	
+	protected void generateMapOfAlgorithmConfigOptions(){
+		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
+		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
+			HashMap<String, ConfigOptionDetailsAlgorithm> configOptionsMapPerAlgorithm = abstractAlgorithm.getConfigOptionsMap();
+			if(configOptionsMapPerAlgorithm!=null && configOptionsMapPerAlgorithm.keySet().size()>0){
+				mConfigOptionsMapAlgorithms.putAll(configOptionsMapPerAlgorithm);
+			}
+		}
+	}
+
 	/**
 	 * Load general algorithm modules here. Method can be overwritten in order
-	 * to load paid-for algorithms - as done in ShimmerPCMSS
+	 * to load licenced Shimmer algorithms - as done in ShimmerPCMSS
 	 */
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
@@ -2216,7 +2152,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// jars depending on licence?
 	}
 
-	public Map<String,AbstractAlgorithm> getMapOfAlgorithms(){
+	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
 		return mMapOfAlgorithmModules;
 	}
 
@@ -2454,5 +2390,23 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return maxSetRate;
 	}
+
+	public boolean isAlgorithmEnabled(String algorithmName) {
+		AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(algorithmName);
+		if(abstractAlgorithm!=null && abstractAlgorithm.isEnabled()){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isAnyAlgortihmChannelEnabled(List<AlgorithmDetails> listOfAlgorithmDetails){
+		for(AlgorithmDetails algortihmDetails:listOfAlgorithmDetails){
+			if(isAlgorithmEnabled(algortihmDetails.mAlgorithmName)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	
 }

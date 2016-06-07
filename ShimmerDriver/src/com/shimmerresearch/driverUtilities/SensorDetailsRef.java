@@ -150,20 +150,4 @@ public class SensorDetailsRef implements Serializable {
 		}
 	}
 
-
-//	/**
-//	 * Holds all information related individual sensor channels for dynamic GUI
-//	 * and configuration purposes. Currently used in Consensys only.
-//	 * 
-//	 * This constructor is used for Shimmer3 GQ BLE firmware
-//	 * 
-//	 * @param isChannelEnabled
-//	 * @param label
-//	 */
-//	public SensorDetails(String label) {
-//		mLabel = label;
-//		mIntExpBoardPowerRequired = false;
-//		mListOfCompatibleVersionInfo = null;
-//	}
-
 }
