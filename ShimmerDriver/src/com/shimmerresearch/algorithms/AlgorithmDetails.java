@@ -28,6 +28,7 @@ public class AlgorithmDetails implements Serializable {
 
 	public List<Integer> mListOfRequiredSensors = new ArrayList<Integer>();
 	public List<String> mListOfAssociatedSensors = new ArrayList<String>();
+	@Deprecated //TODO replace with compatible versions list
 	public List<Integer> mListOfCompatableExpBoards = new ArrayList<Integer>();
 
 	public SENSOR_CHECK_METHOD mSensorCheckMethod = SENSOR_CHECK_METHOD.ALL;
@@ -117,26 +118,10 @@ public class AlgorithmDetails implements Serializable {
 			List<Integer> listOfCompatibleExpBoards,
 			List<Integer> listOfRequiredSensors, 
 			String units){
-		this(listOfRequiredSensors, units);
-		mAlgorithmName = objectClusterName;
-		mGuiFriendlyName = guiFriendlyName;
-		mListOfAssociatedSensors = listOfAssociatedSensors;
-		mDerivedSensorBitmapID.addAll(listOfDerivedSensorBitmapId);
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, listOfDerivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfCompatableExpBoards=listOfCompatibleExpBoards;
-		mGroupName = groupName;
-		mListOfChannelDetails.add(generateChannelDetails());
 	}
 	
-	
-//	public AlgorithmDetails(
-//			List<Integer> listOfRequiredSensors, 
-//			String units, 
-//			String AlgorithmName, 
-//			String groupName){
-//		this(listOfRequiredSensors, units);
-//		mAlgorithmName = AlgorithmName;
-//		mGroupName = groupName;
-//	}
 	
 	//TODO maybe only array of 3? no Shimmer name?
 	public String[] getSignalStringArray() {
@@ -155,7 +140,6 @@ public class AlgorithmDetails implements Serializable {
 				mDatabaseChannelHandle,
 				mUnits,
 				Arrays.asList(mChannelType));
-		
 		return cD;
 	}
 
