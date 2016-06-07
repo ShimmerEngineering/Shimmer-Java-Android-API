@@ -24,7 +24,8 @@ public class AlgorithmDetails implements Serializable {
 	public String mGroupName = "";
 	public String mUnits = "";
 	public CHANNEL_TYPE mChannelType = CHANNEL_TYPE.CAL;
-	public List<Integer> mDerivedSensorBitmapID = new ArrayList<Integer>(); 
+//	public List<Integer> mDerivedSensorBitmapID = new ArrayList<Integer>(); 
+	public long mDerivedSensorBitmapID = 0; 
 
 	public List<Integer> mListOfRequiredSensors = new ArrayList<Integer>();
 	public List<String> mListOfAssociatedSensors = new ArrayList<String>();
@@ -74,14 +75,14 @@ public class AlgorithmDetails implements Serializable {
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
 			String groupName, 
-			List<Integer> listOfDerivedSensorBitmapId, 
+			long derivedSensorBitmapId, 
 			List<Integer> listOfRequiredSensors, 
 			String units){
 		this(listOfRequiredSensors, units);
 		mAlgorithmName = objectClusterName;
 		mGuiFriendlyName = guiFriendlyName;
 		mListOfAssociatedSensors = listOfAssociatedSensors;
-		mDerivedSensorBitmapID.addAll(listOfDerivedSensorBitmapId);
+		mDerivedSensorBitmapID = derivedSensorBitmapId;
 		mGroupName = groupName;
 		mListOfChannelDetails.add(generateChannelDetails());
 	}
@@ -101,11 +102,11 @@ public class AlgorithmDetails implements Serializable {
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
 			String groupName, 
-			List<Integer> listOfDerivedSensorBitmapId, 
+			long derivedSensorBitmapId, 
 			List<Integer> listOfRequiredSensors, 
 			String units,
 			List<ChannelDetails> listOfAlgortihmChannels){
-		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, listOfDerivedSensorBitmapId, listOfRequiredSensors, units);
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
 	}
 	
@@ -114,11 +115,11 @@ public class AlgorithmDetails implements Serializable {
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
 			String groupName, 
-			List<Integer> listOfDerivedSensorBitmapId, 
+			long derivedSensorBitmapId, 
 			List<Integer> listOfCompatibleExpBoards,
 			List<Integer> listOfRequiredSensors, 
 			String units){
-		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, listOfDerivedSensorBitmapId, listOfRequiredSensors, units);
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfCompatableExpBoards=listOfCompatibleExpBoards;
 	}
 	

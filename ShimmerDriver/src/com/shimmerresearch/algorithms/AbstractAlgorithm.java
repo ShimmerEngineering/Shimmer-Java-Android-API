@@ -145,7 +145,6 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public abstract void reset() throws Exception;
 	public abstract void initialize() throws Exception;
 	public abstract String printBatchMetrics();
-	public abstract void setIsEnabled(boolean isEnabled, long derivedSensorBitmapID);
 	
 	/** For event driven algorithm implementation. Event Driven Algorithm is best to be used for algorithms whose processing duration is longer than the Shimmer's sampling rate. It can also be used for algorithms which do not require real time results.
 	 *  Once processing is done use sendProcessingResultMsg method to send your results back as an event to be handled.
@@ -232,6 +231,21 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	public void setIsEnabled(boolean isEnabled) {
 		mIsEnabled = isEnabled;
+	}
+	
+	/** Override if needed for special cases (e.g., OrientationModule, ECGAdaptiveModule etc. */
+	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID){
+		if(mAlgorithmDetails!=null){
+			setIsEnabled((mAlgorithmDetails.mDerivedSensorBitmapID&derivedSensorBitmapID)>0? true:false);
+		}
+	}
+	
+	/** Override if needed for special cases (e.g., OrientationModule, ECGAdaptiveModule etc. */
+	public long getDerivedSensorBitmapID() {
+		if(mAlgorithmDetails!=null && isEnabled()){
+			return mAlgorithmDetails.mDerivedSensorBitmapID;
+		}
+		return 0;
 	}
 	
 	/** This returns a String array of the output signal name, the sequence of the format array MUST MATCH the array returned by the method returnSignalOutputFormatArray
@@ -344,6 +358,8 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		}
 		return null;
 	}
+	
+
 
 
 

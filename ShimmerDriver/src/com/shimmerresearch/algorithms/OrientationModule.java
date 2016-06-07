@@ -156,8 +156,7 @@ public class OrientationModule extends AbstractAlgorithm{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
-			Arrays.asList(DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT,
-					DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER), 
+			(DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
@@ -177,8 +176,7 @@ public class OrientationModule extends AbstractAlgorithm{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
-			Arrays.asList(DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT,
-					DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER), 
+			(DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
@@ -195,8 +193,7 @@ public class OrientationModule extends AbstractAlgorithm{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.getTileText(),
-			Arrays.asList(DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT,
-					DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER), 
+			(DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 			CHANNEL_UNITS.LOCAL,
@@ -212,8 +209,7 @@ public class OrientationModule extends AbstractAlgorithm{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.getTileText(),
-			Arrays.asList(DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT,
-					DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER), 
+			(DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 			CHANNEL_UNITS.LOCAL,
@@ -557,36 +553,137 @@ public class OrientationModule extends AbstractAlgorithm{
 	}
 
 	@Override
-	public void setIsEnabled(boolean isEnabled, long derivedSensorBitmapID) {
-		if(mIsEnabled){
-			mIsEnabled &= isEnabled;
-		}
-		else{
-			mIsEnabled |= isEnabled;
-		}
-		
-		//TODO MN: ask Alex if below line is better? :)
-//		mIsEnabled = isEnabled;
-		
-		updateModuleOutput(derivedSensorBitmapID);
+	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID) {
+		updateModuleIsEnabled(derivedSensorBitmapID);
+//		updateModuleOutput(derivedSensorBitmapID);
 	}
 	
-	private void updateModuleOutput(long derivedSensorBitmapID){
-		if(mIsEnabled){
-			if(derivedSensorBitmapID == DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT 
-					|| derivedSensorBitmapID == DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT ){
-				quaternionOutput = true;
-			}
-			
-			if(derivedSensorBitmapID == DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER 
-					|| derivedSensorBitmapID == DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER ){
-				eulerOutput = true;
+	private void updateModuleIsEnabled(long derivedSensorBitmapID){
+		boolean isEnabled = false;
+		quaternionOutput = false;
+		eulerOutput = false;
+		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
+			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER)>0){
+				isEnabled = true;
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0){
+					quaternionOutput = true;
+				}
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER)>0){
+					eulerOutput = true;
+				}
 			}
 		}
-		else{
-			quaternionOutput = false;
-			eulerOutput = false;
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
+			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER)>0){
+				isEnabled = true;
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0){
+					quaternionOutput = true;
+				}
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER)>0){
+					eulerOutput = true;
+				}
+			}
 		}
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
+			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
+				isEnabled = true;
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
+					quaternionOutput = true;
+				}
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
+					eulerOutput = true;
+				}
+			}
+		}
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
+			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0){
+				isEnabled = true;
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0){
+					quaternionOutput = true;
+				}
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0){
+					eulerOutput = true;
+				}
+			}
+		}
+		setIsEnabled(isEnabled);
+	}
+
+//	private void updateModuleOutput(long derivedSensorBitmapID){
+//		if(mIsEnabled){
+//			if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
+//				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0
+//						||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0
+//						||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0
+//						||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
+//					quaternionOutput = true;
+//				}
+//			}
+//			else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
+//				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0
+//						||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0
+//						||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0
+//						||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
+//					quaternionOutput = true;
+//				}
+//				
+//			}
+//			
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER)>0
+//					||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0
+//					||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER)>0
+//					||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
+//				eulerOutput = true;
+//			}
+//		}
+//		else{
+//			quaternionOutput = false;
+//			eulerOutput = false;
+//		}
+//	}
+	
+	@Override
+	public long getDerivedSensorBitmapID() {
+		long bitmask = 0;
+		if(mAlgorithmDetails!=null && isEnabled()){
+			if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
+				if(quaternionOutput){
+					bitmask |= DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT;
+				}
+				if(eulerOutput){
+					bitmask |= DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER;
+				}
+			}
+			else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
+				if(quaternionOutput){
+					bitmask |= DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT;
+				}
+				if(eulerOutput){
+					bitmask |= DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER;
+				}
+			}
+			else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
+				if(quaternionOutput){
+					bitmask |= DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT;
+				}
+				if(eulerOutput){
+					bitmask |= DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER;
+				}
+			}
+			else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
+				if(quaternionOutput){
+					bitmask |= DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT;
+				}
+				if(eulerOutput){
+					bitmask |= DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER;
+				}
+			}
+		}
+		return bitmask;
 	}
 
 }

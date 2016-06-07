@@ -1627,12 +1627,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void algorithmMapUpdateFromEnabledSensorsVars() {
 		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
-			for(Integer derivedSensorBit: aA.mAlgorithmDetails.mDerivedSensorBitmapID){
-				boolean isEnabled = ((mDerivedSensors&derivedSensorBit)>0)? true:false;
-				aA.setIsEnabled(isEnabled, derivedSensorBit);
-//				boolean isEnabled = ((mDerivedSensors&aA.mAlgorithmDetails.mDerivedSensorBitmapID)>0)? true:false;
-	//			aA.setIsEnabled(isEnabled);
-			}
+			aA.algorithmMapUpdateFromEnabledSensorsVars(mDerivedSensors);
 		}
 		initializeAlgorithms();
 	}
@@ -1921,16 +1916,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	private void updateDerivedSensorsFromAlgorithmMap(){
-		List<AlgorithmDetails> listOfEnabledAlgorithms = getListOfEnabledAlgorithms();
-		for(AlgorithmDetails aD:listOfEnabledAlgorithms){
-//			mDerivedSensors |= aD.mDerivedSensorBitmapID;
-			for(Integer derivedSensorBit: aD.mDerivedSensorBitmapID){
-				mDerivedSensors |= derivedSensorBit;
-			}
+		List<AbstractAlgorithm> listOfEnabledAlgorithms = getListOfEnabledAlgorithmModules();
+		for(AbstractAlgorithm aA:listOfEnabledAlgorithms){
+			mDerivedSensors |= aA.getDerivedSensorBitmapID();
 		}
 	}
 	
-	public List<AlgorithmDetails> getListOfEnabledAlgorithms(){
+	public List<AlgorithmDetails> getListOfEnabledAlgorithmDetails(){
 		List<AlgorithmDetails> listOfEnabledAlgorithms = new ArrayList<AlgorithmDetails>();
 		for(AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
 //		for(AlgorithmDetails aD:mMapOfAlgorithmDetails.values()){
@@ -1940,6 +1932,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return listOfEnabledAlgorithms;
 	}
+	
+	public List<AbstractAlgorithm> getListOfEnabledAlgorithmModules(){
+		List<AbstractAlgorithm> listOfEnabledAlgorithms = new ArrayList<AbstractAlgorithm>();
+		for(AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
+			if(aa.isEnabled()){
+				listOfEnabledAlgorithms.add(aa);
+			}
+		}
+		return listOfEnabledAlgorithms;
+	}
+
 	
 //	//migrated from Shimmer Object 19-5-2016 by EN - all algorithm related functions - UNTESTED
 //	//list of algorithms to configure from panel configure algorithm GUI
@@ -2013,7 +2016,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected List<String[]> getListofEnabledAlgorithmsSignalsandFormats(){
 		List<String[]> listAlgoSignalProperties = new ArrayList<String[]>();
-		List<AlgorithmDetails> listOfEnabledAlgorithms = getListOfEnabledAlgorithms();
+		List<AlgorithmDetails> listOfEnabledAlgorithms = getListOfEnabledAlgorithmDetails();
 		for(AlgorithmDetails aD:listOfEnabledAlgorithms){
 			String[] signalStringArray = aD.getSignalStringArray();
 			//TODO is below needed?
