@@ -76,9 +76,9 @@ public class AlgorithmDetails implements Serializable {
 			List<Integer> listOfRequiredSensors, 
 			String units){
 		this(listOfRequiredSensors, units);
+		mAlgorithmName = objectClusterName;
 		mGuiFriendlyName = guiFriendlyName;
 		mListOfAssociatedSensors = listOfAssociatedSensors;
-		mAlgorithmName = objectClusterName;
 		mDerivedSensorBitmapID.addAll(listOfDerivedSensorBitmapId);
 		mGroupName = groupName;
 		mListOfChannelDetails.add(generateChannelDetails());

@@ -64,14 +64,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** The contents of Parser are kept in a fixed order based on the SensorMapKey */ 
 	protected HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>> mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
 	protected Map<String, SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
-	protected Map<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+	protected TreeMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
 	
 	/** Contains all loaded Algorithm modules */
 	protected Map<String, AbstractAlgorithm> mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 	/** All supported channels based on hardware, expansion board and firmware */
 //	protected Map<String, AlgorithmDetails> mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
 	/** for tile generation in GUI configuration */ 
-	protected Map<String, List<String>> mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
+	protected TreeMap<Integer, SensorGroupingDetails> mAlgorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
 
@@ -271,9 +271,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	//New approach - should not be run when using ShimmerObject
 	public void generateSensorGroupingMap(){
-		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>(); 
+		mSensorGroupingMap = new TreeMap<Integer, SensorGroupingDetails>(); 
 		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
-			Map<String, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
+			Map<Integer, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
 			if(sensorGroupingMap!=null){
 				mSensorGroupingMap.putAll(sensorGroupingMap);
 			}
@@ -283,7 +283,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**	
 	 * @return the mSensorGroupingMap
 	 */
-	public Map<String, SensorGroupingDetails> getSensorGroupingMap() {
+	public TreeMap<Integer, SensorGroupingDetails> getSensorGroupingMap() {
 		return mSensorGroupingMap;
 	}
 
@@ -2170,19 +2170,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mSupportedAlgorithmChannelsMap;
 	}
 	
-	public Map<String, List<String>> getAlgorithmGroupingMap() {
-		//TODO
-//		 List<String> tempAlgorithmChannelNames = new ArrayList<String>();
-//		 String tempGroupName = mAlgorithmChannelsMap.get;
-//		 
-//		parentLoop:
-//	    	for(AlgorithmDetails algorithmDetails:mAlgorithmChannelsMap.values()) {
-//	    		if(algorithmDetails.mAlgorithmDetails.mGroupName.contains(tempGroupName)){
-//	    		tempAlgorithmChannelNames.add(algorithmDetails.mAlgorithmDetails.mAlgorithmName);
-//	    		tempGroupName = algorithmDetails.mAlgorithmDetails.mGroupName;
-//	    		tempAlgorithmChannelNames.add(algorithmDetails);	    		
-//	    	}
-		
+	public TreeMap<Integer, SensorGroupingDetails> getAlgorithmGroupingMap() {
+		TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>(); 
+    	for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {
+    		algorithmGroupingMap.putAll(abstractAlgorithm.mAlgorithmGroupingMap);
+    	}
+    	mAlgorithmGroupingMap = algorithmGroupingMap;
 		return mAlgorithmGroupingMap;
 	}
 

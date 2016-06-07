@@ -99,6 +99,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.vecmath.Quat4d;
 import javax.vecmath.Vector3d;
@@ -6849,8 +6850,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
 		mMapOfAlgorithmModules = new LinkedHashMap<String, AbstractAlgorithm>();
 //		mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
-		mAlgorithmGroupingMap = new LinkedHashMap<String, List<String>>();
-		mSensorGroupingMap = new LinkedHashMap<String,SensorGroupingDetails>();
+		mAlgorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
+		mSensorGroupingMap = new TreeMap<Integer,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String, SensorConfigOptionDetails>();
 
 		if (getHardwareVersion() != -1){
@@ -6864,14 +6865,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				createSensorMapShimmer3();
 				
 				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
-				mSensorGroupingMap = Configuration.Shimmer3.mSensorGroupingMapRef;
+				mSensorGroupingMap.putAll(Configuration.Shimmer3.mSensorGroupingMapRef);
 				mConfigOptionsMap = Configuration.Shimmer3.mConfigOptionsMapRef;
 			
 				
 				generateMapOfAlgorithmModules();
 //				initializeDerivedSensors();
 //				generateAlgorithmChannelsMap();
-				mAlgorithmGroupingMap = Configuration.Shimmer3.mAlgorithmGroupingMapRef;
+				mAlgorithmGroupingMap.putAll(Configuration.Shimmer3.mAlgorithmGroupingMapRef);
 			}
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
@@ -6880,7 +6881,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mSensorMap.put(key, new SensorDetails(false, 0, sensorMapRef.get(key)));
 				}
 
-				mSensorGroupingMap = Configuration.ShimmerGqBle.mSensorGroupingMap;
+				mSensorGroupingMap.putAll(Configuration.ShimmerGqBle.mSensorGroupingMapRef);
 				mConfigOptionsMap = Configuration.ShimmerGqBle.mConfigOptionsMap;
 			}
 		}

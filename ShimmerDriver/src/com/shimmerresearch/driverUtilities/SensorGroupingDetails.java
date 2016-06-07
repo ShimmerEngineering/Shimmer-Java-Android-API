@@ -19,9 +19,8 @@ public class SensorGroupingDetails implements Serializable {
 	
 	public String mGroupName = "";
 	public List<Integer> mListOfSensorMapKeysAssociated = new ArrayList<Integer>();
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
-	
-	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null;  
 
 	/**
 	 * Holds all information related the sensor 'tiles' used in Consensys for
@@ -29,7 +28,8 @@ public class SensorGroupingDetails implements Serializable {
 	 * 
 	 * @param listOfSensorMapKeysAssociated
 	 */
-	public SensorGroupingDetails(String groupName, List<Integer> listOfSensorMapKeysAssociated) {
+	public SensorGroupingDetails(String groupName, 
+			List<Integer> listOfSensorMapKeysAssociated) {
 		mGroupName = groupName;
 		mListOfSensorMapKeysAssociated = listOfSensorMapKeysAssociated;
 	}
@@ -41,7 +41,9 @@ public class SensorGroupingDetails implements Serializable {
 	 * @param listOfChannelMapKeysAssociated
 	 * @param listOfCompatibleVersionInfo
 	 */
-	public SensorGroupingDetails(String groupName, List<Integer> listOfChannelMapKeysAssociated, List<ShimmerVerObject> listOfCompatibleVersionInfo) {
+	public SensorGroupingDetails(String groupName, 
+			List<Integer> listOfChannelMapKeysAssociated, 
+			List<ShimmerVerObject> listOfCompatibleVersionInfo) {
 		this(groupName, listOfChannelMapKeysAssociated);
 		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}

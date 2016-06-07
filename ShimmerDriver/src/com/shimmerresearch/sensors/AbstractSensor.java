@@ -94,7 +94,7 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public TreeMap<Integer, SensorDetails> mSensorMap = new TreeMap<Integer, SensorDetails>();
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
-    public LinkedHashMap<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+    public LinkedHashMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
     
 	
 	public AbstractSensor(ShimmerVerObject svo){
@@ -178,21 +178,21 @@ public abstract class AbstractSensor implements Serializable{
 	
 	
 	public void updateSensorGroupingMap() {
-		for (String sensorGroup:mSensorGroupingMap.keySet()) {
+		for(SensorGroupingDetails sensorGroup:mSensorGroupingMap.values()) {
 			// Ok to clear here because variable is initiated in the class
-			mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated = new ArrayList<String>();
-			for (Integer sensorKey:mSensorGroupingMap.get(sensorGroup).mListOfSensorMapKeysAssociated) {
+			sensorGroup.mListOfConfigOptionKeysAssociated = new ArrayList<String>();
+			for (Integer sensorKey:sensorGroup.mListOfSensorMapKeysAssociated) {
 				SensorDetails sensorDetails = mSensorMap.get(sensorKey);
 				if(sensorDetails!=null && sensorDetails.mSensorDetailsRef!=null && sensorDetails.mSensorDetailsRef.mListOfConfigOptionKeysAssociated!=null){
 					for (String configOption:sensorDetails.mSensorDetailsRef.mListOfConfigOptionKeysAssociated) {
 						// do not add duplicates
-						if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-							mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+						if (!(sensorGroup.mListOfConfigOptionKeysAssociated.contains(configOption))) {
+							sensorGroup.mListOfConfigOptionKeysAssociated.add(configOption);
 						}
 					}
 				}
 				
-				//TODO handle mListOfCompatibleVersionInfo here
+				//TODO handle mListOfCompatibleVersionInfo here?
 			}
 		}
 	}
@@ -254,7 +254,7 @@ public abstract class AbstractSensor implements Serializable{
 		return mConfigOptionsMap;
 	}
 	
-	public LinkedHashMap<String, SensorGroupingDetails> getSensorGroupingMap() {
+	public LinkedHashMap<Integer, SensorGroupingDetails> getSensorGroupingMap() {
 		return mSensorGroupingMap;
 	}
 

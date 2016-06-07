@@ -221,9 +221,10 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(GuiLabelSensorTiles.PRESSURE_TEMPERATURE, new SensorGroupingDetails(
+			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE.ordinal();
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));

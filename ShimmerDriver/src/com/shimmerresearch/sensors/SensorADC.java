@@ -72,7 +72,10 @@ public class SensorADC extends AbstractSensor {
 		public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
 		
 		public static final String EXT_EXP_ADC = "External Expansion";
-		}
+		
+		public static final String PROTO3_MINI = "Proto Mini";
+		public static final String PROTO3_DELUXE = "Proto Deluxe";
+	}
 	
 	//DATABASE NAMES
 	public static class DatabaseChannelHandles{
@@ -294,17 +297,20 @@ public class SensorADC extends AbstractSensor {
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
 		
-		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 //		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
 			
-			mSensorGroupingMap.put(GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
+
+			int groupIndexExt = Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC.ordinal();
+			mSensorGroupingMap.put(groupIndexExt, new SensorGroupingDetails(
 					GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, 
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15),
 							CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			
-			mSensorGroupingMap.put(GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, new SensorGroupingDetails(
+			int groupIndexInt = Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal();
+			mSensorGroupingMap.put(groupIndexInt, new SensorGroupingDetails(
 					GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, 
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,

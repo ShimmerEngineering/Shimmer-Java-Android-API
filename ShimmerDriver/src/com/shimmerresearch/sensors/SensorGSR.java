@@ -204,24 +204,24 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+		
+		int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.GSR.ordinal();
+		
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 
 				|| svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.GSR,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-								Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY)));
-			mSensorGroupingMap.get(GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
+								Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
 		}
 		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
 				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-			mSensorGroupingMap.put(GuiLabelSensorTiles.GSR, new SensorGroupingDetails(
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.GSR,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)));
-			mSensorGroupingMap.get(GuiLabelSensorTiles.GSR).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
-		
-			//TODO - RS (25/5/2016) - Can this comment be removed?
-//			mSensorGroupingMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR).mListOfConfigOptionKeysAssociated.add(e)
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
 		}
 		super.updateSensorGroupingMap();	
 	}

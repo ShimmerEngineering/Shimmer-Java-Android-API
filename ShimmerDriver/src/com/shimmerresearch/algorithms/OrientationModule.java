@@ -49,10 +49,13 @@ public class OrientationModule extends AbstractAlgorithm{
 			ShimmerVerDetails.ANY_VERSION,
 			HW_ID_SR_CODES.EXP_BRD_EXG);
 	
-	public static final String ORIENTATION_9DOF_LN = "LN_Acc_9DoF"; //move to configuration??
-	public static final String ORIENTATION_6DOF_LN = "LN_Acc_6DoF"; //move to configuration??
-	public static final String ORIENTATION_9DOF_WR = "WR_Acc_9DoF"; //move to configuration??
-	public static final String ORIENTATION_6DOF_WR = "WR_Acc_6DoF"; //move to configuration??
+	//TODO update objectcluster name with previously aggreed name
+	public static class AlgorithmName{
+		public static final String ORIENTATION_9DOF_LN = "LN_Acc_9DoF";
+		public static final String ORIENTATION_6DOF_LN = "LN_Acc_6DoF";
+		public static final String ORIENTATION_9DOF_WR = "WR_Acc_9DoF";
+		public static final String ORIENTATION_6DOF_WR = "WR_Acc_6DoF";
+	}
 	
 	public static final String SAMPLING_RATE = "Sampling Rate";
 	public static final String ACCELEROMETER = "Accelerometer";
@@ -76,26 +79,6 @@ public class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	
-	{
-		mListSVO.add(baseSh3Module);
-		
-//		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
-//		String[] accSensors = new String[2];
-//		accSensors[0]=Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-//		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
-//		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
-		
-		mConfigOptionsMap.put(QUATERNION_OUTPUT, new AlgorithmConfigOptionDetails(
-				QUATERNION_OPTIONS, 
-				QUATERNION_OPTIONS_VALUES, 
-				GUI_COMPONENT_TYPE.COMBOBOX));
-		mConfigOptionsMap.put(EULER_OUTPUT, new AlgorithmConfigOptionDetails(
-				EULER_OPTIONS, 
-				EULER_OPTIONS_VALUES, 
-				GUI_COMPONENT_TYPE.COMBOBOX));
-	}
-	
-		
 	static ChannelDetails angleADetails = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
@@ -157,8 +140,8 @@ public class OrientationModule extends AbstractAlgorithm{
 			quatWDetails, quatXDetails, quatYDetails, quatZDetails);
 	
 	public static final AlgorithmDetails algo9DoFOrientation_LN_Acc = new AlgorithmDetails(
-			ORIENTATION_9DOF_LN, 
-			ORIENTATION_9DOF_LN, 
+			AlgorithmName.ORIENTATION_9DOF_LN, 
+			AlgorithmName.ORIENTATION_9DOF_LN, 
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
@@ -168,7 +151,7 @@ public class OrientationModule extends AbstractAlgorithm{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
+					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
 			Arrays.asList(DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT,
 					DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
@@ -178,8 +161,8 @@ public class OrientationModule extends AbstractAlgorithm{
 			listChannels);
 	
 	public static final AlgorithmDetails algo9DoFOrientation_WR_Acc = new AlgorithmDetails(
-			ORIENTATION_9DOF_WR, 
-			ORIENTATION_9DOF_WR, 
+			AlgorithmName.ORIENTATION_9DOF_WR, 
+			AlgorithmName.ORIENTATION_9DOF_WR, 
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
@@ -189,7 +172,7 @@ public class OrientationModule extends AbstractAlgorithm{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF,
+					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
 			Arrays.asList(DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT,
 					DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
@@ -199,15 +182,15 @@ public class OrientationModule extends AbstractAlgorithm{
 			listChannels);
 	
 	public static final AlgorithmDetails algo6DoFOrientation_LN_Acc = new AlgorithmDetails(
-			ORIENTATION_6DOF_LN, 
-			ORIENTATION_6DOF_LN, 
+			AlgorithmName.ORIENTATION_6DOF_LN, 
+			AlgorithmName.ORIENTATION_6DOF_LN, 
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
+					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.getTileText(),
 			Arrays.asList(DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT,
 					DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
@@ -216,15 +199,15 @@ public class OrientationModule extends AbstractAlgorithm{
 			listChannels);
 	
 	public static final AlgorithmDetails algo6DoFOrientation_WR_Acc = new AlgorithmDetails(
-			ORIENTATION_6DOF_WR, 
-			ORIENTATION_6DOF_WR, 
+			AlgorithmName.ORIENTATION_6DOF_WR, 
+			AlgorithmName.ORIENTATION_6DOF_WR, 
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
-					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF,
+					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.getTileText(),
 			Arrays.asList(DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT,
 					DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
@@ -243,6 +226,24 @@ public class OrientationModule extends AbstractAlgorithm{
 		mAlgorithmMapRef = Collections.unmodifiableMap(aMap);
     }
 	
+	{
+		mListSVO.add(baseSh3Module);
+		
+//		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
+//		String[] accSensors = new String[2];
+//		accSensors[0]=Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
+//		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
+//		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
+		
+		mConfigOptionsMap.put(QUATERNION_OUTPUT, new AlgorithmConfigOptionDetails(
+				QUATERNION_OPTIONS, 
+				QUATERNION_OPTIONS_VALUES, 
+				GUI_COMPONENT_TYPE.COMBOBOX));
+		mConfigOptionsMap.put(EULER_OUTPUT, new AlgorithmConfigOptionDetails(
+				EULER_OPTIONS, 
+				EULER_OPTIONS_VALUES, 
+				GUI_COMPONENT_TYPE.COMBOBOX));
+	}
 	
 	public OrientationModule(AlgorithmDetails algorithmDetails, double samplingRate) {
 		mAlgorithmDetails = algorithmDetails;
@@ -371,15 +372,15 @@ public class OrientationModule extends AbstractAlgorithm{
 			magValues.z = value;
 		}
 		else if(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X)){
-			//if shimmer 2 or 3, apply a tweack to the gyro value
+			//if shimmer 2 or 3, apply a tweak to the gyro value
 			gyroValues.x = value*(Math.PI/180.0);
 		}
 		else if(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y)){
-			//if shimmer 2 or 3, apply a tweack to the gyro value
+			//if shimmer 2 or 3, apply a tweak to the gyro value
 			gyroValues.y = value*(Math.PI/180.0);
 		}
 		else if(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z)){
-			//if shimmer 2 or 3, apply a tweack to the gyro value
+			//if shimmer 2 or 3, apply a tweak to the gyro value
 			gyroValues.z = value*(Math.PI/180.0);
 		}
 	}	
@@ -448,25 +449,23 @@ public class OrientationModule extends AbstractAlgorithm{
 		
 		double samplingPeriod = 1/sampleRate;
 		
-		if(mAlgorithmName.contains("9")){
+		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)
+				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
 			orientationType = ORIENTATION_TYPE.NINE_DOF;
 			orientationAlgorithm = new GradDes3DOrientation(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
-			if(mAlgorithmName.contains("LN")){
-				accelerometerSensor = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-			}
-			else{
-				accelerometerSensor = Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
-			}
 		}
-		else{
+		else if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)
+				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
 			orientationType = ORIENTATION_TYPE.SIX_DOF;
 			orientationAlgorithm = new GradDes3DOrientation6DoF(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
-			if(mAlgorithmName.contains("LN")){
-				accelerometerSensor = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-			}
-			else{
-				accelerometerSensor = Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
-			}
+		}
+		
+		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)
+				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
+			accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_LN;
+		}
+		else{
+			accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_WR;
 		}
 	}
 
