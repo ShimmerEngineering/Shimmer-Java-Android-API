@@ -28,6 +28,7 @@ public class AlgorithmDetails implements Serializable {
 
 	public List<Integer> mListOfRequiredSensors = new ArrayList<Integer>();
 	public List<String> mListOfAssociatedSensors = new ArrayList<String>();
+	public List<Integer> mListOfCompatableExpBoards = new ArrayList<Integer>();
 
 	public SENSOR_CHECK_METHOD mSensorCheckMethod = SENSOR_CHECK_METHOD.ALL;
 	public enum SENSOR_CHECK_METHOD{
@@ -106,7 +107,27 @@ public class AlgorithmDetails implements Serializable {
 		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, listOfDerivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
 	}
-
+	
+	public AlgorithmDetails(
+			String objectClusterName, 
+			String guiFriendlyName, 
+			List<String> listOfAssociatedSensors, 
+			String groupName, 
+			List<Integer> listOfDerivedSensorBitmapId, 
+			List<Integer> listOfCompatibleExpBoards,
+			List<Integer> listOfRequiredSensors, 
+			String units){
+		this(listOfRequiredSensors, units);
+		mAlgorithmName = objectClusterName;
+		mGuiFriendlyName = guiFriendlyName;
+		mListOfAssociatedSensors = listOfAssociatedSensors;
+		mDerivedSensorBitmapID.addAll(listOfDerivedSensorBitmapId);
+		mListOfCompatableExpBoards=listOfCompatibleExpBoards;
+		mGroupName = groupName;
+		mListOfChannelDetails.add(generateChannelDetails());
+	}
+	
+	
 //	public AlgorithmDetails(
 //			List<Integer> listOfRequiredSensors, 
 //			String units, 
