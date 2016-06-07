@@ -69,7 +69,7 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	protected byte[] mPressureCalRawParams = new byte[23];
 	protected byte[] mPressureRawParams  = new byte[23];
-	public static final String PRESSURE_TEMPERATURE = "Pressure & Temperature";
+	
 //	public static final int SHIMMER_BMP180_PRESSURE = 22;
 	private int mPressureResolution = 0;
 	
@@ -80,8 +80,10 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	public class GuiLabelSensors{
 		public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
+		public static final String BMP_180 = "BMP180";
 	}
 	
+	// GUI Sensor Tiles
 	public class GuiLabelSensorTiles{
 		public static final String PRESSURE_TEMPERATURE = GuiLabelSensors.PRESS_TEMP_BMP180;
 	}
@@ -219,9 +221,11 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(PRESSURE_TEMPERATURE, new SensorGroupingDetails(
+			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE.ordinal();
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
 		}

@@ -10,12 +10,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.SensorConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -89,23 +87,14 @@ public abstract class AbstractSensor implements Serializable{
 	
 	protected static boolean mEnableCalibration = true;
 	
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	protected String[] mSignalOutputNameArray;
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	protected String[] mSignalOutputFormatArray;
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	protected String[] mSignalOutputUnitArray;
-	
 	protected Double mMaxSetShimmerSamplingRate = 51.2;
 	
-	//TODO remove below?
-	protected int mFirmwareType;
-//	protected int mHardwareID;
+	//TODO implement below?
 //	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor
 	
 	public TreeMap<Integer, SensorDetails> mSensorMap = new TreeMap<Integer, SensorDetails>();
 	public HashMap<String,SensorConfigOptionDetails> mConfigOptionsMap = new HashMap<String,SensorConfigOptionDetails>();
-    public LinkedHashMap<String, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<String, SensorGroupingDetails>();
+    public LinkedHashMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
     
 	
 	public AbstractSensor(ShimmerVerObject svo){
@@ -115,78 +104,6 @@ public abstract class AbstractSensor implements Serializable{
 		generateSensorGroupMapping(svo);
 	}
 
-//	/** To process data originating from the Shimmer device
-//	 * @param channelByteArray The byte array packet, or byte array sd log
-//	 * @param commType The communication type
-//	 * @param object The packet/objectCluster to append the data to
-//	 * @return
-//	 */
-//	public static ObjectCluster processShimmerChannelData(byte[] channelByteArray, ChannelDetails channelDetails, ObjectCluster objectCluster){
-//
-////		if (channelDetails.mIsEnabled){
-////			//byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-////			long rawData = parsedData(channelByteArray,channelDetails.mDefaultChannelDataType,channelDetails.mDefaultChannelDataEndian);
-////			ObjectCluster objectCluster = (ObjectCluster) object;
-////			objectCluster.mPropertyCluster.put(channelDetails.mObjectClusterName,new FormatCluster(channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString(),channelDetails.mDefaultUnit,(double)rawData));
-////			objectCluster.mSensorNames[objectCluster.indexKeeper] = channelDetails.mObjectClusterName;
-////			if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.UNCAL){
-////				objectCluster.mUncalData[objectCluster.indexKeeper]=(double)rawData;
-////				objectCluster.mUnitUncal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;	
-////			} else if (channelDetails.mChannelFormatDerivedFromShimmerDataPacket==CHANNEL_TYPE.CAL){
-////				objectCluster.mCalData[objectCluster.indexKeeper]=(double)rawData;
-////				objectCluster.mUnitCal[objectCluster.indexKeeper]=channelDetails.mDefaultUnit;
-////			}
-////			
-////		}
-//
-//		if(channelDetails.mIsEnabled){
-//			long parsedChannelData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
-//			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUnit, (double)parsedChannelData);
-//		}
-//
-//		return objectCluster;
-////		return object;
-//	
-//	}
-	
-	
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	/**
-//	 * This returns a String array of the output signal name, the sequence of
-//	 * the format array MUST MATCH the array returned by the method
-//	 * returnSignalOutputFormatArray
-//	 * 
-//	 * @return mSignalOutputNameArray
-//	 */
-//	public String[] getSignalOutputNameArray() {
-//		return mSignalOutputNameArray;
-//	}
-//
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	/**
-//	 * This returns a String array of the output signal format, the sequence of
-//	 * the format array MUST MATCH the array returned by the method
-//	 * returnSignalOutputNameArray
-//	 * 
-//	 * @return mSignalOutputFormatArray
-//	 */
-//	public String[] getSignalOutputFormatArray() {
-//		return mSignalOutputFormatArray;
-//	}
-//
-//	//TODO: below belongs in ChannelDetails and not in AbstractSensor?
-//	/**
-//	 * This returns a String array of the output signal format, the sequence of
-//	 * the format array MUST MATCH the array returned by the method
-//	 * returnSignalOutputNameArray
-//	 * 
-//	 * @return mSignalOutputUnitArray
-//	 */
-//	public String[] getSignalOutputUnitArray() {
-//		return mSignalOutputUnitArray;
-//	}
-	
-	
 	public HashMap<String, SensorConfigOptionDetails> getConfigMap() {
 		return mConfigOptionsMap;
 	}
@@ -261,21 +178,21 @@ public abstract class AbstractSensor implements Serializable{
 	
 	
 	public void updateSensorGroupingMap() {
-		for (String sensorGroup:mSensorGroupingMap.keySet()) {
+		for(SensorGroupingDetails sensorGroup:mSensorGroupingMap.values()) {
 			// Ok to clear here because variable is initiated in the class
-			mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated = new ArrayList<String>();
-			for (Integer sensorKey:mSensorGroupingMap.get(sensorGroup).mListOfSensorMapKeysAssociated) {
+			sensorGroup.mListOfConfigOptionKeysAssociated = new ArrayList<String>();
+			for (Integer sensorKey:sensorGroup.mListOfSensorMapKeysAssociated) {
 				SensorDetails sensorDetails = mSensorMap.get(sensorKey);
 				if(sensorDetails!=null && sensorDetails.mSensorDetailsRef!=null && sensorDetails.mSensorDetailsRef.mListOfConfigOptionKeysAssociated!=null){
 					for (String configOption:sensorDetails.mSensorDetailsRef.mListOfConfigOptionKeysAssociated) {
 						// do not add duplicates
-						if (!(mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.contains(configOption))) {
-							mSensorGroupingMap.get(sensorGroup).mListOfConfigOptionKeysAssociated.add(configOption);
+						if (!(sensorGroup.mListOfConfigOptionKeysAssociated.contains(configOption))) {
+							sensorGroup.mListOfConfigOptionKeysAssociated.add(configOption);
 						}
 					}
 				}
 				
-				//TODO handle mListOfCompatibleVersionInfo here
+				//TODO handle mListOfCompatibleVersionInfo here?
 			}
 		}
 	}
@@ -337,7 +254,7 @@ public abstract class AbstractSensor implements Serializable{
 		return mConfigOptionsMap;
 	}
 	
-	public LinkedHashMap<String, SensorGroupingDetails> getSensorGroupingMap() {
+	public LinkedHashMap<Integer, SensorGroupingDetails> getSensorGroupingMap() {
 		return mSensorGroupingMap;
 	}
 

@@ -16,30 +16,10 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
  */
 public class ChannelDetails implements Serializable {
 	
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = -2662151922286820989L;
 
-//	public static final class CHANNEL_DATA_TYPE {
-//		public static final String UNKOWN = "";
-//		public static final String UINT8 = "uint8";
-//		public static final String UINT12 = "uint12";
-//		public static final String UINT16 = "uint16";
-//		public static final String UINT24 = "int24";
-//		public static final String UINT32 = "uint32";
-//		public static final String UINT32_SIGNED = "uint32Signed"; //??
-//		public static final String INT8 = "int8";
-//		public static final String INT12 = "int12";
-//		public static final String INT16_to_12 = "int16to12"; //??
-//		public static final String INT16 = "int16";
-//		public static final String INT24 = "int24";
-//		public static final String INT32 = "int32";
-//		public static final String UINT64 = "uint64";
-//		public static final String UINT72_SIGNED = "uint72Signed"; //??
-//		public static final String UINT48 = "uint48";
-//	}
-
+	/* Channels are Right bit justified unless otherwise stated */
 	public enum CHANNEL_DATA_TYPE{
 		UNKOWN(0, false),
 		UINT8(8, false),
@@ -53,7 +33,7 @@ public class ChannelDetails implements Serializable {
 		
 		INT8(1, true),
 		INT12(2, true),
-		INT16_to_12(2, true),
+//		INT12_LBJ(2, true), //Left bit justified 
 		INT16(2, true),
 		INT24(3, true),
 		INT32(4, true),
@@ -70,14 +50,6 @@ public class ChannelDetails implements Serializable {
 	        this.isSigned = isSigned;
 	    }
 
-//	    /* (non-Javadoc)
-//	     * @see java.lang.Enum#toString()
-//	     */
-//	    @Override
-//	    public String toString() {
-//	        return text;
-//	    }
-	    
 	    public int getNumBytes(){
 	    	return numBytes;
 	    }
@@ -85,7 +57,6 @@ public class ChannelDetails implements Serializable {
 	    public boolean isSigned(){
 	    	return isSigned;
 	    }
-
 	}
 	
 	public enum CHANNEL_DATA_ENDIAN{
@@ -93,17 +64,6 @@ public class ChannelDetails implements Serializable {
 		LSB,
 		MSB
 	}
-	
-//	public static final class CHANNEL_DATA_ENDIAN {
-//		public static final String UNKOWN = "";
-//		public static final String LSB = "LSB";
-//		public static final String MSB = "MSB";
-//	}
-
-//	public enum CHANNEL_DATA_SIGN{
-//		UNSIGNED,
-//		SIGNED
-//	}
 	
 	public enum CHANNEL_TYPE{
 //		RAW("RAW"),
@@ -154,9 +114,8 @@ public class ChannelDetails implements Serializable {
 		API
 	}
 	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
-	//each channel if originates from a packetbytearray/sensorbytearray should have this variable defined, null indicates this channel is created within the API
+	/** each channel if originates from a packetbytearray/sensorbytearray should have this variable defined, null indicates this channel is created within the API */
 	public CHANNEL_TYPE mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL; 
-	
 
 	/**
 	 * Empty constructor not used in standard Shimmer operations (GQ BLE related). 

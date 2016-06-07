@@ -3,6 +3,7 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 import java.util.List;
 
+import com.shimmerresearch.algorithms.ConfigOptionDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 
@@ -13,20 +14,11 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
  * 
  * @author Mark Nolan
  */
-public class SensorConfigOptionDetails implements Serializable {
+public class SensorConfigOptionDetails extends ConfigOptionDetails implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = -8894717489924237791L;
 
-	public static enum GUI_COMPONENT_TYPE {
-		COMBOBOX,
-		CHECKBOX,
-		TEXTFIELD,
-		JPANEL
-	};
-	
 	public static final class VALUE_INDEXES {
 		public static final class LSM303DLHC_ACCEL_RATE{
 			public static final int NOT_LPM = 0;
@@ -45,9 +37,6 @@ public class SensorConfigOptionDetails implements Serializable {
 		}
 	}
 	
-	private String[] mGuiValues;
-	private Integer[] mConfigValues;
-	
 	private String[] mGuiValuesAlt1;
 	private Integer[] mConfigValuesAlt1;
 	private String[] mGuiValuesAlt2;
@@ -58,92 +47,6 @@ public class SensorConfigOptionDetails implements Serializable {
 	private Integer[] mConfigValuesAlt4;
 	private int mIndexValuesToUse = 0;
 	private COMMUNICATION_TYPE mCommunicationType;
-	
-	public GUI_COMPONENT_TYPE mGuiComponentType;
-	
-	public List<ShimmerVerObject> mCompatibleVersionInfo = null;  
-	
-	/**
-	 * Used in Consensys to hold Shimmer configuration GUI information for
-	 * each configuration option to allow for dynamic GUI creation based on
-	 * compatible HW&FW version checking.
-	 * 
-	 * This constructor = ComboBox (compatible with all HW, FW and Expansion Boards)
-	 * 
-	 * @param guiValues array of configuration values to show in the GUI
-	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
-	 * @param guiComponentType
-	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType) {
-		mGuiValues = guiValues;
-		mConfigValues = configValues;
-		mGuiComponentType = guiComponentType;
-		
-		mCompatibleVersionInfo = null;
-	}
-	
-	
-	/**
-	 * Used in Consensys to hold Shimmer configuration GUI information for
-	 * each configuration option to allow for dynamic GUI creation based on
-	 * compatible HW&FW version checking.
-	 * 
-	 * This constructor = ComboBox (compatible with all HW, FW and Expansion Boards)
-	 * 
-	 * @param guiValues array of configuration values to show in the GUI
-	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
-	 * @param guiComponentType
-	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType,COMMUNICATION_TYPE commType) {
-		mGuiValues = guiValues;
-		mConfigValues = configValues;
-		mGuiComponentType = guiComponentType;
-		
-		mCompatibleVersionInfo = null;
-		mCommunicationType = commType;
-	}
-	
-	/**
-	 * Used in Consensys to hold Shimmer configuration GUI information for
-	 * each configuration option to allow for dynamic GUI creation based on
-	 * compatible HW&FW version checking.
-	 * 
-	 * This constructor = ComboBox (with compatible HW, FW, and Expansion Board information)
-	 * 
-	 * @param guiValues
-	 * @param configValues
-	 * @param guiComponentType
-	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
-		mGuiValues = guiValues;
-		mConfigValues = configValues;
-		
-		mGuiComponentType = guiComponentType;
-		
-		mCompatibleVersionInfo = compatibleVersionInfo;
-	}
-
-	/**
-	 * Used in Consensys to hold Shimmer configuration GUI information for
-	 * each configuration option to allow for dynamic GUI creation based on
-	 * compatible HW&FW version checking.
-	 * 
-	 * This constructor = ComboBox (with compatible HW, FW, and Expansion Board information)
-	 * 
-	 * @param guiValues
-	 * @param configValues
-	 * @param guiComponentType
-	 */
-	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE commType) {
-		mGuiValues = guiValues;
-		mConfigValues = configValues;
-		
-		mGuiComponentType = guiComponentType;
-		
-		mCompatibleVersionInfo = compatibleVersionInfo;
-		setmCommunicationType(commType);
-	}
-	
 	
 	/**
 	 * Used in Consensys to hold Shimmer configuration GUI information for
@@ -157,9 +60,7 @@ public class SensorConfigOptionDetails implements Serializable {
 	 * @param guiComponentType
 	 */
 	public SensorConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType) {
-		mGuiComponentType = guiComponentType;
-		
-		mCompatibleVersionInfo = null;
+		super(guiComponentType);
 	}
 	
 	/**
@@ -174,14 +75,77 @@ public class SensorConfigOptionDetails implements Serializable {
 	 * @param guiComponentType
 	 */
 	public SensorConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
-		mGuiComponentType = guiComponentType;
-		
-		mCompatibleVersionInfo = compatibleVersionInfo;
+		super(guiComponentType, compatibleVersionInfo);
 	}
+
+	/**
+	 * Used in Consensys to hold Shimmer configuration GUI information for
+	 * each configuration option to allow for dynamic GUI creation based on
+	 * compatible HW&FW version checking.
+	 * 
+	 * This constructor = ComboBox (compatible with all HW, FW and Expansion Boards)
+	 * 
+	 * @param guiValues array of configuration values to show in the GUI
+	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
+	 * @param guiComponentType
+	 */
+	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType) {
+		super(guiValues, configValues, guiComponentType);
+	}
+	
+	/**
+	 * Used in Consensys to hold Shimmer configuration GUI information for
+	 * each configuration option to allow for dynamic GUI creation based on
+	 * compatible HW&FW version checking.
+	 * 
+	 * This constructor = ComboBox (with compatible HW, FW, and Expansion Board information)
+	 * 
+	 * @param guiValues
+	 * @param configValues
+	 * @param guiComponentType
+	 */
+	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+		super(guiValues, configValues, guiComponentType, compatibleVersionInfo);
+	}
+	
+	/**
+	 * Used in Consensys to hold Shimmer configuration GUI information for
+	 * each configuration option to allow for dynamic GUI creation based on
+	 * compatible HW&FW version checking.
+	 * 
+	 * This constructor = ComboBox (compatible with all HW, FW and Expansion Boards)
+	 * 
+	 * @param guiValues array of configuration values to show in the GUI
+	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
+	 * @param guiComponentType
+	 */
+	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, COMMUNICATION_TYPE commType) {
+		super(guiValues, configValues, guiComponentType);
+		mCommunicationType = commType;
+	}
+	
+	/**
+	 * Used in Consensys to hold Shimmer configuration GUI information for
+	 * each configuration option to allow for dynamic GUI creation based on
+	 * compatible HW&FW version checking.
+	 * 
+	 * This constructor = ComboBox (with compatible HW, FW, and Expansion Board information)
+	 * 
+	 * @param guiValues
+	 * @param configValues
+	 * @param guiComponentType
+	 */
+	public SensorConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE commType) {
+		super(guiValues, configValues, guiComponentType, compatibleVersionInfo);
+		setmCommunicationType(commType);
+	}
+	
+	
 
 	/**
 	 * @return the mGuiValues
 	 */
+	@Override
 	public String[] getGuiValues() {
 		if(mIndexValuesToUse==1){
 			return mGuiValuesAlt1;
@@ -203,6 +167,7 @@ public class SensorConfigOptionDetails implements Serializable {
 	/**
 	 * @return the mConfigValues
 	 */
+	@Override
 	public Integer[] getConfigValues() {
 		if(mIndexValuesToUse==1){
 			return mConfigValuesAlt1;

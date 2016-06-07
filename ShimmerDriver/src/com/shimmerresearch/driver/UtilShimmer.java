@@ -227,7 +227,7 @@ public class UtilShimmer implements Serializable {
 	}
 
 	public static String bytesToHexStringWithSpacesFormatted(byte[] bytes) {
-		if(bytes!=null){
+		if(bytes!=null && bytes.length>0){
 			int charCntPerByte = 5;
 		    char[] hexChars = new char[(bytes.length * charCntPerByte)-1];
 		    for ( int j = 0; j < bytes.length; j++ ) {

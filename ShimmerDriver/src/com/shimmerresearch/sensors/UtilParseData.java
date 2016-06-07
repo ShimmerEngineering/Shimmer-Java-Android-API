@@ -33,27 +33,28 @@ public class UtilParseData {
 		//2) a single for loop looping over the required number of bytes
 		long maskToApply = 0;
 		for(int i=0;i<dataType.getNumBytes();i++){
-			//Old -> not working properly
+			//based on old parseData approach -> seems to be working
+			formattedData = (int)((int)(data[i] & 0xFF) | ((int)formattedData << 8));
+			//new -> not working properly
 //			formattedData = (formattedData << 8)  + data[i];
-			//New based on old parseData approach -> seems to be working
-//			formattedData = (int)((int)(data[i] & 0xFF) | ((int)formattedData << 8));
-			//new -> seems to be working
-			formattedData = (formattedData << 8)  | (data[i]&0xFF);
+			//new new -> seems to be working?
+//			formattedData = (formattedData << 8)  | (data[i]&0xFF);
 
 			maskToApply = (maskToApply << 8) | 0xFF;
 		}
 		consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
 		formattedData &= maskToApply;
-		
+
 		//3) an if statement to calculate the twos complement if required
 		if(dataType.isSigned()){
 			formattedData=calculatetwoscomplement(formattedData,data.length*8);
 		}
-			
+
 		//4) handle special cases like bit shifting for the LSM303
-		if(dataType==CHANNEL_DATA_TYPE.INT16_to_12){
-			formattedData=formattedData>>4; // shift right by 4 bits
-		}
+//		if(dataType==CHANNEL_DATA_TYPE.INT12_LBJ){
+//			formattedData=formattedData>>4; // shift right by 4 bits
+//			formattedData &= 0x0FFF;
+//		}
 
 		consolePrintLnDebugging("Parsing result:\t" + formattedData);
 

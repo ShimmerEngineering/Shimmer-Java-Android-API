@@ -100,7 +100,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		PROTOBUF
 	}
 	public static List<OBJECTCLUSTER_TYPE> mListOfOCTypesEnabled = Arrays.asList(
-			OBJECTCLUSTER_TYPE.ARRAYS,
+//			OBJECTCLUSTER_TYPE.ARRAYS,
 			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER,
 			OBJECTCLUSTER_TYPE.PROTOBUF);
 	
@@ -396,7 +396,17 @@ final public class ObjectCluster implements Cloneable,Serializable{
 				mUncalData[index] = data;
 				mUnitUncal[index] = units;
 			}
+			//TODO below not really needed, just put in to match some legacy code but can be removed. 
+			else if(channelType==CHANNEL_TYPE.DERIVED){
+				mCalData[index] = data;
+				mUnitCal[index] = units;
+				mUncalData[index] = data;
+				mUnitUncal[index] = units;
+			}
 			mSensorNames[index] = objectClusterName;
+			
+			//TODO implement below here and remove everywhere else in the code
+//			incrementIndexKeeper();
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)){

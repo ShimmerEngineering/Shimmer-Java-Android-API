@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
+//TODO merge with ChannelDetails?
 public class AlgorithmDetails implements Serializable {
 	
 	/** * */
@@ -23,7 +24,7 @@ public class AlgorithmDetails implements Serializable {
 	public String mGroupName = "";
 	public String mUnits = "";
 	public CHANNEL_TYPE mChannelType = CHANNEL_TYPE.CAL;
-	public long mDerivedSensorBitmapID = 0; 
+	public List<Integer> mDerivedSensorBitmapID = new ArrayList<Integer>(); 
 
 	public List<Integer> mListOfRequiredSensors = new ArrayList<Integer>();
 	public List<String> mListOfAssociatedSensors = new ArrayList<String>();
@@ -34,57 +35,87 @@ public class AlgorithmDetails implements Serializable {
 		ANY
 	}
 	
+	/**
+	 * @param listOfRequiredSensors
+	 * @param units
+	 */
 	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units){
 		mListOfRequiredSensors = listOfRequiredSensors;
 		mUnits = units;
 	}
 
-	public AlgorithmDetails(String objectClusterName, String guiFriendlyName, List<String> listOfAssociatedSensors, String groupName, long derivedSensorBitmapId, List<Integer> listOfRequiredSensors, String units){
+	//TODO this constructor is only used in the example -> remove?
+	/**
+	 * @param listOfRequiredSensors
+	 * @param units
+	 * @param sensorCheckMethod
+	 */
+	public AlgorithmDetails(
+			List<Integer> listOfRequiredSensors, 
+			String units, 
+			SENSOR_CHECK_METHOD sensorCheckMethod){
 		this(listOfRequiredSensors, units);
+		mSensorCheckMethod = sensorCheckMethod;
+	}
+	
+	/**
+	 * @param objectClusterName
+	 * @param guiFriendlyName
+	 * @param listOfAssociatedSensors
+	 * @param groupName
+	 * @param listOfDerivedSensorBitmapId
+	 * @param listOfRequiredSensors
+	 * @param units
+	 */
+	public AlgorithmDetails(
+			String objectClusterName, 
+			String guiFriendlyName, 
+			List<String> listOfAssociatedSensors, 
+			String groupName, 
+			List<Integer> listOfDerivedSensorBitmapId, 
+			List<Integer> listOfRequiredSensors, 
+			String units){
+		this(listOfRequiredSensors, units);
+		mAlgorithmName = objectClusterName;
 		mGuiFriendlyName = guiFriendlyName;
 		mListOfAssociatedSensors = listOfAssociatedSensors;
-		mAlgorithmName = objectClusterName;
-		mDerivedSensorBitmapID = derivedSensorBitmapId;
+		mDerivedSensorBitmapID.addAll(listOfDerivedSensorBitmapId);
 		mGroupName = groupName;
 		mListOfChannelDetails.add(generateChannelDetails());
 	}
 	
-	public AlgorithmDetails(String objectClusterName, 
-			List<ChannelDetails> listOfAlgortihmChannels, 
+	/**
+	 * @param objectClusterName
+	 * @param listOfAlgortihmChannels
+	 * @param guiFriendlyName
+	 * @param listOfAssociatedSensors
+	 * @param groupName
+	 * @param listOfDerivedSensorBitmapId
+	 * @param listOfRequiredSensors
+	 * @param units
+	 */
+	public AlgorithmDetails(
+			String objectClusterName, 
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
 			String groupName, 
-			long derivedSensorBitmapId, 
+			List<Integer> listOfDerivedSensorBitmapId, 
 			List<Integer> listOfRequiredSensors, 
-			String units){
-		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
+			String units,
+			List<ChannelDetails> listOfAlgortihmChannels){
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, listOfDerivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
 	}
 
-	//TODO this constructor is only used in the example -> remove?
-	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units, SENSOR_CHECK_METHOD sensorCheckMethod){
-		this(listOfRequiredSensors, units);
-		mSensorCheckMethod = sensorCheckMethod;
-	}
-
-	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units, String AlgorithmName, String groupName){
-		this(listOfRequiredSensors, units);
-		mAlgorithmName = AlgorithmName;
-		mGroupName = groupName;
-	}
-	
-//	public AlgorithmDetails(List<Integer> listOfRequiredSensors,SENSOR_CHECK_METHOD sensorCheckMethod, int configByte,String AlgorithmName,String groupName, boolean enabled){
-//		mListOfRequiredSensors = listOfRequiredSensors;
-//		mConfigByte = configByte;
+//	public AlgorithmDetails(
+//			List<Integer> listOfRequiredSensors, 
+//			String units, 
+//			String AlgorithmName, 
+//			String groupName){
+//		this(listOfRequiredSensors, units);
 //		mAlgorithmName = AlgorithmName;
 //		mGroupName = groupName;
-//		mEnabled = enabled;
 //	}
-
-//	public boolean isEnabled() {
-//		return mEnabled;
-//	}
-//
 	
 	//TODO maybe only array of 3? no Shimmer name?
 	public String[] getSignalStringArray() {
@@ -97,7 +128,6 @@ public class AlgorithmDetails implements Serializable {
 	}
 	
 	private ChannelDetails generateChannelDetails(){
-		
 		ChannelDetails cD = new ChannelDetails(
 				mAlgorithmName,
 				mGuiFriendlyName,
