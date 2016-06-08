@@ -973,7 +973,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mSensorMap!=null) {
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 			if(sensorDetails!=null){
-				return mSensorMap.get(sensorMapKey).isEnabled();
+				return sensorDetails.isEnabled();
 			}
 		}		
 		return false;
@@ -1426,55 +1426,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		if(mSensorMap!=null) {
 			
+			sensorMapKey = handleSpecCasesBeforeSetSensorState(sensorMapKey,state);
+			
+			//Automatically handle required channels for each sensor
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 			
-			//RS (30/5/2016) - added special case (at the moment only relevant for PPG) 
-			//RS (30/5/2016) - replaces this:
-			if (getHardwareVersion() == HW_ID.SHIMMER_3){
-				sensorDetails = mSensorMap.get(handleSpecCasesBeforeSetSensorState(sensorMapKey,state));			
-//				
-//				// Special case for Dummy entries in the Sensor Map
-//				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
-//					sensorDetails.setIsEnabled(state);
-//					if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
-//					}
-//					else {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13;
-//					}
-//				}		
-//				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
-//					sensorDetails.setIsEnabled(state);
-//					if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
-//					}
-//					else {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13;
-//					}
-//				}		
-//				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
-//					sensorDetails.setIsEnabled(state);
-//					if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
-//					}
-//					else {
-//						sensorMapKey = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1;
-//					}
-//				}		
-//				
-			
-				//Automatically handle required channels for each sensor
-				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
-				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
-					for(Integer i:listOfRequiredKeys) {
-						mSensorMap.get(i).setIsEnabled(state);
-					}
+			List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
+			if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
+				for(Integer i:listOfRequiredKeys) {
+					mSensorMap.get(i).setIsEnabled(state);
 				}
-//				
 			}
-//			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
-//				
-//			}
 			
 			//Set sensor state
 			sensorDetails.setIsEnabled(state);
@@ -1491,6 +1453,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			//refresh algorithms
 			algorithmRequiredSensorCheck();
 
+			printSensorAndParserMaps();
+			
 			boolean result = sensorDetails.isEnabled();
 			return (result==state? true:false);
 		}
@@ -1744,12 +1708,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			handleSpecCasesAfterSensorMapUpdate();
 		}
 		
-		//Debugging
-		for(SensorDetails sED:mSensorMap.values()){
-			if(sED.isEnabled()){
-				System.out.println("SENSOR enabled:\t"+ sED.mSensorDetailsRef.mGuiFriendlyLabel);
-			}
-		}
+//		//Debugging
+//		printSensorAndParserMaps();
+
 	}
 	
 	public boolean handleSpecCasesBeforeSensorMapUpdate(Integer sensorMapKey) {
