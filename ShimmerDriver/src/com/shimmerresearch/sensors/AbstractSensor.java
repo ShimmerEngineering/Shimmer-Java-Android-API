@@ -193,6 +193,7 @@ public abstract class AbstractSensor implements Serializable{
 				}
 				
 				//TODO handle mListOfCompatibleVersionInfo here?
+//				sensorGroup.mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 			}
 		}
 	}

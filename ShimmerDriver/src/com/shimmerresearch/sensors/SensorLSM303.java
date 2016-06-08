@@ -344,6 +344,16 @@ public class SensorLSM303 extends AbstractSensor{
 	//--------- Channel info end --------------
     
     
+    public static final SensorGroupingDetails sensorGDLsmAccel = new SensorGroupingDetails(
+			GuiLabelSensorTiles.WIDE_RANGE_ACCEL,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+    
+    public static final SensorGroupingDetails sensorGDLsmMag = new SensorGroupingDetails(
+			GuiLabelSensorTiles.MAG,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG),
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+    
     //--------- Constructors for this class start --------------
     public SensorLSM303(ShimmerVerObject svo) {
 		super(svo);
@@ -372,14 +382,8 @@ public class SensorLSM303 extends AbstractSensor{
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), new SensorGroupingDetails(
-					GuiLabelSensorTiles.WIDE_RANGE_ACCEL,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG.ordinal(), new SensorGroupingDetails(
-					GuiLabelSensorTiles.MAG,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), sensorGDLsmAccel);
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG.ordinal(), sensorGDLsmMag);
 		}
 		super.updateSensorGroupingMap();	
 	}	

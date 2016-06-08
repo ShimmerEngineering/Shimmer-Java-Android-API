@@ -21,6 +21,7 @@ public class AlgorithmDetails implements Serializable {
 	public String mGuiFriendlyName = "";
 	public String mDatabaseChannelHandle = "";
 
+	@Deprecated //this mixes the driver level and the gui level -> use SensorGroupDetails instead
 	public String mGroupName = "";
 	public String mUnits = "";
 	public CHANNEL_TYPE mChannelType = CHANNEL_TYPE.CAL;
