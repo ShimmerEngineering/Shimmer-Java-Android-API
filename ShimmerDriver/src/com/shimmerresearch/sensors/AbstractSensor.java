@@ -36,7 +36,8 @@ public abstract class AbstractSensor implements Serializable{
 		KIONIXKXRB52042("Analog Accelerometer"),
 		LSM303("LSM303"),
 		PPG("PPG"), 
-		TEMPLATE("Template sensor - not a real sensor of course!");
+		TEMPLATE("Template sensor - not a real sensor of course!"),
+		ADC("ADC");
 		
 	    private final String text;
 

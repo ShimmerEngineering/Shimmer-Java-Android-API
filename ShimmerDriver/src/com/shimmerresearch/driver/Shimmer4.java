@@ -25,6 +25,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
@@ -93,7 +94,8 @@ public class Shimmer4 extends ShimmerDevice {
 			mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
-			
+//			mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
+
 //		}
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
