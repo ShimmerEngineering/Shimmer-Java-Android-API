@@ -290,6 +290,13 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		}
 		return null;
 	}
+	
+	//TODO EN
+	//returns enabled channels
+	public Integer getNumberOfEnabledChannels(){
+		//redo with channels enabled
+		return mAlgorithmDetails.getChannelDetails().size();
+	}
 
 	/**
 	 * @return the mOutputChannels

@@ -82,7 +82,7 @@ public class OrientationModule extends AbstractAlgorithm{
 		SIX_DOF;
 	}
 	
-	
+	//TODO EN figure out channel details
 	static ChannelDetails channelAngleA = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
@@ -139,6 +139,12 @@ public class OrientationModule extends AbstractAlgorithm{
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
+	 public static List<ChannelDetails> listChannelsQuat = Arrays.asList(
+			channelQuatW, channelQuatX, channelQuatY, channelQuatZ);
+
+	 public static List<ChannelDetails> listChannelsEuler = Arrays.asList(
+			channelAngleA, channelAngleX, channelAngleY, channelAngleZ);
+
 	static List<ChannelDetails> listChannels = Arrays.asList(
 			channelAngleA, channelAngleX, channelAngleY, channelAngleZ,
 			channelQuatW, channelQuatX, channelQuatY, channelQuatZ);
@@ -355,7 +361,7 @@ public class OrientationModule extends AbstractAlgorithm{
 			Collection<FormatCluster> dataFormatsSignal = object.getCollectionOfFormatClusters(associatedChannel);  // first retrieve all the possible formats for the current sensor device
 			if(dataFormatsSignal!=null){
 				FormatCluster formatClusterSignal = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormatsSignal,mAlgorithmDetails.mChannelType.toString())); // retrieve the calibrated data
-				if(formatClusterSignal!=null){
+				if(formatClusterSignal!= null){
 					setChannelValue(associatedChannel, formatClusterSignal.mData);
 				}
 				else{
@@ -683,7 +689,54 @@ public class OrientationModule extends AbstractAlgorithm{
 				}
 			}
 		}
+		
+		bitmask = DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT | DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER ;
+		
 		return bitmask;
 	}
+	
+	@Override
+	public List<ChannelDetails> getChannelDetails() {
+		
+		List<ChannelDetails> listOfChannelDetails = new ArrayList<ChannelDetails>();
+		
+		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
+			if(quaternionOutput){
+				listOfChannelDetails=listChannelsQuat;
+				}
+			if(eulerOutput){
+				listOfChannelDetails=listChannelsEuler;
+			}
+		}
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
+			if(quaternionOutput){
+				listOfChannelDetails=listChannelsQuat;
+			}
+			if(eulerOutput){
+				listOfChannelDetails=listChannelsEuler;
+			}
+		}
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
+			if(quaternionOutput){
+				listOfChannelDetails=listChannelsQuat;
+			}
+			if(eulerOutput){
+				listOfChannelDetails=listChannelsEuler;
+			}
+		}
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
+			if(quaternionOutput){
+				listOfChannelDetails=listChannelsQuat;
+			}
+			if(eulerOutput){
+				listOfChannelDetails=listChannelsEuler;
+			}
+		}
+		
+		// TODO Auto-generated method stub
+		return super.getChannelDetails();
+	}
+	
+
 
 }

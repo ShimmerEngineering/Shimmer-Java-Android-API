@@ -100,7 +100,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		PROTOBUF
 	}
 	public static List<OBJECTCLUSTER_TYPE> mListOfOCTypesEnabled = Arrays.asList(
-//			OBJECTCLUSTER_TYPE.ARRAYS,
+			OBJECTCLUSTER_TYPE.ARRAYS,
 			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER,
 			OBJECTCLUSTER_TYPE.PROTOBUF);
 	
