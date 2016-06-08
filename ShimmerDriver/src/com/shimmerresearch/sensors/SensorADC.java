@@ -275,7 +275,7 @@ public class SensorADC extends AbstractSensor {
 	//--------- Constructors for this class start --------------
 	public SensorADC(ShimmerVerObject svo) {
 		super(svo);
-		setSensorName(SENSORS.MPU9X50.toString());
+		setSensorName(SENSORS.ADC.toString());
 	}
 	
 	//--------- Constructors for this class end --------------
