@@ -41,9 +41,9 @@ public class OrientationModule extends AbstractAlgorithm{
 	private Vector3d gyroValues;
 	private Vector3d magValues;
 	
-	private static final String[] QUATERNION_OPTIONS = {"Quaternion Off", "Quaternion On"};
+	private static final String[] QUATERNION_OPTIONS = {"Off", "On"};
 //	private Integer[] QUATERNION_OPTIONS_VALUES = {1, 0};
-	private static final String[] EULER_OPTIONS = {"Euler Off", "Euler On"};
+	private static final String[] EULER_OPTIONS = {"Off", "On"};
 //	private Integer[] EULER_OPTIONS_VALUES = {1, 0};
 	
 	private static final ShimmerVerObject baseSh3Module = new ShimmerVerObject(
@@ -61,10 +61,12 @@ public class OrientationModule extends AbstractAlgorithm{
 		public static final String ORIENTATION_6DOF_WR = "WR_Acc_6DoF";
 	}
 	
-	public static final String SAMPLING_RATE = "Sampling Rate";
-	public static final String ACCELEROMETER = "Accelerometer";
-	public static final String QUATERNION_OUTPUT = "QuaternionOutput";
-	public static final String EULER_OUTPUT = "EulerOutput";
+	public class GuiLabelConfig{
+		public static final String ACCELEROMETER = "Accelerometer";
+		public static final String QUATERNION_OUTPUT = "Quaternion";
+		public static final String EULER_OUTPUT = "Euler";
+	}
+	
 	
 	public static List<ShimmerVerObject> mListSVO = new ArrayList<ShimmerVerObject>(); 
 	
@@ -73,8 +75,8 @@ public class OrientationModule extends AbstractAlgorithm{
 	
 	double sampleRate;
 	String accelerometerSensor;
-	boolean quaternionOutput;
-	boolean eulerOutput;
+	boolean quaternionOutput = true;
+	boolean eulerOutput = false;
 	ORIENTATION_TYPE orientationType;
 	
 	public enum ORIENTATION_TYPE {
@@ -231,15 +233,15 @@ public class OrientationModule extends AbstractAlgorithm{
 			Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(), 
 			Arrays.asList(OrientationModule.algo9DoFOrientation_LN_Acc,
 					OrientationModule.algo9DoFOrientation_WR_Acc),
-			Arrays.asList(OrientationModule.QUATERNION_OUTPUT,
-					OrientationModule.EULER_OUTPUT),
+			Arrays.asList(GuiLabelConfig.QUATERNION_OUTPUT,
+					GuiLabelConfig.EULER_OUTPUT),
 			0);
 	public static final SensorGroupingDetails sGD6Dof = new SensorGroupingDetails(
 			Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.getTileText(), 
 			Arrays.asList(OrientationModule.algo6DoFOrientation_LN_Acc,
 					OrientationModule.algo6DoFOrientation_WR_Acc),
-			Arrays.asList(OrientationModule.QUATERNION_OUTPUT,
-					OrientationModule.EULER_OUTPUT),
+			Arrays.asList(GuiLabelConfig.QUATERNION_OUTPUT,
+					GuiLabelConfig.EULER_OUTPUT),
 			0);
 	// ------------------- Algorithms grouping map end -----------------------
 
@@ -263,8 +265,8 @@ public class OrientationModule extends AbstractAlgorithm{
 //		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
 //		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
 		
-		mConfigOptionsMap.put(QUATERNION_OUTPUT, configOptionQuatOutput);
-		mConfigOptionsMap.put(EULER_OUTPUT, configOptionEulerOutput);
+		mConfigOptionsMap.put(GuiLabelConfig.QUATERNION_OUTPUT, configOptionQuatOutput);
+		mConfigOptionsMap.put(GuiLabelConfig.EULER_OUTPUT, configOptionEulerOutput);
 		
 		mAlgorithmGroupingMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.ordinal(), sGD9Dof);
 		mAlgorithmGroupingMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.ordinal(), sGD6Dof);
@@ -291,16 +293,16 @@ public class OrientationModule extends AbstractAlgorithm{
 		Object returnValue = null;
 		switch(componentName){
 
-			case(SAMPLING_RATE):
+			case(GuiLabelConfigCommon.SAMPLING_RATE):
 				returnValue = getSamplingRate();
 			break;
-			case(ACCELEROMETER):
+			case(GuiLabelConfig.ACCELEROMETER):
 				returnValue = getAccelerometer();
 			break;
-			case(QUATERNION_OUTPUT):
+			case(GuiLabelConfig.QUATERNION_OUTPUT):
 				returnValue = isQuaternionOutput();
 			break;
-			case(EULER_OUTPUT):
+			case(GuiLabelConfig.EULER_OUTPUT):
 				returnValue = isEulerOutput();
 			break;
 		}
@@ -311,16 +313,16 @@ public class OrientationModule extends AbstractAlgorithm{
 	public Object getDefaultSettings(String componentName) {
 		Object returnValue = null;
 		switch(componentName){
-			case(SAMPLING_RATE):
+			case(GuiLabelConfigCommon.SAMPLING_RATE):
 				returnValue = 512;
 			break;
-			case(ACCELEROMETER):
+			case(GuiLabelConfig.ACCELEROMETER):
 				returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
 			break;
-			case(QUATERNION_OUTPUT):
+			case(GuiLabelConfig.QUATERNION_OUTPUT):
 				returnValue = true;
 			break;
-			case(EULER_OUTPUT):
+			case(GuiLabelConfig.EULER_OUTPUT):
 				returnValue = false;
 			break;
 		}
@@ -328,22 +330,31 @@ public class OrientationModule extends AbstractAlgorithm{
 	}
 
 	@Override
-	public void setSettings(String componentName, Object valueToSet)
-			throws Exception {
+	public void setSettings(String componentName, Object valueToSet){
 		
 		switch(componentName){
-			case(SAMPLING_RATE):
+			case(GuiLabelConfigCommon.SAMPLING_RATE):
 				setSamplingRate(Double.parseDouble((String) valueToSet));
-			break;
-			case(ACCELEROMETER):
+				break;
+			case(GuiLabelConfig.ACCELEROMETER):
 				setAccelerometer((String) valueToSet);
-			break;
-			case(QUATERNION_OUTPUT):
-				setQuaternionOutput((boolean) valueToSet);;
-			break;
-			case(EULER_OUTPUT):
-				setEulerOutput((boolean) valueToSet);
-			break;
+				break;
+			case(GuiLabelConfig.QUATERNION_OUTPUT):
+				if(valueToSet instanceof Boolean){
+					setQuaternionOutput((boolean) valueToSet);
+				}
+				else if(valueToSet instanceof Integer){
+					setQuaternionOutput(((Integer) valueToSet)>0? true:false);
+				}
+				break;
+			case(GuiLabelConfig.EULER_OUTPUT):
+				if(valueToSet instanceof Boolean){
+					setEulerOutput((boolean) valueToSet);
+				}
+				else if(valueToSet instanceof Integer){
+					setEulerOutput(((Integer) valueToSet)>0? true:false);
+				}
+				break;
 		}
 	}
 

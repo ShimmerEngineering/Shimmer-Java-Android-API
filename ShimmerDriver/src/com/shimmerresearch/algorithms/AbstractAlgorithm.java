@@ -80,6 +80,12 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	    }
 	}
 	
+	public class GuiLabelConfigCommon{
+		public final static String SAMPLING_RATE = "Algo Sampling Rate";
+		public final static String TIMESTAMP_SIGNAL_NAME = "Time Stamp Signal Name";
+		public final static String TIMESTAMP_SIGNAL_FORMAT = "Time Stamp Signal Format";
+	}
+	
 	//This identifies what inputs are required for the signal, and the corresponding gui option (e.g. checkbox, textbox)
 	/** AKA ObjectClusterName */
 	protected String mAlgorithmName;
@@ -131,7 +137,8 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public TreeMap<Integer, SensorGroupingDetails> mAlgorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
 	public abstract Object getSettings(String componentName);
 	public abstract Object getDefaultSettings(String componentName);
-	public abstract void setSettings(String componentName, Object valueToSet) throws Exception;
+//	public abstract void setSettings(String componentName, Object valueToSet) throws Exception;
+	public abstract void setSettings(String componentName, Object valueToSet);
 	
 	/** Takes in a single data object and processes the data, the standard way of using this is through the use of ObjectCluster. NOTE: The processing time should never be longer than the Shimmer sampling period, as the method will hold up the thread calling it
 	 * @param object
@@ -358,10 +365,5 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		}
 		return null;
 	}
-	
-
-
-
-
 	
 }

@@ -88,6 +88,7 @@ public class ConfigOptionDetails implements Serializable {
 			List<ShimmerVerObject> listSVO) {
 		mGuiValues = guiValues;
 		mConfigValues = new Integer[guiValues.length];
+		mGuiComponentType = guiComponentType;
 		for(int i=0;i<mConfigValues.length;i++){
 			mConfigValues[i] = i;
 		}
