@@ -1043,12 +1043,26 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void setAlgorithmSettings(String algortihmGroupName, String componentName, Object valueToSet) throws Exception{
-		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
-			if(abstractAlgorithm.mAlgorithmDetails.mGroupName.equals(algortihmGroupName)){
-				abstractAlgorithm.setSettings(componentName, valueToSet);
-				return;
+		TreeMap<Integer, SensorGroupingDetails> mapOfAlgorithmGrouping = getAlgorithmGroupingMap();
+		
+		for(SensorGroupingDetails sensorGroupingDetails:mapOfAlgorithmGrouping.values()){
+			if(sensorGroupingDetails.mGroupName.equals(algortihmGroupName)){
+				for(AlgorithmDetails aD:sensorGroupingDetails.mListOfAlgorithmDetails){
+					AbstractAlgorithm aA = mMapOfAlgorithmModules.get(aD);
+					if(aA!=null){	
+						aA.setSettings(componentName, valueToSet);
+					}
+				}
 			}
 		}
+		
+		
+//		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
+//			if(abstractAlgorithm.mAlgorithmDetails.mGroupName.equals(algortihmGroupName)){
+//				abstractAlgorithm.setSettings(componentName, valueToSet);
+//				return;
+//			}
+//		}
 	}
 
 	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet){
@@ -1583,20 +1597,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		generateParserMap();
 	}
 	
-	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
-		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
-			sensor.updateStateFromEnabledSensorsVars(commType, mEnabledSensors, mDerivedSensors);
-		}
-	}
-	
-	public void algorithmMapUpdateFromEnabledSensorsVars() {
-		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
-			aA.algorithmMapUpdateFromEnabledSensorsVars(mDerivedSensors);
-		}
-		initializeAlgorithms();
-	}
-	
-
 	public void prepareAllAfterConfigRead() {
 		//TODO Complete and tidy below
 		sensorAndConfigMapsCreate();
@@ -1662,6 +1662,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledSensors;
 	}
 	
+	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
+		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
+			sensor.updateStateFromEnabledSensorsVars(commType, mEnabledSensors, mDerivedSensors);
+		}
+	}
+	
+	public void algorithmMapUpdateFromEnabledSensorsVars() {
+		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
+			aA.algorithmMapUpdateFromEnabledSensorsVars(mDerivedSensors);
+		}
+		initializeAlgorithms();
+	}
 	
 	/**
 	 * Used to convert from the enabledSensors long variable read from the
@@ -1669,7 +1681,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * Map. Used in Consensys for dynamic GUI generation to configure a Shimmer.
 	 * 
 	 */
+	//TODO tidy the below. Remove? Almost exact same in ShimmerObject and not sure if this needs to be here 
 	public void sensorMapUpdateFromEnabledSensorsVars() {
+		//TODO below was in ShimmerObject but not carried forward to here?
+		//checkExgResolutionFromEnabledSensorsVar();
+
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
 		}

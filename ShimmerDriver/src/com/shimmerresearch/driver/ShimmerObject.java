@@ -7135,6 +7135,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 */
 	@Override
+	//TODO tidy the below. Almost exact same in ShimmerDevice and not sure if this needs to be there 
 	public void sensorMapUpdateFromEnabledSensorsVars() {
 
 		checkExgResolutionFromEnabledSensorsVar();

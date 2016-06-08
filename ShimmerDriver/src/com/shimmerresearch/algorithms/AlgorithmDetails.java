@@ -21,8 +21,8 @@ public class AlgorithmDetails implements Serializable {
 	public String mGuiFriendlyName = "";
 	public String mDatabaseChannelHandle = "";
 
-	@Deprecated //this mixes the driver level and the gui level -> use SensorGroupDetails instead
-	public String mGroupName = "";
+//	@Deprecated //this mixes the driver level and the gui level -> use SensorGroupDetails instead
+//	public String mGroupName = "";
 	public String mUnits = "";
 	public CHANNEL_TYPE mChannelType = CHANNEL_TYPE.CAL;
 //	public List<Integer> mDerivedSensorBitmapID = new ArrayList<Integer>(); 
@@ -75,7 +75,7 @@ public class AlgorithmDetails implements Serializable {
 			String objectClusterName, 
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
-			String groupName, 
+//			String groupName, 
 			long derivedSensorBitmapId, 
 			List<Integer> listOfRequiredSensors, 
 			String units){
@@ -84,7 +84,7 @@ public class AlgorithmDetails implements Serializable {
 		mGuiFriendlyName = guiFriendlyName;
 		mListOfAssociatedSensors = listOfAssociatedSensors;
 		mDerivedSensorBitmapID = derivedSensorBitmapId;
-		mGroupName = groupName;
+//		mGroupName = groupName;
 		mListOfChannelDetails.add(generateChannelDetails());
 	}
 	
@@ -102,12 +102,13 @@ public class AlgorithmDetails implements Serializable {
 			String objectClusterName, 
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
-			String groupName, 
+//			String groupName, 
 			long derivedSensorBitmapId, 
 			List<Integer> listOfRequiredSensors, 
 			String units,
 			List<ChannelDetails> listOfAlgortihmChannels){
-		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
+//		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, derivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
 	}
 	
@@ -115,12 +116,13 @@ public class AlgorithmDetails implements Serializable {
 			String objectClusterName, 
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
-			String groupName, 
+//			String groupName, 
 			long derivedSensorBitmapId, 
 			List<Integer> listOfCompatibleExpBoards,
 			List<Integer> listOfRequiredSensors, 
 			String units){
-		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
+//		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, groupName, derivedSensorBitmapId, listOfRequiredSensors, units);
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, derivedSensorBitmapId, listOfRequiredSensors, units);
 		mListOfCompatableExpBoards=listOfCompatibleExpBoards;
 	}
 	
