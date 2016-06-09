@@ -20,6 +20,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
 
 /**
  * @author Ronan McCormack
@@ -386,26 +387,33 @@ public class SensorADC extends AbstractSensor {
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType,
 			ObjectCluster objectCluster, boolean isTimeSyncEnabled,long pcTimestamp) {
+		
 		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		
 		double offset = 0; double vRefP = 3; double gain = 1; 
 		if(mEnableCalibration){
-			
-		int index = sensorDetails.mListOfChannels.size()-1;
+			int index = sensorDetails.mListOfChannels.size();
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.INT_EXP_ADC_A1)){
-					double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
-					index--;
-				}
-				else {
+//				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.INT_EXP_ADC_A1)){
+//					double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+//					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
+//					index--;
+//				}
+//				else {
 					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 					double calData = calibrateU12AdcValue(unCalData, offset, vRefP, gain);
 					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
 					index--;
-					}
+//				}
+					
+//					super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+//							new String[]{channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL.toString()}, 
+//							new String[]{channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL.toString()}));
 			}
 		}
-		return null;
+		
+
+		return objectCluster;
 	}
 	
 
