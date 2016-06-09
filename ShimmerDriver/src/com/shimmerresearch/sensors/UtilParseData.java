@@ -55,6 +55,10 @@ public class UtilParseData {
 //			formattedData=formattedData>>4; // shift right by 4 bits
 //			formattedData &= 0x0FFF;
 //		}
+//		if(dataType==CHANNEL_DATA_TYPE.UINT12){
+//			formattedData &= 0x0FFF;
+//		}
+
 
 		consolePrintLnDebugging("Parsing result:\t" + formattedData);
 
