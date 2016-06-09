@@ -481,7 +481,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte TEST_CONNECTION_COMMAND            	= (byte) 0x96;
 	public static final byte STOP_SDBT_COMMAND 						= (byte) 0x97;
 
-	public static final int MAX_NUMBER_OF_SIGNALS = 50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
+	public static final int MAX_NUMBER_OF_SIGNALS = 70;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
 	protected String mClassName="Shimmer";
@@ -892,7 +892,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			numAdditionalChannels += aA.getNumberOfEnabledChannels();
 		}
 		
-		numAdditionalChannels += 15;
+		//numAdditionalChannels += 15;
 		
 		//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 		double [] calibratedData = new double[numCalibratedData+numAdditionalChannels];
@@ -902,6 +902,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		String [] sensorNames = new String[numSensorNames+numAdditionalChannels];
 		
 		System.arraycopy(mSignalNameArray, 0, sensorNames, 0, sensorNames.length);
+		// the above is throwing an error
+		//sensorNames = Arrays.copyOf(mSignalNameArray, mSignalNameArray.length);
 		
 		//PARSE DATA
 		long[] newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);

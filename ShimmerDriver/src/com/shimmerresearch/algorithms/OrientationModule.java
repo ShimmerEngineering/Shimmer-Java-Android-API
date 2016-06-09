@@ -84,72 +84,269 @@ public class OrientationModule extends AbstractAlgorithm{
 		SIX_DOF;
 	}
 	
-	//TODO EN figure out channel details
-	static ChannelDetails channelAngleA = new ChannelDetails(
+	//TODO 6DOF channal details for low noise 
+	static ChannelDetails channelAngleA_6DOF_LN = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails channelAngleX = new ChannelDetails(
+	static ChannelDetails channelAngleX_6DOF_LN = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails channelAngleY = new ChannelDetails(
+	static ChannelDetails channelAngleY_6DOF_LN = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails channelAngleZ = new ChannelDetails(
+	static ChannelDetails channelAngleZ_6DOF_LN = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
 			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails channelQuatW = new ChannelDetails(
+	static ChannelDetails channelQuatW_6DOF_LN = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails channelQuatX = new ChannelDetails(
+	static ChannelDetails channelQuatX_6DOF_LN = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails channelQuatY = new ChannelDetails(
+	static ChannelDetails channelQuatY_6DOF_LN = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	static ChannelDetails channelQuatZ = new ChannelDetails(
+	static ChannelDetails channelQuatZ_6DOF_LN = new ChannelDetails(
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
 			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z, //database name
 			CHANNEL_UNITS.LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
-	 public static List<ChannelDetails> listChannelsQuat = Arrays.asList(
-			channelQuatW, channelQuatX, channelQuatY, channelQuatZ);
+	
+	//6DOF wide range 
+	static ChannelDetails channelAngleA_6DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleX_6DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleY_6DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleZ_6DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatW_6DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatX_6DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatY_6DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatZ_6DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	//9DOF
+	
+	//TODO 9DOF channal details for low noise 
+	static ChannelDetails channelAngleA_9DOF_LN = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleX_9DOF_LN = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleY_9DOF_LN = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleZ_9DOF_LN = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatW_9DOF_LN = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatX_9DOF_LN = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatY_9DOF_LN = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatZ_9DOF_LN = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	
+	//9DOF wide range 
+	static ChannelDetails channelAngleA_9DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleX_9DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleY_9DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelAngleZ_9DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z,
+			Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatW_9DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatX_9DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatY_9DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	static ChannelDetails channelQuatZ_9DOF_WR = new ChannelDetails(
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+			Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z, //database name
+			CHANNEL_UNITS.LOCAL,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	//9 DOF channel groups
+	 public static List<ChannelDetails> listChannelsQuat9DOF_WR = Arrays.asList(
+			 channelQuatW_9DOF_WR, channelQuatX_9DOF_WR, channelQuatY_9DOF_WR, channelQuatZ_9DOF_WR);
+	 
+	 public static List<ChannelDetails> listChannelsEuler9DOF_WR = Arrays.asList(
+			 channelAngleA_9DOF_WR, channelAngleX_9DOF_WR, channelAngleY_9DOF_WR, channelAngleZ_9DOF_WR);
 
-	 public static List<ChannelDetails> listChannelsEuler = Arrays.asList(
-			channelAngleA, channelAngleX, channelAngleY, channelAngleZ);
+	 public static List<ChannelDetails> listChannelsEuler9DOF_LN = Arrays.asList(
+			 channelAngleA_9DOF_LN, channelAngleX_9DOF_LN, channelAngleY_9DOF_LN, channelAngleZ_9DOF_LN);
+	 
+	 public static List<ChannelDetails> listChannelsQuat9DOF_LN = Arrays.asList(
+			 channelQuatW_9DOF_LN, channelQuatX_9DOF_LN, channelQuatY_9DOF_LN, channelQuatZ_9DOF_LN);
 
-	static List<ChannelDetails> listChannels = Arrays.asList(
-			channelAngleA, channelAngleX, channelAngleY, channelAngleZ,
-			channelQuatW, channelQuatX, channelQuatY, channelQuatZ);
+	 //6DOF channel groups
+	 public static List<ChannelDetails> listChannelsQuat6DOF_WR = Arrays.asList(
+			 channelQuatW_6DOF_WR, channelQuatX_6DOF_WR, channelQuatY_6DOF_WR, channelQuatZ_6DOF_WR);
+
+	 public static List<ChannelDetails> listChannelsEuler6DOF_LN = Arrays.asList(
+			 channelAngleA_6DOF_LN, channelAngleX_6DOF_LN, channelAngleY_6DOF_LN, channelAngleZ_6DOF_LN);
+	 
+	 public static List<ChannelDetails> listChannelsQuat6DOF_LN = Arrays.asList(
+			 channelQuatW_6DOF_LN, channelQuatX_6DOF_LN, channelQuatY_6DOF_LN, channelQuatZ_6DOF_LN);
+
+	 public static List<ChannelDetails> listChannelsEuler6DOF_WR = Arrays.asList(
+			 channelAngleA_6DOF_WR, channelAngleX_6DOF_WR, channelAngleY_6DOF_WR, channelAngleZ_6DOF_WR);
+	 
+	 
+	 
+//	static List<ChannelDetails> listChannels = Arrays.asList(
+//			channelAngleA, channelAngleX, channelAngleY, channelAngleZ,
+//			channelQuatW, channelQuatX, channelQuatY, channelQuatZ);
 	
 	public static final AlgorithmDetails algo9DoFOrientation_LN_Acc = new AlgorithmDetails(
 			AlgorithmName.ORIENTATION_9DOF_LN, 
@@ -169,7 +366,7 @@ public class OrientationModule extends AbstractAlgorithm{
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 			CHANNEL_UNITS.LOCAL,
-			listChannels);
+			listChannelsEuler9DOF_LN);
 	
 	public static final AlgorithmDetails algo9DoFOrientation_WR_Acc = new AlgorithmDetails(
 			AlgorithmName.ORIENTATION_9DOF_WR, 
@@ -189,7 +386,7 @@ public class OrientationModule extends AbstractAlgorithm{
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 			CHANNEL_UNITS.LOCAL,
-			listChannels);
+			listChannelsQuat9DOF_WR);
 	
 	public static final AlgorithmDetails algo6DoFOrientation_LN_Acc = new AlgorithmDetails(
 			AlgorithmName.ORIENTATION_6DOF_LN, 
@@ -205,7 +402,7 @@ public class OrientationModule extends AbstractAlgorithm{
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 			CHANNEL_UNITS.LOCAL,
-			listChannels);
+			listChannelsEuler6DOF_LN);
 	
 	public static final AlgorithmDetails algo6DoFOrientation_WR_Acc = new AlgorithmDetails(
 			AlgorithmName.ORIENTATION_6DOF_WR, 
@@ -221,7 +418,7 @@ public class OrientationModule extends AbstractAlgorithm{
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 			CHANNEL_UNITS.LOCAL,
-			listChannels);
+			listChannelsQuat6DOF_WR);
 		
 	
 	public static final Map<String, AlgorithmDetails> mAlgorithmMapRef;
@@ -314,6 +511,19 @@ public class OrientationModule extends AbstractAlgorithm{
 		}
 		return returnValue;
 	}
+	
+	
+	@Override
+	public void setIsEnabled(boolean isEnabled) {
+		mIsEnabled = isEnabled;
+		if(!isEnabled){
+			setQuaternionOutput(false);
+			setEulerOutput(false);
+		}else if(isEnabled){
+			setQuaternionOutput(true);
+			setEulerOutput(false);
+		}
+	}
 
 	@Override
 	public Object getDefaultSettings(String componentName) {
@@ -371,8 +581,9 @@ public class OrientationModule extends AbstractAlgorithm{
 		for(String associatedChannel:mAlgorithmDetails.mListOfAssociatedSensors){
 			Collection<FormatCluster> dataFormatsSignal = object.getCollectionOfFormatClusters(associatedChannel);  // first retrieve all the possible formats for the current sensor device
 			if(dataFormatsSignal!=null){
+
 				FormatCluster formatClusterSignal = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormatsSignal,mAlgorithmDetails.mChannelType.toString())); // retrieve the calibrated data
-				if(formatClusterSignal!= null){
+				if(Double.isNaN(formatClusterSignal.mData)){	
 					setChannelValue(associatedChannel, formatClusterSignal.mData);
 				}
 				else{
@@ -603,18 +814,7 @@ public class OrientationModule extends AbstractAlgorithm{
 				}
 			}
 		}
-		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0
-				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
-				isEnabled = true;
-				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
-					quaternionOutput = true;
-				}
-				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
-					eulerOutput = true;
-				}
-			}
-		}
+
 		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
 			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0
 				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0){
@@ -623,6 +823,18 @@ public class OrientationModule extends AbstractAlgorithm{
 					quaternionOutput = true;
 				}
 				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0){
+					eulerOutput = true;
+				}
+			}
+		}
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
+			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
+				isEnabled = true;
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
+					quaternionOutput = true;
+				}
+				if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
 					eulerOutput = true;
 				}
 			}
@@ -701,10 +913,11 @@ public class OrientationModule extends AbstractAlgorithm{
 			}
 		}
 		
-		bitmask = DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT | DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER ;
+		//bitmask = DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT | DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER ;
 		
 		return bitmask;
 	}
+	
 	
 	@Override
 	public List<ChannelDetails> getChannelDetails() {
@@ -713,34 +926,34 @@ public class OrientationModule extends AbstractAlgorithm{
 		
 		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
 			if(quaternionOutput){
-				listOfChannelDetails=listChannelsQuat;
+				listOfChannelDetails=listChannelsQuat9DOF_LN;
 				}
 			if(eulerOutput){
-				listOfChannelDetails=listChannelsEuler;
+				listOfChannelDetails=listChannelsEuler9DOF_LN;
 			}
 		}
 		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
 			if(quaternionOutput){
-				listOfChannelDetails=listChannelsQuat;
+				listOfChannelDetails=listChannelsQuat9DOF_WR;
 			}
 			if(eulerOutput){
-				listOfChannelDetails=listChannelsEuler;
+				listOfChannelDetails=listChannelsEuler9DOF_WR;
 			}
 		}
 		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
 			if(quaternionOutput){
-				listOfChannelDetails=listChannelsQuat;
+				listOfChannelDetails=listChannelsQuat6DOF_WR;
 			}
 			if(eulerOutput){
-				listOfChannelDetails=listChannelsEuler;
+				listOfChannelDetails=listChannelsQuat6DOF_WR;
 			}
 		}
 		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
 			if(quaternionOutput){
-				listOfChannelDetails=listChannelsQuat;
+				listOfChannelDetails=listChannelsQuat6DOF_LN;
 			}
 			if(eulerOutput){
-				listOfChannelDetails=listChannelsEuler;
+				listOfChannelDetails=listChannelsEuler6DOF_LN;
 			}
 		}
 		
