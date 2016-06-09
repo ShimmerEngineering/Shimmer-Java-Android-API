@@ -308,7 +308,6 @@ public class SensorADC extends AbstractSensor {
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
     	Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-
     	// Internal ADCs
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A1,  channel_INT_EXP_ADC_A1);
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A12, channel_INT_EXP_ADC_A12);
@@ -369,7 +368,7 @@ public class SensorADC extends AbstractSensor {
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
-							CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+							CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcs));
 //		}
 		super.updateSensorGroupingMap();	
 	}

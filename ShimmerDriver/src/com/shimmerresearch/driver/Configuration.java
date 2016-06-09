@@ -1365,7 +1365,12 @@ public class Configuration {
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream 
 					);
-			
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntAdcs = Arrays.asList(
+					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
+					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream,
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
+
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoStreaming = Arrays.asList(
 					baseBtStream, baseLogAndStream);
 
@@ -2952,7 +2957,7 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw;//XXX-RS-LSM-SensorClass?
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA12;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcs;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Mini;
