@@ -109,6 +109,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
+import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
@@ -884,6 +885,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				numAdditionalChannels += 1;
 			}
 		}
+		
+		// adding channels from enabled algorithms details
+		//
+		for(AbstractAlgorithm aA: getListOfEnabledAlgorithmModules()){
+			numAdditionalChannels += aA.getNumberOfEnabledChannels();
+		}
+		
+		numAdditionalChannels += 15;
+		
 		//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
 		double [] calibratedData = new double[numCalibratedData+numAdditionalChannels];
 		double [] uncalibratedData = new double[numUncalibratedData+numAdditionalChannels];
