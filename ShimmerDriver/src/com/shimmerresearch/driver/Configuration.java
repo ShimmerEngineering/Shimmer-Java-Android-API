@@ -1358,18 +1358,20 @@ public class Configuration {
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
 					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
-					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
-
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
+					baseShimmer4Stock);
+			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
-					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream 
-					);
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
+					baseShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntAdcs = Arrays.asList(
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
 					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream,
-					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream,
+					baseShimmer4Stock);
 
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoStreaming = Arrays.asList(
 					baseBtStream, baseLogAndStream);
