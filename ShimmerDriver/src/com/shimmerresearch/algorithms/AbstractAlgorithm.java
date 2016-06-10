@@ -1,11 +1,8 @@
 package com.shimmerresearch.algorithms;
 
-
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -13,7 +10,6 @@ import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 
 public abstract class AbstractAlgorithm extends BasicProcessWithCallBack implements Serializable{

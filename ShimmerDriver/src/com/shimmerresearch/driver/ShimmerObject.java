@@ -6871,7 +6871,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
 		mMapOfAlgorithmModules = new LinkedHashMap<String, AbstractAlgorithm>();
-		mAlgorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
+		mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
 		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
 		mSensorGroupingMap = new TreeMap<Integer,SensorGroupingDetails>();
 		mConfigOptionsMap = new HashMap<String, ConfigOptionDetailsSensor>();
@@ -6925,11 +6925,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	private void generateMapOfAlgorithmGroupingMap() {
-		mAlgorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
+		mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
 		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
 			TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = abstractAlgorithm.mAlgorithmGroupingMap;
 			if(algorithmGroupingMap!=null && algorithmGroupingMap.keySet().size()>0){
-				mAlgorithmGroupingMap.putAll(algorithmGroupingMap);
+				mMapOfAlgorithmGrouping.putAll(algorithmGroupingMap);
 			}
 		}
 	}
