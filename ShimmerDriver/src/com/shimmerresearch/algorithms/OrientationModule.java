@@ -528,8 +528,8 @@ public class OrientationModule extends AbstractAlgorithm{
 		mConfigOptionsMap.put(GuiLabelConfig.QUATERNION_OUTPUT, configOptionQuatOutput);
 		mConfigOptionsMap.put(GuiLabelConfig.EULER_OUTPUT, configOptionEulerOutput);
 		
-		mAlgorithmGroupingMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.ordinal(), sGD9Dof);
-		mAlgorithmGroupingMap.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.ordinal(), sGD6Dof);
+		mMapOfAlgorithmGrouping.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.ordinal(), sGD9Dof);
+		mMapOfAlgorithmGrouping.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.ordinal(), sGD6Dof);
 
 	}
 	

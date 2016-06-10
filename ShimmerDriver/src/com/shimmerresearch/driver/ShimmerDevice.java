@@ -1045,10 +1045,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		if(groupName.isEmpty()){
-			listOfAlgorithms = getListOfEnabledAlgorithmModules();
+//			listOfAlgorithms = getListOfEnabledAlgorithmModules();
+			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		else {
-			listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+//			listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);
 		}
 		
 		// Treat algorithms differently because we normally want to set the same
@@ -1110,10 +1112,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public Object getAlgorithmSettings(String groupName, String configLabel){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		if(groupName.isEmpty()){
-			listOfAlgorithms = getListOfEnabledAlgorithmModules();
+//			listOfAlgorithms = getListOfEnabledAlgorithmModules();
+			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		else {
-			listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+//			listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);
 		}
 		
 		Object returnValue = null;
@@ -1951,6 +1955,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledAlgorithms;
 	}
 
+	public List<AbstractAlgorithm> getListOfAlgorithmModules(){
+		return new ArrayList<AbstractAlgorithm>(mMapOfAlgorithmModules.values());
+	}
+
 	
 //	//migrated from Shimmer Object 19-5-2016 by EN - all algorithm related functions - UNTESTED
 //	//list of algorithms to configure from panel configure algorithm GUI
@@ -2107,20 +2115,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mSupportedAlgorithmChannelsMap;
 	}
 	
-	public TreeMap<Integer, SensorGroupingDetails> getAlgorithmGroupingMap() {
+	public TreeMap<Integer, SensorGroupingDetails> getMapOfAlgorithmGrouping() {
 		TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>(); 
     	for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {
-    		algorithmGroupingMap.putAll(abstractAlgorithm.mAlgorithmGroupingMap);
+    		algorithmGroupingMap.putAll(abstractAlgorithm.mMapOfAlgorithmGrouping);
     	}
     	mMapOfAlgorithmGrouping = algorithmGroupingMap;
 		return mMapOfAlgorithmGrouping;
 	}
 
-	public TreeMap<Integer, SensorGroupingDetails> getAlgorithmGroupingMapEnabled() {
+	public TreeMap<Integer, SensorGroupingDetails> getMapOfAlgorithmGroupingEnabled() {
 		TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>(); 
     	for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {
     		if(abstractAlgorithm.isEnabled()){
-        		algorithmGroupingMap.putAll(abstractAlgorithm.mAlgorithmGroupingMap);
+        		algorithmGroupingMap.putAll(abstractAlgorithm.mMapOfAlgorithmGrouping);
     		}
     	}
     	mMapOfAlgorithmGrouping = algorithmGroupingMap;
@@ -2440,6 +2448,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 
+
+	public List<AbstractAlgorithm> getListOfEnabledAlgorithmModulesPerGroup(String groupName) {
+		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
+			if(sGD.mGroupName.equals(groupName)){
+				return getListOfEnabledAlgorithmModulesPerGroup(sGD);
+			}
+		}
+		return null;
+	}
+	
 	public List<AbstractAlgorithm> getListOfEnabledAlgorithmModulesPerGroup(SensorGroupingDetails sGD) {
 		List<AbstractAlgorithm> listOfEnabledAlgorthimsPerGroup = new ArrayList<AbstractAlgorithm>();
 		if(sGD!=null){
@@ -2456,14 +2474,29 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledAlgorthimsPerGroup;
 	}
 
-	public List<AbstractAlgorithm> getListOfEnabledAlgorithmModulesPerGroup(String groupName) {
+	public List<AbstractAlgorithm> getListOfAlgorithmModulesPerGroup(String groupName) {
 		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
 			if(sGD.mGroupName.equals(groupName)){
-				return getListOfEnabledAlgorithmModulesPerGroup(sGD);
+				return getListOfAlgorithmModulesPerGroup(sGD);
 			}
 		}
 		return null;
 	}
 
+	public List<AbstractAlgorithm> getListOfAlgorithmModulesPerGroup(SensorGroupingDetails sGD) {
+		List<AbstractAlgorithm> listOfEnabledAlgorthimsPerGroup = new ArrayList<AbstractAlgorithm>();
+		if(sGD!=null){
+			Map<String, AbstractAlgorithm> mapOfSupportAlgorithms = getSupportedAlgorithmChannels();
+			for(AlgorithmDetails aD:sGD.mListOfAlgorithmDetails){
+				AbstractAlgorithm aA = mapOfSupportAlgorithms.get(aD.mAlgorithmName);
+				if(aA!=null){
+					listOfEnabledAlgorthimsPerGroup.add(aA);
+				}
+			}			
+		}
+		return listOfEnabledAlgorthimsPerGroup;
+	}
+
+	
 	
 }

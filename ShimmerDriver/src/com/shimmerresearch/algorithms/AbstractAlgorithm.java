@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -77,7 +78,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	public class GuiLabelConfigCommon{
-		public final static String SAMPLING_RATE = "Algo Sampling Rate";
+		public final static String SAMPLING_RATE = Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE;
 		public final static String TIMESTAMP_SIGNAL_NAME = "Time Stamp Signal Name";
 		public final static String TIMESTAMP_SIGNAL_FORMAT = "Time Stamp Signal Format";
 	}
@@ -130,7 +131,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public HashMap<String,ConfigOptionDetailsAlgorithm> mConfigOptionsMap = new HashMap<String,ConfigOptionDetailsAlgorithm>();//Define the gui to be generated
 	public HashMap<String, AlgorithmDetails> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetails>();//Defines algorithm requirements
 	
-	public TreeMap<Integer, SensorGroupingDetails> mAlgorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
+	public TreeMap<Integer, SensorGroupingDetails> mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
 	public abstract Object getSettings(String componentName);
 	public abstract Object getDefaultSettings(String componentName);
 //	public abstract void setSettings(String componentName, Object valueToSet) throws Exception;

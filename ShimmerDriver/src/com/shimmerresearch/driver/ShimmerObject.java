@@ -6927,7 +6927,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private void generateMapOfAlgorithmGroupingMap() {
 		mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
 		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
-			TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = abstractAlgorithm.mAlgorithmGroupingMap;
+			TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = abstractAlgorithm.mMapOfAlgorithmGrouping;
 			if(algorithmGroupingMap!=null && algorithmGroupingMap.keySet().size()>0){
 				mMapOfAlgorithmGrouping.putAll(algorithmGroupingMap);
 			}
