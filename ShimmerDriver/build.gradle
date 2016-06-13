@@ -43,6 +43,9 @@ task singleJar(type: Jar) {
         	'Main-Class': 'com.shimmerresearch.driver'
     }
     baseName = project.name
+    jar {
+     from sourceSets.main.allSource
+ 	}
     with jar
 }
 
@@ -66,8 +69,10 @@ dependencies {
    compile group: 'com.google.guava', name: 'guava', version: '19.0'
    compile group: 'java3d', name: 'vecmath', version: '1.3.1'
    compile name: 'ShimmerBiophysicalProcessingLibrary_Rev_0_11'
-    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
-    testCompile group: 'junit', name: 'junit', version: '4.+'
-    compile 'com.google.protobuf:protobuf-java:3.0.0-beta-2'
-    compile 'io.grpc:grpc-all:0.14.0'
+   compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+   testCompile group: 'junit', name: 'junit', version: '4.+'
+   compile 'com.google.protobuf:protobuf-java:3.0.0-beta-2'
+   compile 'io.grpc:grpc-all:0.14.0'
+   compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.6'
+   
 } 
