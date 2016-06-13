@@ -1047,7 +1047,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		if(groupName.isEmpty()){
-			listOfAlgorithms = getListOfEnabledAlgorithmModules();
+			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		else {
 			listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
@@ -1112,7 +1112,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public Object getAlgorithmSettings(String groupName, String configLabel){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		if(groupName.isEmpty()){
-			listOfAlgorithms = getListOfEnabledAlgorithmModules();
+			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		else {
 			listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
@@ -2184,6 +2184,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
 		return mMapOfAlgorithmModules;
 	}
+	
+	public List<AbstractAlgorithm> getListOfAlgorithmModules(){
+		List<AbstractAlgorithm> mListAbstractAlgorithms = new ArrayList<AbstractAlgorithm>();
+		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()) {
+			mListAbstractAlgorithms.add(aA);
+			}
+		return mListAbstractAlgorithms;
+	}
+	
 
 	protected void initializeAlgorithms() {
 		for (AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){

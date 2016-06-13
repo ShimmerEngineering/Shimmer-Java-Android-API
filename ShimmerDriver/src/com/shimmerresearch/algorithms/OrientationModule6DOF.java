@@ -239,7 +239,7 @@ public class OrientationModule6DOF extends OrientationModule{
 	
 	public static final AlgorithmDetails algo6DoFOrientation_WR_Acc = new AlgorithmDetails(
 			AlgorithmName.ORIENTATION_6DOF_WR, 
-			"Wide-Noise Accel", 
+			"Wide-Range Accel", 
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
