@@ -20,6 +20,8 @@ import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.OrientationModule;
+import com.shimmerresearch.algorithms.OrientationModule6DOF;
+import com.shimmerresearch.algorithms.OrientationModule9DOF;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -830,7 +832,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		
 		//add in algorithm processing
-		// TO  TEST
 //		ojc = processAlgorithmData(ojc);
 		
 		return ojc;
@@ -2172,12 +2173,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 		
 		double samplingRate = getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedPpgToHrCh = OrientationModule.getMapOfSupportedAlgorithms(mShimmerVerObject);
-		for (AlgorithmDetails algorithmDetails:mapOfSupportedPpgToHrCh.values()) {
-			OrientationModule orientationModule = new OrientationModule(algorithmDetails, samplingRate);
-			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule);
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = OrientationModule9DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
+		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
+			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, samplingRate);
+			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule9DOF);
 		}
 		
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = OrientationModule6DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
+		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
+			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
+			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule6DOF);
+		}
 		// TODO load algorithm modules automatically from any included algorithm
 		// jars depending on licence?
 	}

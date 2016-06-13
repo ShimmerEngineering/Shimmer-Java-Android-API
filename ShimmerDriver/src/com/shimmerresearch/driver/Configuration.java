@@ -927,6 +927,8 @@ public class Configuration {
 
 		//DATABASE NAMES
 		public static class DatabaseChannelHandles{
+			public static final String NONE = "";
+			
 			public static final String EXT_ADC_A7 = SensorADC.DatabaseChannelHandles.EXT_ADC_A7;  //"F5437a_Ext_A7";
 			public static final String EXT_ADC_A6 = SensorADC.DatabaseChannelHandles.EXT_ADC_A6;  //"F5437a_Ext_A6";
 			public static final String EXT_ADC_A15 = SensorADC.DatabaseChannelHandles.EXT_ADC_A15; //"F5437a_Ext_A15";
@@ -1242,7 +1244,9 @@ public class Configuration {
 			public static  String PPG_TO_HR = "PPGtoHR";
 			public static  String PPG_TO_HR1 = "PPGtoHR1";
 			public static  String PPG_TO_HR2 = "PPGtoHR2";
-// --------------------------------------------------------------			
+// --------------------------------------------------------------
+			
+			public static String DEVICE_PROPERTIES = "Device Properties"; // Only used as a sensor name for the GUI
 		}
 		
 //		//Names used for parsing the GQ configuration header file 
@@ -1256,7 +1260,7 @@ public class Configuration {
 		
 		public static class CompatibilityInfoForMaps{
 			// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
-			private static final ShimmerVerObject baseAnyIntExpBoardAndFw = 			new ShimmerVerObject(HW_ID.SHIMMER_3,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			private static final ShimmerVerObject baseAnyIntExpBoardAndFw = 			new ShimmerVerObject(ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject baseAnyIntExpBoardAndSdlog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject baseAnyIntExpBoardAndBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject baseAnyIntExpBoardAndLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
@@ -1312,7 +1316,8 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 					baseExgSdLog, baseExgBtStream, baseExgLogAndStream,  
 					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream,
-					baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq);
+					baseShimmerGq802154Lr, baseShimmerGq802154Nr, baseShimmer2rGq,
+					baseShimmer4Stock);
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoSdLog = Arrays.asList(baseSdLog);
 			
@@ -1344,41 +1349,48 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
-					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream,
+					baseShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA12 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
 					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream,
-					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream,
+					baseShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA13 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
 					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream, 
-					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
-
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
+					baseShimmer4Stock);
+			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 
 					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream, 
-					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream 
-					);
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
+					baseShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntAdcs = Arrays.asList(
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
 					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream,
-					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream);
+					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream,
+					baseShimmer4Stock);
 
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoStreaming = Arrays.asList(
-					baseBtStream, baseLogAndStream);
+					baseBtStream, baseLogAndStream,
+					baseShimmer4Stock);
 
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoLogging = Arrays.asList(
-					baseSdLog, baseLogAndStream);
+					baseSdLog, baseLogAndStream,
+					baseShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoRespiration = Arrays.asList(
-					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream);
+					baseExgUnifiedSdLog, baseExgUnifiedBtStream, baseExgUnifiedLogAndStream,
+					baseShimmer4Stock);
 
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
 					baseHighGAccelSdLog,baseHighGAccelBtStream,baseHighGAccelLogAndStream);
@@ -1395,7 +1407,7 @@ public class Configuration {
 	    static {
 	        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 
-	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, new SensorDetailsRef(0, 0, "Device Properties"));
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, new SensorDetailsRef(0, 0, Shimmer3.ObjectClusterSensorName.DEVICE_PROPERTIES));
 	        
 //	        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP, new SensorDetailsRef(0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP));
 //	        aMap.put(Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC, new SensorDetailsRef(0, 0, Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC));

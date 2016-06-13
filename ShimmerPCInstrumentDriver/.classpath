@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="com/shimmerresearch/pcdriver/MsgDock.java" kind="src" path="src"/>
+	<classpathentry excluding="com/shimmerresearch/pcdriver/MsgDock.java|com/shimmerresearch/pcDriver/testShimmer4.java" kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ShimmerDriver"/>
 	<classpathentry exported="true" kind="lib" path="libs/jchart2d-3.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-io-2.4.jar"/>
