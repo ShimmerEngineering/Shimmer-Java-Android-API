@@ -353,6 +353,7 @@ public class Shimmer4 extends ShimmerDevice {
 		//Override Shimmer4 sensors
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true);
+		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, true);
 
 //		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.BLUETOOTH);
 		
@@ -421,22 +422,6 @@ public class Shimmer4 extends ShimmerDevice {
 
 				long pcTimestamp = System.currentTimeMillis();
 				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
-				
-//				//Hack for debugging
-//				//JC: This is temp, should actually be set using the real Shimmer Clock cal time
-//				objectCluster.mShimmerCalibratedTimeStamp = System.currentTimeMillis();
-//				if(mFirstPacketParsed) {
-//					mFirstPacketParsed=false;
-//					long systemTime = System.currentTimeMillis();
-//					objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
-//					byte[] bSystemTS = objectCluster.mSystemTimeStamp;
-//					ByteBuffer bb = ByteBuffer.allocate(8);
-//			    	bb.put(bSystemTS);
-//			    	bb.flip();
-//			    	long systemTimeStamp = bb.getLong();
-//					mOffsetFirstTime = systemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
-//				}
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime));
 				
 				dataHandler(objectCluster);
 			}
@@ -714,10 +699,9 @@ public class Shimmer4 extends ShimmerDevice {
 
 	protected void dataHandler(ObjectCluster ojc) {
 		
-		//CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress(), mComPort, getPacketReceptionRate());
-		//sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, callBackObject);
+//		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress(), mComPort, getPacketReceptionRate());
+//		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE, callBackObject);
 		
-//		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET, ojc);
 	}
 	
@@ -773,6 +757,29 @@ public class Shimmer4 extends ShimmerDevice {
 			setBluetoothRadioState(BT_STATE.CONNECTED);
 		}
 	}
+	
+//	protected double mLastReceivedCalibratedTimeStamp=-1; 
+//	double mLastSavedCalibratedTimeStamp = 0.0;
+//
+//	public void calculatePacketReceptionRateCurrent(int intervalMs) {
+//		
+//		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
+//		
+//		if (mLastReceivedCalibratedTimeStamp!=-1){
+//			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
+//			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
+//			mPacketReceptionRateCurrent = (numPacketsReceived/numPacketsShouldHaveReceived)*100.0;
+//		}	
+//
+//		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent>100.0? 100.0:mPacketReceptionRateCurrent);
+//		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent<0? 0.0:mPacketReceptionRateCurrent);
+//
+//		mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
+//
+//		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getBluetoothAddress(), mComPort, mPacketReceptionRateCurrent);
+//		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+//	}
+	
 	
 	/**
 	 * Due to the nature of the Bluetooth SPP stack a delay has been added to

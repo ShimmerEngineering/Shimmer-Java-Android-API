@@ -117,8 +117,6 @@ public class SensorEXG extends AbstractSensor{
 	public class GuiLabelSensorTiles{
 		public static final String EXG = "ECG/EMG";
 	}
-
-	
 	
 //	aMap.put(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT, new SensorDetailsRef(0x10<<(0*8), 0x10<<(0*8), Configuration.Shimmer3.GuiLabelSensors.EXG1_24BIT));
 //	aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT, new SensorDetailsRef(0x08<<(0*8), 0x08<<(0*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_24BIT));
@@ -156,15 +154,16 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,
-//							Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,
+	//							Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,
 					
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT
-//							Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT
+	//							Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT
 					),
 					true);
+	
 	public static final SensorDetailsRef sDRefExgTest = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_TEST,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
@@ -196,6 +195,7 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT,
 					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT),
 			true);
+	
 	public static final SensorDetailsRef sDRefExgRespiration = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_RESPIRATION,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration,
 			Arrays.asList(
@@ -231,6 +231,7 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,
 					Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT),
 			true);
+	
 	public static final SensorDetailsRef sDRefEmg =  new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EMG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
@@ -263,6 +264,7 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,
 					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT),
 			true);
+	
 	public static final SensorDetailsRef sDRefExgCustom =  new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_CUSTOM,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(

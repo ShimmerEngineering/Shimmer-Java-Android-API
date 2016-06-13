@@ -830,7 +830,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		
 		//add in algorithm processing
-		// TO  TEST
 //		ojc = processAlgorithmData(ojc);
 		
 		return ojc;

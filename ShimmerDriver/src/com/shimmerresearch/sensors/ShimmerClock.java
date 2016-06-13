@@ -77,12 +77,35 @@ public class ShimmerClock extends AbstractSensor {
 	{
 		sensorSystemTimeStampRef.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
 	}
+
+	public static final SensorDetailsRef sensorShimmerPacketReception = new SensorDetailsRef(
+			Configuration.Shimmer3.ObjectClusterSensorName.DEVICE_PROPERTIES,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			Arrays.asList(
+					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
+//					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
+					//temp only! JC: delete after db sync works
+//					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
+					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
+					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
+					
+//					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
+//					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL
+					));
+	{
+		sensorShimmerPacketReception.mIsApiSensor = true;
+	}
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, ShimmerClock.sensorSystemTimeStampRef);
         aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, ShimmerClock.sensorShimmerClock);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -157,9 +180,65 @@ public class ShimmerClock extends AbstractSensor {
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL), false, true);
 	{
 		//TODO put into above constructor
-		channelShimmerClockOffset.mChannelSource = CHANNEL_SOURCE.API;
+		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
 	}
 
+	public static final ChannelDetails channelRealTimeClockSync = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+			Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+			DatabaseChannelHandles.REAL_TIME_CLOCK_SYNC,
+			CHANNEL_UNITS.MILLISECONDS,
+			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
+	{
+		//TODO put into above constructor
+		channelRealTimeClockSync.mChannelSource = CHANNEL_SOURCE.API;
+	}
+
+	public static final ChannelDetails channelBattPercentage = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
+			Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
+			DatabaseChannelHandles.NONE,
+			CHANNEL_UNITS.PERCENT,
+			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+	{
+		//TODO put into above constructor
+		channelBattPercentage.mChannelSource = CHANNEL_SOURCE.API;
+	}
+
+	public static final ChannelDetails channelReceptionRateCurrent = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
+			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
+			DatabaseChannelHandles.NONE,
+			CHANNEL_UNITS.PERCENT,
+			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+	{
+		//TODO put into above constructor
+		channelReceptionRateCurrent.mChannelSource = CHANNEL_SOURCE.API;
+	}
+
+	public static final ChannelDetails channelReceptionRateTrial = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+			DatabaseChannelHandles.NONE,
+			CHANNEL_UNITS.PERCENT,
+			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+	{
+		//TODO put into above constructor
+		channelReceptionRateTrial.mChannelSource = CHANNEL_SOURCE.API;
+	}
+
+	public static final ChannelDetails channelEventMarker = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+			DatabaseChannelHandles.NONE,
+			CHANNEL_UNITS.PERCENT,
+			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+	{
+		//TODO put into above constructor
+		channelEventMarker.mChannelSource = CHANNEL_SOURCE.API;
+	}
+	
+	
 	//--------- Channel info end --------------
 
 	public ShimmerClock(ShimmerVerObject svo) {
@@ -187,6 +266,13 @@ public class ShimmerClock extends AbstractSensor {
 			
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
+			
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, ShimmerClock.channelRealTimeClockSync);
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, ShimmerClock.channelBattPercentage);
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL, ShimmerClock.channelReceptionRateTrial);
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
+
 		}
 		
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
@@ -242,6 +328,23 @@ public class ShimmerClock extends AbstractSensor {
 //					objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime);
 					objectCluster.addCalData(channelDetails, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime);
 					objectCluster.incrementIndexKeeper();
+					
+//					//Hack for debugging
+//					//JC: This is temp, should actually be set using the real Shimmer Clock cal time
+//					objectCluster.mShimmerCalibratedTimeStamp = System.currentTimeMillis();
+//					if(mFirstPacketParsed) {
+//						mFirstPacketParsed=false;
+//						long systemTime = System.currentTimeMillis();
+//						objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
+//						byte[] bSystemTS = objectCluster.mSystemTimeStamp;
+//						ByteBuffer bb = ByteBuffer.allocate(8);
+//				    	bb.put(bSystemTS);
+//				    	bb.flip();
+//				    	long systemTimeStamp = bb.getLong();
+//						mOffsetFirstTime = systemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
+//					}
+//					objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, new FormatCluster(CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime));
+					
 					
 //					//TODO: Hack -> just copying from elsewhere (forgotten where exactly)
 //					double systemTime = 0;
@@ -423,6 +526,55 @@ public class ShimmerClock extends AbstractSensor {
 	//						calibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
 						} 
 					}
+				}
+				
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC)){
+					
+				}
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE)){
+
+//					objectCluster.addData(channelBattPercentage, Double.NaN, mShimmerBattStatusDetails.mEstimatedChargePercentage);
+//					objectCluster.incrementIndexKeeper();
+//
+////					objectCluster.addData(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage);
+////					calibratedData[additionalChannelsOffset] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
+////					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+////					uncalibratedData[additionalChannelsOffset] = Double.NaN;
+////					uncalibratedDataUnits[additionalChannelsOffset] = "";
+////					sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
+////					additionalChannelsOffset+=1;
+
+				}
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT)){
+					
+					objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mPacketReceptionRateCurrent);
+					objectCluster.incrementIndexKeeper();
+
+//					objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent);
+//					calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRateCurrent;
+//					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+//					uncalibratedData[additionalChannelsOffset] = Double.NaN;
+//					uncalibratedDataUnits[additionalChannelsOffset] = "";
+//					sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;
+//					additionalChannelsOffset+=1;
+
+					
+				}
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL)){
+
+					objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mPacketReceptionRate);
+					objectCluster.incrementIndexKeeper();
+
+//					calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRate;
+//					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+//					uncalibratedData[additionalChannelsOffset] = Double.NaN;
+//					uncalibratedDataUnits[additionalChannelsOffset] = "";
+//					sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
+//					additionalChannelsOffset+=1;
+				}
+				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER)){
+//					objectCluster.addData(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
+//					untriggerEventIfLastOneWasPulse();
 				}
 
 			}
