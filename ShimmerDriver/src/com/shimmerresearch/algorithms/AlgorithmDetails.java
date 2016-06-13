@@ -16,7 +16,7 @@ public class AlgorithmDetails implements Serializable {
 	
 	/** AKA ObjectClusterName */
 	public String mAlgorithmName = "";
-	private List<ChannelDetails> mListOfChannelDetails = new ArrayList<ChannelDetails>();
+	public List<ChannelDetails> mListOfChannelDetails = new ArrayList<ChannelDetails>();
 	//TODO implement mGuiFriendlyName below across algorithms
 	public String mGuiFriendlyName = "";
 	public String mDatabaseChannelHandle = "";
