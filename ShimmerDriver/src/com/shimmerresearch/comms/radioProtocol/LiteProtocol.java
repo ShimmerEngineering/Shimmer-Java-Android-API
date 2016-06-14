@@ -76,6 +76,8 @@ public class LiteProtocol extends ByteLevelProtocol{
 	public String mMyBluetoothAddress;
 	public String mComPort;
 	
+	public UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), true);
+	
 	public void writeInstruction(byte[] instruction){
 		getListofInstructions().add(instruction);
 	};
@@ -469,14 +471,16 @@ public class LiteProtocol extends ByteLevelProtocol{
 						byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
 						
 						//Data packet followed by another data packet
-						if(bufferTemp[0]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE && bufferTemp[mPacketSize+1]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE){
+						if(bufferTemp[0]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE 
+								&& bufferTemp[mPacketSize+1]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE){
 							//Handle the data packet
 							processDataPacket(bufferTemp);
 							clearSingleDataPacketFromBuffers(bufferTemp, mPacketSize+1);
 						} 
 						
 						//Data packet followed by an ACK (suggesting an ACK in response to a SET BT command or else a BT response command)
-						else if(bufferTemp[0]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE && bufferTemp[mPacketSize+1]==LiteProtocolInstructionSet.InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
+						else if(bufferTemp[0]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE 
+								&& bufferTemp[mPacketSize+1]==LiteProtocolInstructionSet.InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
 							if(mByteArrayOutputStream.size()>mPacketSize+2){
 								
 								if(bufferTemp[mPacketSize+2]==LiteProtocolInstructionSet.InstructionsSet.DATA_PACKET_VALUE){
@@ -552,9 +556,10 @@ public class LiteProtocol extends ByteLevelProtocol{
 	} // End IOThread
 	
 	public void printLogDataForDebugging(String msg){
-		System.out.println(msg);
-		
+//		System.out.println(msg);
+		mUtilShimmer.consolePrintLn(msg);
 	}
+	
 	public synchronized void startTimerCheckForAckOrResp(int seconds) {
 		//public synchronized void responseTimer(int seconds) {
 			if(mTimerCheckForAckOrResp!=null) {
