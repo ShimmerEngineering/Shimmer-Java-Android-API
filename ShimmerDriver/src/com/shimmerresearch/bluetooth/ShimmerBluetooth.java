@@ -463,34 +463,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private int mNumOfInfoMemSetCmds = 0;
 
 	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
-
 	public static final int MSG_IDENTIFIER_DEVICE_PAIRED = 8;
-
 	public static final int MSG_IDENTIFIER_DEVICE_UNPAIRED = 9;
-
 	public static final int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1;
-
 	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
-
 	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
-
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
-
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
-
 	public static final int MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE = 7;
 
 	//	private boolean mVerboseMode = true;
 	//	private String mParentClassName = "ShimmerPC";
 		
-		public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
-
+	public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
 	public static final int NOTIFICATION_SHIMMER_FULLY_INITIALIZED = 2;
-
 	public static final int NOTIFICATION_SHIMMER_START_STREAMING = 1;
-
 	public static final int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
-
 	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0;
 
 	

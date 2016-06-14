@@ -261,7 +261,8 @@ public class ChannelDetails implements Serializable {
 
 	private void checkDatabaseChannelHandle(){
 		if(mDatabaseChannelHandle.isEmpty()){
-			mStoreToDatabase = false;
+//			mStoreToDatabase = false;
+			mDatabaseChannelHandle = mObjectClusterName;
 		}
 	}
 

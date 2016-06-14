@@ -1511,6 +1511,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iexg1sta]=CHANNEL_UNITS.NO_UNITS;
 					calibratedDataUnits[iexg1ch1]=CHANNEL_UNITS.MILLIVOLTS;
 					calibratedDataUnits[iexg1ch2]=CHANNEL_UNITS.MILLIVOLTS;
+					
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.EXG1_STATUS,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1sta);
+					
 					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
 						sensorNames[iexg1ch1]=Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
 						objectCluster.addData(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1);
@@ -1576,6 +1579,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iexg2sta]=CHANNEL_UNITS.NO_UNITS;
 					calibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.MILLIVOLTS;
 					calibratedDataUnits[iexg2ch2]=CHANNEL_UNITS.MILLIVOLTS;
+					
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.EXG2_STATUS,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2sta);
+					
 					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
 						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
 						objectCluster.addData(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2);
