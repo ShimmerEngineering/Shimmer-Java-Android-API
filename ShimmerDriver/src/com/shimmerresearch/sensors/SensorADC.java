@@ -309,16 +309,15 @@ public class SensorADC extends AbstractSensor {
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
     	Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+    	// External ADCs
+    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A7,  channel_EXT_EXP_ADC_A7);
+    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A6,  channel_EXT_EXP_ADC_A6);
+    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A15, channel_EXT_EXP_ADC_A15);
     	// Internal ADCs
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A1,  channel_INT_EXP_ADC_A1);
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A12, channel_INT_EXP_ADC_A12);
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A13, channel_INT_EXP_ADC_A13);
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A14, channel_INT_EXP_ADC_A14);
-
-    	// External ADCs
-    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A6,  channel_EXT_EXP_ADC_A6);
-    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A7,  channel_EXT_EXP_ADC_A7);
-    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A15, channel_EXT_EXP_ADC_A15);
     	mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
 
