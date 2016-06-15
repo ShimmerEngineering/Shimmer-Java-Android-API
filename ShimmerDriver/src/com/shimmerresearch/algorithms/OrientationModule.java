@@ -326,36 +326,36 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	@Override
 	public void setSettings(String componentName, Object valueToSet){
 		
-		if(!((String) valueToSet).isEmpty()){
-			switch(componentName){
-				case(GuiLabelConfigCommon.SAMPLING_RATE):
-					if(valueToSet instanceof String){
+		switch(componentName){
+			case(GuiLabelConfigCommon.SAMPLING_RATE):
+				if(valueToSet instanceof String){
+					if(!((String) valueToSet).isEmpty()){
 						setSamplingRate(Double.parseDouble((String) valueToSet));
 					}
-					else if(valueToSet instanceof Double){
+				}
+				else if(valueToSet instanceof Double){
 						setSamplingRate((Double) valueToSet);
-					}
-					break;
-				case(GuiLabelConfig.ACCELEROMETER):
-					setAccelerometer((String) valueToSet);
-					break;
-				case(GuiLabelConfig.QUATERNION_OUTPUT):
-					if(valueToSet instanceof Boolean){
-						setQuaternionOutput((boolean) valueToSet);
-					}
-					else if(valueToSet instanceof Integer){
-						setQuaternionOutput(((Integer) valueToSet)>0? true:false);
-					}
-					break;
-				case(GuiLabelConfig.EULER_OUTPUT):
-					if(valueToSet instanceof Boolean){
-						setEulerOutput((boolean) valueToSet);
-					}
-					else if(valueToSet instanceof Integer){
-						setEulerOutput(((Integer) valueToSet)>0? true:false);
-					}
-					break;
-			}
+				}
+				break;
+			case(GuiLabelConfig.ACCELEROMETER):
+				setAccelerometer((String) valueToSet);
+				break;
+			case(GuiLabelConfig.QUATERNION_OUTPUT):
+				if(valueToSet instanceof Boolean){
+					setQuaternionOutput((boolean) valueToSet);
+				}
+				else if(valueToSet instanceof Integer){
+					setQuaternionOutput(((Integer) valueToSet)>0? true:false);
+				}
+				break;
+			case(GuiLabelConfig.EULER_OUTPUT):
+				if(valueToSet instanceof Boolean){
+					setEulerOutput((boolean) valueToSet);
+				}
+				else if(valueToSet instanceof Integer){
+					setEulerOutput(((Integer) valueToSet)>0? true:false);
+				}
+				break;
 		}
 	}
 	
