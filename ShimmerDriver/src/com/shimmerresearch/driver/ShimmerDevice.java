@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -2501,6 +2502,50 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledAlgorthimsPerGroup;
 	}
 
+	
+	public List<String> getSensorsAndAlgorithmToStoreInDB(){
+		Set<String> setOfSensorsAndAlgorithms = getSensorChannelsToStoreInDB();
+		setOfSensorsAndAlgorithms.addAll(getAlgortihmChannelsToStoreInDB());
+		
+		List<String> listOfObjectClusterSensors = new ArrayList<String>(setOfSensorsAndAlgorithms.size());
+		listOfObjectClusterSensors.addAll(setOfSensorsAndAlgorithms);
+		
+		return listOfObjectClusterSensors;
+	}
+	
+	private Set<String> getSensorChannelsToStoreInDB(){
+		
+		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
+		for(SensorDetails sensorEnabled: mSensorMap.values()){
+			if(sensorEnabled.isEnabled() && !sensorEnabled.mSensorDetailsRef.mIsDummySensor){
+    			for(ChannelDetails channelDetails:sensorEnabled.mListOfChannels) {
+    					if(channelDetails.mStoreToDatabase){
+        					setOfObjectClusterSensors.add(channelDetails.mObjectClusterName);
+    					}
+    			}
+			}
+		}
+		
+		return setOfObjectClusterSensors;
+	}
+	
+	private Set<String> getAlgortihmChannelsToStoreInDB(){
+		
+		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
+		for(AbstractAlgorithm algortihm: mMapOfAlgorithmModules.values()){
+			if(algortihm.isEnabled()){
+				List<ChannelDetails> listOfDetails = algortihm.mAlgorithmDetails.mListOfChannelDetails;
+				for(ChannelDetails details: listOfDetails){
+					if(details.mStoreToDatabase){
+						setOfObjectClusterChannels.add(details.mObjectClusterName);
+//						setOfObjectClusterSensors.add(details.mDatabaseChannelHandle); AS: use this one better??
+					}
+				}
+			}
+		}
+		
+		return setOfObjectClusterChannels;
+	}
 	
 	
 }

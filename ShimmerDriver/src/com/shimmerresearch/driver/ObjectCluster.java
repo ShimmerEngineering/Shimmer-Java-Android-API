@@ -169,6 +169,19 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		}
 		return returnFormatCluster;
 	}
+	
+	public double getFormatClusterValue(String channelName, String format){
+		Collection<FormatCluster> formatClusterCollection = mPropertyCluster.get(channelName);
+		if(formatClusterCollection != null){
+			for(FormatCluster formatCluster: formatClusterCollection){
+				if(formatCluster.mFormat.equals(format)){
+					return formatCluster.mData;
+				}
+			}
+		}
+		
+		return Double.NaN;
+	}
 
 	/**
 	 * Users should note that a property has to be removed before it is replaced
