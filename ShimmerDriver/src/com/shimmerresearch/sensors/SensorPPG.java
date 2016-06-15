@@ -16,11 +16,13 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorGSR.GuiLabelSensorTiles;
 
 /**
  * @author Ronan McCormack
@@ -121,9 +123,13 @@ public class SensorPPG extends AbstractSensor {
 	public static final String[] ListOfPpg2AdcSelection = {"Int A1","Int A14"};
 	public static final Integer[] ListOfPpg2AdcSelectionConfigValues = {0,1};
 	
-	public static final Integer[] FixedConflictingSensorMapKeys = {Configuration.Shimmer3.SensorMapKey.HOST_ECG,Configuration.Shimmer3.SensorMapKey.HOST_EMG, 
-		Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, 
-		Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP};
+	public static final Integer[] FixedConflictingSensorMapKeys = {
+		Configuration.Shimmer3.SensorMapKey.HOST_ECG,
+		Configuration.Shimmer3.SensorMapKey.HOST_EMG, 
+		Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
+		Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, 
+		Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
+		Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP};
 
     List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
     
@@ -189,7 +195,8 @@ public class SensorPPG extends AbstractSensor {
 			true
 			);
 	{
-		sensorPpgHostPPG_A12.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+		//TODO addAll doesnt work when used in a static way
+//		sensorPpgHostPPG_A12.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
 	}
 	
 	public static final SensorDetailsRef sensorPpgHostPPG_A13 = new SensorDetailsRef(
@@ -197,15 +204,21 @@ public class SensorPPG extends AbstractSensor {
 			0, 
 			GuiLabelSensors.PPG_A13,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12,Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13, Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12,
+					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13, 
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, 
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG_A13),
 			true
 			);
 	
 	{
-		sensorPpgHostPPG_A13.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+		//TODO addAll doesnt work when used in a static way
+//		sensorPpgHostPPG_A13.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
 	}
 	
 	// Derived Channels - Proto3 Board
@@ -227,15 +240,20 @@ public class SensorPPG extends AbstractSensor {
 			0, 
 			GuiLabelSensors.PPG1_A12,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12,Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13, Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, 
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12,
+					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13, 
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, 
 		            Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG1_A12),
 			true
 			);
 	{
-		sensorPpgHostPPG1A12.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+		//TODO addAll doesnt work when used in a static way
+//		sensorPpgHostPPG1A12.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
 	}
 	
 	public static final SensorDetailsRef sensorPpgHostPPG1A13 = new SensorDetailsRef(
@@ -243,13 +261,17 @@ public class SensorPPG extends AbstractSensor {
 			0, 
 			GuiLabelSensors.PPG1_A13,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12,Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13),
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG1_A13),
 			true
 			);
 	{
-		sensorPpgHostPPG1A13.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+		//TODO addAll doesnt work when used in a static way
+//		sensorPpgHostPPG1A13.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
 	}
 	
 	public static final SensorDetailsRef sensorPpgHostPPG2Dummy = new SensorDetailsRef(
@@ -279,7 +301,8 @@ public class SensorPPG extends AbstractSensor {
 			true
 			);
 	{
-		sensorPpgHostPPG2_A1.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+		//TODO addAll doesnt work when used in a static way
+//		sensorPpgHostPPG2_A1.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
 	}
 	
 	public static final SensorDetailsRef sensorPpgHostPPG2_A14 = new SensorDetailsRef(
@@ -295,7 +318,8 @@ public class SensorPPG extends AbstractSensor {
 			);
 	
 	{
-		sensorPpgHostPPG2_A14.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+		//TODO addAll doesnt work when used in a static way
+//		sensorPpgHostPPG2_A14.mListOfSensorMapKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
 	}
 
 	    
@@ -378,7 +402,7 @@ public class SensorPPG extends AbstractSensor {
 	static {
 		 Map<String, ChannelDetails> aChannelMap = new LinkedHashMap<String, ChannelDetails>();
 		
-		aChannelMap.put(ObjectClusterSensorName.PPG_A12, SensorPPG.channelPPG1_A12);
+		aChannelMap.put(ObjectClusterSensorName.PPG_A12, SensorPPG.channelPPG_A12);
 		aChannelMap.put(ObjectClusterSensorName.PPG_A13, SensorPPG.channelPPG_A13); 
 		// PPG - Using Proto3 Deluxe TRRS Socket 1
 		aChannelMap.put(ObjectClusterSensorName.PPG1_A12, SensorPPG.channelPPG1_A12); 
@@ -413,36 +437,44 @@ public class SensorPPG extends AbstractSensor {
 	 
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-
-			mConfigOptionsMap.put(GuiLabelConfig.PPG_ADC_SELECTION , configOptionPpgAdcSelection); 
-			mConfigOptionsMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, configOptionPpg1AdcSelection); 
-			mConfigOptionsMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, configOptionPpgAdcSelection); 
-//			mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
+		mConfigOptionsMap.clear();
+		mConfigOptionsMap.put(GuiLabelConfig.PPG_ADC_SELECTION , configOptionPpgAdcSelection); 
+		mConfigOptionsMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, configOptionPpg1AdcSelection); 
+		mConfigOptionsMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, configOptionPpgAdcSelection); 
+//		mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
 	}
 
 	
 	@Override
 	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
+		int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP.ordinal();
+		
+		if(svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					GuiLabelSensorTiles.PROTO3_DELUXE_SUPP,
+					Arrays.asList(
+//							Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY,
+							Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY,
+							Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+		}
+		super.updateSensorGroupingMap();	
 	}
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		//NOT USED IN THIS CLASS
-		
 		return objectCluster;
 	}
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		//XXX What about this?
 	}
 
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		//XXX What about this?
 	}
@@ -478,13 +510,13 @@ public class SensorPPG extends AbstractSensor {
 		switch(componentName){
 		case(GuiLabelConfig.PPG_ADC_SELECTION):
 			returnValue = getPpgAdcSelectionGsrBoard();
-		break;
+			break;
 		case(GuiLabelConfig.PPG1_ADC_SELECTION):
 			returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
-		break;
+			break;
 		case(GuiLabelConfig.PPG2_ADC_SELECTION):
 			returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
-		break;
+			break;
 		}
 		return returnValue;
 	}
@@ -520,8 +552,7 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE commType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

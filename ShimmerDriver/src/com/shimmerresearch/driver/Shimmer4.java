@@ -118,7 +118,7 @@ public class Shimmer4 extends ShimmerDevice {
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
 				){
 			if(isDerivedSensorsSupported()){
-//				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
+				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
 			}
 		}
 
