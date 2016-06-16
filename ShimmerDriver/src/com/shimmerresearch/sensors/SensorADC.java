@@ -432,7 +432,8 @@ public class SensorADC extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName,
+	public Object setConfigValueUsingConfigLabel(String groupName, 
+			String componentName,
 			Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;

@@ -810,7 +810,7 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
 		Object returnValue = null;
 		int buf = 0;
 
@@ -822,7 +822,7 @@ public class Shimmer4 extends ShimmerDevice {
 //Integers
 //Strings
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel("", componentName, valueToSet);
 	        	break;
 		}
 	
