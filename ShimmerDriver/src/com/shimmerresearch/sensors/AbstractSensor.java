@@ -156,23 +156,25 @@ public abstract class AbstractSensor implements Serializable{
 		return false;
 	}
 	
-	
+	@Deprecated //?? not sure whether it's be to do this here or in ShimmerDevice
 	public void updateStateFromEnabledSensorsVars(COMMUNICATION_TYPE commType, long enabledSensors, long derivedSensors) {
 		for(SensorDetails sensorDetails:mSensorMap.values()){
 			//check as to whether the sensor originates from the Shimmer data packet or the API
-			if(sensorDetails.isApiSensor()){
-				continue;
-			}
+//			if(sensorDetails.isApiSensor()){
+//				continue;
+//			}
 			
-			boolean state = false;
-			if(sensorDetails.isDerivedChannel()){
-				//TODO check enabledSensors as well if required???
-				state = (derivedSensors & sensorDetails.mDerivedSensorBitmapID)>0? true:false;
-			}
-			else {
-				state = (enabledSensors & sensorDetails.mSensorDetailsRef.mSensorBitmapIDStreaming)>0? true:false;
-			}
-			sensorDetails.setIsEnabled(commType, state);
+			sensorDetails.updateFromEnabledSensorsVars(commType, enabledSensors, derivedSensors);
+			
+//			boolean state = false;
+//			if(sensorDetails.isDerivedChannel()){
+//				//TODO check enabledSensors as well if required???
+//				state = (derivedSensors & sensorDetails.mDerivedSensorBitmapID)>0? true:false;
+//			}
+//			else {
+//				state = (enabledSensors & sensorDetails.mSensorDetailsRef.mSensorBitmapIDStreaming)>0? true:false;
+//			}
+//			sensorDetails.setIsEnabled(commType, state);
 		}
 		
 //		//TODO: enabledSensors should be directed at channels coming from the Shimmer, derivedSensors at channels from the API 

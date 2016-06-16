@@ -6108,7 +6108,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			sensorAndConfigMapsCreate();
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				//XXX-RS-AA-SensorClass?
-				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL, true);
+				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, true);
 				
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, true);
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, true);//XXX-RS-LSM-SensorClass? Where is the LSM303DLHC_ACCEL?
@@ -7157,6 +7157,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
 		}
+		
 		if(mSensorMap!=null) {
 			if (getHardwareVersion() == HW_ID.SHIMMER_3) {
 				mapLoop:
@@ -7167,24 +7168,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 					// Process remaining channels
 					SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
-					sensorDetails.setIsEnabled(false);
-					// Check if this sensor is a derived sensor
-					if(sensorDetails.isDerivedChannel()) {
-						//Check if associated derived channels are enabled 
-						if((mDerivedSensors&sensorDetails.mDerivedSensorBitmapID) == sensorDetails.mDerivedSensorBitmapID) {
-							//TODO add comment
-							if((mEnabledSensors&sensorDetails.mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == sensorDetails.mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-								sensorDetails.setIsEnabled(true);
-							}
-						}
-					}
-					// This is not a derived sensor
-					else {
-						//Check if sensor's bit in sensor bitmap is enabled
-						if((mEnabledSensors&sensorDetails.mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == sensorDetails.mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-							sensorDetails.setIsEnabled(true);
-						}
-					}
+					sensorDetails.updateFromEnabledSensorsVars(mEnabledSensors, mDerivedSensors);
 				}
 				
 				// Now that all main sensor channels have been parsed, deal with
@@ -7607,11 +7591,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**Automatically control internal expansion board power based on sensor map
 	 */
 	@Override
-	protected boolean checkIfInternalExpBrdPowerIsNeeded(){
+	protected void checkIfInternalExpBrdPowerIsNeeded(){
 
 		if (getHardwareVersion() == HW_ID.SHIMMER_3){
-			for(Integer channelKey:mSensorMap.keySet()) {
-				if(mSensorMap.get(channelKey).isEnabled() && mSensorMap.get(channelKey).mSensorDetailsRef.mIntExpBoardPowerRequired) {
+			for(SensorDetails sensorDetails:mSensorMap.values()) {
+				if(sensorDetails.isInternalExpBrdPowerRequired()){
 					mInternalExpPower = 1;
 					break;
 				}
@@ -7630,7 +7614,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
-		return (mInternalExpPower > 0)? true:false;
 	}
 	
 // --------------------------------------------------------------------------------------	
@@ -7881,7 +7864,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
-		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL){
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
 			return isUsingDefaultLNAccelParam();
 		}
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){

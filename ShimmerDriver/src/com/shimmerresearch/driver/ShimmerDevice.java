@@ -1307,13 +1307,27 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mVerboseMode = verboseMode;
 	}
 
-	protected boolean checkIfInternalExpBrdPowerIsNeeded() {
+	/**Automatically control internal expansion board power based on sensor map
+	 */
+	protected void checkIfInternalExpBrdPowerIsNeeded() {
 		for(SensorDetails sensorEnabledDetails:mSensorMap.values()) {
 			if(sensorEnabledDetails.isInternalExpBrdPowerRequired()){
-				return true;
+				mInternalExpPower = 1;
+				break;
+			}
+			else{
+				//TODO move to AbstractSensors
+				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
+					||isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
+					||isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
+					||isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14)){
+					
+				}
+				else {
+					mInternalExpPower = 0;
+				}
 			}
 		}
-		return false;
 	}
 	
 	/**
@@ -1568,9 +1582,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	
 	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
-		AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
-		if(abstractSensor!=null){
-			return abstractSensor.handleSpecCasesBeforeSetSensorState(sensorMapKey, state);
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			int newSensorMapKey = abstractSensor.handleSpecCasesBeforeSetSensorState(sensorMapKey, state);
+			if(newSensorMapKey!=sensorMapKey){
+				return newSensorMapKey;
+			}
 		}
 		return sensorMapKey;
 	}
@@ -1676,6 +1694,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mDerivedSensors;
 	}
 
+	public void setEnabledAndDerivedSensors(long enabledSensors, long derivedSensors) {
+		setEnabledAndDerivedSensors(enabledSensors, derivedSensors, null);
+	}
 	
 	public void setEnabledAndDerivedSensors(long enabledSensors, long derivedSensors, COMMUNICATION_TYPE commsType) {
 		setEnabledSensors(enabledSensors);
@@ -1699,6 +1720,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
+			printSensorAndParserMaps();			
 			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
 				mEnabledSensors = (long)0;
 				mDerivedSensors = (long)0;
@@ -1750,12 +1772,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledSensors;
 	}
 	
-	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
-		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
-			sensor.updateStateFromEnabledSensorsVars(commType, mEnabledSensors, mDerivedSensors);
-		}
-	}
-	
 	public void algorithmMapUpdateFromEnabledSensorsVars() {
 		for(AbstractAlgorithm aA:mMapOfAlgorithmModules.values()){
 			aA.algorithmMapUpdateFromEnabledSensorsVars(mDerivedSensors);
@@ -1763,6 +1779,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		initializeAlgorithms();
 	}
 	
+//	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
+//		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
+//			sensor.updateStateFromEnabledSensorsVars(commType, mEnabledSensors, mDerivedSensors);
+//		}
+//	}
+	
+	public void sensorMapUpdateFromEnabledSensorsVars() {
+		sensorMapUpdateFromEnabledSensorsVars(null);
+	}
+
 	/**
 	 * Used to convert from the enabledSensors long variable read from the
 	 * Shimmer to the set enabled status of the relative entries in the Sensor
@@ -1770,13 +1796,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * 
 	 */
 	//TODO tidy the below. Remove? Almost exact same in ShimmerObject and not sure if this needs to be here 
-	public void sensorMapUpdateFromEnabledSensorsVars() {
+	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
 		//TODO below was in ShimmerObject but not carried forward to here?
 		//checkExgResolutionFromEnabledSensorsVar();
 
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
 		}
+		
 		if(mSensorMap!=null) {
 			mapLoop:
 			for(Integer sensorMapKey:mSensorMap.keySet()) {
@@ -1785,24 +1812,28 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 					
 				// Process remaining channels
-				mSensorMap.get(sensorMapKey).setIsEnabled(false);
-				// Check if this sensor is a derived sensor
-				if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
-					//Check if associated derived channels are enabled 
-					if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
-						//TODO add comment
-						if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-							mSensorMap.get(sensorMapKey).setIsEnabled(true);
-						}
-					}
-				}
-				// This is not a derived sensor
-				else {
-					//Check if sensor's bit in sensor bitmap is enabled
-					if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-						mSensorMap.get(sensorMapKey).setIsEnabled(true);
-					}
-				}
+				SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+				sensorDetails.updateFromEnabledSensorsVars(mEnabledSensors, mDerivedSensors);
+
+//				// Process remaining channels
+//				mSensorMap.get(sensorMapKey).setIsEnabled(false);
+//				// Check if this sensor is a derived sensor
+//				if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+//					//Check if associated derived channels are enabled 
+//					if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
+//						//TODO add comment
+//						if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
+//							mSensorMap.get(sensorMapKey).setIsEnabled(true);
+//						}
+//					}
+//				}
+//				// This is not a derived sensor
+//				else {
+//					//Check if sensor's bit in sensor bitmap is enabled
+//					if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
+//						mSensorMap.get(sensorMapKey).setIsEnabled(true);
+//					}
+//				}
 			}
 				
 			// Now that all main sensor channels have been parsed, deal with
@@ -1950,17 +1981,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean ignoreAndDisable(Integer sensorMapKey) {
 		//Check if a derived channel is enabled, if it is ignore disable and skip 
 //		innerloop:
-			for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
-				if(mSensorMap.get(conflictKey).isDerivedChannel()) {
-					if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
-						mSensorMap.get(sensorMapKey).setIsEnabled(false);
-						return true;
-//						skipKey = true;
-//						break innerloop;
+		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+		if(sensorDetails!=null){
+			for(Integer conflictKey:sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
+				SensorDetails conflictingSensor = mSensorMap.get(conflictKey);
+				if(conflictingSensor!=null){
+					if(conflictingSensor.isDerivedChannel()) {
+						if((mDerivedSensors&conflictingSensor.mDerivedSensorBitmapID)>0) {
+							sensorDetails.setIsEnabled(false);
+							return true;
+//							skipKey = true;
+//							break innerloop;
+						}
 					}
 				}
 			}
-			return false;
+			
+		}
+		return false;
 	}
 	
 	// ------------- Algorithm Code Start -----------------------

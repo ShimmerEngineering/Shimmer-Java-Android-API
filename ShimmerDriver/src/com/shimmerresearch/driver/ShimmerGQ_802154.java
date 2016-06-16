@@ -403,7 +403,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		//Check if Expansion board power is required for any of the enabled sensors
 		//TODO replace with checkIfInternalExpBrdPowerIsNeeded from ShimmerObject
-		mInternalExpPower = (super.checkIfInternalExpBrdPowerIsNeeded()? 1:0);
+		super.checkIfInternalExpBrdPowerIsNeeded();
 //		mInternalExpPower = 0;
 //		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 //			if(abstractSensor.mIntExpBoardPowerRequired && abstractSensor.isAnySensorChannelEnabled(COMMUNICATION_TYPE.IEEE802154)){
@@ -618,10 +618,12 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(commType, true);
 			} 
 			else {
-				//TODO: needs a lot of work
-				for(AbstractSensor sensor:mMapOfSensorClasses.values()){
-					sensor.updateStateFromEnabledSensorsVars(commType, enabledSensors, 0); 
-				}
+//				//TODO: needs a lot of work
+//				for(AbstractSensor sensor:mMapOfSensorClasses.values()){
+//					sensor.updateStateFromEnabledSensorsVars(commType, enabledSensors, 0); 
+//				}
+				//TODO does the below work?
+				sensorMapUpdateFromEnabledSensorsVars();
 				
 //				if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
 //					mMapOfSensors.get(SENSORS.GSR).enableSensorChannels(commType);

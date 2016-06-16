@@ -232,7 +232,7 @@ public class OrientationModule6DOF extends OrientationModule{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 //					Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.getTileText(),
 			(DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER), 
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 			CHANNEL_UNITS.NO_UNITS,
 			listChannelsEuler6DOF_LN);

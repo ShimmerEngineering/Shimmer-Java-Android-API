@@ -688,87 +688,72 @@ public class Configuration {
 		public static final Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
 		public class SensorMapKey{
-			
 			//Sensors channels originating from the Shimmer
-			public static final int SHIMMER_TIMESTAMP = -1;
+			
+			//Analog channels begin
+			public static final int SHIMMER_TIMESTAMP = 1;
 			/** Shimmer3 Low-noise analog accelerometer */
-			//XXX-RS-AA-SensorClass?
-			public static final int SHIMMER_A_ACCEL = 0;
-			/** Shimmer3 Gyroscope */
-//			public static final int SHIMMER_MPU9150_GYRO = 1;
-			/** Shimmer3 Primary magnetometer */
+			public static final int SHIMMER_ANALOG_ACCEL = 2;
+			public static final int SHIMMER_VBATT = 3;
 			
-			//RS (03/06/2016) - bugfix: LSM303 SensorMapKey for MAG and ACCEL exchanged
-//			public static final int SHIMMER_LSM303DLHC_MAG = 11;
+			public static final int SHIMMER_EXT_EXP_ADC_A7 = 4;
+			public static final int SHIMMER_EXT_EXP_ADC_A6 = 5;
+			public static final int SHIMMER_EXT_EXP_ADC_A15 = 6;
 			
-			public static final int SHIMMER_VBATT = 1;
+			public static final int SHIMMER_INT_EXP_ADC_A12 = 7;
+			public static final int HOST_PPG_A12 = 8; //GSR Board
+			public static final int HOST_PPG1_A12 = 9; //Proto3 Deluxe Board
+			public static final int SHIMMER_INT_EXP_ADC_A13 = 10;
+			public static final int HOST_PPG_A13 = 11; //GSR Board
+			public static final int HOST_PPG1_A13 = 12; //Proto3 Deluxe Board
+			public static final int SHIMMER_INT_EXP_ADC_A14 = 13;
+			public static final int HOST_PPG2_A14 = 14; //Proto3 Deluxe Board
 			
-			public static final int SHIMMER_EXT_EXP_ADC_A7 = 2;
-			public static final int SHIMMER_EXT_EXP_ADC_A6 = 3;
-			public static final int SHIMMER_EXT_EXP_ADC_A15 = 4;
+			//TODO which ADCs should these be beside?
+			public static final int SHIMMER_BRIDGE_AMP = 15;
+			public static final int SHIMMER_RESISTANCE_AMP = 16;
 			
-			public static final int SHIMMER_INT_EXP_ADC_A12 = 5;
-			public static final int SHIMMER_INT_EXP_ADC_A13 = 6;
-			public static final int SHIMMER_INT_EXP_ADC_A14 = 7;
-			public static final int SHIMMER_BRIDGE_AMP = 8;
-			public static final int SHIMMER_RESISTANCE_AMP = 9;
-			public static final int SHIMMER_INT_EXP_ADC_A1 = 10;
-
-			public static final int SHIMMER_GSR = 11;//5; // Based on ADC1
-			public static final int SHIMMER_MPU9150_GYRO = 12;
-			public static final int SHIMMER_LSM303DLHC_ACCEL = 13;
-			public static final int SHIMMER_LSM303DLHC_MAG = 14;
-			public static final int SHIMMER_MPU9150_ACCEL = 15;
-			public static final int SHIMMER_MPU9150_MAG = 16;
-			public static final int SHIMMER_MPU9150_TEMP = 17;
-			public static final int SHIMMER_BMP180_PRESSURE = 18;
-
-
-
-
+			public static final int SHIMMER_INT_EXP_ADC_A1 = 17;
+			public static final int HOST_PPG2_A1 = 18; //Proto3 Deluxe Board
+			public static final int SHIMMER_GSR = 19;// Based on ADC1
 
 			
-//			public static final int SHIMMER_LSM303DLHC_ACCEL = 0;
+			//Digital channels begin
+			public static final int SHIMMER_MPU9150_GYRO = 30;
+			/** Shimmer3 Wide-range digital accelerometer */
+			public static final int SHIMMER_LSM303DLHC_ACCEL = 31;
+			public static final int SHIMMER_LSM303DLHC_MAG = 32;
+			/** Shimmer3 Alternative accelerometer */
+			public static final int SHIMMER_MPU9150_ACCEL = 33;
+			/** Shimmer3 Alternative magnetometer */
+			public static final int SHIMMER_MPU9150_MAG = 34;
+			public static final int SHIMMER_MPU9150_TEMP = 35;
+			public static final int SHIMMER_BMP180_PRESSURE = 36;
 
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
-//			public static final int SHIMMER_EXT_EXP_ADC_A6 = 6;
-//			public static final int SHIMMER_EXT_EXP_ADC_A7 = 7;
-//			public static final int SHIMMER_BRIDGE_AMP = 8;
-//			public static final int SHIMMER_RESISTANCE_AMP = 9;
 			//public static final int SHIMMER_HR = 9;
-//			public static final int SHIMMER_VBATT = 10;
-			/** Shimmer3 Wide-range digital accelerometer */
-//			public static final int SHIMMER_EXT_EXP_ADC_A15 = 12;
-//			public static final int SHIMMER_INT_EXP_ADC_A1 = 13;
-//			public static final int SHIMMER_INT_EXP_ADC_A12 = 14;
-//			public static final int SHIMMER_INT_EXP_ADC_A13 = 15;
-//			public static final int SHIMMER_INT_EXP_ADC_A14 = 16;
-			/** Shimmer3 Alternative accelerometer */
-//			public static final int SHIMMER_MPU9150_ACCEL = 17;
-			/** Shimmer3 Alternative magnetometer */
-//			public static final int SHIMMER_MPU9150_MAG = 18;
 //			public static final int SHIMMER_EXG1_16BIT = 19;
 //			public static final int SHIMMER_EXG2_16BIT = 21;
-//			public static final int SHIMMER_BMP180_PRESSURE = 22;
+			
 			//public static final int SHIMMER_BMP180_TEMPERATURE = 23; // not yet implemented
 			//public static final int SHIMMER_MSP430_TEMPERATURE = 24; // not yet implemented
-//			public static final int SHIMMER_MPU9150_TEMP = 25;
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = 27;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_9DOF = 28;
-			public static final int SHIMMER_MPU9150_MPL_EULER_6DOF = 29;
-			public static final int SHIMMER_MPU9150_MPL_EULER_9DOF = 30;
-			public static final int SHIMMER_MPU9150_MPL_HEADING = 31;
-			public static final int SHIMMER_MPU9150_MPL_PEDOMETER = 32;
-			public static final int SHIMMER_MPU9150_MPL_TAP = 33;
-			public static final int SHIMMER_MPU9150_MPL_MOTION_ORIENT = 34;
-			public static final int SHIMMER_MPU9150_MPL_GYRO = 35;
-			public static final int SHIMMER_MPU9150_MPL_ACCEL = 36;
-			public static final int SHIMMER_MPU9150_MPL_MAG = 37;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = 38;
+			
+			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = 50;
+			public static final int SHIMMER_MPU9150_MPL_QUAT_9DOF = 51;
+			public static final int SHIMMER_MPU9150_MPL_EULER_6DOF = 52;
+			public static final int SHIMMER_MPU9150_MPL_EULER_9DOF = 53;
+			public static final int SHIMMER_MPU9150_MPL_HEADING = 54;
+			public static final int SHIMMER_MPU9150_MPL_PEDOMETER = 55;
+			public static final int SHIMMER_MPU9150_MPL_TAP = 56;
+			public static final int SHIMMER_MPU9150_MPL_MOTION_ORIENT = 57;
+			public static final int SHIMMER_MPU9150_MPL_GYRO = 58;
+			public static final int SHIMMER_MPU9150_MPL_ACCEL = 59;
+			public static final int SHIMMER_MPU9150_MPL_MAG = 60;
+			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = 61;
 	
 			//Sensors channels modified or created on the host side
 			// Combination Channels
@@ -781,23 +766,13 @@ public class Configuration {
 			public static final int HOST_EXG_RESPIRATION = 103;
 			public static final int HOST_SKIN_TEMPERATURE_PROBE = 104;
 	
-			// Derived Channels - GSR Board
-			public static final int HOST_PPG_A12 = 106;
-			public static final int HOST_PPG_A13 = 107;
-			
-			// Derived Channels - Proto3 Deluxe Board
-			public static final int HOST_PPG1_A12 = 111;
-			public static final int HOST_PPG1_A13 = 112;
-			public static final int HOST_PPG2_A1 = 114;
-			public static final int HOST_PPG2_A14 = 115;
+			public static final int HOST_PPG_DUMMY = 105;
+			public static final int HOST_PPG1_DUMMY = 110;
+			public static final int HOST_PPG2_DUMMY = 113;
 			
 			public static final int HOST_TIMESTAMP_SYNC = 151;
 			public static final int HOST_REAL_TIME_CLOCK = 152;
 			public static final int HOST_REAL_TIME_CLOCK_SYNC = 153;
-
-			public static final int HOST_PPG_DUMMY = 105;
-			public static final int HOST_PPG1_DUMMY = 110;
-			public static final int HOST_PPG2_DUMMY = 113;
 			
 			public static final int HOST_SHIMMER_STREAMING_PROPERTIES = 200;
 			//TODO below should be merged with HOST_REAL_TIME_CLOCK?
@@ -2999,7 +2974,7 @@ public class Configuration {
 	      //XXX-RS-AA-SensorClass?
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL.ordinal(), new SensorGroupingDetails(
 					SensorKionixKXRB52042.GuiLabelSensorTiles.LOW_NOISE_ACCEL,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL)));
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), new SensorGroupingDetails(//XXX-RS-LSM-SensorClass?
 					SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)));

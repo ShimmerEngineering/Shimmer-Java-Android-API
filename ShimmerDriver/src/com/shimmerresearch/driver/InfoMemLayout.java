@@ -78,6 +78,7 @@ public abstract class InfoMemLayout implements Serializable {
 		byte[] newArray = new byte[size];
 		for(byte b:newArray) {
 			b = (byte)0xFF;
+//			b = (byte)0x00;
 		}
 		return newArray;
 	}

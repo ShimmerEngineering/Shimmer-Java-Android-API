@@ -509,7 +509,7 @@ public class SensorLSM303 extends AbstractSensor{
 		int lengthGeneralCalibrationBytes =        21;
 		
 		//idxConfigSetupByte0 
-		mInfoMemBytes[idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & maskLSM303DLHCAccelSamplingRate) << bitShiftLSM303DLHCAccelSamplingRate);
+		mInfoMemBytes[idxConfigSetupByte0] |= (byte) ((mLSM303DigitalAccelRate & maskLSM303DLHCAccelSamplingRate) << bitShiftLSM303DLHCAccelSamplingRate);
 		mInfoMemBytes[idxConfigSetupByte0] |= (byte) ((mAccelRange & maskLSM303DLHCAccelRange) << bitShiftLSM303DLHCAccelRange);
 		if(mLowPowerAccelWR) {
 			mInfoMemBytes[idxConfigSetupByte0] |= (maskLSM303DLHCAccelLPM << bitShiftLSM303DLHCAccelLPM);
@@ -519,7 +519,7 @@ public class SensorLSM303 extends AbstractSensor{
 		}
 		
 		//idxConfigSetupByte2
-		mInfoMemBytes[idxConfigSetupByte2] = (byte) ((mMagRange & maskLSM303DLHCMagRange) << bitShiftLSM303DLHCMagRange);
+		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((mMagRange & maskLSM303DLHCMagRange) << bitShiftLSM303DLHCMagRange);
 		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((mLSM303MagRate & maskLSM303DLHCMagSamplingRate) << bitShiftLSM303DLHCMagSamplingRate);
 		
 		// LSM303DLHC Digital Accel Calibration Parameters

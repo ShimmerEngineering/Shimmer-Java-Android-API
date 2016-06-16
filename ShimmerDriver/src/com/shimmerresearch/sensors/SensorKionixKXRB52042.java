@@ -118,7 +118,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042);
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
@@ -192,7 +192,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL.ordinal();
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.LOW_NOISE_ACCEL,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL),
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 		}
 		super.updateSensorGroupingMap();	
@@ -481,7 +481,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	 */
 	@Override
 	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
-		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_A_ACCEL){
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
 			return isUsingDefaultLNAccelParam();
 		}
 		return false;

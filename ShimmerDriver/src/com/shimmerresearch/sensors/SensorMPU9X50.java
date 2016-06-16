@@ -1538,23 +1538,23 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		int bitShiftMPLEnable = 3;
 		int maskMPLEnable = 0x01;
 
-		mInfoMemBytes[idxConfigSetupByte1] = (byte) ((mMPU9150GyroAccelRate & maskMPU9150AccelGyroSamplingRate) << bitShiftMPU9150AccelGyroSamplingRate);
+		mInfoMemBytes[idxConfigSetupByte1] |= (byte) ((mMPU9150GyroAccelRate & maskMPU9150AccelGyroSamplingRate) << bitShiftMPU9150AccelGyroSamplingRate);
 		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((mGyroRange & maskMPU9150GyroRange) << bitShiftMPU9150GyroRange);
-		mInfoMemBytes[idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & maskMPU9150AccelRange) << bitShiftMPU9150AccelRange);
+		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mMPU9150AccelRange & maskMPU9150AccelRange) << bitShiftMPU9150AccelRange);
 
 		// MPU9150 Gyroscope Calibration Parameters
 		byte[] bufferCalibrationParameters = generateCalParamGyroscope();
 		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, idxMPU9150GyroCalibration, lengthGeneralCalibrationBytes);
 
 		//if(getFirmwareIdentifier()==FW_ID.SDLOG) {
-		mInfoMemBytes[idxConfigSetupByte4] = (byte) ((mMPU9150DMP & maskMPU9150DMP) << bitShiftMPU9150DMP);
+		mInfoMemBytes[idxConfigSetupByte4] |= (byte) ((mMPU9150DMP & maskMPU9150DMP) << bitShiftMPU9150DMP);
 		mInfoMemBytes[idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & maskMPU9150LPF) << bitShiftMPU9150LPF);
 		mInfoMemBytes[idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & maskMPU9150MotCalCfg) << bitShiftMPU9150MotCalCfg);
 
-		mInfoMemBytes[idxConfigSetupByte5] = (byte) ((mMPU9150MPLSamplingRate & maskMPU9150MPLSamplingRate) << bitShiftMPU9150MPLSamplingRate);
+		mInfoMemBytes[idxConfigSetupByte5] |= (byte) ((mMPU9150MPLSamplingRate & maskMPU9150MPLSamplingRate) << bitShiftMPU9150MPLSamplingRate);
 		mInfoMemBytes[idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & maskMPU9150MPLSamplingRate) << bitShiftMPU9150MagSamplingRate);
 
-		mInfoMemBytes[idxConfigSetupByte6] = (byte) ((mMPLSensorFusion & maskMPLSensorFusion) << bitShiftMPLSensorFusion);
+		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLSensorFusion & maskMPLSensorFusion) << bitShiftMPLSensorFusion);
 		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & maskMPLGyroCalTC) << bitShiftMPLGyroCalTC);
 		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & maskMPLVectCompCal) << bitShiftMPLVectCompCal);
 		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & maskMPLMagDistCal) << bitShiftMPLMagDistCal);

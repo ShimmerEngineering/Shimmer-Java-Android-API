@@ -186,7 +186,7 @@ public class SensorPPG extends AbstractSensor {
 		listOfKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
 		sensorPpgHostPPG_A12.mListOfSensorMapKeysConflicting = Collections.unmodifiableList(listOfKeysConflicting);
 		
-		sensorPpgHostPPG_A12.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
+//		sensorPpgHostPPG_A12.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
 	}
 	
 	public static final SensorDetailsRef sensorPpgHostPPG_A13 = new SensorDetailsRef(
@@ -207,7 +207,7 @@ public class SensorPPG extends AbstractSensor {
 		listOfKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
 		sensorPpgHostPPG_A13.mListOfSensorMapKeysConflicting = Collections.unmodifiableList(listOfKeysConflicting);
 		
-		sensorPpgHostPPG_A13.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
+//		sensorPpgHostPPG_A13.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
 	}
 	
 	// Derived Channels - Proto3 Board
@@ -247,9 +247,9 @@ public class SensorPPG extends AbstractSensor {
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG1_A12),
 			true);
-	{
-		sensorPpgHostPPG1_A12.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG1_12_13; 
-	}
+//	{
+//		sensorPpgHostPPG1_A12.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG1_12_13; 
+//	}
 	
 	public static final SensorDetailsRef sensorPpgHostPPG1_A13 = new SensorDetailsRef(
 			SensorADC.sensorADC_INT_EXP_ADC_A13Ref.mSensorBitmapIDStreaming,
@@ -274,9 +274,9 @@ public class SensorPPG extends AbstractSensor {
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG1_A13),
 			true);
-	{
-		sensorPpgHostPPG1_A13.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG1_12_13; 
-	}
+//	{
+//		sensorPpgHostPPG1_A13.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG1_12_13; 
+//	}
 	
 	public static final SensorDetailsRef sensorPpg2Dummy = new SensorDetailsRef(
 			0, 0, 
@@ -313,9 +313,9 @@ public class SensorPPG extends AbstractSensor {
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG2_A1),
 			true);
-	{
-		sensorPpgHostPPG2_A1.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG2_1_14; 
-	}
+//	{
+//		sensorPpgHostPPG2_A1.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG2_1_14; 
+//	}
 	
 	public static final SensorDetailsRef sensorPpgHostPPG2_A14 = new SensorDetailsRef(
 			SensorADC.sensorADC_INT_EXP_ADC_A14Ref.mSensorBitmapIDStreaming,
@@ -341,9 +341,9 @@ public class SensorPPG extends AbstractSensor {
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG2_A14),
 			true);
-	{
-		sensorPpgHostPPG2_A1.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG2_1_14; 
-	}
+//	{
+//		sensorPpgHostPPG2_A1.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG2_1_14; 
+//	}
 	    
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -461,7 +461,6 @@ public class SensorPPG extends AbstractSensor {
 	public void generateSensorMap(ShimmerVerObject svo) {
 		//TODO either use createLocalSensorMap or fill in the "processDataCustom" method
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
-
 		
 		//Update the derived sensor bit index
 		for(Integer sensorMapKey:mSensorMap.keySet()){
@@ -515,9 +514,8 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
-		//NOT USED IN THIS CLASS
-		return objectCluster;
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+		return SensorADC.processMspAdcChannel(sensorDetails, rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 	}
 
 	@Override
@@ -654,43 +652,6 @@ public class SensorPPG extends AbstractSensor {
 		return false;
 	}
 
-	public int handleDummyEntriesInSensorMap(int sensorMapKey, boolean state) {
-		if(mSensorMap!=null) {
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
-
-			// Special case for Dummy entries in the Sensor Map
-			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
-				sensorDetails.setIsEnabled(state);
-				if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
-					return Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
-				}
-				else {
-					return Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13;
-				}
-			}		
-			else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
-				sensorDetails.setIsEnabled(state);
-				if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
-					return Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
-				}
-				else {
-					return Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13;
-				}
-			}		
-			else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
-				sensorDetails.setIsEnabled(state);
-				if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
-					return Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
-				}
-				else {
-					return Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1;
-				}
-			}		
-		}
-		return sensorMapKey;
-	}
-	
-	
 	/**
 	 * @return the mPpgAdcSelectionGsrBoard
 	 */
@@ -814,7 +775,7 @@ public class SensorPPG extends AbstractSensor {
 				}
 			}
 			else {
-			mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
+				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
 			}
 		}
 	}
@@ -822,7 +783,35 @@ public class SensorPPG extends AbstractSensor {
 	
 	@Override
 	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
-		return handleDummyEntriesInSensorMap(sensorMapKey, state);
+		// Special case for Dummy entries in the Sensor Map
+		if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
+			mSensorMap.get(sensorMapKey).setIsEnabled(state);
+			if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
+				return Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
+			}
+			else {
+				return Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13;
+			}
+		}		
+		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
+			mSensorMap.get(sensorMapKey).setIsEnabled(state);
+			if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
+				return Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
+			}
+			else {
+				return Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13;
+			}
+		}		
+		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
+			mSensorMap.get(sensorMapKey).setIsEnabled(state);
+			if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
+				return Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
+			}
+			else {
+				return Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1;
+			}
+		}	
+		return sensorMapKey;
 	}
 	//--------- Optional methods to override in Sensor Class end --------
 

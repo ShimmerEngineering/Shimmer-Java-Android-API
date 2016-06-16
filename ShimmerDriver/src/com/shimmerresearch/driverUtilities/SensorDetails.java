@@ -104,13 +104,6 @@ public class SensorDetails implements Serializable{
 		return dataPacketSize;
 	}
 
-	public boolean isDerivedChannel() {
-		if(mDerivedSensorBitmapID>0) {
-			return true;
-		}
-		return false;
-	}
-
 	public int getNumberOfChannels() {
 		return mListOfChannels.size();
 	}
@@ -122,7 +115,12 @@ public class SensorDetails implements Serializable{
 	}
 
 	public void setIsEnabled(COMMUNICATION_TYPE commType, boolean state) {
-		mapOfIsEnabledPerCommsType.put(commType, state);
+		if(commType==null){
+			setIsEnabled(state);
+		}
+		else{
+			mapOfIsEnabledPerCommsType.put(commType, state);
+		}
 	}
 
 	public boolean isEnabled(COMMUNICATION_TYPE commType) {
@@ -168,6 +166,42 @@ public class SensorDetails implements Serializable{
 
 	public boolean isApiSensor() {
 		return mSensorDetailsRef.mIsApiSensor ;
+	}
+
+	public boolean isDerivedChannel() {
+		if(mDerivedSensorBitmapID>0) {
+			return true;
+		}
+		return false;
+	}
+
+	public void updateFromEnabledSensorsVars(long enabledSensors, long derivedSensors) {
+		updateFromEnabledSensorsVars(null, enabledSensors, derivedSensors);
+	}
+
+	public void updateFromEnabledSensorsVars(COMMUNICATION_TYPE commType, long enabledSensors, long derivedSensors) {
+		if(isApiSensor()){
+			return;
+		}
+		
+		setIsEnabled(commType, false);
+		// Check if this sensor is a derived sensor
+		if(isDerivedChannel()) {
+			//Check if associated derived channels are enabled 
+			if((derivedSensors&mDerivedSensorBitmapID) == mDerivedSensorBitmapID) {
+				//TODO add comment
+				if((enabledSensors&mSensorDetailsRef.mSensorBitmapIDSDLogHeader)>0) {
+					setIsEnabled(commType, true);
+				}
+			}
+		}
+		// This is not a derived sensor
+		else {
+			//Check if sensor's bit in sensor bitmap is enabled
+			if((enabledSensors&mSensorDetailsRef.mSensorBitmapIDSDLogHeader)>0) {
+				setIsEnabled(commType, true);
+			}
+		}
 	}
 	
 

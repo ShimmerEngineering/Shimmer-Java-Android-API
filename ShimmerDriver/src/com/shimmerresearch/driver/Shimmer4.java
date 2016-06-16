@@ -264,7 +264,13 @@ public class Shimmer4 extends ShimmerDevice {
 		mInfoMemBytes[infoMemLayout.idxSensors3] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors3) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSensors4] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors4) & 0xFF);
 
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] = (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
+		mInfoMemBytes[infoMemLayout.idxConfigSetupByte0] = (byte) (0x00);
+		mInfoMemBytes[infoMemLayout.idxConfigSetupByte1] = (byte) (0x00);
+		mInfoMemBytes[infoMemLayout.idxConfigSetupByte2] = (byte) (0x00);
+		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] = (byte) (0x00);
+		
+		checkIfInternalExpBrdPowerIsNeeded();
+		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
 		
 		// Derived Sensors
 		if((infoMemLayout.idxDerivedSensors0>0)&&(infoMemLayout.idxDerivedSensors1>0)) { // Check if compatible
@@ -352,8 +358,9 @@ public class Shimmer4 extends ShimmerDevice {
 		sensorAndConfigMapsCreate();
 		
 //		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.ALL);
-		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);
-		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.SD);
+//		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);
+//		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.SD);
+		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors);
 
 		//Override Shimmer4 sensors
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
