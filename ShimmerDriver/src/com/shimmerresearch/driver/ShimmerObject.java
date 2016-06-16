@@ -502,7 +502,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mPastGSRRange=4; // this is to fix a bug with SDLog v0.9
 	protected int mPastGSRUncalibratedValue=4; // this is to fix a bug with SDLog v0.9
 	protected boolean mPastGSRFirstTime=true; // this is to fix a bug with SDLog v0.9
-	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
+//	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	protected long mConfigByte0;//XXX-RS-LSM-SensorClass?	
 	protected int mNChannels=0;	                                                // Default number of sensor channels set to three because of the on board accelerometer 
 	protected int mBufferSize;                   							
@@ -4825,10 +4825,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mGSRRange;
 	}
 
-	public int getInternalExpPower(){
-		return mInternalExpPower;
-	}
-
 	public int getPMux(){
 		if ((mConfigByte0 & (byte)64)!=0) {
 			//then set ConfigByte0 at bit position 7
@@ -8046,39 +8042,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 
-	/**
-	 * @return the mDerivedSensors
-	 */
-	//moved to Shimmer Device by EN
-//	public long getDerivedSensors() {
-//		return mDerivedSensors;
-//	}
-
 	public boolean isUsingConfigFromInfoMem() {
 		return mShimmerUsingConfigFromInfoMem;
 	}
 
-	/**
-	 * @return the mPpgAdcSelectionGsrBoard
-	 */
-	public int getPpgAdcSelectionGsrBoard() {
-		return mPpgAdcSelectionGsrBoard;
-	}
-
-	/**
-	 * @return the mPpg1AdcSelectionProto3DeluxeBoard
-	 */
-	public int getPpg1AdcSelectionProto3DeluxeBoard() {
-		return mPpg1AdcSelectionProto3DeluxeBoard;
-	}
-
-	/**
-	 * @return the mPpg2AdcSelectionProto3DeluxeBoard
-	 */
-	public int getPpg2AdcSelectionProto3DeluxeBoard() {
-		return mPpg2AdcSelectionProto3DeluxeBoard;
-	}
-	
 	/**
 	 * @return the mMacIdFromBtParsed
 	 */
@@ -8126,25 +8093,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mSamplingDividerGsr;
 	}
 
-	/**
-	 * @return the mSamplingDividerPpg
-	 */
-	public int getSamplingDividerPpg() {
-		return mSamplingDividerPpg;
-	}
-
 	public long getInitialTimeStamp(){
 		return mInitialTimeStamp;
-	}
-
-	/**
-	 * @param state the mInternalExpPower state to set
-	 */
-	protected void setInternalExpPower(boolean state) {
-		if(state) 
-			mInternalExpPower = 0x01;
-		else 
-			mInternalExpPower = 0x00;
 	}
 
 	public void setPressureResolution(int i){
@@ -8221,22 +8171,37 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     	this.mTrialDurationMaximum = mExperimentDurationMaximum;
 	}
 	
-	/**
-	 * @param state the mInternalExpPower state to set
-	 */
-	protected void setInternalExpPower(int state) {
-		this.mInternalExpPower = state;
-	}
-	
-	/**
-	 * @return the mInternalExpPower
-	 */
-	public boolean isInternalExpPower() {
-		if(mInternalExpPower > 0)
-			return true;
-		else
-			return false;
-	}
+//	/**
+//	 * @param state the mInternalExpPower state to set
+//	 */
+//	protected void setInternalExpPower(int state) {
+//		this.mInternalExpPower = state;
+//	}
+//	
+//	/**
+//	 * @return the mInternalExpPower
+//	 */
+//	public boolean isInternalExpPower() {
+//		if(mInternalExpPower > 0)
+//			return true;
+//		else
+//			return false;
+//	}
+//	
+//	/**
+//	 * @param state the mInternalExpPower state to set
+//	 */
+//	protected void setInternalExpPower(boolean state) {
+//		if(state) 
+//			mInternalExpPower = 0x01;
+//		else 
+//			mInternalExpPower = 0x00;
+//	}
+//	
+//	public int getInternalExpPower(){
+//		return mInternalExpPower;
+//	}
+
 	
 	/**
 	 * @param state the mMasterShimmer state to set
@@ -8384,6 +8349,37 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	/**
+	 * @param myBluetoothAddress the myBluetoothAddress to set
+	 */
+	protected void setMacIdFromBt(String myBluetoothAddress){
+		this.mMyBluetoothAddress = myBluetoothAddress;
+	}
+	
+
+	//-------------------- PPG Start -----------------------------------
+
+	/**
+	 * @return the mPpgAdcSelectionGsrBoard
+	 */
+	public int getPpgAdcSelectionGsrBoard() {
+		return mPpgAdcSelectionGsrBoard;
+	}
+
+	/**
+	 * @return the mPpg1AdcSelectionProto3DeluxeBoard
+	 */
+	public int getPpg1AdcSelectionProto3DeluxeBoard() {
+		return mPpg1AdcSelectionProto3DeluxeBoard;
+	}
+
+	/**
+	 * @return the mPpg2AdcSelectionProto3DeluxeBoard
+	 */
+	public int getPpg2AdcSelectionProto3DeluxeBoard() {
+		return mPpg2AdcSelectionProto3DeluxeBoard;
+	}
+
+	/**
 	 * @param ppgAdcSelectionGsrBoard the mPpgAdcSelectionGsrBoard to set
 	 */
 	protected void setPpgAdcSelectionGsrBoard(int ppgAdcSelectionGsrBoard) {
@@ -8409,14 +8405,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int key = Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY;
 		this.setSensorEnabledState(key, mSensorMap.get(key).isEnabled());
 	}
+	
+	/** ShimmerGQBle
+	 * @param mSamplingDividerPpg the mSamplingDividerPpg to set
+	 */
+	public void setSamplingDividerPpg(int mSamplingDividerPpg) {
+		this.mSamplingDividerPpg = mSamplingDividerPpg;
+	}
 
 	/**
-	 * @param myBluetoothAddress the myBluetoothAddress to set
+	 * @return the mSamplingDividerPpg
 	 */
-	protected void setMacIdFromBt(String myBluetoothAddress){
-		this.mMyBluetoothAddress = myBluetoothAddress;
+	public int getSamplingDividerPpg() {
+		return mSamplingDividerPpg;
 	}
-	
+
+
+	//-------------------- PPG End -----------------------------------
+
 	//-------------------- ExG Start -----------------------------------
 	
 	/**
@@ -10611,9 +10617,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
 				returnValue = isTCXO();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
-				returnValue = isInternalExpPower();
-	        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+//				returnValue = isInternalExpPower();
+//	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
 				returnValue = isMPU9150DMP();
 	        	break;
@@ -10730,9 +10736,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
 				returnValue = getEXG2RespirationDetectPhase();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
-				returnValue = getInternalExpPower();
-            	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+//				returnValue = getInternalExpPower();
+//            	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
 				returnValue = getPpgAdcSelectionGsrBoard();
 	    		break;
@@ -11219,13 +11225,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public void setSamplingDividerGsr(int mSamplingDividerGsr) {
 		this.mSamplingDividerGsr = mSamplingDividerGsr;
-	}
-
-	/** ShimmerGQBle
-	 * @param mSamplingDividerPpg the mSamplingDividerPpg to set
-	 */
-	public void setSamplingDividerPpg(int mSamplingDividerPpg) {
-		this.mSamplingDividerPpg = mSamplingDividerPpg;
 	}
 
 	/** ShimmerGQBle

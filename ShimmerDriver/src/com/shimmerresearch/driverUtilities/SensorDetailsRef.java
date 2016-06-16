@@ -27,6 +27,9 @@ public class SensorDetailsRef implements Serializable {
 	 */
 	public long mSensorBitmapIDSDLogHeader = 0;
 	
+	/** only used in Shimmer4 at the moment. Shimmer3 is handled in ShimmerObject using a wrapper class*/
+	public long mDerivedSensorBitmapID = 0;
+	
 	public String mGuiFriendlyLabel = "";
 	public List<Integer> mListOfSensorMapKeysRequired = null; //needs to be null by default
 	public List<Integer> mListOfSensorMapKeysConflicting = null; //needs to be null by default
@@ -101,6 +104,7 @@ public class SensorDetailsRef implements Serializable {
 	/**
 	 * Holds all information related individual sensor channels for dynamic GUI
 	 * and configuration purposes.
+	 * 
 	 * @param sensorBitmapIDStreaming
 	 * @param sensorBitmapIDSDLogHeader
 	 * @param guiFriendlyLabel
@@ -108,6 +112,7 @@ public class SensorDetailsRef implements Serializable {
 	 * @param listOfSensorMapKeysConflicting
 	 * @param listOfConfigOptionKeysAssociated
 	 * @param listOfChannelsRef
+	 * @param intExpBoardPowerRequired
 	 */
 	public SensorDetailsRef(
 			long sensorBitmapIDStreaming, 

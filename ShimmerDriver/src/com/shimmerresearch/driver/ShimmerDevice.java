@@ -147,13 +147,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public ObjectCluster mLastProcessedObjectCluster = null;
 	public List<ShimmerLogDetails> mListofLogs = new ArrayList<ShimmerLogDetails>();
 
-	public boolean mVerboseMode = true;
-
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
+	protected long mDerivedSensors = (long)0;	
 
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
-	protected long mDerivedSensors = (long)0;	
 	
+	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
+	
+	public boolean mVerboseMode = true;
+
+
+
 	// --------------- Abstract Methods Start --------------------------
 	
 	/**
@@ -816,7 +820,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					}
 					else{
 						//TODO replace with consolePrintSystem
-//						System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetails.mGuiFriendlyLabel);
+						System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetailsRef.mGuiFriendlyLabel);
 					}
 				}
 				sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestamp);
@@ -1032,7 +1036,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public void setDefaultShimmerConfiguration() {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
@@ -1075,7 +1078,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		switch(configLabel){
 //Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+	        	setInternalExpPower((boolean)valueToSet);
+	        	break;
 //Integers
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+				setInternalExpPower((int)valueToSet);
+            	break;
 //Strings
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
         		setShimmerUserAssignedName((String)valueToSet);
@@ -1143,7 +1152,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		switch(configLabel){
 //Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+				returnValue = isInternalExpPower();
+	        	break;
 //Integers
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+				returnValue = getInternalExpPower();
+            	break;
 //Strings
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
 				returnValue = getShimmerUserAssignedName();
@@ -1300,6 +1315,38 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return false;
 	}
+	
+	/**
+	 * @param state the mInternalExpPower state to set
+	 */
+	protected void setInternalExpPower(int state) {
+		this.mInternalExpPower = state;
+	}
+	
+	/**
+	 * @return the mInternalExpPower
+	 */
+	public boolean isInternalExpPower() {
+		if(mInternalExpPower > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * @param state the mInternalExpPower state to set
+	 */
+	protected void setInternalExpPower(boolean state) {
+		if(state) 
+			mInternalExpPower = 0x01;
+		else 
+			mInternalExpPower = 0x00;
+	}
+
+	public int getInternalExpPower(){
+		return mInternalExpPower;
+	}
+
 
 	public Map<String, ChannelDetails> getListOfEnabledChannelsForStoringToDb() {
 		return getListOfEnabledChannelsForStoringToDb(null);

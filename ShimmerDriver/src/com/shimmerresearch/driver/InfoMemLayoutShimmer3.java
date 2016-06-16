@@ -231,11 +231,11 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	public int maskDerivedChannelPpg_ADC12ADC13 =	0x000004;
 	public int maskDerivedChannelPpg1_ADC12ADC13 =	0x000008;
 	public int maskDerivedChannelPpg2_ADC1ADC14 =	0x000010;
-	public int maskDerivedChannelPpgToHr = 			0x000020;
-	public int maskDerivedChannelEcgToHr = 			0x000040;
-	
-	public int maskDerivedChannel6DofMadgewick =	0x000100;
-	public int maskDerivedChannel9DofMadgewick =	0x000200;
+//	public int maskDerivedChannelPpgToHr = 			0x000020;
+//	public int maskDerivedChannelEcgToHr = 			0x000040;
+//	
+//	public int maskDerivedChannel6DofMadgewick =	0x000100;
+//	public int maskDerivedChannel9DofMadgewick =	0x000200;
 
 	
 	// ExG related config bytes

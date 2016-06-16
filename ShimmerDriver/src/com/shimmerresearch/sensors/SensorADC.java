@@ -37,12 +37,14 @@ public class SensorADC extends AbstractSensor {
 
 	
 	public class GuiLabelConfig{
+		//No config options in this class
+		
 //		public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION; //"PPG Channel";
 //		public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";
 //		public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION; // "Channel2";
 		
-		public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
-		public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
+//		public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
+//		public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 	}
 	
 	// GUI Label Sensors 
@@ -108,22 +110,12 @@ public class SensorADC extends AbstractSensor {
 	public static final String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
 
 	
-	public static final String[] ListOfPpgAdcSelection= SensorPPG.ListOfPpgAdcSelection; //{"Int A13","Int A12"};
-	public static final Integer[] ListOfPpgAdcSelectionConfigValues= SensorPPG.ListOfPpgAdcSelectionConfigValues; // {0,1};
-	public static final String[] ListOfPpg1AdcSelection=SensorPPG.ListOfPpg1AdcSelection; //{"Int A13","Int A12"};
-	public static final Integer[] ListOfPpg1AdcSelectionConfigValues=SensorPPG.ListOfPpg1AdcSelectionConfigValues; //{0,1};
-	public static final String[] ListOfPpg2AdcSelection=SensorPPG.ListOfPpg2AdcSelection; //{"Int A1","Int A14"};
-	public static final Integer[] ListOfPpg2AdcSelectionConfigValues= SensorPPG.ListOfPpg2AdcSelectionConfigValues; //{0,1
-	
-//	public static final ConfigOptionDetailsSensor configOptionIntExpBrdPowerInteger = new ConfigOptionDetailsSensor(
-//			Configuration.Shimmer3.ListOfOnOff, 
-//			Configuration.Shimmer3.ListOfOnOffConfigValues, 
-//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX);
-//	
-//	public static final ConfigOptionDetailsSensor configOptionIntExpBrdPowerBoolean = new ConfigOptionDetailsSensor(
-//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
-	
-
+//	public static final String[] ListOfPpgAdcSelection= SensorPPG.ListOfPpgAdcSelection; //{"Int A13","Int A12"};
+//	public static final Integer[] ListOfPpgAdcSelectionConfigValues= SensorPPG.ListOfPpgAdcSelectionConfigValues; // {0,1};
+//	public static final String[] ListOfPpg1AdcSelection=SensorPPG.ListOfPpg1AdcSelection; //{"Int A13","Int A12"};
+//	public static final Integer[] ListOfPpg1AdcSelectionConfigValues=SensorPPG.ListOfPpg1AdcSelectionConfigValues; //{0,1};
+//	public static final String[] ListOfPpg2AdcSelection=SensorPPG.ListOfPpg2AdcSelection; //{"Int A1","Int A14"};
+//	public static final Integer[] ListOfPpg2AdcSelectionConfigValues= SensorPPG.ListOfPpg2AdcSelectionConfigValues; //{0,1
 	
 	//--------- Configuration options end --------------
 	

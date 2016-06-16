@@ -96,6 +96,7 @@ public abstract class AbstractSensor implements Serializable{
 	public TreeMap<Integer, SensorDetails> mSensorMap = new TreeMap<Integer, SensorDetails>();
 	public HashMap<String,ConfigOptionDetailsSensor> mConfigOptionsMap = new HashMap<String,ConfigOptionDetailsSensor>();
     public LinkedHashMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
+    protected ShimmerDevice mShimmerDevice = null;
     
 	
 	public AbstractSensor(ShimmerVerObject svo){
@@ -105,6 +106,11 @@ public abstract class AbstractSensor implements Serializable{
 		generateSensorGroupMapping(svo);
 	}
 
+	public AbstractSensor(ShimmerDevice shimmerDevice) {
+		this(shimmerDevice.getShimmerVerObject());
+		this.mShimmerDevice  = shimmerDevice;
+	}
+	
 	public HashMap<String, ConfigOptionDetailsSensor> getConfigMap() {
 		return mConfigOptionsMap;
 	}

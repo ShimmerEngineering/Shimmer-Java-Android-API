@@ -118,7 +118,8 @@ public class Shimmer4 extends ShimmerDevice {
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
 				){
 			if(isDerivedSensorsSupported()){
-				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
+//				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
+				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(this));
 			}
 		}
 
@@ -171,6 +172,9 @@ public class Shimmer4 extends ShimmerDevice {
 			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors3] & 0xFF) << infoMemLayoutCast.bitShiftSensors3;
 			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors4] & 0xFF) << infoMemLayoutCast.bitShiftSensors4;
 			
+			mInternalExpPower = (infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
+
+			
 			mDerivedSensors = (long)0;
 			// Check if compatible and not equal to 0xFF
 			if((infoMemLayoutCast.idxDerivedSensors0>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors0]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)
@@ -217,7 +221,6 @@ public class Shimmer4 extends ShimmerDevice {
 			
 			mButtonStart = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftButtonStart) & infoMemLayoutCast.maskButtonStart)>0? true:false;
 			mShowRtcErrorLeds = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowRwcErrorLeds) & infoMemLayoutCast.maskShowRwcErrorLeds)>0? true:false;
-
 			
 			prepareAllAfterConfigRead();
 			
@@ -261,6 +264,8 @@ public class Shimmer4 extends ShimmerDevice {
 		mInfoMemBytes[infoMemLayout.idxSensors3] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors3) & 0xFF);
 		mInfoMemBytes[infoMemLayout.idxSensors4] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors4) & 0xFF);
 
+		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] = (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
+		
 		// Derived Sensors
 		if((infoMemLayout.idxDerivedSensors0>0)&&(infoMemLayout.idxDerivedSensors1>0)) { // Check if compatible
 			mInfoMemBytes[infoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors0) & infoMemLayout.maskDerivedChannelsByte);
@@ -364,6 +369,13 @@ public class Shimmer4 extends ShimmerDevice {
 		if(mShimmerRadioHWLiteProtocol!=null){
 			mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(expectedDataPacketSize);
 		}
+	}
+	
+	@Override
+	public void setDefaultShimmerConfiguration() {
+		super.setDefaultShimmerConfiguration();
+		
+		mInternalExpPower=0;
 	}
 	
 	@Override
@@ -807,6 +819,13 @@ public class Shimmer4 extends ShimmerDevice {
 	 */
 	public void setButtonStart(boolean state) {
 		mButtonStart = state;
+	}
+	
+	@Override
+	public void generateConfigOptionsMap() {
+		super.generateConfigOptionsMap();
+		
+		mConfigOptionsMap.putAll(Configuration.Shimmer4.mConfigOptionsMapRef);
 	}
 	
 	@Override
