@@ -1,0 +1,168 @@
+syntax = "proto3";
+package tutorial;
+import "google/protobuf/descriptor.proto";
+option csharp_namespace = "com.shimmerresearch.radioprotocol";
+option java_package = "com.shimmerresearch.comms.radioProtocol";
+option java_outer_classname = "ShimmerLiteProtocolInstructionSet";
+
+message LiteProtocolInstructionSet {
+  	
+  	extend google.protobuf.EnumValueOptions {
+  		int32 response_size = 50003;
+	}
+  	//response_size = -1, this means that the 1st rx byte is the length of the payload
+    enum InstructionsSet {
+    	DATA_PACKET = 0x00 ;
+		SET_SAMPLING_RATE_COMMAND        		= 0x05;
+		TOGGLE_LED_COMMAND              		= 0x06;
+		START_STREAMING_COMMAND          		= 0x07;
+		SET_SENSORS_COMMAND              		= 0x08;
+		SET_ACCEL_SENSITIVITY_COMMAND    		= 0x09;
+		SET_5V_REGULATOR_COMMAND         		= 0x0C; // only Shimmer 2
+		SET_PMUX_COMMAND                 		= 0x0D; // only Shimmer 2
+		SET_CONFIG_BYTE0_COMMAND   	   		= 0x0E;
+		STOP_STREAMING_COMMAND           		= 0x20;
+		SET_ACCEL_CALIBRATION_COMMAND			= 0x11;
+		SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND =0x1A;
+		SET_GYRO_CALIBRATION_COMMAND 	  		= 0x14;
+		SET_MAG_CALIBRATION_COMMAND      		= 0x17;
+		SET_GSR_RANGE_COMMAND			   		= 0x21;
+		SET_EMG_CALIBRATION_COMMAND      		= 0x26;
+		SET_ECG_CALIBRATION_COMMAND      		= 0x29;
+		SET_BLINK_LED                    		= 0x30;
+		SET_GYRO_TEMP_VREF_COMMAND       		= 0x33;
+		SET_BUFFER_SIZE_COMMAND          		= 0x34;
+		SET_MAG_GAIN_COMMAND             		= 0x37;
+		SET_MAG_SAMPLING_RATE_COMMAND    		= 0x3A;
+		SET_ACCEL_SAMPLING_RATE_COMMAND  		= 0x40;
+		SET_LSM303DLHC_ACCEL_LPMODE_COMMAND 	= 0x43;
+		SET_LSM303DLHC_ACCEL_HRMODE_COMMAND		= 0x46;
+		SET_MPU9150_GYRO_RANGE_COMMAND 			= 0x49;
+		SET_MPU9150_SAMPLING_RATE_COMMAND 		= 0x4C;
+		SET_BMP180_PRES_RESOLUTION_COMMAND 		= 0x52;
+		SET_BMP180_PRES_CALIBRATION_COMMAND		= 0x55;
+		RESET_TO_DEFAULT_CONFIGURATION_COMMAND = 0x5A;
+		RESET_CALIBRATION_VALUE_COMMAND 		= 0x5B;
+		SET_INTERNAL_EXP_POWER_ENABLE_COMMAND 	= 0x5E;
+		SET_EXG_REGS_COMMAND 					= 0x61;
+		SET_BAUD_RATE_COMMAND 					= 0x6A;
+		SET_DERIVED_CHANNEL_BYTES				= 0x6D; 
+		START_SDBT_COMMAND 					= 0x70;
+		SET_TRIAL_CONFIG_COMMAND				= 0x73; 
+		SET_CENTER_COMMAND						= 0x76; 
+		SET_SHIMMERNAME_COMMAND				= 0x79; //Shimmer Name
+		SET_EXPID_COMMAND						= 0x7c; //Experiment Name
+		SET_MYID_COMMAND						= 0x7F; //Shimmer ID in trial
+		SET_NSHIMMER_COMMAND					= 0x82; 
+		SET_CONFIGTIME_COMMAND					= 0x85; 
+		SET_INFOMEM_COMMAND   					= 0x8C;
+		SET_CRC_COMMAND						= 0x8B; 
+		SET_RWC_COMMAND                        = 0x8F;
+		ROUTINE_COMMUNICATION					= 0xE0;
+		ACK_COMMAND_PROCESSED            		= 0xFF;		
+		START_LOGGING_ONLY_COMMAND				= 0x92;
+		STOP_LOGGING_ONLY_COMMAND				= 0x93;
+		TEST_CONNECTION_COMMAND            	= 0x96;
+		STOP_SDBT_COMMAND 						= 0x97;
+		
+			
+  	}
+  	
+   enum InstructionsGet {
+   		NOT_USED_GET = 0; //protobuf requirement to have a 0
+   		INQUIRY_COMMAND	= 0x01 ;
+		GET_SAMPLING_RATE_COMMAND = 0x03;
+		GET_ACCEL_SENSITIVITY_COMMAND    		= 0x0B;
+		GET_CONFIG_BYTE0_COMMAND   	   		= 0x10;
+		GET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND = 0x1C;
+		GET_ACCEL_CALIBRATION_COMMAND    		= 0x13;
+		GET_GYRO_CALIBRATION_COMMAND     		= 0x16;
+		GET_MAG_CALIBRATION_COMMAND      		= 0x19;
+		GET_GSR_RANGE_COMMAND			   		= 0x23;
+		GET_SHIMMER_VERSION_COMMAND      		= 0x24;
+		GET_SHIMMER_VERSION_COMMAND_NEW      	= 0x3F; //this is to avoid the $ char which is used by rn42
+		GET_EMG_CALIBRATION_COMMAND      		= 0x28;
+		GET_ECG_CALIBRATION_COMMAND      		= 0x2B;
+		GET_ALL_CALIBRATION_COMMAND      		= 0x2C;
+		GET_FW_VERSION_COMMAND          		= 0x2E;
+		GET_BLINK_LED                    		= 0x32;
+		GET_BUFFER_SIZE_COMMAND          		= 0x36;
+		GET_MAG_GAIN_COMMAND             		= 0x39;
+		GET_MAG_SAMPLING_RATE_COMMAND    		= 0x3C;
+		GET_ACCEL_SAMPLING_RATE_COMMAND  		= 0x42;
+		GET_LSM303DLHC_ACCEL_LPMODE_COMMAND 	= 0x45;
+		GET_LSM303DLHC_ACCEL_HRMODE_COMMAND 	= 0x48;
+		GET_MPU9150_GYRO_RANGE_COMMAND 			= 0x4B;
+		GET_MPU9150_SAMPLING_RATE_COMMAND 		= 0x4E;
+		GET_BMP180_PRES_RESOLUTION_COMMAND 		= 0x54;
+		GET_BMP180_PRES_CALIBRATION_COMMAND 	= 0x57;
+		GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND = 0x59;
+		GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND 	= 0x5D;
+		GET_INTERNAL_EXP_POWER_ENABLE_COMMAND 	= 0x60;
+		GET_EXG_REGS_COMMAND 					= 0x63;
+		GET_DAUGHTER_CARD_ID_COMMAND			= 0x66;
+		GET_BAUD_RATE_COMMAND 					= 0x6C;
+		GET_DERIVED_CHANNEL_BYTES				= 0x6F; 
+		GET_STATUS_COMMAND 					= 0x72;
+		GET_TRIAL_CONFIG_COMMAND				= 0x75; 
+		GET_CENTER_COMMAND						= 0x78; 
+		GET_SHIMMERNAME_COMMAND				= 0x7b; 
+		GET_EXPID_COMMAND						= 0x7e; 
+		GET_MYID_COMMAND						= 0x81; 
+		GET_NSHIMMER_COMMAND					= 0x84; 
+		GET_CONFIGTIME_COMMAND					= 0x87; 
+		GET_DIR_COMMAND 						= 0x89;
+		GET_INFOMEM_COMMAND   					= 0x8E;		
+		GET_RWC_COMMAND                        = 0x91;		
+		GET_VBATT_COMMAND                      = 0x95;
+	}
+  
+  	enum InstructionsResponse {
+  		NOT_USED_RESPONSE=0;
+  		INQUIRY_RESPONSE = 0x02 ;
+		SAMPLING_RATE_RESPONSE           		= 0x04 [(response_size) = 2];
+		ACCEL_SENSITIVITY_RESPONSE       		= 0x0A [(response_size) = 1];
+		CONFIG_BYTE0_RESPONSE      	   		= 0x0F [(response_size) = 4];
+		ACCEL_CALIBRATION_RESPONSE       		= 0x12 [(response_size) = 21];
+		LSM303DLHC_ACCEL_CALIBRATION_RESPONSE 	= 0x1B [(response_size) = 21];
+		GYRO_CALIBRATION_RESPONSE        		= 0x15 [(response_size) = 21];
+		MAG_CALIBRATION_RESPONSE         		= 0x18 [(response_size) = 21];
+		GSR_RANGE_RESPONSE			   			= 0x22 [(response_size) = 1];
+		GET_SHIMMER_VERSION_RESPONSE     		= 0x25 [(response_size) = 1];
+		EMG_CALIBRATION_RESPONSE         		= 0x27 [(response_size) = 4];
+		ECG_CALIBRATION_RESPONSE         		= 0x2A [(response_size) = 4];
+		ALL_CALIBRATION_RESPONSE         		= 0x2D [(response_size) = 84]; 
+		FW_VERSION_RESPONSE             	 	= 0x2F [(response_size) = 6];
+		BLINK_LED_RESPONSE               		= 0x31 [(response_size) = 1];
+		BUFFER_SIZE_RESPONSE             		= 0x35 [(response_size) = 1];
+		MAG_GAIN_RESPONSE                		= 0x38 [(response_size) = 1];
+		MAG_SAMPLING_RATE_RESPONSE       		= 0x3B [(response_size) = 1];
+		ACCEL_SAMPLING_RATE_RESPONSE  			= 0x41 [(response_size) = 1];
+		LSM303DLHC_ACCEL_LPMODE_RESPONSE		= 0x44 [(response_size) = 1];
+		LSM303DLHC_ACCEL_HRMODE_RESPONSE		= 0x47 [(response_size) = 1];
+		MPU9150_GYRO_RANGE_RESPONSE 			= 0x4A [(response_size) = 1];
+		MPU9150_SAMPLING_RATE_RESPONSE 			= 0x4D [(response_size) = 1];
+		BMP180_PRES_RESOLUTION_RESPONSE 		= 0x53 [(response_size) = 1];
+		BMP180_PRES_CALIBRATION_RESPONSE 		= 0x56; //not used
+		BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = 0x58 [(response_size) = 22];
+		MPU9150_MAG_SENS_ADJ_VALS_RESPONSE 	= 0x5C; //not used
+		INTERNAL_EXP_POWER_ENABLE_RESPONSE 	= 0x5F [(response_size) = 1];
+		EXG_REGS_RESPONSE 						= 0x62 [(response_size) = 11];
+		DAUGHTER_CARD_ID_RESPONSE 				= 0x65 [(response_size) = 3];
+		BAUD_RATE_RESPONSE 					= 0x6B [(response_size) = 1];
+		DERIVED_CHANNEL_BYTES_RESPONSE			= 0x6E [(response_size) = 3]; 
+		STATUS_RESPONSE	 					= 0x71 [(response_size) = 1];
+		TRIAL_CONFIG_RESPONSE					= 0x74 [(response_size) = 3]; 
+		CENTER_RESPONSE						= 0x77 [(response_size) = -1]; 
+		SHIMMERNAME_RESPONSE					= 0x7a [(response_size) = -1]; 
+		EXPID_RESPONSE							= 0x7d [(response_size) = -1]; 
+		MYID_RESPONSE							= 0x80 [(response_size) = 1]; 	
+		NSHIMMER_RESPONSE						= 0x83 [(response_size) = 1]; 
+		CONFIGTIME_RESPONSE					= 0x86 [(response_size) = -1]; 
+		DIR_RESPONSE		 					= 0x88 [(response_size) = -1];
+		INSTREAM_CMD_RESPONSE 					= 0x8A; // no following byte
+		INFOMEM_RESPONSE      					= 0x8D [(response_size) = -1];
+		RWC_RESPONSE                           = 0x90 [(response_size) = 8];
+		VBATT_RESPONSE                         = 0x94 [(response_size) = 3];
+  	}
+}

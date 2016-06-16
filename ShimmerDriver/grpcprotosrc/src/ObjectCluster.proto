@@ -1,0 +1,34 @@
+syntax = "proto3";
+package tutorial;
+
+option csharp_namespace = "com.shimmerresearch.datastructure";
+option java_package = "com.shimmerresearch.dataStructure";
+option java_outer_classname = "ShimmerObjectCluster";
+
+message ObjectCluster2 {
+  string name = 1;
+  string bluetoothAddress = 2;
+  
+  enum CommunicationType {
+    BT = 0;
+    SD = 1;
+    Radio_802_15_4 = 2;
+  }
+  
+  CommunicationType communicationType = 3;
+
+  message FormatCluster2 {
+  	
+  	message DataCluster2{
+  		string unit = 1;
+    	double data = 2;	
+    	repeated double dataArray = 3;
+  	}
+  	map<string, DataCluster2> formatMap = 1;  
+    
+  }
+  map<string,FormatCluster2> dataMap = 4;
+  
+  int64 systemTime = 5;
+  double calibratedTimeStamp = 6;
+}
