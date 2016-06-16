@@ -61,8 +61,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		public static final String ORIENTATION_6DOF_WR = "WR_Acc_6DoF";
 	}
 	
-	public class GuiLabelConfig{
-		public static final String ACCELEROMETER = "Accelerometer";
+	public class GuiFriendlyLabelConfig{
 		public static final String QUATERNION_OUTPUT = "Quaternion";
 		public static final String EULER_OUTPUT = "Euler";
 	}
@@ -264,30 +263,6 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		}
 	}
 	
-	public void setAccelerometer(String accelerometerName){
-		this.accelerometerSensor = accelerometerName;
-	}
-	@Override
-	public Object getSettings(String componentName) {
-		Object returnValue = null;
-		switch(componentName){
-
-			case(GuiLabelConfigCommon.SAMPLING_RATE):
-				returnValue = getSamplingRate();
-			break;
-			case(GuiLabelConfig.ACCELEROMETER):
-				returnValue = getAccelerometer();
-			break;
-			case(GuiLabelConfig.QUATERNION_OUTPUT):
-				returnValue = isQuaternionOutput();
-			break;
-			case(GuiLabelConfig.EULER_OUTPUT):
-				returnValue = isEulerOutput();
-			break;
-		}
-		return returnValue;
-	}
-	
 	@Override
 	public void setIsEnabled(boolean isEnabled) {
 		mIsEnabled = isEnabled;
@@ -300,64 +275,89 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		else {
 			setQuaternionOutput(false);
 			setEulerOutput(false);
+			mIsEnabled = false;
 		}
 	}
-
-	@Override
-	public Object getDefaultSettings(String componentName) {
-		Object returnValue = null;
-		switch(componentName){
-			case(GuiLabelConfigCommon.SAMPLING_RATE):
-				returnValue = 512;
-				break;
-			case(GuiLabelConfig.ACCELEROMETER):
-				returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-				break;
-			case(GuiLabelConfig.QUATERNION_OUTPUT):
-				returnValue = true;
-				break;
-			case(GuiLabelConfig.EULER_OUTPUT):
-				returnValue = false;
-				break;
-		}
-		return returnValue;
-	}
-
-	@Override
-	public void setSettings(String componentName, Object valueToSet){
-		
-		switch(componentName){
-			case(GuiLabelConfigCommon.SAMPLING_RATE):
-				if(valueToSet instanceof String){
-					if(!((String) valueToSet).isEmpty()){
-						setSamplingRate(Double.parseDouble((String) valueToSet));
-					}
-				}
-				else if(valueToSet instanceof Double){
-						setSamplingRate((Double) valueToSet);
-				}
-				break;
-			case(GuiLabelConfig.ACCELEROMETER):
-				setAccelerometer((String) valueToSet);
-				break;
-			case(GuiLabelConfig.QUATERNION_OUTPUT):
-				if(valueToSet instanceof Boolean){
-					setQuaternionOutput((boolean) valueToSet);
-				}
-				else if(valueToSet instanceof Integer){
-					setQuaternionOutput(((Integer) valueToSet)>0? true:false);
-				}
-				break;
-			case(GuiLabelConfig.EULER_OUTPUT):
-				if(valueToSet instanceof Boolean){
-					setEulerOutput((boolean) valueToSet);
-				}
-				else if(valueToSet instanceof Integer){
-					setEulerOutput(((Integer) valueToSet)>0? true:false);
-				}
-				break;
-		}
-	}
+	
+	
+//	public void setAccelerometer(String accelerometerName){
+//		this.accelerometerSensor = accelerometerName;
+//	}
+//	@Override
+//	public Object getSettings(String componentName) {
+//		Object returnValue = null;
+//		switch(componentName){
+//
+//			case(GuiLabelConfigCommon.SAMPLING_RATE):
+//				returnValue = getSamplingRate();
+//			break;
+//			case(GuiLabelConfig.ACCELEROMETER):
+//				returnValue = getAccelerometer();
+//			break;
+//			case(GuiLabelConfig.QUATERNION_OUTPUT):
+//				returnValue = isQuaternionOutput();
+//			break;
+//			case(GuiLabelConfig.EULER_OUTPUT):
+//				returnValue = isEulerOutput();
+//			break;
+//		}
+//		return returnValue;
+//	}
+//	
+//
+//	@Override
+//	public Object getDefaultSettings(String componentName) {
+//		Object returnValue = null;
+//		switch(componentName){
+//			case(GuiLabelConfigCommon.SAMPLING_RATE):
+//				returnValue = 512;
+//				break;
+//			case(GuiLabelConfig.ACCELEROMETER):
+//				returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
+//				break;
+//			case(GuiLabelConfig.QUATERNION_OUTPUT):
+//				returnValue = true;
+//				break;
+//			case(GuiLabelConfig.EULER_OUTPUT):
+//				returnValue = false;
+//				break;
+//		}
+//		return returnValue;
+//	}
+//
+//	@Override
+//	public void setSettings(String componentName, Object valueToSet){
+//		
+//		switch(componentName){
+//			case(GuiLabelConfigCommon.SAMPLING_RATE):
+//				if(valueToSet instanceof String){
+//					setSamplingRate(Double.parseDouble((String) valueToSet));
+//				}
+//				else if(valueToSet instanceof Double){
+//					setSamplingRate((Double) valueToSet);
+//				}
+//				break;
+//			case(GuiLabelConfig.ACCELEROMETER):
+//				setAccelerometer((String) valueToSet);
+//				break;
+//			case(GuiLabelConfig.QUATERNION_OUTPUT):
+//				if(valueToSet instanceof Boolean){
+//					setQuaternionOutput((boolean) valueToSet);
+//				}
+//				else if(valueToSet instanceof Integer){
+//					setQuaternionOutput(((Integer) valueToSet)>0? true:false);
+//				}
+//				break;
+//			case(GuiLabelConfig.EULER_OUTPUT):
+//				if(valueToSet instanceof Boolean){
+//					setEulerOutput((boolean) valueToSet);
+//				}
+//				else if(valueToSet instanceof Integer){
+//					setEulerOutput(((Integer) valueToSet)>0? true:false);
+//				}
+//				break;
+//		}
+//	}
 	
 	//trying to split combo box connection
 	public boolean isEulerOutput() {

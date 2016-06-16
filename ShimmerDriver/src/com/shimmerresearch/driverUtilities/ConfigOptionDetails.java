@@ -13,6 +13,7 @@ public class ConfigOptionDetails implements Serializable {
 	};
 	
 	public String[] mGuiValues;
+	String mGuiFriendlyName;
 	public Integer[] mConfigValues;
 	public GUI_COMPONENT_TYPE mGuiComponentType;
 	
@@ -52,6 +53,13 @@ public class ConfigOptionDetails implements Serializable {
 		mCompatibleVersionInfo = compatibleVersionInfo;
 	}
 	
+	public ConfigOptionDetails(String[] guiValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo, String guiFriendlyName) {
+		mGuiValues = guiValues;
+		mGuiComponentType = guiComponentType;
+		mCompatibleVersionInfo = compatibleVersionInfo;
+		mGuiFriendlyName = guiFriendlyName;
+	}
+	
 	/**
 	 * Used in Consensys to hold Shimmer configuration GUI information for
 	 * each configuration option to allow for dynamic GUI creation based on
@@ -82,6 +90,7 @@ public class ConfigOptionDetails implements Serializable {
 		this(guiValues, configValues, guiComponentType, null);
 	}
 	
+	
 	public ConfigOptionDetails(
 			String[] guiValues,
 			GUI_COMPONENT_TYPE guiComponentType, 
@@ -100,6 +109,10 @@ public class ConfigOptionDetails implements Serializable {
 
 	public String[] getGuiValues() {
 		return mGuiValues;
+	}
+	
+	public String getGuiFriendlyName() {
+		return mGuiFriendlyName;
 	}
 
 	public Integer[] getConfigValues() {
