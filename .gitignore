@@ -48,3 +48,6 @@ local.properties
 .texlipse
 out/production/JavaShimmerConnect/com/shimmerresearch/ShimmerCapture/ShimmerCapture$1.class
 out/production/ShimmerPCInstrumentDriver/com/shimmerresearch/pcdriver/DockException.class
+
+JavaShimmerConnect/.settings/org.eclipse.jdt.core.prefs
+ShimmerDriver/.settings/org.eclipse.jdt.core.prefs
