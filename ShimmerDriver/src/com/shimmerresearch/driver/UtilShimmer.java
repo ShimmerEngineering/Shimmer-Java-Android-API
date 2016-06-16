@@ -22,6 +22,8 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
+
 /** Utility class with commonly useful methods
  * 
  * @author Mark Nolan
@@ -309,6 +311,13 @@ public class UtilShimmer implements Serializable {
 	public static boolean compareVersions(int thisHwIdent, int thisFwIdent, int thisMajor, int thisMinor, int thisInternal,
 			int compHwIdent, int compFwIdent, int compMajor, int compMinor, int compInternal) {
 
+//		if(compHwIdent!=ShimmerVerDetails.ANY_VERSION){
+//			if (thisHwIdent!=compHwIdent){
+//				return false;
+//			}
+//		}
+//		return compareVersions(thisFwIdent, thisMajor, thisMinor, thisInternal, compFwIdent, compMajor, compMinor, compInternal);
+
 		if (thisHwIdent==compHwIdent){
 			return compareVersions(thisFwIdent, thisMajor, thisMinor, thisInternal, compFwIdent, compMajor, compMinor, compInternal);
 		}
@@ -330,10 +339,17 @@ public class UtilShimmer implements Serializable {
 	public static boolean compareVersions(int thisFwIdent, int thisMajor, int thisMinor, int thisInternal,
 			int compFwIdent, int compMajor, int compMinor, int compInternal) {
 
-		if (thisFwIdent==compFwIdent){
-			return compareVersions(thisMajor, thisMinor, thisInternal, compMajor, compMinor, compInternal);
+		if(compFwIdent!=ShimmerVerDetails.ANY_VERSION){
+			if (thisFwIdent!=compFwIdent){
+				return false;
+			}
 		}
-		return false; // if less or not the same FW ID
+		return compareVersions(thisMajor, thisMinor, thisInternal, compMajor, compMinor, compInternal);
+		
+//		if (thisFwIdent==compFwIdent){
+//			return compareVersions(thisMajor, thisMinor, thisInternal, compMajor, compMinor, compInternal);
+//		}
+//		return false; // if less or not the same FW ID
 	}
 	
 	/**Returns true if "this" version is greater or equal then comparison version

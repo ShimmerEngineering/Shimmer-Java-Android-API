@@ -613,39 +613,66 @@ public class Configuration {
 			//XXX-RS-AA-SensorClass?
 			public static final int SHIMMER_A_ACCEL = 0;
 			/** Shimmer3 Gyroscope */
-			public static final int SHIMMER_MPU9150_GYRO = 1;
+//			public static final int SHIMMER_MPU9150_GYRO = 1;
 			/** Shimmer3 Primary magnetometer */
 			
 			//RS (03/06/2016) - bugfix: LSM303 SensorMapKey for MAG and ACCEL exchanged
-			public static final int SHIMMER_LSM303DLHC_MAG = 11;
-			public static final int SHIMMER_LSM303DLHC_ACCEL = 2;
+//			public static final int SHIMMER_LSM303DLHC_MAG = 11;
 			
+			public static final int SHIMMER_VBATT = 1;
+			
+			public static final int SHIMMER_EXT_EXP_ADC_A7 = 2;
+			public static final int SHIMMER_EXT_EXP_ADC_A6 = 3;
+			public static final int SHIMMER_EXT_EXP_ADC_A15 = 4;
+			
+			public static final int SHIMMER_INT_EXP_ADC_A12 = 5;
+			public static final int SHIMMER_INT_EXP_ADC_A13 = 6;
+			public static final int SHIMMER_INT_EXP_ADC_A14 = 7;
+			public static final int SHIMMER_BRIDGE_AMP = 8;
+			public static final int SHIMMER_RESISTANCE_AMP = 9;
+			public static final int SHIMMER_INT_EXP_ADC_A1 = 10;
+
+			public static final int SHIMMER_GSR = 11;//5; // Based on ADC1
+			public static final int SHIMMER_MPU9150_GYRO = 12;
+			public static final int SHIMMER_LSM303DLHC_ACCEL = 13;
+			public static final int SHIMMER_LSM303DLHC_MAG = 14;
+			public static final int SHIMMER_MPU9150_ACCEL = 15;
+			public static final int SHIMMER_MPU9150_MAG = 16;
+			public static final int SHIMMER_MPU9150_TEMP = 17;
+			public static final int SHIMMER_BMP180_PRESSURE = 18;
+
+
+
+
+
+			
+//			public static final int SHIMMER_LSM303DLHC_ACCEL = 0;
+
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
-			public static final int SHIMMER_GSR = 5;
-			public static final int SHIMMER_EXT_EXP_ADC_A6 = 6;
-			public static final int SHIMMER_EXT_EXP_ADC_A7 = 7;
-			public static final int SHIMMER_BRIDGE_AMP = 8;
-			public static final int SHIMMER_RESISTANCE_AMP = 9;
+//			public static final int SHIMMER_EXT_EXP_ADC_A6 = 6;
+//			public static final int SHIMMER_EXT_EXP_ADC_A7 = 7;
+//			public static final int SHIMMER_BRIDGE_AMP = 8;
+//			public static final int SHIMMER_RESISTANCE_AMP = 9;
 			//public static final int SHIMMER_HR = 9;
-			public static final int SHIMMER_VBATT = 10;
+//			public static final int SHIMMER_VBATT = 10;
 			/** Shimmer3 Wide-range digital accelerometer */
-			public static final int SHIMMER_EXT_EXP_ADC_A15 = 12;
-			public static final int SHIMMER_INT_EXP_ADC_A1 = 13;
-			public static final int SHIMMER_INT_EXP_ADC_A12 = 14;
-			public static final int SHIMMER_INT_EXP_ADC_A13 = 15;
-			public static final int SHIMMER_INT_EXP_ADC_A14 = 16;
+//			public static final int SHIMMER_EXT_EXP_ADC_A15 = 12;
+//			public static final int SHIMMER_INT_EXP_ADC_A1 = 13;
+//			public static final int SHIMMER_INT_EXP_ADC_A12 = 14;
+//			public static final int SHIMMER_INT_EXP_ADC_A13 = 15;
+//			public static final int SHIMMER_INT_EXP_ADC_A14 = 16;
 			/** Shimmer3 Alternative accelerometer */
-			public static final int SHIMMER_MPU9150_ACCEL = 17;
+//			public static final int SHIMMER_MPU9150_ACCEL = 17;
 			/** Shimmer3 Alternative magnetometer */
-			public static final int SHIMMER_MPU9150_MAG = 18;
+//			public static final int SHIMMER_MPU9150_MAG = 18;
 //			public static final int SHIMMER_EXG1_16BIT = 19;
 //			public static final int SHIMMER_EXG2_16BIT = 21;
-			public static final int SHIMMER_BMP180_PRESSURE = 22;
+//			public static final int SHIMMER_BMP180_PRESSURE = 22;
 			//public static final int SHIMMER_BMP180_TEMPERATURE = 23; // not yet implemented
 			//public static final int SHIMMER_MSP430_TEMPERATURE = 24; // not yet implemented
-			public static final int SHIMMER_MPU9150_TEMP = 25;
+//			public static final int SHIMMER_MPU9150_TEMP = 25;
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
 			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = 27;
@@ -1344,7 +1371,8 @@ public class Configuration {
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoProto3Deluxe = Arrays.asList(
-					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream);
+					baseProto3DeluxeSdLog, baseProto3DeluxeBtStream, baseProto3DeluxeLogAndStream,
+					baseShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
 					baseProto3MiniSdLog, baseProto3MiniBtStream, baseProto3MiniLogAndStream, 

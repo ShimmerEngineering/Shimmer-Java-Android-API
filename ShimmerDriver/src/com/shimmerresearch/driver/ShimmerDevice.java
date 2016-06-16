@@ -1478,33 +1478,36 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			//Automatically handle required channels for each sensor
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 			
-			List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
-			if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
-				for(Integer i:listOfRequiredKeys) {
-					mSensorMap.get(i).setIsEnabled(state);
+			if(sensorDetails!=null){
+				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
+				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
+					for(Integer i:listOfRequiredKeys) {
+						mSensorMap.get(i).setIsEnabled(state);
+					}
 				}
+				
+				//Set sensor state
+				sensorDetails.setIsEnabled(state);
+				
+				sensorMapConflictCheckandCorrect(sensorMapKey);
+				setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
+				
+				// Automatically control internal expansion board power
+				checkIfInternalExpBrdPowerIsNeeded();
+
+				refreshEnabledSensorsFromSensorMap();
+				
+				generateParserMap();
+				//refresh algorithms
+				algorithmRequiredSensorCheck();
+
+//				//Debugging
+//				printSensorAndParserMaps();
+				
+				boolean result = sensorDetails.isEnabled();
+				return (result==state? true:false);
 			}
-			
-			//Set sensor state
-			sensorDetails.setIsEnabled(state);
-			
-			sensorMapConflictCheckandCorrect(sensorMapKey);
-			setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
-			
-			// Automatically control internal expansion board power
-			checkIfInternalExpBrdPowerIsNeeded();
-
-			refreshEnabledSensorsFromSensorMap();
-			
-			generateParserMap();
-			//refresh algorithms
-			algorithmRequiredSensorCheck();
-
-//			//Debugging
-//			printSensorAndParserMaps();
-			
-			boolean result = sensorDetails.isEnabled();
-			return (result==state? true:false);
+			return false;
 		}
 		else {
 			System.out.println("setSensorEnabledState:\t SensorMap=null");

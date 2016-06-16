@@ -11,6 +11,7 @@ import java.util.Map;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.sensors.UtilParseData;
 
 public class SensorDetails implements Serializable{
@@ -93,11 +94,13 @@ public class SensorDetails implements Serializable{
 			Iterator<ChannelDetails> iterator = mListOfChannels.iterator();
 			while(iterator.hasNext()){
 				ChannelDetails channelDetails = iterator.next();
-//				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket){
+				//TODO add the below check?
+//				if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
+					dataPacketSize += channelDetails.mDefaultNumBytes;
 //				}
-				dataPacketSize += channelDetails.mDefaultNumBytes;
 			}
 //		}
+//		System.err.println("Sensor:\t" + mSensorDetailsRef.mGuiFriendlyLabel + "PACKET SIZE:\t" + dataPacketSize);
 		return dataPacketSize;
 	}
 

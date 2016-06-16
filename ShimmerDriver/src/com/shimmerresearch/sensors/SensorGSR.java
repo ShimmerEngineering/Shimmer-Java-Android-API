@@ -198,7 +198,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-			mConfigOptionsMap.put(GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
+		mConfigOptionsMap.put(GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
 	}
 
 	
@@ -212,6 +212,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.GSR,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
+							//TODO PPG not working here because it's not contained within this sensor class
 								Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
 		}

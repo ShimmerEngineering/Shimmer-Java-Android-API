@@ -82,7 +82,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.DEVICE_PROPERTIES,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
+//					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 //					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
 					//temp only! JC: delete after db sync works
 //					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
