@@ -1,0 +1,26 @@
+syntax = "proto3";
+package tutorial;
+
+option csharp_namespace = "com.shimmerresearch.datastructure";
+option java_package = "com.shimmerresearch.datastructure";
+option java_outer_classname = "ShimmerObjectClusterLite";
+
+message ObjectClusterLite {
+  uint32 systemTime = 1;
+  uint32 adc = 2;
+  sint32 accel_x = 3;
+  sint32 accel_y = 4;
+  sint32 accel_z = 5;
+  sint32 daccel_x = 6;  
+  sint32 daccel_y = 7;
+  sint32 daccel_z = 8;
+  sint32 gyro_x = 9;
+  sint32 gyro_y = 10;
+  sint32 gyro_z = 11;
+  sint32 mag_x = 12;
+  sint32 mag_y = 13;
+  sint32 mag_z = 14;
+  
+  
+  
+}
