@@ -1043,46 +1043,41 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
+		
 		if(groupName.isEmpty()){
-//			listOfAlgorithms = getListOfEnabledAlgorithmModules();
 			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		else {
-//			listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
 			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);
 		}
 		
 		// Treat algorithms differently because we normally want to set the same
 		// config across multiple algorithm modules so return only after all have been set
 		if(listOfAlgorithms!=null && !listOfAlgorithms.isEmpty()){
-			for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
-//				returnValue = abstractAlgorithm.setSettings(componentName, valueToSet);
+			for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){	
 				abstractAlgorithm.setSettings(configLabel, valueToSet);
 			}
 		}
-//		if(returnValue!=null){
-//			return returnValue;
-//		}
 	}
 
-	public Object setConfigValueUsingConfigLabel(String configLabel, Object valueToSet){
+	public Object setConfigValueUsingConfigLabel(String groupName, String configLabel, Object valueToSet){
+		
+		System.err.println("GROUPNAME:\t" + (groupName.isEmpty()? "EMPTY":groupName) + "\tCONFIGLABEL:\t" + configLabel);
+		
 		Object returnValue = null;
 
 		//TODO check sensor classes return a null if the setting is successfully found
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			returnValue = abstractSensor.setConfigValueUsingConfigLabel(configLabel, valueToSet);
+			returnValue = abstractSensor.setConfigValueUsingConfigLabel(groupName,configLabel, valueToSet);
 			if(returnValue!=null){
 				return returnValue;
 			}
 		}
 		
-		//TODO remove below when ready and use "getAlgorithmConfigValueUsingConfigLabel" 
-		setAlgorithmSettings("", configLabel, valueToSet);
+		//TODO remove below when ready and use "getAlgorithmConfigValueUsingConfigLabel"
+		setAlgorithmSettings(groupName, configLabel, valueToSet);
 
 		switch(configLabel){
-//Booleans
-//Integers
-//Strings
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
         		setShimmerUserAssignedName((String)valueToSet);
 	        	break;

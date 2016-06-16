@@ -10821,7 +10821,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}		
 	
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
@@ -11098,7 +11098,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	        	
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel("",componentName, valueToSet);
 	        	break;
 		}
 		

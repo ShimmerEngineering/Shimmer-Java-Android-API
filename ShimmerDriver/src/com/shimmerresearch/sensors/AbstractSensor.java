@@ -68,7 +68,7 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
 	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
-	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
+	public abstract Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 
 	public abstract void setSensorSamplingRate(double samplingRateHz);
