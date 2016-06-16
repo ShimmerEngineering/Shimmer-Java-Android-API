@@ -46,8 +46,8 @@ public class OrientationModule9DOF extends OrientationModule {
 		
 		transient Object orientationAlgorithm;
 			
-		protected static String WR = "_WR";
-		protected static String LN = "_LN";
+		public static String WR = "_WR";
+		public static String LN = "_LN";
 		
 		public static class ObjectClusterSensorName{
 			//QUATERNIONS
@@ -463,7 +463,9 @@ public class OrientationModule9DOF extends OrientationModule {
 			switch(componentName){
 				case(GuiLabelConfigCommon.SAMPLING_RATE):
 					if(valueToSet instanceof String){
-						setSamplingRate(Double.parseDouble((String) valueToSet));
+						if(!((String) valueToSet).isEmpty()){
+							setSamplingRate(Double.parseDouble((String) valueToSet));
+						}
 					}
 					else if(valueToSet instanceof Double){
 						setSamplingRate((Double) valueToSet);

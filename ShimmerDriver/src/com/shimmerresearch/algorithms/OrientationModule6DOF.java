@@ -474,7 +474,9 @@ public void setSettings(String componentName, Object valueToSet){
 	switch(componentName){
 		case(GuiLabelConfigCommon.SAMPLING_RATE):
 			if(valueToSet instanceof String){
-				setSamplingRate(Double.parseDouble((String) valueToSet));
+				if(!((String) valueToSet).isEmpty()){
+					setSamplingRate(Double.parseDouble((String) valueToSet));
+				}
 			}
 			else if(valueToSet instanceof Double){
 				setSamplingRate((Double) valueToSet);
