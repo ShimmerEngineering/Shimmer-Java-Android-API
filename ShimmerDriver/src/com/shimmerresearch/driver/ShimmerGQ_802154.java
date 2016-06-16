@@ -285,7 +285,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
@@ -299,7 +299,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	        	break;
 		
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel("", componentName, valueToSet);
 	        	break;
 		}
 			

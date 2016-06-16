@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1040,41 +1041,43 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
+		
 		if(groupName.isEmpty()){
-//			listOfAlgorithms = getListOfEnabledAlgorithmModules();
 			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		else {
-//			listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
 			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);
 		}
 		
 		// Treat algorithms differently because we normally want to set the same
 		// config across multiple algorithm modules so return only after all have been set
 		if(listOfAlgorithms!=null && !listOfAlgorithms.isEmpty()){
-			for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
-//				returnValue = abstractAlgorithm.setSettings(componentName, valueToSet);
+			for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){	
 				abstractAlgorithm.setSettings(configLabel, valueToSet);
 			}
 		}
-//		if(returnValue!=null){
-//			return returnValue;
-//		}
 	}
 
 	public Object setConfigValueUsingConfigLabel(String configLabel, Object valueToSet){
+		return setConfigValueUsingConfigLabel("", configLabel, valueToSet);
+	}
+
+	public Object setConfigValueUsingConfigLabel(String groupName, String configLabel, Object valueToSet){
+		
+		System.err.println("GROUPNAME:\t" + (groupName.isEmpty()? "EMPTY":groupName) + "\tCONFIGLABEL:\t" + configLabel);
+		
 		Object returnValue = null;
 
 		//TODO check sensor classes return a null if the setting is successfully found
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			returnValue = abstractSensor.setConfigValueUsingConfigLabel(configLabel, valueToSet);
+			returnValue = abstractSensor.setConfigValueUsingConfigLabel(groupName,configLabel, valueToSet);
 			if(returnValue!=null){
 				return returnValue;
 			}
 		}
 		
-		//TODO remove below when ready and use "getAlgorithmConfigValueUsingConfigLabel" 
-		setAlgorithmSettings("", configLabel, valueToSet);
+		//TODO remove below when ready and use "getAlgorithmConfigValueUsingConfigLabel"
+		setAlgorithmSettings(groupName, configLabel, valueToSet);
 
 		switch(configLabel){
 //Booleans
@@ -2593,6 +2596,50 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledAlgorthimsPerGroup;
 	}
 
+	
+	public List<String> getSensorsAndAlgorithmToStoreInDB(){
+		Set<String> setOfSensorsAndAlgorithms = getSensorChannelsToStoreInDB();
+		setOfSensorsAndAlgorithms.addAll(getAlgortihmChannelsToStoreInDB());
+		
+		List<String> listOfObjectClusterSensors = new ArrayList<String>(setOfSensorsAndAlgorithms.size());
+		listOfObjectClusterSensors.addAll(setOfSensorsAndAlgorithms);
+		
+		return listOfObjectClusterSensors;
+	}
+	
+	private Set<String> getSensorChannelsToStoreInDB(){
+		
+		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
+		for(SensorDetails sensorEnabled: mSensorMap.values()){
+			if(sensorEnabled.isEnabled() && !sensorEnabled.mSensorDetailsRef.mIsDummySensor){
+    			for(ChannelDetails channelDetails:sensorEnabled.mListOfChannels) {
+    					if(channelDetails.mStoreToDatabase){
+        					setOfObjectClusterSensors.add(channelDetails.mObjectClusterName);
+    					}
+    			}
+			}
+		}
+		
+		return setOfObjectClusterSensors;
+	}
+	
+	private Set<String> getAlgortihmChannelsToStoreInDB(){
+		
+		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
+		for(AbstractAlgorithm algortihm: mMapOfAlgorithmModules.values()){
+			if(algortihm.isEnabled()){
+				List<ChannelDetails> listOfDetails = algortihm.mAlgorithmDetails.mListOfChannelDetails;
+				for(ChannelDetails details: listOfDetails){
+					if(details.mStoreToDatabase){
+						setOfObjectClusterChannels.add(details.mObjectClusterName);
+//						setOfObjectClusterSensors.add(details.mDatabaseChannelHandle); AS: use this one better??
+					}
+				}
+			}
+		}
+		
+		return setOfObjectClusterChannels;
+	}
 	
 	
 }

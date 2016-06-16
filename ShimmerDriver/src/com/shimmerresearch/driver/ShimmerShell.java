@@ -89,7 +89,7 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object configValue) {
+	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object configValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}

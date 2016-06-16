@@ -23,6 +23,7 @@ public class SensorGroupingDetails implements Serializable {
 	public List<Integer> mListOfSensorMapKeysAssociated = new ArrayList<Integer>();
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
+	public List<String> mListofGuiConfigNames = new ArrayList<String>();
 
 	//For algorithm grouping
 	public List<AlgorithmDetails> mListOfAlgorithmDetails = new ArrayList<AlgorithmDetails>();
@@ -60,6 +61,8 @@ public class SensorGroupingDetails implements Serializable {
 	 * 
 	 * @param list
 	 */
+	
+	//special case for orientation sensor grouping map 
 	public SensorGroupingDetails(String groupName,
 			List<AlgorithmDetails> listOfAlgorithmDetails,
 			List<String> listOfConfigOptionKeysAssociated,
@@ -67,10 +70,10 @@ public class SensorGroupingDetails implements Serializable {
 		mGroupName = groupName;
 		
 		mListOfAlgorithmDetails = listOfAlgorithmDetails;
-		
 		if(listOfConfigOptionKeysAssociated!=null){
 			mListOfConfigOptionKeysAssociated = listOfConfigOptionKeysAssociated;
 		}
 	}
+	
 	
 }

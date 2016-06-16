@@ -10,9 +10,11 @@ import java.util.Map;
 import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_RESULT_TYPE;
 import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_TYPE;
 import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
+import com.shimmerresearch.algorithms.OrientationModule.GuiFriendlyLabelConfig;
 //import com.shimmerresearch.algorithms.OrientationModule.GuiLabelConfig;
 import com.shimmerresearch.algorithms.OrientationModule.ORIENTATION_TYPE;
 import com.shimmerresearch.algorithms.OrientationModule6DOF.AlgorithmName;
+import com.shimmerresearch.algorithms.OrientationModule6DOF.GuiLabelConfig;
 import com.shimmerresearch.algorithms.OrientationModule6DOF.ObjectClusterSensorName;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -36,10 +38,16 @@ public class OrientationModule9DOF extends OrientationModule {
 			public static final String ORIENTATION_9DOF_WR = "WR_Acc_9DoF";
 		}	
 		
+		public class GuiLabelConfig{
+		public static final String ACCELEROMETER_9DOF = "Accelerometer_9DOF";
+		public static final String QUATERNION_OUTPUT_9DOF = "Quaternion_9DOF";
+		public static final String EULER_OUTPUT_9DOF = "Euler_9DOF";
+	}
+		
 		transient Object orientationAlgorithm;
 			
-		protected static String WR = "_WR";
-		protected static String LN = "_LN";
+		public static String WR = "_WR";
+		public static String LN = "_LN";
 		
 		public static class ObjectClusterSensorName{
 			//QUATERNIONS
@@ -258,11 +266,11 @@ public class OrientationModule9DOF extends OrientationModule {
 	    
 		// ------------------- Algorithms grouping map start -----------------------
 		public static final SensorGroupingDetails sGD9Dof = new SensorGroupingDetails(
-				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(), 
+				Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
 				Arrays.asList(OrientationModule9DOF.algo9DoFOrientation_LN_Acc,
 						OrientationModule9DOF.algo9DoFOrientation_WR_Acc),
-				Arrays.asList(GuiLabelConfig.QUATERNION_OUTPUT,
-						GuiLabelConfig.EULER_OUTPUT),
+				Arrays.asList(GuiLabelConfig.QUATERNION_OUTPUT_9DOF,
+						GuiLabelConfig.EULER_OUTPUT_9DOF),
 				0);
 		// ------------------- Algorithms grouping map end -----------------------
 
@@ -275,17 +283,19 @@ public class OrientationModule9DOF extends OrientationModule {
 //			mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
 			final ConfigOptionDetailsAlgorithm configOptionQuatOutput9DOF = new ConfigOptionDetailsAlgorithm(
 					QUATERNION_OPTIONS, 
+					GuiFriendlyLabelConfig.QUATERNION_OUTPUT,
 					GUI_COMPONENT_TYPE.COMBOBOX,
 					null);
 
 			final ConfigOptionDetailsAlgorithm configOptionEulerOutput9DOF = new ConfigOptionDetailsAlgorithm(
 					EULER_OPTIONS, 
+					GuiFriendlyLabelConfig.EULER_OUTPUT,
 					GUI_COMPONENT_TYPE.COMBOBOX,
 					null);
 			
 			
-			mConfigOptionsMap.put(GuiLabelConfig.QUATERNION_OUTPUT, configOptionQuatOutput9DOF);
-			mConfigOptionsMap.put(GuiLabelConfig.EULER_OUTPUT, configOptionEulerOutput9DOF);
+			mConfigOptionsMap.put(GuiLabelConfig.QUATERNION_OUTPUT_9DOF, configOptionQuatOutput9DOF);
+			mConfigOptionsMap.put(GuiLabelConfig.EULER_OUTPUT_9DOF, configOptionEulerOutput9DOF);
 			
 			mMapOfAlgorithmGrouping.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.ordinal(), sGD9Dof);
 
@@ -332,7 +342,8 @@ public class OrientationModule9DOF extends OrientationModule {
 			mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
 			mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
 			mAlgorithmName = algorithmDetails.mAlgorithmName;
-			mAlgorithmGroupingName = algorithmDetails.mAlgorithmName;
+			//TODO EN replace hardcoded
+			mAlgorithmGroupingName = "9DOF";
 			
 			this.samplingRate = samplingRate;
 			
@@ -401,7 +412,86 @@ public class OrientationModule9DOF extends OrientationModule {
 			return listOfChannelDetails;
 		}
 		
+		public void setAccelerometer(String accelerometerName){
+			this.accelerometerSensor = accelerometerName;
+		}
+		@Override
+		public Object getSettings(String componentName) {
+			Object returnValue = null;
+			switch(componentName){
 
+				case(GuiLabelConfigCommon.SAMPLING_RATE):
+					returnValue = getSamplingRate();
+				break;
+//				case(GuiLabelConfig.ACCELEROMETER_9DOF):
+//					returnValue = getAccelerometer();
+//				break;
+				case(GuiLabelConfig.QUATERNION_OUTPUT_9DOF):
+					returnValue = isQuaternionOutput();
+				break;
+				case(GuiLabelConfig.EULER_OUTPUT_9DOF):
+					returnValue = isEulerOutput();
+				break;
+			}
+			return returnValue;
+		}
+		
+
+		@Override
+		public Object getDefaultSettings(String componentName) {
+			Object returnValue = null;
+			switch(componentName){
+				case(GuiLabelConfigCommon.SAMPLING_RATE):
+					returnValue = 512;
+					break;
+//				case(GuiLabelConfig.ACCELEROMETER_9DOF):
+//					returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
+//					break;
+				case(GuiLabelConfig.QUATERNION_OUTPUT_9DOF):
+					returnValue = true;
+					break;
+				case(GuiLabelConfig.EULER_OUTPUT_9DOF):
+					returnValue = false;
+					break;
+			}
+			return returnValue;
+		}
+
+		@Override
+		public void setSettings(String componentName, Object valueToSet){
+			
+			switch(componentName){
+				case(GuiLabelConfigCommon.SAMPLING_RATE):
+					if(valueToSet instanceof String){
+						if(!((String) valueToSet).isEmpty()){
+							setSamplingRate(Double.parseDouble((String) valueToSet));
+						}
+					}
+					else if(valueToSet instanceof Double){
+						setSamplingRate((Double) valueToSet);
+					}
+					break;
+//				case(GuiLabelConfig.ACCELEROMETER_9DOF):
+//					setAccelerometer((String) valueToSet);
+//					break;
+				case(GuiLabelConfig.QUATERNION_OUTPUT_9DOF):
+					if(valueToSet instanceof Boolean){
+						setQuaternionOutput((boolean) valueToSet);
+					}
+					else if(valueToSet instanceof Integer){
+						setQuaternionOutput(((Integer) valueToSet)>0? true:false);
+					}
+					break;
+				case(GuiLabelConfig.EULER_OUTPUT_9DOF):
+					if(valueToSet instanceof Boolean){
+						setEulerOutput((boolean) valueToSet);
+					}
+					else if(valueToSet instanceof Integer){
+						setEulerOutput(((Integer) valueToSet)>0? true:false);
+					}
+					break;
+			}
+		}
 		
 	}
 

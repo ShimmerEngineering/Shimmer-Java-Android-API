@@ -531,7 +531,8 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName,
+	public Object setConfigValueUsingConfigLabel(String groupName,
+			String componentName,
 			Object valueToSet) {
 		////XXX What about this? Are the newly introduced method handling the commented out stuff below?
 		

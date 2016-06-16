@@ -2280,7 +2280,7 @@ public class SensorEXG extends AbstractSensor{
 
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
 		Object returnValue = null;
 		switch(componentName){
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):

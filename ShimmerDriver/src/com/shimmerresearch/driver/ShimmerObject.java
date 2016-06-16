@@ -841,10 +841,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		long systemTime = System.currentTimeMillis();
 		if(fwType == FW_TYPE_BT){
 			systemTime = pcTimestamp;
+			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime);
 		}
-		objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 		
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime);
 		
 		if(fwType != FW_TYPE_BT && fwType != FW_TYPE_SD){
 			throw new Exception("The Firmware is not compatible");
@@ -10810,7 +10810,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}		
 	
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
@@ -11087,7 +11087,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	        	
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel("",componentName, valueToSet);
 	        	break;
 		}
 		

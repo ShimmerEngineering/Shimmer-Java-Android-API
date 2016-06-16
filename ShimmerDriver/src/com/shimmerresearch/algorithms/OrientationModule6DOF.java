@@ -46,8 +46,8 @@ public class OrientationModule6DOF extends OrientationModule{
 	
 	public class GuiLabelConfig{
 		public static final String ACCELEROMETER = "Accelerometer";
-		public static final String QUATERNION_OUTPUT = "Quaternion";
-		public static final String EULER_OUTPUT = "Euler";
+		public static final String QUATERNION_OUTPUT_6DOF = "Quaternion_6DOF";
+		public static final String EULER_OUTPUT_6DOF = "Euler_6DOF";
 	}
 	
 	
@@ -275,8 +275,8 @@ public class OrientationModule6DOF extends OrientationModule{
 			Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.getTileText(), 
 			Arrays.asList(OrientationModule6DOF.algo6DoFOrientation_LN_Acc,
 					OrientationModule6DOF.algo6DoFOrientation_WR_Acc),
-			Arrays.asList(GuiLabelConfig.QUATERNION_OUTPUT,
-					GuiLabelConfig.EULER_OUTPUT),
+			Arrays.asList(GuiLabelConfig.QUATERNION_OUTPUT_6DOF,
+					GuiLabelConfig.EULER_OUTPUT_6DOF),
 			0);
 	// ------------------- Algorithms grouping map end -----------------------
 
@@ -291,17 +291,19 @@ public class OrientationModule6DOF extends OrientationModule{
 		
 		final ConfigOptionDetailsAlgorithm configOptionQuatOutput = new ConfigOptionDetailsAlgorithm(
 				QUATERNION_OPTIONS, 
+				GuiFriendlyLabelConfig.QUATERNION_OUTPUT,
 				GUI_COMPONENT_TYPE.COMBOBOX,
 				null);
 
 		final ConfigOptionDetailsAlgorithm configOptionEulerOutput = new ConfigOptionDetailsAlgorithm(
 				EULER_OPTIONS, 
+				GuiFriendlyLabelConfig.EULER_OUTPUT,
 				GUI_COMPONENT_TYPE.COMBOBOX,
 				null);
 
 		
-		mConfigOptionsMap.put(GuiLabelConfig.QUATERNION_OUTPUT, configOptionQuatOutput);
-		mConfigOptionsMap.put(GuiLabelConfig.EULER_OUTPUT, configOptionEulerOutput);
+		mConfigOptionsMap.put(GuiLabelConfig.QUATERNION_OUTPUT_6DOF, configOptionQuatOutput);
+		mConfigOptionsMap.put(GuiLabelConfig.EULER_OUTPUT_6DOF, configOptionEulerOutput);
 		
 		mMapOfAlgorithmGrouping.put(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_6DOF.ordinal(), sGD6Dof);
 
@@ -349,7 +351,7 @@ public class OrientationModule6DOF extends OrientationModule{
 		mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
 		mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
 		mAlgorithmName = algorithmDetails.mAlgorithmName;
-		mAlgorithmGroupingName = algorithmDetails.mAlgorithmName;
+		mAlgorithmGroupingName = "6DOF";
 		
 		this.samplingRate = samplingRate;
 		
@@ -421,7 +423,86 @@ public class OrientationModule6DOF extends OrientationModule{
 		return listOfChannelDetails;
 	}
 	
+	public void setAccelerometer(String accelerometerName){
+	this.accelerometerSensor = accelerometerName;
+}
+@Override
+public Object getSettings(String componentName) {
+	Object returnValue = null;
+	switch(componentName){
+
+		case(GuiLabelConfigCommon.SAMPLING_RATE):
+			returnValue = getSamplingRate();
+		break;
+//		case(GuiLabelConfig.ACCELEROMETER):
+//			returnValue = getAccelerometer();
+//		break;
+		case(GuiLabelConfig.QUATERNION_OUTPUT_6DOF):
+			returnValue = isQuaternionOutput();
+		break;
+		case(GuiLabelConfig.EULER_OUTPUT_6DOF):
+			returnValue = isEulerOutput();
+		break;
+	}
+	return returnValue;
+}
+
+
+@Override
+public Object getDefaultSettings(String componentName) {
+	Object returnValue = null;
+	switch(componentName){
+		case(GuiLabelConfigCommon.SAMPLING_RATE):
+			returnValue = 512;
+			break;
+//		case(GuiLabelConfig.ACCELEROMETER):
+//			returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
+//			break;
+		case(GuiLabelConfig.QUATERNION_OUTPUT_6DOF):
+			returnValue = true;
+			break;
+		case(GuiLabelConfig.EULER_OUTPUT_6DOF):
+			returnValue = false;
+			break;
+	}
+	return returnValue;
+}
+
+@Override
+public void setSettings(String componentName, Object valueToSet){
 	
+	switch(componentName){
+		case(GuiLabelConfigCommon.SAMPLING_RATE):
+			if(valueToSet instanceof String){
+				if(!((String) valueToSet).isEmpty()){
+					setSamplingRate(Double.parseDouble((String) valueToSet));
+				}
+			}
+			else if(valueToSet instanceof Double){
+				setSamplingRate((Double) valueToSet);
+			}
+			break;
+//		case(GuiLabelConfig.ACCELEROMETER):
+//			setAccelerometer((String) valueToSet);
+//			break;
+		case(GuiLabelConfig.QUATERNION_OUTPUT_6DOF):
+			if(valueToSet instanceof Boolean){
+				setQuaternionOutput((boolean) valueToSet);
+			}
+			else if(valueToSet instanceof Integer){
+				setQuaternionOutput(((Integer) valueToSet)>0? true:false);
+			}
+			break;
+		case(GuiLabelConfig.EULER_OUTPUT_6DOF):
+			if(valueToSet instanceof Boolean){
+				setEulerOutput((boolean) valueToSet);
+			}
+			else if(valueToSet instanceof Integer){
+				setEulerOutput(((Integer) valueToSet)>0? true:false);
+			}
+			break;
+	}
+}
 
 
 }
