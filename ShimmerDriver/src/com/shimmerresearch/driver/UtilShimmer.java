@@ -311,17 +311,17 @@ public class UtilShimmer implements Serializable {
 	public static boolean compareVersions(int thisHwIdent, int thisFwIdent, int thisMajor, int thisMinor, int thisInternal,
 			int compHwIdent, int compFwIdent, int compMajor, int compMinor, int compInternal) {
 
-//		if(compHwIdent!=ShimmerVerDetails.ANY_VERSION){
-//			if (thisHwIdent!=compHwIdent){
-//				return false;
-//			}
-//		}
-//		return compareVersions(thisFwIdent, thisMajor, thisMinor, thisInternal, compFwIdent, compMajor, compMinor, compInternal);
-
-		if (thisHwIdent==compHwIdent){
-			return compareVersions(thisFwIdent, thisMajor, thisMinor, thisInternal, compFwIdent, compMajor, compMinor, compInternal);
+		if(compHwIdent!=ShimmerVerDetails.ANY_VERSION){
+			if (thisHwIdent!=compHwIdent){
+				return false;
+			}
 		}
-		return false; // if less or not the same FW_ID and HW_ID
+		return compareVersions(thisFwIdent, thisMajor, thisMinor, thisInternal, compFwIdent, compMajor, compMinor, compInternal);
+
+//		if (thisHwIdent==compHwIdent){
+//			return compareVersions(thisFwIdent, thisMajor, thisMinor, thisInternal, compFwIdent, compMajor, compMinor, compInternal);
+//		}
+//		return false; // if less or not the same FW_ID and HW_ID
 	}
 
 	

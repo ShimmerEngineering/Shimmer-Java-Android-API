@@ -12,6 +12,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMap
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -20,6 +21,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
 import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
 
 /**
@@ -35,9 +37,12 @@ public class SensorADC extends AbstractSensor {
 
 	
 	public class GuiLabelConfig{
-		public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION; //"PPG Channel";
-		public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";
-		public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION; // "Channel2";
+//		public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION; //"PPG Channel";
+//		public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";
+//		public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION; // "Channel2";
+		
+		public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
+		public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 	}
 	
 	// GUI Label Sensors 
@@ -109,6 +114,16 @@ public class SensorADC extends AbstractSensor {
 	public static final Integer[] ListOfPpg1AdcSelectionConfigValues=SensorPPG.ListOfPpg1AdcSelectionConfigValues; //{0,1};
 	public static final String[] ListOfPpg2AdcSelection=SensorPPG.ListOfPpg2AdcSelection; //{"Int A1","Int A14"};
 	public static final Integer[] ListOfPpg2AdcSelectionConfigValues= SensorPPG.ListOfPpg2AdcSelectionConfigValues; //{0,1
+	
+//	public static final ConfigOptionDetailsSensor configOptionIntExpBrdPowerInteger = new ConfigOptionDetailsSensor(
+//			Configuration.Shimmer3.ListOfOnOff, 
+//			Configuration.Shimmer3.ListOfOnOffConfigValues, 
+//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX);
+//	
+//	public static final ConfigOptionDetailsSensor configOptionIntExpBrdPowerBoolean = new ConfigOptionDetailsSensor(
+//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
+	
+
 	
 	//--------- Configuration options end --------------
 	
@@ -342,8 +357,8 @@ public class SensorADC extends AbstractSensor {
 
 	@Override
 	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		// Not in this class
-		
+//		mConfigOptionsMap.put(GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, configOptionIntExpBrdPowerBoolean);
+//		mConfigOptionsMap.put(GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, configOptionIntExpBrdPowerInteger);
 	}
 
 	@Override
@@ -368,7 +383,7 @@ public class SensorADC extends AbstractSensor {
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
 							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
-							CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcs));
+							CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcsGeneral));
 //		}
 		super.updateSensorGroupingMap();	
 	}

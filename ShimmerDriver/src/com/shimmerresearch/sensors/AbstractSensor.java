@@ -199,16 +199,21 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 
-	public String getSensorGuiFriendlyLabel(int sensorKey) {
-		SensorDetails sensorDetails = mSensorMap.get(sensorKey);
+	public String getSensorGuiFriendlyLabel(int sensorMapKey) {
+		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 		if(sensorDetails!=null){
 			return sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel;
 		}
 		return null;
 	}
+	
+	public SensorDetails getSensorDetails(int sensorMapKey){
+		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+		return sensorDetails;
+	}
 
-	public List<ShimmerVerObject> getSensorListOfCompatibleVersionInfo(int sensorKey) {
-		SensorDetails sensorDetails = mSensorMap.get(sensorKey);
+	public List<ShimmerVerObject> getSensorListOfCompatibleVersionInfo(int sensorMapKey) {
+		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 		if(sensorDetails!=null){
 			return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
 		}

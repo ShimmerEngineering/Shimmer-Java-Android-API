@@ -1287,7 +1287,7 @@ public class Configuration {
 		
 		public static class CompatibilityInfoForMaps{
 			// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
-			private static final ShimmerVerObject baseAnyIntExpBoardAndFw = 			new ShimmerVerObject(ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			private static final ShimmerVerObject baseAnyIntExpBoardAndFw = 		new ShimmerVerObject(ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject baseAnyIntExpBoardAndSdlog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject baseAnyIntExpBoardAndBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject baseAnyIntExpBoardAndLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
@@ -1402,7 +1402,7 @@ public class Configuration {
 					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream, 
 					baseShimmer4Stock);
 
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntAdcs = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntAdcsGeneral = Arrays.asList(
 					baseGsrSdLog, baseGsrBtStream, baseGsrLogAndStream, 
 					baseGsrUnifiedSdLog, baseGsrUnifiedBtStream, baseGsrUnifiedLogAndStream,
 					baseHighGAccelSdLog, baseHighGAccelBtStream, baseHighGAccelLogAndStream,
@@ -1492,7 +1492,7 @@ public class Configuration {
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT, new SensorDetailsRef(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_16BIT));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.BMP180_PRESSURE, new SensorDetailsRef(0x04<<(streamingByteIndex*8), 0x04<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.PRESS_TEMP_BMP180));
 	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
-			aMap.putAll(SensorBMP180.mSensorMapRef);
+//			aMap.putAll(SensorBMP180.mSensorMapRef);
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
 			//shimmerChannels.put(SENSOR_SHIMMER3_MSP430_TEMPERATURE, new ChannelDetails(false, 0x01<<(btStreamByteIndex*8), 0x01<<(sDHeaderByteIndex*8), "")); // not yet implemented
@@ -2997,7 +2997,7 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw;//XXX-RS-LSM-SensorClass?
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcs;
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcsGeneral;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.EXG.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg;
 			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Mini;
@@ -3014,7 +3014,7 @@ public class Configuration {
 			for (SensorGroupingDetails sensorGroup:aMap.values()) {
 //				 Ok to clear here because variable is initiated in the class
 //				sensorGroup.mListOfConfigOptionKeysAssociated.clear();
-				List<ShimmerVerObject> listOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();
+//				List<ShimmerVerObject> listOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();
 				for (Integer sensor:sensorGroup.mListOfSensorMapKeysAssociated) {
 					SensorDetailsRef sensorDetails = Configuration.Shimmer3.mSensorMapRef.get(sensor);
 					if(sensorDetails!=null){
@@ -3027,9 +3027,9 @@ public class Configuration {
 								}
 							}
 						}
-						if(sensorDetails.mListOfCompatibleVersionInfo!=null){
-							listOfCompatibleVersionInfo.addAll(sensorDetails.mListOfCompatibleVersionInfo);
-						}
+//						if(sensorDetails.mListOfCompatibleVersionInfo!=null){
+//							listOfCompatibleVersionInfo.addAll(sensorDetails.mListOfCompatibleVersionInfo);
+//						}
 					}
 				}
 //				sensorGroup.mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;

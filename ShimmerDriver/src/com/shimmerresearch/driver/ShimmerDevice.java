@@ -986,51 +986,45 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	    return false;
 	}
 
-	public String getChannelLabel(int sensorKey) {
+	public String getChannelLabel(int sensorMapKey) {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			String guiFriendlyLabel = abstractSensor.getSensorGuiFriendlyLabel(sensorKey);
+			String guiFriendlyLabel = abstractSensor.getSensorGuiFriendlyLabel(sensorMapKey);
 			if(guiFriendlyLabel!=null){
 				return guiFriendlyLabel;
 			}
 		}
 		return null;
-		
-//	    AbstractSensor sensor = mMapOfSensorClasses.get(sensorKey);
-//	    if(sensor!=null){
-//		    return sensor.mGuiFriendlyLabel;
-//	    }
-//		return null;
 	}
 
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
-		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
-		while(iterator.hasNext()){
-			AbstractSensor abstractSensor = iterator.next();
-			List<ShimmerVerObject> listOfCompatibleVersionInfo = abstractSensor.getSensorListOfCompatibleVersionInfo(sensorKey);
-			if(listOfCompatibleVersionInfo!=null){
-				return listOfCompatibleVersionInfo;
-			}
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorMapKey) {
+		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+		if(sensorDetails!=null){
+			return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
 		}
 		return null;
 		
-//	    AbstractSensor sensor = mMapOfSensorClasses.get(sensorKey);
-//	    if(sensor!=null){
-//		    return sensor.mListOfCompatibleVersionInfo;
-//	    }
-//	    return null;
+//		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+//		while(iterator.hasNext()){
+//			AbstractSensor abstractSensor = iterator.next();
+//			SensorDetails sensorDetails = abstractSensor.getSensorDetails(sensorMapKey);
+//			if(sensorDetails!=null){
+//				return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
+//			}
+//			
+////			List<ShimmerVerObject> listOfCompatibleVersionInfo = abstractSensor.getSensorListOfCompatibleVersionInfo(sensorMapKey);
+////			if(listOfCompatibleVersionInfo!=null){
+////				return listOfCompatibleVersionInfo;
+////			}
+//		}
+//		return null;
 	}
     
+	/** Returns all sensor map keys in use */
 	public Set<Integer> getSensorMapKeySet() {
-		//Returns all sensor map keys in use
 		TreeSet<Integer> setOfSensorMapKeys = new TreeSet<Integer>();
-//		for(TreeMap<Integer, SensorEnabledDetails> sensorMap:mSensorEnabledMap.values()){
-//			setOfSensorMapKeys.addAll(sensorMap.keySet());
-//		}
-		
 		setOfSensorMapKeys.addAll(mSensorMap.keySet());
-
 		return setOfSensorMapKeys;
 	}
 	
@@ -1404,7 +1398,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public boolean isVerCompatibleWithAnyOf(List<ShimmerVerObject> listOfCompatibleVersionInfo) {
 
-		if(listOfCompatibleVersionInfo == null) {
+		if(listOfCompatibleVersionInfo==null || listOfCompatibleVersionInfo.isEmpty()) {
 			return true;
 		}
 
@@ -1415,24 +1409,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 			}
 			
-			int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
-			if(hwIdToUse==ShimmerVerDetails.ANY_VERSION){
-				hwIdToUse = getHardwareVersion();
-			}
-			
-			int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
-			if(fwIdToUse==ShimmerVerDetails.ANY_VERSION){
-				fwIdToUse = getFirmwareIdentifier();
-			}
+//			int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
+//			if(hwIdToUse==ShimmerVerDetails.ANY_VERSION){
+//				hwIdToUse = getHardwareVersion();
+//			}
+//			
+//			int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
+//			if(fwIdToUse==ShimmerVerDetails.ANY_VERSION){
+//				fwIdToUse = getFirmwareIdentifier();
+//			}
+//			
+//			if(isThisVerCompatibleWith( 
+//					hwIdToUse,
+//					fwIdToUse, 
+//					compatibleVersionInfo.mFirmwareVersionMajor, 
+//					compatibleVersionInfo.mFirmwareVersionMinor, 
+//					compatibleVersionInfo.mFirmwareVersionInternal)){
+//				return true;
+//			}
 			
 			if(isThisVerCompatibleWith( 
-					hwIdToUse,
-					fwIdToUse, 
+					compatibleVersionInfo.mHardwareVersion,
+					compatibleVersionInfo.mFirmwareIdentifier, 
 					compatibleVersionInfo.mFirmwareVersionMajor, 
 					compatibleVersionInfo.mFirmwareVersionMinor, 
 					compatibleVersionInfo.mFirmwareVersionInternal)){
 				return true;
 			}
+
 		}
 		return false;
 	}
