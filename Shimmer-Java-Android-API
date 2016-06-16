@@ -1,0 +1,6 @@
+tree b3e5a46b539e8ba47b4746cc205e03eb1febad9c
+parent 9938ec7ec8e6b242eef79f881c1d17f1895b6b90
+author JongChern <jclim@shimmersensing.com> 1461922616 +0800
+committer JongChern <jclim@shimmersensing.com> 1461922616 +0800
+
+android now able to connect, this is pre switching Shimmer
