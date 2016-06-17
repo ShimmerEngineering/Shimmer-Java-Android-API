@@ -370,4 +370,10 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return null;
 	}
 	
+	
+	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

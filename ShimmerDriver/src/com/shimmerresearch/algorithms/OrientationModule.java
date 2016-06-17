@@ -264,18 +264,15 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	@Override
-	public void setIsEnabled(boolean isEnabled) {
+	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
 		mIsEnabled = isEnabled;
-		if(mIsEnabled){
-			if(!isQuaternionOutput() && !isEulerOutput()){
+		if(mIsEnabled && !groupEnabled){
 				setQuaternionOutput(true);
-//				setEulerOutput(false);
-			}
+				setEulerOutput(false);
 		}
-		else {
+		else if(!mIsEnabled && !groupEnabled){
 			setQuaternionOutput(false);
 			setEulerOutput(false);
-			mIsEnabled = false;
 		}
 	}
 	
