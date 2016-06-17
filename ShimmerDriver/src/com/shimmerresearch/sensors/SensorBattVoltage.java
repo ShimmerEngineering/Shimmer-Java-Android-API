@@ -23,6 +23,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
+import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
 
 /**
  * @author Ronan McCormack
@@ -188,8 +190,18 @@ public class SensorBattVoltage extends AbstractSensor{
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] rawData, COMMUNICATION_TYPE commType,ObjectCluster objectCluster, boolean isTimeSyncEnabled,
-			long pctimestamp) {
-		// TODO Auto-generated method stub
+			long pcTimeStamp) {
+		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimeStamp);
+		
+		for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+		      if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATTERY)){
+		    	  
+		      }
+		      else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATT_PERCENTAGE)){
+		    	  
+		      }
+		}
+		
 		return null;
 	}
 
