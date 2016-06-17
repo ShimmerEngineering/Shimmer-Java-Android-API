@@ -2309,7 +2309,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					stopTimerCheckForAckOrResp(); //Terminate the timer thread
 					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
-					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT){
+					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mCurrentCommand!=GET_SHIMMER_VERSION_COMMAND_NEW && !mIsInitialised){
+						killConnection(); //If command fail exit device	
+					} else if(mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mIsInitialised){
 						killConnection(); //If command fail exit device	
 					} else {
 						mWaitForAck=false;
