@@ -223,11 +223,15 @@ public class OrientationModule9DOF extends OrientationModule {
 						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
+						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z,
+						Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
+						Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+						Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z),
 //						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
 				(DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER), 
 				Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL,
 						Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+					//	Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG),
 				CHANNEL_UNITS.NO_UNITS,
 				listChannelsEuler9DOF_LN);
 		
@@ -239,11 +243,15 @@ public class OrientationModule9DOF extends OrientationModule {
 						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_X,
 						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
-						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
+						Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z,
+						Configuration.Shimmer3.ObjectClusterSensorName.MAG_X,
+						Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
+						Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z),
 //						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
 				(DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER), 
 				Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 						Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+				//		Configuration.Shimmer3.SensorMapKey.SHIMMER_),
 				CHANNEL_UNITS.NO_UNITS,
 				listChannelsQuat9DOF_WR);
 			

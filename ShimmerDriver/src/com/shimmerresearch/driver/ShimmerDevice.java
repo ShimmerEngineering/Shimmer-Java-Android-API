@@ -1077,8 +1077,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		
 		if((groupName != null && !groupName.isEmpty())){
-			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);		}
-		else {
+			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);		
+			}else{
 			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		
@@ -2168,6 +2168,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					SensorDetails sensorDetails = mSensorMap.get(sensor);
 					if (sensorDetails.isEnabled() == false) {
 						abstractAlgorithm.setIsEnabled(false); // TURNS ALGORITHM OFF
+						for(String s:abstractAlgorithm.mConfigOptionsMap.keySet()){
+							setConfigValueUsingConfigLabel(abstractAlgorithm.mAlgorithmGroupingName, s, 0); //turning config values off
+							}
 						initializeAlgorithms();
 						// refresh panels??
 					}
@@ -2354,6 +2357,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 				else {
 					if(!aa.isEnabled()){
+						//orientationChannelSync(aa.mAlgorithmName, aa.isEnabled());
 //						aa.reset();
 						//TODO stop the algorithm
 					}
@@ -2363,6 +2367,39 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	
+	public void orientationChannelSync(String algoName, boolean enabled){
+		AbstractAlgorithm abstractAlgorithm = getMapOfAlgorithmModules().get(algoName);
+		String groupName = abstractAlgorithm.mAlgorithmGroupingName;
+		
+		//check if another algorithm in the group has been enabled 
+		if(getListOfEnabledAlgorithmModulesPerGroup(groupName)!=null){
+		for(AbstractAlgorithm aA: getListOfEnabledAlgorithmModulesPerGroup(groupName)){
+			if(aA.isEnabled() && enabled){
+				//getting default values
+				for(SensorGroupingDetails sGD:abstractAlgorithm.mMapOfAlgorithmGrouping.values()){
+					if(sGD.mGroupName.equals(groupName)){
+						for(String cL:sGD.mListOfConfigOptionKeysAssociated){
+							//sets all algorithms in that group to the same config
+							setConfigValueUsingConfigLabel(groupName, cL, getConfigValueUsingConfigLabel(cL));
+						}
+						}
+					}	
+			} //turning off both config options of both channels off 
+			if(getListOfEnabledAlgorithmModulesPerGroup(groupName).size()==1 && !enabled){
+				for(SensorGroupingDetails sGD:abstractAlgorithm.mMapOfAlgorithmGrouping.values()){
+					if(sGD.mGroupName.equals(groupName)){
+						for(String cL:sGD.mListOfConfigOptionKeysAssociated){
+							//sets all algorithms in that group off
+							setConfigValueUsingConfigLabel(groupName, cL, 0);
+						}
+			}
+		}
+			}
+		}
+	}
 	}
 
 	@Deprecated
@@ -2715,6 +2752,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		return setOfObjectClusterChannels;
 	}
+
 	
 	
 }
