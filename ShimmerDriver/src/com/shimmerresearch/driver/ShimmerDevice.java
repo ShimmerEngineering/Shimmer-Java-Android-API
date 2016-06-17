@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
+import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
@@ -839,6 +840,25 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		return ojc;
 	}
+	
+	protected ObjectCluster processAlgorithms(ObjectCluster ojc) {
+		//TODO sort out the flow of the below structure
+		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()) {
+			if (aA.isEnabled()) {
+				try {
+					AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
+					if(algorithmResultObject!=null){
+						ojc = (ObjectCluster) algorithmResultObject.mResult;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return ojc;
+	}
+
 	
 	//TODO get below working if even needed
 	/** Based on the SensorMap approach rather then legacy inquiry command */

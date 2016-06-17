@@ -87,6 +87,7 @@ public abstract class AbstractSensor implements Serializable{
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
 	protected static boolean mEnableCalibration = true;
+	protected boolean mDebugOutput = false;
 	
 	protected Double mMaxSetShimmerSamplingRate = 51.2;
 	
