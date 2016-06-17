@@ -382,6 +382,10 @@ public class OrientationModule6DOF extends OrientationModule{
 		else{
 			accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_WR;
 		}
+		
+		
+		
+		
 	}
 	
 	

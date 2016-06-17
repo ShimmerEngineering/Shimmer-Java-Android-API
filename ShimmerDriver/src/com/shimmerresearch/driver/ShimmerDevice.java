@@ -270,9 +270,22 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mConfigOptionsMap = new HashMap<String, ConfigOptionDetailsSensor>();
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 			HashMap<String, ConfigOptionDetailsSensor> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
-			if(configOptionsMapPerSensor!=null && configOptionsMapPerSensor.keySet().size()>0){
+				
+				if(configOptionsMapPerSensor!=null && configOptionsMapPerSensor.keySet().size()>0){
+					
 				mConfigOptionsMap.putAll(configOptionsMapPerSensor);
-			}
+					// taking out duplicates for orientation algorithm config options 
+//					for(String s: configOptionsMapPerSensor.keySet()){
+//						if(mConfigOptionsMap.containsKey(s)){
+//							//do nothing 
+//						}else{
+//							mConfigOptionsMap.put(s,configOptionsMapPerSensor.get(s));
+//						}				
+//					
+					
+				//	}
+				}	
+
 		}
 	}
 	
@@ -1043,11 +1056,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		
-		if(groupName.isEmpty()){
-			listOfAlgorithms = getListOfAlgorithmModules();
-		}
+		if((groupName != null && !groupName.isEmpty())){
+			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);		}
 		else {
-			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);
+			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		
 		// Treat algorithms differently because we normally want to set the same
@@ -2092,10 +2104,29 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setAlgorithmEnabled(String key, boolean state){
 		AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(key);
+		String groupName = abstractAlgorithm.mAlgorithmGroupingName;
+		Boolean groupEnable= false;
+
 		if(abstractAlgorithm!=null){
-			abstractAlgorithm.setIsEnabled(state); 
-			if (abstractAlgorithm.isEnabled()) { // an algorithm has been switched on
+		//find if anything else in the group is on 
+			if(getListOfAlgorithmModulesPerGroup(groupName)!=null){
+				if (getListOfEnabledAlgorithmModulesPerGroup(groupName).size() > 1) {
+					groupEnable = true;
+				} else {
+					groupEnable = false;
+				}
+				abstractAlgorithm.setIsEnabled(state, groupEnable);
+			} else {
+				abstractAlgorithm.setIsEnabled(state);
+			}
+				
+			if (abstractAlgorithm.isEnabled()){ // an algorithm has been switched on
 				//switch on sensors
+				//update config options 
+				for(String s:abstractAlgorithm.mConfigOptionsMap.keySet()){
+				setConfigValueUsingConfigLabel(groupName, s, abstractAlgorithm.getDefaultSettings(s));
+				}
+				
 				for (Integer sensor : abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
 					//this will call a refresh 
 					setSensorEnabledState(sensor, true);
@@ -2253,8 +2284,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
 		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
 			HashMap<String, ConfigOptionDetailsAlgorithm> configOptionsMapPerAlgorithm = abstractAlgorithm.getConfigOptionsMap();
+			
 			if(configOptionsMapPerAlgorithm!=null && configOptionsMapPerAlgorithm.keySet().size()>0){
-				mConfigOptionsMapAlgorithms.putAll(configOptionsMapPerAlgorithm);
+				// taking out duplicates for orientation algorithm config options 
+				for(String s: configOptionsMapPerAlgorithm.keySet()){
+					if(mConfigOptionsMapAlgorithms.containsKey(s)){
+						//do nothing 
+					}else{
+						mConfigOptionsMapAlgorithms.put(s,configOptionsMapPerAlgorithm.get(s));
+					}				
+				
+				}
 			}
 		}
 	}
