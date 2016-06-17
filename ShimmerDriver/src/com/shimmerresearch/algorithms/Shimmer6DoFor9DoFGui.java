@@ -20,7 +20,7 @@ public class Shimmer6DoFor9DoFGui{
 	}
 	
 	public void setIs9DoFSelected(String deviceNameAndDoF){
-		this.is9DoFSelected = (deviceNameAndDoF.contains(Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.toString()));
+		this.is9DoFSelected = (deviceNameAndDoF.contains(OrientationModule9DOF.sGD9Dof.mGroupName));
 	}
 	
 	public String getUserAssignedShimmerName(){

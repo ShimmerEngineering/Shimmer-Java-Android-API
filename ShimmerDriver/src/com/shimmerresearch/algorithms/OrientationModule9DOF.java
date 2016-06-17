@@ -367,10 +367,10 @@ public class OrientationModule9DOF extends OrientationModule {
 			}
 			
 			if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
-				accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_LN;
+				accelerometerSensor = GuiFriendlyLabelConfig.ORIENTATAION_LN;
 			}
 			else{
-				accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_WR;
+				accelerometerSensor = GuiFriendlyLabelConfig.ORIENTATAION_WR;
 			}
 		}
 		

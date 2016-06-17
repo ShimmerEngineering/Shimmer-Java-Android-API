@@ -14,6 +14,7 @@ import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_RESULT_TYPE;
 import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_TYPE;
 import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
 import com.shimmerresearch.algorithms.OrientationModule.AlgorithmName;
+import com.shimmerresearch.algorithms.OrientationModule.GuiFriendlyLabelConfig;
 //import com.shimmerresearch.algorithms.OrientationModule.GuiLabelConfig;
 import com.shimmerresearch.algorithms.OrientationModule.ORIENTATION_TYPE;
 import com.shimmerresearch.driver.Configuration;
@@ -377,15 +378,11 @@ public class OrientationModule6DOF extends OrientationModule{
 		}
 		
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-			accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_LN;
+			accelerometerSensor = GuiFriendlyLabelConfig.ORIENTATAION_LN;
 		}
 		else{
-			accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_WR;
+			accelerometerSensor = GuiFriendlyLabelConfig.ORIENTATAION_WR;
 		}
-		
-		
-		
-		
 	}
 	
 	

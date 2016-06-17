@@ -1103,7 +1103,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		//TODO check sensor classes return a null if the setting is successfully found
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			returnValue = abstractSensor.setConfigValueUsingConfigLabel(groupName,configLabel, valueToSet);
+			returnValue = abstractSensor.setConfigValueUsingConfigLabel(groupName, configLabel, valueToSet);
 			if(returnValue!=null){
 				return returnValue;
 			}
@@ -2618,15 +2618,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return null;
 	}
 	
-	public List<AbstractAlgorithm> getListOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup(String groupName) {
-		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
-			if(sGD.mGroupName.equals(groupName)){
-				return getListOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup(sGD);
-			}
-		}
-		return null;
-	}
-	
 	public List<AbstractAlgorithm> getListOfEnabledAlgorithmModulesPerGroup(SensorGroupingDetails sGD) {
 		List<AbstractAlgorithm> listOfEnabledAlgorthimsPerGroup = new ArrayList<AbstractAlgorithm>();
 		if(sGD!=null){
@@ -2642,26 +2633,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return listOfEnabledAlgorthimsPerGroup;
 	}
-	
-	public List<AbstractAlgorithm> getListOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup(SensorGroupingDetails sGD) {
-		List<AbstractAlgorithm> listOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup = new ArrayList<AbstractAlgorithm>();
-		if(sGD!=null){
-			Map<String, AbstractAlgorithm> mapOfSupportAlgorithms = getSupportedAlgorithmChannels();
-			for(AlgorithmDetails aD:sGD.mListOfAlgorithmDetails){
-				AbstractAlgorithm aA = mapOfSupportAlgorithms.get(aD.mAlgorithmName);
-				if(aA!=null){
-					if(aA instanceof OrientationModule){
-						OrientationModule orientationModule = (OrientationModule)aA;
-						if(orientationModule.isEnabled() && orientationModule.isQuaternionOutput()){
-							listOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup.add(aA);
-						}
-					}
-				}
-			}			
-		}
-		return listOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup;
-	}
-	
+
 	public List<AbstractAlgorithm> getListOfAlgorithmModulesPerGroup(String groupName) {
 		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
 			if(sGD.mGroupName.equals(groupName)){
@@ -2669,6 +2641,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		return null;
+	}
+	
+	public List<AbstractAlgorithm> getListOfAlgorithmModulesPerGroup(String[] listOfGroupNames){
+		
+		List<AbstractAlgorithm> listOfAbstractAlgorithms = new ArrayList<AbstractAlgorithm>();
+		
+		for(String groupName: listOfGroupNames){
+			for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
+				if(sGD.mGroupName.equals(groupName)){
+					listOfAbstractAlgorithms.addAll(getListOfAlgorithmModulesPerGroup(sGD));
+				}
+			}
+		}
+		return listOfAbstractAlgorithms;
 	}
 
 	public List<AbstractAlgorithm> getListOfAlgorithmModulesPerGroup(SensorGroupingDetails sGD) {
