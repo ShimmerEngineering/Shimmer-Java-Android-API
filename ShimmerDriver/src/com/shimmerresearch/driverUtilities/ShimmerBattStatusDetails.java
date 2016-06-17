@@ -102,30 +102,8 @@ public class ShimmerBattStatusDetails implements Serializable {
         }
 
         if(adcVoltageError == false) {
-//        	mBattVoltage = String.format(Locale.UK, "%,.1f",battVoltage) + " V";
-        	mBattVoltageParsed = String.format("%,.1f",mBattVoltage) + " V";
+        	processBattPercentage(mBattVoltage);
         	
-        	// equations are only valid when: 3.2 < x < 4.167. Leaving a 0.2v either side just incase
-            if (mBattVoltage > (4.167 + 0.2)) { 
-            	mBattVoltage = 4.167;
-            }
-            else if (mBattVoltage < (3.2 - 0.2)) {
-            	mBattVoltage = 3.2;
-            }
-        	
-            // 4th order polynomial fit - good enough for purpose
-            mEstimatedChargePercentage = (1109.739792 * Math.pow(mBattVoltage, 4)) - (17167.12674 * Math.pow(mBattVoltage, 3)) + (99232.71686 * Math.pow(mBattVoltage, 2)) - (253825.397 * mBattVoltage) + 242266.0527;
-
-            // 6th order polynomial fit - best fit -> think there is a bug with this one
-            //battPercentage = -(29675.10393 * Math.pow(battVoltage, 6)) + (675893.9095 * Math.pow(battVoltage, 5)) - (6404308.2798 * Math.pow(battVoltage, 4)) + (32311485.5704 * Math.pow(battVoltage, 3)) - (91543800.1720 * Math.pow(battVoltage, 2)) + (138081754.0880 * battVoltage) - 86624424.6584;
-
-            if (mEstimatedChargePercentage > 100) {
-            	mEstimatedChargePercentage = 100.0;
-            }
-            else if (mEstimatedChargePercentage < 0) {
-            	mEstimatedChargePercentage = 0.0;
-            }
-
             if ((chargingStatus&0xFF) != 0xC0) {// Bad battery
 //            	mEstimatedChargePercentage = String.format(Locale.UK, "%,.1f",battPercentage) + "%";
             	mEstimatedChargePercentageParsed = String.format("%,.1f",mEstimatedChargePercentage) + "%";
@@ -134,6 +112,35 @@ public class ShimmerBattStatusDetails implements Serializable {
             	mEstimatedChargePercentageParsed = "0.0%";
             }
         }
+	}
+
+	public void processBattPercentage(double battVoltage) {
+		mBattVoltage = battVoltage;
+//    	mBattVoltage = String.format(Locale.UK, "%,.1f",battVoltage) + " V";
+    	mBattVoltageParsed = String.format("%,.1f",mBattVoltage) + " V";
+    	
+    	// equations are only valid when: 3.2 < x < 4.167. Leaving a 0.2v either side just incase
+        if (mBattVoltage > (4.167 + 0.2)) { 
+        	mBattVoltage = 4.167;
+        }
+        else if (mBattVoltage < (3.2 - 0.2)) {
+        	mBattVoltage = 3.2;
+        }
+    	
+        // 4th order polynomial fit - good enough for purpose
+        mEstimatedChargePercentage = (1109.739792 * Math.pow(mBattVoltage, 4)) - (17167.12674 * Math.pow(mBattVoltage, 3)) + (99232.71686 * Math.pow(mBattVoltage, 2)) - (253825.397 * mBattVoltage) + 242266.0527;
+
+        // 6th order polynomial fit - best fit -> think there is a bug with this one
+        //battPercentage = -(29675.10393 * Math.pow(battVoltage, 6)) + (675893.9095 * Math.pow(battVoltage, 5)) - (6404308.2798 * Math.pow(battVoltage, 4)) + (32311485.5704 * Math.pow(battVoltage, 3)) - (91543800.1720 * Math.pow(battVoltage, 2)) + (138081754.0880 * battVoltage) - 86624424.6584;
+
+        if (mEstimatedChargePercentage > 100) {
+        	mEstimatedChargePercentage = 100.0;
+        }
+        else if (mEstimatedChargePercentage < 0) {
+        	mEstimatedChargePercentage = 0.0;
+        }
+
+    	mEstimatedChargePercentageParsed = String.format("%,.1f",mEstimatedChargePercentage) + "%";
 	}
 
 	public String getChargingStatusParsed() {
