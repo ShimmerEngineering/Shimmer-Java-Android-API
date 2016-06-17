@@ -23,12 +23,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorLSM303.DatabaseChannelHandles;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensorTiles;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
-import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
+
 /**
  * @author Ronan McCormack
  * @author Mark Nolan
@@ -36,12 +31,11 @@ import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
  */
 public class SensorBattVoltage extends AbstractSensor{
 	
-	private static final long serialVersionUID = 2251208184040052082L;
-	
+	/** *  */
+	private static final long serialVersionUID = -2835431738933986391L;
 	
 	//--------- Sensor specific variables start --------------
-	
-	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024);
+//	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024);
 	
 	/** GQ BLE */
 	protected int mSamplingDividerVBatt = 0;
@@ -64,7 +58,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 	public static class ObjectClusterSensorName{
 		public static final String BATT_PERCENTAGE = "Batt_Percentage";
-		public static String BATTERY = "Battery";
+		public static final String BATTERY = "Battery";
 	}
 	
 	
@@ -99,9 +93,9 @@ public class SensorBattVoltage extends AbstractSensor{
   			0x2000, 
   			0x2000, 
   			GuiLabelSensors.BATTERY,
-  			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
   			null,
-  			Arrays.asList(ObjectClusterSensorName.BATT_PERCENTAGE,
+  			null,
+  			Arrays.asList(//ObjectClusterSensorName.BATT_PERCENTAGE,
   					ObjectClusterSensorName.BATTERY)
   					);
     
@@ -125,7 +119,7 @@ public class SensorBattVoltage extends AbstractSensor{
   	 public static final ChannelDetails channelBattPercentage = new ChannelDetails(
  			ObjectClusterSensorName.BATT_PERCENTAGE,
  			ObjectClusterSensorName.BATT_PERCENTAGE,
- 			null,
+ 			ObjectClusterSensorName.BATT_PERCENTAGE,
  			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
  			CHANNEL_UNITS.PERCENT,
  			Arrays.asList(CHANNEL_TYPE.CAL),
@@ -138,7 +132,9 @@ public class SensorBattVoltage extends AbstractSensor{
 					DatabaseChannelHandles.BATTERY,
 					CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					true,
+					true);
   	 
   	 
   	public static final Map<String, ChannelDetails> mChannelMapRef;
@@ -164,8 +160,8 @@ public class SensorBattVoltage extends AbstractSensor{
 	
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
+//		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
-		
 	}
 
 	@Override
@@ -182,7 +178,6 @@ public class SensorBattVoltage extends AbstractSensor{
 			
 		}
 		super.updateSensorGroupingMap();
-		
 	}
 
 	@Override
@@ -199,35 +194,32 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName,
-			String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
 		Object returnValue = null;
-		if (componentName.equals(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT)){
-		    setSamplingDividerVBatt((int)valueToSet);
-		}
+//		if (componentName.equals(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT)){
+//		    setSamplingDividerVBatt((int)valueToSet);
+//		}
 		return returnValue;
 	}
 
 	@Override
 	public Object getConfigValueUsingConfigLabel(String componentName) {
 		Object returnValue = null;
-		if(componentName.equals(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT)){
-			returnValue = getSamplingDividerVBatt();
-		}	
+//		if(componentName.equals(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT)){
+//			returnValue = getSamplingDividerVBatt();
+//		}	
 		return returnValue;
 	}
 
@@ -257,8 +249,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE commType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// Not in this class
 		return null;
 	}
