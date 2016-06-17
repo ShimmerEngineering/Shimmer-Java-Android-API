@@ -344,7 +344,6 @@ public class SensorADC extends AbstractSensor {
 	@Override
 	public void generateSensorMap(ShimmerVerObject svo) {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
-		
 	}
 
 	@Override
@@ -438,9 +437,7 @@ public class SensorADC extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, 
-			String componentName,
-			Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}

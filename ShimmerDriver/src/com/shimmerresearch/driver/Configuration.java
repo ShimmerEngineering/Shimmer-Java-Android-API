@@ -73,6 +73,7 @@ import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorADC;
 //import com.shimmerresearch.pluginalgo.ECGAdaptiveModule.ObjectClusterSensorName;
 import com.shimmerresearch.sensors.SensorBMP180;
+import com.shimmerresearch.sensors.SensorBattVoltage;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
@@ -883,7 +884,7 @@ public class Configuration {
 			MAG(SensorLSM303.GuiLabelSensorTiles.MAG),
 			
 			MPU(SensorMPU9X50.GuiLabelSensorTiles.MPU),
-			BATTERY_MONITORING(Configuration.Shimmer3.GuiLabelSensors.BATTERY),
+			BATTERY_MONITORING(SensorBattVoltage.GuiLabelSensorTiles.BATTERY_MONITORING),
 			
 			//XXX-RS-LSM-SensorClass?
 			WIDE_RANGE_ACCEL(SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL),
@@ -919,7 +920,7 @@ public class Configuration {
 			//XXX-RS-AA-SensorClass?
 			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
 			
-			public static final String BATTERY = "Battery Voltage";
+			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;//"Battery Voltage"; //YYY
 			public static final String EXT_EXP_A7 = SensorADC.GuiLabelSensors.EXT_EXP_A7; //"Ext A7"; //YYY
 			public static final String EXT_EXP_A6 = SensorADC.GuiLabelSensors.EXT_EXP_A6; //"Ext A6"; //YYY
 			public static final String EXT_EXP_A15 = SensorADC.GuiLabelSensors.EXT_EXP_A15; //Ext A15"; //YYY
@@ -1020,7 +1021,7 @@ public class Configuration {
 			public static final String INT_ADC_A12 = SensorADC.DatabaseChannelHandles.INT_ADC_A12; //"F5437a_Int_A12";
 			public static final String INT_ADC_A13 = SensorADC.DatabaseChannelHandles.INT_ADC_A13; //"F5437a_Int_A13";
 			public static final String INT_ADC_A14 = SensorADC.DatabaseChannelHandles.INT_ADC_A14; //"F5437a_Int_A14";
-			public static final String BATTERY = "F5437a_Int_A2_Battery";
+			public static final String BATTERY = SensorBattVoltage.DatabaseChannelHandles.BATTERY; //"F5437a_Int_A2_Battery";
 			public static final String GSR = SensorGSR.DatabaseChannelHandles.GSR;
 			public static final String PRESSURE = SensorBMP180.DatabaseChannelHandles.PRESSURE; //"BMP180_Pressure";
 			public static final String MPU_HEADING = SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING; //"MPU9150_MPL_Heading"; // not available but supported in FW
@@ -1149,7 +1150,7 @@ public class Configuration {
 		public static class ObjectClusterSensorName{
 			
 			public static final String SHIMMER = "Shimmer";
-			public static final String BATT_PERCENTAGE = "Batt_Percentage";
+			public static final String BATT_PERCENTAGE = SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE; //"Batt_Percentage"; YYY
 			public static final String PACKET_RECEPTION_RATE_CURRENT = "Packet_Reception_Rate_Current";
 			public static final String PACKET_RECEPTION_RATE_TRIAL = "Packet_Reception_Rate_Trial";
 			
@@ -1167,7 +1168,7 @@ public class Configuration {
 			public static String ACCEL_LN_Y = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Y;
 			public static String ACCEL_LN_Z = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Z;
 			
-			public static String BATTERY = "Battery";
+			public static String BATTERY = SensorBattVoltage.ObjectClusterSensorName.BATTERY; //"Battery"; YYY
 			public static String EXT_EXP_ADC_A7 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A7; //"Ext_Exp_A7";
 			public static String EXT_EXP_ADC_A6 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A6; //"Ext_Exp_A6";
 			public static String EXT_EXP_ADC_A15 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A15; //"Ext_Exp_A15";
@@ -1527,6 +1528,8 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP, new SensorDetailsRef(0x80<<(streamingByteIndex*8), 0x80<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.BRIDGE_AMPLIFIER));
 			//shimmerChannels.put(, new ChannelDetails(false, 0x40<<(streamingByteIndex*8), 0x40<<(logHeaderByteIndex*8), "")); // unused? - new PPG bit might be here now
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, new SensorDetailsRef(0x20<<(streamingByteIndex*8), 0x20<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.BATTERY));
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, SensorBattVoltage.sensorBattVoltageRef);
+
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, new SensorDetailsRef(0x10<<(streamingByteIndex*8), 0x10<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.ACCEL_WR));
 //			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15, new SensorDetailsRef(0x08<<(streamingByteIndex*8), 0x08<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.EXT_EXP_A15));
 			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15, SensorADC.sensorADC_EXT_EXP_ADC_A15Ref);
@@ -2494,12 +2497,16 @@ public class Configuration {
 	        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
 	        
 	        //TODO ShimmerObject variables section -> not directly from the Shimmer 
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
+
+	        // YYY-----------Implemented in SensorBattVoltage---------------------
+	        aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 							"Battery Percentage",
 							CHANNEL_UNITS.PERCENT,
 							Arrays.asList(CHANNEL_TYPE.CAL), true, false));
+	        //--------------------------------------------------------
+	        
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
@@ -2587,7 +2594,9 @@ public class Configuration {
 //							CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 //							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
 			
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY,
+			
+			// YYY-----------Implemented in SensorBattVoltage---------------------
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY,             
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.BATTERY,
 							Configuration.Shimmer3.ObjectClusterSensorName.BATTERY,
@@ -2595,6 +2604,7 @@ public class Configuration {
 							CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 							CHANNEL_UNITS.MILLIVOLTS,
 							Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL)));
+			// YYY-----------Implemented in SensorBattVoltage---------------------
 
 			aMap.putAll(SensorADC.mChannelMapRef);
 //			// External ADCs

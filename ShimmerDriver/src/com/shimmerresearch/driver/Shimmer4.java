@@ -27,6 +27,7 @@ import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBMP180;
+import com.shimmerresearch.sensors.SensorBattVoltage;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorKionixKXRB52042;
@@ -95,6 +96,8 @@ public class Shimmer4 extends ShimmerDevice {
 			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
+
 
 //		}
 		
