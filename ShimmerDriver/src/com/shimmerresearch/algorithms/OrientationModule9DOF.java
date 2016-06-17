@@ -217,7 +217,7 @@ public class OrientationModule9DOF extends OrientationModule {
 		
 		public static final AlgorithmDetails algo9DoFOrientation_LN_Acc = new AlgorithmDetails(
 				AlgorithmName.ORIENTATION_9DOF_LN, 
-				"Low-Noise Accel", 
+				OrientationModule.GuiFriendlyLabelConfig.ORIENTATAION_LN, 
 				Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
 						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
@@ -233,7 +233,7 @@ public class OrientationModule9DOF extends OrientationModule {
 		
 		public static final AlgorithmDetails algo9DoFOrientation_WR_Acc = new AlgorithmDetails(
 				AlgorithmName.ORIENTATION_9DOF_WR, 
-				"Wide-Range Accel", 
+				OrientationModule.GuiFriendlyLabelConfig.ORIENTATAION_WR, 
 				Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
 						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
 						Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,

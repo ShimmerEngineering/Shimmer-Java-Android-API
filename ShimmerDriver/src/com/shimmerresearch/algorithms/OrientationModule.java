@@ -1,30 +1,18 @@
 package com.shimmerresearch.algorithms;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.vecmath.Vector3d;
 
-import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
-import com.shimmerresearch.algorithms.OrientationModule6DOF.GuiLabelConfig;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerObject.DerivedSensorsBitMask;
-import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
@@ -62,6 +50,8 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	public class GuiFriendlyLabelConfig{
+		public static final String ORIENTATAION_LN = "Low-Noise Accel";
+		public static final String ORIENTATAION_WR = "Wide-Range Accel";
 		public static final String QUATERNION_OUTPUT = "Quaternion";
 		public static final String EULER_OUTPUT = "Euler";
 	}
@@ -264,18 +254,15 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	@Override
-	public void setIsEnabled(boolean isEnabled) {
+	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
 		mIsEnabled = isEnabled;
-		if(mIsEnabled){
-			if(!isQuaternionOutput() && !isEulerOutput()){
+		if(mIsEnabled && !groupEnabled){
 				setQuaternionOutput(true);
-//				setEulerOutput(false);
-			}
+				setEulerOutput(false);
 		}
-		else {
+		else if(!mIsEnabled && !groupEnabled){
 			setQuaternionOutput(false);
 			setEulerOutput(false);
-			mIsEnabled = false;
 		}
 	}
 	
