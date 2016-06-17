@@ -4285,6 +4285,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//XXX-RS-LSM-SensorClass?
 			if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE && checkIfDefaultWideRangeAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
 				mDefaultCalibrationParametersDigitalAccel = true;
+				mAlignmentMatrixWRAccel = AlignmentMatrix;
+				mOffsetVectorWRAccel = OffsetVector;
+				mSensitivityMatrixWRAccel = SensitivityMatrix;
 			}
 			//XXX-RS-LSM-SensorClass?
 			else if (packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
