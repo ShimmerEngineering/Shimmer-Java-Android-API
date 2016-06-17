@@ -20,6 +20,7 @@ import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
+import com.shimmerresearch.algorithms.OrientationModule;
 import com.shimmerresearch.algorithms.OrientationModule6DOF;
 import com.shimmerresearch.algorithms.OrientationModule9DOF;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
@@ -2557,6 +2558,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return null;
 	}
 	
+	public List<AbstractAlgorithm> getListOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup(String groupName) {
+		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
+			if(sGD.mGroupName.equals(groupName)){
+				return getListOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup(sGD);
+			}
+		}
+		return null;
+	}
+	
 	public List<AbstractAlgorithm> getListOfEnabledAlgorithmModulesPerGroup(SensorGroupingDetails sGD) {
 		List<AbstractAlgorithm> listOfEnabledAlgorthimsPerGroup = new ArrayList<AbstractAlgorithm>();
 		if(sGD!=null){
@@ -2572,7 +2582,26 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return listOfEnabledAlgorthimsPerGroup;
 	}
-
+	
+	public List<AbstractAlgorithm> getListOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup(SensorGroupingDetails sGD) {
+		List<AbstractAlgorithm> listOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup = new ArrayList<AbstractAlgorithm>();
+		if(sGD!=null){
+			Map<String, AbstractAlgorithm> mapOfSupportAlgorithms = getSupportedAlgorithmChannels();
+			for(AlgorithmDetails aD:sGD.mListOfAlgorithmDetails){
+				AbstractAlgorithm aA = mapOfSupportAlgorithms.get(aD.mAlgorithmName);
+				if(aA!=null){
+					if(aA instanceof OrientationModule){
+						OrientationModule orientationModule = (OrientationModule)aA;
+						if(orientationModule.isEnabled() && orientationModule.isQuaternionOutput()){
+							listOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup.add(aA);
+						}
+					}
+				}
+			}			
+		}
+		return listOfEnabled6DoF9DoFQuatAlgorithmModulesPerGroup;
+	}
+	
 	public List<AbstractAlgorithm> getListOfAlgorithmModulesPerGroup(String groupName) {
 		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
 			if(sGD.mGroupName.equals(groupName)){

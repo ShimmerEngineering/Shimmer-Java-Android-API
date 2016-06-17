@@ -2,14 +2,14 @@ package com.shimmerresearch.algorithms;
 
 import com.shimmerresearch.driver.Configuration;
 
-public class Shimmer9DoF{
+public class Shimmer6DoFor9DoFGui{
 	
 	private String shimmerName = "";
 	private String selectedAccel = "";
 	private boolean is9DoFSelected = false;
 	private boolean isBothAccelsAvailable = false;
 	
-	public Shimmer9DoF(String shimmerName, String enabledAccel, boolean isBothAccelsAvailable){
+	public Shimmer6DoFor9DoFGui(String shimmerName, String enabledAccel, boolean isBothAccelsAvailable){
 		this.shimmerName = shimmerName;
 		this.selectedAccel = enabledAccel;
 		this.isBothAccelsAvailable = isBothAccelsAvailable;
@@ -32,7 +32,7 @@ public class Shimmer9DoF{
 	}
 	
 	public boolean isLowNoiseAccelSelected(){
-		return (getEnabledAccel().contains(OrientationModule9DOF.LN));
+		return (getEnabledAccel().equals(OrientationModule.GuiFriendlyLabelConfig.ORIENTATAION_LN));
 	}
 	
 	public boolean isBothAccelsAvailable(){
