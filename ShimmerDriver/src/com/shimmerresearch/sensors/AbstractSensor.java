@@ -37,7 +37,8 @@ public abstract class AbstractSensor implements Serializable{
 		LSM303("LSM303"),
 		PPG("PPG"), 
 		TEMPLATE("Template sensor - not a real sensor of course!"),
-		ADC("ADC");
+		ADC("ADC"),
+		Battery("Battery");
 		
 	    private final String text;
 

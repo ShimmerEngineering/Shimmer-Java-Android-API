@@ -680,7 +680,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mFirstTimeCalTime=true;//XXX-RS-LSM-SensorClass?	
 	protected double mCalTimeStart;//XXX-RS-LSM-SensorClass?	
 	private double mLastKnownHeartRate=0;
-	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024);
+	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024); //YYY -BattVolt-SensorClass
 	Quat4d mQ = new Quat4d();//XXX-RS-LSM-SensorClass?	
 	transient GradDes3DOrientation mOrientationAlgo;//XXX-RS-LSM-SensorClass?	
 	protected boolean mOrientationEnabled = false;//XXX-RS-LSM-SensorClass?	
@@ -8061,7 +8061,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		}
 	}	
-
+// YYY - Implemented in SensorBattVoltage
 	/**
 	 * @return the mSamplingDividerVBatt
 	 */
