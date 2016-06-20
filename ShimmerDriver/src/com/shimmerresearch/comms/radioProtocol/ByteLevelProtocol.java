@@ -7,7 +7,7 @@ import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 public abstract class ByteLevelProtocol {
 	ProtocolListener mProtocolListener;
 	ByteLevelDataComm mShimmerRadio; //every radio protocol requires radio control
-	int mPacketSize;
+	protected int mPacketSize = 0;
 	
 	/**When using this, it is required that the byteleveldatacomm is set using the serByteLevelDataComm
 	 * 

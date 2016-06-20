@@ -660,5 +660,13 @@ public class UtilShimmer implements Serializable {
 		String strStackTrace = sWriter.toString();
 		return strStackTrace;
 	}
+
+	public static String longToHexStringWithSpacesFormatted(long number, int numBytes) {
+		byte[] bytesArray = new byte[numBytes];
+		for(int i=0;i<numBytes;i++){
+			bytesArray[i] = (byte) ((number >> (i*8)) & 0xFF);
+		}
+		return bytesToHexStringWithSpacesFormatted(bytesArray);
+	}
 	
 }

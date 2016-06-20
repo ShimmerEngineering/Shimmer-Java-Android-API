@@ -534,7 +534,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 								}
 							} 
 							if(mByteArrayOutputStream.size()>mPacketSize+2){
-								printLogDataForDebugging("Unknown packet error (check with JC):\tExpected: " + mPacketSize+2 + "bytes but buffer contains " + mByteArrayOutputStream.size() + "bytes");
+								printLogDataForDebugging("Unknown packet error (check with JC):\tExpected: " + (mPacketSize+2) + "bytes but buffer contains " + mByteArrayOutputStream.size() + "bytes");
 								discardFirstBufferByte(); //throw the first byte away
 							}
 							
@@ -542,7 +542,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 						//TODO: ACK in bufferTemp[0] not handled
 						//else if
 						else {
-							printLogDataForDebugging("Packet syncing problem:\tExpected: " + mPacketSize+2 + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
+							printLogDataForDebugging("Packet syncing problem:\tExpected: " + (mPacketSize+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
 							discardFirstBufferByte(); //throw the first byte away
 						}
 					} 

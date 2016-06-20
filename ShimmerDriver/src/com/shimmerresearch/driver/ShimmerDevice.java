@@ -913,7 +913,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			Iterator<SensorDetails> iterator = parserMapPerCommType.values().iterator();
 			while(iterator.hasNext()){
 				SensorDetails sensorDetails = iterator.next();
-				dataPacketSize += sensorDetails.getExpectedDataPacketSize();
+				int expectedPktSize = sensorDetails.getExpectedDataPacketSize();
+				if(expectedPktSize>0){
+					System.out.println("Expected Packet size for:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\t:\t" + expectedPktSize);
+					dataPacketSize += expectedPktSize;
+				}
 			}
 		}
 		return dataPacketSize;
@@ -1759,7 +1763,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
-			printSensorAndParserMaps();			
+			
+//			//Debugging
+//			printSensorAndParserMaps();
+			
 			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
 				mEnabledSensors = (long)0;
 				mDerivedSensors = (long)0;
@@ -1782,8 +1789,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void printSensorAndParserMaps(){
 		//For debugging
 		System.out.println("");
-		System.out.println("Enabled Sensors\t" + mEnabledSensors);
-		System.out.println("Derived Sensors\t" + mDerivedSensors);
+		System.out.println("Enabled Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mEnabledSensors, 5));
+		System.out.println("Derived Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mDerivedSensors, 3));
 		for(SensorDetails sensorDetails:mSensorMap.values()){
 			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
 		}
@@ -1886,7 +1893,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		
 //		//Debugging
-		printSensorAndParserMaps();
+//		printSensorAndParserMaps();
 
 	}
 

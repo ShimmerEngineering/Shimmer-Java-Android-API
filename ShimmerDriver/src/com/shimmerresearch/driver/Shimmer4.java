@@ -137,7 +137,7 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
-		//TODO don't think this is relevent for Shimmer4
+		//TODO don't think this is relevant for Shimmer4
 	}
 
 	@Override
@@ -230,13 +230,14 @@ public class Shimmer4 extends ShimmerDevice {
 			
 			mButtonStart = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftButtonStart) & infoMemLayoutCast.maskButtonStart)>0? true:false;
 			mShowRtcErrorLeds = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowRwcErrorLeds) & infoMemLayoutCast.maskShowRwcErrorLeds)>0? true:false;
-			
+
 			prepareAllAfterConfigRead();
-			
+
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
 			}
+			updateExpectedDataPacketSize();
 
 		}
 		checkAndCorrectShimmerName(shimmerName);
@@ -377,16 +378,20 @@ public class Shimmer4 extends ShimmerDevice {
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, true);
 
 //		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.BLUETOOTH);
-		
-//		printSensorAndParserMaps();
-		
+
+		printSensorAndParserMaps();
+
+		updateExpectedDataPacketSize();
+	}
+	
+	private void updateExpectedDataPacketSize() {
 		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
 //		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.ALL);
 		if(mShimmerRadioHWLiteProtocol!=null){
 			mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(expectedDataPacketSize);
 		}
 	}
-	
+
 	@Override
 	public void setDefaultShimmerConfiguration() {
 		super.setDefaultShimmerConfiguration();
