@@ -20,6 +20,7 @@ import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.OrientationModule;
 import com.shimmerresearch.algorithms.OrientationModule6DOF;
@@ -2137,8 +2138,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			if (abstractAlgorithm.isEnabled()){ // an algorithm has been switched on
 				//switch on sensors
 				//update config options 
-				for(String s:abstractAlgorithm.mConfigOptionsMap.keySet()){
-				setConfigValueUsingConfigLabel(groupName, s, abstractAlgorithm.getDefaultSettings(s));
+				boolean useDefaultAlgorithmECGtoHRSamplingRate = true;
+				for(String configOption: abstractAlgorithm.mConfigOptionsMap.keySet()){
+					if(configOption.equals(GuiLabelConfigCommon.SAMPLING_RATE)){
+						if(getSamplingRateShimmer() >= 128){
+							useDefaultAlgorithmECGtoHRSamplingRate = false;
+						}
+					}
+					if(useDefaultAlgorithmECGtoHRSamplingRate){
+						setConfigValueUsingConfigLabel(groupName, configOption, abstractAlgorithm.getDefaultSettings(configOption));
+					}
+					else{
+						setConfigValueUsingConfigLabel(groupName, configOption, String.valueOf(getSamplingRateShimmer()));
+					}
 				}
 				
 				for (Integer sensor : abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
