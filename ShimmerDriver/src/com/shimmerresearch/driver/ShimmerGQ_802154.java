@@ -568,7 +568,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHRFw(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
+//			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(this));
 		}
 		
 		setDefaultShimmerConfiguration();

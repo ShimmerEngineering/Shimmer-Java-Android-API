@@ -336,25 +336,34 @@ public abstract class AbstractSensor implements Serializable{
 	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
 		return false;
 	}
+
+	public void handleSpecialCasesAfterSensorMapCreate() {
+    	//NOT USED IN THIS CLASS
+    	//USED in {SensorEXG}
+	}
 	
-    public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
+	public void handleSpecCasesBeforeSensorMapUpdateGeneral(ShimmerDevice shimmerDevice) {
+    	//NOT USED IN THIS CLASS
+    	//USED in {SensorEXG}
+	}
+
+    public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(ShimmerDevice shimmerDevice, Integer sensorMapKey){
     	//NOT USED IN THIS CLASS
     	//USED in {SensorPPG, SensorEXG}
     	return false;
     }
     
     
-	public void handleSpecCasesAfterSensorMapUpdate() {
+	public void handleSpecCasesAfterSensorMapUpdateFromEnabledSensors() {
 		//NOT IN THIS CLASS
 		//USED in {SensorPPG, SensorEXG}
 	}
 
 	
-	public void handleSpecCasesUpdateEnabledSensors(long enabledSensors) {
+	public void handleSpecCasesUpdateEnabledSensors() {
 		//TODO Auto-generated method stub
 		//USED in {SensorEXG}
 	}
-	
 	
 	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
 		//NOT USED IN THIS CLASS
@@ -362,7 +371,5 @@ public abstract class AbstractSensor implements Serializable{
 		return sensorMapKey;
 	}
 	//--------- Optional methods to override in Sensor Class end -------- 
-	
-
 
 }

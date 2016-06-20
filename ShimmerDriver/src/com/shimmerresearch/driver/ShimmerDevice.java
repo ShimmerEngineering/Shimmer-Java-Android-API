@@ -1747,6 +1747,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		printSensorAndParserMaps();
 	}
 	
+	protected void handleSpecialCasesAfterSensorMapCreate() {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.handleSpecialCasesAfterSensorMapCreate();
+		}
+	}
+	
 
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
@@ -1772,6 +1780,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** For use when debugging */
 	protected void printSensorAndParserMaps(){
 		//For debugging
+		System.out.println("");
+		System.out.println("Enabled Sensors\t" + mEnabledSensors);
+		System.out.println("Derived Sensors\t" + mDerivedSensors);
 		for(SensorDetails sensorDetails:mSensorMap.values()){
 			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
 		}
@@ -1780,14 +1791,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				System.out.println("PARSER SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
 			}
 		}
+		System.out.println("");
 	}
 	
-	//RS (30/5/2016) - added special case for EXG
+	/** added special cases (e.g., for SensorEXG) */
 	public void handleSpecCasesUpdateEnabledSensors() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			abstractSensor.handleSpecCasesUpdateEnabledSensors(mEnabledSensors);
+			abstractSensor.handleSpecCasesUpdateEnabledSensors();
 		}
 	}
 	
@@ -1827,8 +1839,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	//TODO tidy the below. Remove? Almost exact same in ShimmerObject and not sure if this needs to be here 
 	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
-		//TODO below was in ShimmerObject but not carried forward to here?
-		//checkExgResolutionFromEnabledSensorsVar();
+		handleSpecCasesBeforeSensorMapUpdateGeneral();
 
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
@@ -1837,7 +1848,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mSensorMap!=null) {
 			mapLoop:
 			for(Integer sensorMapKey:mSensorMap.keySet()) {
-				if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
+				if(handleSpecCasesBeforeSensorMapUpdatePerSensor(sensorMapKey)){
 					continue mapLoop;
 				}
 					
@@ -1870,30 +1881,38 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			// sensor channels that have special conditions. E.g. deciding
 			// what type of signal the ExG is configured for or what derived
 			// channel is enabled like whether PPG is on ADC12 or ADC13
-			handleSpecCasesAfterSensorMapUpdate();
+			handleSpecCasesAfterSensorMapUpdateFromEnabledSensors();
 		}
 		
 //		//Debugging
-//		printSensorAndParserMaps();
+		printSensorAndParserMaps();
 
 	}
-	
-	public boolean handleSpecCasesBeforeSensorMapUpdate(Integer sensorMapKey) {
+
+	public void handleSpecCasesBeforeSensorMapUpdateGeneral() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			if(abstractSensor.handleSpecCasesBeforeSensorMapUpdate(this, sensorMapKey)){
+			abstractSensor.handleSpecCasesBeforeSensorMapUpdateGeneral(this);
+		}
+	}
+
+	public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(Integer sensorMapKey) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			if(abstractSensor.handleSpecCasesBeforeSensorMapUpdatePerSensor(this, sensorMapKey)){
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void handleSpecCasesAfterSensorMapUpdate() {
+	public void handleSpecCasesAfterSensorMapUpdateFromEnabledSensors() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			abstractSensor.handleSpecCasesAfterSensorMapUpdate();
+			abstractSensor.handleSpecCasesAfterSensorMapUpdateFromEnabledSensors();
 		}
 	}
 
@@ -2307,11 +2326,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				for(String s: configOptionsMapPerAlgorithm.keySet()){
 					if(mConfigOptionsMapAlgorithms.containsKey(s)){
 						//do nothing 
-					}else{
+					}
+					else{
 						mConfigOptionsMapAlgorithms.put(s,configOptionsMapPerAlgorithm.get(s));
 					}				
-				
 				}
+			}
+		}
+	}
+	
+	protected void generateMapOfAlgorithmGroupingMap() {
+		mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
+		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
+			TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = abstractAlgorithm.mMapOfAlgorithmGrouping;
+			if(algorithmGroupingMap!=null && algorithmGroupingMap.keySet().size()>0){
+				mMapOfAlgorithmGrouping.putAll(algorithmGroupingMap);
 			}
 		}
 	}
@@ -2714,7 +2743,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	private Set<String> getSensorChannelsToStoreInDB(){
-		
 		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
 		for(SensorDetails sensorEnabled: mSensorMap.values()){
 			if(sensorEnabled.isEnabled() && !sensorEnabled.mSensorDetailsRef.mIsDummySensor){
@@ -2730,7 +2758,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	private Set<String> getAlgortihmChannelsToStoreInDB(){
-		
 		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
 		for(AbstractAlgorithm algortihm: mMapOfAlgorithmModules.values()){
 			if(algortihm.isEnabled()){
@@ -2746,6 +2773,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		return setOfObjectClusterChannels;
 	}
+
 
 	
 	

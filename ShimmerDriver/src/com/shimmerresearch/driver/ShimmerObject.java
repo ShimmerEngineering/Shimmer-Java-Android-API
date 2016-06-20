@@ -6898,9 +6898,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				generateMapOfAlgorithmModules();
 				generateMapOfAlgorithmConfigOptions();
-//				initializeDerivedSensors();
-//				generateAlgorithmChannelsMap();
-//				mAlgorithmGroupingMap.putAll(Configuration.Shimmer3.mAlgorithmGroupingMapRef);
 				generateMapOfAlgorithmGroupingMap();
 			}
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
@@ -6930,17 +6927,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		handleSpecialCasesAfterSensorMapCreate();
 	}
 	
-	private void generateMapOfAlgorithmGroupingMap() {
-		mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
-		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
-			TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = abstractAlgorithm.mMapOfAlgorithmGrouping;
-			if(algorithmGroupingMap!=null && algorithmGroupingMap.keySet().size()>0){
-				mMapOfAlgorithmGrouping.putAll(algorithmGroupingMap);
-			}
-		}
-	}
-
-	private void handleSpecialCasesAfterSensorMapCreate() {
+	@Override
+	protected void handleSpecialCasesAfterSensorMapCreate() {
 		
 		//Special cases for ExG 24-bit vs. 16-bit
 		List<Integer> listOfSensorMapKeys = Arrays.asList(
@@ -7074,125 +7062,60 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-	//TODO 2016-05-18 feed below into sensor map classes
-	private void checkWhichExgRespPhaseValuesToUse(){
-		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
-		if(mConfigOptionsMap!=null){
-			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
-			if(configOptions!=null){
-				if(getHardwareVersion()==HW_ID.SHIMMER_3){
-					int nonStandardIndex = -1;
-					if(isExgRespirationDetectFreq32kHz()) {
-						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_32KHZ;
-					}
-					else {
-						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ;
-					}
-					
-					if(nonStandardIndex!=-1 && configOptions instanceof ConfigOptionDetailsSensor){
-						((ConfigOptionDetailsSensor) configOptions).setIndexOfValuesToUse(nonStandardIndex);
-					}
-					
-					// change config val if not appropriate
-					Integer[] configvalues = configOptions.getConfigValues();
-					if(!Arrays.asList(configvalues).contains(getEXG2RespirationDetectPhase())){
-						setEXG2RespirationDetectPhase(configvalues[0]);
-					}
-					
-				}
-			}
-		}
-	}
-	
-	//TODO 2016-05-18 feed below into sensor map classes
-	private void checkWhichExgRefElectrodeValuesToUse(){
-		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
-		if(mConfigOptionsMap!=null){
-			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
-			if(configOptions!=null){
-				if(getHardwareVersion()==HW_ID.SHIMMER_3){
-					int nonStandardIndex = -1;
-					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
-						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP;
-					}
-					else if(isEXGUsingDefaultECGConfiguration()) {
-						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.ECG;
-					}
-					else if(isEXGUsingDefaultEMGConfiguration()) {
-						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG;
-					}
-					else if(isEXGUsingDefaultTestSignalConfiguration()) {
-						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST;
-					}
-					else {
-						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM;
-					}
-					
-					if(nonStandardIndex!=-1 && configOptions instanceof ConfigOptionDetailsSensor){
-						((ConfigOptionDetailsSensor) configOptions).setIndexOfValuesToUse(nonStandardIndex);
-					}
-
-					
-					// change config val if not appropriate
-					Integer[] configvalues = configOptions.getConfigValues();
-					if(!Arrays.asList(configvalues).contains(getEXGReferenceElectrode())){
-						setEXGReferenceElectrode(configvalues[0]);
-					}
-
-				}
-			}
-		}
-	}
-
 
 // -------------Copied to Sensor PPG + EXG + ShimmerDevice----------------------------------	
-	/**
-	 * Used to convert from the enabledSensors long variable read from the
-	 * Shimmer to the set enabled status of the relative entries in the Sensor
-	 * Map. Used in Consensys for dynamic GUI generation to configure a Shimmer.
-	 * 
-	 */
+//	/**
+//	 * Used to convert from the enabledSensors long variable read from the
+//	 * Shimmer to the set enabled status of the relative entries in the Sensor
+//	 * Map. Used in Consensys for dynamic GUI generation to configure a Shimmer.
+//	 * 
+//	 */
+//	@Override
+//	//TODO tidy the below. Almost exact same in ShimmerDevice and not sure if this needs to be there 
+//	public void sensorMapUpdateFromEnabledSensorsVars() {
+//
+//		checkExgResolutionFromEnabledSensorsVar();
+//
+//		if(mSensorMap==null){
+//			sensorAndConfigMapsCreate();
+//		}
+//		
+//		if(mSensorMap!=null) {
+//			if (getHardwareVersion() == HW_ID.SHIMMER_3) {
+//				mapLoop:
+//				for(Integer sensorMapKey:mSensorMap.keySet()) {
+//					if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
+//						continue mapLoop;
+//					}
+//
+//					// Process remaining channels
+//					SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+//					sensorDetails.updateFromEnabledSensorsVars(mEnabledSensors, mDerivedSensors);
+//				}
+//				
+//				// Now that all main sensor channels have been parsed, deal with
+//				// sensor channels that have special conditions. E.g. deciding
+//				// what type of signal the ExG is configured for or what derived
+//				// channel is enabled like whether PPG is on ADC12 or ADC13
+//				handleSpecCasesAfterSensorMapUpdate();
+//			}
+//			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
+//				
+//			}
+//		}
+//		
+////		//Debugging
+////		printSensorAndParserMaps();
+//
+//	}
+	
 	@Override
-	//TODO tidy the below. Almost exact same in ShimmerDevice and not sure if this needs to be there 
-	public void sensorMapUpdateFromEnabledSensorsVars() {
-
+	public void handleSpecCasesBeforeSensorMapUpdateGeneral() {
 		checkExgResolutionFromEnabledSensorsVar();
-
-		if(mSensorMap==null){
-			sensorAndConfigMapsCreate();
-		}
-		
-		if(mSensorMap!=null) {
-			if (getHardwareVersion() == HW_ID.SHIMMER_3) {
-				mapLoop:
-				for(Integer sensorMapKey:mSensorMap.keySet()) {
-					if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
-						continue mapLoop;
-					}
-
-					// Process remaining channels
-					SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
-					sensorDetails.updateFromEnabledSensorsVars(mEnabledSensors, mDerivedSensors);
-				}
-				
-				// Now that all main sensor channels have been parsed, deal with
-				// sensor channels that have special conditions. E.g. deciding
-				// what type of signal the ExG is configured for or what derived
-				// channel is enabled like whether PPG is on ADC12 or ADC13
-				handleSpecCasesAfterSensorMapUpdate();
-			}
-			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
-				
-			}
-		}
-		
-//		//Debugging
-//		printSensorAndParserMaps();
-
 	}
 	
 	@Override
-	public boolean handleSpecCasesBeforeSensorMapUpdate(Integer sensorMapKey) {
+	public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(Integer sensorMapKey) {
 		// Skip if ExG channels here -> handle them after for loop.
 		if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
@@ -7234,7 +7157,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	@Override
-	public void handleSpecCasesAfterSensorMapUpdate() {
+	public void handleSpecCasesAfterSensorMapUpdateFromEnabledSensors() {
 		// Now that all main sensor channels have been parsed, deal with
 		// sensor channels that have special conditions. E.g. deciding
 		// what type of signal the ExG is configured for or what derived
@@ -8490,111 +8413,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
 	
-	
-//	/**
-//	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not
-//	 * use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 16 bit ECG is set
-//	 */
-//	public boolean isEXGUsingECG16Configuration(){
-//		boolean using = false;
-//		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
-//			if(isEXGUsingDefaultECGConfiguration()){
-//				using = true;
-//			}
-//		}
-//		return using;
-//	}
-//	
-//	/**
-//	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not
-//	 * use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 24 bit ECG is set
-//	 */
-//	public boolean isEXGUsingECG24Configuration(){
-//		boolean using = false;
-//		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
-//			if(isEXGUsingDefaultECGConfiguration()){
-//				using = true;
-//			}
-//		}
-//		return using;
-//	}
-//	
-//	/**
-//	 * Checks if 16 bit EMG configuration is set on the Shimmer device. Do not
-//	 * use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 16 bit EMG is set
-//	 */
-//	public boolean isEXGUsingEMG16Configuration(){
-//		boolean using = false;
-//		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
-//			if(isEXGUsingDefaultEMGConfiguration()){
-//				using = true;
-//			}
-//		}
-//		return using;
-//	}
-//	
-//	/**
-//	 * Checks if 24 bit EMG configuration is set on the Shimmer device. Do not
-//	 * use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 24 bit EMG is set
-//	 */
-//	public boolean isEXGUsingEMG24Configuration(){
-//		boolean using = false;
-//		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
-//			if(isEXGUsingDefaultEMGConfiguration()){
-//				using = true;
-//			}
-//		}
-//		return using;
-//	}
-//	
-//	/**
-//	 * Checks if 16 bit test signal configuration is set on the Shimmer device.
-//	 * Do not use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 24 bit test signal is set
-//	 */
-//	public boolean isEXGUsingTestSignal16Configuration(){
-//		boolean using = false;
-//		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
-//			if(isEXGUsingDefaultTestSignalConfiguration()){
-//				using = true;
-//			}
-//		}
-//		return using;
-//	}
-//	
-//	/**
-//	 * Checks if 24 bit test signal configuration is set on the Shimmer device.
-//	 * @return true if 24 bit test signal is set
-//	 */
-//	public boolean isEXGUsingTestSignal24Configuration(){
-//		boolean using = false;
-//		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
-//			if(isEXGUsingDefaultTestSignalConfiguration()){
-//				using = true;
-//			}
-//		}
-//		return using;
-//	}	
-	
 	/**
 	 * This can only be used for Shimmer3 devices (EXG) When a enable
 	 * configuration is load, the advanced exg configuration is removed, so it
@@ -9009,29 +8827,47 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//System.out.println("mExGResolution: " +mExGResolution);
 		return mExGResolution;
 	}
+	
+	public int getExg1CH1GainValue(){
+//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
+		return mEXG1CH1GainValue;
+	}
+	
+	public int getExg1CH2GainValue(){
+//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
+		return mEXG1CH2GainValue;
+	}
+	
+	public int getExg2CH1GainValue(){
+//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
+		return mEXG2CH1GainValue;
+	}
+	
+	public int getExg2CH2GainValue(){
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
+//		return mEXG2CH2GainValue;
+	}
+	
+	public boolean areExgChannelGainsEqual(List<EXG_CHIP_INDEX> listOfChipsToCheck){
+		boolean areEqual = true;
+		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1)){
+			if(getExg1CH1GainValue() != getExg1CH2GainValue()) {
+				areEqual = false;
+			}
+		}
 
-	public int getReferenceElectrode(){
-		return mEXGReferenceElectrode;
-	}
-	
-	public int getLeadOffDetectionMode(){
-		return mLeadOffDetectionMode;
-	}
-	
-	public int getLeadOffDetectionCurrent(){
-		return mEXGLeadOffDetectionCurrent;
-	}
-	
-	public int getLeadOffComparatorTreshold(){
-		return mEXGLeadOffComparatorTreshold;
-	}
-	
-	public int getExGComparatorsChip1(){
-		return mEXG1Comparators;
-	}
-	
-	public int getExGComparatorsChip2(){
-		return mEXG2Comparators;
+		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP2)){
+			if(getExg2CH1GainValue() != getExg2CH2GainValue()) {
+				areEqual = false;
+			}
+		}
+
+		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1) && listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP2)){
+			if(getExg1CH1GainValue() != getExg2CH1GainValue()) {
+				areEqual = false;
+			}
+		}
+		return areEqual;
 	}
 
 	protected void setExGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int value){
@@ -9508,11 +9344,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
 					}
 					else {
-//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.ECG, false);
-//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.EMG, false);
-//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.EXG_TEST, false);
-//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.EXG_CUSTOM, false);
-//						setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.EXG_RESPIRATION, false);
 						if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG)!=null){
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
@@ -9520,55 +9351,190 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
 							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
 						}
-
 					}
 				}
 //			}
 		}
 	}
 	
-	public int getExg1CH1GainValue(){
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
-		return mEXG1CH1GainValue;
-	}
-	
-	public int getExg1CH2GainValue(){
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
-		return mEXG1CH2GainValue;
-	}
-	
-	public int getExg2CH1GainValue(){
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
-		return mEXG2CH1GainValue;
-	}
-	
-	public int getExg2CH2GainValue(){
-		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
-//		return mEXG2CH2GainValue;
-	}
-	
-	public boolean areExgChannelGainsEqual(List<EXG_CHIP_INDEX> listOfChipsToCheck){
-		boolean areEqual = true;
-		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1)){
-			if(getExg1CH1GainValue() != getExg1CH2GainValue()) {
-				areEqual = false;
+	private void checkWhichExgRespPhaseValuesToUse(){
+		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
+		if(mConfigOptionsMap!=null){
+			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
+			if(configOptions!=null){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3){
+					int nonStandardIndex = -1;
+					if(isExgRespirationDetectFreq32kHz()) {
+						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_32KHZ;
+					}
+					else {
+						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ;
+					}
+					
+					if(nonStandardIndex!=-1 && configOptions instanceof ConfigOptionDetailsSensor){
+						((ConfigOptionDetailsSensor) configOptions).setIndexOfValuesToUse(nonStandardIndex);
+					}
+					
+					// change config val if not appropriate
+					Integer[] configvalues = configOptions.getConfigValues();
+					if(!Arrays.asList(configvalues).contains(getEXG2RespirationDetectPhase())){
+						setEXG2RespirationDetectPhase(configvalues[0]);
+					}
+					
+				}
 			}
 		}
-
-		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP2)){
-			if(getExg2CH1GainValue() != getExg2CH2GainValue()) {
-				areEqual = false;
-			}
-		}
-
-		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1) && listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP2)){
-			if(getExg1CH1GainValue() != getExg2CH1GainValue()) {
-				areEqual = false;
-			}
-		}
-		return areEqual;
 	}
+	
+	private void checkWhichExgRefElectrodeValuesToUse(){
+		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
+		if(mConfigOptionsMap!=null){
+			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
+			if(configOptions!=null){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3){
+					int nonStandardIndex = -1;
+					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
+						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP;
+					}
+					else if(isEXGUsingDefaultECGConfiguration()) {
+						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.ECG;
+					}
+					else if(isEXGUsingDefaultEMGConfiguration()) {
+						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG;
+					}
+					else if(isEXGUsingDefaultTestSignalConfiguration()) {
+						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST;
+					}
+					else {
+						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM;
+					}
+					
+					if(nonStandardIndex!=-1 && configOptions instanceof ConfigOptionDetailsSensor){
+						((ConfigOptionDetailsSensor) configOptions).setIndexOfValuesToUse(nonStandardIndex);
+					}
 
+					
+					// change config val if not appropriate
+					Integer[] configvalues = configOptions.getConfigValues();
+					if(!Arrays.asList(configvalues).contains(getEXGReferenceElectrode())){
+						setEXGReferenceElectrode(configvalues[0]);
+					}
+
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not
+	 * use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
+	 * @return true if 16 bit ECG is set
+	 */
+	@Deprecated
+	public boolean isEXGUsingECG16Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+			if(isEXGUsingDefaultECGConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not
+	 * use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
+	 * @return true if 24 bit ECG is set
+	 */
+	@Deprecated
+	public boolean isEXGUsingECG24Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+			if(isEXGUsingDefaultECGConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 16 bit EMG configuration is set on the Shimmer device. Do not
+	 * use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
+	 * @return true if 16 bit EMG is set
+	 */
+	@Deprecated
+	public boolean isEXGUsingEMG16Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+			if(isEXGUsingDefaultEMGConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 24 bit EMG configuration is set on the Shimmer device. Do not
+	 * use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
+	 * @return true if 24 bit EMG is set
+	 */
+	@Deprecated
+	public boolean isEXGUsingEMG24Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+			if(isEXGUsingDefaultEMGConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 16 bit test signal configuration is set on the Shimmer device.
+	 * Do not use this command right after setting an EXG setting, as due to the
+	 * execution model, the old settings might be returned, if this command is
+	 * executed before an ack is received.
+	 * 
+	 * @return true if 24 bit test signal is set
+	 */
+	@Deprecated
+	public boolean isEXGUsingTestSignal16Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_16BIT)>0 && (mEnabledSensors & SENSOR_EXG2_16BIT)>0){
+			if(isEXGUsingDefaultTestSignalConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}
+	
+	/**
+	 * Checks if 24 bit test signal configuration is set on the Shimmer device.
+	 * @return true if 24 bit test signal is set
+	 */
+	@Deprecated
+	public boolean isEXGUsingTestSignal24Configuration(){
+		boolean using = false;
+		if ((mEnabledSensors & SENSOR_EXG1_24BIT)>0 && (mEnabledSensors & SENSOR_EXG2_24BIT)>0){
+			if(isEXGUsingDefaultTestSignalConfiguration()){
+				using = true;
+			}
+		}
+		return using;
+	}	
+	
 	@Deprecated
 	public String parseReferenceElectrodeTotring(int referenceElectrode){
 		String refElectrode = "Unknown";
@@ -9662,6 +9628,36 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 
 		return currentString;
+	}
+	
+	@Deprecated
+	public int getReferenceElectrode(){
+		return mEXGReferenceElectrode;
+	}
+	
+	@Deprecated
+	public int getLeadOffDetectionMode(){
+		return mLeadOffDetectionMode;
+	}
+	
+	@Deprecated
+	public int getLeadOffDetectionCurrent(){
+		return mEXGLeadOffDetectionCurrent;
+	}
+	
+	@Deprecated
+	public int getLeadOffComparatorTreshold(){
+		return mEXGLeadOffComparatorTreshold;
+	}
+	
+	@Deprecated
+	public int getExGComparatorsChip1(){
+		return mEXG1Comparators;
+	}
+	
+	@Deprecated
+	public int getExGComparatorsChip2(){
+		return mEXG2Comparators;
 	}
 
 	//-------------------- ExG End -----------------------------------

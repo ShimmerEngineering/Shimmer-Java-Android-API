@@ -99,13 +99,13 @@ public class Shimmer4 extends ShimmerDevice {
 			mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
 
 
-//		}
+////		}
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
 				){
-			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));
+//			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(this));
 		}
 
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
@@ -127,6 +127,12 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 
 		generateSensorAndParserMaps();
+		
+		generateMapOfAlgorithmModules();
+		generateMapOfAlgorithmConfigOptions();
+		generateMapOfAlgorithmGroupingMap();
+		
+		handleSpecialCasesAfterSensorMapCreate();
 	}
 	
 	@Override
