@@ -1,5 +1,9 @@
 Developer notes
 
+Shimmer Capture Rev0.13
+- bug fixes to shimmer2r
+- but fixes cant enable sensors after streaming
+
 Shimmer Capture Rev0.10
 - updated to API 3.0 (pre)
 - added ecgtohr and ppgtohr functionality
