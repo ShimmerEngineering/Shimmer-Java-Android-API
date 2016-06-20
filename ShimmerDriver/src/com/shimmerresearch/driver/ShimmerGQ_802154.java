@@ -583,10 +583,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(COMMUNICATION_TYPE.IEEE802154, true);
 		
 		//TODO Currently SD communication type is not used via this class, GQ relies on the Shimmer3 SD parsing structure (to save devel time). Including here for future work.
-		mMapOfSensorClasses.get(SENSORS.CLOCK).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
-		mMapOfSensorClasses.get(SENSORS.EXG).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true, Configuration.Shimmer3.SensorMapKey.HOST_ECG);
-		mMapOfSensorClasses.get(SENSORS.GSR).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
-		mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
+//		mMapOfSensorClasses.get(SENSORS.CLOCK).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
+//		mMapOfSensorClasses.get(SENSORS.EXG).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true, Configuration.Shimmer3.SensorMapKey.HOST_ECG);
+//		mMapOfSensorClasses.get(SENSORS.GSR).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
+//		mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
 	}
 
 	/**
