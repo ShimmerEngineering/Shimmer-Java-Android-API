@@ -35,7 +35,6 @@ public class UtilCalibration {
 		return ansdata;
 	}
 	
-	
 	public static double[][] matrixinverse3x3(double[][] data) {
 		double a,b,c,d,e,f,g,h,i;
 		a=data[0][0];
@@ -63,7 +62,6 @@ public class UtilCalibration {
 		return answer;
 	}
 	
-	
 	public static double[][] matrixminus(double[][] a ,double[][] b) {
 		int aRows = a.length,
 				aColumns = a[0].length,
@@ -82,7 +80,6 @@ public class UtilCalibration {
 		}
 		return resultant;
 	}
-
 	
 	public static double[][] matrixmultiplication(double[][] a, double[][] b) {
 		int aRows = a.length,

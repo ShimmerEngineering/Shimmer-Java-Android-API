@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.driverUtilities;
 
 /**
  * Class that holds the calibration parameters for a particular range in a
@@ -7,7 +7,7 @@ package com.shimmerresearch.sensors;
  * @author Mark Nolan
  *
  */
-public class CalDetailsKinematic {
+public class CalibDetailsKinematic {
 	
 	protected double[][] mAlignmentMatrix = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
 	protected double[][] mSensitivityMatrix = {{0,0,0},{0,0,0},{0,0,0}}; 	
@@ -16,7 +16,7 @@ public class CalDetailsKinematic {
 	protected String mRangeStrng = "";
 	protected int mRangeValue = 0;
 
-	public CalDetailsKinematic(double[][] alignmentMatrix, double[][] sensitivityMatrix, double[][] offsetVector) {
+	public CalibDetailsKinematic(double[][] alignmentMatrix, double[][] sensitivityMatrix, double[][] offsetVector) {
 		super();
 		this.mAlignmentMatrix = alignmentMatrix;
 		this.mSensitivityMatrix = sensitivityMatrix;
