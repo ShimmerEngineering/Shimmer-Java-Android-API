@@ -947,10 +947,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 */
 	private void clearSerialBuffer() {
+		/* JC: not working well on android
 		if(bytesAvailableToBeRead()){
 			byte[] buffer = readBytes(availableBytes());
 			printLogDataForDebugging("Discarding:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(buffer));
 		}
+		*/
+		while (availableBytes()!=0){
+			int available = availableBytes();
+			if (bytesAvailableToBeRead()){
+				byte[] tb=readBytes(1);
+				String msg = "First Time : " + Arrays.toString(tb);
+				printLogDataForDebugging(msg);
+			}
+		}		  		
 	}
 	
 	/**
@@ -2340,6 +2350,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				else if(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){ //in case the new command doesn't work, try the old command
 					mFirstTime=false;
+					getListofInstructions().clear();
 					readShimmerVersionDepracated();
 				}
 
