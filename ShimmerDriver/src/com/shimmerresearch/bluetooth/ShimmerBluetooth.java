@@ -543,11 +543,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							else {
 								// Overwritten for commands that aren't supported
 								// for older versions of Shimmer
-								if((mCurrentCommand==GET_FW_VERSION_COMMAND)
-										||(mCurrentCommand==GET_SAMPLING_RATE_COMMAND)
-										||(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW)){
-									startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
-								}
+								if(mCurrentCommand==SET_SENSORS_COMMAND && getShimmerVersion()==HW_ID.SHIMMER_2R){
+									startTimerCheckForAckOrResp(ACK_TIMER_DURATION+8);
+								} else if((mCurrentCommand==GET_FW_VERSION_COMMAND)
+											||(mCurrentCommand==GET_SAMPLING_RATE_COMMAND)
+											||(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW)){
+										startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
+								 } 
 								else {
 									if(mIsStreaming){
 										startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
@@ -2360,7 +2362,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					stopTimerCheckForAckOrResp(); //Terminate the timer thread
 					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
-					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT){
+					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mCurrentCommand!=GET_SHIMMER_VERSION_COMMAND_NEW && !mIsInitialised){
+						killConnection(); //If command fail exit device	
+					} else if(mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mIsInitialised){
 						killConnection(); //If command fail exit device	
 					} else {
 						mWaitForAck=false;
