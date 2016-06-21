@@ -38,7 +38,8 @@ public abstract class AbstractSensor implements Serializable{
 		PPG("PPG"), 
 		TEMPLATE("Template sensor - not a real sensor of course!"),
 		ADC("ADC"),
-		Battery("Battery");
+		Battery("Battery"),
+		Bridge_Amplifier("Bridge Amplifier");
 		
 	    private final String text;
 
