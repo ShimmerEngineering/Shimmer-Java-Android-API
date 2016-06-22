@@ -2763,7 +2763,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
 		for(AbstractAlgorithm algortihm: mMapOfAlgorithmModules.values()){
 			if(algortihm.isEnabled()){
-				List<ChannelDetails> listOfDetails = algortihm.mAlgorithmDetails.mListOfChannelDetails;
+				List<ChannelDetails> listOfDetails = algortihm.getChannelDetails();
 				for(ChannelDetails details: listOfDetails){
 					if(details.mStoreToDatabase){
 						setOfObjectClusterChannels.add(details.mObjectClusterName);
