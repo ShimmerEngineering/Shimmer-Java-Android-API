@@ -4292,7 +4292,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				int rangeValue = 0;
 				String rangeString = "+-2g";
-				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, 
+						mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel,
+						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3);
 				calDetails.mIsDefaultCal = mDefaultCalibrationParametersAccel;
 				mCalibAccelAnalog.put(rangeValue, calDetails);
 			}
