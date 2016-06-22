@@ -230,8 +230,8 @@ public class OrientationModule9DOF extends OrientationModule {
 //						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
 				(DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER), 
 				Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL,
-						Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
-					//	Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG),
+						Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO,
+						Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG),
 				CHANNEL_UNITS.NO_UNITS,
 				listChannelsEuler9DOF_LN);
 		
@@ -250,8 +250,8 @@ public class OrientationModule9DOF extends OrientationModule {
 //						Configuration.Shimmer3.GuiLabelAlgorithmGrouping.ORIENTATION_9DOF.getTileText(),
 				(DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER), 
 				Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
-						Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
-				//		Configuration.Shimmer3.SensorMapKey.SHIMMER_),
+						Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO,
+						Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG),
 				CHANNEL_UNITS.NO_UNITS,
 				listChannelsQuat9DOF_WR);
 			

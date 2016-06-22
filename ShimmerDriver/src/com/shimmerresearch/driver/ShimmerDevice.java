@@ -2,7 +2,9 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -29,6 +31,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
@@ -1087,8 +1090,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		
+		//check if both setting off then turn channel off
+		
+		
 		// Treat algorithms differently because we normally want to set the same
-		// config across multiple algorithm modules so return only after all have been set
+		// Config across multiple algorithm modules so return only after all have been set
 		if(listOfAlgorithms!=null && !listOfAlgorithms.isEmpty()){
 			for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){	
 				abstractAlgorithm.setSettings(configLabel, valueToSet);
@@ -1100,8 +1106,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return setConfigValueUsingConfigLabel("", configLabel, valueToSet);
 	}
 
+
+
 	public Object setConfigValueUsingConfigLabel(String groupName, String configLabel, Object valueToSet){
 		
+		//groupName = "6DOF";  //testing 
 		System.err.println("GROUPNAME:\t" + (groupName.isEmpty()? "EMPTY":groupName) + "\tCONFIGLABEL:\t" + configLabel);
 		
 		Object returnValue = null;
@@ -1116,6 +1125,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		//TODO remove below when ready and use "getAlgorithmConfigValueUsingConfigLabel"
 		setAlgorithmSettings(groupName, configLabel, valueToSet);
+		
+		// turn channel off when config options off
+		List<Boolean> configOptions=new ArrayList<Boolean>();		
+		List<AbstractAlgorithm> listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+		if(listOfAlgorithms!=null){
+		for(AbstractAlgorithm aA:listOfAlgorithms){
+			for(String s:aA.mConfigOptionsMap.keySet()){
+			 configOptions.add((Boolean)getConfigValueUsingConfigLabel(s));
+			}
+		}
+		//if no config option turned on 
+		if(configOptions.contains(true)){
+		}else{
+			for(AbstractAlgorithm aA:listOfAlgorithms){
+				aA.setIsEnabled(false);
+				}
+		}
+		}
 
 		switch(configLabel){
 //Booleans
