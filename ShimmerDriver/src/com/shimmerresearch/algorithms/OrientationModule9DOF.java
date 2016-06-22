@@ -7,19 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_RESULT_TYPE;
-import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_TYPE;
-import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
-import com.shimmerresearch.algorithms.OrientationModule.GuiFriendlyLabelConfig;
-//import com.shimmerresearch.algorithms.OrientationModule.GuiLabelConfig;
-import com.shimmerresearch.algorithms.OrientationModule.ORIENTATION_TYPE;
-import com.shimmerresearch.algorithms.OrientationModule6DOF.AlgorithmName;
-import com.shimmerresearch.algorithms.OrientationModule6DOF.GuiLabelConfig;
-import com.shimmerresearch.algorithms.OrientationModule6DOF.ObjectClusterSensorName;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerObject.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -498,8 +488,36 @@ public class OrientationModule9DOF extends OrientationModule {
 		break;
 		}
 	}
+	
+	@Override
+	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID) {
+		setQuaternionOutput(false);
+		setEulerOutput(false);
+		setIsEnabled(false);
+		
+		// This is necessary because all 6DOF modules need to have synced
+		// booleans for enabling Quaternion/Euler outputs for the Consensys implementation. 
+		if(((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0)
+			||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0){
+			setQuaternionOutput(true);
+		}
+		if(((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER)>0)
+			||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER)>0){
+			setEulerOutput(true);
+		}
+		
+		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
+			if(((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0)
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER)>0){
+				setIsEnabled(true);
+			}
+		}
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
+			if(((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0)
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER)>0){
+				setIsEnabled(true);
+			}
+		}
+	}
 
 }
-
-
-

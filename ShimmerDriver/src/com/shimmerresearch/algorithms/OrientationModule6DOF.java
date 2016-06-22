@@ -2,36 +2,20 @@ package com.shimmerresearch.algorithms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Vector3d;
-
-import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_RESULT_TYPE;
-import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_TYPE;
-import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
-import com.shimmerresearch.algorithms.OrientationModule.AlgorithmName;
-import com.shimmerresearch.algorithms.OrientationModule.GuiFriendlyLabelConfig;
-//import com.shimmerresearch.algorithms.OrientationModule.GuiLabelConfig;
-import com.shimmerresearch.algorithms.OrientationModule.ORIENTATION_TYPE;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerObject.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails.GUI_COMPONENT_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 public class OrientationModule6DOF extends OrientationModule{
 
@@ -499,6 +483,39 @@ public class OrientationModule6DOF extends OrientationModule{
 		break;
 		}
 	}
+	
+	@Override
+	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID) {
+		setQuaternionOutput(false);
+		setEulerOutput(false);
+		setIsEnabled(false);
+		
+		// This is necessary because all 6DOF modules need to have synced
+		// booleans for enabling Quaternion/Euler outputs for the Consensys implementation. 
+		if(((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0)
+			||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
+			setQuaternionOutput(true);
+		}
+		if(((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0)
+			||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
+			setEulerOutput(true);
+		}
+		
+		
+		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
+			if(((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0)
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0){
+				setIsEnabled(true);
+			}
+		}
+		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
+			if(((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0)
+				||(derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
+				setIsEnabled(true);
+			}
+		}
+	}
+
 
 
 }
