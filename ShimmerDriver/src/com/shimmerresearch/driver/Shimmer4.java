@@ -862,7 +862,7 @@ public class Shimmer4 extends ShimmerDevice {
 //Integers
 //Strings
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel("", componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel(groupName, componentName, valueToSet);
 	        	break;
 		}
 	

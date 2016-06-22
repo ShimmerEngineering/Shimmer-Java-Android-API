@@ -2496,7 +2496,7 @@ public class SensorEXG extends AbstractSensor{
 				Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST);
 		
 		for(Integer sensorMapKey:listOfSensorMapKeys){
-			SensorDetails sensorDetails = mShimmerDevice.getSensorMap().get(sensorMapKey);
+			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 			if(sensorDetails!=null){
 				Iterator<ChannelDetails> iterator = sensorDetails.mListOfChannels.iterator();
 				while (iterator.hasNext()) {

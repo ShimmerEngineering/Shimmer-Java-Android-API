@@ -259,17 +259,38 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	@Override
-	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
+	public void setIsEnabled(boolean isEnabled) {
 		mIsEnabled = isEnabled;
-		if(mIsEnabled && !groupEnabled){
+		if(mIsEnabled){
+			if(!isQuaternionOutput() && !isEulerOutput()){
 				setQuaternionOutput(true);
-				setEulerOutput(false);
+//				setEulerOutput(false);
+			}
 		}
-		else if(!mIsEnabled && !groupEnabled){
+		else {
 			setQuaternionOutput(false);
 			setEulerOutput(false);
 		}
 	}
+	
+	protected void checkIfToDisable(){
+		if(isEnabled() && !isQuaternionOutput() && !isEulerOutput()){
+			setIsEnabled(false);
+		}
+	}
+	
+//	@Override
+//	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
+//		mIsEnabled = isEnabled;
+//		if(mIsEnabled && !groupEnabled){
+//				setQuaternionOutput(true);
+//				setEulerOutput(false);
+//		}
+//		else if(!mIsEnabled && !groupEnabled){
+//			setQuaternionOutput(false);
+//			setEulerOutput(false);
+//		}
+//	}
 	
 	
 //	public void setAccelerometer(String accelerometerName){
@@ -358,6 +379,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 
 	public void setEulerOutput(boolean eulerOutput) {
 		this.eulerOutput = eulerOutput;
+		checkIfToDisable();
 	}
 	
 	public boolean isQuaternionOutput() {
@@ -366,6 +388,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 
 	public void setQuaternionOutput(boolean quaternionOutput) {
 		this.quaternionOutput = quaternionOutput;
+		checkIfToDisable();
 	}
 	
 

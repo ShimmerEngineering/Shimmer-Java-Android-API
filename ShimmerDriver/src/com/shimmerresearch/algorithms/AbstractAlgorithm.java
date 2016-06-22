@@ -101,6 +101,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	protected boolean mInitialized = false;
 	protected boolean mIsEnabled = false;
 	public AlgorithmDetails mAlgorithmDetails;
+	protected double mMinSamplingRateForAlgorithhm = 0.0;
 	
 	/**
      * @deprecated
@@ -356,6 +357,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return mTrialName;
 	}
 	
+	public double getMinSamplingRateForAlgorithm(){
+		return mMinSamplingRateForAlgorithhm;
+	}
 	
 	//TODO fix below if needed
 	public AlgorithmResultObject processDataRealTime(List<ObjectCluster> objectClusterArray) {
@@ -371,9 +375,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	
-	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
-		// TODO Auto-generated method stub
-		
-	}
+//	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 	
 }

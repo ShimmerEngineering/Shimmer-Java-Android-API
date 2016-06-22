@@ -299,7 +299,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	        	break;
 		
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel("", componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel(groupName, componentName, valueToSet);
 	        	break;
 		}
 			

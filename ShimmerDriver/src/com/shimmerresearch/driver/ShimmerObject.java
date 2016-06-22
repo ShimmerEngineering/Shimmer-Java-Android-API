@@ -11064,7 +11064,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	        	
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel("",componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel(groupName, componentName, valueToSet);
 	        	break;
 		}
 		
@@ -11328,6 +11328,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else {
 			return super.generateUartConfigMessage(cPD);
 		}			
+	}
+	
+	@Override
+	public double getMinAllowedSamplingRate() {
+		double minAllowedSamplingRate = super.getMinAllowedSamplingRate();
+		if(isMPLEnable() || isMPU9150DMP()){
+			minAllowedSamplingRate = Math.max(51.2, minAllowedSamplingRate);
+		}
+		return minAllowedSamplingRate;
 	}
 
 }
