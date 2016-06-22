@@ -261,16 +261,16 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	@Override
 	public void setIsEnabled(boolean isEnabled) {
 		mIsEnabled = isEnabled;
-		if(mIsEnabled){
-			if(!isQuaternionOutput() && !isEulerOutput()){
-				setQuaternionOutput(true);
-//				setEulerOutput(false);
-			}
-		}
-		else {
-			setQuaternionOutput(false);
-			setEulerOutput(false);
-		}
+//		if(mIsEnabled){
+//			if(!isQuaternionOutput() && !isEulerOutput()){
+//				setQuaternionOutput(true);
+////				setEulerOutput(false);
+//			}
+//		}
+//		else {
+//			setQuaternionOutput(false);
+//			setEulerOutput(false);
+//		}
 	}
 	
 	protected void checkIfToDisable(){
@@ -489,8 +489,19 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	
-
-	
-
+	@Override
+	public void setDefaultSetting() {
+		super.setDefaultSetting();
+		if(isEnabled()){
+			if(!isQuaternionOutput() && !isEulerOutput()){
+				setQuaternionOutput(true);
+	//			setEulerOutput(false);
+			}
+		}
+		else {
+			setQuaternionOutput(false);
+			setEulerOutput(false);
+		}
+	}
 
 }

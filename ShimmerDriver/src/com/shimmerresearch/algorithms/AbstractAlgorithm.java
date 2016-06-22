@@ -3,6 +3,7 @@ package com.shimmerresearch.algorithms;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -374,10 +375,29 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return null;
 	}
 	
+	public HashMap<String, Object> getAlgorithmSettings() {
+		HashMap<String, Object> mapOfAlgorithmSettings = new HashMap<String, Object>();
+		for(String configOptionKey:mConfigOptionsMap.keySet()){
+			Object configValue = getSettings(configOptionKey);
+			if(configValue!=null){
+				System.out.println("getEnabledAlgorithmSettings\t" + configOptionKey);
+				mapOfAlgorithmSettings.put(configOptionKey, configValue);
+			}
+		}
+		return mapOfAlgorithmSettings;
+	}
 	
-//	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	public void setAlgorithmSettings(HashMap<String, Object> mapOfAlgoSettings) {
+		for(String configOptionKey:mapOfAlgoSettings.keySet()){
+			setSettings(configOptionKey, mapOfAlgoSettings.get(configOptionKey));
+		}
+	}
+	
+	
+	public void setDefaultSetting() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	
 }

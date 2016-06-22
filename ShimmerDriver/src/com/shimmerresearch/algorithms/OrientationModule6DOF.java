@@ -360,8 +360,6 @@ public class OrientationModule6DOF extends OrientationModule{
 
 	}
 
-
-
 	@Override
 	public void initialize() throws Exception {
 
