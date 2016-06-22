@@ -101,8 +101,7 @@ public class SensorBattVoltage extends AbstractSensor{
   			null,
   			null,
   			Arrays.asList(ObjectClusterSensorName.BATTERY,
-  					ObjectClusterSensorName.BATT_PERCENTAGE
-  					));
+  					ObjectClusterSensorName.BATT_PERCENTAGE));
     
   	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -193,18 +192,12 @@ public class SensorBattVoltage extends AbstractSensor{
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] rawData, COMMUNICATION_TYPE commType,ObjectCluster objectCluster, boolean isTimeSyncEnabled,
 			long pcTimeStamp) {
-//		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimeStamp);
-		
-//		double tempBattV = 0.0;
+
 		
 		if (mEnableCalibration){
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATTERY)){
-//					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-//					double CalData = calibrateU12AdcValue(unCalData,0,3,1)*2;
-//					objectCluster.addCalData(channelDetails, CalData, objectCluster.getIndexKeeper()-1);
-					
-					objectCluster = SensorADC.processMspAdcChannel(sensorDetails, rawData, commType, objectCluster, isTimeSyncEnabled, pcTimeStamp);
+				objectCluster = SensorADC.processMspAdcChannel(sensorDetails, rawData, commType, objectCluster, isTimeSyncEnabled, pcTimeStamp);
 				}
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATT_PERCENTAGE)){
 					double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.BATTERY), CHANNEL_TYPE.CAL.toString())).mData;

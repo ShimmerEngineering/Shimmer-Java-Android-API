@@ -102,7 +102,7 @@ public class SensorPPG extends AbstractSensor {
 		public static  String PPG2_A1 = "PPG2_A1";
 		public static  String PPG2_A14 = "PPG2_A14";
 	}
-	//--------- Sensor specific variables start --------------
+	//--------- Sensor specific variables End --------------
 
 	
 	//--------- Bluetooth commands start --------------
