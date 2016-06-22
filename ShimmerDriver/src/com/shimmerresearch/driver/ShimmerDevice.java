@@ -28,6 +28,7 @@ import com.shimmerresearch.algorithms.OrientationModule9DOF;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
@@ -44,6 +45,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.UtilCalibration;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -2071,7 +2073,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
-	
+	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getMapOfKinematicSensorCalibration(){
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>(); 
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION);
+			if(returnVal!=null){
+				mapOfKinematicSensorCalibration.putAll((Map<Integer, TreeMap<Integer, CalibDetailsKinematic>>) returnVal);
+			}
+		}
+		return mapOfKinematicSensorCalibration;
+	}
 	
 	// ------------- Algorithm Code Start -----------------------
 	public void updateDerivedSensors(){
@@ -2168,11 +2179,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	
-	// check to ensure sensors that algorithm requires hasn't been switched off
-	//to be called during sensor pane mouse press?
+	/** check to ensure sensors that algorithm requires haven't been switched off */
 	public void algorithmRequiredSensorCheck() {
 		//New way to handle syncing of all settings in an algorithm group 
-		
 		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
 			// looping through algorithms to see which ones are enabled
 			for (AlgorithmDetails algorithmDetails:sGD.mListOfAlgorithmDetails) {
@@ -2189,7 +2198,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 			}
 		}
-		
 		initializeAlgorithms();
 				
 		//Old code - works but doesn't sync settings in a algorithm group

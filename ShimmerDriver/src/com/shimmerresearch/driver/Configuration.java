@@ -872,7 +872,8 @@ public class Configuration {
 
 			//XXX-RS-AA-SensorClass?
 			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = SensorKionixKXRB52042.GuiLabelConfig.KXRB8_2042_ACCEL_DEFAULT_CALIB;
-
+			
+			public static final String KINEMATIC_CALIBRATION = "Kinematic Calibration";
 		}
 
 		// GUI Sensor Tiles

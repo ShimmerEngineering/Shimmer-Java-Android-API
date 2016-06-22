@@ -13,11 +13,13 @@ public class CalibDetailsKinematic {
 	protected double[][] mSensitivityMatrix = {{0,0,0},{0,0,0},{0,0,0}}; 	
 	protected double[][] mOffsetVector = {{0},{0},{0}};
 	
-	protected String mRangeStrng = "";
+	protected String mRangeString = "";
 	protected int mRangeValue = 0;
+	public boolean mIsDefaultCal = false;
 
-	public CalibDetailsKinematic(double[][] alignmentMatrix, double[][] sensitivityMatrix, double[][] offsetVector) {
-		super();
+	public CalibDetailsKinematic(int rangeValue, String rangeString, double[][] alignmentMatrix, double[][] sensitivityMatrix, double[][] offsetVector) {
+		this.mRangeValue = rangeValue;
+		this.mRangeString = rangeString;
 		this.mAlignmentMatrix = alignmentMatrix;
 		this.mSensitivityMatrix = sensitivityMatrix;
 		this.mOffsetVector = offsetVector;
