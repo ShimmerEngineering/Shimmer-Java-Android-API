@@ -4785,6 +4785,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * where Vo = Uncalibrated output of the resistance amplifier channel
 	 * 
 	*/
+	
+	// YYY implemented in SensorBridgeAmp
 	protected static double calibratePhillipsSkinTemperatureData(double uncalibratedData){
 		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
 		double y = -27.42*Math.log(x) + 56.502;
@@ -10255,7 +10257,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		}
 		return false;
 	}	
-	
+
 	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
 		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorMap.keySet().size()>0){

@@ -1858,21 +1858,21 @@ public class Configuration {
 ////					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
 ////					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT
 //					);
-			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE).mListOfSensorMapKeysConflicting = Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE).mListOfSensorMapKeysConflicting = Arrays.asList(
+//					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+//					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
+//					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
+//					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
+//					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
+//					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
+//					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
+//					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
+//					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT
-					);
+//					);
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP).mListOfSensorMapKeysConflicting = Arrays.asList(
 //					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
 //					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
@@ -2252,13 +2252,13 @@ public class Configuration {
 //							Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,
 //							Configuration.Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW);
 			
-			//Resistance Amplifier
-			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP).mListOfChannelsRef = Arrays.asList(
-							Configuration.Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP);
-			
-			// Phillps Skin Temperature Probe (through Bridge Amp)
-			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE).mListOfChannelsRef = Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE);
+//			//Resistance Amplifier
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP).mListOfChannelsRef = Arrays.asList(
+//							Configuration.Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP);
+//			
+//			// Phillps Skin Temperature Probe (through Bridge Amp)
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE).mListOfChannelsRef = Arrays.asList(
+//					Configuration.Shimmer3.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE);
 			
 //			//GSR
 //			aMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR).mListOfChannelsRef = Arrays.asList(
