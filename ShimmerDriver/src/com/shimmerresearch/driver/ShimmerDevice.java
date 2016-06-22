@@ -2071,6 +2071,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
+	
+	
 	// ------------- Algorithm Code Start -----------------------
 	public void updateDerivedSensors(){
 		mDerivedSensors = (long)0;
@@ -2098,7 +2100,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public List<AlgorithmDetails> getListOfEnabledAlgorithmDetails(){
 		List<AlgorithmDetails> listOfEnabledAlgorithms = new ArrayList<AlgorithmDetails>();
 		for(AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
-//		for(AlgorithmDetails aD:mMapOfAlgorithmDetails.values()){
 			if(aa.isEnabled()){
 				listOfEnabledAlgorithms.add(aa.mAlgorithmDetails);
 			}
@@ -2120,43 +2121,36 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return new ArrayList<AbstractAlgorithm>(mMapOfAlgorithmModules.values());
 	}
 
-	
-//	//migrated from Shimmer Object 19-5-2016 by EN - all algorithm related functions - UNTESTED
-//	//list of algorithms to configure from panel configure algorithm GUI
-//	protected void addDerivedSensorConfig(int configAlgorithmInt){
-//		//adding in configuration for algorithms
-//		//test bitwise OR
-//		mDerivedSensorsClone = mDerivedSensorsClone | configAlgorithmInt;
-//	}
-	
-	
-	
-//	public void configDerivedSensor(){
-//		mDerivedSensorsClone=0;
-//		
-//		// FAKE DATA - WILL BE REMOVED
-//		algorithmGuiData = getListOfCompatibleAlgorithmChannels();
-//		
-//		for (AlgorithmDetails algoDetails:algorithmGuiData) {
-//			algoDetails.mEnabled = true;
-//			// all algorithm has been switched on for testing
-//		}		
-//		
-//		// looping through algorithms to see which ones are enabled
-//		for (AlgorithmDetails algoDetails:algorithmGuiData) {
-//			if (algoDetails.isEnabled()) { // an algorithm has been switched on
-//				// configure byte
-//				addDerivedSensorConfig(algoDetails.mAlgorithmDetails.mDerivedSensorBitmapId);
-//				//switch on sensors
-//				for (Integer sensor : algoDetails.mAlgorithmDetails.mListOfRequiredSensors) {
-//					//this will call a refresh 
-//					setSensorEnabledState(sensor, true);
-//				}
-//			}
-//		}
-//	}	
-	
-	public void setAlgorithmEnabled(String algorithmName, boolean state){
+	public void setIsAlgorithmEnabledAndSyncGroup(String algorithmName, String groupName, boolean state){
+		AbstractAlgorithm abstractAlgorithmToChange = getMapOfAlgorithmModules().get(algorithmName);
+		if(abstractAlgorithmToChange!=null){
+			// Sync all settings for the group and pass back the configuration
+			// (just a precaution as they should all have the same settings even
+			// if they are enabled/disabled)
+			HashMap<String, Object> mapOfAlgoSettings = syncAlgoGroupConfig(groupName, state);			
+			
+			setIsAlgorithmEnabled(algorithmName, state);
+			
+			//Load all settings for the group only if the algorithm has been enabled
+			// (just a precaution as they should all have the same settings even
+			// if they are enabled/disabled)
+			if(state && mapOfAlgoSettings!=null){
+				abstractAlgorithmToChange.setAlgorithmSettings(mapOfAlgoSettings);
+			}
+			
+			//Set default settings if the algorithm group has been disabled or freshly enabled
+			List<AbstractAlgorithm> listOfEnabledAlgosForGroup = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+			if((listOfEnabledAlgosForGroup.size()==0) 				//no algos in group enabled, so set defaults for off
+				||(state && listOfEnabledAlgosForGroup.size()==1)){	// this is the first algo to be enabled in this group, set the default for on for the group
+				setDefaultSettingsForAlgorithmGroup(groupName);
+			}
+			
+			//Sync again
+			syncAlgoGroupConfig(groupName, state);
+		}
+	}
+
+	public void setIsAlgorithmEnabled(String algorithmName, boolean state){
 		AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(algorithmName);
 
 		if(abstractAlgorithm!=null){
@@ -2177,28 +2171,51 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	// check to ensure sensors that algorithm requires hasn't been switched off
 	//to be called during sensor pane mouse press?
 	public void algorithmRequiredSensorCheck() {
-		// looping through algorithms to see which ones are enabled
-		for (AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {
-			if (abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
-				for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
-					SensorDetails sensorDetails = mSensorMap.get(sensor);
-					if (sensorDetails!=null && !sensorDetails.isEnabled()) {
-						abstractAlgorithm.setIsEnabled(false); // TURNS ALGORITHM OFF
-						
-//						//turning config values off
-//						for(String configOption:abstractAlgorithm.mConfigOptionsMap.keySet()){
-//							setConfigValueUsingConfigLabel(abstractAlgorithm.mAlgorithmGroupingName, configOption, 0);
-//						}
-						
-						initializeAlgorithms();
-						
-						// refresh panels??
-//						break; //??
+		//New way to handle syncing of all settings in an algorithm group 
+		
+		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
+			// looping through algorithms to see which ones are enabled
+			for (AlgorithmDetails algorithmDetails:sGD.mListOfAlgorithmDetails) {
+				AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(algorithmDetails.mAlgorithmName);
+				if (abstractAlgorithm!=null && abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
+					innerLoop:
+					for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
+						SensorDetails sensorDetails = mSensorMap.get(sensor);
+						if (sensorDetails!=null && !sensorDetails.isEnabled()) {
+							setIsAlgorithmEnabledAndSyncGroup(abstractAlgorithm.mAlgorithmName, sGD.mGroupName, false);
+							break innerLoop;
+						}
 					}
 				}
 			}
 		}
+		
+		initializeAlgorithms();
+				
+		//Old code - works but doesn't sync settings in a algorithm group
+//		// looping through algorithms to see which ones are enabled
+//		for (AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {
+//			if (abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
+//				innerLoop:
+//				for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
+//					SensorDetails sensorDetails = mSensorMap.get(sensor);
+//					if (sensorDetails!=null && !sensorDetails.isEnabled()) {
+//						abstractAlgorithm.setIsEnabled(false); // TURNS ALGORITHM OFF
+////						//turning config values off
+////						for(String configOption:abstractAlgorithm.mConfigOptionsMap.keySet()){
+////							setConfigValueUsingConfigLabel(abstractAlgorithm.mAlgorithmGroupingName, configOption, 0);
+////						}
+//						
+//						initializeAlgorithms();
+//						
+//						// refresh panels??
+//						break innerLoop;
+//					}
+//				}
+//			}
+//		}
 	}
+	
 	
 	protected List<String[]> getListofEnabledAlgorithmsSignalsandFormats(){
 		List<String[]> listAlgoSignalProperties = new ArrayList<String[]>();
