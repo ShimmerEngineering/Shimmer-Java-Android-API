@@ -109,13 +109,11 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
-import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
@@ -136,13 +134,11 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.UtilCalibration;
 import com.shimmerresearch.sensors.UtilParseData;
-import com.shimmerresearch.sensors.SensorMPU9X50.GuiLabelConfig;
 import com.shimmerresearch.algorithms.Orientation3DObject;
 
 /**
@@ -612,6 +608,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double GainEMG=750;
 
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibGyro = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	{
+		mCalibGyro.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], Shimmer3.ListofGyroRange[0],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro250dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibGyro.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], Shimmer3.ListofGyroRange[1],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro500dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibGyro.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], Shimmer3.ListofGyroRange[2],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibGyro.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], Shimmer3.ListofGyroRange[3],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
+	}
 	protected boolean mDefaultCalibrationParametersGyro = true;
 	protected double[][] mAlignmentMatrixGyroscope = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	protected double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
@@ -4295,7 +4305,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, 
 						mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel,
 						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3);
-				calDetails.mIsDefaultCal = mDefaultCalibrationParametersAccel;
+//				calDetails.mIsDefaultCal = mDefaultCalibrationParametersAccel;
 				mCalibAccelAnalog.put(rangeValue, calDetails);
 			}
 			
@@ -4318,9 +4328,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 				int rangeValue = getAccelRange();
-				String rangeString = "TEMP";
+				String rangeString = "TEMP"; //TODO update with getSensorRangeFromConfigValue()
 				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
-				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
+//				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
 				mCalibAccelWideRange.put(rangeValue, calDetails);
 			}
 			
@@ -4356,9 +4366,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} 
 				
 				int rangeValue = getGyroRange();
-				String rangeString = "TEMP";
-				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
-				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
+				CalibDetailsKinematic calDetails = mCalibGyro.get(rangeValue);
+				if(calDetails==null){
+					String rangeString = "TEMP"; //TODO update with getSensorRangeFromConfigValue()
+					calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+				}
+				calDetails.setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+//				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
 				mCalibGyro.put(rangeValue, calDetails);
 			}
 			
@@ -4403,9 +4417,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 				int rangeValue = mMagRange;
-				String rangeString = "TEMP";
+				String rangeString = "TEMP"; //TODO update with getSensorRangeFromConfigValue()
 				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
-				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
+//				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
 				mCalibGyro.put(rangeValue, calDetails);
 			}
 		}
