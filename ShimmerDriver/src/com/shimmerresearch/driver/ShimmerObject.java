@@ -7880,6 +7880,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mDefaultCalibrationParametersGyro;
 	}
 	
+	public boolean isUsingValidGyroParam(){
+		if(!isAllZeros(getAlignmentMatrixGyro()) && !isAllZeros(getSensitivityMatrixGyro())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 
 	public boolean isUsingDefaultECGParam(){
 		return mDefaultCalibrationParametersECG;
@@ -9668,6 +9676,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mDefaultCalibrationParametersAccel;
 	}
 
+	public boolean isUsingValidLNAccelParam(){
+		if(!isAllZeros(getAlignmentMatrixAccel()) && !isAllZeros(getSensitivityMatrixAccel())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	//XXX-RS-AA-SensorClass?
 	public boolean isUsingDefaultAccelParam(){
 		return mDefaultCalibrationParametersAccel;
@@ -9946,10 +9962,40 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mDefaultCalibrationParametersDigitalAccel; 
 	}
 
+	//XXX-RS-LSM-SensorClass?
+	public boolean isUsingValidWRAccelParam(){
+		if(!isAllZeros(getAlignmentMatrixAccel()) && !isAllZeros(getSensitivityMatrixAccel())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean isAllZeros(double[][] matrix){
+		boolean allZeros = true;
+		
+		for(int j = 0; j < matrix[1].length; j++){
+			for(int i = 0; i < matrix.length; i++){
+		//		ty
+			}
+			
+		}
+		
+		return allZeros;
+	}
 
 	//XXX-RS-LSM-SensorClass?
 	public boolean isUsingDefaultMagParam(){
 		return mDefaultCalibrationParametersMag;
+	}
+	
+	//XXX-RS-LSM-SensorClass?
+	public boolean isUsingValidMagParam(){
+		if(!isAllZeros(getAlignmentMatrixMag()) && !isAllZeros(getSensitivityMatrixMag())){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 
