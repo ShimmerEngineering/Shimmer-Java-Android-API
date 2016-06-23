@@ -231,12 +231,19 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return mInitialized;
 	}
 	
+	public void setIsInitialized(boolean state){
+		mInitialized = state;
+	}
+	
 	public boolean isEnabled() {
 		return mIsEnabled;
 	}
 	
 	public void setIsEnabled(boolean isEnabled) {
 		mIsEnabled = isEnabled;
+		if(!isEnabled){
+			setIsInitialized(false);
+		}
 	}
 	
 	/** Override if needed for special cases (e.g., OrientationModule, ECGAdaptiveModule etc. */
