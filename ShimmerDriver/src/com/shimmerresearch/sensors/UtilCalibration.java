@@ -22,7 +22,7 @@ public class UtilCalibration {
 		data2d[0][0]=data[0];
 		data2d[1][0]=data[1];
 		data2d[2][0]=data[2];
-		data2d= matrixmultiplication(matrixmultiplication(matrixinverse3x3(AM),matrixinverse3x3(SM)),matrixminus(data2d,OV));
+		data2d= matrixMultiplication(matrixMultiplication(matrixInverse3x3(AM),matrixInverse3x3(SM)),matrixMinus(data2d,OV));
 		double[] ansdata=new double[3];
 		ansdata[0]=data2d[0][0];
 		ansdata[1]=data2d[1][0];
@@ -35,7 +35,7 @@ public class UtilCalibration {
 		return ansdata;
 	}
 	
-	public static double[][] matrixinverse3x3(double[][] data) {
+	public static double[][] matrixInverse3x3(double[][] data) {
 		double a,b,c,d,e,f,g,h,i;
 		a=data[0][0];
 		b=data[0][1];
@@ -62,7 +62,7 @@ public class UtilCalibration {
 		return answer;
 	}
 	
-	public static double[][] matrixminus(double[][] a ,double[][] b) {
+	public static double[][] matrixMinus(double[][] a ,double[][] b) {
 		int aRows = a.length,
 				aColumns = a[0].length,
 				bRows = b.length,
@@ -81,7 +81,7 @@ public class UtilCalibration {
 		return resultant;
 	}
 	
-	public static double[][] matrixmultiplication(double[][] a, double[][] b) {
+	public static double[][] matrixMultiplication(double[][] a, double[][] b) {
 		int aRows = a.length,
 				aColumns = a[0].length,
 				bRows = b.length,

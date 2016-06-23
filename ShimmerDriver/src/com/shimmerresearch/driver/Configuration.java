@@ -97,6 +97,8 @@ import com.shimmerresearch.sensors.ShimmerClock;
  */
 public class Configuration {
 	
+	public static final double ACCELERATION_DUE_TO_GRAVITY = 9.81;
+	
 	public static class CHANNEL_UNITS{
 		//Sensors units
 		public static final String NO_UNITS = "no_units";

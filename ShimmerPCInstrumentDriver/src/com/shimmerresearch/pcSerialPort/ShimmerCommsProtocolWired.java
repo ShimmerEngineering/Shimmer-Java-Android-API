@@ -50,7 +50,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 	byte[] carriedRxBuf = new byte[]{};
 
 	public boolean mIsDebugMode = false;
-	public boolean mVerboseMode = true;
+	public boolean mVerboseMode = false;
 	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
 	/**
