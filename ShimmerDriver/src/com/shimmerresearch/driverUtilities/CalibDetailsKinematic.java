@@ -114,17 +114,17 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 	
 	public boolean isAlignmentValid(){
-		//TODO
+		//TODO for Eimear
 		return true;
 	}
 
 	public boolean isSensitivityValid(){
-		//TODO
+		//TODO for Eimear
 		return true;
 	}
 	
 	public boolean isOffsetVectorValid(){
-		//TODO
+		//TODO for Eimear
 		return true;
 	}
 }
