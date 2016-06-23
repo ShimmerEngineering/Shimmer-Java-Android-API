@@ -2,7 +2,6 @@ package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 
-import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.SPAN_VERSION;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;

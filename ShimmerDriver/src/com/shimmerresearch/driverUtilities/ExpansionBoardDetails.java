@@ -2,7 +2,6 @@ package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 
-import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 /**

@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.driverUtilities;
 /** 
  * @author Ruud Stolk
  * @author Mark Nolan

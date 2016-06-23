@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driverUtilities;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import org.apache.commons.lang3.ArrayUtils;
-
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 
 /** Utility class with commonly useful methods
  * 

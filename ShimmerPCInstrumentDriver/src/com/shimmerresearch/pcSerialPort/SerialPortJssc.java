@@ -16,7 +16,7 @@ import com.shimmerresearch.driver.DeviceException;
 //import com.shimmerresearch.comms.wiredProtocol.DeviceException;
 //import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
 //import com.shimmerresearch.comms.wiredProtocol.ShimmerCommsWired;
-import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 /**
  * @author Mark Nolan

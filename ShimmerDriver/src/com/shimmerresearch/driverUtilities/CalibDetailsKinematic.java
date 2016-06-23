@@ -3,8 +3,6 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import com.shimmerresearch.driver.UtilShimmer;
-
 /**
  * Class that holds the calibration parameters for a particular range in a
  * Kinematic sensor

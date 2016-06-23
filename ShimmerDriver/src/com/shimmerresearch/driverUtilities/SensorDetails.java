@@ -12,7 +12,6 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
-import com.shimmerresearch.sensors.UtilParseData;
 
 public class SensorDetails implements Serializable{
 	
