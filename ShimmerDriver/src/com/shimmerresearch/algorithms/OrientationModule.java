@@ -108,13 +108,18 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		magValues = new Vector3d();
 		gyroValues = new Vector3d();
 
-		for(String associatedChannel:mAlgorithmDetails.mListOfAssociatedSensors){
+		for(String associatedChannel: mAlgorithmDetails.mListOfAssociatedSensors){
 			Collection<FormatCluster> dataFormatsSignal = object.getCollectionOfFormatClusters(associatedChannel);  // first retrieve all the possible formats for the current sensor device
 			if(dataFormatsSignal!=null){
-				FormatCluster formatClusterSignal = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormatsSignal,mAlgorithmDetails.mChannelType.toString())); // retrieve the calibrated data
-				double value = formatClusterSignal.mData;
-				if(!Double.isNaN(value)){	
-					setChannelValue(associatedChannel, value);
+				FormatCluster formatClusterSignal = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormatsSignal, mAlgorithmDetails.mChannelType.toString())); // retrieve the calibrated data
+				if(formatClusterSignal != null){
+					double value = formatClusterSignal.mData;
+					if(!Double.isNaN(value)){	
+						setChannelValue(associatedChannel, value);
+					}
+					else{
+						return null;
+					}
 				}
 				else{
 					return null;
@@ -254,17 +259,38 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	@Override
-	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
+	public void setIsEnabled(boolean isEnabled) {
 		mIsEnabled = isEnabled;
-		if(mIsEnabled && !groupEnabled){
-				setQuaternionOutput(true);
-				setEulerOutput(false);
-		}
-		else if(!mIsEnabled && !groupEnabled){
-			setQuaternionOutput(false);
-			setEulerOutput(false);
+//		if(mIsEnabled){
+//			if(!isQuaternionOutput() && !isEulerOutput()){
+//				setQuaternionOutput(true);
+////				setEulerOutput(false);
+//			}
+//		}
+//		else {
+//			setQuaternionOutput(false);
+//			setEulerOutput(false);
+//		}
+	}
+	
+	protected void checkIfToDisable(){
+		if(isEnabled() && !isQuaternionOutput() && !isEulerOutput()){
+			setIsEnabled(false);
 		}
 	}
+	
+//	@Override
+//	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
+//		mIsEnabled = isEnabled;
+//		if(mIsEnabled && !groupEnabled){
+//				setQuaternionOutput(true);
+//				setEulerOutput(false);
+//		}
+//		else if(!mIsEnabled && !groupEnabled){
+//			setQuaternionOutput(false);
+//			setEulerOutput(false);
+//		}
+//	}
 	
 	
 //	public void setAccelerometer(String accelerometerName){
@@ -353,6 +379,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 
 	public void setEulerOutput(boolean eulerOutput) {
 		this.eulerOutput = eulerOutput;
+		checkIfToDisable();
 	}
 	
 	public boolean isQuaternionOutput() {
@@ -361,6 +388,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 
 	public void setQuaternionOutput(boolean quaternionOutput) {
 		this.quaternionOutput = quaternionOutput;
+		checkIfToDisable();
 	}
 	
 
@@ -373,51 +401,46 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		this.orientationType = algorithmType;
 	}
 		
-	@Override
-	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID) {
-		updateModuleIsEnabled(derivedSensorBitmapID);
-//		updateModuleOutput(derivedSensorBitmapID);
-	}
-	
-	private void updateModuleIsEnabled(long derivedSensorBitmapID){
-		setQuaternionOutput(false);
-		setEulerOutput(false);
-		
-		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0){
-				setQuaternionOutput(true);
-			}
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER)>0){
-				setEulerOutput(true);
-			}
-		}
-		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0){
-				setQuaternionOutput(true);
-			}
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER)>0){
-				setEulerOutput(true);
-			}
-		}
-		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0){
-				setQuaternionOutput(true);
-			}
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0){
-				setEulerOutput(true);
-			}
-		}
-		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
-				setQuaternionOutput(true);
-			}
-			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
-				setEulerOutput(true);
-			}
-		}
-		
-		setIsEnabled(isEulerOutput()||isQuaternionOutput());
-	}
+//	@Override
+//	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID) {
+//		setQuaternionOutput(false);
+//		setEulerOutput(false);
+//		
+//		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0){
+//				setQuaternionOutput(true);
+//			}
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER)>0){
+//				setEulerOutput(true);
+//			}
+//		}
+//		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0){
+//				setQuaternionOutput(true);
+//			}
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER)>0){
+//				setEulerOutput(true);
+//			}
+//		}
+//		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0){
+//				setQuaternionOutput(true);
+//			}
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0){
+//				setEulerOutput(true);
+//			}
+//		}
+//		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
+//				setQuaternionOutput(true);
+//			}
+//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
+//				setEulerOutput(true);
+//			}
+//		}
+//		
+//		setIsEnabled(isEulerOutput()||isQuaternionOutput());
+//	}
 	
 	@Override
 	public long getDerivedSensorBitmapID() {
@@ -461,8 +484,19 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	
-
-	
-
+	@Override
+	public void setDefaultSetting() {
+		super.setDefaultSetting();
+		if(isEnabled()){
+			if(!isQuaternionOutput() && !isEulerOutput()){
+				setQuaternionOutput(true);
+	//			setEulerOutput(false);
+			}
+		}
+		else {
+			setQuaternionOutput(false);
+			setEulerOutput(false);
+		}
+	}
 
 }

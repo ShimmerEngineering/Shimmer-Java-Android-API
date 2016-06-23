@@ -20,6 +20,7 @@ import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.OrientationModule;
 import com.shimmerresearch.algorithms.OrientationModule6DOF;
@@ -27,6 +28,7 @@ import com.shimmerresearch.algorithms.OrientationModule9DOF;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
@@ -43,6 +45,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.UtilCalibration;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -912,7 +915,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			Iterator<SensorDetails> iterator = parserMapPerCommType.values().iterator();
 			while(iterator.hasNext()){
 				SensorDetails sensorDetails = iterator.next();
-				dataPacketSize += sensorDetails.getExpectedDataPacketSize();
+				int expectedPktSize = sensorDetails.getExpectedDataPacketSize();
+				if(expectedPktSize>0){
+					System.out.println("Expected Packet size for:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\t:\t" + expectedPktSize);
+					dataPacketSize += expectedPktSize;
+				}
 			}
 		}
 		return dataPacketSize;
@@ -1076,9 +1083,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		
-		if((groupName != null && !groupName.isEmpty())){
+		if((groupName!=null && !groupName.isEmpty())){
 			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);		
-			}else{
+		}
+		else{
 			listOfAlgorithms = getListOfAlgorithmModules();
 		}
 		
@@ -1097,7 +1105,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public Object setConfigValueUsingConfigLabel(String groupName, String configLabel, Object valueToSet){
 		
-		System.err.println("GROUPNAME:\t" + (groupName.isEmpty()? "EMPTY":groupName) + "\tCONFIGLABEL:\t" + configLabel);
+//		System.err.println("GROUPNAME:\t" + (groupName.isEmpty()? "EMPTY":groupName) + "\tCONFIGLABEL:\t" + configLabel);
 		
 		Object returnValue = null;
 
@@ -1144,6 +1152,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	        	break;
 		}
 		
+		
+		
 		return returnValue;		
 	}
 	
@@ -1169,6 +1179,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return returnValue;		
 	}
+	
+	public HashMap<String, Object> getEnabledAlgorithmSettings(String groupName) {
+		List<AbstractAlgorithm> listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+		HashMap<String, Object> mapOfAlgorithmSettings = new HashMap<String, Object>();
+		for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
+			mapOfAlgorithmSettings.putAll(abstractAlgorithm.getAlgorithmSettings());
+		}
+		return mapOfAlgorithmSettings;
+	}
+
 	
 	public Object getConfigValueUsingConfigLabel(String configLabel){
 		Object returnValue = null;
@@ -1708,22 +1728,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-
-	//TODO update sensor map with enabledSensors 
 	public void setEnabledSensors(long mEnabledSensors) {
 		this.mEnabledSensors = mEnabledSensors;
-//		sensorMapUpdateFromEnabledSensorsVars();
 	}
 	
 	public long getEnabledSensors() {
 		return mEnabledSensors;
 	}
 
-
-	//TODO update sensor map with derivedSensors
 	public void setDerivedSensors(long mDerivedSensors) {
 		this.mDerivedSensors = mDerivedSensors;
-//		sensorMapUpdateFromEnabledSensorsVars();
 	}
 	
 	public long getDerivedSensors() {
@@ -1753,10 +1767,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		printSensorAndParserMaps();
 	}
 	
+	protected void handleSpecialCasesAfterSensorMapCreate() {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.handleSpecialCasesAfterSensorMapCreate();
+		}
+	}
+	
 
 	public void refreshEnabledSensorsFromSensorMap(){
 		if(mSensorMap!=null) {
-			printSensorAndParserMaps();			
+			
+//			//Debugging
+//			printSensorAndParserMaps();
+			
 			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
 				mEnabledSensors = (long)0;
 				mDerivedSensors = (long)0;
@@ -1778,6 +1803,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** For use when debugging */
 	protected void printSensorAndParserMaps(){
 		//For debugging
+		System.out.println("");
+		System.out.println("Enabled Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mEnabledSensors, 5));
+		System.out.println("Derived Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mDerivedSensors, 3));
 		for(SensorDetails sensorDetails:mSensorMap.values()){
 			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
 		}
@@ -1786,14 +1814,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				System.out.println("PARSER SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
 			}
 		}
+		System.out.println("");
 	}
 	
-	//RS (30/5/2016) - added special case for EXG
+	/** added special cases (e.g., for SensorEXG) */
 	public void handleSpecCasesUpdateEnabledSensors() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			abstractSensor.handleSpecCasesUpdateEnabledSensors(mEnabledSensors);
+			abstractSensor.handleSpecCasesUpdateEnabledSensors();
 		}
 	}
 	
@@ -1833,8 +1862,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	//TODO tidy the below. Remove? Almost exact same in ShimmerObject and not sure if this needs to be here 
 	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
-		//TODO below was in ShimmerObject but not carried forward to here?
-		//checkExgResolutionFromEnabledSensorsVar();
+		handleSpecCasesBeforeSensorMapUpdateGeneral();
 
 		if(mSensorMap==null){
 			sensorAndConfigMapsCreate();
@@ -1843,7 +1871,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mSensorMap!=null) {
 			mapLoop:
 			for(Integer sensorMapKey:mSensorMap.keySet()) {
-				if(handleSpecCasesBeforeSensorMapUpdate(sensorMapKey)){
+				if(handleSpecCasesBeforeSensorMapUpdatePerSensor(sensorMapKey)){
 					continue mapLoop;
 				}
 					
@@ -1876,30 +1904,38 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			// sensor channels that have special conditions. E.g. deciding
 			// what type of signal the ExG is configured for or what derived
 			// channel is enabled like whether PPG is on ADC12 or ADC13
-			handleSpecCasesAfterSensorMapUpdate();
+			handleSpecCasesAfterSensorMapUpdateFromEnabledSensors();
 		}
 		
 //		//Debugging
 //		printSensorAndParserMaps();
 
 	}
-	
-	public boolean handleSpecCasesBeforeSensorMapUpdate(Integer sensorMapKey) {
+
+	public void handleSpecCasesBeforeSensorMapUpdateGeneral() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			if(abstractSensor.handleSpecCasesBeforeSensorMapUpdate(this, sensorMapKey)){
+			abstractSensor.handleSpecCasesBeforeSensorMapUpdateGeneral(this);
+		}
+	}
+
+	public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(Integer sensorMapKey) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			if(abstractSensor.handleSpecCasesBeforeSensorMapUpdatePerSensor(this, sensorMapKey)){
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void handleSpecCasesAfterSensorMapUpdate() {
+	public void handleSpecCasesAfterSensorMapUpdateFromEnabledSensors() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			abstractSensor.handleSpecCasesAfterSensorMapUpdate();
+			abstractSensor.handleSpecCasesAfterSensorMapUpdateFromEnabledSensors();
 		}
 	}
 
@@ -2037,6 +2073,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
+	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getMapOfKinematicSensorCalibration(){
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>(); 
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION);
+			if(returnVal!=null){
+				mapOfKinematicSensorCalibration.putAll((Map<Integer, TreeMap<Integer, CalibDetailsKinematic>>) returnVal);
+			}
+		}
+		return mapOfKinematicSensorCalibration;
+	}
+	
 	// ------------- Algorithm Code Start -----------------------
 	public void updateDerivedSensors(){
 		mDerivedSensors = (long)0;
@@ -2064,7 +2111,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public List<AlgorithmDetails> getListOfEnabledAlgorithmDetails(){
 		List<AlgorithmDetails> listOfEnabledAlgorithms = new ArrayList<AlgorithmDetails>();
 		for(AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
-//		for(AlgorithmDetails aD:mMapOfAlgorithmDetails.values()){
 			if(aa.isEnabled()){
 				listOfEnabledAlgorithms.add(aa.mAlgorithmDetails);
 			}
@@ -2086,98 +2132,98 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return new ArrayList<AbstractAlgorithm>(mMapOfAlgorithmModules.values());
 	}
 
-	
-//	//migrated from Shimmer Object 19-5-2016 by EN - all algorithm related functions - UNTESTED
-//	//list of algorithms to configure from panel configure algorithm GUI
-//	protected void addDerivedSensorConfig(int configAlgorithmInt){
-//		//adding in configuration for algorithms
-//		//test bitwise OR
-//		mDerivedSensorsClone = mDerivedSensorsClone | configAlgorithmInt;
-//	}
-	
-	
-	
-//	public void configDerivedSensor(){
-//		mDerivedSensorsClone=0;
-//		
-//		// FAKE DATA - WILL BE REMOVED
-//		algorithmGuiData = getListOfCompatibleAlgorithmChannels();
-//		
-//		for (AlgorithmDetails algoDetails:algorithmGuiData) {
-//			algoDetails.mEnabled = true;
-//			// all algorithm has been switched on for testing
-//		}		
-//		
-//		// looping through algorithms to see which ones are enabled
-//		for (AlgorithmDetails algoDetails:algorithmGuiData) {
-//			if (algoDetails.isEnabled()) { // an algorithm has been switched on
-//				// configure byte
-//				addDerivedSensorConfig(algoDetails.mAlgorithmDetails.mDerivedSensorBitmapId);
-//				//switch on sensors
-//				for (Integer sensor : algoDetails.mAlgorithmDetails.mListOfRequiredSensors) {
-//					//this will call a refresh 
-//					setSensorEnabledState(sensor, true);
-//				}
-//			}
-//		}
-//	}	
-	
-	public void setAlgorithmEnabled(String key, boolean state){
-		AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(key);
-		String groupName = abstractAlgorithm.mAlgorithmGroupingName;
-		Boolean groupEnable= false;
+	public void setIsAlgorithmEnabledAndSyncGroup(String algorithmName, String groupName, boolean state){
+		AbstractAlgorithm abstractAlgorithmToChange = getMapOfAlgorithmModules().get(algorithmName);
+		if(abstractAlgorithmToChange!=null){
+			// Sync all settings for the group and pass back the configuration
+			// (just a precaution as they should all have the same settings even
+			// if they are enabled/disabled)
+			HashMap<String, Object> mapOfAlgoSettings = syncAlgoGroupConfig(groupName, state);			
+			
+			setIsAlgorithmEnabled(algorithmName, state);
+			
+			//Load all settings for the group only if the algorithm has been enabled
+			// (just a precaution as they should all have the same settings even
+			// if they are enabled/disabled)
+			if(state && mapOfAlgoSettings!=null){
+				abstractAlgorithmToChange.setAlgorithmSettings(mapOfAlgoSettings);
+			}
+			
+			//Set default settings if the algorithm group has been disabled or freshly enabled
+			List<AbstractAlgorithm> listOfEnabledAlgosForGroup = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+			if((listOfEnabledAlgosForGroup.size()==0) 				//no algos in group enabled, so set defaults for off
+				||(state && listOfEnabledAlgosForGroup.size()==1)){	// this is the first algo to be enabled in this group, set the default for on for the group
+				setDefaultSettingsForAlgorithmGroup(groupName);
+			}
+			
+			//Sync again
+			syncAlgoGroupConfig(groupName, state);
+		}
+	}
+
+	public void setIsAlgorithmEnabled(String algorithmName, boolean state){
+		AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(algorithmName);
 
 		if(abstractAlgorithm!=null){
-		//find if anything else in the group is on 
-			if(getListOfAlgorithmModulesPerGroup(groupName)!=null){
-				if (getListOfEnabledAlgorithmModulesPerGroup(groupName).size() > 1) {
-					groupEnable = true;
-				} else {
-					groupEnable = false;
-				}
-				abstractAlgorithm.setIsEnabled(state, groupEnable);
-			} else {
-				abstractAlgorithm.setIsEnabled(state);
-			}
-				
-			if (abstractAlgorithm.isEnabled()){ // an algorithm has been switched on
-				//switch on sensors
-				//update config options 
-				for(String s:abstractAlgorithm.mConfigOptionsMap.keySet()){
-				setConfigValueUsingConfigLabel(groupName, s, abstractAlgorithm.getDefaultSettings(s));
-				}
-				
-				for (Integer sensor : abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
-					//this will call a refresh 
-					setSensorEnabledState(sensor, true);
+			if(state){ 
+				//switch on the required sensors
+				for (Integer sensorMapKey:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
+					setSensorEnabledState(sensorMapKey, true);
 				}
 			}
+
+			abstractAlgorithm.setIsEnabled(state);
 		}
 		updateDerivedSensors();
 		initializeAlgorithms();
 	}
 	
 	
-	// check to ensure sensors that algorithm requires hasn't been switched off
-	//to be called during sensor pane mouse press?
+	/** check to ensure sensors that algorithm requires haven't been switched off */
 	public void algorithmRequiredSensorCheck() {
-		// looping through algorithms to see which ones are enabled
-		for (AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {
-			if (abstractAlgorithm.isEnabled()) { // run check to see if accompanying s
-				for (Integer sensor : abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
-					SensorDetails sensorDetails = mSensorMap.get(sensor);
-					if (sensorDetails.isEnabled() == false) {
-						abstractAlgorithm.setIsEnabled(false); // TURNS ALGORITHM OFF
-						for(String s:abstractAlgorithm.mConfigOptionsMap.keySet()){
-							setConfigValueUsingConfigLabel(abstractAlgorithm.mAlgorithmGroupingName, s, 0); //turning config values off
-							}
-						initializeAlgorithms();
-						// refresh panels??
+		//New way to handle syncing of all settings in an algorithm group 
+		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
+			// looping through algorithms to see which ones are enabled
+			for (AlgorithmDetails algorithmDetails:sGD.mListOfAlgorithmDetails) {
+				AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(algorithmDetails.mAlgorithmName);
+				if (abstractAlgorithm!=null && abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
+					innerLoop:
+					for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
+						SensorDetails sensorDetails = mSensorMap.get(sensor);
+						if (sensorDetails!=null && !sensorDetails.isEnabled()) {
+							setIsAlgorithmEnabledAndSyncGroup(abstractAlgorithm.mAlgorithmName, sGD.mGroupName, false);
+							break innerLoop;
+						}
 					}
 				}
 			}
 		}
+		initializeAlgorithms();
+				
+		//Old code - works but doesn't sync settings in a algorithm group
+//		// looping through algorithms to see which ones are enabled
+//		for (AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {
+//			if (abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
+//				innerLoop:
+//				for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
+//					SensorDetails sensorDetails = mSensorMap.get(sensor);
+//					if (sensorDetails!=null && !sensorDetails.isEnabled()) {
+//						abstractAlgorithm.setIsEnabled(false); // TURNS ALGORITHM OFF
+////						//turning config values off
+////						for(String configOption:abstractAlgorithm.mConfigOptionsMap.keySet()){
+////							setConfigValueUsingConfigLabel(abstractAlgorithm.mAlgorithmGroupingName, configOption, 0);
+////						}
+//						
+//						initializeAlgorithms();
+//						
+//						// refresh panels??
+//						break innerLoop;
+//					}
+//				}
+//			}
+//		}
 	}
+	
 	
 	protected List<String[]> getListofEnabledAlgorithmsSignalsandFormats(){
 		List<String[]> listAlgoSignalProperties = new ArrayList<String[]>();
@@ -2313,11 +2359,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				for(String s: configOptionsMapPerAlgorithm.keySet()){
 					if(mConfigOptionsMapAlgorithms.containsKey(s)){
 						//do nothing 
-					}else{
+					}
+					else{
 						mConfigOptionsMapAlgorithms.put(s,configOptionsMapPerAlgorithm.get(s));
 					}				
-				
 				}
+			}
+		}
+	}
+	
+	protected void generateMapOfAlgorithmGroupingMap() {
+		mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
+		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
+			TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = abstractAlgorithm.mMapOfAlgorithmGrouping;
+			if(algorithmGroupingMap!=null && algorithmGroupingMap.keySet().size()>0){
+				mMapOfAlgorithmGrouping.putAll(algorithmGroupingMap);
 			}
 		}
 	}
@@ -2370,36 +2426,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	
-	public void orientationChannelSync(String algoName, boolean enabled){
-		AbstractAlgorithm abstractAlgorithm = getMapOfAlgorithmModules().get(algoName);
-		String groupName = abstractAlgorithm.mAlgorithmGroupingName;
+	public HashMap<String, Object> syncAlgoGroupConfig(String groupName, boolean enabled){
+		HashMap<String, Object> mapOfAlgoSettings = null;
 		
+		List<AbstractAlgorithm> listOfEnabledAlgoModulesPerGroup = getListOfEnabledAlgorithmModulesPerGroup(groupName);
 		//check if another algorithm in the group has been enabled 
-		if(getListOfEnabledAlgorithmModulesPerGroup(groupName)!=null){
-		for(AbstractAlgorithm aA: getListOfEnabledAlgorithmModulesPerGroup(groupName)){
-			if(aA.isEnabled() && enabled){
-				//getting default values
-				for(SensorGroupingDetails sGD:abstractAlgorithm.mMapOfAlgorithmGrouping.values()){
-					if(sGD.mGroupName.equals(groupName)){
-						for(String cL:sGD.mListOfConfigOptionKeysAssociated){
-							//sets all algorithms in that group to the same config
-							setConfigValueUsingConfigLabel(groupName, cL, getConfigValueUsingConfigLabel(cL));
-						}
-						}
-					}	
-			} //turning off both config options of both channels off 
-			if(getListOfEnabledAlgorithmModulesPerGroup(groupName).size()==1 && !enabled){
-				for(SensorGroupingDetails sGD:abstractAlgorithm.mMapOfAlgorithmGrouping.values()){
-					if(sGD.mGroupName.equals(groupName)){
-						for(String cL:sGD.mListOfConfigOptionKeysAssociated){
-							//sets all algorithms in that group off
-							setConfigValueUsingConfigLabel(groupName, cL, 0);
-						}
+		if(listOfEnabledAlgoModulesPerGroup!=null && listOfEnabledAlgoModulesPerGroup.size()>0){
+			//Take the first enabled algorithm settings and configure all the other algorithms to be the same
+			AbstractAlgorithm firstEnabledAlgo = listOfEnabledAlgoModulesPerGroup.get(0);
+			
+			mapOfAlgoSettings = firstEnabledAlgo.getAlgorithmSettings();
+
+			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
+			Iterator<AbstractAlgorithm> iterator = listOfAlgoModulesPerGroup.iterator();
+			while(iterator.hasNext()){
+				AbstractAlgorithm abstractAlgorithm = iterator.next();
+				abstractAlgorithm.setAlgorithmSettings(mapOfAlgoSettings);
 			}
 		}
-			}
+		else{
+			//Set defaults for off?
+			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
 		}
-	}
+		
+		return mapOfAlgoSettings;
 	}
 
 	@Deprecated
@@ -2720,7 +2770,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	private Set<String> getSensorChannelsToStoreInDB(){
-		
 		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
 		for(SensorDetails sensorEnabled: mSensorMap.values()){
 			if(sensorEnabled.isEnabled() && !sensorEnabled.mSensorDetailsRef.mIsDummySensor){
@@ -2736,11 +2785,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	private Set<String> getAlgortihmChannelsToStoreInDB(){
-		
 		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
 		for(AbstractAlgorithm algortihm: mMapOfAlgorithmModules.values()){
 			if(algortihm.isEnabled()){
-				List<ChannelDetails> listOfDetails = algortihm.mAlgorithmDetails.mListOfChannelDetails;
+				List<ChannelDetails> listOfDetails = algortihm.getChannelDetails();
 				for(ChannelDetails details: listOfDetails){
 					if(details.mStoreToDatabase){
 						setOfObjectClusterChannels.add(details.mObjectClusterName);
@@ -2752,6 +2800,31 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		return setOfObjectClusterChannels;
 	}
+
+	public double getMinAllowedSamplingRate() {
+		return getMinAllowedEnabledAlgorithmSamplingRate();
+	}
+
+	public double getMinAllowedEnabledAlgorithmSamplingRate(){
+		double minAllowedAlgoSamplingRate = 0.0;
+		Iterator<AbstractAlgorithm> iterator = mMapOfAlgorithmModules.values().iterator();
+		while(iterator.hasNext()){
+			AbstractAlgorithm abstractAlgorithm = iterator.next();
+			if(abstractAlgorithm.isEnabled()){
+				minAllowedAlgoSamplingRate = Math.max(abstractAlgorithm.getMinSamplingRateForAlgorithm(), minAllowedAlgoSamplingRate);
+			}
+		}
+		return minAllowedAlgoSamplingRate;
+	}
+
+	public void setDefaultSettingsForAlgorithmGroup(String groupName) {
+		List<AbstractAlgorithm> listOfAlgosForGroup = getListOfAlgorithmModulesPerGroup(groupName);
+		for(AbstractAlgorithm abstractAlgorithm:listOfAlgosForGroup){
+			abstractAlgorithm.setDefaultSetting();
+		}
+	}
+
+	
 
 	
 	

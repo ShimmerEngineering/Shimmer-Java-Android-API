@@ -46,14 +46,17 @@ public class SensorDetails implements Serializable{
 	}
 	
 	public ObjectCluster processDataCommon(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
-		int index = 0;
-		for (ChannelDetails channelDetails:mListOfChannels){
-			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
-			index += channelDetails.mDefaultNumBytes;
-			objectCluster.incrementIndexKeeper();
+		if(rawData!=null && rawData.length>0){
+			int index = 0;
+			for (ChannelDetails channelDetails:mListOfChannels){
+				//first process the data originating from the Shimmer sensor
+				byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+				System.arraycopy(rawData, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+				objectCluster = processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+				index += channelDetails.mDefaultNumBytes;
+				objectCluster.incrementIndexKeeper();
+			}
+			
 		}
 		return objectCluster;
 	}

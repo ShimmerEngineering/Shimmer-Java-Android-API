@@ -102,7 +102,7 @@ public class SensorPPG extends AbstractSensor {
 		public static  String PPG2_A1 = "PPG2_A1";
 		public static  String PPG2_A14 = "PPG2_A14";
 	}
-	//--------- Sensor specific variables start --------------
+	//--------- Sensor specific variables End --------------
 
 	
 	//--------- Bluetooth commands start --------------
@@ -717,7 +717,7 @@ public class SensorPPG extends AbstractSensor {
 
 	//--------- Optional methods to override in Sensor Class start --------	
 	@Override
-	public boolean handleSpecCasesBeforeSensorMapUpdate(ShimmerDevice shimmerDevice, Integer sensorMapKey){
+	public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(ShimmerDevice shimmerDevice, Integer sensorMapKey){
 		if(((sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13)
 				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1)
@@ -731,7 +731,7 @@ public class SensorPPG extends AbstractSensor {
 
 	
 	@Override
-	public void handleSpecCasesAfterSensorMapUpdate() {
+	public void handleSpecCasesAfterSensorMapUpdateFromEnabledSensors() {
 		//Used for Shimmer GSR hardware
 		if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12)!=null){
 			if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled())) {

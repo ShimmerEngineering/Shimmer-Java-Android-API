@@ -3765,85 +3765,85 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
     //region --------- IS FUNCTIONS ---------
 	
-	/**
-	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not
-	 * use this command right after setting an EXG setting, as due to the
-	 * execution model, the old settings might be returned, if this command is
-	 * executed before an ack is received.
-	 * 
-	 * @return true if 16 bit ECG is set
-	 */
-	@Override
-	public boolean isEXGUsingECG16Configuration(){
-		while(!getListofInstructions().isEmpty());
-		return super.isEXGUsingECG16Configuration();
-	}
-	
-	/**
-	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not
-	 * use this command right after setting an EXG setting, as due to the
-	 * execution model, the old settings might be returned, if this command is
-	 * executed before an ack is received.
-	 * 
-	 * @return true if 24 bit ECG is set
-	 */
-	@Override
-	public boolean isEXGUsingECG24Configuration(){
-		while(!getListofInstructions().isEmpty());
-		return super.isEXGUsingECG24Configuration();
-	}
-	
-	/**
-	 * Checks if 16 bit EMG configuration is set on the Shimmer device. Do not
-	 * use this command right after setting an EXG setting, as due to the
-	 * execution model, the old settings might be returned, if this command is
-	 * executed before an ack is received.
-	 * 
-	 * @return true if 16 bit EMG is set
-	 */
-	@Override
-	public boolean isEXGUsingEMG16Configuration(){
-		while(!getListofInstructions().isEmpty());
-		return super.isEXGUsingEMG16Configuration();
-	}
-	
-	/**
-	 * Checks if 24 bit EMG configuration is set on the Shimmer device. Do not
-	 * use this command right after setting an EXG setting, as due to the
-	 * execution model, the old settings might be returned, if this command is
-	 * executed before an ack is received.
-	 * 
-	 * @return true if 24 bit EMG is set
-	 */
-	@Override
-	public boolean isEXGUsingEMG24Configuration(){
-		while(!getListofInstructions().isEmpty());
-		return super.isEXGUsingEMG24Configuration();
-	}
-	
-	/**
-	 * Checks if 16 bit test signal configuration is set on the Shimmer device.
-	 * Do not use this command right after setting an EXG setting, as due to the
-	 * execution model, the old settings might be returned, if this command is
-	 * executed before an ack is received.
-	 * 
-	 * @return true if 24 bit test signal is set
-	 */
-	@Override
-	public boolean isEXGUsingTestSignal16Configuration(){
-		while(!getListofInstructions().isEmpty());
-		return super.isEXGUsingTestSignal16Configuration();
-	}
-	
-	/**
-	 * Checks if 24 bit test signal configuration is set on the Shimmer device.
-	 * @return true if 24 bit test signal is set
-	 */
-	@Override
-	public boolean isEXGUsingTestSignal24Configuration(){
-		while(!getListofInstructions().isEmpty());
-		return super.isEXGUsingTestSignal24Configuration();
-	}
+//	/**
+//	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not
+//	 * use this command right after setting an EXG setting, as due to the
+//	 * execution model, the old settings might be returned, if this command is
+//	 * executed before an ack is received.
+//	 * 
+//	 * @return true if 16 bit ECG is set
+//	 */
+//	@Override
+//	public boolean isEXGUsingECG16Configuration(){
+//		while(!getListofInstructions().isEmpty());
+//		return super.isEXGUsingECG16Configuration();
+//	}
+//	
+//	/**
+//	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not
+//	 * use this command right after setting an EXG setting, as due to the
+//	 * execution model, the old settings might be returned, if this command is
+//	 * executed before an ack is received.
+//	 * 
+//	 * @return true if 24 bit ECG is set
+//	 */
+//	@Override
+//	public boolean isEXGUsingECG24Configuration(){
+//		while(!getListofInstructions().isEmpty());
+//		return super.isEXGUsingECG24Configuration();
+//	}
+//	
+//	/**
+//	 * Checks if 16 bit EMG configuration is set on the Shimmer device. Do not
+//	 * use this command right after setting an EXG setting, as due to the
+//	 * execution model, the old settings might be returned, if this command is
+//	 * executed before an ack is received.
+//	 * 
+//	 * @return true if 16 bit EMG is set
+//	 */
+//	@Override
+//	public boolean isEXGUsingEMG16Configuration(){
+//		while(!getListofInstructions().isEmpty());
+//		return super.isEXGUsingEMG16Configuration();
+//	}
+//	
+//	/**
+//	 * Checks if 24 bit EMG configuration is set on the Shimmer device. Do not
+//	 * use this command right after setting an EXG setting, as due to the
+//	 * execution model, the old settings might be returned, if this command is
+//	 * executed before an ack is received.
+//	 * 
+//	 * @return true if 24 bit EMG is set
+//	 */
+//	@Override
+//	public boolean isEXGUsingEMG24Configuration(){
+//		while(!getListofInstructions().isEmpty());
+//		return super.isEXGUsingEMG24Configuration();
+//	}
+//	
+//	/**
+//	 * Checks if 16 bit test signal configuration is set on the Shimmer device.
+//	 * Do not use this command right after setting an EXG setting, as due to the
+//	 * execution model, the old settings might be returned, if this command is
+//	 * executed before an ack is received.
+//	 * 
+//	 * @return true if 24 bit test signal is set
+//	 */
+//	@Override
+//	public boolean isEXGUsingTestSignal16Configuration(){
+//		while(!getListofInstructions().isEmpty());
+//		return super.isEXGUsingTestSignal16Configuration();
+//	}
+//	
+//	/**
+//	 * Checks if 24 bit test signal configuration is set on the Shimmer device.
+//	 * @return true if 24 bit test signal is set
+//	 */
+//	@Override
+//	public boolean isEXGUsingTestSignal24Configuration(){
+//		while(!getListofInstructions().isEmpty());
+//		return super.isEXGUsingTestSignal24Configuration();
+//	}
 	
     //endregion --------- IS FUNCTIONS ---------
 	
