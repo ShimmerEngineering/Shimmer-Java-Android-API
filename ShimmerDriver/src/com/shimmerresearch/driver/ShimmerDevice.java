@@ -2673,9 +2673,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	private void setSamplingRateAlgorithms(double samplingRateShimmer) {
 		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
-			if(abstractAlgorithm.isEnabled()){
+//			if(abstractAlgorithm.isEnabled()){
 				abstractAlgorithm.setSettings(AbstractAlgorithm.GuiLabelConfigCommon.SAMPLING_RATE, samplingRateShimmer);
-			}
+//			}
 		}
 	}
 
