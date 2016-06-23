@@ -9976,13 +9976,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		for(int j = 0; j < matrix[1].length; j++){
 			for(int i = 0; i < matrix.length; i++){
-		//		ty
-			}
-			
+		if(matrix[j][i]!=0){
+			allZeros = false;
 		}
-		
+			}
+		}
 		return allZeros;
 	}
+	
 
 	//XXX-RS-LSM-SensorClass?
 	public boolean isUsingDefaultMagParam(){
