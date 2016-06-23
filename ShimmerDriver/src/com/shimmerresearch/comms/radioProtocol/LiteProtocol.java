@@ -884,14 +884,16 @@ public class LiteProtocol extends ByteLevelProtocol{
 	public void initialize() {
 		// TODO Auto-generated method stub
 		mIOThread = new IOThread();
+		mIOThread.setName(getClass().getSimpleName()+"-"+mMyBluetoothAddress+"-"+mComPort);
 		mIOThread.start();
 	
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		mIOThread.stop=true;
-		mIOThread = null;
+		if(mIOThread!=null){
+			mIOThread.stop=true;
+			mIOThread = null;
+		}
 	}
 }
