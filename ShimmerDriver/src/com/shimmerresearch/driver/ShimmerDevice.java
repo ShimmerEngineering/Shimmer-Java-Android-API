@@ -685,6 +685,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isInitialised() {
 		return mIsInitialised;
 	}
+	
+	public boolean isCalibrationValid(){
+		return true;
+	}
 
 	/**
 	 * @return the mHaveAttemptedToRead
