@@ -575,7 +575,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//-------- Timestamp end --------
 
 	//XXX-RS-AA-SensorClass?
-	// ----------   Analog accel calibration start ---------------
+	// ----------   Analog accel start ---------------
 	/** all raw params should start with a 1 byte identifier in position [0] */
 	protected byte[] mAccelCalRawParams = new byte[22];
 
@@ -602,10 +602,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCalibMapAccelAnalogShimmer3.put(0, new CalibDetailsKinematic(0, "+/- 2g",
 						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3));
 	}
-	// ----------   Analog accel calibration end ---------------
+	// ----------   Analog accel end ---------------
 	
 	//XXX-RS-LSM-SensorClass?
-	// ----------   Wide-range accel calibration start ---------------
+	// ----------   Wide-range accel start ---------------
 	protected boolean mHighResAccelWR = false; //TODO: add comment and set from BT command
 //	protected boolean mLowPowerAccelWR = false;//TODO: add comment and set from BT command	
 	protected int mLSM303DigitalAccelRate=0;
@@ -651,9 +651,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], Shimmer3.ListofAccelRange[3],
 						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel16gShimmer3, OffsetVectorWideRangeAccelShimmer3));
 	}
-	// ----------   Wide-range accel calibration end ---------------
+	// ----------   Wide-range accel end ---------------
 
-	// ----------   Gyro calibration start ---------------
+	// ----------   Gyro start ---------------
 	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
 	protected int mGyroRange=1;													 
 	protected boolean mLowPowerGyro = false;
@@ -704,10 +704,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	DescriptiveStatistics mGyroYRaw;
 	DescriptiveStatistics mGyroZRaw;
 	protected boolean mEnableOntheFlyGyroOVCal = false;
-	// ----------   Gyro calibration end ---------------
+	// ----------   Gyro end ---------------
 
 	//XXX-RS-LSM-SensorClass?	
-	// ----------   Mag calibration start ---------------
+	// ----------   Mag start ---------------
 	protected boolean mLowPowerMag = false;	
 
 	protected int mShimmer2MagRate=0;
@@ -776,7 +776,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[6], Shimmer3.ListofMagRange[6],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag8p1GaShimmer3, OffsetVectorMagShimmer3));
 	}
-	// ----------   Mag calibration end ---------------
+	// ----------   Mag end ---------------
 	
 	// ----------- MPU9X50 options start -------------------------
 	/** This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g */
