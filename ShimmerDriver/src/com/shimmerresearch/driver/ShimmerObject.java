@@ -50,6 +50,7 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorMPU9X50;
@@ -10662,7 +10663,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// ----------- MPU9X50 options end -------------------------
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String configLabel) {
+	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel) {
 		Object returnValue = null;
 		
         if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
@@ -10670,6 +10671,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
         		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);
         }
+        
+		Integer sensorMapKey = Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR;
+		try{
+			sensorMapKey = Integer.parseInt(identifier);
+		} catch (NumberFormatException nFE){
+			//Do nothing
+		}
+
         
 		switch(configLabel){
 //Booleans
@@ -10851,7 +10860,39 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
 				returnValue = getSamplingDividerVBatt();
 	    		break;
-	    		
+
+			case(AbstractSensor.GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+					return 0;
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
+				}
+				break;
+			case(AbstractSensor.GuiLabelConfigCommon.RATE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+				}
+				break;
+
 	    		
 //Strings
 //    					case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):

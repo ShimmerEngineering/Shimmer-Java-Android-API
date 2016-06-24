@@ -827,7 +827,7 @@ public class Configuration {
 			public static final String EXG_GAIN = "Gain";
 			public static final String EXG_BYTES = "Bytes";
 
-			public static final String EXG_RATE = "Rate";
+			public static final String EXG_RATE = "ExG Rate";
 			public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
 			public static final String EXG_LEAD_OFF_DETECTION = "Lead-Off Detection";
 			public static final String EXG_LEAD_OFF_CURRENT = "Lead-Off Current";
