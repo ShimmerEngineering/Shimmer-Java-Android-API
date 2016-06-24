@@ -10481,7 +10481,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return numerator;
 		}
 		else {
-			return (numerator / mMPU9150GyroAccelRate);
+			return (numerator / (mMPU9150GyroAccelRate+1));
 		}
 	}
 	
