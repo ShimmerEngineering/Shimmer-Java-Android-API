@@ -379,12 +379,12 @@ public class SensorBridgeAmp extends AbstractSensor{
 
 	}
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		// TODO Auto-generated method stub
 		return null;
 	}

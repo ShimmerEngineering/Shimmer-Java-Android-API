@@ -363,10 +363,10 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 
-		switch(componentName){
+		switch(configLabel){
 			case(GuiLabelConfig.GSR_RANGE):
 	    		setGSRRange((int)valueToSet);
 				returnValue = valueToSet;
@@ -382,9 +382,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 			case(GuiLabelConfig.GSR_RANGE):
 				returnValue = getGSRRange(); //TODO: check with RM re firmware bug?? -> //RS (25/05/2016): Still relevant?
 		    	break;

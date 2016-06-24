@@ -692,6 +692,8 @@ public class Configuration {
 		public static final Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
 		public class SensorMapKey{
+			public static final int RESERVER_ANY_SENSOR = -1;
+
 			//Sensors channels originating from the Shimmer
 			
 			//Analog channels begin
@@ -874,8 +876,7 @@ public class Configuration {
 
 			//XXX-RS-AA-SensorClass?
 			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = SensorKionixKXRB52042.GuiLabelConfig.KXRB8_2042_ACCEL_DEFAULT_CALIB;
-			
-			public static final String KINEMATIC_CALIBRATION = "Kinematic Calibration";
+			public static final String KINEMATIC_CALIBRATION_ALL = "Kinematic Calibration all";
 		}
 
 		// GUI Sensor Tiles

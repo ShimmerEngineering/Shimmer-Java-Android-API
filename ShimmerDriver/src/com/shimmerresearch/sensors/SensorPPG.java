@@ -531,13 +531,13 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		////XXX What about this? Are the newly introduced method handling the commented out stuff below?
 		
 		Object returnValue = null;
 		int buf = 0;
 
-		switch(componentName){
+		switch(configLabel){
 			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
 				setPpgAdcSelectionGsrBoard((int)valueToSet);
 	    		break;
@@ -555,9 +555,9 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 		case(GuiLabelConfig.PPG_ADC_SELECTION):
 			returnValue = getPpgAdcSelectionGsrBoard();
 			break;

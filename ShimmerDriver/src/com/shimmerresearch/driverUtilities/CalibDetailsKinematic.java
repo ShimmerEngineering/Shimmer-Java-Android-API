@@ -123,4 +123,34 @@ public class CalibDetailsKinematic implements Serializable {
 		//TODO for Eimear
 		return true;
 	}
+
+	public String generateDebugString() {
+		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
+		
+		debugString += "Default Alignment = ";
+		if(mDefaultAlignmentMatrix==null){
+			debugString += "NULL";
+		}
+		else{
+			debugString += UtilShimmer.doubleArrayToString(mDefaultAlignmentMatrix);
+		}
+
+		debugString += "Default Sensitivity = ";
+		if(mDefaultSensitivityMatrix==null){
+			debugString += "NULL";
+		}
+		else{
+			debugString += UtilShimmer.doubleArrayToString(mDefaultSensitivityMatrix);
+		}
+
+		debugString += "Default Offset Vector = ";
+		if(mDefaultOffsetVector==null){
+			debugString += "NULL";
+		}
+		else{
+			debugString += UtilShimmer.doubleArrayToString(mDefaultOffsetVector);
+		}
+		
+		return debugString;
+	}
 }

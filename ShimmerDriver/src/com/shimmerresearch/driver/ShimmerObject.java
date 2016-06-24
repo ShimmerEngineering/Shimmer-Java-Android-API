@@ -10662,16 +10662,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// ----------- MPU9X50 options end -------------------------
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(String configLabel) {
 		Object returnValue = null;
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
         
-		switch(componentName){
+		switch(configLabel){
 //Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				returnValue = isButtonStart();
@@ -10908,7 +10908,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    			        	break;
 	        	
 	        default:
-	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
+	        	returnValue = super.getConfigValueUsingConfigLabel(configLabel);
 	        	break;
 		}
 		
@@ -10916,12 +10916,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}		
 	
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String identifier, String configLabel, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
 
-		switch(componentName){
+		switch(configLabel){
 //Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				setButtonStart((boolean)valueToSet);
@@ -11193,14 +11193,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	        	
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel(groupName, componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel(identifier, configLabel, valueToSet);
 	        	break;
 		}
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass?
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass?
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
 			
 		return returnValue;

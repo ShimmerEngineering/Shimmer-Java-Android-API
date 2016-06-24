@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -57,6 +58,13 @@ public abstract class AbstractSensor implements Serializable{
 	    }
 	}
 	
+	//General Configurations options that are normally used in conjunction with a sensorMapKey
+	public class GuiLabelConfigCommon{
+		public static final String RATE = "Rate";
+		public static final String RANGE = "Range";
+		public static final String KINEMATIC_CALIBRATION = "Kinematic Calibration";
+	}
+	
 	// --------------- Abstract methods start ----------------
 	/** call either createLocalSensorMap() or createLocalSensorMapWithCustomParser() inside depending if a custom parser is needed. */
 	public abstract void generateSensorMap(ShimmerVerObject svo);
@@ -70,8 +78,8 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
 	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
-	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
-	public abstract Object getConfigValueUsingConfigLabel(String componentName);
+	public abstract Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet);
+	public abstract Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel);
 
 	public abstract void setSensorSamplingRate(double samplingRateHz);
 	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled);
@@ -301,6 +309,14 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
+	public Object setConfigValueUsingConfigLabel(String configLabel, Object valueToSet){
+		return setConfigValueUsingConfigLabel(Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR, configLabel, valueToSet);
+	}
+	
+	public Object getConfigValueUsingConfigLabel(String configLabel){
+		return getConfigValueUsingConfigLabel(Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR, configLabel);
+	}
+
 	/** Quickly implemented method to print channel data to the console
 	 * @param objectCluster 
 	 * @param listOfChannelOCNAndType a list of channel objectClusterNames to print to the console

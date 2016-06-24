@@ -591,11 +591,26 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 	@Override 
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		
-		switch(componentName){
-		
+		switch(configLabel){
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					setDigitalAccelRange((int)valueToSet);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					setLSM303MagRange((int)valueToSet);
+				}
+				break;
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					setLSM303DigitalAccelRate((int)valueToSet);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					setLSM303MagRate((int)valueToSet);
+				}
+				break;
 			case(GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
 				setLowPowerAccelWR((boolean)valueToSet);
 				break;
@@ -603,7 +618,6 @@ public class SensorLSM303 extends AbstractSensor{
 			case(GuiLabelConfig.LSM303DLHC_MAG_LPM):
 				setLowPowerMag((boolean)valueToSet);
 				break;
-				
 			case(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
 				setDigitalAccelRange((int)valueToSet);
 				break;
@@ -625,14 +639,14 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 	@Override 
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
 		
-		if(componentName.equals(GuiLabelConfig.LSM303DLHC_ACCEL_RATE)){
-        	checkConfigOptionValues(componentName);
+		if(configLabel.equals(GuiLabelConfig.LSM303DLHC_ACCEL_RATE)){
+        	checkConfigOptionValues(configLabel);
         }
 		
-		switch(componentName){
+		switch(configLabel){
 		
 			case(GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
 				returnValue = isLSM303DigitalAccelLPM();

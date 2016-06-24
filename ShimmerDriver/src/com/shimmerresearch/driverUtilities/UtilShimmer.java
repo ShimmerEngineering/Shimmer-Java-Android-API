@@ -666,5 +666,16 @@ public class UtilShimmer implements Serializable {
 		}
 		return bytesToHexStringWithSpacesFormatted(bytesArray);
 	}
+
+	public static String doubleArrayToString(double[][] doubleArray) {
+		String returnString = "";
+		for(int x=0;x<doubleArray.length;x++){
+			for(int y=0;y<doubleArray[x].length;y++){
+				returnString = doubleArray[x][y] + "\t";
+			}
+			returnString += "\n";
+		}
+		return returnString;
+	}
 	
 }

@@ -1690,12 +1690,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
 
-		switch(componentName){
+		switch(configLabel){
 //Booleans
 			case(GuiLabelConfig.MPU9150_DMP):
 		    	setMPU9150DMP((boolean)valueToSet);
@@ -1766,9 +1766,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 //Booleans
 			case(GuiLabelConfig.MPU9150_DMP):
 				returnValue = isMPU9150DMP();

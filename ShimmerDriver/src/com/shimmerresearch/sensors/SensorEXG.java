@@ -2320,9 +2320,9 @@ public class SensorEXG extends AbstractSensor{
 
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
 				setExGResolution((int)valueToSet);
 				returnValue = valueToSet;
@@ -2363,24 +2363,24 @@ public class SensorEXG extends AbstractSensor{
 	        	break;
 		}
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
 			
 		return returnValue;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
 		
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
 				returnValue = getExGGainSetting();
 				//consolePrintLn("Get " + configValue);

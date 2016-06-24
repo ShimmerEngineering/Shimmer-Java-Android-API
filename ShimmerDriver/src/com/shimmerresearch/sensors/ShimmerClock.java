@@ -595,13 +595,13 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		//NOT USED IN THIS CLASS
 		return null;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		//NOT USED IN THIS CLASS
 		return null;
 	}

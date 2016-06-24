@@ -302,9 +302,9 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 			case(GuiLabelConfig.PRESSURE_RESOLUTION):
 				setPressureResolution((int)valueToSet);
 				returnValue = valueToSet;
@@ -314,10 +314,10 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName){
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel){
 		Object returnValue = null;
 		
-		switch(componentName){
+		switch(configLabel){
 		case(GuiLabelConfig.PRESSURE_RESOLUTION):
 			returnValue = getPressureResolution();
 	 		break;
