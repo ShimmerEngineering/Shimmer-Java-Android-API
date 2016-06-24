@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -894,30 +895,4 @@ public class Shimmer4 extends ShimmerDevice {
 
 	}
 
-	
-	public static void main (String[] arg) {
-		System.out.println("Started");
-
-		ShimmerVerObject sVO = new ShimmerVerObject(HW_ID.SHIMMER_4_SDK, FW_ID.SHIMMER4_SDK_STOCK, 0, 0, 1, HW_ID_SR_CODES.SHIMMER_4_SDK);
-		ShimmerDevice shimmer4 = new Shimmer4();
-		shimmer4.setShimmerVersionObject(sVO);
-		shimmer4.prepareAllAfterConfigRead();
-
-		Object returnValue = shimmer4.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL);
-		if(returnValue!=null){
-			TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = (TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>)returnValue;
-			for(Integer sensorMapKey:mapOfKinematicSensorCalibration.keySet()){
-				SensorDetails sensorDetails = shimmer4.getSensorDetails(sensorMapKey);
-				if(sensorDetails!=null){
-					System.out.println(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
-					TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicCalibPerRange = mapOfKinematicSensorCalibration.get(sensorMapKey);
-					for(CalibDetailsKinematic calibDetailsKinematic:mapOfKinematicCalibPerRange.values()){
-						System.out.println(calibDetailsKinematic.generateDebugString());
-					}
-					System.out.println();
-				}
-			}
-		}
-		System.out.println("Finished");
-	}
 }

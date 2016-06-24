@@ -2,6 +2,7 @@ package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class that holds the calibration parameters for a particular range in a
@@ -126,31 +127,23 @@ public class CalibDetailsKinematic implements Serializable {
 
 	public String generateDebugString() {
 		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
-		
-		debugString += "Default Alignment = ";
-		if(mDefaultAlignmentMatrix==null){
-			debugString += "NULL";
-		}
-		else{
-			debugString += UtilShimmer.doubleArrayToString(mDefaultAlignmentMatrix);
-		}
+		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Current Alignment", mCurrentAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Default Sensitivity", mDefaultSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("CurrentSensitivity", mCurrentSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("Default Offset Vector", mDefaultOffsetVector);
+		debugString += generateDebugStringPerProperty("Current Offset Vector", mCurrentOffsetVector);
+		return debugString;
+	}
 
-		debugString += "Default Sensitivity = ";
-		if(mDefaultSensitivityMatrix==null){
-			debugString += "NULL";
+	private String generateDebugStringPerProperty(String property, double[][] calMatrix) {
+		String debugString = property + " =\n";
+		if(calMatrix==null){
+			debugString += "NULL\n";
 		}
 		else{
-			debugString += UtilShimmer.doubleArrayToString(mDefaultSensitivityMatrix);
+			debugString += UtilShimmer.doubleArrayToString(calMatrix);
 		}
-
-		debugString += "Default Offset Vector = ";
-		if(mDefaultOffsetVector==null){
-			debugString += "NULL";
-		}
-		else{
-			debugString += UtilShimmer.doubleArrayToString(mDefaultOffsetVector);
-		}
-		
 		return debugString;
 	}
 }

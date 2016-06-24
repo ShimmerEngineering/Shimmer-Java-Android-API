@@ -1070,6 +1070,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return setConfigValueUsingConfigLabel("", configLabel, valueToSet);
 	}
 	
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet){
+		return setConfigValueUsingConfigLabel(Integer.toString(sensorMapKey), configLabel, valueToSet);
+	}
+
 	public Object setConfigValueUsingConfigLabel(String identifier, String configLabel, Object valueToSet){
 		
 //		System.err.println("GROUPNAME:\t" + (identifier.isEmpty()? "EMPTY":identifier) + "\tCONFIGLABEL:\t" + configLabel);
@@ -1125,6 +1129,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public Object getConfigValueUsingConfigLabel(String configLabel){
 		return getConfigValueUsingConfigLabel("", configLabel);
+	}
+
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel){
+		return getConfigValueUsingConfigLabel(Integer.toString(sensorMapKey), configLabel);
 	}
 
 	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel){

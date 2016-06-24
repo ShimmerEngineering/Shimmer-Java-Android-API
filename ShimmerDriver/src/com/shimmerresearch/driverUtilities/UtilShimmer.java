@@ -671,7 +671,7 @@ public class UtilShimmer implements Serializable {
 		String returnString = "";
 		for(int x=0;x<doubleArray.length;x++){
 			for(int y=0;y<doubleArray[x].length;y++){
-				returnString = doubleArray[x][y] + "\t";
+				returnString += doubleArray[x][y] + "\t";
 			}
 			returnString += "\n";
 		}

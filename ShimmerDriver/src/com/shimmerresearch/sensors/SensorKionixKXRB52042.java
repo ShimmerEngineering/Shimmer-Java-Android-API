@@ -320,6 +320,11 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+					returnValue = 0;
+				}
+				break;
 			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
 				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR)
 						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)){
@@ -391,9 +396,11 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
 		mCalibMapAccelAnalogShimmer3.putAll(mapOfKinematicSensorCalibration);
 	}
-	
-	private TreeMap<Integer, CalibDetailsKinematic> getKinematicCalibration() {
-		return mCalibMapAccelAnalogShimmer3;
+
+	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibration() {
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+		mapOfKinematicSensorCalibration.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3);
+		return mapOfKinematicSensorCalibration;
 	}
 	
 	private void updateCalibMapAccelLn() {

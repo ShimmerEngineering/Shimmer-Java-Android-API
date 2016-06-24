@@ -63,6 +63,7 @@ public abstract class AbstractSensor implements Serializable{
 		public static final String RATE = "Rate";
 		public static final String RANGE = "Range";
 		public static final String KINEMATIC_CALIBRATION = "Kinematic Calibration";
+		public static final String KINEMATIC_CALIBRATION_ALL = Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL;
 	}
 	
 	// --------------- Abstract methods start ----------------
