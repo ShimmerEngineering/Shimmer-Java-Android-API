@@ -1033,7 +1033,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	    return false;
 	}
 
-	public String getChannelLabel(int sensorMapKey) {
+	public String getSensorLabel(int sensorMapKey) {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
@@ -1045,27 +1045,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return null;
 	}
 
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorMapKey) {
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfoForSensor(int sensorMapKey) {
 		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 		if(sensorDetails!=null){
 			return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
 		}
 		return null;
-		
-//		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
-//		while(iterator.hasNext()){
-//			AbstractSensor abstractSensor = iterator.next();
-//			SensorDetails sensorDetails = abstractSensor.getSensorDetails(sensorMapKey);
-//			if(sensorDetails!=null){
-//				return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
-//			}
-//			
-////			List<ShimmerVerObject> listOfCompatibleVersionInfo = abstractSensor.getSensorListOfCompatibleVersionInfo(sensorMapKey);
-////			if(listOfCompatibleVersionInfo!=null){
-////				return listOfCompatibleVersionInfo;
-////			}
-//		}
-//		return null;
 	}
     
 	/** Returns all sensor map keys in use */
@@ -1112,7 +1097,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		//TODO check sensor classes return a null if the setting is successfully found
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			returnValue = abstractSensor.setConfigValueUsingConfigLabel(groupName, configLabel, valueToSet);
+			returnValue = abstractSensor.setConfigValueUsingConfigLabel(configLabel, valueToSet);
 			if(returnValue!=null){
 				return returnValue;
 			}
@@ -2084,7 +2069,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return mapOfKinematicSensorCalibration;
 	}
-	
+
+	public void setMapOfKinematicSensorCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration){
+		for(Integer sensorMapKey:mapOfKinematicSensorCalibration.keySet()){
+			AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
+			if(abstractSensor!=null){
+				abstractSensor.setConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION, mapOfKinematicSensorCalibration.get(sensorMapKey));
+			}
+		}
+	}
+
 	// ------------- Algorithm Code Start -----------------------
 	public void updateDerivedSensors(){
 		mDerivedSensors = (long)0;

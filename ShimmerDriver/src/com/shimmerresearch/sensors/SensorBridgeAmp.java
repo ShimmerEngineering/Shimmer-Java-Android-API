@@ -369,20 +369,17 @@ public class SensorBridgeAmp extends AbstractSensor{
 		return y;
 	}
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 
 	}
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
-			byte[] mInfoMemBytes) {
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 
 	}
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName,
-			String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}

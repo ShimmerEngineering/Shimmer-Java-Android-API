@@ -140,7 +140,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -590,13 +590,13 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	public String getChannelLabel(int sensorKey) {
+	public String getSensorLabel(int sensorKey) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfoForSensor(int sensorKey) {
 		// TODO Auto-generated method stub
 		return null;
 	}
