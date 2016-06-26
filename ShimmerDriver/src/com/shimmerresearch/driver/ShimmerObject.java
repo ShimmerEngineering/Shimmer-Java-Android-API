@@ -10866,30 +10866,30 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					return 0;
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
-					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE);
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE);
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
 				}
 				break;
 			case(AbstractSensor.GuiLabelConfigCommon.RATE):
 				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
-					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
 				}
 				break;
 
@@ -10949,7 +10949,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    			        	break;
 	        	
 	        default:
-	        	returnValue = super.getConfigValueUsingConfigLabel(configLabel);
+	        	returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);
 	        	break;
 		}
 		

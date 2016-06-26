@@ -386,7 +386,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 //		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.BLUETOOTH);
 
-		printSensorAndParserMaps();
+//		printSensorAndParserMaps();
 
 		updateExpectedDataPacketSize();
 	}
