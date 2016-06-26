@@ -2343,7 +2343,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			return numerator;
 		}
 		else {
-			return (numerator / mMPU9150GyroAccelRate);
+			return (numerator / (mMPU9150GyroAccelRate + 1));
 		}
 	}
 	
