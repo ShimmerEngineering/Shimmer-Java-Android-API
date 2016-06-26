@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
-import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 /**
  * @author Mark Nolan

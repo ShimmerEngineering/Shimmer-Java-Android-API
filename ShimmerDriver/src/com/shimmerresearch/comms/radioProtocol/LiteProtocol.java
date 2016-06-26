@@ -19,9 +19,9 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 import com.shimmerresearch.driver.DeviceException;
-import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 
@@ -892,14 +892,16 @@ public class LiteProtocol extends ByteLevelProtocol{
 	public void initialize() {
 		// TODO Auto-generated method stub
 		mIOThread = new IOThread();
+		mIOThread.setName(getClass().getSimpleName()+"-"+mMyBluetoothAddress+"-"+mComPort);
 		mIOThread.start();
 	
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		mIOThread.stop=true;
-		mIOThread = null;
+		if(mIOThread!=null){
+			mIOThread.stop=true;
+			mIOThread = null;
+		}
 	}
 }

@@ -47,7 +47,7 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.DeviceException;
-import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.pcSerialPort.SerialPortJssc;
 
 import java.util.*;

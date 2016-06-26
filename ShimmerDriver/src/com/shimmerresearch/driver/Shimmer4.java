@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.List;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -19,10 +21,13 @@ import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.SensorADC;
@@ -889,5 +894,5 @@ public class Shimmer4 extends ShimmerDevice {
 		return returnValue;
 
 	}
-	
+
 }

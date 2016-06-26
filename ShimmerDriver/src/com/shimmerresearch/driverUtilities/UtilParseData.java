@@ -1,6 +1,5 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.driverUtilities;
 
-import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 

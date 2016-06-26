@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -13,12 +14,15 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilCalibration;
+import com.shimmerresearch.driverUtilities.UtilParseData;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -42,6 +46,12 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
 	protected static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
 	protected static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
+
+	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelAnalogShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	{
+		mCalibMapAccelAnalogShimmer3.put(0, new CalibDetailsKinematic(0, "+/- 2g",
+						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3));
+	}
 
 	//TODO commented - RS (20/5/2016): Keep in Configuration.java for now. 
 //	public class SensorBitmap{
@@ -289,16 +299,42 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
-		// No configuration options.
-		return null;
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+		Object returnValue = null;
+		switch(configLabel){
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
+				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR)
+						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)){
+					TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
+					setKinematicCalibration(mapOfKinematicSensorCalibration);
+					returnValue = valueToSet;
+				}
+	    		break;
+	        default:
+	        	break;
+		}
+		return returnValue;
 	}
 
-	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
-		// No configuration options.
-		return null;
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+		Object returnValue = null;
+		switch(configLabel){
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+					returnValue = 0;
+				}
+				break;
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
+				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR)
+						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)){
+					returnValue = getKinematicCalibration();
+				}
+				break;
+	        default:
+				break;
+		}
+		return returnValue;
 	}
 
 	
@@ -357,6 +393,27 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 
 	//--------- Sensor specific methods start --------------
+	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
+		mCalibMapAccelAnalogShimmer3.putAll(mapOfKinematicSensorCalibration);
+	}
+
+	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibration() {
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+		mapOfKinematicSensorCalibration.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3);
+		return mapOfKinematicSensorCalibration;
+	}
+	
+	private void updateCalibMapAccelLn() {
+		int rangeValue = 0;
+		CalibDetailsKinematic calDetails = mCalibMapAccelAnalogShimmer3.get(rangeValue);
+		if(calDetails==null){
+			String rangeString = "+/- 2g";
+			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+		}
+		calDetails.setCurrentValues(mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+		mCalibMapAccelAnalogShimmer3.put(rangeValue, calDetails);
+	}
+
 	private byte[] generateCalParamAnalogAccel(){
 		// Analog Accel Calibration Parameters
 		byte[] bufferCalibrationParameters = new byte[21];
@@ -410,6 +467,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 			setDefaultCalibrationShimmer3LowNoiseAccel();
 		}
+		
+		updateCalibMapAccelLn();
 	}
 
 	

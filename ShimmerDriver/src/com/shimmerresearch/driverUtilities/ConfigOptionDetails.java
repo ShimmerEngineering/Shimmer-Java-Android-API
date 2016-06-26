@@ -3,6 +3,8 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 import java.util.List;
 
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+
 public class ConfigOptionDetails implements Serializable {
 	
 	public static enum GUI_COMPONENT_TYPE {
@@ -33,6 +35,10 @@ public class ConfigOptionDetails implements Serializable {
 	public ConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
 		mGuiComponentType = guiComponentType;
 		mCompatibleVersionInfo = compatibleVersionInfo;
+		
+		if(mGuiComponentType==GUI_COMPONENT_TYPE.CHECKBOX){
+			mGuiValues = new String[]{"Off", "On"};
+		}
 	}
 
 	/**
@@ -47,16 +53,14 @@ public class ConfigOptionDetails implements Serializable {
 	 * @param guiComponentType
 	 */
 	public ConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+		this(guiComponentType, compatibleVersionInfo);
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
-		mGuiComponentType = guiComponentType;
-		mCompatibleVersionInfo = compatibleVersionInfo;
 	}
 	
 	public ConfigOptionDetails(String[] guiValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo, String guiFriendlyName) {
+		this(guiComponentType, compatibleVersionInfo);
 		mGuiValues = guiValues;
-		mGuiComponentType = guiComponentType;
-		mCompatibleVersionInfo = compatibleVersionInfo;
 		mGuiFriendlyName = guiFriendlyName;
 	}
 	

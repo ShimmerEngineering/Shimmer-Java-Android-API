@@ -1,90 +1,3 @@
-//Rev_1.9
-/*
- * Copyright (c) 2010 - 2014, Shimmer Research, Ltd.
- * All rights reserved
-
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
-
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- *       copyright notice, this list of conditions and the following
- *       disclaimer in the documentation and/or other materials provided
- *       with the distribution.
- *     * Neither the name of Shimmer Research, Ltd. nor the names of its
- *       contributors may be used to endorse or promote products derived
- *       from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @author Jong Chern Lim, Ruaidhri Molloy, Alejandro Saez, Mark Nolan 
- * 
- * Changes since 1.8
- * - updated to work with SDLOG
- * - change method formatdatapacketreverse to protected
- * - added i32r to parsed data
- * - mSignalNameArray changed to protected
- * - fix twos complement for long numbers (32bit>=)
- * - fix 6dof calculation ~ long 
- * - fix intiali time stamp ~ long
- * 
- * 
- * Changes since 1.7
- * - remove multiplying factor (2.8) from the gain in the calculation of the Bridge Amplifier calibrated data
- * 
- * @date   September, 2014
- * 
- * Changes since 1.6
- * - Added functionality for plotmanager see MSSAPI , addExtraSignalProperty, removeExtraSignalProperty ,getListofEnabledSensorSignalsandFormats()
- * - various exg advance updates
- * 
- * @date   July, 2014
- * 
- * Changes since 1.5
- * - Bridge Amplifier gauge support for Shimmer3
- * - Bug fix for strain gauge calibration for Shimmer2r
- * - Enable 3D orientation for wide range accel, orientation algorithm defaults to low noise even if wide range is enabled
- * - Fixed quaternion naming typo
- * - Commented out initialisation mSensorBitmaptoName
- * - add method getPressureRawCoefficients
- *  
- * @date   October, 2013
- * 
- * Changes since 1.4
- * - fix getListofEnabledSensors, which was not returning accel shimmer2r
- * - fix null pointer graddes algo when using Shimmer2
- * - converted to abstract class , and added checkbattery abstract method for the Shimmer2r
- * - updated gsr calibrate command parameters for Shimmer3
- * - removed mShimmerSamplingRate decimal formatter, decimal formatter should be done on the UI
- * - fixed a GSR Shimmer2 problem when using autorange
- * - added VSense Batt and VSense Reg and Timestamp to getListOfEnabledSensorSignals
- * - added getSamplingRate()
- * - added get methods for calibration parameters accel,gyro,mag,accel2
- * - updated getoffsetaccel
- * - added exg configurations
- * - added i24r for exg
- * - add get exg configurations
- * - renamed i16* to i16r for consistency
- * - added EXG_CHIP1 = 0 and EXG_CHIP2=1
- * - updated Mag Default Range
- * 
- */
-
-//v0.1.0 consensys
-
 package com.shimmerresearch.driver;
 
 import java.io.ByteArrayOutputStream;
@@ -126,6 +39,9 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilCalibration;
+import com.shimmerresearch.driverUtilities.UtilParseData;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -134,17 +50,97 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorMPU9X50;
-import com.shimmerresearch.sensors.UtilCalibration;
-import com.shimmerresearch.sensors.UtilParseData;
 import com.shimmerresearch.algorithms.Orientation3DObject;
 
 /**
- * @author mnolan
- *
- */
+ * Rev_1.9
+* Copyright (c) 2010 - 2014, Shimmer Research, Ltd.
+* All rights reserved
+
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are
+* met:
+
+*     * Redistributions of source code must retain the above copyright
+*       notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above
+*       copyright notice, this list of conditions and the following
+*       disclaimer in the documentation and/or other materials provided
+*       with the distribution.
+*     * Neither the name of Shimmer Research, Ltd. nor the names of its
+*       contributors may be used to endorse or promote products derived
+*       from this software without specific prior written permission.
+
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. <br>
+*
+* @author Jong Chern Lim, Ruaidhri Molloy, Alejandro Saez, Mark Nolan  <br>
+* 
+* Changes since 1.8 <br>
+* - updated to work with SDLOG
+* - change method formatdatapacketreverse to protected
+* - added i32r to parsed data
+* - mSignalNameArray changed to protected
+* - fix twos complement for long numbers (32bit>=)
+* - fix 6dof calculation ~ long 
+* - fix intiali time stamp ~ long
+* 
+* 
+*  <br>Changes since 1.7 <br>
+* - remove multiplying factor (2.8) from the gain in the calculation of the Bridge Amplifier calibrated data
+* 
+* @date   September, 2014  <br>
+* 
+* Changes since 1.6 <br>
+* - Added functionality for plotmanager see MSSAPI , addExtraSignalProperty, removeExtraSignalProperty ,getListofEnabledSensorSignalsandFormats()
+* - various exg advance updates
+* 
+* @date   July, 2014 <br>
+* 
+*  <br>Changes since 1.5 <br>
+* - Bridge Amplifier gauge support for Shimmer3
+* - Bug fix for strain gauge calibration for Shimmer2r
+* - Enable 3D orientation for wide range accel, orientation algorithm defaults to low noise even if wide range is enabled
+* - Fixed quaternion naming typo
+* - Commented out initialisation mSensorBitmaptoName
+* - add method getPressureRawCoefficients
+*  
+* @date   October, 2013 <br>
+* 
+*  <br>Changes since 1.4 <br>
+* - fix getListofEnabledSensors, which was not returning accel shimmer2r
+* - fix null pointer graddes algo when using Shimmer2
+* - converted to abstract class , and added checkbattery abstract method for the Shimmer2r
+* - updated gsr calibrate command parameters for Shimmer3
+* - removed mShimmerSamplingRate decimal formatter, decimal formatter should be done on the UI
+* - fixed a GSR Shimmer2 problem when using autorange
+* - added VSense Batt and VSense Reg and Timestamp to getListOfEnabledSensorSignals
+* - added getSamplingRate()
+* - added get methods for calibration parameters accel,gyro,mag,accel2
+* - updated getoffsetaccel
+* - added exg configurations
+* - added i24r for exg
+* - add get exg configurations
+* - renamed i16* to i16r for consistency
+* - added EXG_CHIP1 = 0 and EXG_CHIP2=1
+* - updated Mag Default Range
+* 
+*  <br>v0.1.0 consensys
+*/
 public abstract class ShimmerObject extends ShimmerDevice implements Serializable {
 
 	/** * */
@@ -482,44 +478,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final int MAX_NUMBER_OF_SIGNALS = 70;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
-	protected String mClassName="Shimmer";
-	protected double mLastReceivedTimeStamp=0;
-	protected double mCurrentTimeStampCycle=0;
 	protected int mBluetoothBaudRate=9; //460800
 
 	protected int mPacketSize=0; // Default 2 bytes for time stamp and 6 bytes for accelerometer 
-	protected int mAccelRange=0;// This stores the current accelerometer range being used. The accelerometer range is stored during two instances, once an ack packet is received after a writeAccelRange(), and after a response packet has been received after readAccelRange() //XXX-RS-LSM-SensorClass?	 	
-//	protected boolean mLowPowerAccelWR = false;//TODO: add comment and set from BT command //XXX-RS-LSM-SensorClass?	
-	protected boolean mHighResAccelWR = false; //TODO: add comment and set from BT command //XXX-RS-LSM-SensorClass?	
-	protected int mLSM303MagRate=4;	// This stores the current Mag Sampling rate, it is a value between 0 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz //XXX-RS-LSM-SensorClass?	
-	protected int mLSM303DigitalAccelRate=0;//XXX-RS-LSM-SensorClass?
-	protected int mMagRange=1;// Currently not supported on Shimmer2. This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga //XXX-RS-LSM-SensorClass?	
-	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
-	protected int mGyroRange=1;													 
-	protected int mGSRRange=4;													// This stores the current GSR range being used.
-	protected int mPastGSRRange=4; // this is to fix a bug with SDLog v0.9
-	protected int mPastGSRUncalibratedValue=4; // this is to fix a bug with SDLog v0.9
-	protected boolean mPastGSRFirstTime=true; // this is to fix a bug with SDLog v0.9
-//	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	protected long mConfigByte0;//XXX-RS-LSM-SensorClass?	
 	protected int mNChannels=0;	                                                // Default number of sensor channels set to three because of the on board accelerometer 
 	protected int mBufferSize;                   							
 
 	protected String[] mSignalNameArray=new String[MAX_NUMBER_OF_SIGNALS];							// 19 is the maximum number of signal thus far
 	protected String[] mSignalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];						// 19 is the maximum number of signal thus far
-	protected boolean mDefaultCalibrationParametersECG = true;
-	protected boolean mDefaultCalibrationParametersEMG = true;
-	protected boolean mDefaultCalibrationParametersAccel = true;//XXX-RS-AA-SensorClass?
-	protected boolean mDefaultCalibrationParametersDigitalAccel = true; //Also known as the wide range accelerometer //XXX-RS-LSM-SensorClass?
-	protected int mPressureResolution = 0;
-	/** 0 = 16 bit, 1 = 24 bit */
-	protected int mExGResolution = 1;
-	private boolean mIsExg1_24bitEnabled = false;
-	private boolean mIsExg2_24bitEnabled = false;
-	private boolean mIsExg1_16bitEnabled = false;
-	private boolean mIsExg2_16bitEnabled = false;
-	
-	protected int mShimmer2MagRate=0;
 	
 	protected int mButtonStart = 0;
 	protected int mShowRtcErrorLeds = 0;
@@ -530,18 +497,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
 //	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
-	protected boolean mShimmerUsingConfigFromInfoMem = false;
-	protected boolean mIsCrcEnabled = false;
 	protected String mCenter = "";
 	
-	protected long mInitialTimeStamp = 0;
-
 	protected final static int FW_TYPE_BT=0;
 	protected final static int FW_TYPE_SD=1;
 	
 	protected int mTrialId = 0;
 	protected int mTrialNumberOfShimmers = 0;
-
 	protected int mTrialDurationEstimated = 0;
 	protected int mTrialDurationMaximum = 0;
 	
@@ -553,9 +515,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected String mMacIdFromInfoMem = "";
 	
 //	protected String mShimmerUserAssignedName=""; // This stores the user assigned name
-
-	protected boolean mConfigFileCreationFlag = true;
-	protected boolean mCalibFileCreationFlag = false;
 	
 	protected List<String> syncNodesList = new ArrayList<String>();
 // ----------- Now implemented in SensorPPG -------------------------		
@@ -564,85 +523,205 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mPpg2AdcSelectionProto3DeluxeBoard = 0;
 // ------------------------------------------------------------------	
 
-	//
+	protected int mCurrentLEDStatus=0;
+
+	private double mLastKnownHeartRate=0;
+	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024); //YYY -BattVolt-SensorClass
+	Quat4d mQ = new Quat4d();	
+	transient GradDes3DOrientation mOrientationAlgo;	
+	protected boolean mOrientationEnabled = false;	
+
+	protected boolean mEnableCalibration = true;	
+	private boolean isOverrideShowRwcErrorLeds = true;
+	protected boolean mConfigFileCreationFlag = true;
+	protected boolean mCalibFileCreationFlag = false;
+	protected boolean mShimmerUsingConfigFromInfoMem = false;
+	protected boolean mIsCrcEnabled = false;
+
+	protected byte[] mInquiryResponseBytes;	
+	
+	//This features are only used in LogAndStream FW 
+	protected String mDirectoryName;
+	protected int mDirectoryNameLength;
+	@Deprecated
+	private List<String[]> mExtraSignalProperties = null;
+	
+	/** GQ BLE */
+	protected int mGqPacketNumHeaderBytes = 0;
+	/** GQ BLE */
+	protected int mSamplingDividerVBatt = 0;
+	/** GQ BLE */
+	protected int mSamplingDividerGsr = 0;
+// ----------- Now implemented in SensorPPG -------------------------		
+	/** GQ BLE */
+	protected int mSamplingDividerPpg = 0;
+// ------------------------------------------------------------------	
+	/** GQ BLE */
+	protected int mSamplingDividerLsm303dlhcAccel = 0;//XXX-RS-LSM-SensorClass?
+	/** GQ BLE */
+	protected int mSamplingDividerBeacon = 0;
+
+
+	protected abstract void checkBattery();
+	
+	//-------- Timestamp start --------
+	protected double mLastReceivedTimeStamp=0;
+	protected double mCurrentTimeStampCycle=0;
+	protected long mInitialTimeStamp = 0;
+	protected double mLastReceivedCalibratedTimeStamp=-1; 
+	protected boolean mFirstTimeCalTime=true;//XXX-RS-LSM-SensorClass?	
+	protected double mCalTimeStart;//XXX-RS-LSM-SensorClass?
+	protected int mTimeStampPacketByteSize = 2;
+	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
+	//-------- Timestamp end --------
+
 	//XXX-RS-AA-SensorClass?
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibAccelAnalog = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	// ----------   Analog accel start ---------------
+	/** all raw params should start with a 1 byte identifier in position [0] */
+	protected byte[] mAccelCalRawParams = new byte[22];
+
+	protected boolean mDefaultCalibrationParametersAccel = true;
+
 	protected double[][] mAlignmentMatrixAnalogAccel = {{-1,0,0},{0,-1,0},{0,0,1}}; 			
 	protected double[][] mSensitivityMatrixAnalogAccel = {{38,0,0},{0,38,0},{0,0,38}}; 	
 	protected double[][] mOffsetVectorAnalogAccel = {{2048},{2048},{2048}};
 	
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibAccelWideRange = new TreeMap<Integer, CalibDetailsKinematic>(); 
-	protected double[][] mAlignmentMatrixWRAccel = {{-1,0,0},{0,1,0},{0,0,-1}};//XXX-RS-LSM-SensorClass?	 			
-	protected double[][] mSensitivityMatrixWRAccel = {{1631,0,0},{0,1631,0},{0,0,1631}};//XXX-RS-LSM-SensorClass?	 	
-	protected double[][] mOffsetVectorWRAccel = {{0},{0},{0}};//XXX-RS-LSM-SensorClass?		
-
 	//Default values Shimmer2 
+	protected static final double[][] AlignmentMatrixAccelShimmer2 =  {{-1,0,0},{0,-1,0},{0,0,1}}; 			
+	protected static final double[][] OffsetVectorAccelShimmer2 = {{2048},{2048},{2048}};			
 	protected static final double[][] SensitivityMatrixAccel1p5gShimmer2 = {{101,0,0},{0,101,0},{0,0,101}};
 	protected static final double[][] SensitivityMatrixAccel2gShimmer2 = {{76,0,0},{0,76,0},{0,0,76}};
 	protected static final double[][] SensitivityMatrixAccel4gShimmer2 = {{38,0,0},{0,38,0},{0,0,38}};
 	protected static final double[][] SensitivityMatrixAccel6gShimmer2 = {{25,0,0},{0,25,0},{0,0,25}};
-	protected static final double[][] AlignmentMatrixAccelShimmer2 =  {{-1,0,0},{0,-1,0},{0,0,1}}; 			
-	protected static final double[][] OffsetVectorAccelShimmer2 = {{2048},{2048},{2048}};			
 	//Shimmer3
-	//XXX-RS-AA-SensorClass?
+	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
+	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
-	protected static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
-	
-	public static final double[][] SensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};//XXX-RS-LSM-SensorClass?	
-	public static final double[][] SensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};//XXX-RS-LSM-SensorClass?	
-	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};//XXX-RS-LSM-SensorClass?	
-	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};//XXX-RS-LSM-SensorClass?	
 
-	protected static final double[][] AlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}};//XXX-RS-LSM-SensorClass?	 	
-	protected static final double[][] AlignmentMatrixAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
-	//XXX-RS-AA-SensorClass?
-	protected static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
-	
-	protected static final double[][] OffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};//XXX-RS-LSM-SensorClass?	
-
-	protected double OffsetECGRALL=2060;
-	protected double GainECGRALL=175;
-	protected double OffsetECGLALL=2060;
-	protected double GainECGLALL=175;
-	protected double OffsetEMG=2060;
-	protected double GainEMG=750;
-
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibGyro = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelAnalogShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
-		mCalibGyro.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], 
-				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], Shimmer3.ListofGyroRange[0],
-						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro250dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibGyro.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], 
-				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], Shimmer3.ListofGyroRange[1],
-						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro500dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibGyro.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], 
-				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], Shimmer3.ListofGyroRange[2],
-						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibGyro.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], 
-				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], Shimmer3.ListofGyroRange[3],
-						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibMapAccelAnalogShimmer3.put(0, new CalibDetailsKinematic(0, "+/- 2g",
+						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3));
 	}
+	// ----------   Analog accel end ---------------
+	
+	//XXX-RS-LSM-SensorClass?
+	// ----------   Wide-range accel start ---------------
+	protected boolean mHighResAccelWR = false; //TODO: add comment and set from BT command
+//	protected boolean mLowPowerAccelWR = false;//TODO: add comment and set from BT command	
+	protected int mLSM303DigitalAccelRate=0;
+	/**
+	 * This stores the current accelerometer range being used. The accelerometer
+	 * range is stored during two instances, once an ack packet is received
+	 * after a writeAccelRange(), and after a response packet has been received
+	 * after readAccelRange()
+	 */
+	protected int mAccelRange=0;
+	protected boolean mLowPowerAccelWR = false;	
+	
+	/** all raw params should start with a 1 byte identifier in position [0] */
+	protected byte[] mDigiAccelCalRawParams  = new byte[22];
+
+	protected boolean mDefaultCalibrationParametersDigitalAccel = true; //Also known as the wide range accelerometer
+
+	protected double[][] mAlignmentMatrixWRAccel = {{-1,0,0},{0,1,0},{0,0,-1}};	 			
+	protected double[][] mSensitivityMatrixWRAccel = {{1631,0,0},{0,1631,0},{0,0,1631}};	 	
+	protected double[][] mOffsetVectorWRAccel = {{0},{0},{0}};		
+
+	protected static final double[][] AlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}};	 	
+	protected static final double[][] OffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
+
+	public static final double[][] SensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};	
+	public static final double[][] SensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};	
+	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};	
+	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};	
+
+	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelWideRangeShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	{
+		//TODO improve the way these are loaded - using array indexes is too hard coded?
+		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[0], 
+				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[0], Shimmer3.ListofAccelRange[0],
+						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel2gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[1], 
+				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[1], Shimmer3.ListofAccelRange[1],
+						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel4gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[2], 
+				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[2], Shimmer3.ListofAccelRange[2],
+						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel8gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], 
+				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], Shimmer3.ListofAccelRange[3],
+						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel16gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+	}
+	// ----------   Wide-range accel end ---------------
+
+	// ----------   Gyro start ---------------
+	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
+	protected int mGyroRange=1;													 
+	protected boolean mLowPowerGyro = false;
+
+	/** all raw params should start with a 1 byte identifier in position [0] */
+	protected byte[] mGyroCalRawParams  = new byte[22];
+
 	protected boolean mDefaultCalibrationParametersGyro = true;
+	
 	protected double[][] mAlignmentMatrixGyroscope = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	protected double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
 	protected double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};						
 
 	//Default values Shimmer2
 	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
 	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
+	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
 	//Shimmer3
+	protected static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+	protected static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};		
 	public static final double[][] SensitivityMatrixGyro250dpsShimmer3 = {{131,0,0},{0,131,0},{0,0,131}};
 	public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
 	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
 	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
-	protected static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	protected static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};		
 
-	protected int mCurrentLEDStatus=0;
+	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	{
+		//TODO improve the way these are loaded - using array indexes is too hard coded?
+		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], Shimmer3.ListofGyroRange[0],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro250dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], Shimmer3.ListofGyroRange[1],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro500dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], Shimmer3.ListofGyroRange[2],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], Shimmer3.ListofGyroRange[3],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
+	}
+	
+	protected double mGyroOVCalThreshold = 1.2;
+	DescriptiveStatistics mGyroX;
+	DescriptiveStatistics mGyroY;
+	DescriptiveStatistics mGyroZ;
+	DescriptiveStatistics mGyroXRaw;
+	DescriptiveStatistics mGyroYRaw;
+	DescriptiveStatistics mGyroZRaw;
+	protected boolean mEnableOntheFlyGyroOVCal = false;
+	// ----------   Gyro end ---------------
+
 	//XXX-RS-LSM-SensorClass?	
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMag = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	// ----------   Mag start ---------------
+	protected boolean mLowPowerMag = false;	
+
+	protected int mShimmer2MagRate=0;
+	/** This stores the current Mag Sampling rate, it is a value between 0 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz*/
+	protected int mLSM303MagRate=4;
+	/** Currently not supported on Shimmer2. This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga */
+	protected int mMagRange=1;	
+
+	/** all raw params should start with a 1 byte identifier in position [0] */
+	protected byte[] mMagCalRawParams  = new byte[22];	
+
 	protected boolean mDefaultCalibrationParametersMag = true;	
+	
 	protected double[][] mAlignmentMatrixMagnetometer = {{1,0,0},{0,1,0},{0,0,-1}};				
 	protected double[][] mSensitivityMatrixMagnetometer = {{580,0,0},{0,580,0},{0,0,580}};	
 	protected double[][] mOffsetVectorMagnetometer = {{0},{0},{0}};
@@ -651,20 +730,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] AlignmentMatrixMagShimmer2 = {{1,0,0},{0,1,0},{0,0,-1}};
 	protected static final double[][] SensitivityMatrixMagShimmer2 = {{580,0,0},{0,580,0},{0,0,580}}; 		
 	protected static final double[][] OffsetVectorMagShimmer2 = {{0},{0},{0}};				
-	//Shimmer3 
-	//XXX-RS-LSM-SensorClass?	
-	protected static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
-	protected static final double[][] SensitivityMatrixMagShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}}; 		
-	protected static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
-
-	//XXX-RS-LSM-SensorClass?	
-	public static final double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
-	public static final double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
-	public static final double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
-	public static final double[][] SensitivityMatrixMag4GaShimmer3 = {{450,0,0},{0,450,0},{0,0,400}};
-	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
-	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
-	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
 
 	protected static final double[][] SensitivityMatrixMag0p8GaShimmer2 = {{1370,0,0},{0,1370,0},{0,0,1370}};
 	protected static final double[][] SensitivityMatrixMag1p3GaShimmer2 = {{1090,0,0},{0,1090,0},{0,0,1090}};
@@ -675,7 +740,78 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] SensitivityMatrixMag5p6GaShimmer2 = {{330,0,0},{0,330,0},{0,0,330}};
 	protected static final double[][] SensitivityMatrixMag8p1GaShimmer2 = {{230,0,0},{0,230,0},{0,0,230}};
 
-	//YYY ----------- Now implemented in SensorBMP180 -------------------------
+	//Shimmer3 
+	protected static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
+	protected static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
+
+	public static final double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
+	public static final double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
+	public static final double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
+	public static final double[][] SensitivityMatrixMag4GaShimmer3 = {{450,0,0},{0,450,0},{0,0,400}};
+	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
+	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
+	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
+
+	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapMagShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	{
+		//TODO improve the way these are loaded - using array indexes is too hard coded?
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[0], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[0], Shimmer3.ListofMagRange[0],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p3GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[1], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[1], Shimmer3.ListofMagRange[1],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p9GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[2], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[2], Shimmer3.ListofMagRange[2],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag2p5GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[3], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[3], Shimmer3.ListofMagRange[3],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[4], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[4], Shimmer3.ListofMagRange[4],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4p7GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[5], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[5], Shimmer3.ListofMagRange[5],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag5p6GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[6], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[6], Shimmer3.ListofMagRange[6],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag8p1GaShimmer3, OffsetVectorMagShimmer3));
+	}
+	// ----------   Mag end ---------------
+	
+	// ----------- MPU9X50 options start -------------------------
+	/** This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g */
+	protected int mMPU9150AccelRange=0;
+	protected int mMPU9150GyroAccelRate=0;
+
+	protected int mMPU9150DMP = 0;
+	protected int mMPU9150LPF = 0;
+	protected int mMPU9150MotCalCfg = 0;
+	protected int mMPU9150MPLSamplingRate = 0;
+	protected int mMPU9150MagSamplingRate = 0;
+	protected int mMPLSensorFusion = 0;
+	protected int mMPLGyroCalTC = 0;
+	protected int mMPLVectCompCal = 0;
+	protected int mMPLMagDistCal = 0;
+	protected int mMPLEnable = 0;
+
+	protected double[][] AlignmentMatrixMPLAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLAccel = {{0},{0},{0}};
+	
+	protected double[][] AlignmentMatrixMPLMag = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLMag = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLMag = {{0},{0},{0}};
+	
+	protected double[][] AlignmentMatrixMPLGyro = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	protected double[][] SensitivityMatrixMPLGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
+	protected double[][] OffsetVectorMPLGyro = {{0},{0},{0}};
+
+	// ----------- MPU9X50 options end -------------------------	
+
+	// ----------- Pressure/Temperature Start -------------------------
+	protected int mPressureResolution = 0;
+	
 	protected double pressTempAC1 = 408;          
 	protected double pressTempAC2 = -72;
 	protected double pressTempAC3 = -14383;
@@ -687,50 +823,32 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double pressTempMB = -32767;
 	protected double pressTempMC = -8711;
 	protected double pressTempMD = 2868;
-	// ---------------------------------------------------------------------
-	protected boolean mLowPowerMag = false;//XXX-RS-LSM-SensorClass?	
-	protected boolean mLowPowerAccelWR = false;//XXX-RS-LSM-SensorClass?	
-	protected boolean mLowPowerGyro = false;
 	
-	protected double mLastReceivedCalibratedTimeStamp=-1; 
-	protected boolean mFirstTimeCalTime=true;//XXX-RS-LSM-SensorClass?	
-	protected double mCalTimeStart;//XXX-RS-LSM-SensorClass?	
-	private double mLastKnownHeartRate=0;
-	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024); //YYY -BattVolt-SensorClass
-	Quat4d mQ = new Quat4d();//XXX-RS-LSM-SensorClass?	
-	transient GradDes3DOrientation mOrientationAlgo;//XXX-RS-LSM-SensorClass?	
-	protected boolean mOrientationEnabled = false;//XXX-RS-LSM-SensorClass?	
-	protected boolean mEnableOntheFlyGyroOVCal = false;
+	protected byte[] mPressureCalRawParams = new byte[23];
+	protected byte[] mPressureRawParams  = new byte[23];
+	// ----------- Pressure/Temperature end -------------------------
+	
+	// ----------  ECG/EMG start ---------------
+	protected double OffsetECGRALL=2060;
+	protected double GainECGRALL=175;
+	protected double OffsetECGLALL=2060;
+	protected double GainECGLALL=175;
+	protected double OffsetEMG=2060;
+	protected double GainEMG=750;
 
-	protected double mGyroOVCalThreshold = 1.2;
-	DescriptiveStatistics mGyroX;
-	DescriptiveStatistics mGyroY;
-	DescriptiveStatistics mGyroZ;
-	DescriptiveStatistics mGyroXRaw;
-	DescriptiveStatistics mGyroYRaw;
-	DescriptiveStatistics mGyroZRaw;
-	
-	protected boolean mEnableCalibration = true;//XXX-RS-LSM-SensorClass?	
-	protected byte[] mInquiryResponseBytes;//XXX-RS-LSM-SensorClass?	
-//	protected boolean mIsStreaming =false;											// This is used to monitor whether the device is in streaming mode
-//	protected boolean mIsSDLogging =false;											// This is used to monitor whether the device is in sd log mode
-	//all raw params should start with a 1 byte identifier in position [0]
-	//XXX-RS-AA-SensorClass?
-	protected byte[] mAccelCalRawParams = new byte[22];
-	
-	protected byte[] mDigiAccelCalRawParams  = new byte[22];//XXX-RS-LSM-SensorClass?	
-	protected byte[] mGyroCalRawParams  = new byte[22];
-	protected byte[] mMagCalRawParams  = new byte[22];//XXX-RS-LSM-SensorClass?	
-	
-	    // ----------- Now implemented in SensorBMP180 -------------------------
-		protected byte[] mPressureCalRawParams = new byte[23];
-		protected byte[] mPressureRawParams  = new byte[23];
-		// ---------------------------------------------------------------------
-	
+	/** 0 = 16 bit, 1 = 24 bit */
+	protected int mExGResolution = 1;
+	private boolean mIsExg1_24bitEnabled = false;
+	private boolean mIsExg2_24bitEnabled = false;
+	private boolean mIsExg1_16bitEnabled = false;
+	private boolean mIsExg2_16bitEnabled = false;
+
+	//Shimmer2r and not Shimmer3?
 	protected byte[] mEMGCalRawParams  = new byte[13];
 	protected byte[] mECGCalRawParams = new byte[13];
 	
-	
+	protected boolean mDefaultCalibrationParametersECG = true;
+	protected boolean mDefaultCalibrationParametersEMG = true;
 
 	//EXG
 	protected ExGConfigBytesDetails mExGConfigBytesDetails = new ExGConfigBytesDetails(); 
@@ -764,76 +882,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mEXG2RespirationDetectState;//Not used in ShimmerBluetooth
 	protected int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
 	protected int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
+	// ----------  ECG/EMG end ---------------
 	
-	//YYY ----------- MPU9X50 options start -------------------------
-//	protected int mMPU9150GyroRate = 0;
-//	protected int mMPUAccelRange = 0;
+	// ---------- GSR start ------------------
+	protected int mGSRRange=4;													// This stores the current GSR range being used.
+	protected int mPastGSRRange=4; // this is to fix a bug with SDLog v0.9
+	protected int mPastGSRUncalibratedValue=4; // this is to fix a bug with SDLog v0.9
+	protected boolean mPastGSRFirstTime=true; // this is to fix a bug with SDLog v0.9
+	// ---------- GSR end ------------------
 
-	protected int mMPU9150AccelRange=0;											// This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
-	protected int mMPU9150GyroAccelRate=0;
-
-	protected int mMPU9150DMP = 0;
-	protected int mMPU9150LPF = 0;
-	protected int mMPU9150MotCalCfg = 0;
-	protected int mMPU9150MPLSamplingRate = 0;
-	protected int mMPU9150MagSamplingRate = 0;
-	protected int mMPLSensorFusion = 0;
-	protected int mMPLGyroCalTC = 0;
-	protected int mMPLVectCompCal = 0;
-	protected int mMPLMagDistCal = 0;
-	protected int mMPLEnable = 0;
-
-	protected double[][] AlignmentMatrixMPLAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	protected double[][] SensitivityMatrixMPLAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-	protected double[][] OffsetVectorMPLAccel = {{0},{0},{0}};
-	
-	protected double[][] AlignmentMatrixMPLMag = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	protected double[][] SensitivityMatrixMPLMag = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-	protected double[][] OffsetVectorMPLMag = {{0},{0},{0}};
-	
-	protected double[][] AlignmentMatrixMPLGyro = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	protected double[][] SensitivityMatrixMPLGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
-	protected double[][] OffsetVectorMPLGyro = {{0},{0},{0}};
-
-	// ----------- MPU9X50 options end -------------------------	
-
-	
-	//This features are only used in LogAndStream FW 
-	protected String mDirectoryName;
-	protected int mDirectoryNameLength;
-	@Deprecated
-	private List<String[]> mExtraSignalProperties = null;
-	
-	public static final double ACCELERATION_DUE_TO_GRAVITY = 9.81;//XXX-RS-LSM-SensorClass?
-	
-	/** GQ BLE */
-	protected int mGqPacketNumHeaderBytes = 0;
-	/** GQ BLE */
-	protected int mSamplingDividerVBatt = 0;
-	/** GQ BLE */
-	protected int mSamplingDividerGsr = 0;
-// ----------- Now implemented in SensorPPG -------------------------		
-	/** GQ BLE */
-	protected int mSamplingDividerPpg = 0;
-// ------------------------------------------------------------------	
-	/** GQ BLE */
-	protected int mSamplingDividerLsm303dlhcAccel = 0;//XXX-RS-LSM-SensorClass?
-	/** GQ BLE */
-	protected int mSamplingDividerBeacon = 0;
-
-	
-	protected int mTimeStampPacketByteSize = 2;
-//	protected byte[] mSetRWC;
-//	protected byte[] mGetRWC;
-//	public long mShimmerRealTimeClockConFigTime = 0;
-//	public long mShimmerLastReadRealTimeClockValue = 0;
-//	public String mShimmerLastReadRtcValueParsed = "";
-	
-	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
-	
-	private boolean isOverrideShowRwcErrorLeds = true;
-
-	protected abstract void checkBattery();
 	
 	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
 	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
@@ -4300,13 +4357,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 				
-				int rangeValue = 0;
-				String rangeString = "+-2g";
-				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, 
-						mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel,
-						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3);
-//				calDetails.mIsDefaultCal = mDefaultCalibrationParametersAccel;
-				mCalibAccelAnalog.put(rangeValue, calDetails);
+				updateCalibMapAccelLn();
 			}
 			
 			//XXX-RS-LSM-SensorClass?
@@ -4327,11 +4378,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					setDefaultCalibrationShimmer3WideRangeAccel();
 				}
 				
-				int rangeValue = getAccelRange();
-				String rangeString = "TEMP"; //TODO update with getSensorRangeFromConfigValue()
-				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
-//				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
-				mCalibAccelWideRange.put(rangeValue, calDetails);
+				updateCalibMapAccelWr();
 			}
 			
 			if(packetType==GYRO_CALIBRATION_RESPONSE){
@@ -4365,15 +4412,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				} 
 				
-				int rangeValue = getGyroRange();
-				CalibDetailsKinematic calDetails = mCalibGyro.get(rangeValue);
-				if(calDetails==null){
-					String rangeString = "TEMP"; //TODO update with getSensorRangeFromConfigValue()
-					calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
-				}
-				calDetails.setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
-//				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
-				mCalibGyro.put(rangeValue, calDetails);
+				updateCalibMapGyro();
 			}
 			
 			if(packetType==MAG_CALIBRATION_RESPONSE){
@@ -4416,21 +4455,61 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 				
-				int rangeValue = mMagRange;
-				String rangeString = "TEMP"; //TODO update with getSensorRangeFromConfigValue()
-				CalibDetailsKinematic calDetails = new CalibDetailsKinematic(rangeValue, rangeString, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
-//				calDetails.mIsDefaultCal = mDefaultCalibrationParametersDigitalAccel;
-				mCalibGyro.put(rangeValue, calDetails);
+				updateCalibMapMag();
 			}
 		}
 	}
+
+	private void updateCalibMapAccelLn() {
+		int rangeValue = 0;
+		CalibDetailsKinematic calDetails = mCalibMapAccelAnalogShimmer3.get(rangeValue);
+		if(calDetails==null){
+			String rangeString = "+/- 2g";
+			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+		}
+		calDetails.setCurrentValues(mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+		mCalibMapAccelAnalogShimmer3.put(rangeValue, calDetails);
+	}
+
+	private void updateCalibMapAccelWr() {
+		int rangeValue = getAccelRange();
+		CalibDetailsKinematic calDetails = mCalibMapAccelWideRangeShimmer3.get(rangeValue);
+		if(calDetails==null){
+			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, Shimmer3.ListofAccelRange, rangeValue);
+			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+		}
+		calDetails.setCurrentValues(mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
+		mCalibMapAccelWideRangeShimmer3.put(rangeValue, calDetails);
+	}
+
+	private void updateCalibMapGyro() {
+		int rangeValue = getGyroRange();
+		CalibDetailsKinematic calDetails = mCalibMapGyroShimmer3.get(rangeValue);
+		if(calDetails==null){
+			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofMPU9150GyroRangeConfigValues, Shimmer3.ListofGyroRange, rangeValue);
+			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+		}
+		calDetails.setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+		mCalibMapGyroShimmer3.put(rangeValue, calDetails);
+	}
 	
-	//TODO: MN 22-06-2016
-	public String getSensorRangeFromConfigValue(){
-//		int index = Arrays.asList(sensorCalDetOb.getSensorRangesConfigValues()).indexOf(sensorCalDetOb.getCurrentConfigValue());
-//		return sensorCalDetOb.getSensorRanges()[index];
-		
-		return "";
+	private void updateCalibMapMag() {
+		int rangeValue = mMagRange;
+		CalibDetailsKinematic calDetails = mCalibMapMagShimmer3.get(rangeValue);
+		if(calDetails==null){ //Should never be null
+			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofMagRangeConfigValues, Shimmer3.ListofMagRange, rangeValue);
+			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+		}
+		calDetails.setCurrentValues(mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+		mCalibMapMagShimmer3.put(rangeValue, calDetails);
+	}
+
+	public static String getSensorRangeFromConfigValue(Integer[] listOfConfigValues, String[] listOfConfigValueStrings, Integer configValueToFind){
+		int index = Arrays.asList(listOfConfigValues).indexOf(configValueToFind);
+		if(index>=0 && listOfConfigValueStrings.length>index){
+			return listOfConfigValueStrings[index];
+		}
+		return "?";
 	}
 
 	//XXX-RS-AA-SensorClass?
@@ -8266,10 +8345,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Override
 	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getMapOfKinematicSensorCalibration(){
 		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
-		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibAccelAnalog);
-		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibGyro);
-		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibAccelWideRange);
-		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMag);
+		if(getHardwareVersion()==HW_ID.SHIMMER_2R){
+			//TODO add support for Shimmer2r if needed
+		}
+		else if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3);
+			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
+			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibMapAccelWideRangeShimmer3);
+			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3);
+		}
 		return mapOfKinematicSensorCalibration;
 	}
 
@@ -9976,13 +10060,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		for(int j = 0; j < matrix[1].length; j++){
 			for(int i = 0; i < matrix.length; i++){
-		//		ty
-			}
-			
+		if(matrix[j][i]!=0){
+			allZeros = false;
 		}
-		
+			}
+		}
 		return allZeros;
 	}
+	
 
 	//XXX-RS-LSM-SensorClass?
 	public boolean isUsingDefaultMagParam(){
@@ -10578,16 +10663,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// ----------- MPU9X50 options end -------------------------
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel) {
 		Object returnValue = null;
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
         
-		switch(componentName){
+		Integer sensorMapKey = Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR;
+		try{
+			sensorMapKey = Integer.parseInt(identifier);
+		} catch (NumberFormatException nFE){
+			//Do nothing
+		}
+
+        
+		switch(configLabel){
 //Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				returnValue = isButtonStart();
@@ -10767,7 +10860,39 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
 				returnValue = getSamplingDividerVBatt();
 	    		break;
-	    		
+
+			case(AbstractSensor.GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+					return 0;
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
+				}
+				break;
+			case(AbstractSensor.GuiLabelConfigCommon.RATE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					return this.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+				}
+				break;
+
 	    		
 //Strings
 //    					case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
@@ -10824,7 +10949,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    			        	break;
 	        	
 	        default:
-	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
+	        	returnValue = super.getConfigValueUsingConfigLabel(configLabel);
 	        	break;
 		}
 		
@@ -10832,12 +10957,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}		
 	
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String identifier, String configLabel, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
 
-		switch(componentName){
+		switch(configLabel){
 //Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				setButtonStart((boolean)valueToSet);
@@ -11109,14 +11234,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	        	
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel(groupName, componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel(identifier, configLabel, valueToSet);
 	        	break;
 		}
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass?
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass?
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
 			
 		return returnValue;

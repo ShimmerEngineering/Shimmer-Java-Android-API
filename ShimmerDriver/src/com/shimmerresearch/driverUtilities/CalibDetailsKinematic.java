@@ -2,8 +2,7 @@ package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
-import com.shimmerresearch.driver.UtilShimmer;
+import java.util.List;
 
 /**
  * Class that holds the calibration parameters for a particular range in a
@@ -17,40 +16,39 @@ public class CalibDetailsKinematic implements Serializable {
 	/** * */
 	private static final long serialVersionUID = -3556098650349506733L;
 	
-	protected double[][] mAlignmentMatrix = null; 			
-	protected double[][] mSensitivityMatrix = null; 	
-	protected double[][] mOffsetVector = null;
+	public double[][] mCurrentAlignmentMatrix = null; 			
+	public double[][] mCurrentSensitivityMatrix = null; 	
+	public double[][] mCurrentOffsetVector = null;
 
-	protected double[][] mDefaultAlignmentMatrix = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	protected double[][] mDefaultSensitivityMatrix = {{0,0,0},{0,0,0},{0,0,0}}; 	
-	protected double[][] mDefaultOffsetVector = {{0},{0},{0}};
+	public double[][] mDefaultAlignmentMatrix = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	public double[][] mDefaultSensitivityMatrix = {{0,0,0},{0,0,0},{0,0,0}}; 	
+	public double[][] mDefaultOffsetVector = {{0},{0},{0}};
 	
-	protected String mRangeString = "";
-	protected int mRangeValue = 0;
+	public String mRangeString = "";
+	public int mRangeValue = 0;
 	
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {
 		this.mRangeValue = rangeValue;
 		this.mRangeString = rangeString;
 	}
 
-	public CalibDetailsKinematic(int rangeValue, String rangeString, double[][] alignmentMatrix, double[][] sensitivityMatrix, double[][] offsetVector) {
+	public CalibDetailsKinematic(int rangeValue, String rangeString, double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
 		this(rangeValue, rangeString);
-		this.setCurrentValues(alignmentMatrix, sensitivityMatrix, offsetVector);
-	}
-
-	public CalibDetailsKinematic(int rangeValue, String rangeString, 
-			double[][] alignmentMatrix, double[][] sensitivityMatrix, double[][] offsetVector,
-			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
-		this(rangeValue, rangeString, alignmentMatrix, sensitivityMatrix, offsetVector);
-
 		this.setDefaultValues(defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
 	}
 
+	public CalibDetailsKinematic(int rangeValue, String rangeString, 
+			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector,
+			double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
+		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
+		this.setCurrentValues(currentAlignmentMatrix, currentSensitivityMatrix, currentOffsetVector);
+	}
+
 	
-	public void setCurrentValues(double[][] alignmentMatrix, double[][] sensitivityMatrix, double[][] offsetVector) {
-		this.mAlignmentMatrix = alignmentMatrix;
-		this.mSensitivityMatrix = sensitivityMatrix;
-		this.mOffsetVector = offsetVector;
+	public void setCurrentValues(double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
+		this.mCurrentAlignmentMatrix = currentAlignmentMatrix;
+		this.mCurrentSensitivityMatrix = currentSensitivityMatrix;
+		this.mCurrentOffsetVector = currentOffsetVector;
 	}
 
 	public void setDefaultValues(double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
@@ -60,15 +58,14 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 
 	public void resetToDefaultParameters(){
-		mAlignmentMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultAlignmentMatrix);
-		mSensitivityMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultSensitivityMatrix);
-		mOffsetVector = UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector);
+		mCurrentAlignmentMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultAlignmentMatrix);
+		mCurrentSensitivityMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultSensitivityMatrix);
+		mCurrentOffsetVector = UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector);
 	}
 	
 	
-	
 	public boolean isCurrentValuesSet(){
-		if(mAlignmentMatrix!=null && mSensitivityMatrix!=null && mOffsetVector!=null){
+		if(mCurrentAlignmentMatrix!=null && mCurrentSensitivityMatrix!=null && mCurrentOffsetVector!=null){
 			return true;
 		}
 		return false;
@@ -84,24 +81,24 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 	
 	public boolean isAlignmentUsingDefault(){
-		if(mAlignmentMatrix==null || mDefaultAlignmentMatrix==null){
+		if(mCurrentAlignmentMatrix==null || mDefaultAlignmentMatrix==null){
 			return false;
 		}
-		return Arrays.deepEquals(mAlignmentMatrix, mDefaultAlignmentMatrix);
+		return Arrays.deepEquals(mCurrentAlignmentMatrix, mDefaultAlignmentMatrix);
 	}
 
 	public boolean isSensitivityUsingDefault(){
-		if(mSensitivityMatrix==null || mDefaultSensitivityMatrix==null){
+		if(mCurrentSensitivityMatrix==null || mDefaultSensitivityMatrix==null){
 			return false;
 		}
-		return Arrays.deepEquals(mSensitivityMatrix, mDefaultSensitivityMatrix);
+		return Arrays.deepEquals(mCurrentSensitivityMatrix, mDefaultSensitivityMatrix);
 	}
 
 	public boolean isOffsetVectorUsingDefault(){
-		if(mOffsetVector==null || mDefaultOffsetVector==null){
+		if(mCurrentOffsetVector==null || mDefaultOffsetVector==null){
 			return false;
 		}
-		return Arrays.deepEquals(mOffsetVector, mDefaultOffsetVector);
+		return Arrays.deepEquals(mCurrentOffsetVector, mDefaultOffsetVector);
 	}
 
 	
@@ -126,5 +123,27 @@ public class CalibDetailsKinematic implements Serializable {
 	public boolean isOffsetVectorValid(){
 		//TODO for Eimear
 		return true;
+	}
+
+	public String generateDebugString() {
+		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
+		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Current Alignment", mCurrentAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Default Sensitivity", mDefaultSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("CurrentSensitivity", mCurrentSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("Default Offset Vector", mDefaultOffsetVector);
+		debugString += generateDebugStringPerProperty("Current Offset Vector", mCurrentOffsetVector);
+		return debugString;
+	}
+
+	private String generateDebugStringPerProperty(String property, double[][] calMatrix) {
+		String debugString = property + " =\n";
+		if(calMatrix==null){
+			debugString += "NULL\n";
+		}
+		else{
+			debugString += UtilShimmer.doubleArrayToString(calMatrix);
+		}
+		return debugString;
 	}
 }

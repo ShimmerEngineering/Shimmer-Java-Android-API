@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.shimmerresearch.driver.UtilShimmer;
-
 /**
  * Holds Shimmer Hardware and Firmware version details.
  * 

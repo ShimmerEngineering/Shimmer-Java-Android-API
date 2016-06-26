@@ -15,7 +15,6 @@ import com.shimmerresearch.driver.InfoMemLayout;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.Shimmer4;
 import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
@@ -32,6 +31,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -2320,9 +2320,9 @@ public class SensorEXG extends AbstractSensor{
 
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
 				setExGResolution((int)valueToSet);
 				returnValue = valueToSet;
@@ -2363,24 +2363,24 @@ public class SensorEXG extends AbstractSensor{
 	        	break;
 		}
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
 			
 		return returnValue;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
 		
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
 				returnValue = getExGGainSetting();
 				//consolePrintLn("Get " + configValue);

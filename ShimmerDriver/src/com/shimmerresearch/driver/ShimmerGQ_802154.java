@@ -21,6 +21,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;

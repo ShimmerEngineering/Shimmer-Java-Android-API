@@ -4,22 +4,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilCalibration;
+import com.shimmerresearch.driverUtilities.UtilParseData;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -83,6 +88,49 @@ public class SensorLSM303 extends AbstractSensor{
 	protected static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
 	protected static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};	
 
+	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelWideRangeShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	{
+		//TODO improve the way these are loaded - using array indexes is too hard coded?
+		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[0], 
+				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[0], Shimmer3.ListofAccelRange[0],
+						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel2gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[1], 
+				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[1], Shimmer3.ListofAccelRange[1],
+						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel4gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[2], 
+				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[2], Shimmer3.ListofAccelRange[2],
+						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel8gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], 
+				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], Shimmer3.ListofAccelRange[3],
+						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel16gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+	}
+	
+	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapMagShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	{
+		//TODO improve the way these are loaded - using array indexes is too hard coded?
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[0], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[0], Shimmer3.ListofMagRange[0],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p3GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[1], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[1], Shimmer3.ListofMagRange[1],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p9GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[2], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[2], Shimmer3.ListofMagRange[2],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag2p5GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[3], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[3], Shimmer3.ListofMagRange[3],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[4], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[4], Shimmer3.ListofMagRange[4],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4p7GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[5], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[5], Shimmer3.ListofMagRange[5],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag5p6GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[6], 
+				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[6], Shimmer3.ListofMagRange[6],
+						AlignmentMatrixMagShimmer3, SensitivityMatrixMag8p1GaShimmer3, OffsetVectorMagShimmer3));
+	}
+	
 	//TODO commented - RS (20/5/2016): Keep in Configuration.java for now. 
 //	public class SensorBitmap{
 //		public static final int SENSOR_MAG = 0x20;
@@ -589,11 +637,10 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 	@Override 
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		
-		switch(componentName){
-		
+		switch(configLabel){
 			case(GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
 				setLowPowerAccelWR((boolean)valueToSet);
 				break;
@@ -601,7 +648,6 @@ public class SensorLSM303 extends AbstractSensor{
 			case(GuiLabelConfig.LSM303DLHC_MAG_LPM):
 				setLowPowerMag((boolean)valueToSet);
 				break;
-				
 			case(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
 				setDigitalAccelRange((int)valueToSet);
 				break;
@@ -617,21 +663,42 @@ public class SensorLSM303 extends AbstractSensor{
 			case(GuiLabelConfig.LSM303DLHC_MAG_RATE):
 				setLSM303MagRate((int)valueToSet);
 				break;
+				
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+				TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
+				setKinematicCalibration(mapOfKinematicSensorCalibration);
+				returnValue = valueToSet;
+	    		break;
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, valueToSet);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_MAG_RANGE, valueToSet);
+				}
+				break;
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_ACCEL_RATE, valueToSet);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_MAG_RANGE, valueToSet);
+				}
+				break;
 		}		
 		return returnValue;
 	}
 
 	
 	@Override 
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
 		
-		if(componentName.equals(GuiLabelConfig.LSM303DLHC_ACCEL_RATE)){
-        	checkConfigOptionValues(componentName);
+		if(configLabel.equals(GuiLabelConfig.LSM303DLHC_ACCEL_RATE)){
+        	checkConfigOptionValues(configLabel);
         }
 		
-		switch(componentName){
-		
+		switch(configLabel){
 			case(GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
 				returnValue = isLSM303DigitalAccelLPM();
 	        	break;
@@ -672,9 +739,30 @@ public class SensorLSM303 extends AbstractSensor{
 			case(GuiLabelConfig.LSM303DLHC_MAG_RATE):
 				returnValue = getLSM303MagRate();
 	        	break;
+	        	
+			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+				returnValue = getKinematicCalibration();
+				break;
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+				}
+				break;
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_MAG_RATE);
+				}
+				break;
 			
 		}
 		return returnValue;
+	
 	}
 
 	
@@ -905,43 +993,50 @@ public class SensorLSM303 extends AbstractSensor{
 		double[][] OffsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
 		
 		//Accelerometer
-		if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE && checkIfDefaultWideRangeAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
-			mDefaultCalibrationParametersDigitalAccel = true;
-			mAlignmentMatrixWRAccel = AlignmentMatrix;
-			mOffsetVectorWRAccel = OffsetVector;
-			mSensitivityMatrixWRAccel = SensitivityMatrix;
-		}
-		else if (packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
-			mDefaultCalibrationParametersDigitalAccel = false;
-			mAlignmentMatrixWRAccel = AlignmentMatrix;
-			mOffsetVectorWRAccel = OffsetVector;
-			mSensitivityMatrixWRAccel = SensitivityMatrix;
-		}
-		else if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE  && SensitivityMatrix[0][0]==-1){
-			//TODO - Use Shimmer3 values or something different? 
-
-			setDefaultCalibrationShimmer3WideRangeAccel();
+		if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE){
+			if(checkIfDefaultWideRangeAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
+				mDefaultCalibrationParametersDigitalAccel = true;
+				mAlignmentMatrixWRAccel = AlignmentMatrix;
+				mOffsetVectorWRAccel = OffsetVector;
+				mSensitivityMatrixWRAccel = SensitivityMatrix;
+			}
+			else if (SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
+				mDefaultCalibrationParametersDigitalAccel = false;
+				mAlignmentMatrixWRAccel = AlignmentMatrix;
+				mOffsetVectorWRAccel = OffsetVector;
+				mSensitivityMatrixWRAccel = SensitivityMatrix;
+			}
+			else if(SensitivityMatrix[0][0]==-1){
+				setDefaultCalibrationShimmer3WideRangeAccel();
+			}
+			
+			updateCalibMapAccelWr();
 		}
 		
+		
 		//Magnetometer
-		if(packetType==MAG_CALIBRATION_RESPONSE && checkIfDefaulMagCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
-			mDefaultCalibrationParametersMag = true;
-			mAlignmentMatrixMagnetometer = AlignmentMatrix;
-			mOffsetVectorMagnetometer = OffsetVector;
-			mSensitivityMatrixMagnetometer = SensitivityMatrix;
-		}
-		else if (packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]!=-1) {
-			mDefaultCalibrationParametersMag = false;
-			mAlignmentMatrixMagnetometer = AlignmentMatrix;
-			mOffsetVectorMagnetometer = OffsetVector;
-			mSensitivityMatrixMagnetometer = SensitivityMatrix;
-		}
-		else if(packetType==MAG_CALIBRATION_RESPONSE && SensitivityMatrix[0][0]==-1){
+		if(packetType==MAG_CALIBRATION_RESPONSE){
+			if(checkIfDefaulMagCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
+				mDefaultCalibrationParametersMag = true;
+				mAlignmentMatrixMagnetometer = AlignmentMatrix;
+				mOffsetVectorMagnetometer = OffsetVector;
+				mSensitivityMatrixMagnetometer = SensitivityMatrix;
+			}
+			else if (SensitivityMatrix[0][0]!=-1) {
+				mDefaultCalibrationParametersMag = false;
+				mAlignmentMatrixMagnetometer = AlignmentMatrix;
+				mOffsetVectorMagnetometer = OffsetVector;
+				mSensitivityMatrixMagnetometer = SensitivityMatrix;
+			}
+			else if(SensitivityMatrix[0][0]==-1){
 			//TODO - Use Shimmer3 values or something different? 
 
-			setDefaultCalibrationShimmer3Mag();
+				setDefaultCalibrationShimmer3Mag();
+			}
+			updateCalibMapMag();
 		}
 	}
+	
 	
 	
 	private void setDefaultCalibrationShimmer3WideRangeAccel() {
@@ -1320,6 +1415,49 @@ public class SensorLSM303 extends AbstractSensor{
 	public double[][] getOffsetVectorMatrixMag(){
 		return mOffsetVectorMagnetometer;
 	}
+	
+	
+	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
+		mCalibMapAccelWideRangeShimmer3.putAll(mapOfKinematicSensorCalibration);
+	}
+	
+	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibration() {
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibMapAccelWideRangeShimmer3);
+		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3);
+		return mapOfKinematicSensorCalibration;
+	}
+
+
+	private void updateCalibMapAccelWr() {
+		int rangeValue = getAccelRange();
+		CalibDetailsKinematic calDetails = mCalibMapAccelWideRangeShimmer3.get(rangeValue);
+		if(calDetails==null){
+			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, Shimmer3.ListofAccelRange, rangeValue);
+			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+		}
+		calDetails.setCurrentValues(mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
+		mCalibMapAccelWideRangeShimmer3.put(rangeValue, calDetails);
+	}
+	
+	private void updateCalibMapMag() {
+		int rangeValue = mMagRange;
+		CalibDetailsKinematic calDetails = mCalibMapMagShimmer3.get(rangeValue);
+		if(calDetails==null){ //Should never be null
+			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofMagRangeConfigValues, Shimmer3.ListofMagRange, rangeValue);
+			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+		}
+		calDetails.setCurrentValues(mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+		mCalibMapMagShimmer3.put(rangeValue, calDetails);
+	}
+	public static String getSensorRangeFromConfigValue(Integer[] listOfConfigValues, String[] listOfConfigValueStrings, Integer configValueToFind){
+		int index = Arrays.asList(listOfConfigValues).indexOf(configValueToFind);
+		if(index>=0 && listOfConfigValueStrings.length>index){
+			return listOfConfigValueStrings[index];
+		}
+		return "?";
+	}
+	
 	//--------- Sensor specific methods end --------------
 
 

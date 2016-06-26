@@ -101,11 +101,11 @@ import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{

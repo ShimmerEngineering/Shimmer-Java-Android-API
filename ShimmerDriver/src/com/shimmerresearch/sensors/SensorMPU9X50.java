@@ -6,20 +6,26 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilCalibration;
+import com.shimmerresearch.driverUtilities.UtilParseData;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -28,7 +34,8 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
+import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
 
 /**
  * @author Ronan McCormack
@@ -102,6 +109,25 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
 	public static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	public static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};	
+	
+	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	{
+		//TODO improve the way these are loaded - using array indexes is too hard coded?
+		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], Shimmer3.ListofGyroRange[0],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro250dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], Shimmer3.ListofGyroRange[1],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro500dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], Shimmer3.ListofGyroRange[2],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], 
+				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], Shimmer3.ListofGyroRange[3],
+						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
+	}
+	
+	
 	
 //	------------ Keep in Configuration? ------------
 //	public class SensorMapKey{
@@ -1688,12 +1714,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
 
-		switch(componentName){
+		switch(configLabel){
 //Booleans
 			case(GuiLabelConfig.MPU9150_DMP):
 		    	setMPU9150DMP((boolean)valueToSet);
@@ -1755,6 +1781,30 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			case(GuiLabelConfig.MPU9150_GYRO_RATE_HZ):
 //				returnValue = getMPU9150GyroAccelRateInHz();
 	        	break;
+			
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+				TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
+				setKinematicCalibration(mapOfKinematicSensorCalibration);
+				returnValue = valueToSet;
+	    		break;
+
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_GYRO_RANGE, valueToSet);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_ACCEL_RANGE, valueToSet);
+				}
+				break;
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_GYRO_RATE, valueToSet);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_GYRO_RATE, valueToSet);
+				}
+				break;			
+			
 	        default:
 //	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
 	        	break;
@@ -1764,9 +1814,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 //Booleans
 			case(GuiLabelConfig.MPU9150_DMP):
 				returnValue = isMPU9150DMP();
@@ -1816,9 +1866,30 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			case(GuiLabelConfig.MPU9150_GYRO_RATE_HZ):
 				returnValue = getMPU9150GyroAccelRateInHz();
 				break;
+				
+			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+				returnValue = getKinematicCalibration();
+				break;
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_GYRO_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_ACCEL_RANGE);
+				}
+				break;
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_GYRO_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_GYRO_RATE);
+				}
+				break;
+				
 		    default:
 	        	break;
-		}
+	    }
 
 		return returnValue;
 	}
@@ -2596,6 +2667,36 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 		return false;
 	}
+	
+	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
+		mCalibMapGyroShimmer3.putAll(mapOfKinematicSensorCalibration);
+	}
+	
+	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibration() {
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
+		return mapOfKinematicSensorCalibration;
+	}
+	
+	private void updateCalibMapGyro() {
+		int rangeValue = getGyroRange();
+		CalibDetailsKinematic calDetails = mCalibMapGyroShimmer3.get(rangeValue);
+		if(calDetails==null){
+			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofMPU9150GyroRangeConfigValues, Shimmer3.ListofGyroRange, rangeValue);
+			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+		}
+		calDetails.setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+		mCalibMapGyroShimmer3.put(rangeValue, calDetails);
+	}
+	
+	public static String getSensorRangeFromConfigValue(Integer[] listOfConfigValues, String[] listOfConfigValueStrings, Integer configValueToFind){
+		int index = Arrays.asList(listOfConfigValues).indexOf(configValueToFind);
+		if(index>=0 && listOfConfigValueStrings.length>index){
+			return listOfConfigValueStrings[index];
+		}
+		return "?";
+	}
+
 	//--------- Optional methods to override in Sensor Class end -------- 
 
 

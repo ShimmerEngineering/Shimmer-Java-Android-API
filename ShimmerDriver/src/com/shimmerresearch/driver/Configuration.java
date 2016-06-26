@@ -97,6 +97,8 @@ import com.shimmerresearch.sensors.ShimmerClock;
  */
 public class Configuration {
 	
+	public static final double ACCELERATION_DUE_TO_GRAVITY = 9.81;
+	
 	public static class CHANNEL_UNITS{
 		//Sensors units
 		public static final String NO_UNITS = "no_units";
@@ -690,6 +692,8 @@ public class Configuration {
 		public static final Integer[] ListOfOnOffConfigValues={0x01,0x00};
 		
 		public class SensorMapKey{
+			public static final int RESERVER_ANY_SENSOR = -1;
+
 			//Sensors channels originating from the Shimmer
 			
 			//Analog channels begin
@@ -823,7 +827,7 @@ public class Configuration {
 			public static final String EXG_GAIN = "Gain";
 			public static final String EXG_BYTES = "Bytes";
 
-			public static final String EXG_RATE = "Rate";
+			public static final String EXG_RATE = "ExG Rate";
 			public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
 			public static final String EXG_LEAD_OFF_DETECTION = "Lead-Off Detection";
 			public static final String EXG_LEAD_OFF_CURRENT = "Lead-Off Current";
@@ -872,8 +876,7 @@ public class Configuration {
 
 			//XXX-RS-AA-SensorClass?
 			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = SensorKionixKXRB52042.GuiLabelConfig.KXRB8_2042_ACCEL_DEFAULT_CALIB;
-			
-			public static final String KINEMATIC_CALIBRATION = "Kinematic Calibration";
+			public static final String KINEMATIC_CALIBRATION_ALL = "Kinematic Calibration all";
 		}
 
 		// GUI Sensor Tiles

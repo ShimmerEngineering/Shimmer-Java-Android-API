@@ -228,7 +228,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 //		if (componentName.equals(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT)){
 //		    setSamplingDividerVBatt((int)valueToSet);
@@ -237,7 +237,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
 //		if(componentName.equals(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT)){
 //			returnValue = getSamplingDividerVBatt();

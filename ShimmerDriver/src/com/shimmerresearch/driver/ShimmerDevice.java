@@ -40,12 +40,13 @@ import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilCalibration;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.UtilCalibration;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -1032,7 +1033,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	    return false;
 	}
 
-	public String getChannelLabel(int sensorMapKey) {
+	public String getSensorLabel(int sensorMapKey) {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
@@ -1044,27 +1045,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return null;
 	}
 
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorMapKey) {
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfoForSensor(int sensorMapKey) {
 		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 		if(sensorDetails!=null){
 			return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
 		}
 		return null;
-		
-//		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
-//		while(iterator.hasNext()){
-//			AbstractSensor abstractSensor = iterator.next();
-//			SensorDetails sensorDetails = abstractSensor.getSensorDetails(sensorMapKey);
-//			if(sensorDetails!=null){
-//				return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
-//			}
-//			
-////			List<ShimmerVerObject> listOfCompatibleVersionInfo = abstractSensor.getSensorListOfCompatibleVersionInfo(sensorMapKey);
-////			if(listOfCompatibleVersionInfo!=null){
-////				return listOfCompatibleVersionInfo;
-////			}
-//		}
-//		return null;
 	}
     
 	/** Returns all sensor map keys in use */
@@ -1080,45 +1066,27 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO Auto-generated method stub
 	}
 	
-	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
-		List<AbstractAlgorithm> listOfAlgorithms = null;
-		
-		if((groupName!=null && !groupName.isEmpty())){
-			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);		
-		}
-		else{
-			listOfAlgorithms = getListOfAlgorithmModules();
-		}
-		
-		// Treat algorithms differently because we normally want to set the same
-		// config across multiple algorithm modules so return only after all have been set
-		if(listOfAlgorithms!=null && !listOfAlgorithms.isEmpty()){
-			for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){	
-				abstractAlgorithm.setSettings(configLabel, valueToSet);
-			}
-		}
-	}
-
 	public Object setConfigValueUsingConfigLabel(String configLabel, Object valueToSet){
 		return setConfigValueUsingConfigLabel("", configLabel, valueToSet);
 	}
+	
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet){
+		return setConfigValueUsingConfigLabel(Integer.toString(sensorMapKey), configLabel, valueToSet);
+	}
 
-	public Object setConfigValueUsingConfigLabel(String groupName, String configLabel, Object valueToSet){
+	public Object setConfigValueUsingConfigLabel(String identifier, String configLabel, Object valueToSet){
 		
-//		System.err.println("GROUPNAME:\t" + (groupName.isEmpty()? "EMPTY":groupName) + "\tCONFIGLABEL:\t" + configLabel);
+//		System.err.println("GROUPNAME:\t" + (identifier.isEmpty()? "EMPTY":identifier) + "\tCONFIGLABEL:\t" + configLabel);
 		
 		Object returnValue = null;
 
-		//TODO check sensor classes return a null if the setting is successfully found
-		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			returnValue = abstractSensor.setConfigValueUsingConfigLabel(groupName, configLabel, valueToSet);
-			if(returnValue!=null){
-				return returnValue;
-			}
+		returnValue = setSensorClassSetting(identifier, configLabel, valueToSet);
+		if(returnValue!=null){
+			return returnValue;
 		}
 		
 		//TODO remove below when ready and use "getAlgorithmConfigValueUsingConfigLabel"
-		setAlgorithmSettings(groupName, configLabel, valueToSet);
+		setAlgorithmSettings(identifier, configLabel, valueToSet);
 
 		switch(configLabel){
 //Booleans
@@ -1148,15 +1116,142 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
 	      		
 	      		returnValue = Double.toString(getSamplingRateShimmer());
+			case(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
+				returnValue = getMapOfKinematicSensorCalibration();
+				break;
 	        default:
 	        	break;
 		}
 		
 		
+		return returnValue;		
+	}
+	
+	public Object getConfigValueUsingConfigLabel(String configLabel){
+		return getConfigValueUsingConfigLabel("", configLabel);
+	}
+
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel){
+		return getConfigValueUsingConfigLabel(Integer.toString(sensorMapKey), configLabel);
+	}
+
+	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel){
+		Object returnValue = null;
+		
+		returnValue = getSensorClassSetting(identifier, configLabel);
+		if(returnValue!=null){
+			return returnValue;
+		}
+		
+		//TODO remove below when ready and use "getAlgorithmConfigValueUsingConfigLabel"
+		returnValue = getAlgorithmSettings(identifier, configLabel);
+		if(returnValue!=null){
+			return returnValue;
+		}
+
+		switch(configLabel){
+//Booleans
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
+				returnValue = isInternalExpPower();
+	        	break;
+//Integers
+			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
+				returnValue = getInternalExpPower();
+            	break;
+//Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
+				returnValue = getShimmerUserAssignedName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
+				returnValue = getTrialName();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
+	        	returnValue = getConfigTimeParsed();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+				returnValue = getMapOfKinematicSensorCalibration();
+				break;
+	        default:
+	        	break;
+		}
 		
 		return returnValue;		
 	}
 	
+	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getMapOfKinematicSensorCalibration(){
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>(); 
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION);
+			if(returnVal!=null){
+				mapOfKinematicSensorCalibration.putAll((Map<Integer, TreeMap<Integer, CalibDetailsKinematic>>) returnVal);
+			}
+		}
+		return mapOfKinematicSensorCalibration;
+	}
+
+	public void setMapOfKinematicSensorCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration){
+		for(Integer sensorMapKey:mapOfKinematicSensorCalibration.keySet()){
+			AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
+			if(abstractSensor!=null){
+				abstractSensor.setConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION, mapOfKinematicSensorCalibration.get(sensorMapKey));
+			}
+		}
+	}
+
+	private Object setSensorClassSetting(String identifier, String configLabel, Object valueToSet) {
+		Object returnValue = null;
+		//TODO check sensor classes return a null if the setting is successfully found
+		Integer sensorMapkey = Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR;
+		try{
+			sensorMapkey = Integer.parseInt(identifier);
+		} catch(NumberFormatException eFE) {
+			//DO nothing
+		}
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			returnValue = abstractSensor.setConfigValueUsingConfigLabel(sensorMapkey, configLabel, valueToSet);
+			if(returnValue!=null){
+				return returnValue;
+			}
+		}
+		return returnValue;
+	}
+	
+	private Object getSensorClassSetting(String identifier, String configLabel) {
+		Object returnValue = null;
+		Integer sensorMapkey = Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR;
+		try{
+			sensorMapkey = Integer.parseInt(identifier);
+		} catch(NumberFormatException eFE) {
+			//DO nothing
+		}
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+			returnValue = abstractSensor.getConfigValueUsingConfigLabel(sensorMapkey, configLabel);
+			if(returnValue!=null){
+				return returnValue;
+			}
+		}
+		return returnValue;
+	}
+	
+	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
+		List<AbstractAlgorithm> listOfAlgorithms = null;
+		
+		if((groupName!=null && !groupName.isEmpty())){
+			listOfAlgorithms = getListOfAlgorithmModulesPerGroup(groupName);		
+		}
+		else{
+			listOfAlgorithms = getListOfAlgorithmModules();
+		}
+		
+		// Treat algorithms differently because we normally want to set the same
+		// config across multiple algorithm modules so return only after all have been set
+		if(listOfAlgorithms!=null && !listOfAlgorithms.isEmpty()){
+			for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){	
+				abstractAlgorithm.setSettings(configLabel, valueToSet);
+			}
+		}
+	}
+
 	public Object getAlgorithmSettings(String groupName, String configLabel){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		if(groupName.isEmpty()){
@@ -1189,49 +1284,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfAlgorithmSettings;
 	}
 
-	
-	public Object getConfigValueUsingConfigLabel(String configLabel){
-		Object returnValue = null;
-		
-		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			returnValue = abstractSensor.getConfigValueUsingConfigLabel(configLabel);
-			if(returnValue!=null){
-				return returnValue;
-			}
-		}
-		
-		//TODO remove below when ready and use "getAlgorithmConfigValueUsingConfigLabel"
-		returnValue = getAlgorithmSettings("", configLabel);
-		if(returnValue!=null){
-			return returnValue;
-		}
-
-		switch(configLabel){
-//Booleans
-			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
-				returnValue = isInternalExpPower();
-	        	break;
-//Integers
-			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
-				returnValue = getInternalExpPower();
-            	break;
-//Strings
-			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
-				returnValue = getShimmerUserAssignedName();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
-				returnValue = getTrialName();
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
-	        	returnValue = getConfigTimeParsed();
-	        	break;
-	        default:
-	        	break;
-		}
-		
-		return returnValue;		
-	}
-	
 	
 	public void incrementPacketExpectedCount() {
 		mPacketExpectedCount += 1;
@@ -2073,17 +2125,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
-	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getMapOfKinematicSensorCalibration(){
-		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>(); 
-		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION);
-			if(returnVal!=null){
-				mapOfKinematicSensorCalibration.putAll((Map<Integer, TreeMap<Integer, CalibDetailsKinematic>>) returnVal);
-			}
-		}
-		return mapOfKinematicSensorCalibration;
-	}
-	
+
 	// ------------- Algorithm Code Start -----------------------
 	public void updateDerivedSensors(){
 		mDerivedSensors = (long)0;
@@ -2672,9 +2714,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	private void setSamplingRateAlgorithms(double samplingRateShimmer) {
 		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
-			if(abstractAlgorithm.isEnabled()){
+//			if(abstractAlgorithm.isEnabled()){
 				abstractAlgorithm.setSettings(AbstractAlgorithm.GuiLabelConfigCommon.SAMPLING_RATE, samplingRateShimmer);
-			}
+//			}
 		}
 	}
 
@@ -2822,6 +2864,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		for(AbstractAlgorithm abstractAlgorithm:listOfAlgosForGroup){
 			abstractAlgorithm.setDefaultSetting();
 		}
+	}
+
+	public SensorDetails getSensorDetails(Integer sensorMapKey) {
+		if(mSensorMap!=null && mSensorMap.containsKey(sensorMapKey)){
+			return mSensorMap.get(sensorMapKey);
+		}
+		return null;
 	}
 
 	

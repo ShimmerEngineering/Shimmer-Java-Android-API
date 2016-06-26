@@ -24,7 +24,7 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.driver.UtilShimmer;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 /**Driver for managing and configuring the Shimmer through the Dock using the 
  * Shimmer's dock connected UART.
@@ -50,7 +50,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 	byte[] carriedRxBuf = new byte[]{};
 
 	public boolean mIsDebugMode = false;
-	public boolean mVerboseMode = true;
+	public boolean mVerboseMode = false;
 	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
 	/**

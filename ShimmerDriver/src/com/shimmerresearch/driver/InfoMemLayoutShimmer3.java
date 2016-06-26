@@ -3,6 +3,7 @@ package com.shimmerresearch.driver;
 import java.io.Serializable;
 
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 
 /**

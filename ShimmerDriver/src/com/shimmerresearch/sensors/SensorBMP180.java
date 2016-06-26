@@ -17,13 +17,14 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.UtilShimmer;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilParseData;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
@@ -301,9 +302,9 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
-		switch(componentName){
+		switch(configLabel){
 			case(GuiLabelConfig.PRESSURE_RESOLUTION):
 				setPressureResolution((int)valueToSet);
 				returnValue = valueToSet;
@@ -313,10 +314,10 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName){
+	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel){
 		Object returnValue = null;
 		
-		switch(componentName){
+		switch(configLabel){
 		case(GuiLabelConfig.PRESSURE_RESOLUTION):
 			returnValue = getPressureResolution();
 	 		break;

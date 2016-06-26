@@ -786,7 +786,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	//Need to override here because ShimmerDevice class uses a different map
 	@Override
-	public String getChannelLabel(int sensorKey) {
+	public String getSensorLabel(int sensorKey) {
 		SensorDetails sensor = mSensorMap.get(sensorKey);
 	    if(sensor!=null){
 		    return sensor.mSensorDetailsRef.mGuiFriendlyLabel;
@@ -796,7 +796,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	//Need to override here because ShimmerDevice class uses a different map
 	@Override
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfo(int sensorKey) {
+	public List<ShimmerVerObject> getListOfCompatibleVersionInfoForSensor(int sensorKey) {
 		SensorDetails sensor = mSensorMap.get(sensorKey);
 	    if(sensor!=null){
 		    return sensor.mSensorDetailsRef.mListOfCompatibleVersionInfo;

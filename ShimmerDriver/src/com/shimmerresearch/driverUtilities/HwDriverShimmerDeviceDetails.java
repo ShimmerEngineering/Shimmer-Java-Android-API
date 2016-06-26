@@ -166,9 +166,9 @@ public class HwDriverShimmerDeviceDetails {
             }
             public static final String[] SHIMMER_DEVICE = new String[] {
         		"Shimmer3",
+        		"Shimmer4",
         		"RN42",
             };
-            
         }
         
     }

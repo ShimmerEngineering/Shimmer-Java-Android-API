@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driverUtilities;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import org.apache.commons.lang3.ArrayUtils;
-
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 
 /** Utility class with commonly useful methods
  * 
@@ -667,6 +665,17 @@ public class UtilShimmer implements Serializable {
 			bytesArray[i] = (byte) ((number >> (i*8)) & 0xFF);
 		}
 		return bytesToHexStringWithSpacesFormatted(bytesArray);
+	}
+
+	public static String doubleArrayToString(double[][] doubleArray) {
+		String returnString = "";
+		for(int x=0;x<doubleArray.length;x++){
+			for(int y=0;y<doubleArray[x].length;y++){
+				returnString += doubleArray[x][y] + "\t";
+			}
+			returnString += "\n";
+		}
+		return returnString;
 	}
 	
 }
