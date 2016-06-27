@@ -157,8 +157,8 @@ public class GuiTestShimmer4 extends JPanel {
         				public void eventConnected() {
         					// TODO Auto-generated method stub
         					ShimmerVerObject svo = sspj.getShimmerVerObject();
-        					if (svo.getHardwareVersion()==HW_ID.SHIMMER_3){
-        						
+        					if (svo.getHardwareVersion()==HW_ID.SHIMMER_3 || svo.getHardwareVersion()==HW_ID.SHIMMER_2R){
+        						System.out.print("Shimmer 3/2r detected.");
         					} else if(svo.getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
         						initializeShimmer4(sspj);
         					}
@@ -179,7 +179,7 @@ public class GuiTestShimmer4 extends JPanel {
         });
         
         txtCom = new JTextField();
-        txtCom.setText("COM89");
+        txtCom.setText("COM55");
         shimmerPanel.add(txtCom);
         txtCom.setColumns(1);
         btnConnect.setText("Connect");

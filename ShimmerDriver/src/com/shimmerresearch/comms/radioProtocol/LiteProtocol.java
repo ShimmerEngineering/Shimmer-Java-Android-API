@@ -126,6 +126,14 @@ public class LiteProtocol extends ByteLevelProtocol{
 				e.printStackTrace();
 			}
 		}
+		while (mShimmerRadio.availableBytes()!=0){
+			int available = mShimmerRadio.availableBytes();
+			if (mShimmerRadio.bytesAvailableToBeRead()){
+				byte[] tb=mShimmerRadio.rxBytes(1);
+				String msg = "First Time : " + Arrays.toString(tb);
+				printLogDataForDebugging(msg);
+			}
+		}		
 	}
 	
 	public double getPacketReceptionRate(){
