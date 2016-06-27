@@ -687,7 +687,23 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isCalibrationValid(){
-		return true;
+		//debugging
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> calibrationMap = getMapOfKinematicSensorCalibration();
+		Boolean validCal= true;
+		
+		if(calibrationMap!=null){
+			for (Integer key : calibrationMap.keySet()) {
+				TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicDetails = getMapOfKinematicSensorCalibration().get(key);
+					for(CalibDetailsKinematic cdk:mapOfKinematicDetails.values()){
+						if(cdk.isCurrentValuesSet()){
+							if(!cdk.isAllCalibrationValid()){
+								validCal =false;
+							}
+						}
+					}
+			}
+		}
+		return validCal;
 	}
 
 	/**
