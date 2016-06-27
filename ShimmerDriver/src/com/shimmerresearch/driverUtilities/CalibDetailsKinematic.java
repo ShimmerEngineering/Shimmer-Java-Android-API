@@ -26,6 +26,8 @@ public class CalibDetailsKinematic implements Serializable {
 	
 	public String mRangeString = "";
 	public int mRangeValue = 0;
+	public int guiRangeValue = 0;
+	public Integer[]guiRangeOptions =null;
 	
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {
 		this.mRangeValue = rangeValue;
@@ -71,9 +73,8 @@ public class CalibDetailsKinematic implements Serializable {
 		return false;
 	}
 
-	
-	public boolean isAnyUsingDefaultParameters(){
-		if(isAlignmentUsingDefault() || isSensitivityUsingDefault() || isOffsetVectorUsingDefault()){
+	public boolean isAllUsingDefaultParameters(){
+		if(isAlignmentUsingDefault() && isSensitivityUsingDefault() && isOffsetVectorUsingDefault()){
 			return true;
 		}
 		return false;
@@ -101,14 +102,14 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 
 	public boolean isAllCalibrationValid(){
-		if(isAlignmentValid() && isSensitivityValid() && isOffsetVectorValid()){
+		if((isAlignmentValid() && isSensitivityValid() && isOffsetVectorValid()) || isAllUsingDefaultParameters()){
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean isAlignmentValid(){
-		if(isAllZeros(mCurrentAlignmentMatrix) || mCurrentAlignmentMatrix==null){
+	 if(isAllZeros(mCurrentAlignmentMatrix)){
 			return false;
 		}else{
 			return true;
@@ -116,19 +117,16 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 
 	public boolean isSensitivityValid(){
-		if(isAllZeros(mCurrentSensitivityMatrix) || mCurrentSensitivityMatrix==null ){
+	 if(isAllZeros(mCurrentSensitivityMatrix) ){
 			return false;
 		}else{
 			return true;
 		}
 	}
 	
+	//TODO : look up is there a valid check for a valid offset vector 
 	public boolean isOffsetVectorValid(){
-	 if(!isAllZeros(mCurrentOffsetVector) || mCurrentOffsetVector==null){
-			return false;
-		}else{
 			return true;
-		}
 	}
 	
 	//TODO to be replaced with MN utility function
@@ -139,9 +137,6 @@ public class CalibDetailsKinematic implements Serializable {
 //			System.err.println("Matrix length extra  " + matrix.length);
 			for(int j = 0; j < matrix[1].length; j++){
 				for(int i = 0; i < matrix.length; i++){
-//					System.err.println("Matrix j  " +j);
-//					System.err.println("Matrix i  " + i);
-//					System.err.println("Matrix Value  " + matrix[i][j]);
 			if(matrix[i][j]!=0){
 				allZeros = false;
 			}
