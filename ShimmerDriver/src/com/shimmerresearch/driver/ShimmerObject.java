@@ -50,6 +50,7 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorMPU9X50;
@@ -575,7 +576,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//-------- Timestamp end --------
 
 	//XXX-RS-AA-SensorClass?
-	// ----------   Analog accel calibration start ---------------
+	// ----------   Analog accel start ---------------
 	/** all raw params should start with a 1 byte identifier in position [0] */
 	protected byte[] mAccelCalRawParams = new byte[22];
 
@@ -602,10 +603,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCalibMapAccelAnalogShimmer3.put(0, new CalibDetailsKinematic(0, "+/- 2g",
 						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3));
 	}
-	// ----------   Analog accel calibration end ---------------
+	// ----------   Analog accel end ---------------
 	
 	//XXX-RS-LSM-SensorClass?
-	// ----------   Wide-range accel calibration start ---------------
+	// ----------   Wide-range accel start ---------------
 	protected boolean mHighResAccelWR = false; //TODO: add comment and set from BT command
 //	protected boolean mLowPowerAccelWR = false;//TODO: add comment and set from BT command	
 	protected int mLSM303DigitalAccelRate=0;
@@ -651,9 +652,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], Shimmer3.ListofAccelRange[3],
 						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel16gShimmer3, OffsetVectorWideRangeAccelShimmer3));
 	}
-	// ----------   Wide-range accel calibration end ---------------
+	// ----------   Wide-range accel end ---------------
 
-	// ----------   Gyro calibration start ---------------
+	// ----------   Gyro start ---------------
 	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
 	protected int mGyroRange=1;													 
 	protected boolean mLowPowerGyro = false;
@@ -704,10 +705,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	DescriptiveStatistics mGyroYRaw;
 	DescriptiveStatistics mGyroZRaw;
 	protected boolean mEnableOntheFlyGyroOVCal = false;
-	// ----------   Gyro calibration end ---------------
+	// ----------   Gyro end ---------------
 
 	//XXX-RS-LSM-SensorClass?	
-	// ----------   Mag calibration start ---------------
+	// ----------   Mag start ---------------
 	protected boolean mLowPowerMag = false;	
 
 	protected int mShimmer2MagRate=0;
@@ -776,7 +777,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[6], Shimmer3.ListofMagRange[6],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag8p1GaShimmer3, OffsetVectorMagShimmer3));
 	}
-	// ----------   Mag calibration end ---------------
+	// ----------   Mag end ---------------
 	
 	// ----------- MPU9X50 options start -------------------------
 	/** This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g */
@@ -10481,7 +10482,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return numerator;
 		}
 		else {
-			return (numerator / mMPU9150GyroAccelRate);
+			return (numerator / (mMPU9150GyroAccelRate+1));
 		}
 	}
 	
@@ -10662,16 +10663,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// ----------- MPU9X50 options end -------------------------
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(String componentName) {
+	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel) {
 		Object returnValue = null;
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
         
-		switch(componentName){
+		Integer sensorMapKey = Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR;
+		try{
+			sensorMapKey = Integer.parseInt(identifier);
+		} catch (NumberFormatException nFE){
+			//Do nothing
+		}
+
+        
+		switch(configLabel){
 //Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				returnValue = isButtonStart();
@@ -10851,7 +10860,39 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT):
 				returnValue = getSamplingDividerVBatt();
 	    		break;
-	    		
+
+			case(AbstractSensor.GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+					return 0;
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
+				}
+				break;
+			case(AbstractSensor.GuiLabelConfigCommon.RATE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+				}
+				break;
+
 	    		
 //Strings
 //    					case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
@@ -10908,7 +10949,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    			        	break;
 	        	
 	        default:
-	        	returnValue = super.getConfigValueUsingConfigLabel(componentName);
+	        	returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);
 	        	break;
 		}
 		
@@ -10916,12 +10957,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}		
 	
 	@Override
-	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(String identifier, String configLabel, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
 
-		switch(componentName){
+		switch(configLabel){
 //Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				setButtonStart((boolean)valueToSet);
@@ -11193,14 +11234,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	        	
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabel(groupName, componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabel(identifier, configLabel, valueToSet);
 	        	break;
 		}
 		
-        if((componentName.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass?
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(componentName.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(componentName);
+        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass?
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        	checkConfigOptionValues(configLabel);
         }
 			
 		return returnValue;
