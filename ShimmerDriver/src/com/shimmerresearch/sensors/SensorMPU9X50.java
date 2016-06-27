@@ -1867,7 +1867,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				returnValue = getMPU9150GyroAccelRateInHz();
 				break;
 				
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+//			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+//				returnValue = getKinematicCalibration();
+//				break;
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
 				returnValue = getKinematicCalibration();
 				break;
 			case(GuiLabelConfigCommon.RANGE):
