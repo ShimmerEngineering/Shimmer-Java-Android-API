@@ -20,9 +20,9 @@ public class CalibDetailsKinematic implements Serializable {
 	public double[][] mCurrentSensitivityMatrix = null; 	
 	public double[][] mCurrentOffsetVector = null;
 
-	public double[][] mDefaultAlignmentMatrix = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
-	public double[][] mDefaultSensitivityMatrix = {{0,0,0},{0,0,0},{0,0,0}}; 	
-	public double[][] mDefaultOffsetVector = {{0},{0},{0}};
+	public double[][] mDefaultAlignmentMatrix =null;   			
+	public double[][] mDefaultSensitivityMatrix = null;  	
+	public double[][] mDefaultOffsetVector = null; 
 	
 	public String mRangeString = "";
 	public int mRangeValue = 0;
@@ -72,7 +72,6 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 
 	
-	
 	public boolean isAnyUsingDefaultParameters(){
 		if(isAlignmentUsingDefault() || isSensitivityUsingDefault() || isOffsetVectorUsingDefault()){
 			return true;
@@ -101,8 +100,6 @@ public class CalibDetailsKinematic implements Serializable {
 		return Arrays.deepEquals(mCurrentOffsetVector, mDefaultOffsetVector);
 	}
 
-	
-	
 	public boolean isAllCalibrationValid(){
 		if(isAlignmentValid() && isSensitivityValid() && isOffsetVectorValid()){
 			return true;
@@ -111,18 +108,48 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 	
 	public boolean isAlignmentValid(){
-		//TODO for Eimear
-		return true;
+		if(isAllZeros(mCurrentAlignmentMatrix) || mCurrentAlignmentMatrix==null){
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 	public boolean isSensitivityValid(){
-		//TODO for Eimear
-		return true;
+		if(isAllZeros(mCurrentSensitivityMatrix) || mCurrentSensitivityMatrix==null ){
+			return false;
+		}else{
+			return true;
+		}
 	}
 	
 	public boolean isOffsetVectorValid(){
-		//TODO for Eimear
-		return true;
+	 if(!isAllZeros(mCurrentOffsetVector) || mCurrentOffsetVector==null){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	//TODO to be replaced with MN utility function
+	public boolean isAllZeros(double[][] matrix){
+		boolean allZeros = true;
+		if(matrix!=null){
+//			System.err.println("Matrix lengths  " + matrix[1].length);
+//			System.err.println("Matrix length extra  " + matrix.length);
+			for(int j = 0; j < matrix[1].length; j++){
+				for(int i = 0; i < matrix.length; i++){
+//					System.err.println("Matrix j  " +j);
+//					System.err.println("Matrix i  " + i);
+//					System.err.println("Matrix Value  " + matrix[i][j]);
+			if(matrix[i][j]!=0){
+				allZeros = false;
+			}
+				}
+			}
+			return allZeros;
+			}
+		return allZeros;
 	}
 
 	public String generateDebugString() {
