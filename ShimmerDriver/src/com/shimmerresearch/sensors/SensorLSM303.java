@@ -740,9 +740,13 @@ public class SensorLSM303 extends AbstractSensor{
 				returnValue = getLSM303MagRate();
 	        	break;
 	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
-				returnValue = getKinematicCalibration();
+//			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+//				returnValue = getKinematicCalibration();
+//				break;
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
+				returnValue = getKinematicCalibrationAll();
 				break;
+				
 			case(GuiLabelConfigCommon.RANGE):
 				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
@@ -1421,7 +1425,7 @@ public class SensorLSM303 extends AbstractSensor{
 		mCalibMapAccelWideRangeShimmer3.putAll(mapOfKinematicSensorCalibration);
 	}
 	
-	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibration() {
+	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibrationAll() {
 		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
 		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibMapAccelWideRangeShimmer3);
 		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3);
