@@ -302,6 +302,9 @@ public class ShimmerClock extends AbstractSensor {
 		//TIMESTAMP
 		if(sensorDetails.isEnabled(commType)){
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				
+//				if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MAG)){
+
 				if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
 					long systemTime = pcTimestamp;
 					if(commType==COMMUNICATION_TYPE.SD){
@@ -584,6 +587,12 @@ public class ShimmerClock extends AbstractSensor {
 			}
 		}
 
+		//Debugging
+		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+				new String[]{Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, CHANNEL_TYPE.CAL.toString()}, 
+				new String[]{Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, CHANNEL_TYPE.CAL.toString()}, 
+				new String[]{Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL, CHANNEL_TYPE.CAL.toString()} 
+				));
 
 		return objectCluster;
 	}
