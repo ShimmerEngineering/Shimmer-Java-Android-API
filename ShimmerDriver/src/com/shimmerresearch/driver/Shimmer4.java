@@ -103,13 +103,13 @@ public class Shimmer4 extends ShimmerDevice {
 //		mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
 		mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(this));
 		
-//		mMapOfSensorClasses.put(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
-//		mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
-//		mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
-//		mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
-//		mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
-//		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
-//		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED
@@ -118,23 +118,23 @@ public class Shimmer4 extends ShimmerDevice {
 			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(this));
 		}
 
-//		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
-//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
-//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
-//				){
-//			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
-//		}
-//
-//		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
-//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
-//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
-//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
-//				){
-//			if(isDerivedSensorsSupported()){
-////				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
-//				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(this));
-//			}
-//		}
+		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
+				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
+				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+				){
+			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+		}
+
+		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
+				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
+				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
+				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+				){
+			if(isDerivedSensorsSupported()){
+//				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
+				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(this));
+			}
+		}
 
 		generateSensorAndParserMaps();
 		
