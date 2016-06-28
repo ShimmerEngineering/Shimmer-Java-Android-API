@@ -1278,7 +1278,7 @@ public class Configuration {
 			public static String QUAT_DMP_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z; //"Quat_DMP_6DOF_Z";
 
 			public static final String SKIN_TEMPERATURE_PROBE = SensorBridgeAmp.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE; //"Skin_Temperature";
-			public static String EVENT_MARKER = "Event_Marker";
+			public static String EVENT_MARKER = "Event Marker";
 // ----------------Implemented in SensorPPG----------------------			
 			public static String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12; //"PPG_A12";
 			public static String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13; //"PPG_A13";
@@ -2517,24 +2517,28 @@ public class Configuration {
 							Arrays.asList(CHANNEL_TYPE.CAL), true, false));
 	        //--------------------------------------------------------
 	        
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-							"Packet Reception Rate (per second)",
-							CHANNEL_UNITS.PERCENT,
-							Arrays.asList(CHANNEL_TYPE.CAL), true, false));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-							"Packet Reception Rate (overall)",
-							CHANNEL_UNITS.PERCENT,
-							Arrays.asList(CHANNEL_TYPE.CAL), true, false));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
-							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL), true, false));			
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
+//							"Packet Reception Rate (per second)",
+//							CHANNEL_UNITS.PERCENT,
+//							Arrays.asList(CHANNEL_TYPE.CAL), true, false));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL, ShimmerClock.channelReceptionRateTrial);
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+//							"Packet Reception Rate (overall)",
+//							CHANNEL_UNITS.PERCENT,
+//							Arrays.asList(CHANNEL_TYPE.CAL), true, false));
+			
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL), true, false));			
 			
 			// All Information required for parsing each of the channels
 			//TODO incorportate 3 byte timestamp change for newer firmware

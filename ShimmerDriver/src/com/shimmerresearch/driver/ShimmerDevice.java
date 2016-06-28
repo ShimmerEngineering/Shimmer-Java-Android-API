@@ -149,7 +149,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected int mEventMarkersCodeLast = 0;
 	protected boolean mEventMarkersIsPulse = false;
 	protected int mEventMarkerDefault = -1; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
-	protected int mEventMarkers = mEventMarkerDefault;
+	public int mEventMarkers = mEventMarkerDefault;
 	
 	public ObjectCluster mLastProcessedObjectCluster = null;
 	public List<ShimmerLogDetails> mListofLogs = new ArrayList<ShimmerLogDetails>();
