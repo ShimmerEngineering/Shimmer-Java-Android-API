@@ -449,7 +449,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 				||(mBluetoothRadioState==BT_STATE.CONNECTION_LOST)
 //				||(mState==BT_STATE.NONE)
 				||(mBluetoothRadioState==BT_STATE.CONNECTION_FAILED)){
-			mIsConnected = false;
+			setIsConnected(false);
 			mIsStreaming = false;
 			mIsInitialised = false;
 		}
@@ -483,7 +483,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 			if(mIsStreaming){
 				setBluetoothRadioState(BT_STATE.STREAMING);
 			}
-			else if(mIsConnected){
+			else if(isConnected()){
 				setBluetoothRadioState(BT_STATE.CONNECTED);
 			}
 			else{
@@ -501,7 +501,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 				setBluetoothRadioState(BT_STATE.SDLOGGING);
 			}
 			else{
-				if(!mIsStreaming && !mIsSDLogging && mIsConnected){
+				if(!mIsStreaming && !mIsSDLogging && isConnected()){
 					setBluetoothRadioState(BT_STATE.CONNECTED);	
 				}
 //				if(getBTState() == BT_STATE.INITIALISED){

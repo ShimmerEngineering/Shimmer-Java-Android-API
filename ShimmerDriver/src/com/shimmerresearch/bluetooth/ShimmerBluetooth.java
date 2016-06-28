@@ -4039,7 +4039,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- MISCELLANEOUS FUNCTIONS ---------
 	
 	public void reconnect(){
-        if(mIsConnected && !mIsStreaming){
+        if(isConnected() && !mIsStreaming){
         	String msgReconnect = "Reconnecting the Shimmer...";
 			sendStatusMSGtoUI(msgReconnect);
             stop();

@@ -669,17 +669,20 @@ public class Shimmer4 extends ShimmerDevice {
 	protected void setBluetoothRadioState(BT_STATE state){
 
 		if (state.equals(BT_STATE.CONNECTED)){
-			mIsConnected = true;
-			mIsStreaming = false;
-		} else if (state.equals(BT_STATE.DISCONNECTED)){
-			mIsConnected = false;
-			mIsStreaming = false;
-			mIsInitialised = false;
-		} else if (state.equals(BT_STATE.STREAMING)){
-			mIsStreaming = true;
-		} else if (state.equals(BT_STATE.CONNECTING)){
-			mIsConnected = true;
-			mIsInitialised = false;
+			setIsConnected(true);
+			setIsStreaming(false);
+		} 
+		else if (state.equals(BT_STATE.DISCONNECTED)){
+			setIsConnected(false);
+			setIsStreaming(false);
+			setIsInitialised(false);
+		} 
+		else if (state.equals(BT_STATE.STREAMING)){
+			setIsStreaming(true);
+		} 
+		else if (state.equals(BT_STATE.CONNECTING)){
+			setIsConnected(true);
+			setIsInitialised(false);
 			startOperation(BT_STATE.CONNECTING,mNumberOfInfoMemReadsRequired);
 		}
 		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE,state, getMacIdFromUart(), getComPort());

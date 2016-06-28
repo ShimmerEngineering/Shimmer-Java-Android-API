@@ -259,7 +259,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 						if (mSerialPort.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
 //						if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
 //							setState(BT_STATE.CONNECTED);
-							mIsConnected = true;
+							setIsConnected(true);
 
 							mIOThread = new IOThread();
 							mIOThread.start();
@@ -289,7 +289,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	    
 	    thread.setName("ShimmerPC-"+getMacId()+"-"+mShimmerUserAssignedName);
 	    
-	    if (!mIsConnected){
+	    if (!isConnected()){
 	    	thread.start();
 	    }
 	    
@@ -557,7 +557,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				||(mBluetoothRadioState==BT_STATE.CONNECTION_LOST)
 //				||(mState==BT_STATE.NONE)
 				||(mBluetoothRadioState==BT_STATE.CONNECTION_FAILED)){
-			mIsConnected = false;
+			setIsConnected(false);
 			mIsStreaming = false;
 			mIsInitialised = false;
 		}
@@ -636,7 +636,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			if(mIsStreaming){
 				setBluetoothRadioState(BT_STATE.STREAMING);
 			}
-			else if(mIsConnected){
+			else if(isConnected()){
 				setBluetoothRadioState(BT_STATE.CONNECTED);
 			}
 			else{
@@ -654,7 +654,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setBluetoothRadioState(BT_STATE.SDLOGGING);
 			}
 			else{
-				if(!mIsStreaming && !mIsSDLogging && mIsConnected){
+				if(!mIsStreaming && !mIsSDLogging && isConnected()){
 					setBluetoothRadioState(BT_STATE.CONNECTED);	
 				}
 //				if(getBTState() == BT_STATE.INITIALISED){

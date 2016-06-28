@@ -633,7 +633,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mIsDocked;
 	}
 
-	public void setConnected(boolean state) {
+	public void setIsConnected(boolean state) {
 		mIsConnected = state;
 	}
 
@@ -652,7 +652,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
     	return mIsStreaming;
     }
 
-	public void setStreaming(boolean state) {
+	public void setIsStreaming(boolean state) {
 		mIsStreaming = state;
 	}
 
@@ -675,7 +675,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param isInitialized the mSuccessfullyInitialized to set
 	 */
-	public void setInitialised(boolean isInitialized) {
+	public void setIsInitialised(boolean isInitialized) {
 		mIsInitialised = isInitialized;
 	}
 	

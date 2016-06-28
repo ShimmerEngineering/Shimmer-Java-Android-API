@@ -702,13 +702,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 
 	public void pairToSpan(String spanId) {
-		setConnected(true);
+		setIsConnected(true);
 		mSpanId = spanId;
 		addCommunicationRoute(COMMUNICATION_TYPE.IEEE802154);
 	}
 
 	public void unpairFromSpan() {
-		setConnected(false);
+		setIsConnected(false);
 		mSpanId = "";
 	}
 	
