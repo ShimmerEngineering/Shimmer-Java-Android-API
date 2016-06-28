@@ -466,7 +466,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int MSG_IDENTIFIER_DEVICE_PAIRED = 8;
 	public static final int MSG_IDENTIFIER_DEVICE_UNPAIRED = 9;
 	public static final int MSG_IDENTIFIER_NOTIFICATION_MESSAGE = 1;
-	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE = 3;
+	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL = 3;
 	public static final int MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT = 6;
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
@@ -2159,10 +2159,29 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region  --------- START/STOP STREAMING FUNCTIONS --------- 
 	
 	public void startStreaming() {
+		//mCurrentLEDStatus=-1;	
+		
+		initialiseStreaming();
+
+		mByteArrayOutputStream.reset();
+		mListofPCTimeStamps.clear();
+		getListofInstructions().add(new byte[]{START_STREAMING_COMMAND});
+	}
+	
+	public void startDataLogAndStreaming(){
+		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+			initialiseStreaming();
+			
+			//TODO: ask JC, should mByteArrayOutputStream.reset(); and mListofPCTimeStamps.clear(); be here as well? 
+			getListofInstructions().add(new byte[]{START_SDBT_COMMAND});
+		}
+	}
+	
+	private void initialiseStreaming(){
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
 			readRealTimeClock();
 		}
-		//mCurrentLEDStatus=-1;	
+
 		//provides a callback for users to initialize their algorithms when start streaming is called
 		if(mDataProcessing!=null){
 			mDataProcessing.InitializeProcessData();
@@ -2174,15 +2193,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
 		
 		mPacketLossCount = 0;
-		mPacketReceptionRate = 100;
+		setPacketReceptionRateOverall(100);
 		mFirstPacketParsed=true;
 		mFirstTimeCalTime=true;
 		resetCalibratedTimeStamp();
 		mLastReceivedCalibratedTimeStamp = -1;
 		mSync=true; // a backup sync done every time you start streaming
-		mByteArrayOutputStream.reset();
-		mListofPCTimeStamps.clear();
-		getListofInstructions().add(new byte[]{START_STREAMING_COMMAND});
 	}
 	
 	public void startSDLogging(){
@@ -2195,29 +2211,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
 			getListofInstructions().add(new byte[]{STOP_LOGGING_ONLY_COMMAND});
 		}	
-	}
-	
-	public void startDataLogAndStreaming(){
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
-			readRealTimeClock();
-			if(mDataProcessing!=null){
-				mDataProcessing.InitializeProcessData();
-			} 	
-			else {
-				//do nothing
-			}
-			
-			stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
-
-			mPacketLossCount = 0;
-			mPacketReceptionRate = 100;
-			mFirstTimeCalTime=true;
-			mFirstPacketParsed=true;
-			resetCalibratedTimeStamp();
-			mLastReceivedCalibratedTimeStamp = -1;
-			mSync=true; // a backup sync done every time you start streaming
-			getListofInstructions().add(new byte[]{START_SDBT_COMMAND});
-		}
 	}
 	
 	public void stopStreaming() {
@@ -2292,8 +2285,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					printLogDataForDebugging("Response not received");
 					sendStatusMSGtoUI("Response not received, please reset Shimmer Device." + mMyBluetoothAddress); //Android?
 				}
-				if(mIsStreaming && getPacketReceptionRate()<100){
-					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRate()));
+				if(mIsStreaming && getPacketReceptionRateOverall()<100){
+					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRateOverall()));
 				} 
 				
 				//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response

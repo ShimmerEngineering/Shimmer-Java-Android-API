@@ -53,6 +53,8 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.sensors.SensorKionixKXRB52042;
+import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.algorithms.Orientation3DObject;
 
@@ -594,9 +596,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] SensitivityMatrixAccel4gShimmer2 = {{38,0,0},{0,38,0},{0,0,38}};
 	protected static final double[][] SensitivityMatrixAccel6gShimmer2 = {{25,0,0},{0,25,0},{0,0,25}};
 	//Shimmer3
-	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
-	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
-	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
+	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = SensorKionixKXRB52042.AlignmentMatrixLowNoiseAccelShimmer3;
+	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = SensorKionixKXRB52042.OffsetVectorLowNoiseAccelShimmer3;
+	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = SensorKionixKXRB52042.SensitivityMatrixLowNoiseAccel2gShimmer3;
 
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelAnalogShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
@@ -628,13 +630,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double[][] mSensitivityMatrixWRAccel = {{1631,0,0},{0,1631,0},{0,0,1631}};	 	
 	protected double[][] mOffsetVectorWRAccel = {{0},{0},{0}};		
 
-	protected static final double[][] AlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}};	 	
-	protected static final double[][] OffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
+	protected static final double[][] AlignmentMatrixWideRangeAccelShimmer3 = SensorLSM303.AlignmentMatrixWideRangeAccelShimmer3;	 	
+	protected static final double[][] OffsetVectorWideRangeAccelShimmer3 = SensorLSM303.OffsetVectorWideRangeAccelShimmer3;	
 
-	public static final double[][] SensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};	
-	public static final double[][] SensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};	
-	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};	
-	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};	
+	public static final double[][] SensitivityMatrixWideRangeAccel2gShimmer3 = SensorLSM303.SensitivityMatrixWideRangeAccel2gShimmer3;	
+	public static final double[][] SensitivityMatrixWideRangeAccel4gShimmer3 = SensorLSM303.SensitivityMatrixWideRangeAccel4gShimmer3;	
+	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = SensorLSM303.SensitivityMatrixWideRangeAccel8gShimmer3;	
+	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = SensorLSM303.SensitivityMatrixWideRangeAccel16gShimmer3;	
 
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelWideRangeShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
@@ -673,12 +675,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
 	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
 	//Shimmer3
-	protected static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	protected static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};		
-	public static final double[][] SensitivityMatrixGyro250dpsShimmer3 = {{131,0,0},{0,131,0},{0,0,131}};
-	public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
-	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
-	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
+	protected static final double[][] AlignmentMatrixGyroShimmer3 = SensorMPU9X50.AlignmentMatrixGyroShimmer3; 				
+	protected static final double[][] OffsetVectorGyroShimmer3 = SensorMPU9X50.OffsetVectorGyroShimmer3;		
+	public static final double[][] SensitivityMatrixGyro250dpsShimmer3 = SensorMPU9X50.SensitivityMatrixGyro250dpsShimmer3;
+	public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = SensorMPU9X50.SensitivityMatrixGyro500dpsShimmer3;
+	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = SensorMPU9X50.SensitivityMatrixGyro1000dpsShimmer3;
+	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = SensorMPU9X50.SensitivityMatrixGyro2000dpsShimmer3;
 
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
@@ -741,16 +743,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] SensitivityMatrixMag8p1GaShimmer2 = {{230,0,0},{0,230,0},{0,0,230}};
 
 	//Shimmer3 
-	protected static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
-	protected static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};		
+	protected static final double[][] AlignmentMatrixMagShimmer3 = SensorLSM303.AlignmentMatrixMagShimmer3; 				
+	protected static final double[][] OffsetVectorMagShimmer3 = SensorLSM303.OffsetVectorMagShimmer3;		
 
-	public static final double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
-	public static final double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
-	public static final double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
-	public static final double[][] SensitivityMatrixMag4GaShimmer3 = {{450,0,0},{0,450,0},{0,0,400}};
-	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
-	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
-	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
+	public static final double[][] SensitivityMatrixMag1p3GaShimmer3 = SensorLSM303.SensitivityMatrixMag1p3GaShimmer3;
+	public static final double[][] SensitivityMatrixMag1p9GaShimmer3 = SensorLSM303.SensitivityMatrixMag1p9GaShimmer3;
+	public static final double[][] SensitivityMatrixMag2p5GaShimmer3 = SensorLSM303.SensitivityMatrixMag2p5GaShimmer3;
+	public static final double[][] SensitivityMatrixMag4GaShimmer3 = SensorLSM303.SensitivityMatrixMag4GaShimmer3;
+	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = SensorLSM303.SensitivityMatrixMag4p7GaShimmer3;
+	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = SensorLSM303.SensitivityMatrixMag5p6GaShimmer3;
+	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = SensorLSM303.SensitivityMatrixMag8p1GaShimmer3;
 
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapMagShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
@@ -2274,8 +2276,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;
 				additionalChannelsOffset+=1;
 
-				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRate);
-				calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRate;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)getPacketReceptionRateOverall());
+				calibratedData[additionalChannelsOffset] = (double)getPacketReceptionRateOverall();
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
 				uncalibratedData[additionalChannelsOffset] = Double.NaN;
 				uncalibratedDataUnits[additionalChannelsOffset] = "";
@@ -4744,101 +4746,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-//	//XXX-RS-LSM-SensorClass? //XXX-RS-AA-SensorClass?
-//	protected static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
-//		/*  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
-//           in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
-//           C = [R^(-1)] .[K^(-1)] .([U]-[B])
-//			where.....
-//			[C] -> [3 x n] Calibrated Data Matrix 
-//			[U] -> [3 x n] Uncalibrated Data Matrix
-//			[B] ->  [3 x n] Replicated Sensor Offset Vector Matrix 
-//			[R^(-1)] -> [3 x 3] Inverse Alignment Matrix
-//			[K^(-1)] -> [3 x 3] Inverse Sensitivity Matrix
-//			n = Number of Samples
-//		 */
-//		double [][] data2d=new double [3][1];
-//		data2d[0][0]=data[0];
-//		data2d[1][0]=data[1];
-//		data2d[2][0]=data[2];
-//		data2d= matrixmultiplication(matrixmultiplication(matrixinverse3x3(AM),matrixinverse3x3(SM)),matrixminus(data2d,OV));
-//		double[] ansdata=new double[3];
-//		ansdata[0]=data2d[0][0];
-//		ansdata[1]=data2d[1][0];
-//		ansdata[2]=data2d[2][0];
-//		return ansdata;
-//	}
-//
-//	private static double[][] matrixinverse3x3(double[][] data) {
-//		double a,b,c,d,e,f,g,h,i;
-//		a=data[0][0];
-//		b=data[0][1];
-//		c=data[0][2];
-//		d=data[1][0];
-//		e=data[1][1];
-//		f=data[1][2];
-//		g=data[2][0];
-//		h=data[2][1];
-//		i=data[2][2];
-//		//
-//		double deter=a*e*i+b*f*g+c*d*h-c*e*g-b*d*i-a*f*h;
-//		double[][] answer=new double[3][3];
-//		answer[0][0]=(1/deter)*(e*i-f*h);
-//
-//		answer[0][1]=(1/deter)*(c*h-b*i);
-//		answer[0][2]=(1/deter)*(b*f-c*e);
-//		answer[1][0]=(1/deter)*(f*g-d*i);
-//		answer[1][1]=(1/deter)*(a*i-c*g);
-//		answer[1][2]=(1/deter)*(c*d-a*f);
-//		answer[2][0]=(1/deter)*(d*h-e*g);
-//		answer[2][1]=(1/deter)*(g*b-a*h);
-//		answer[2][2]=(1/deter)*(a*e-b*d);
-//		return answer;
-//	}
-//	private static double[][] matrixminus(double[][] a ,double[][] b) {
-//		int aRows = a.length,
-//				aColumns = a[0].length,
-//				bRows = b.length,
-//				bColumns = b[0].length;
-//		if (( aColumns != bColumns )&&( aRows != bRows )) {
-//			throw new IllegalArgumentException(" Matrix did not match");
-//		}
-//		double[][] resultant = new double[aRows][bColumns];
-//		for(int i = 0; i < aRows; i++) { // aRow
-//			for(int k = 0; k < aColumns; k++) { // aColumn
-//
-//				resultant[i][k]=a[i][k]-b[i][k];
-//
-//			}
-//		}
-//		return resultant;
-//	}
-//
-//	private static double[][] matrixmultiplication(double[][] a, double[][] b) {
-//
-//		int aRows = a.length,
-//				aColumns = a[0].length,
-//				bRows = b.length,
-//				bColumns = b[0].length;
-//
-//		if ( aColumns != bRows ) {
-//			throw new IllegalArgumentException("A:Rows: " + aColumns + " did not match B:Columns " + bRows + ".");
-//		}
-//
-//		double[][] resultant = new double[aRows][bColumns];
-//
-//		for(int i = 0; i < aRows; i++) { // aRow
-//			for(int j = 0; j < bColumns; j++) { // bColumn
-//				for(int k = 0; k < aColumns; k++) { // aColumn
-//					resultant[i][j] += a[i][k] * b[k][j];
-//				}
-//			}
-//		}
-//
-//		return resultant;
-//	}
-
-	
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
 		double calibratedTimeStamp=0;
@@ -4852,6 +4759,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mFirstTimeCalTime=false;
 			mCalTimeStart = calibratedTimeStamp;
 		}
+		
+		//Calculate packet loss
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
 			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
@@ -4862,7 +4771,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mPacketLossCount+= (long) (timeDifference/expectedTimeDifferenceLimit);
 				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
 
-				mPacketReceptionRate = (double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100;
+				setPacketReceptionRateOverall((double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100);
 				sendStatusMsgPacketLossDetected();
 			}
 		}	

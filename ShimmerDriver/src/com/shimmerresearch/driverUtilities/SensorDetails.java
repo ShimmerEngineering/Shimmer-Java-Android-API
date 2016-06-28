@@ -96,13 +96,13 @@ public class SensorDetails implements Serializable{
 			Iterator<ChannelDetails> iterator = mListOfChannels.iterator();
 			while(iterator.hasNext()){
 				ChannelDetails channelDetails = iterator.next();
-				//TODO add the below check?
-//				if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
+				if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
 					dataPacketSize += channelDetails.mDefaultNumBytes;
-//				}
+					System.err.println("Sensor:\t" + mSensorDetailsRef.mGuiFriendlyLabel + "\tChannel:\t" + channelDetails.mGuiName + " - BYTES SIZE:\t" + channelDetails.mDefaultNumBytes);
+				}
 			}
 //		}
-//		System.err.println("Sensor:\t" + mSensorDetailsRef.mGuiFriendlyLabel + "PACKET SIZE:\t" + dataPacketSize);
+		System.err.println("Sensor:\t" + mSensorDetailsRef.mGuiFriendlyLabel + " - PACKET SIZE:\t" + dataPacketSize);
 		return dataPacketSize;
 	}
 

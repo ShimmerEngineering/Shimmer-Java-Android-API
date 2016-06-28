@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="com/shimmerresearch/driver/ShimmerGQ_802154_SD.java|com/shimmerresearch/driver/Shimmer4Test.java|com/shimmerresearch/sensors/TestSensorParsing.java|com/shimmerresearch/driver/ShimmerGQInitSettings.java" kind="src" path="src"/>
+	<classpathentry excluding="com/shimmerresearch/driver/ShimmerGQ_802154_SD.java|com/shimmerresearch/driver/Shimmer4Test.java|com/shimmerresearch/sensors/TestSensorParsing.java|com/shimmerresearch/driver/ShimmerGQInitSettings.java|com/shimmerresearch/bluetooth/ShimmerBluetoothResolver.java" kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry kind="output" path="bin"/>

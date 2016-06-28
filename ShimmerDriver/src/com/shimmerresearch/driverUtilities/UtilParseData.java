@@ -5,7 +5,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public class UtilParseData {
 	
-	private static boolean mIsDebugEnabled = false;
+	private static boolean mIsDebugEnabled = true;
 
 	/**
 	 * Converts the raw packet byte values, into the corresponding calibrated and uncalibrated sensor values, the Instruction String determines the output 

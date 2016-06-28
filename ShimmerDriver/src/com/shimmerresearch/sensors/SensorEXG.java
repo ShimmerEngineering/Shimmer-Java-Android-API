@@ -17,7 +17,6 @@ import com.shimmerresearch.driver.Shimmer4;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driver.ShimmerObject.BTStream;
@@ -111,6 +110,7 @@ public class SensorEXG extends AbstractSensor{
 	protected int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
 	@Deprecated
 	protected int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
+	
 	//--------- Sensor specific variables end --------------
 	
 	//--------- Bluetooth commands start --------------
@@ -120,16 +120,114 @@ public class SensorEXG extends AbstractSensor{
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
+	public static class ObjectClusterSensorName{
+		public static String ECG_GQ = "ECG";
+		public static String EXG1_STATUS = "ECG_EMG_Status1";
+		public static String EXG2_STATUS = "ECG_EMG_Status2";
+		public static String EXG1_CH1_24BIT = "ExG1_CH1_24BIT";
+		public static String EXG1_CH2_24BIT = "ExG1_CH2_24BIT";
+		public static String EXG1_CH1_16BIT = "ExG1_CH1_16BIT";
+		public static String EXG1_CH2_16BIT = "ExG1_CH2_16BIT";
+		public static String EXG2_CH1_24BIT = "ExG2_CH1_24BIT";
+		public static String EXG2_CH2_24BIT = "ExG2_CH2_24BIT";
+		public static String EXG2_CH1_16BIT = "ExG2_CH1_16BIT";
+		public static String EXG2_CH2_16BIT = "ExG2_CH2_16BIT";
+		public static String EMG_CH1_24BIT = "EMG_CH1_24BIT";
+		public static String EMG_CH2_24BIT = "EMG_CH2_24BIT";
+		public static String EMG_CH1_16BIT = "EMG_CH1_16BIT";
+		public static String EMG_CH2_16BIT = "EMG_CH2_16BIT";
+		public static String ECG_LA_RA_24BIT = "ECG_LA-RA_24BIT";
+		public static String ECG_LA_RL_24BIT = "ECG_LA-RL_24BIT";
+		public static String ECG_LL_RA_24BIT = "ECG_LL-RA_24BIT";
+		public static String ECG_LL_LA_24BIT = "ECG_LL-LA_24BIT"; //derived
+		public static String ECG_RESP_24BIT = "ECG_RESP_24BIT";
+		public static String ECG_VX_RL_24BIT = "ECG_Vx-RL_24BIT";
+		public static String ECG_LA_RA_16BIT = "ECG_LA-RA_16BIT";
+		public static String ECG_LA_RL_16BIT = "ECG_LA-RL_16BIT";
+		public static String ECG_LL_RA_16BIT = "ECG_LL-RA_16BIT";
+		public static String ECG_LL_LA_16BIT = "ECG_LL-LA_16BIT"; //derived
+		public static String ECG_RESP_16BIT = "ECG_RESP_16BIT";
+		public static String ECG_VX_RL_16BIT = "ECG_Vx-RL_16BIT";
+		public static String EXG_TEST_CHIP1_CH1_24BIT = "Test_CHIP1_CH1_24BIT";
+		public static String EXG_TEST_CHIP1_CH2_24BIT = "Test_CHIP1_CH2_24BIT";
+		public static String EXG_TEST_CHIP2_CH1_24BIT = "Test_CHIP2_CH1_24BIT";
+		public static String EXG_TEST_CHIP2_CH2_24BIT = "Test_CHIP2_CH2_24BIT";
+		public static String EXG_TEST_CHIP1_CH1_16BIT = "Test_CHIP1_CH1_16BIT";
+		public static String EXG_TEST_CHIP1_CH2_16BIT = "Test_CHIP1_CH2_16BIT";
+		public static String EXG_TEST_CHIP2_CH1_16BIT = "Test_CHIP2_CH1_16BIT";
+		public static String EXG_TEST_CHIP2_CH2_16BIT = "Test_CHIP2_CH2_16BIT";		
+		
+		public static String ECG_CHIP2_CH1_DUMMY_16BIT = "ECG_CHIP1_CH1_DUMMY_16BIT";
+		public static String ECG_CHIP2_CH1_DUMMY_24BIT = "ECG_CHIP1_CH1_DUMMY_24BIT";
+	}
+	
+	public class GuiLabelSensors{
+		public static final String EMG = "EMG";
+		public static final String ECG = "ECG";
+		public static final String EXG_TEST = "ExG Test";  
+		public static final String EXG_RESPIRATION = "Respiration";
+		public static final String EXG1_24BIT = "EXG1 24BIT";
+		public static final String EXG2_24BIT = "EXG2 24BIT";
+		public static final String EXG1_16BIT = "EXG1 16BIT";
+		public static final String EXG2_16BIT = "EXG2 16BIT";
+		public static final String EXG_CUSTOM = "Custom";
+	}
 	
 	public class GuiLabelSensorTiles{
 		public static final String EXG = "ECG/EMG";
 	}
 	
-//	aMap.put(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT, new SensorDetailsRef(0x10<<(0*8), 0x10<<(0*8), Configuration.Shimmer3.GuiLabelSensors.EXG1_24BIT));
-//	aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT, new SensorDetailsRef(0x08<<(0*8), 0x08<<(0*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_24BIT));
-//	aMap.put(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT, new SensorDetailsRef(0x10<<(2*8), 0x10<<(2*8), Configuration.Shimmer3.GuiLabelSensors.EXG1_16BIT));
-//	aMap.put(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT, new SensorDetailsRef(0x08<<(2*8), 0x08<<(2*8), Configuration.Shimmer3.GuiLabelSensors.EXG2_16BIT));
+	List<String> listOfChannels_Chip1Ch1_24Bit = Arrays.asList(
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT
+			);
+	List<String> listOfChannels_Chip1Ch1_16Bit = Arrays.asList(
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT
+			);
+	
+	List<String> listOfChannels_Chip1Ch2_24Bit = Arrays.asList(
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT
+			);
+	List<String> listOfChannels_Chip1Ch2_16Bit = Arrays.asList(
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT
+			);
+	
+	List<String> listOfChannels_Chip2Ch1_24Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT,
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT
+			);
+	List<String> listOfChannels_Chip2Ch1_16Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT,
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT
+			);
+	
+	List<String> listOfChannels_Chip2Ch2_24Bit = Arrays.asList(
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT
+			);
+	List<String> listOfChannels_Chip2Ch2_16Bit = Arrays.asList(
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT
+			);
 
+	List<String> listOfChannels_Derived_24Bit = Arrays.asList(
+			);
+	List<String> listOfChannels_Derived_16Bit = Arrays.asList(
+			);
+
+//	ObjectClusterSensorName.ECG_LA_RA_24BIT,
+//	ObjectClusterSensorName.EMG_CH1_24BIT
+//	ObjectClusterSensorName.ECG_LL_RA_24BIT
+//	ObjectClusterSensorName.ECG_VX_RL_24BIT
+//	ObjectClusterSensorName.ECG_LL_LA_24BIT
+//	ObjectClusterSensorName.ECG_RESP_24BIT
+//	ObjectClusterSensorName.EMG_CH2_24BIT
+//
+//	ObjectClusterSensorName.ECG_LA_RA_16BIT
+//	ObjectClusterSensorName.ECG_LL_RA_16BIT
+//	ObjectClusterSensorName.ECG_VX_RL_16BIT
+//	ObjectClusterSensorName.ECG_LL_LA_16BIT
+//	ObjectClusterSensorName.ECG_RESP_16BIT
+//	ObjectClusterSensorName.EMG_CH1_16BIT
+//	ObjectClusterSensorName.EMG_CH2_16BIT
+	
 	public static final SensorDetailsRef sDRefEcg = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.ECG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
@@ -154,56 +252,26 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
 			Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
+					//TODO sort
+					ObjectClusterSensorName.EXG1_STATUS,
 					
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,
-	//							Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,
+					ObjectClusterSensorName.ECG_LL_RA_16BIT,
+					ObjectClusterSensorName.ECG_LA_RA_16BIT,
+					ObjectClusterSensorName.ECG_LL_LA_16BIT,
+					ObjectClusterSensorName.ECG_VX_RL_16BIT,
+	//							ObjectClusterSensorName.ECG_RESP_16BIT,
+					ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT,
 
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,
+					ObjectClusterSensorName.EXG2_STATUS,
 
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT
-	//							Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT
+					ObjectClusterSensorName.ECG_LL_RA_24BIT,
+					ObjectClusterSensorName.ECG_LA_RA_24BIT,
+					ObjectClusterSensorName.ECG_LL_LA_24BIT,
+					ObjectClusterSensorName.ECG_VX_RL_24BIT,
+	//							ObjectClusterSensorName.ECG_RESP_24BIT
+					ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT
 					),
 					true);
-	
-	public static final SensorDetailsRef sDRefExgTest = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_TEST,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
-			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION),
-			Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION),
-			Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
-					
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT,
-
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,
-
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT),
-			true);
 	
 	public static final SensorDetailsRef sDRefExgRespiration = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_RESPIRATION,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration,
@@ -225,21 +293,53 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
 			Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
+					//TODO sort
+					ObjectClusterSensorName.EXG1_STATUS,
 					
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,
+					ObjectClusterSensorName.ECG_LL_RA_16BIT,
+					ObjectClusterSensorName.ECG_LA_RA_16BIT,
+					ObjectClusterSensorName.ECG_LL_LA_16BIT,
+					ObjectClusterSensorName.ECG_VX_RL_16BIT,
+					ObjectClusterSensorName.ECG_RESP_16BIT,
 					
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,
+					ObjectClusterSensorName.EXG2_STATUS,
 					
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT),
+					ObjectClusterSensorName.ECG_LL_RA_24BIT,
+					ObjectClusterSensorName.ECG_LA_RA_24BIT,
+					ObjectClusterSensorName.ECG_LL_LA_24BIT,
+					ObjectClusterSensorName.ECG_VX_RL_24BIT,
+					ObjectClusterSensorName.ECG_RESP_24BIT),
+			true);
+
+	public static final SensorDetailsRef sDRefExgTest = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_TEST,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			Arrays.asList(
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
+					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION),
+			Arrays.asList(
+					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION),
+			Arrays.asList(
+					ObjectClusterSensorName.EXG1_STATUS,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT,
+
+					ObjectClusterSensorName.EXG2_STATUS,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT),
 			true);
 	
 	public static final SensorDetailsRef sDRefEmg =  new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EMG,
@@ -266,13 +366,11 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
 					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR),
 			Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
-					
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT,
-					
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT),
+					ObjectClusterSensorName.EXG1_STATUS,
+					ObjectClusterSensorName.EMG_CH1_16BIT,
+					ObjectClusterSensorName.EMG_CH2_16BIT,
+					ObjectClusterSensorName.EMG_CH1_24BIT,
+					ObjectClusterSensorName.EMG_CH2_24BIT),
 			true);
 	
 	public static final SensorDetailsRef sDRefExgCustom =  new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_CUSTOM,
@@ -299,19 +397,17 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
 			Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
+					ObjectClusterSensorName.EXG1_STATUS,
+					ObjectClusterSensorName.EXG1_CH1_16BIT,
+					ObjectClusterSensorName.EXG1_CH2_16BIT,
+					ObjectClusterSensorName.EXG1_CH1_24BIT,
+					ObjectClusterSensorName.EXG1_CH2_24BIT,
 					
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,
-
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,
-
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT),
+					ObjectClusterSensorName.EXG2_STATUS,
+					ObjectClusterSensorName.EXG2_CH1_16BIT,
+					ObjectClusterSensorName.EXG2_CH2_16BIT,
+					ObjectClusterSensorName.EXG2_CH1_24BIT,
+					ObjectClusterSensorName.EXG2_CH2_24BIT),
 			true);
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
@@ -330,15 +426,15 @@ public class SensorEXG extends AbstractSensor{
 	//--------- Channel info start --------------
 	//ExG - Status
 	public static final ChannelDetails cDExg1Status = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS,
+					ObjectClusterSensorName.EXG1_STATUS,
+					ObjectClusterSensorName.EXG1_STATUS,
 					DatabaseChannelHandles.EXG1_STATUS,
 					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 					CHANNEL_UNITS.NO_UNITS,
 					Arrays.asList(CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg2Status = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS,
+					ObjectClusterSensorName.EXG2_STATUS,
+					ObjectClusterSensorName.EXG2_STATUS,
 					DatabaseChannelHandles.EXG2_STATUS,
 					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 					CHANNEL_UNITS.NO_UNITS,
@@ -346,60 +442,60 @@ public class SensorEXG extends AbstractSensor{
 	
 	//ExG - General
 	public static final ChannelDetails cDExg1Ch1_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT,
+					ObjectClusterSensorName.EXG1_CH1_24BIT,
+					ObjectClusterSensorName.EXG1_CH1_24BIT,
 					DatabaseChannelHandles.EXG1_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg1Ch2_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT,
+					ObjectClusterSensorName.EXG1_CH2_24BIT,
+					ObjectClusterSensorName.EXG1_CH2_24BIT,
 					DatabaseChannelHandles.EXG1_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
 	public static final ChannelDetails cDExg2Ch1_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,
+					ObjectClusterSensorName.EXG2_CH1_24BIT,
+					ObjectClusterSensorName.EXG2_CH1_24BIT,
 					DatabaseChannelHandles.EXG2_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg2Ch2_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT,
+					ObjectClusterSensorName.EXG2_CH2_24BIT,
+					ObjectClusterSensorName.EXG2_CH2_24BIT,
 					DatabaseChannelHandles.EXG2_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
 	public static final ChannelDetails cDExg1Ch1_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT,
+					ObjectClusterSensorName.EXG1_CH1_16BIT,
+					ObjectClusterSensorName.EXG1_CH1_16BIT,
 					DatabaseChannelHandles.EXG1_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg1Ch2_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT,
+					ObjectClusterSensorName.EXG1_CH2_16BIT,
+					ObjectClusterSensorName.EXG1_CH2_16BIT,
 					DatabaseChannelHandles.EXG1_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
 	public static final ChannelDetails cDExg2Ch1_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,
+					ObjectClusterSensorName.EXG2_CH1_16BIT,
+					ObjectClusterSensorName.EXG2_CH1_16BIT,
 					DatabaseChannelHandles.EXG2_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg2Ch2_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT,
+					ObjectClusterSensorName.EXG2_CH2_16BIT,
+					ObjectClusterSensorName.EXG2_CH2_16BIT,
 					DatabaseChannelHandles.EXG2_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
@@ -407,29 +503,29 @@ public class SensorEXG extends AbstractSensor{
 
 	//ExG - EMG
 	public static final ChannelDetails cDEmgCh1_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT,
+					ObjectClusterSensorName.EMG_CH1_16BIT,
+					ObjectClusterSensorName.EMG_CH1_16BIT,
 					DatabaseChannelHandles.EXG1_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDEmgCh2_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT,
+					ObjectClusterSensorName.EMG_CH2_16BIT,
+					ObjectClusterSensorName.EMG_CH2_16BIT,
 					DatabaseChannelHandles.EXG1_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDEmgCh1_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT,
+					ObjectClusterSensorName.EMG_CH1_24BIT,
+					ObjectClusterSensorName.EMG_CH1_24BIT,
 					DatabaseChannelHandles.EXG1_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDEmgCh2_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT,
+					ObjectClusterSensorName.EMG_CH2_24BIT,
+					ObjectClusterSensorName.EMG_CH2_24BIT,
 					DatabaseChannelHandles.EXG1_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
@@ -437,129 +533,145 @@ public class SensorEXG extends AbstractSensor{
 	
 	//ExG - ECG
 	public static final ChannelDetails cDEcg_LL_RA_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,
+					ObjectClusterSensorName.ECG_LL_RA_16BIT,
+					ObjectClusterSensorName.ECG_LL_RA_16BIT,
 					DatabaseChannelHandles.EXG1_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDEcg_LA_RA_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,
+					ObjectClusterSensorName.ECG_LA_RA_16BIT,
+					ObjectClusterSensorName.ECG_LA_RA_16BIT,
 					DatabaseChannelHandles.EXG1_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDEcg_VX_RL_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,
+					ObjectClusterSensorName.ECG_VX_RL_16BIT,
+					ObjectClusterSensorName.ECG_VX_RL_16BIT,
 					DatabaseChannelHandles.EXG2_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
 	public static final ChannelDetails cDEcg_RESP_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT,
+					ObjectClusterSensorName.ECG_RESP_16BIT,
+					ObjectClusterSensorName.ECG_RESP_16BIT,
 					DatabaseChannelHandles.EXG2_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
+	public static final ChannelDetails cDEcg_CHIP2_CH1_DUMMY_16BIT = new ChannelDetails(
+					ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT,
+					ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT,
+					DatabaseChannelHandles.EXG2_CH1_16BITS,
+					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+					CHANNEL_UNITS.MILLIVOLTS,
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					false, false);	
 	public static final ChannelDetails cDEcg_LL_RA_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,
+					ObjectClusterSensorName.ECG_LL_RA_24BIT,
+					ObjectClusterSensorName.ECG_LL_RA_24BIT,
 					DatabaseChannelHandles.EXG1_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDEcg_LA_RA_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,
+					ObjectClusterSensorName.ECG_LA_RA_24BIT,
+					ObjectClusterSensorName.ECG_LA_RA_24BIT,
 					DatabaseChannelHandles.EXG1_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));		
 	public static final ChannelDetails cDEcg_VX_RL_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,
+					ObjectClusterSensorName.ECG_VX_RL_24BIT,
+					ObjectClusterSensorName.ECG_VX_RL_24BIT,
 					DatabaseChannelHandles.EXG2_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));					
 	public static final ChannelDetails cDEcg_RESP_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT,
+					ObjectClusterSensorName.ECG_RESP_24BIT,
+					ObjectClusterSensorName.ECG_RESP_24BIT,
 					DatabaseChannelHandles.EXG2_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
-	
+	public static final ChannelDetails cDEcg_CHIP2_CH1_DUMMY_24BIT = new ChannelDetails(
+					ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT,
+					ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT,
+					DatabaseChannelHandles.EXG2_CH1_24BITS,
+					CHANNEL_DATA_TYPE.INT16, 3, CHANNEL_DATA_ENDIAN.MSB,
+					CHANNEL_UNITS.MILLIVOLTS,
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					false, false);	
+
 	//ECG derived
 	public static final ChannelDetails cDEcg_LL_LA_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,
+					ObjectClusterSensorName.ECG_LL_LA_16BIT,
+					ObjectClusterSensorName.ECG_LL_LA_16BIT,
+					ObjectClusterSensorName.ECG_LL_LA_16BIT,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL));
 	public static final ChannelDetails cDEcg_LL_LA_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,
+					ObjectClusterSensorName.ECG_LL_LA_24BIT,
+					ObjectClusterSensorName.ECG_LL_LA_24BIT,
+					ObjectClusterSensorName.ECG_LL_LA_24BIT,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL));
 	
 	//ExG - Test signal
 	public static final ChannelDetails cDExg_Test_CHIP1_CH1_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
 					DatabaseChannelHandles.EXG1_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg_Test_CHIP1_CH2_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT,
 					DatabaseChannelHandles.EXG1_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg_Test_CHIP2_CH1_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
 					DatabaseChannelHandles.EXG2_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
 	public static final ChannelDetails cDExg_Test_CHIP2_CH2_16bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT,
 					DatabaseChannelHandles.EXG2_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
 	public static final ChannelDetails cDExg_Test_CHIP1_CH1_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT,
 					DatabaseChannelHandles.EXG1_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg_Test_CHIP1_CH2_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT,
 					DatabaseChannelHandles.EXG1_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));		
 	public static final ChannelDetails cDExg_Test_CHIP2_CH1_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT,
 					DatabaseChannelHandles.EXG2_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	public static final ChannelDetails cDExg_Test_CHIP2_CH2_24bit = new ChannelDetails(
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT,
-					Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT,
+					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT,
 					DatabaseChannelHandles.EXG2_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
@@ -569,51 +681,55 @@ public class SensorEXG extends AbstractSensor{
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
 		//ExG - Status
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS, SensorEXG.cDExg1Status);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS, SensorEXG.cDExg2Status);
+		aMap.put(ObjectClusterSensorName.EXG1_STATUS, SensorEXG.cDExg1Status);
+		aMap.put(ObjectClusterSensorName.EXG2_STATUS, SensorEXG.cDExg2Status);
 		
 		//ExG - General
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_24BIT, SensorEXG.cDExg1Ch1_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_24BIT, SensorEXG.cDExg1Ch2_24bit);
+		aMap.put(ObjectClusterSensorName.EXG1_CH1_24BIT, SensorEXG.cDExg1Ch1_24bit);
+		aMap.put(ObjectClusterSensorName.EXG1_CH2_24BIT, SensorEXG.cDExg1Ch2_24bit);
 
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT, SensorEXG.cDExg2Ch1_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_24BIT, SensorEXG.cDExg2Ch2_24bit);
+		aMap.put(ObjectClusterSensorName.EXG2_CH1_24BIT, SensorEXG.cDExg2Ch1_24bit);
+		aMap.put(ObjectClusterSensorName.EXG2_CH2_24BIT, SensorEXG.cDExg2Ch2_24bit);
 
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH1_16BIT, SensorEXG.cDExg1Ch1_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_CH2_16BIT, SensorEXG.cDExg1Ch2_16bit);
+		aMap.put(ObjectClusterSensorName.EXG1_CH1_16BIT, SensorEXG.cDExg1Ch1_16bit);
+		aMap.put(ObjectClusterSensorName.EXG1_CH2_16BIT, SensorEXG.cDExg1Ch2_16bit);
 
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT, SensorEXG.cDExg2Ch1_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_CH2_16BIT, SensorEXG.cDExg2Ch2_16bit);
+		aMap.put(ObjectClusterSensorName.EXG2_CH1_16BIT, SensorEXG.cDExg2Ch1_16bit);
+		aMap.put(ObjectClusterSensorName.EXG2_CH2_16BIT, SensorEXG.cDExg2Ch2_16bit);
 
 		//ExG - EMG
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT, SensorEXG.cDEmgCh1_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT, SensorEXG.cDEmgCh2_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT, SensorEXG.cDEmgCh1_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT, SensorEXG.cDEmgCh2_24bit);
+		aMap.put(ObjectClusterSensorName.EMG_CH1_16BIT, SensorEXG.cDEmgCh1_16bit);
+		aMap.put(ObjectClusterSensorName.EMG_CH2_16BIT, SensorEXG.cDEmgCh2_16bit);
+		aMap.put(ObjectClusterSensorName.EMG_CH1_24BIT, SensorEXG.cDEmgCh1_24bit);
+		aMap.put(ObjectClusterSensorName.EMG_CH2_24BIT, SensorEXG.cDEmgCh2_24bit);
 		
 		//ExG - ECG
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT, SensorEXG.cDEcg_LL_RA_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT, SensorEXG.cDEcg_LA_RA_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT, SensorEXG.cDEcg_VX_RL_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT, SensorEXG.cDEcg_RESP_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT, SensorEXG.cDEcg_LL_RA_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT, SensorEXG.cDEcg_LA_RA_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT, SensorEXG.cDEcg_VX_RL_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT, SensorEXG.cDEcg_RESP_24bit);
+		aMap.put(ObjectClusterSensorName.ECG_LL_RA_16BIT, SensorEXG.cDEcg_LL_RA_16bit);
+		aMap.put(ObjectClusterSensorName.ECG_LA_RA_16BIT, SensorEXG.cDEcg_LA_RA_16bit);
+		aMap.put(ObjectClusterSensorName.ECG_VX_RL_16BIT, SensorEXG.cDEcg_VX_RL_16bit);
+		aMap.put(ObjectClusterSensorName.ECG_RESP_16BIT, SensorEXG.cDEcg_RESP_16bit);
+		aMap.put(ObjectClusterSensorName.ECG_LL_RA_24BIT, SensorEXG.cDEcg_LL_RA_24bit);
+		aMap.put(ObjectClusterSensorName.ECG_LA_RA_24BIT, SensorEXG.cDEcg_LA_RA_24bit);
+		aMap.put(ObjectClusterSensorName.ECG_VX_RL_24BIT, SensorEXG.cDEcg_VX_RL_24bit);
+		aMap.put(ObjectClusterSensorName.ECG_RESP_24BIT, SensorEXG.cDEcg_RESP_24bit);
+		
+		aMap.put(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT, SensorEXG.cDEcg_CHIP2_CH1_DUMMY_16BIT);
+		aMap.put(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT, SensorEXG.cDEcg_CHIP2_CH1_DUMMY_24BIT);
+		
 		
 		//ECG derived
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT, SensorEXG.cDEcg_LL_LA_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT, SensorEXG.cDEcg_LL_LA_24bit);
+		aMap.put(ObjectClusterSensorName.ECG_LL_LA_16BIT, SensorEXG.cDEcg_LL_LA_16bit);
+		aMap.put(ObjectClusterSensorName.ECG_LL_LA_24BIT, SensorEXG.cDEcg_LL_LA_24bit);
 		
 		//ExG - Test signal
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT, SensorEXG.cDExg_Test_CHIP1_CH1_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT, SensorEXG.cDExg_Test_CHIP1_CH2_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT, SensorEXG.cDExg_Test_CHIP2_CH1_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT, SensorEXG.cDExg_Test_CHIP2_CH2_16bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT, SensorEXG.cDExg_Test_CHIP1_CH1_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT, SensorEXG.cDExg_Test_CHIP1_CH2_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT, SensorEXG.cDExg_Test_CHIP2_CH1_24bit);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT, SensorEXG.cDExg_Test_CHIP2_CH2_24bit);
+		aMap.put(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT, SensorEXG.cDExg_Test_CHIP1_CH1_16bit);
+		aMap.put(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT, SensorEXG.cDExg_Test_CHIP1_CH2_16bit);
+		aMap.put(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT, SensorEXG.cDExg_Test_CHIP2_CH1_16bit);
+		aMap.put(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT, SensorEXG.cDExg_Test_CHIP2_CH2_16bit);
+		aMap.put(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT, SensorEXG.cDExg_Test_CHIP1_CH1_24bit);
+		aMap.put(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT, SensorEXG.cDExg_Test_CHIP1_CH2_24bit);
+		aMap.put(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT, SensorEXG.cDExg_Test_CHIP2_CH1_24bit);
+		aMap.put(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT, SensorEXG.cDExg_Test_CHIP2_CH2_24bit);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
 
@@ -736,7 +852,6 @@ public class SensorEXG extends AbstractSensor{
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
-		
 		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 
 		if (mEnableCalibration){
@@ -746,12 +861,21 @@ public class SensorEXG extends AbstractSensor{
 				FormatCluster formatClusterUncal = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString()));
 				if(formatClusterUncal!=null){
 					double unCalData = formatClusterUncal.mData;
-					if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG1_STATUS)
-							||channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG2_STATUS)){
+					if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.EXG1_STATUS)
+							||channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.EXG2_STATUS)){
 						objectCluster.addCalData(channelDetails, unCalData, objectCluster.getIndexKeeper()-i);
 					}
 					else{
-						double calData = unCalData *(((2.42*1000)/getExg1CH1GainValue())/(Math.pow(2,23)-1));
+						//TODO get the gain for the particular chip/channel
+						int exgChGainValue = getExg1Ch1GainSetting();
+//						int exgChGainValue = getExg2Ch1GainSetting();
+						
+						double denominator = (Math.pow(2,15)-1);
+						if(is24BitExgChannel(channelDetails.mObjectClusterName)){
+							denominator = (Math.pow(2,23)-1);
+						}
+
+						double calData = unCalData *(((2.42*1000)/exgChGainValue)/denominator);
 						objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-i);
 					}
 				}
@@ -759,6 +883,16 @@ public class SensorEXG extends AbstractSensor{
 					System.out.println(getClass().getSimpleName() + "\tNULL FORMAT CLUSTER\t" + channelDetails.mObjectClusterName);
 				}
 			}
+		}
+		
+		//Debugging
+		if(mIsDebugOutput){
+			super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+					new String[]{ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT, CHANNEL_TYPE.CAL.toString()}, 
+					new String[]{ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT, CHANNEL_TYPE.CAL.toString()}, 
+					new String[]{ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT, CHANNEL_TYPE.CAL.toString()}, 
+					new String[]{ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT, CHANNEL_TYPE.CAL.toString()}
+					));
 		}
 
 		
@@ -1120,7 +1254,6 @@ public class SensorEXG extends AbstractSensor{
 //			}
 //		}
 		
-		// TODO Auto-generated method stub
 		return objectCluster;
 	}
 
@@ -1294,7 +1427,7 @@ public class SensorEXG extends AbstractSensor{
 	public void exgBytesGetConfigFrom(byte[] mEXG1RegisterArray, byte[] mEXG2RegisterArray){
 		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-		internalCheckExgModeAndUpdateSensorMap();
+//		internalCheckExgModeAndUpdateSensorMap();
 	}
 	
 	//TODO:2015-06-16 remove the need for this by using map
@@ -1749,22 +1882,22 @@ public class SensorEXG extends AbstractSensor{
 		return mExGResolution;
 	}
 
-	public int getExg1CH1GainValue(){
+	public int getExg1CH1GainConfigValue(){
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
 //		return mEXG1CH1GainValue;
 	}
 	
-	public int getExg1CH2GainValue(){
+	public int getExg1CH2GainConfigValue(){
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
 //		return mEXG1CH2GainValue;
 	}
 	
-	public int getExg2CH1GainValue(){
+	public int getExg2CH1GainConfigValue(){
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
 //		return mEXG2CH1GainValue;
 	}
 	
-	public int getExg2CH2GainValue(){
+	public int getExg2CH2GainConfigValue(){
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
 //		return mEXG2CH2GainValue;
 	}
@@ -1772,19 +1905,19 @@ public class SensorEXG extends AbstractSensor{
 	public boolean areExgChannelGainsEqual(List<EXG_CHIP_INDEX> listOfChipsToCheck){
 		boolean areEqual = true;
 		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1)){
-			if(getExg1CH1GainValue() != getExg1CH2GainValue()) {
+			if(getExg1CH1GainConfigValue() != getExg1CH2GainConfigValue()) {
 				areEqual = false;
 			}
 		}
 
 		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP2)){
-			if(getExg2CH1GainValue() != getExg2CH2GainValue()) {
+			if(getExg2CH1GainConfigValue() != getExg2CH2GainConfigValue()) {
 				areEqual = false;
 			}
 		}
 
 		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1) && listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP2)){
-			if(getExg1CH1GainValue() != getExg2CH1GainValue()) {
+			if(getExg1CH1GainConfigValue() != getExg2CH1GainConfigValue()) {
 				areEqual = false;
 			}
 		}
@@ -2148,6 +2281,11 @@ public class SensorEXG extends AbstractSensor{
 		return false;
 	}
 	
+	/**
+	 * should only be checked last as it is a general check to determine if any
+	 * of the sensor bits are enabled but the EXG configurations bytes are
+	 * unknown
+	 */
 	public boolean isEXGUsingCustomSignalConfiguration(){
 		if(mIsExg1_16bitEnabled||mIsExg2_16bitEnabled||mIsExg1_24bitEnabled||mIsExg2_24bitEnabled){
 			return true;
@@ -2483,6 +2621,14 @@ public class SensorEXG extends AbstractSensor{
 	}
 	//-------------------- ExG from ShimmerObject End -----------------------------------	
 
+	private int getExg1Ch1GainSetting(){
+		return convertEXGGainSettingToValue(getExg1CH1GainConfigValue());
+	}
+	
+	private int getExg2Ch1GainSetting() {
+		return convertEXGGainSettingToValue(getExg2CH1GainConfigValue());
+	}
+	
 
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override
@@ -2504,39 +2650,84 @@ public class SensorEXG extends AbstractSensor{
 					String channelName = channelDetails.mObjectClusterName;
 //			   		System.out.println("getExGResolution(): " +getExGResolution());
 			   		
-					if((getExGResolution()==1)
-							&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
-	    				||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
-						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
-						    iterator.remove();
-					}
-					else if((getExGResolution()==0)
-							&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
-	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
+					if((getExGResolution()==1 && is16BitExgChannel(channelName))
+							|| (getExGResolution()==0 && is24BitExgChannel(channelName))){
 					    iterator.remove();
 					}
+
+//					if((getExGResolution()==1)
+//							&&((channelName.equals(ObjectClusterSensorName.ECG_LA_RA_16BIT))
+//						||(channelName.equals(ObjectClusterSensorName.ECG_LL_RA_16BIT))
+//						||(channelName.equals(ObjectClusterSensorName.ECG_VX_RL_16BIT))
+//						||(channelName.equals(ObjectClusterSensorName.ECG_LL_LA_16BIT))
+//	    				||(channelName.equals(ObjectClusterSensorName.ECG_RESP_16BIT))
+//    					||(channelName.equals(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT))
+//						||(channelName.equals(ObjectClusterSensorName.EMG_CH1_16BIT))
+//						||(channelName.equals(ObjectClusterSensorName.EMG_CH2_16BIT))
+//						||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
+//						||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
+//						||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
+//						||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
+//						)){
+//					    iterator.remove();
+//					}
+//					else if((getExGResolution()==0)
+//							&&((channelName.equals(ObjectClusterSensorName.ECG_LA_RA_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.ECG_LL_RA_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.ECG_VX_RL_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.ECG_LL_LA_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.ECG_RESP_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.EMG_CH1_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.EMG_CH2_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
+//	    					||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
+//	    					)){
+//					    iterator.remove();
+//					}
 			   	}
 			}
 		}
 	}
 	
+	private boolean is24BitExgChannel(String channelName) {
+		if(channelName.equals(ObjectClusterSensorName.ECG_LA_RA_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_LL_RA_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_VX_RL_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_LL_LA_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_RESP_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.EMG_CH1_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.EMG_CH2_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT)
+			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT)){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean is16BitExgChannel(String channelName) {
+		if(channelName.equals(ObjectClusterSensorName.ECG_LA_RA_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_LL_RA_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_VX_RL_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_LL_LA_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_RESP_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.EMG_CH1_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.EMG_CH2_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT)
+			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT)){
+				return true;
+			}
+		return false;
+	}
+
 	@Override
 	public void handleSpecCasesBeforeSensorMapUpdateGeneral(ShimmerDevice shimmerDevice) {
 		checkExgResolutionFromEnabledSensorsVar();

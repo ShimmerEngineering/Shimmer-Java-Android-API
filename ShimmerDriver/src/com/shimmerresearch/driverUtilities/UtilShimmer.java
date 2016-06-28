@@ -677,5 +677,11 @@ public class UtilShimmer implements Serializable {
 		}
 		return returnString;
 	}
+
+	public static double nudgeDouble(double valToNudge, double thresholdLower, double thresholdUpper) {
+		valToNudge = (valToNudge>thresholdUpper? thresholdUpper:valToNudge);
+		valToNudge = (valToNudge<thresholdLower? thresholdLower:valToNudge);
+		return valToNudge;
+	}
 	
 }

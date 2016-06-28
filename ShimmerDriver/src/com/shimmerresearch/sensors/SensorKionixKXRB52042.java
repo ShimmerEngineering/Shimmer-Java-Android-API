@@ -38,14 +38,22 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	private static final long serialVersionUID = -5027305280613145453L;
 	
 	//--------- Sensor specific variables start --------------
+	/**TODO use calibration map instead*/
+	@Deprecated
 	protected boolean mDefaultCalibrationParametersAccel = true;
+	/**TODO use calibration map instead*/
+	@Deprecated
 	protected double[][] mAlignmentMatrixAnalogAccel = {{-1,0,0},{0,-1,0},{0,0,1}}; 			
+	/**TODO use calibration map instead*/
+	@Deprecated
 	protected double[][] mSensitivityMatrixAnalogAccel = {{38,0,0},{0,38,0},{0,0,38}}; 	
+	/**TODO use calibration map instead*/
+	@Deprecated
 	protected double[][] mOffsetVectorAnalogAccel = {{2048},{2048},{2048}};
 
+	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
+	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
-	protected static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
-	protected static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelAnalogShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
@@ -256,7 +264,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		}
 		
 		//Debugging
-		if(mDebugOutput){
+		if(mIsDebugOutput){
 			super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 					new String[]{ObjectClusterSensorName.ACCEL_LN_X, CHANNEL_TYPE.UNCAL.toString()}, 
 					new String[]{ObjectClusterSensorName.ACCEL_LN_Y, CHANNEL_TYPE.UNCAL.toString()}, 

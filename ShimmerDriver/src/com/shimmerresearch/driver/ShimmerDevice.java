@@ -142,7 +142,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
 	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
 	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
-	protected double mPacketReceptionRate = 100;
+	protected double mPacketReceptionRateOverall = 100;
 	protected double mPacketReceptionRateCurrent = 100;
 	
 	//Events markers
@@ -256,6 +256,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void generateParserMap() {
+		//TODO switch ParserMap value to list of sensorMapKeys as below?
+//		HashMap<COMMUNICATION_TYPE, List<Integer>> parseMap = new HashMap<COMMUNICATION_TYPE, List<Integer>>(); 
+
 		mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
 		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
 			for(Entry<Integer, SensorDetails> sensorEntry:mSensorMap.entrySet()){
@@ -762,13 +765,35 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mInfoMemBytes;
 	}
 
+	public void setPacketReceptionRateOverall(double packetReceptionRateTrial){
+		mPacketReceptionRateOverall = packetReceptionRateTrial;
+	}
+
+	public double getPacketReceptionRateOverall(){
+		return mPacketReceptionRateOverall;
+	}
+
+	@Deprecated
 	public double getPacketReceptionRate(){
-		return mPacketReceptionRate;
+		return mPacketReceptionRateOverall;
+	}
+
+	public void setPacketReceptionRateCurrent(double packetReceptionRateCurrent){
+		mPacketReceptionRateCurrent = packetReceptionRateCurrent;
 	}
 
 	public double getPacketReceptionRateCurrent(){
 		return mPacketReceptionRateCurrent;
 	}
+
+	public void setPacketLossCount(long packetLossCount){
+		mPacketLossCount = packetLossCount;
+	}
+
+	public long getPacketLossCount(){
+		return mPacketLossCount;
+	}
+	
 	
 	 /**
 	 * @return the mConfigTime

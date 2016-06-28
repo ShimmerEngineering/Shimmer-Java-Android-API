@@ -59,34 +59,26 @@ public class SensorLSM303 extends AbstractSensor{
 	public int mMagRange = 1;
 	public int mLSM303MagRate = 4;
 	
+	// ----------   Wide-range accel start ---------------
+	/**TODO use calibration map instead*/
+	@Deprecated
 	protected boolean mDefaultCalibrationParametersDigitalAccel = true;
+	/**TODO use calibration map instead*/
+	@Deprecated
 	protected double[][] mAlignmentMatrixWRAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
+	/**TODO use calibration map instead*/
+	@Deprecated
 	protected double[][] mSensitivityMatrixWRAccel = {{1631,0,0},{0,1631,0},{0,0,1631}};	 	
+	/**TODO use calibration map instead*/
+	@Deprecated
 	protected double[][] mOffsetVectorWRAccel = {{0},{0},{0}};	
 	
-	protected boolean mDefaultCalibrationParametersMag = true;	
-	protected double[][] mAlignmentMatrixMagnetometer = {{1,0,0},{0,1,0},{0,0,-1}};				
-	protected double[][] mSensitivityMatrixMagnetometer = {{580,0,0},{0,580,0},{0,0,580}};	
-	protected double[][] mOffsetVectorMagnetometer = {{0},{0},{0}};
-	
+	public static final double[][] AlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}};	
+	public static final double[][] OffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
 	public static final double[][] SensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};
 	public static final double[][] SensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};
 	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
 	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
-
-	protected static final double[][] AlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}};	
-	protected static final double[][] OffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
-
-	public static final double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
-	public static final double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
-	public static final double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
-	public static final double[][] SensitivityMatrixMag4GaShimmer3 = {{450,0,0},{0,450,0},{0,0,400}};
-	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
-	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
-	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
-	
-	protected static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
-	protected static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};	
 
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelWideRangeShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
@@ -104,7 +96,32 @@ public class SensorLSM303 extends AbstractSensor{
 				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], Shimmer3.ListofAccelRange[3],
 						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel16gShimmer3, OffsetVectorWideRangeAccelShimmer3));
 	}
-	
+	// ----------   Wide-range accel end ---------------
+
+	// ----------   Mag start ---------------
+	/**TODO use calibration map instead*/
+	@Deprecated
+	protected boolean mDefaultCalibrationParametersMag = true;	
+	/**TODO use calibration map instead*/
+	@Deprecated
+	protected double[][] mAlignmentMatrixMagnetometer = {{1,0,0},{0,1,0},{0,0,-1}};				
+	@Deprecated
+	/**TODO use calibration map instead*/
+	protected double[][] mSensitivityMatrixMagnetometer = {{580,0,0},{0,580,0},{0,0,580}};	
+	/**TODO use calibration map instead*/
+	@Deprecated
+	protected double[][] mOffsetVectorMagnetometer = {{0},{0},{0}};
+
+	public static final double[][] AlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
+	public static final double[][] OffsetVectorMagShimmer3 = {{0},{0},{0}};	
+	public static final double[][] SensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
+	public static final double[][] SensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
+	public static final double[][] SensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
+	public static final double[][] SensitivityMatrixMag4GaShimmer3 = {{450,0,0},{0,450,0},{0,0,400}};
+	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
+	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
+	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
+
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapMagShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
 		//TODO improve the way these are loaded - using array indexes is too hard coded?
@@ -130,6 +147,7 @@ public class SensorLSM303 extends AbstractSensor{
 				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[6], Shimmer3.ListofMagRange[6],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag8p1GaShimmer3, OffsetVectorMagShimmer3));
 	}
+	// ----------   Mag end ---------------
 	
 	//TODO commented - RS (20/5/2016): Keep in Configuration.java for now. 
 //	public class SensorBitmap{
@@ -479,7 +497,7 @@ public class SensorLSM303 extends AbstractSensor{
 				}
 	
 				//Debugging
-				if(mDebugOutput){
+				if(mIsDebugOutput){
 					super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 							new String[]{ObjectClusterSensorName.ACCEL_WR_X, CHANNEL_TYPE.UNCAL.toString()}, 
 							new String[]{ObjectClusterSensorName.ACCEL_WR_Y, CHANNEL_TYPE.UNCAL.toString()}, 
@@ -522,7 +540,7 @@ public class SensorLSM303 extends AbstractSensor{
 				}
 				
 				//Debugging
-				if(mDebugOutput){
+				if(mIsDebugOutput){
 					super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 							new String[]{ObjectClusterSensorName.MAG_X, CHANNEL_TYPE.UNCAL.toString()}, 
 							new String[]{ObjectClusterSensorName.MAG_Y, CHANNEL_TYPE.UNCAL.toString()}, 

@@ -34,7 +34,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	protected static final String[] QUATERNION_OPTIONS = {"Off", "On"};
 	protected static final String[] EULER_OPTIONS = {"Off", "On"};
 	
-	private static final ShimmerVerObject baseSh3Module = new ShimmerVerObject(
+	private static final ShimmerVerObject svoSh3Module = new ShimmerVerObject(
 			HW_ID.SHIMMER_3,ShimmerVerDetails.ANY_VERSION,
 			ShimmerVerDetails.ANY_VERSION,
 			ShimmerVerDetails.ANY_VERSION,
@@ -74,7 +74,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	// ------------------- Algorithms grouping map end -----------------------
 
 	{
-		mListSVO.add(baseSh3Module);
+		mListSVO.add(svoSh3Module);
 		
 //		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
 //		String[] accSensors = new String[2];

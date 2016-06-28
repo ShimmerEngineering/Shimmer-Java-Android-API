@@ -86,11 +86,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	protected double[][] SensitivityMatrixMPLGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
 	protected double[][] OffsetVectorMPLGyro = {{0},{0},{0}};
 
-	public boolean mDefaultCalibrationParametersGyro = true;
-	public double[][] mAlignmentMatrixGyroscope = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	public double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
-	public double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};
-
 	//MPU Mag (AK8975A) - obtained from: 
 	// http://www.akm.com/akm/en/file/datasheet/AK8975.pdf
 	// https://github.com/kriswiner/MPU-9150/blob/master/MPU9150BasicAHRS.ino
@@ -98,17 +93,32 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public double[][] mSensitivityMatrixMagnetometer = {{0.3,0,0},{0,0.3,0},{0,0,0.3}}; 		
 	public double[][] mOffsetVectorMagnetometer = {{-5.0},{-95.0},{-260.0}};
 
+	// ----------   Gyro start ---------------
+	/**TODO use calibration map instead*/
+	@Deprecated
+	public boolean mDefaultCalibrationParametersGyro = true;
+	/**TODO use calibration map instead*/
+	@Deprecated
+	public double[][] mAlignmentMatrixGyroscope = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+	/**TODO use calibration map instead*/
+	@Deprecated
+	public double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
+	/**TODO use calibration map instead*/
+	@Deprecated
+	public double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};
+
+	//TODO Shimmer2 doesn't belong here
 	//Default values Shimmer2
 	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
 	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
 	//Shimmer3
+	public static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+	public static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};	
 	public static final double[][] SensitivityMatrixGyro250dpsShimmer3 = {{131,0,0},{0,131,0},{0,0,131}};
 	public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
 	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
 	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
-	public static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	public static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};	
 	
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
@@ -126,7 +136,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], Shimmer3.ListofGyroRange[3],
 						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
 	}
-	
+	// ----------   Gyro end ---------------
+
 	
 	
 //	------------ Keep in Configuration? ------------
@@ -1500,7 +1511,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		
 		
 		//Debugging
-		if(mDebugOutput){
+		if(mIsDebugOutput){
 			super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 					new String[]{ObjectClusterSensorName.GYRO_X, CHANNEL_TYPE.UNCAL.toString()}, 
 					new String[]{ObjectClusterSensorName.GYRO_Y, CHANNEL_TYPE.UNCAL.toString()}, 

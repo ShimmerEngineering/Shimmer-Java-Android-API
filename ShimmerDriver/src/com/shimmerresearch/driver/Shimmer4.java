@@ -26,6 +26,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor;
@@ -92,47 +93,48 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	public void sensorAndConfigMapsCreate() {
+		//Example code
 //		if(UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
-//				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ANY_VERSION, ANY_VERSION, ANY_VERSION)){
-		
-//		mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+//				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION)){
+//			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+//		}
+
 		
 //		mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
 		mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(this));
-	
-		mMapOfSensorClasses.put(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
-//		}
+		
+//		mMapOfSensorClasses.put(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
+//		mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
+//		mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
+//		mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
+//		mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
+//		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
+//		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
 				){
-//			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(this));
+			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(this));
 		}
 
-		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
-				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
-				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
-				){
-			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
-		}
-
-		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
-				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
-				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
-				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
-				){
-			if(isDerivedSensorsSupported()){
-//				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
-				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(this));
-			}
-		}
+//		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
+//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
+//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+//				){
+//			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+//		}
+//
+//		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
+//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
+//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
+//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+//				){
+//			if(isDerivedSensorsSupported()){
+////				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(mShimmerVerObject));
+//				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(this));
+//			}
+//		}
 
 		generateSensorAndParserMaps();
 		
@@ -239,14 +241,12 @@ public class Shimmer4 extends ShimmerDevice {
 			mButtonStart = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftButtonStart) & infoMemLayoutCast.maskButtonStart)>0? true:false;
 			mShowRtcErrorLeds = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowRwcErrorLeds) & infoMemLayoutCast.maskShowRwcErrorLeds)>0? true:false;
 
-			prepareAllAfterConfigRead();
-
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
 			}
-			updateExpectedDataPacketSize();
 
+			prepareAllAfterConfigRead();
 		}
 		checkAndCorrectShimmerName(shimmerName);
 	}
@@ -373,7 +373,7 @@ public class Shimmer4 extends ShimmerDevice {
 	//TODO improve flow of below, move to ShimmerDevice also?
 	@Override
 	public void prepareAllAfterConfigRead() {
-		sensorAndConfigMapsCreate();
+//		sensorAndConfigMapsCreate();
 		
 //		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.ALL);
 //		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);
@@ -459,17 +459,29 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void eventNewPacket(byte[] packetByteArray) {
-				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
+//				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
 
 				long pcTimestamp = System.currentTimeMillis();
 				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
+				
+				//TODO HACK for packet loss callback
+//				AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
+//				if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
+//					ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
+//					if(shimmerClock.mFlagPacketLoss){
+//						sendStatusMsgPacketLossDetected();
+//					}
+//					shimmerClock.mFlagPacketLoss = false;
+//				}
 				
 				dataHandler(objectCluster);
 			}
 
 			@Override
 			public void eventResponseReceived(byte[] responseBytes) {
-				// TODO Auto-generated method stub
+				
+				// TODO These response should be processed in the ShimmerRadioLiteProtocol and the parsed responses fed back here
+				
 				if ((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
 					int firmwareIdentifier=(int)((responseBytes[2]&0xFF)<<8)+(int)(responseBytes[1]&0xFF);
 					int firmwareVersionMajor = (int)((responseBytes[4]&0xFF)<<8)+(int)(responseBytes[3]&0xFF);
@@ -482,13 +494,15 @@ public class Shimmer4 extends ShimmerDevice {
 					}
 					System.out.println("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
 					System.out.println("FW Version Response Received: " + getFirmwareVersionParsed());
-				} else if ((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE){
+				} 
+				else if ((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE){
 					setHardwareVersion(responseBytes[1]);
 					System.out.println("Shimmer Version Response Received. HW Code: " + getHardwareVersion());
 					createInfoMemLayout();
 					setBluetoothRadioState(BT_STATE.CONNECTING);
 					readInfoMem();
-				} else if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
+				} 
+				else if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
 					// Get data length to read
 					int lengthToRead = responseBytes.length-1;
 					byte[] rxBuf = new byte[lengthToRead];
@@ -509,13 +523,17 @@ public class Shimmer4 extends ShimmerDevice {
 						int numofIns = mShimmerRadioHWLiteProtocol.mRadioProtocol.getListofInstructions().size();
 						sendProgressReport(new BluetoothProgressReportPerCmd(0, numofIns, getMacId(), getComPort()));
 					}
-				} else{
-					if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE) {
-						if (getBluetoothRadioState()==BT_STATE.CONNECTING){
-							int numofIns = mShimmerRadioHWLiteProtocol.mRadioProtocol.getListofInstructions().size();
-							sendProgressReport(new BluetoothProgressReportPerCmd(0, numofIns, getMacId(), getComPort()));
-						}
+				} 
+				else if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE) {
+					if (getBluetoothRadioState()==BT_STATE.CONNECTING){
+						int numofIns = mShimmerRadioHWLiteProtocol.mRadioProtocol.getListofInstructions().size();
+						sendProgressReport(new BluetoothProgressReportPerCmd(0, numofIns, getMacId(), getComPort()));
 					}
+				}
+				else if((responseBytes[0]&0xff) == LiteProtocolInstructionSet.InstructionsResponse.STATUS_RESPONSE_VALUE) {
+					System.err.println("STATUS RESPONSE RECEIVED");
+				}
+				else{
 					System.out.println("POSSIBLE_SENSOR_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseBytes));
 					for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 						abstractSensor.processResponse(responseBytes, COMMUNICATION_TYPE.BLUETOOTH);
