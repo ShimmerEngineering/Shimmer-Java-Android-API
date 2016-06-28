@@ -2625,6 +2625,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					setDefaultCalibrationShimmer3Gyro();
 				}
 			} 
+			updateCalibMapGyro();
 	}
 	
 	public boolean isUsingDefaultGyroParam(){
