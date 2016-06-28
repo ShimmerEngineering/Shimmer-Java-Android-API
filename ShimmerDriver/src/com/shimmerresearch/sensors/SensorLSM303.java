@@ -1423,6 +1423,7 @@ public class SensorLSM303 extends AbstractSensor{
 	
 	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
 		mCalibMapAccelWideRangeShimmer3.putAll(mapOfKinematicSensorCalibration);
+//		mCalibMapMagShimmer3.putAll(mapOfKinematicSensorCalibration);
 	}
 	
 	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibrationAll() {
