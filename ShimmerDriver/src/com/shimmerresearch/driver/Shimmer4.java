@@ -96,7 +96,7 @@ public class Shimmer4 extends ShimmerDevice {
 //				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ANY_VERSION, ANY_VERSION, ANY_VERSION)){
 		
 //			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
+//			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
@@ -104,6 +104,7 @@ public class Shimmer4 extends ShimmerDevice {
 			mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(this));
 
 
 ////		}
@@ -798,27 +799,19 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
-//	protected double mLastReceivedCalibratedTimeStamp=-1; 
-//	double mLastSavedCalibratedTimeStamp = 0.0;
-//
-//	public void calculatePacketReceptionRateCurrent(int intervalMs) {
-//		
-//		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
-//		
-//		if (mLastReceivedCalibratedTimeStamp!=-1){
-//			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
-//			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
-//			mPacketReceptionRateCurrent = (numPacketsReceived/numPacketsShouldHaveReceived)*100.0;
-//		}	
-//
-//		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent>100.0? 100.0:mPacketReceptionRateCurrent);
-//		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent<0? 0.0:mPacketReceptionRateCurrent);
-//
-//		mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
-//
-//		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getBluetoothAddress(), mComPort, mPacketReceptionRateCurrent);
-//		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
-//	}
+
+
+	public void calculatePacketReceptionRateCurrent(int intervalMs) {
+
+		AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
+		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
+			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
+			mPacketReceptionRateCurrent = shimmerClock.calculatePacketReceptionRateCurrent(intervalMs);
+			CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), mPacketReceptionRateCurrent);
+			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+		}
+
+	}
 	
 	
 	/**

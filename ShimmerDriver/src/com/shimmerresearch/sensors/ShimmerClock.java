@@ -208,7 +208,7 @@ public class ShimmerClock extends AbstractSensor {
 
 	public static final ChannelDetails channelReceptionRateCurrent = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
+			"Packet Reception Rate (per second)",
 			DatabaseChannelHandles.NONE,
 			CHANNEL_UNITS.PERCENT,
 			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
@@ -219,7 +219,7 @@ public class ShimmerClock extends AbstractSensor {
 
 	public static final ChannelDetails channelReceptionRateTrial = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+			"Packet Reception Rate (overall)",
 			DatabaseChannelHandles.NONE,
 			CHANNEL_UNITS.PERCENT,
 			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
@@ -232,7 +232,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 			DatabaseChannelHandles.NONE,
-			CHANNEL_UNITS.PERCENT,
+			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
 	{
 		//TODO put into above constructor
@@ -242,8 +242,8 @@ public class ShimmerClock extends AbstractSensor {
 	
 	//--------- Channel info end --------------
 
-	public ShimmerClock(ShimmerVerObject svo) {
-		super(svo);
+	public ShimmerClock(ShimmerDevice shimmerDevice) {
+		super(shimmerDevice);
 		setSensorName(SENSORS.CLOCK.toString());
 	}
 
@@ -533,8 +533,8 @@ public class ShimmerClock extends AbstractSensor {
 				}
 				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE)){
 
-//					objectCluster.addData(channelBattPercentage, Double.NaN, mShimmerBattStatusDetails.mEstimatedChargePercentage);
-//					objectCluster.incrementIndexKeeper();
+					objectCluster.addData(channelBattPercentage, Double.NaN, mShimmerDevice.mShimmerBattStatusDetails.mEstimatedChargePercentage);
+					objectCluster.incrementIndexKeeper();
 //
 ////					objectCluster.addData(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage);
 ////					calibratedData[additionalChannelsOffset] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
@@ -546,7 +546,7 @@ public class ShimmerClock extends AbstractSensor {
 
 				}
 				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT)){
-					
+//					objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mShimmerDevice.getPacketReceptionRateCurrent());
 					objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mPacketReceptionRateCurrent);
 					objectCluster.incrementIndexKeeper();
 
@@ -562,6 +562,7 @@ public class ShimmerClock extends AbstractSensor {
 				}
 				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL)){
 
+//					objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mShimmerDevice.getPacketReceptionRate());
 					objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mPacketReceptionRate);
 					objectCluster.incrementIndexKeeper();
 
@@ -575,6 +576,9 @@ public class ShimmerClock extends AbstractSensor {
 				else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER)){
 //					objectCluster.addData(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
 //					untriggerEventIfLastOneWasPulse();
+					objectCluster.addData(channelEventMarker, Double.NaN, mShimmerDevice.mEventMarkers);
+					objectCluster.incrementIndexKeeper();
+
 				}
 
 			}
@@ -684,6 +688,27 @@ public class ShimmerClock extends AbstractSensor {
 	public void checkShimmerConfigBeforeConfiguring() {
 		// TODO Auto-generated method stub
 		
+	}
+
+//	protected double mLastReceivedCalibratedTimeStamp=-1; 
+	double mLastSavedCalibratedTimeStamp = 0.0;
+	
+	public double calculatePacketReceptionRateCurrent(int intervalMs) {
+		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * mMaxSetShimmerSamplingRate;
+//		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
+		
+		if (mLastReceivedCalibratedTimeStamp!=-1){
+			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
+			double numPacketsReceived= ((timeDifference/1000) * mMaxSetShimmerSamplingRate);
+//			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
+			mPacketReceptionRateCurrent = (numPacketsReceived/numPacketsShouldHaveReceived)*100.0;
+		}	
+
+		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent>100.0? 100.0:mPacketReceptionRateCurrent);
+		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent<0? 0.0:mPacketReceptionRateCurrent);
+
+		mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
+		return mPacketReceptionRateCurrent;
 	}
 	
 	//--------- Optional methods to override in Sensor Class start --------
