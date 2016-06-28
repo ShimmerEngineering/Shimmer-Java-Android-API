@@ -26,7 +26,10 @@ public class CalibDetailsKinematic implements Serializable {
 	
 	public String mRangeString = "";
 	public int mRangeValue = 0;
+	
+	//Not Driver related - consider a different approach?
 	public int guiRangeValue = 0;
+	//Not Driver related - consider a different approach?
 	public Integer[]guiRangeOptions =null;
 	
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {

@@ -752,7 +752,7 @@ public class SensorLSM303 extends AbstractSensor{
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303DLHC_MAG_RANGE);
 				}
 				break;
 			case(GuiLabelConfigCommon.RATE):
