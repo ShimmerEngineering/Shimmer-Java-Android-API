@@ -30,7 +30,7 @@ public class CalibDetailsKinematic implements Serializable {
 	//Not Driver related - consider a different approach?
 	public int guiRangeValue = 0;
 	//Not Driver related - consider a different approach?
-	public Integer[]guiRangeOptions =null;
+	public Integer[]guiRangeOptions = null;
 	
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {
 		this.mRangeValue = rangeValue;
