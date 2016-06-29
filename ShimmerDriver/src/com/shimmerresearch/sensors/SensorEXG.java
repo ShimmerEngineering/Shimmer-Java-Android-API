@@ -120,8 +120,23 @@ public class SensorEXG extends AbstractSensor{
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
+	public class GuiLabelConfig{
+		public static final String EXG_RESOLUTION = "Resolution";
+		public static final String EXG_GAIN = "Gain";
+		public static final String EXG_BYTES = "Bytes";
+
+		public static final String EXG_RATE = "ExG Rate";
+		public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
+		public static final String EXG_LEAD_OFF_DETECTION = "Lead-Off Detection";
+		public static final String EXG_LEAD_OFF_CURRENT = "Lead-Off Current";
+		public static final String EXG_LEAD_OFF_COMPARATOR = "Lead-Off Compartor Threshold";
+		public static final String EXG_RESPIRATION_DETECT_FREQ = "Respiration Detection Freq.";
+		public static final String EXG_RESPIRATION_DETECT_PHASE = "Respiration Detection Phase";
+	}
+
 	public static class ObjectClusterSensorName{
 		public static String ECG_GQ = "ECG";
+		
 		public static String EXG1_STATUS = "ECG_EMG_Status1";
 		public static String EXG2_STATUS = "ECG_EMG_Status2";
 		public static String EXG1_CH1_24BIT = "ExG1_CH1_24BIT";

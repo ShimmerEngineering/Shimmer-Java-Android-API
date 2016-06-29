@@ -57,6 +57,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.OrientationModule;
+import com.shimmerresearch.algorithms.OrientationModule6DOF;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -158,11 +160,6 @@ public class Configuration {
 		READ,
 		WRITE
 	}
-//	public static class CHANNEL_TYPE{
-//		public static final String CAL = "CAL";
-//		public static final String UNCAL = "UNCAL";
-//		public static final String RAW = "RAW";
-//	}
 
 	public static class Shimmer2{
 		public class Channel{
@@ -810,74 +807,66 @@ public class Configuration {
 			public static final String EXPERIMENT_MASTER_SHIMMER = "Master Shimmer";
 			public static final String EXPERIMENT_SYNC_WHEN_LOGGING = "Sync When Logging";
 
-			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE;
 			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE;
-			
-			public static final String MPU9150_GYRO_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE; //"Gyro Range";
-			public static final String MPU9150_GYRO_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE; //"Gyro Sampling Rate";
-			public static final String MPU9150_GYRO_RATE_HZ = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE_HZ;
-			
-			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_MAG_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE;
 			public static final String LSM303DLHC_MAG_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE;
 			
-			public static final String PRESSURE_RESOLUTION =  SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION; // "Pressure Resolution";
+			public static final String PRESSURE_RESOLUTION =  SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION;
 			
 			public static final String GSR_RANGE = SensorGSR.GuiLabelConfig.GSR_RANGE;
-			public static final String EXG_RESOLUTION = "Resolution";
-			public static final String EXG_GAIN = "Gain";
-			public static final String EXG_BYTES = "Bytes";
-
-			public static final String EXG_RATE = "ExG Rate";
-			public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
-			public static final String EXG_LEAD_OFF_DETECTION = "Lead-Off Detection";
-			public static final String EXG_LEAD_OFF_CURRENT = "Lead-Off Current";
-			public static final String EXG_LEAD_OFF_COMPARATOR = "Lead-Off Compartor Threshold";
-			public static final String EXG_RESPIRATION_DETECT_FREQ = "Respiration Detection Freq.";
-			public static final String EXG_RESPIRATION_DETECT_PHASE = "Respiration Detection Phase";
-
-			public static final String MPU9150_ACCEL_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE; //"MPU Accel Range";
-			public static final String MPU9150_DMP_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL; //"MPU Gyro Cal";
-			public static final String MPU9150_MPL_LPF = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF; //"MPU LPF";
-			public static final String MPU9150_MPL_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE; //"MPL Rate";
-			public static final String MPU9150_MAG_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE; //"MPU Mag Rate";
-
-			public static final String MPU9150_DMP = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP; //"DMP";
-			public static final String MPU9150_MPL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL; //"MPL";
-			public static final String MPU9150_MPL_9DOF_SENSOR_FUSION = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION; //"9DOF Sensor Fusion";
-			public static final String MPU9150_MPL_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL; //"Gyro Calibration";
-			public static final String MPU9150_MPL_VECTOR_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL; //"Vector Compensation Calibration";
-			public static final String MPU9150_MPL_MAG_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL; //"Magnetic Disturbance Calibration";
-
-			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
 			
-			//XXX-RS-LSM-SensorClass?
+			public static final String EXG_RESOLUTION = SensorEXG.GuiLabelConfig.EXG_RESOLUTION;
+			public static final String EXG_GAIN = SensorEXG.GuiLabelConfig.EXG_GAIN;
+			public static final String EXG_BYTES = SensorEXG.GuiLabelConfig.EXG_BYTES;
+
+			public static final String EXG_RATE = SensorEXG.GuiLabelConfig.EXG_RATE;
+			public static final String EXG_REFERENCE_ELECTRODE = SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
+			public static final String EXG_LEAD_OFF_DETECTION = SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_DETECTION;
+			public static final String EXG_LEAD_OFF_CURRENT = SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_CURRENT;
+			public static final String EXG_LEAD_OFF_COMPARATOR = SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR;
+			public static final String EXG_RESPIRATION_DETECT_FREQ = SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ;
+			public static final String EXG_RESPIRATION_DETECT_PHASE = SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
+
+			public static final String MPU9150_GYRO_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE;
+			public static final String MPU9150_GYRO_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE;
+			public static final String MPU9150_GYRO_RATE_HZ = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE_HZ;
+			
+			public static final String MPU9150_ACCEL_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE;
+			public static final String MPU9150_DMP_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL;
+			public static final String MPU9150_MPL_LPF = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF;
+			public static final String MPU9150_MPL_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE;
+			public static final String MPU9150_MAG_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE;
+
+			public static final String MPU9150_DMP = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP;
+			public static final String MPU9150_MPL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL;
+			public static final String MPU9150_MPL_9DOF_SENSOR_FUSION = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION;
+			public static final String MPU9150_MPL_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL;
+			public static final String MPU9150_MPL_VECTOR_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL;
+			public static final String MPU9150_MPL_MAG_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL;
+
 			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM;
 			
-			public static final String MPU9150_GYRO_LPM = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM; //"Gyro Low-Power Mode";
+			public static final String MPU9150_GYRO_LPM = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM;
 			
-			//XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_MAG_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM;
 			
+			public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION;
+			public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION;
+			public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION;
+			
+			public static final String MPU9150_GYRO_DEFAULT_CALIB = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_DEFAULT_CALIB;
+			
+			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB;
+			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB;
+
+			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = SensorKionixKXRB52042.GuiLabelConfig.KXRB8_2042_ACCEL_DEFAULT_CALIB;
+
 			public static final String TCX0 = "TCX0";
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
-			
-			public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION; //"PPG Channel"; //YYY
-			public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION; //"Channel1";   //YYY
-			public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION; // "Channel2";  //YYY
-			
-			//XXX-RS-LSM-SensorClass?
-			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB;
-			
-			public static final String MPU9150_GYRO_DEFAULT_CALIB = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_DEFAULT_CALIB; //"Gyro Default Calibration";
-			
-			//XXX-RS-LSM-SensorClass?
-			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB;
 
-			//XXX-RS-AA-SensorClass?
-			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = SensorKionixKXRB52042.GuiLabelConfig.KXRB8_2042_ACCEL_DEFAULT_CALIB;
+			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
 			public static final String KINEMATIC_CALIBRATION_ALL = "Kinematic Calibration all";
 		}
 
@@ -924,52 +913,56 @@ public class Configuration {
 		
 		//GUI SENSORS
 		public class GuiLabelSensors{
-			//XXX-RS-AA-SensorClass?
 			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
 			
-			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;//"Battery Voltage"; //YYY
-			public static final String EXT_EXP_A7 = SensorADC.GuiLabelSensors.EXT_EXP_A7; //"Ext A7"; //YYY
-			public static final String EXT_EXP_A6 = SensorADC.GuiLabelSensors.EXT_EXP_A6; //"Ext A6"; //YYY
-			public static final String EXT_EXP_A15 = SensorADC.GuiLabelSensors.EXT_EXP_A15; //Ext A15"; //YYY
-			public static final String INT_EXP_A12 = SensorADC.GuiLabelSensors.INT_EXP_A12; //"Int A12"; //YYY
-			public static final String INT_EXP_A13 = SensorADC.GuiLabelSensors.INT_EXP_A13; // "Int A13"; //YYY
-			public static final String INT_EXP_A14 = SensorADC.GuiLabelSensors.INT_EXP_A14; //"Int A14"; //YYY
-			public static final String BRIDGE_AMPLIFIER = SensorBridgeAmp.GuiLabelSensors.BRIDGE_AMPLIFIER; //"Bridge Amp";
-			public static final String GSR = SensorGSR.GuiLabelSensors.GSR;
-			public static final String INT_EXP_A1 = SensorADC.GuiLabelSensors.INT_EXP_A1; //"Int A1"; //YYY
-			public static final String RESISTANCE_AMP = SensorBridgeAmp.GuiLabelSensors.RESISTANCE_AMP; // "Resistance Amp";
-			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO; //"Gyroscope";
+			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;
 			
-			//XXX-RS-LSM-SensorClass?
+			public static final String EXT_EXP_A7 = SensorADC.GuiLabelSensors.EXT_EXP_A7;
+			public static final String EXT_EXP_A6 = SensorADC.GuiLabelSensors.EXT_EXP_A6;
+			public static final String EXT_EXP_A15 = SensorADC.GuiLabelSensors.EXT_EXP_A15;
+			public static final String INT_EXP_A12 = SensorADC.GuiLabelSensors.INT_EXP_A12;
+			public static final String INT_EXP_A13 = SensorADC.GuiLabelSensors.INT_EXP_A13;
+			public static final String INT_EXP_A14 = SensorADC.GuiLabelSensors.INT_EXP_A14;
+			public static final String INT_EXP_A1 = SensorADC.GuiLabelSensors.INT_EXP_A1;
+			
+			public static final String BRIDGE_AMPLIFIER = SensorBridgeAmp.GuiLabelSensors.BRIDGE_AMPLIFIER;
+			public static final String RESISTANCE_AMP = SensorBridgeAmp.GuiLabelSensors.RESISTANCE_AMP;
+			public static final String SKIN_TEMP_PROBE = SensorBridgeAmp.GuiLabelSensors.SKIN_TEMP_PROBE;
+			public static final String BRAMP_HIGHGAIN = SensorBridgeAmp.GuiLabelSensors.BRAMP_HIGHGAIN;
+			public static final String BRAMP_LOWGAIN = SensorBridgeAmp.GuiLabelSensors.BRAMP_LOWGAIN;
+
+			public static final String GSR = SensorGSR.GuiLabelSensors.GSR;
+			
 			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
 			public static final String MAG = SensorLSM303.GuiLabelSensors.MAG;
+
+			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
+
+			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO;
+			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU;
+			public static final String MAG_MPU = SensorMPU9X50.GuiLabelSensors.MAG_MPU;
+
+			public static final String GYRO_MPU_MPL = SensorMPU9X50.GuiLabelSensors.GYRO_MPU_MPL;
+			public static final String ACCEL_MPU_MPL = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU_MPL;
+			public static final String MAG_MPU_MPL = SensorMPU9X50.GuiLabelSensors.MAG_MPU_MPL;
 			
-			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU; //"Alternative Accel";
-			public static final String BMP_180 = SensorBMP180.GuiLabelSensors.BMP_180; //"BMP180";
-			public static final String MAG_MPU = SensorMPU9X50.GuiLabelSensors.MAG_MPU; //"Alternative Mag";
-			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180; //"Pressure & Temperature";
-			public static final String EMG = SensorEXG.GuiLabelSensors.EMG;//"EMG";
-			public static final String ECG = SensorEXG.GuiLabelSensors.ECG;//"ECG";
-			public static final String EXG_TEST = SensorEXG.GuiLabelSensors.EXG_TEST;//"ExG Test";
-			public static final String EXT_EXP_ADC = SensorADC.GuiLabelSensorTiles.EXT_EXP_ADC; //"External Expansion";
-			public static final String QUAT_MPL_6DOF = SensorMPU9X50.GuiLabelSensors.QUAT_MPL_6DOF; //"MPU Quat 6DOF";
-			public static final String QUAT_MPL_9DOF = SensorMPU9X50.GuiLabelSensors.QUAT_MPL_9DOF; //"MPU Quat 9DOF";
-			public static final String EULER_MPL_6DOF = SensorMPU9X50.GuiLabelSensors.EULER_ANGLES_6DOF; //"MPU Euler 6DOF";
-			public static final String EULER_MPL_9DOF = SensorMPU9X50.GuiLabelSensors.EULER_ANGLES_9DOF; //"MPU Euler 9DOF";
-			public static final String MPL_HEADING = SensorMPU9X50.GuiLabelSensors.MPL_HEADING; //"MPU Heading";
-			public static final String MPL_TEMPERATURE = SensorMPU9X50.GuiLabelSensors.MPL_TEMPERATURE; //"MPU Temp";
-			public static final String MPL_PEDOM_CNT = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_CNT; //"MPL_Pedom_cnt"; // not currently supported
-			public static final String MPL_PEDOM_TIME = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_TIME; //"MPL_Pedom_Time"; // not currently supported
+			public static final String QUAT_MPL_6DOF = SensorMPU9X50.GuiLabelSensors.QUAT_MPL_6DOF;
+			public static final String QUAT_MPL_9DOF = SensorMPU9X50.GuiLabelSensors.QUAT_MPL_9DOF;
+			public static final String EULER_MPL_6DOF = SensorMPU9X50.GuiLabelSensors.EULER_MPL_6DOF;
+			public static final String EULER_MPL_9DOF = SensorMPU9X50.GuiLabelSensors.EULER_MPL_9DOF;
+			public static final String QUAT_DMP_6DOF = SensorMPU9X50.GuiLabelSensors.QUAT_DMP_6DOF;
+
+			public static final String MPL_HEADING = SensorMPU9X50.GuiLabelSensors.MPL_HEADING;
+			public static final String MPL_TEMPERATURE = SensorMPU9X50.GuiLabelSensors.MPL_TEMPERATURE;
+			public static final String MPL_PEDOM_CNT = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_CNT; // not currently supported
+			public static final String MPL_PEDOM_TIME = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_TIME; // not currently supported
 			public static final String MPL_TAPDIRANDTAPCNT = SensorMPU9X50.GuiLabelSensors.MPL_TAPDIRANDTAPCNT; //"TapDirAndTapCnt"; // not currently supported
 			public static final String MPL_MOTIONANDORIENT = SensorMPU9X50.GuiLabelSensors.MPL_MOTIONANDORIENT; //"MotionAndOrient"; // not currently supported
-			public static final String GYRO_MPU_MPL = SensorMPU9X50.GuiLabelSensors.GYRO_MPU_MPL; //"MPU Gyro";
-			public static final String ACCEL_MPU_MPL = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU_MPL; //"MPU Accel";
-			public static final String MAG_MPU_MPL = SensorMPU9X50.GuiLabelSensors.MAG_MPU_MPL; //"MPU Mag";
-			public static final String QUAT_DMP_6DOF = SensorMPU9X50.GuiLabelSensors.QUAT_DMP_6DOF; //"MPU Quat 6DOF (from DMP)";
+			
 			public static final String ECG_TO_HR = "ECG To HR";
 			public static final String PPG_TO_HR = "PPG To HR";
 			
-			//XXX-RS-LSM-SensorClass? (Nope -> algorithm class.)
+			//TODO: refer to OrienationModule instead
 			public static final String ORIENTATION_3D_6DOF = "3D Orientation (6DOF)"; 
 			public static final String ORIENTATION_3D_9DOF = "3D Orientation (9DOF)"; 
 			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)"; 
@@ -977,25 +970,25 @@ public class Configuration {
 
 			public static final String HIGH_G_ACCEL = "200g Accel";
 
-			public static final String PPG_DUMMY = SensorPPG.GuiLabelSensors.PPG_DUMMY; //"PPG";
-			public static final String PPG_A12 = SensorPPG.GuiLabelSensors.PPG_A12; //"PPG A12";
-			public static final String PPG_A13 = SensorPPG.GuiLabelSensors.PPG_A13; //"PPG A13";
-			public static final String PPG1_DUMMY = SensorPPG.GuiLabelSensors.PPG1_DUMMY; //"PPG1";
-			public static final String PPG1_A12 = SensorPPG.GuiLabelSensors.PPG1_A12;//"PPG1 A12";
-			public static final String PPG1_A13 = SensorPPG.GuiLabelSensors.PPG1_A13; //"PPG1 A13";
-			public static final String PPG2_DUMMY = SensorPPG.GuiLabelSensors.PPG2_DUMMY; //"PPG2";
-			public static final String PPG2_A1 = SensorPPG.GuiLabelSensors.PPG2_A1; //"PPG2 A1";
-			public static final String PPG2_A14 = SensorPPG.GuiLabelSensors.PPG2_A14; //"PPG2 A14";
-			public static final String EXG_RESPIRATION = SensorEXG.GuiLabelSensors.EXG_RESPIRATION;//"Respiration";
-			public static final String SKIN_TEMP_PROBE = SensorBridgeAmp.GuiLabelSensors.SKIN_TEMP_PROBE; //"Skin Temperature";
-			public static final String BRAMP_HIGHGAIN = SensorBridgeAmp.GuiLabelSensors.BRAMP_HIGHGAIN; //"High Gain";
-			public static final String BRAMP_LOWGAIN = SensorBridgeAmp.GuiLabelSensors.BRAMP_LOWGAIN; //"Low Gain";
-	
-			public static final String EXG1_24BIT = SensorEXG.GuiLabelSensors.EXG1_24BIT;//"EXG1 24BIT";
-			public static final String EXG2_24BIT = SensorEXG.GuiLabelSensors.EXG2_24BIT;//"EXG2 24BIT";
-			public static final String EXG1_16BIT = SensorEXG.GuiLabelSensors.EXG1_16BIT;//"EXG1 16BIT";
-			public static final String EXG2_16BIT = SensorEXG.GuiLabelSensors.EXG2_16BIT;//"EXG2 16BIT";
-			public static final String EXG_CUSTOM = SensorEXG.GuiLabelSensors.EXG_CUSTOM;//"Custom";
+			public static final String PPG_DUMMY = SensorPPG.GuiLabelSensors.PPG_DUMMY;
+			public static final String PPG_A12 = SensorPPG.GuiLabelSensors.PPG_A12;
+			public static final String PPG_A13 = SensorPPG.GuiLabelSensors.PPG_A13;
+			public static final String PPG1_DUMMY = SensorPPG.GuiLabelSensors.PPG1_DUMMY;
+			public static final String PPG1_A12 = SensorPPG.GuiLabelSensors.PPG1_A12;
+			public static final String PPG1_A13 = SensorPPG.GuiLabelSensors.PPG1_A13;
+			public static final String PPG2_DUMMY = SensorPPG.GuiLabelSensors.PPG2_DUMMY;
+			public static final String PPG2_A1 = SensorPPG.GuiLabelSensors.PPG2_A1;
+			public static final String PPG2_A14 = SensorPPG.GuiLabelSensors.PPG2_A14;
+			
+			public static final String EMG = SensorEXG.GuiLabelSensors.EMG;
+			public static final String ECG = SensorEXG.GuiLabelSensors.ECG;
+			public static final String EXG_TEST = SensorEXG.GuiLabelSensors.EXG_TEST;
+			public static final String EXG_RESPIRATION = SensorEXG.GuiLabelSensors.EXG_RESPIRATION;
+			public static final String EXG1_24BIT = SensorEXG.GuiLabelSensors.EXG1_24BIT;
+			public static final String EXG2_24BIT = SensorEXG.GuiLabelSensors.EXG2_24BIT;
+			public static final String EXG1_16BIT = SensorEXG.GuiLabelSensors.EXG1_16BIT;
+			public static final String EXG2_16BIT = SensorEXG.GuiLabelSensors.EXG2_16BIT;
+			public static final String EXG_CUSTOM = SensorEXG.GuiLabelSensors.EXG_CUSTOM;
 		}
 		
 		// GUI Algorithm Grouping
@@ -1021,25 +1014,23 @@ public class Configuration {
 		public static class DatabaseChannelHandles{
 			public static final String NONE = "";
 			
-			public static final String EXT_ADC_A7 = SensorADC.DatabaseChannelHandles.EXT_ADC_A7;  //"F5437a_Ext_A7";
-			public static final String EXT_ADC_A6 = SensorADC.DatabaseChannelHandles.EXT_ADC_A6;  //"F5437a_Ext_A6";
-			public static final String EXT_ADC_A15 = SensorADC.DatabaseChannelHandles.EXT_ADC_A15; //"F5437a_Ext_A15";
-			public static final String INT_ADC_A1 = SensorADC.DatabaseChannelHandles.INT_ADC_A1; //"F5437a_Int_A1";
-			public static final String INT_ADC_A12 = SensorADC.DatabaseChannelHandles.INT_ADC_A12; //"F5437a_Int_A12";
-			public static final String INT_ADC_A13 = SensorADC.DatabaseChannelHandles.INT_ADC_A13; //"F5437a_Int_A13";
-			public static final String INT_ADC_A14 = SensorADC.DatabaseChannelHandles.INT_ADC_A14; //"F5437a_Int_A14";
-			public static final String BATTERY = SensorBattVoltage.DatabaseChannelHandles.BATTERY; //"F5437a_Int_A2_Battery";
+			public static final String EXT_ADC_A7 = SensorADC.DatabaseChannelHandles.EXT_ADC_A7;
+			public static final String EXT_ADC_A6 = SensorADC.DatabaseChannelHandles.EXT_ADC_A6;
+			public static final String EXT_ADC_A15 = SensorADC.DatabaseChannelHandles.EXT_ADC_A15;
+			public static final String INT_ADC_A1 = SensorADC.DatabaseChannelHandles.INT_ADC_A1;
+			public static final String INT_ADC_A12 = SensorADC.DatabaseChannelHandles.INT_ADC_A12;
+			public static final String INT_ADC_A13 = SensorADC.DatabaseChannelHandles.INT_ADC_A13;
+			public static final String INT_ADC_A14 = SensorADC.DatabaseChannelHandles.INT_ADC_A14;
+			public static final String BATTERY = SensorBattVoltage.DatabaseChannelHandles.BATTERY;
 			public static final String GSR = SensorGSR.DatabaseChannelHandles.GSR;
-			public static final String PRESSURE = SensorBMP180.DatabaseChannelHandles.PRESSURE; //"BMP180_Pressure";
-			public static final String MPU_HEADING = SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING; //"MPU9150_MPL_Heading"; // not available but supported in FW
-			public static final String MPU_TEMP = SensorMPU9X50.DatabaseChannelHandles.MPU_TEMP; //"MPU9150_Temperature";
+			public static final String PRESSURE = SensorBMP180.DatabaseChannelHandles.PRESSURE;
+			public static final String MPU_HEADING = SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING; // not available but supported in FW
+			public static final String MPU_TEMP = SensorMPU9X50.DatabaseChannelHandles.MPU_TEMP;
 
-			//XXX-RS-AA-SensorClass?
 			public static final String LN_ACC_X = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_X;
 			public static final String LN_ACC_Y = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_Y;
 			public static final String LN_ACC_Z = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_Z;
 			
-			//XXX-RS-LSM-SensorClass?
 			public static final String WR_ACC_X = SensorLSM303.DatabaseChannelHandles.WR_ACC_X;
 			public static final String WR_ACC_Y = SensorLSM303.DatabaseChannelHandles.WR_ACC_Y;
 			public static final String WR_ACC_Z = SensorLSM303.DatabaseChannelHandles.WR_ACC_Z;
@@ -1047,9 +1038,9 @@ public class Configuration {
 			public static final String MAG_Y = SensorLSM303.DatabaseChannelHandles.MAG_Y;
 			public static final String MAG_Z = SensorLSM303.DatabaseChannelHandles.MAG_Z;
 			
-			public static final String GYRO_X = SensorMPU9X50.DatabaseChannelHandles.GYRO_X; //"MPU9150_GYRO_X";
-			public static final String GYRO_Y = SensorMPU9X50.DatabaseChannelHandles.GYRO_Y; //"MPU9150_GYRO_Y";
-			public static final String GYRO_Z = SensorMPU9X50.DatabaseChannelHandles.GYRO_Z; //"MPU9150_GYRO_Z";
+			public static final String GYRO_X = SensorMPU9X50.DatabaseChannelHandles.GYRO_X;
+			public static final String GYRO_Y = SensorMPU9X50.DatabaseChannelHandles.GYRO_Y;
+			public static final String GYRO_Z = SensorMPU9X50.DatabaseChannelHandles.GYRO_Z;
 	//		public static final String BATTERY = "F5437a_INT_A2_BATTERY"; --> already define for the shimmerCongig Table
 	//		public static final String EXT_ADC_A7 = "F5437a_Ext_A7"; --> already define for the shimmerCongig Table
 	//		public static final String EXT_ADC_A6 = "F5437a_Ext_A6"; --> already define for the shimmerCongig Table
@@ -1059,62 +1050,62 @@ public class Configuration {
 	//		public static final String INT_ADC_A13 = "F5437a_Int_A13"; --> already define for the shimmerCongig Table
 	//		public static final String INT_ADC_A14 = "F5437a_Int_A14"; --> already define for the shimmerCongig Table
 	//		public static final String PRESSURE = "BMP180_Pressure"; --> already define for the shimmerCongig Table
-			public static final String BRIDGE_AMPLIFIER_HIGH = SensorBridgeAmp.DatabaseChannelHandles.BRIDGE_AMPLIFIER_HIGH; // "F5437a_Int_A13_BR_AMP_HIGH";
-			public static final String BRIDGE_AMPLIFIER_LOW = SensorBridgeAmp.DatabaseChannelHandles.BRIDGE_AMPLIFIER_LOW;//"F5437a_Int_A13_BR_AMP_LOW";
-			public static final String SKIN_TEMPERATURE = SensorBridgeAmp.DatabaseChannelHandles.SKIN_TEMPERATURE; //"Philips_21091A_Int_A1_SKIN_TEMP";
+			public static final String BRIDGE_AMPLIFIER_HIGH = SensorBridgeAmp.DatabaseChannelHandles.BRIDGE_AMPLIFIER_HIGH;
+			public static final String BRIDGE_AMPLIFIER_LOW = SensorBridgeAmp.DatabaseChannelHandles.BRIDGE_AMPLIFIER_LOW;
+			public static final String SKIN_TEMPERATURE = SensorBridgeAmp.DatabaseChannelHandles.SKIN_TEMPERATURE;
 	//		public static final String GSR = "F5437a_Int_A1_GSR";  --> already define for the shimmerCongig Table
-			public static final String RESISTANCE_AMPLIFIER = SensorBridgeAmp.DatabaseChannelHandles.RESISTANCE_AMPLIFIER; //"F5437a_Int_A1_RES_AMP";
-			public static final String ALTERNATIVE_ACC_X = "MPU9150_ACC_X"; // not available but supported in FW
-			public static final String ALTERNATIVE_ACC_Y = "MPU9150_ACC_Y"; // not available but supported in FW
-			public static final String ALTERNATIVE_ACC_Z = "MPU9150_ACC_Z"; // not available but supported in FW
-			public static final String ALTERNATIVE_MAG_X = "MPU9150_MAG_X"; // not available but supported in FW
-			public static final String ALTERNATIVE_MAG_Y = "MPU9150_MAG_Y"; // not available but supported in FW
-			public static final String ALTERNATIVE_MAG_Z = "MPU9150_MAG_Z"; // not available but supported in FW
-			public static final String TEMPERATURE = SensorBMP180.DatabaseChannelHandles.TEMPERATURE; //"BMP180_Temperature";
+			public static final String RESISTANCE_AMPLIFIER = SensorBridgeAmp.DatabaseChannelHandles.RESISTANCE_AMPLIFIER;
+			public static final String ALTERNATIVE_ACC_X = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_X; // not available but supported in FW
+			public static final String ALTERNATIVE_ACC_Y = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Y; // not available but supported in FW
+			public static final String ALTERNATIVE_ACC_Z = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Z; // not available but supported in FW
+			public static final String ALTERNATIVE_MAG_X = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_MAG_X; // not available but supported in FW
+			public static final String ALTERNATIVE_MAG_Y = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_MAG_Y; // not available but supported in FW
+			public static final String ALTERNATIVE_MAG_Z = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_MAG_Z; // not available but supported in FW
+			public static final String TEMPERATURE = SensorBMP180.DatabaseChannelHandles.TEMPERATURE;
 	//		public static final String PRESSURE = "BMP180_Pressure"; -> already define for the shimmerCongig Table
-			public static final String EXG1_CH1_24BITS = SensorEXG.DatabaseChannelHandles.EXG1_CH1_24BITS;//"ADS1292R_1_CH1_24BIT";
-			public static final String EXG1_CH2_24BITS = SensorEXG.DatabaseChannelHandles.EXG1_CH2_24BITS;//"ADS1292R_1_CH2_24BIT";
-			public static final String EXG2_CH1_24BITS = SensorEXG.DatabaseChannelHandles.EXG2_CH1_24BITS;//"ADS1292R_2_CH1_24BIT";
-			public static final String EXG2_CH2_24BITS = SensorEXG.DatabaseChannelHandles.EXG2_CH2_24BITS;//"ADS1292R_2_CH2_24BIT";
-			public static final String EXG1_CH1_16BITS = SensorEXG.DatabaseChannelHandles.EXG1_CH1_16BITS;//"ADS1292R_1_CH1_16BIT";
-			public static final String EXG1_CH2_16BITS = SensorEXG.DatabaseChannelHandles.EXG1_CH2_16BITS;//"ADS1292R_1_CH2_16BIT";
-			public static final String EXG2_CH1_16BITS = SensorEXG.DatabaseChannelHandles.EXG2_CH1_16BITS;//"ADS1292R_2_CH1_16BIT";
-			public static final String EXG2_CH2_16BITS = SensorEXG.DatabaseChannelHandles.EXG2_CH2_16BITS;//"ADS1292R_2_CH2_16BIT";
-			public static final String EXG1_STATUS = SensorEXG.DatabaseChannelHandles.EXG1_STATUS;//"ADS1292R_1_STATUS";
-			public static final String EXG2_STATUS = SensorEXG.DatabaseChannelHandles.EXG2_STATUS;//"ADS1292R_2_STATUS";
-			public static final String MPU_QUAT_6DOF_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_W; //"MPU9150_MPL_QUAT_6DOF_W";
-			public static final String MPU_QUAT_6DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_X; //"MPU9150_MPL_QUAT_6DOF_X";
-			public static final String MPU_QUAT_6DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Y; //"MPU9150_MPL_QUAT_6DOF_Y";
-			public static final String MPU_QUAT_6DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Z; //"MPU9150_MPL_QUAT_6DOF_Z";
-			public static final String MPU_QUAT_9DOF_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_W; //"MPU9150_MPL_QUAT_9DOF_W";
-			public static final String MPU_QUAT_9DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_X; //"MPU9150_MPL_QUAT_9DOF_X";
-			public static final String MPU_QUAT_9DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_Y; //"MPU9150_MPL_QUAT_9DOF_Y";
-			public static final String MPU_QUAT_9DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_Z; //"MPU9150_MPL_QUAT_9DOF_Z";
-			public static final String MPU_EULER_6DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_X; //"MPU9150_MPL_EULER_6DOF_X"; // not available but supported in FW
-			public static final String MPU_EULER_6DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Y; //"MPU9150_MPL_EULER_6DOF_Y"; // not available but supported in FW
-			public static final String MPU_EULER_6DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Z; //"MPU9150_MPL_EULER_6DOF_Z"; // not available but supported in FW
-			public static final String MPU_EULER_9DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_X; //"MPU9150_MPL_EULER_9DOF_X"; // not available but supported in FW
-			public static final String MPU_EULER_9DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_Y; //"MPU9150_MPL_EULER_9DOF_Y"; // not available but supported in FW
-			public static final String MPU_EULER_9DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_Z; //"MPU9150_MPL_EULER_9DOF_Z"; // not available but supported in FW
+			public static final String EXG1_CH1_24BITS = SensorEXG.DatabaseChannelHandles.EXG1_CH1_24BITS;
+			public static final String EXG1_CH2_24BITS = SensorEXG.DatabaseChannelHandles.EXG1_CH2_24BITS;
+			public static final String EXG2_CH1_24BITS = SensorEXG.DatabaseChannelHandles.EXG2_CH1_24BITS;
+			public static final String EXG2_CH2_24BITS = SensorEXG.DatabaseChannelHandles.EXG2_CH2_24BITS;
+			public static final String EXG1_CH1_16BITS = SensorEXG.DatabaseChannelHandles.EXG1_CH1_16BITS;
+			public static final String EXG1_CH2_16BITS = SensorEXG.DatabaseChannelHandles.EXG1_CH2_16BITS;
+			public static final String EXG2_CH1_16BITS = SensorEXG.DatabaseChannelHandles.EXG2_CH1_16BITS;
+			public static final String EXG2_CH2_16BITS = SensorEXG.DatabaseChannelHandles.EXG2_CH2_16BITS;
+			public static final String EXG1_STATUS = SensorEXG.DatabaseChannelHandles.EXG1_STATUS;
+			public static final String EXG2_STATUS = SensorEXG.DatabaseChannelHandles.EXG2_STATUS;
+			public static final String MPU_QUAT_6DOF_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_W;
+			public static final String MPU_QUAT_6DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_X;
+			public static final String MPU_QUAT_6DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Y;
+			public static final String MPU_QUAT_6DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Z;
+			public static final String MPU_QUAT_9DOF_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_W;
+			public static final String MPU_QUAT_9DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_X;
+			public static final String MPU_QUAT_9DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_Y;
+			public static final String MPU_QUAT_9DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_9DOF_Z;
+			public static final String MPU_EULER_6DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_X; // not available but supported in FW
+			public static final String MPU_EULER_6DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Y; // not available but supported in FW
+			public static final String MPU_EULER_6DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Z; // not available but supported in FW
+			public static final String MPU_EULER_9DOF_X = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_X; // not available but supported in FW
+			public static final String MPU_EULER_9DOF_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_Y; // not available but supported in FW
+			public static final String MPU_EULER_9DOF_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_9DOF_Z; // not available but supported in FW
 	//		public static final String MPU_HEADING = "MPU9150_MPL_HEADING"; -> already define for the shimmerCongig Table
 	//		public static final String MPU_TEMP = "MPU9150_Temperature"; -> already define for the shimmerCongig Table
-			public static final String PEDOMETER_CNT = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_CNT; //"MPU9150_MPL_PEDOM_CNT"; // not available but supported in FW
-			public static final String PEDOMETER_TIME = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_TIME; //"MPU9150_MPL_PEDOM_TIME"; // not available but supported in FW
-			public static final String TAP_DIR_AND_CNT = SensorMPU9X50.DatabaseChannelHandles.TAP_DIR_AND_CNT; //"MPU9150_MPL_TAP"; // not available but supported in FW
-			public static final String MOTION_AND_ORIENT = SensorMPU9X50.DatabaseChannelHandles.MOTION_AND_ORIENT; //"MPU9150_MPL_MOTION"; // not available but supported in FW
-			public static final String MPU_MPL_GYRO_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_X; //"MPU9150_MPL_GYRO_X_CAL";
-			public static final String MPU_MPL_GYRO_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Y; //"MPU9150_MPL_GYRO_Y_CAL";
-			public static final String MPU_MPL_GYRO_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Z; //"MPU9150_MPL_GYRO_Z_CAL";
-			public static final String MPU_MPL_ACC_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_X; //"MPU9150_MPL_ACC_X_CAL";
-			public static final String MPU_MPL_ACC_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Y; //"MPU9150_MPL_ACC_Y_CAL";
-			public static final String MPU_MPL_ACC_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Z; //"MPU9150_MPL_ACC_Z_CAL";
-			public static final String MPU_MPL_MAG_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_X; //"MPU9150_MPL_MAG_X_CAL";
-			public static final String MPU_MPL_MAG_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Y; //"MPU9150_MPL_MAG_Y_CAL";
-			public static final String MPU_MPL_MAG_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Z; //"MPU9150_MPL_MAG_Z_CAL";
-			public static final String MPU_QUAT_6DOF_DMP_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W; //"MPU9150_QUAT_6DOF_W";
-			public static final String MPU_QUAT_6DOF_DMP_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X; //"MPU9150_QUAT_6DOF_X";
-			public static final String MPU_QUAT_6DOF_DMP_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y; //"MPU9150_QUAT_6DOF_Y";
-			public static final String MPU_QUAT_6DOF_DMP_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z; //"MPU9150_QUAT_6DOF_Z";
+			public static final String PEDOMETER_CNT = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_CNT; // not available but supported in FW
+			public static final String PEDOMETER_TIME = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_TIME; // not available but supported in FW
+			public static final String TAP_DIR_AND_CNT = SensorMPU9X50.DatabaseChannelHandles.TAP_DIR_AND_CNT; // not available but supported in FW
+			public static final String MOTION_AND_ORIENT = SensorMPU9X50.DatabaseChannelHandles.MOTION_AND_ORIENT; // not available but supported in FW
+			public static final String MPU_MPL_GYRO_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_X;
+			public static final String MPU_MPL_GYRO_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Y;
+			public static final String MPU_MPL_GYRO_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Z;
+			public static final String MPU_MPL_ACC_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_X;
+			public static final String MPU_MPL_ACC_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Y;
+			public static final String MPU_MPL_ACC_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Z;
+			public static final String MPU_MPL_MAG_X = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_X;
+			public static final String MPU_MPL_MAG_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Y;
+			public static final String MPU_MPL_MAG_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Z;
+			public static final String MPU_QUAT_6DOF_DMP_W = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W;
+			public static final String MPU_QUAT_6DOF_DMP_X = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X;
+			public static final String MPU_QUAT_6DOF_DMP_Y = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y;
+			public static final String MPU_QUAT_6DOF_DMP_Z = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z;
 			public static final String TIMESTAMP = "TimeStamp";
 			public static final String TIMESTAMP_EXPORT = "Timestamp";
 			public static final String OFFSET_TIMESTAMP = "Offset";
@@ -1133,31 +1124,33 @@ public class Configuration {
 			public static final String REAL_TIME_CLOCK_SYNC = "RealTimeSync";
 			public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
 			public static final String FILTERED = "_Filtered"; // to create the name of the filtered signals
+			
+			//TODO: refer to OrienationModule instead
 			public static final String ECG_TO_HR = "ECGToHR";
 			public static final String PPG_TO_HR = "PPGToHR";
-			public static final String QUARTENION_W_6DOF = "QUAT_MADGE_6DOF_W";//XXX-RS-LSM-SensorClass? 
-			public static final String QUARTENION_X_6DOF = "QUAT_MADGE_6DOF_X";//XXX-RS-LSM-SensorClass?
-			public static final String QUARTENION_Y_6DOF = "QUAT_MADGE_6DOF_Y";//XXX-RS-LSM-SensorClass?
-			public static final String QUARTENION_Z_6DOF = "QUAT_MADGE_6DOF_Z";//XXX-RS-LSM-SensorClass?
-			public static final String QUARTENION_W_9DOF = "QUAT_MADGE_9DOF_W";//XXX-RS-LSM-SensorClass?
-			public static final String QUARTENION_X_9DOF = "QUAT_MADGE_9DOF_X";//XXX-RS-LSM-SensorClass?
-			public static final String QUARTENION_Y_9DOF = "QUAT_MADGE_9DOF_Y";//XXX-RS-LSM-SensorClass?
-			public static final String QUARTENION_Z_9DOF = "QUAT_MADGE_9DOF_Z";//XXX-RS-LSM-SensorClass?
-			public static final String EULER_6DOF_A = "EULER_6DOF_A";//XXX-RS-LSM-SensorClass? 
-			public static final String EULER_6DOF_X = "EULER_6DOF_X";//XXX-RS-LSM-SensorClass? 
-			public static final String EULER_6DOF_Y = "EULER_6DOF_Y";//XXX-RS-LSM-SensorClass? 
-			public static final String EULER_6DOF_Z = "EULER_6DOF_Z";//XXX-RS-LSM-SensorClass? 
-			public static final String EULER_9DOF_A = "EULER_9DOF_A";//XXX-RS-LSM-SensorClass? 
-			public static final String EULER_9DOF_X = "EULER_9DOF_X";//XXX-RS-LSM-SensorClass? 
-			public static final String EULER_9DOF_Y = "EULER_9DOF_Y";//XXX-RS-LSM-SensorClass? 
-			public static final String EULER_9DOF_Z = "EULER_9DOF_Z";//XXX-RS-LSM-SensorClass? 
+			
+			//TODO: refer to OrienationModule instead
+			public static final String QUARTENION_W_6DOF = "QUAT_MADGE_6DOF_W"; 
+			public static final String QUARTENION_X_6DOF = "QUAT_MADGE_6DOF_X";
+			public static final String QUARTENION_Y_6DOF = "QUAT_MADGE_6DOF_Y";
+			public static final String QUARTENION_Z_6DOF = "QUAT_MADGE_6DOF_Z";
+			public static final String QUARTENION_W_9DOF = "QUAT_MADGE_9DOF_W";
+			public static final String QUARTENION_X_9DOF = "QUAT_MADGE_9DOF_X";
+			public static final String QUARTENION_Y_9DOF = "QUAT_MADGE_9DOF_Y";
+			public static final String QUARTENION_Z_9DOF = "QUAT_MADGE_9DOF_Z";
+			public static final String EULER_6DOF_A = "EULER_6DOF_A"; 
+			public static final String EULER_6DOF_X = "EULER_6DOF_X"; 
+			public static final String EULER_6DOF_Y = "EULER_6DOF_Y"; 
+			public static final String EULER_6DOF_Z = "EULER_6DOF_Z"; 
+			public static final String EULER_9DOF_A = "EULER_9DOF_A"; 
+			public static final String EULER_9DOF_X = "EULER_9DOF_X"; 
+			public static final String EULER_9DOF_Y = "EULER_9DOF_Y"; 
+			public static final String EULER_9DOF_Z = "EULER_9DOF_Z"; 
 		}
 		
 		//GUI AND EXPORT CHANNELS
 		public static class ObjectClusterSensorName{
-			
 			public static final String SHIMMER = "Shimmer";
-			public static final String BATT_PERCENTAGE = SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE; //"Batt_Percentage"; YYY
 			public static final String PACKET_RECEPTION_RATE_CURRENT = "Packet_Reception_Rate_Current";
 			public static final String PACKET_RECEPTION_RATE_TRIAL = "Packet_Reception_Rate_Trial";
 			
@@ -1170,29 +1163,29 @@ public class Configuration {
 
 			public static String TIMESTAMP_OFFSET = "Offset";
 
-			//XXX-RS-AA-SensorClass?
 			public static String ACCEL_LN_X = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_X;
 			public static String ACCEL_LN_Y = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Y;
 			public static String ACCEL_LN_Z = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Z;
 			
-			public static String BATTERY = SensorBattVoltage.ObjectClusterSensorName.BATTERY; //"Battery"; YYY
-			public static String EXT_EXP_ADC_A7 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A7; //"Ext_Exp_A7";
-			public static String EXT_EXP_ADC_A6 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A6; //"Ext_Exp_A6";
-			public static String EXT_EXP_ADC_A15 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A15; //"Ext_Exp_A15";
-			public static String INT_EXP_ADC_A1 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A1; //"Int_Exp_A1";
-			public static String INT_EXP_ADC_A12 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A12; //"Int_Exp_A12";
-			public static String INT_EXP_ADC_A13 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A13; //"Int_Exp_A13";
-			public static String INT_EXP_ADC_A14 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A14; //"Int_Exp_A14";
-			public static String BRIDGE_AMP_HIGH = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_HIGH; //"Bridge_Amp_High";
-			public static String BRIDGE_AMP_LOW = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_LOW; //"Bridge_Amp_Low";
+			public static String BATTERY = SensorBattVoltage.ObjectClusterSensorName.BATTERY;
+			public static final String BATT_PERCENTAGE = SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE;
+			
+			public static String EXT_EXP_ADC_A7 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A7;
+			public static String EXT_EXP_ADC_A6 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A6;
+			public static String EXT_EXP_ADC_A15 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A15;
+			public static String INT_EXP_ADC_A1 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A1;
+			public static String INT_EXP_ADC_A12 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A12;
+			public static String INT_EXP_ADC_A13 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A13;
+			public static String INT_EXP_ADC_A14 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A14;
+			
+			public static String BRIDGE_AMP_HIGH = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_HIGH;
+			public static String BRIDGE_AMP_LOW = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_LOW;
+			public static String RESISTANCE_AMP = SensorBridgeAmp.ObjectClusterSensorName.RESISTANCE_AMP;
+			public static final String SKIN_TEMPERATURE_PROBE = SensorBridgeAmp.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE;
+
 			public static String GSR = SensorGSR.ObjectClusterSensorName.GSR;
 			public static String GSR_CONDUCTANCE = SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE;
-			public static String RESISTANCE_AMP = SensorBridgeAmp.ObjectClusterSensorName.RESISTANCE_AMP; //"Resistance_Amp";
-			public static String GYRO_X = SensorMPU9X50.ObjectClusterSensorName.GYRO_X; //"Gyro_X";
-			public static String GYRO_Y = SensorMPU9X50.ObjectClusterSensorName.GYRO_Y; //"Gyro_Y";
-			public static String GYRO_Z = SensorMPU9X50.ObjectClusterSensorName.GYRO_Z; //"Gyro_Z";
-			
-			//XXX-RS-LSM-SensorClass? 
+
 			public static String ACCEL_WR_X = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
 			public static String ACCEL_WR_Y = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y;
 			public static String ACCEL_WR_Z= SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z;
@@ -1200,97 +1193,101 @@ public class Configuration {
 			public static String MAG_Y = SensorLSM303.ObjectClusterSensorName.MAG_Y;
 			public static String MAG_Z = SensorLSM303.ObjectClusterSensorName.MAG_Z;
 			
-			public static String ACCEL_MPU_X = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_X; //"Accel_MPU_X";
-			public static String ACCEL_MPU_Y = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Y; //"Accel_MPU_Y";
-			public static String ACCEL_MPU_Z = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Z; //"Accel_MPU_Z";
-			public static String MAG_MPU_X = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_X; //"Mag_MPU_X";
-			public static String MAG_MPU_Y = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_Y; //"Mag_MPU_Y";
-			public static String MAG_MPU_Z = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_Z; //"Mag_MPU_Z";
-			public static String TEMPERATURE_BMP180 = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180; //"Temperature_BMP180";
-			public static String PRESSURE_BMP180 =    SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;//"Pressure_BMP180";
+			public static String TEMPERATURE_BMP180 = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180;
+			public static String PRESSURE_BMP180 = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
 			
-			public static String ECG_GQ = SensorEXG.ObjectClusterSensorName.ECG_GQ; //"ECG";
+			public static String ECG_GQ = SensorEXG.ObjectClusterSensorName.ECG_GQ;
 			public static String ECG_TO_HR_FW_GQ = "ECGToHR_FW";
 			public static String ECG_TO_HR_SW_GQ = "ECGToHR_SW";
-			public static String EXG1_STATUS = SensorEXG.ObjectClusterSensorName.EXG1_STATUS; //"ECG_EMG_Status1";
-			public static String EXG2_STATUS = SensorEXG.ObjectClusterSensorName.EXG2_STATUS; //"ECG_EMG_Status2";
-			public static String EXG1_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH1_24BIT; //"ExG1_CH1_24BIT";
-			public static String EXG1_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH2_24BIT; //"ExG1_CH2_24BIT";
-			public static String EXG1_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH1_16BIT; //"ExG1_CH1_16BIT";
-			public static String EXG1_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH2_16BIT; //"ExG1_CH2_16BIT";
-			public static String EXG2_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG2_CH1_24BIT; //"ExG2_CH1_24BIT";
-			public static String EXG2_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EXG2_CH2_24BIT; //"ExG2_CH2_24BIT";
-			public static String EXG2_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EXG2_CH1_16BIT; //"ExG2_CH1_16BIT";
-			public static String EXG2_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EXG2_CH2_16BIT; //"ExG2_CH2_16BIT";
-			public static String EMG_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EMG_CH1_24BIT; //"EMG_CH1_24BIT";
-			public static String EMG_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EMG_CH2_24BIT; //"EMG_CH2_24BIT";
-			public static String EMG_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EMG_CH1_16BIT; //"EMG_CH1_16BIT";
-			public static String EMG_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EMG_CH2_16BIT; //"EMG_CH2_16BIT";
-			public static String ECG_LA_RA_24BIT = SensorEXG.ObjectClusterSensorName.ECG_LA_RA_24BIT; //"ECG_LA-RA_24BIT";
-			public static String ECG_LA_RL_24BIT = SensorEXG.ObjectClusterSensorName.ECG_LA_RL_24BIT; //"ECG_LA-RL_24BIT";
-			public static String ECG_LL_RA_24BIT = SensorEXG.ObjectClusterSensorName.ECG_LL_RA_24BIT; //"ECG_LL-RA_24BIT";
-			public static String ECG_LL_LA_24BIT = SensorEXG.ObjectClusterSensorName.ECG_LL_LA_24BIT; //"ECG_LL-LA_24BIT"; //derived
-			public static String ECG_RESP_24BIT = SensorEXG.ObjectClusterSensorName.ECG_RESP_24BIT; //"ECG_RESP_24BIT";
-			public static String ECG_VX_RL_24BIT = SensorEXG.ObjectClusterSensorName.ECG_VX_RL_24BIT; //"ECG_Vx-RL_24BIT";
-			public static String ECG_LA_RA_16BIT = SensorEXG.ObjectClusterSensorName.ECG_LA_RA_16BIT; //"ECG_LA-RA_16BIT";
-			public static String ECG_LA_RL_16BIT = SensorEXG.ObjectClusterSensorName.ECG_LA_RL_16BIT; //"ECG_LA-RL_16BIT";
-			public static String ECG_LL_RA_16BIT = SensorEXG.ObjectClusterSensorName.ECG_LL_RA_16BIT; //"ECG_LL-RA_16BIT";
-			public static String ECG_LL_LA_16BIT = SensorEXG.ObjectClusterSensorName.ECG_LL_LA_16BIT; //"ECG_LL-LA_16BIT"; //derived
-			public static String ECG_RESP_16BIT = SensorEXG.ObjectClusterSensorName.ECG_RESP_16BIT; //"ECG_RESP_16BIT";
-			public static String ECG_VX_RL_16BIT = SensorEXG.ObjectClusterSensorName.ECG_VX_RL_16BIT; //"ECG_Vx-RL_16BIT";
-			public static String EXG_TEST_CHIP1_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT; //"Test_CHIP1_CH1_24BIT";
-			public static String EXG_TEST_CHIP1_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT; //"Test_CHIP1_CH2_24BIT";
-			public static String EXG_TEST_CHIP2_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT; //"Test_CHIP2_CH1_24BIT";
-			public static String EXG_TEST_CHIP2_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT; //"Test_CHIP2_CH2_24BIT";
-			public static String EXG_TEST_CHIP1_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT; //"Test_CHIP1_CH1_16BIT";
-			public static String EXG_TEST_CHIP1_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT; //"Test_CHIP1_CH2_16BIT";
-			public static String EXG_TEST_CHIP2_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT; //"Test_CHIP2_CH1_16BIT";
-			public static String EXG_TEST_CHIP2_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT; //"Test_CHIP2_CH2_16BIT";
+			public static String EXG1_STATUS = SensorEXG.ObjectClusterSensorName.EXG1_STATUS;
+			public static String EXG2_STATUS = SensorEXG.ObjectClusterSensorName.EXG2_STATUS;
+			public static String EXG1_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH1_24BIT;
+			public static String EXG1_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH2_24BIT;
+			public static String EXG1_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH1_16BIT;
+			public static String EXG1_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH2_16BIT;
+			public static String EXG2_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG2_CH1_24BIT;
+			public static String EXG2_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EXG2_CH2_24BIT;
+			public static String EXG2_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EXG2_CH1_16BIT;
+			public static String EXG2_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EXG2_CH2_16BIT;
+			public static String EMG_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EMG_CH1_24BIT;
+			public static String EMG_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EMG_CH2_24BIT;
+			public static String EMG_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EMG_CH1_16BIT;
+			public static String EMG_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EMG_CH2_16BIT;
+			public static String ECG_LA_RA_24BIT = SensorEXG.ObjectClusterSensorName.ECG_LA_RA_24BIT;
+			public static String ECG_LA_RL_24BIT = SensorEXG.ObjectClusterSensorName.ECG_LA_RL_24BIT;
+			public static String ECG_LL_RA_24BIT = SensorEXG.ObjectClusterSensorName.ECG_LL_RA_24BIT;
+			public static String ECG_LL_LA_24BIT = SensorEXG.ObjectClusterSensorName.ECG_LL_LA_24BIT; //derived
+			public static String ECG_RESP_24BIT = SensorEXG.ObjectClusterSensorName.ECG_RESP_24BIT;
+			public static String ECG_VX_RL_24BIT = SensorEXG.ObjectClusterSensorName.ECG_VX_RL_24BIT;
+			public static String ECG_LA_RA_16BIT = SensorEXG.ObjectClusterSensorName.ECG_LA_RA_16BIT;
+			public static String ECG_LA_RL_16BIT = SensorEXG.ObjectClusterSensorName.ECG_LA_RL_16BIT;
+			public static String ECG_LL_RA_16BIT = SensorEXG.ObjectClusterSensorName.ECG_LL_RA_16BIT;
+			public static String ECG_LL_LA_16BIT = SensorEXG.ObjectClusterSensorName.ECG_LL_LA_16BIT; //derived
+			public static String ECG_RESP_16BIT = SensorEXG.ObjectClusterSensorName.ECG_RESP_16BIT;
+			public static String ECG_VX_RL_16BIT = SensorEXG.ObjectClusterSensorName.ECG_VX_RL_16BIT;
+			public static String EXG_TEST_CHIP1_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT;
+			public static String EXG_TEST_CHIP1_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT;
+			public static String EXG_TEST_CHIP2_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT;
+			public static String EXG_TEST_CHIP2_CH2_24BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT;
+			public static String EXG_TEST_CHIP1_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT;
+			public static String EXG_TEST_CHIP1_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT;
+			public static String EXG_TEST_CHIP2_CH1_16BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT;
+			public static String EXG_TEST_CHIP2_CH2_16BIT = SensorEXG.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT;
 			
-			public static String QUAT_MPL_6DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_W; //"Quat_MPL_6DOF_W";
-			public static String QUAT_MPL_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_X; //"Quat_MPL_6DOF_X";
-			public static String QUAT_MPL_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Y; //"Quat_MPL_6DOF_Y";
-			public static String QUAT_MPL_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Z; //"Quat_MPL_6DOF_Z";
-			public static String QUAT_MPL_9DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_W; //"Quat_MPL_9DOF_W";
-			public static String QUAT_MPL_9DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_X; //"Quat_MPL_9DOF_X";
-			public static String QUAT_MPL_9DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_Y; //"Quat_MPL_9DOF_Y";
-			public static String QUAT_MPL_9DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_Z; //"Quat_MPL_9DOF_Z";
-			public static String EULER_MPL_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_X; // "Euler_MPL_6DOF_X";
-			public static String EULER_MPL_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Y; //"Euler_MPL_6DOF_Y";
-			public static String EULER_MPL_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Z; //"Euler_MPL_6DOF_Z";
-			public static String EULER_MPL_9DOF_X = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_X; //"Euler_MPL_9DOF_X";
-			public static String EULER_MPL_9DOF_Y = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_Y; //"Euler_MPL_9DOF_Y";
-			public static String EULER_MPL_9DOF_Z = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_Z; //"Euler_MPL_9DOF_Z";
-			public static String MPL_HEADING = SensorMPU9X50.ObjectClusterSensorName.MPL_HEADING; //"MPL_heading";
-			public static String MPL_TEMPERATURE = SensorMPU9X50.ObjectClusterSensorName.MPL_TEMPERATURE; //"MPL_Temperature";
-			public static String MPL_PEDOM_CNT = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_CNT; //"MPL_Pedom_cnt";
-			public static String MPL_PEDOM_TIME = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_TIME; //"MPL_Pedom_Time";
-			public static String TAPDIRANDTAPCNT = SensorMPU9X50.ObjectClusterSensorName.TAPDIRANDTAPCNT; //"TapDirAndTapCnt";
-			public static String MOTIONANDORIENT = SensorMPU9X50.ObjectClusterSensorName.MOTIONANDORIENT; //"MotionAndOrient";
-			public static String GYRO_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_X; //"Gyro_MPU_MPL_X";
-			public static String GYRO_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Y; //"Gyro_MPU_MPL_Y";
-			public static String GYRO_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Z; //"Gyro_MPU_MPL_Z";
-			public static String ACCEL_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_X; //"Accel_MPU_MPL_X";
-			public static String ACCEL_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Y; //"Accel_MPU_MPL_Y";
-			public static String ACCEL_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Z; //"Accel_MPU_MPL_Z";
-			public static String MAG_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_X; //"Mag_MPU_MPL_X";
-			public static String MAG_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Y; //"Mag_MPU_MPL_Y";
-			public static String MAG_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Z; //"Mag_MPU_MPL_Z";
-			public static String QUAT_DMP_6DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_W; //"Quat_DMP_6DOF_W";
-			public static String QUAT_DMP_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_X; //"Quat_DMP_6DOF_X";
-			public static String QUAT_DMP_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Y; //"Quat_DMP_6DOF_Y";
-			public static String QUAT_DMP_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z; //"Quat_DMP_6DOF_Z";
+			public static String GYRO_X = SensorMPU9X50.ObjectClusterSensorName.GYRO_X;
+			public static String GYRO_Y = SensorMPU9X50.ObjectClusterSensorName.GYRO_Y;
+			public static String GYRO_Z = SensorMPU9X50.ObjectClusterSensorName.GYRO_Z;
+			public static String ACCEL_MPU_X = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_X;
+			public static String ACCEL_MPU_Y = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Y;
+			public static String ACCEL_MPU_Z = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Z;
+			public static String MAG_MPU_X = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_X;
+			public static String MAG_MPU_Y = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_Y;
+			public static String MAG_MPU_Z = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_Z;
+			
+			public static String QUAT_MPL_6DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_W;
+			public static String QUAT_MPL_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_X;
+			public static String QUAT_MPL_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Y;
+			public static String QUAT_MPL_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Z;
+			public static String QUAT_MPL_9DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_W;
+			public static String QUAT_MPL_9DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_X;
+			public static String QUAT_MPL_9DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_Y;
+			public static String QUAT_MPL_9DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_9DOF_Z;
+			public static String EULER_MPL_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_X;
+			public static String EULER_MPL_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Y;
+			public static String EULER_MPL_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Z;
+			public static String EULER_MPL_9DOF_X = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_X;
+			public static String EULER_MPL_9DOF_Y = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_Y;
+			public static String EULER_MPL_9DOF_Z = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_9DOF_Z;
+			
+			public static String MPL_HEADING = SensorMPU9X50.ObjectClusterSensorName.MPL_HEADING;
+			public static String MPL_TEMPERATURE = SensorMPU9X50.ObjectClusterSensorName.MPL_TEMPERATURE;
+			public static String MPL_PEDOM_CNT = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_CNT;
+			public static String MPL_PEDOM_TIME = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_TIME;
+			public static String TAPDIRANDTAPCNT = SensorMPU9X50.ObjectClusterSensorName.TAPDIRANDTAPCNT;
+			public static String MOTIONANDORIENT = SensorMPU9X50.ObjectClusterSensorName.MOTIONANDORIENT;
+			
+			public static String GYRO_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_X;
+			public static String GYRO_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Y;
+			public static String GYRO_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Z;
+			public static String ACCEL_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_X;
+			public static String ACCEL_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Y;
+			public static String ACCEL_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Z;
+			public static String MAG_MPU_MPL_X = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_X;
+			public static String MAG_MPU_MPL_Y = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Y;
+			public static String MAG_MPU_MPL_Z = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Z;
+			public static String QUAT_DMP_6DOF_W = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_W;
+			public static String QUAT_DMP_6DOF_X = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_X;
+			public static String QUAT_DMP_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Y;
+			public static String QUAT_DMP_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z;
 
-			public static final String SKIN_TEMPERATURE_PROBE = SensorBridgeAmp.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE; //"Skin_Temperature";
 			public static String EVENT_MARKER = "Event Marker";
-// ----------------Implemented in SensorPPG----------------------			
-			public static String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12; //"PPG_A12";
-			public static String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13; //"PPG_A13";
-			public static String PPG1_A12 = SensorPPG.ObjectClusterSensorName.PPG1_A12; //"PPG1_A12";
-			public static String PPG1_A13 = SensorPPG.ObjectClusterSensorName.PPG1_A13; //"PPG1_A13";
-			public static String PPG2_A1 = SensorPPG.ObjectClusterSensorName.PPG2_A1; //"PPG2_A1";
-			public static String PPG2_A14 = SensorPPG.ObjectClusterSensorName.PPG2_A14; //"PPG2_A14";
-// --------------------------------------------------------------			
+
+			public static String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12;
+			public static String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13;
+			public static String PPG1_A12 = SensorPPG.ObjectClusterSensorName.PPG1_A12;
+			public static String PPG1_A13 = SensorPPG.ObjectClusterSensorName.PPG1_A13;
+			public static String PPG2_A1 = SensorPPG.ObjectClusterSensorName.PPG2_A1;
+			public static String PPG2_A14 = SensorPPG.ObjectClusterSensorName.PPG2_A14;
 
 			//TODO: move to algorithms class (JC).
 			//Algorithms
@@ -1317,23 +1314,23 @@ public class Configuration {
 			public static String AXIS_ANGLE_Y = "Axis_Angle_Y"; 
 			public static String AXIS_ANGLE_Z = "Axis_Angle_Z"; 
 			
-			// Moved by JC to algorithm module
-			public static String ECG_TO_HR_LA_RA = "ECGtoHR_LA-RA";
-			public static String ECG_TO_HR_LL_RA = "ECGtoHR_LL-RA";
-			public static String ECG_TO_HR_LL_LA = "ECGtoHR_LL_LA";
-			public static String ECG_TO_HR_VX_RL = "ECGtoHR_VX-RL";
+//			// Moved by JC to algorithm module
+//			public static String ECG_TO_HR_LA_RA = "ECGtoHR_LA-RA";
+//			public static String ECG_TO_HR_LL_RA = "ECGtoHR_LL-RA";
+//			public static String ECG_TO_HR_LL_LA = "ECGtoHR_LL_LA";
+//			public static String ECG_TO_HR_VX_RL = "ECGtoHR_VX-RL";
 
 			//TODO: remove two old channels names below
 			public static String ECG_TO_HR = "ECGtoHR";
 // ----------------Implemented in SensorPPG----------------------
-			@Deprecated
-			public static String PPG_TO_HR_A12 = "PPGtoHR_A12";
-			@Deprecated
-			public static String PPG_TO_HR_A13 = "PPGtoHR_A13";
-			@Deprecated
-			public static String PPG_TO_HR_A1 = "PPGtoHR_A1";
-			@Deprecated
-			public static String PPG_TO_HR_A14 = "PPGtoHR_A14";
+//			@Deprecated
+//			public static String PPG_TO_HR_A12 = "PPGtoHR_A12";
+//			@Deprecated
+//			public static String PPG_TO_HR_A13 = "PPGtoHR_A13";
+//			@Deprecated
+//			public static String PPG_TO_HR_A1 = "PPGtoHR_A1";
+//			@Deprecated
+//			public static String PPG_TO_HR_A14 = "PPGtoHR_A14";
 
 			public static  String PPG_TO_HR = "PPGtoHR";
 			public static  String PPG_TO_HR1 = "PPGtoHR1";
@@ -3455,26 +3452,18 @@ public class Configuration {
 				return tileText;
 			}
 		}
-//		public class GuiLabelSensorTiles{
-//			public static final String GYRO = Configuration.ShimmerGqBle.GuiLabelSensors.GYRO;
-//			public static final String MAG = Configuration.ShimmerGqBle.GuiLabelSensors.MAG; //XXX-RS-LSM-SensorClass?
-//			public static final String BATTERY_MONITORING = Configuration.ShimmerGqBle.GuiLabelSensors.BATTERY;
-//			public static final String WIDE_RANGE_ACCEL = Configuration.ShimmerGqBle.GuiLabelSensors.ACCEL_WR;  //XXX-RS-LSM-SensorClass?
-//			public static final String GSR = "GSR+";
-//			public static final String BEACON = Configuration.ShimmerGqBle.GuiLabelSensors.BEACON;
-//		}
 		
 		//GUI SENSORS
 		public class GuiLabelSensors{
-			public static final String BATTERY = "Battery Voltage";
-			public static final String GSR = "GSR";
-			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO; //"Gyroscope";
-			public static final String ACCEL_WR = "Wide-Range Accelerometer";  //XXX-RS-LSM-SensorClass?
-			public static final String MAG = "Magnetometer"; 				//XXX-RS-LSM-SensorClass?
-			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU; //"Alternative Accel";
-			public static final String MAG_MPU = SensorMPU9X50.GuiLabelSensors.MAG_MPU; //"Alternative Mag";
+			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;
+			public static final String GSR = SensorGSR.GuiLabelSensors.GSR;
+			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO;
+			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
+			public static final String MAG = SensorLSM303.GuiLabelSensors.MAG;
+			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU;
+			public static final String MAG_MPU = SensorMPU9X50.GuiLabelSensors.MAG_MPU;
 			public static final String PPG_TO_HR = "PPG To HR";
-			public static final String PPG = SensorPPG.GuiLabelSensors.PPG; //"PPG";
+			public static final String PPG = SensorPPG.GuiLabelSensors.PPG;
 			public static final String BEACON = "Beacon";
 		}
 		
@@ -3483,10 +3472,10 @@ public class Configuration {
 			public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
 			public static final String SAMPLING_RATE_DIVIDER_PPG = SensorPPG.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG; //"PPG Divider";
 			public static final String SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL = "LSM303DLHC Divider"; //XXX-RS-LSM-SensorClass?
-			public static final String LSM303DLHC_ACCEL_RATE = "Wide Range Accel Rate";  //XXX-RS-LSM-SensorClass?
-			public static final String LSM303DLHC_ACCEL_RANGE = "Wide Range Accel Range"; //XXX-RS-LSM-SensorClass?
+			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE;
+			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE;
 			public static final String GSR_RANGE = "GSR Range";
-			public static final String LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode";  //XXX-RS-LSM-SensorClass?
+			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM;
 			public static final String SAMPLING_RATE_DIVIDER_BEACON = "Beacon Divider";
 			
 			public static final String SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
