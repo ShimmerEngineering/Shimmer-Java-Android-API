@@ -72,7 +72,10 @@ public class SensorPPG extends AbstractSensor {
 
 
 	public class GuiLabelSensors{
+		//BLE
 		public static final String PPG = "PPG";
+		
+		//Other
 		public static final String PPG_DUMMY = "PPG";
 		public static final String PPG_A12 = "PPG A12";
 		public static final String PPG_A13 = "PPG A13";

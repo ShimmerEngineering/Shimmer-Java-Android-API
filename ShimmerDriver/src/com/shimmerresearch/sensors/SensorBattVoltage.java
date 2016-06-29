@@ -62,8 +62,8 @@ public class SensorBattVoltage extends AbstractSensor{
 		public static final String BATTERY = "F5437a_Int_A2_Battery";
 	}
 	public static class ObjectClusterSensorName{
-		public static final String BATT_PERCENTAGE = "Batt_Percentage";
 		public static final String BATTERY = "Battery";
+		public static final String BATT_PERCENTAGE = "Batt_Percentage";
 	}
 	
 	

@@ -191,18 +191,21 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String GYRO = "Gyroscope";
 		public static final String ACCEL_MPU = "Alternative Accel";
 		public static final String MAG_MPU = "Alternative Mag";
+		
 		public static final String GYRO_MPU_MPL = "MPU Gyro";
 		public static final String ACCEL_MPU_MPL = "MPU Accel";
 		public static final String MAG_MPU_MPL = "MPU Mag";
-		public static final String MPL_TEMPERATURE = "MPU Temp";
-		public static final String QUAT_DMP_6DOF = "MPU Quat 6DOF (from DMP)";
+		
 		public static final String QUAT_MPL_6DOF = "MPU Quat 6DOF";
 		public static final String QUAT_MPL_9DOF = "MPU Quat 9DOF";
-		public static final String EULER_MPL_6DOF = "MPU Euler 6DOF";
-		public static final String EULER_MPL_9DOF = "MPU Euler 9DOF";
 		public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)"; 
 		public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";
+		public static final String EULER_MPL_6DOF = "MPU Euler 6DOF";
+		public static final String EULER_MPL_9DOF = "MPU Euler 9DOF";
+		public static final String QUAT_DMP_6DOF = "MPU Quat 6DOF (from DMP)";
+
 		public static final String MPL_HEADING = "MPU Heading";
+		public static final String MPL_TEMPERATURE = "MPU Temp";
 		public static final String MPL_PEDOMETER = "MPL_Pedometer"; 		// not currently supported
 		public static final String MPL_PEDOM_CNT = "MPL_Pedom_cnt"; 		// not currently supported
 		public static final String MPL_PEDOM_TIME = "MPL_Pedom_Time"; 		// not currently supported
@@ -289,15 +292,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static String MAG_MPU_Y = "Mag_MPU_Y";
 		public static String MAG_MPU_Z = "Mag_MPU_Z";
 		
-		public static String TAPDIRANDTAPCNT = "TapDirAndTapCnt";
-		public static String TAPDIR = "Tap_Dirirection";
-		public static String TAPCNT = "Tap_Count";
-		public static String MOTIONANDORIENT = "MotionAndOrient";
-		public static String MOTION = "Motion";
-		public static String ORIENT = "Orient";
-		
-		public static String MPL_TEMPERATURE = "MPL_Temperature";
-		
 		public static String GYRO_MPU_MPL_X = "Gyro_MPU_MPL_X";
 		public static String GYRO_MPU_MPL_Y = "Gyro_MPU_MPL_Y";
 		public static String GYRO_MPU_MPL_Z = "Gyro_MPU_MPL_Z";
@@ -327,11 +321,18 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static String EULER_MPL_9DOF_X = "Euler_MPL_9DOF_X";
 		public static String EULER_MPL_9DOF_Y = "Euler_MPL_9DOF_Y";
 		public static String EULER_MPL_9DOF_Z = "Euler_MPL_9DOF_Z";
-		public static String MPL_HEADING = "MPL_heading";
 		
+		public static String MPL_HEADING = "MPL_heading";
+		public static String MPL_TEMPERATURE = "MPL_Temperature";
 		public static String MPL_PEDOM_CNT = "MPL_Pedom_cnt";
 		public static String MPL_PEDOM_TIME = "MPL_Pedom_Time";
+		public static String TAPDIRANDTAPCNT = "TapDirAndTapCnt";
+		public static String TAPDIR = "Tap_Dirirection";
+		public static String TAPCNT = "Tap_Count";
+		public static String MOTIONANDORIENT = "MotionAndOrient";
 		
+		public static String MOTION = "Motion";
+		public static String ORIENT = "Orient";
 	}
 	
 	public boolean mEnableOntheFlyGyroOVCal = false;

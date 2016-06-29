@@ -63,8 +63,6 @@ public class SensorADC extends AbstractSensor {
 		public static final String EXTERNAL_EXPANSION_ADC = "External Expansion ADCs";
 		public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
 		
-		public static final String EXT_EXP_ADC = "External Expansion";
-		
 		public static final String PROTO3_MINI = "Proto Mini";
 		public static final String PROTO3_DELUXE = "Proto Deluxe";
 	}
@@ -89,8 +87,6 @@ public class SensorADC extends AbstractSensor {
 		public static String INT_EXP_ADC_A12 = "Int_Exp_A12";
 		public static String INT_EXP_ADC_A13 = "Int_Exp_A13";
 		public static String INT_EXP_ADC_A14 = "Int_Exp_A14";
-		
-		
 	}
 	
 	

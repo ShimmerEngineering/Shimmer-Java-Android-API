@@ -81,7 +81,6 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	public class GuiLabelSensors{
 		public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
-		public static final String BMP_180 = "BMP180";
 	}
 	
 	// GUI Sensor Tiles

@@ -120,8 +120,23 @@ public class SensorEXG extends AbstractSensor{
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
+	public class GuiLabelConfig{
+		public static final String EXG_RESOLUTION = "Resolution";
+		public static final String EXG_GAIN = "Gain";
+		public static final String EXG_BYTES = "Bytes";
+
+		public static final String EXG_RATE = "ExG Rate";
+		public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
+		public static final String EXG_LEAD_OFF_DETECTION = "Lead-Off Detection";
+		public static final String EXG_LEAD_OFF_CURRENT = "Lead-Off Current";
+		public static final String EXG_LEAD_OFF_COMPARATOR = "Lead-Off Compartor Threshold";
+		public static final String EXG_RESPIRATION_DETECT_FREQ = "Respiration Detection Freq.";
+		public static final String EXG_RESPIRATION_DETECT_PHASE = "Respiration Detection Phase";
+	}
+
 	public static class ObjectClusterSensorName{
 		public static String ECG_GQ = "ECG";
+		
 		public static String EXG1_STATUS = "ECG_EMG_Status1";
 		public static String EXG2_STATUS = "ECG_EMG_Status2";
 		public static String EXG1_CH1_24BIT = "ExG1_CH1_24BIT";
@@ -177,56 +192,64 @@ public class SensorEXG extends AbstractSensor{
 		public static final String EXG = "ECG/EMG";
 	}
 	
-	List<String> listOfChannels_Chip1Ch1_24Bit = Arrays.asList(
-			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT
-			);
-	List<String> listOfChannels_Chip1Ch1_16Bit = Arrays.asList(
-			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT
-			);
+	//DATABASE NAMES
+	public static class DatabaseChannelHandles{
+		public static final String EXG1_CH1_24BITS = "ADS1292R_1_CH1_24BIT";
+		public static final String EXG1_CH2_24BITS = "ADS1292R_1_CH2_24BIT";
+		public static final String EXG2_CH1_24BITS = "ADS1292R_2_CH1_24BIT";
+		public static final String EXG2_CH2_24BITS = "ADS1292R_2_CH2_24BIT";
+		public static final String EXG1_CH1_16BITS = "ADS1292R_1_CH1_16BIT";
+		public static final String EXG1_CH2_16BITS = "ADS1292R_1_CH2_16BIT";
+		public static final String EXG2_CH1_16BITS = "ADS1292R_2_CH1_16BIT";
+		public static final String EXG2_CH2_16BITS = "ADS1292R_2_CH2_16BIT";
+		public static final String EXG1_STATUS = "ADS1292R_1_STATUS";
+		public static final String EXG2_STATUS = "ADS1292R_2_STATUS";
+	}
 	
-	List<String> listOfChannels_Chip1Ch2_24Bit = Arrays.asList(
-			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT
-			);
-	List<String> listOfChannels_Chip1Ch2_16Bit = Arrays.asList(
-			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT
-			);
+	//Chip 1 - 24-bit
+	private static List<String> listOfChannels_Chip1Ch1_24Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_LL_RA_24BIT,
+			ObjectClusterSensorName.EMG_CH1_24BIT,
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT);
+	private static List<String> listOfChannels_Chip1Ch1_16Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_LL_RA_16BIT,
+			ObjectClusterSensorName.EMG_CH1_16BIT,
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT);
 	
-	List<String> listOfChannels_Chip2Ch1_24Bit = Arrays.asList(
+	//Chip 1 - 16-bit
+	private static List<String> listOfChannels_Chip1Ch2_24Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_LA_RA_24BIT,
+			ObjectClusterSensorName.EMG_CH2_24BIT,
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT);
+	private static List<String> listOfChannels_Chip1Ch2_16Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_LA_RA_16BIT,
+			ObjectClusterSensorName.EMG_CH2_16BIT,
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT);
+	
+	//Chip 2 - 24-bit
+	private static List<String> listOfChannels_Chip2Ch1_24Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_RESP_24BIT,
 			ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT
-			);
-	List<String> listOfChannels_Chip2Ch1_16Bit = Arrays.asList(
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT);
+	private static List<String> listOfChannels_Chip2Ch1_16Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_RESP_16BIT,
 			ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT
-			);
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT);
 	
-	List<String> listOfChannels_Chip2Ch2_24Bit = Arrays.asList(
-			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT
-			);
-	List<String> listOfChannels_Chip2Ch2_16Bit = Arrays.asList(
-			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT
-			);
+	//Chip 1 - 16-bit
+	private static List<String> listOfChannels_Chip2Ch2_24Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_VX_RL_24BIT,
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT);
+	private static List<String> listOfChannels_Chip2Ch2_16Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_VX_RL_16BIT,
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT);
 
-	List<String> listOfChannels_Derived_24Bit = Arrays.asList(
-			);
-	List<String> listOfChannels_Derived_16Bit = Arrays.asList(
-			);
+	//Not parsed from Shimmer data packet, calculated afterwards
+	private static List<String> listOfChannels_Derived_24Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_LL_LA_24BIT);
+	private static List<String> listOfChannels_Derived_16Bit = Arrays.asList(
+			ObjectClusterSensorName.ECG_LL_LA_16BIT);
 
-//	ObjectClusterSensorName.ECG_LA_RA_24BIT,
-//	ObjectClusterSensorName.EMG_CH1_24BIT
-//	ObjectClusterSensorName.ECG_LL_RA_24BIT
-//	ObjectClusterSensorName.ECG_VX_RL_24BIT
-//	ObjectClusterSensorName.ECG_LL_LA_24BIT
-//	ObjectClusterSensorName.ECG_RESP_24BIT
-//	ObjectClusterSensorName.EMG_CH2_24BIT
-//
-//	ObjectClusterSensorName.ECG_LA_RA_16BIT
-//	ObjectClusterSensorName.ECG_LL_RA_16BIT
-//	ObjectClusterSensorName.ECG_VX_RL_16BIT
-//	ObjectClusterSensorName.ECG_LL_LA_16BIT
-//	ObjectClusterSensorName.ECG_RESP_16BIT
-//	ObjectClusterSensorName.EMG_CH1_16BIT
-//	ObjectClusterSensorName.EMG_CH2_16BIT
 	
 	public static final SensorDetailsRef sDRefEcg = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.ECG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
@@ -866,16 +889,7 @@ public class SensorEXG extends AbstractSensor{
 						objectCluster.addCalData(channelDetails, unCalData, objectCluster.getIndexKeeper()-i);
 					}
 					else{
-						//TODO get the gain for the particular chip/channel
-						int exgChGainValue = getExg1Ch1GainSetting();
-//						int exgChGainValue = getExg2Ch1GainSetting();
-						
-						double denominator = (Math.pow(2,15)-1);
-						if(is24BitExgChannel(channelDetails.mObjectClusterName)){
-							denominator = (Math.pow(2,23)-1);
-						}
-
-						double calData = unCalData *(((2.42*1000)/exgChGainValue)/denominator);
+						double calData = unCalData * computeCalConstantForChannel(channelDetails.mObjectClusterName);
 						objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-i);
 					}
 				}
@@ -1256,6 +1270,7 @@ public class SensorEXG extends AbstractSensor{
 		
 		return objectCluster;
 	}
+
 
 	@Override
 	public Object getSettings(String componentName, COMMUNICATION_TYPE commType) {
@@ -2621,12 +2636,102 @@ public class SensorEXG extends AbstractSensor{
 	}
 	//-------------------- ExG from ShimmerObject End -----------------------------------	
 
+	private double computeCalConstantForChannel(String channelName) {
+		double calConstant = 1.0;
+		int exgGainValuePerChannel = getExgGainPerChannel(channelName);
+		
+		double denominator = (Math.pow(2,15)-1);
+		if(is24BitExgChannel(channelName)){
+			denominator = (Math.pow(2,23)-1);
+		}
+
+		calConstant = (((2.42*1000)/exgGainValuePerChannel)/denominator);
+		return calConstant;
+	}
+	
 	private int getExg1Ch1GainSetting(){
 		return convertEXGGainSettingToValue(getExg1CH1GainConfigValue());
 	}
-	
+
+	private int getExg1Ch2GainSetting(){
+		return convertEXGGainSettingToValue(getExg1CH2GainConfigValue());
+	}
+
 	private int getExg2Ch1GainSetting() {
 		return convertEXGGainSettingToValue(getExg2CH1GainConfigValue());
+	}
+
+	private int getExg2Ch2GainSetting() {
+		return convertEXGGainSettingToValue(getExg2CH2GainConfigValue());
+	}
+
+	public static boolean is24BitExgChannel(String channelName) {
+		if(listOfChannels_Chip1Ch1_24Bit.contains(channelName)
+				||listOfChannels_Chip1Ch2_24Bit.contains(channelName)
+				||listOfChannels_Chip2Ch1_24Bit.contains(channelName)
+				||listOfChannels_Chip2Ch2_24Bit.contains(channelName)
+				||listOfChannels_Derived_24Bit.contains(channelName)){
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean is16BitExgChannel(String channelName) {
+		if(listOfChannels_Chip1Ch1_16Bit.contains(channelName)
+				||listOfChannels_Chip1Ch2_16Bit.contains(channelName)
+				||listOfChannels_Chip2Ch1_16Bit.contains(channelName)
+				||listOfChannels_Chip2Ch2_16Bit.contains(channelName)
+				||listOfChannels_Derived_16Bit.contains(channelName)){
+				return true;
+			}
+		return false;
+	}
+	
+	/** get the gain for the particular chip/channel */
+	private int getExgGainPerChannel(String channelName) {
+		int exgChGainValue = getExg1Ch1GainSetting();
+		if(isChip1Ch2Channel(channelName)){
+			exgChGainValue = getExg1Ch2GainSetting();
+		}
+		else if(isChip2Ch1Channel(channelName)){
+			exgChGainValue = getExg2Ch1GainSetting();
+		}
+		else if(isChip2Ch2Channel(channelName)){
+			exgChGainValue = getExg2Ch2GainSetting();
+		}
+		return exgChGainValue;
+	}
+
+	public static boolean isChip1Ch1Channel(String channelName){
+		if(listOfChannels_Chip1Ch1_16Bit.contains(channelName)
+				||listOfChannels_Chip1Ch1_24Bit.contains(channelName)){
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isChip1Ch2Channel(String channelName){
+		if(listOfChannels_Chip1Ch2_16Bit.contains(channelName)
+				||listOfChannels_Chip1Ch2_24Bit.contains(channelName)){
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isChip2Ch1Channel(String channelName){
+		if(listOfChannels_Chip2Ch1_16Bit.contains(channelName)
+				||listOfChannels_Chip2Ch1_24Bit.contains(channelName)){
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isChip2Ch2Channel(String channelName){
+		if(listOfChannels_Chip2Ch2_16Bit.contains(channelName)
+				||listOfChannels_Chip2Ch2_24Bit.contains(channelName)){
+			return true;
+		}
+		return false;
 	}
 	
 
@@ -2654,80 +2759,11 @@ public class SensorEXG extends AbstractSensor{
 							|| (getExGResolution()==0 && is24BitExgChannel(channelName))){
 					    iterator.remove();
 					}
-
-//					if((getExGResolution()==1)
-//							&&((channelName.equals(ObjectClusterSensorName.ECG_LA_RA_16BIT))
-//						||(channelName.equals(ObjectClusterSensorName.ECG_LL_RA_16BIT))
-//						||(channelName.equals(ObjectClusterSensorName.ECG_VX_RL_16BIT))
-//						||(channelName.equals(ObjectClusterSensorName.ECG_LL_LA_16BIT))
-//	    				||(channelName.equals(ObjectClusterSensorName.ECG_RESP_16BIT))
-//    					||(channelName.equals(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT))
-//						||(channelName.equals(ObjectClusterSensorName.EMG_CH1_16BIT))
-//						||(channelName.equals(ObjectClusterSensorName.EMG_CH2_16BIT))
-//						||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
-//						||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
-//						||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
-//						||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
-//						)){
-//					    iterator.remove();
-//					}
-//					else if((getExGResolution()==0)
-//							&&((channelName.equals(ObjectClusterSensorName.ECG_LA_RA_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.ECG_LL_RA_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.ECG_VX_RL_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.ECG_LL_LA_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.ECG_RESP_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.EMG_CH1_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.EMG_CH2_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
-//	    					||(channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
-//	    					)){
-//					    iterator.remove();
-//					}
 			   	}
 			}
 		}
 	}
 	
-	private boolean is24BitExgChannel(String channelName) {
-		if(channelName.equals(ObjectClusterSensorName.ECG_LA_RA_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_LL_RA_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_VX_RL_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_LL_LA_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_RESP_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.EMG_CH1_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.EMG_CH2_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT)
-			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT)){
-			return true;
-		}
-		return false;
-	}
-
-	private boolean is16BitExgChannel(String channelName) {
-		if(channelName.equals(ObjectClusterSensorName.ECG_LA_RA_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_LL_RA_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_VX_RL_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_LL_LA_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_RESP_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.EMG_CH1_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.EMG_CH2_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT)
-			|| channelName.equals(ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT)){
-				return true;
-			}
-		return false;
-	}
-
 	@Override
 	public void handleSpecCasesBeforeSensorMapUpdateGeneral(ShimmerDevice shimmerDevice) {
 		checkExgResolutionFromEnabledSensorsVar();
