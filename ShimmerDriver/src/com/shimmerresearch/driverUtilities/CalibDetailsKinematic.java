@@ -120,10 +120,10 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 
 	public boolean isSensitivityValid(){
-	 if(isAllZeros(mCurrentSensitivityMatrix) ){
-			return false;
-		}else{
+	 if(isDiagonalFilled(mCurrentSensitivityMatrix) ){
 			return true;
+		}else{
+			return false;
 		}
 	}
 	
@@ -132,19 +132,27 @@ public class CalibDetailsKinematic implements Serializable {
 			return true;
 	}
 	
+	public boolean isDiagonalFilled(double[][] matrix){
+		boolean diagonalFilled = true;
+		for(int j = 0; j < matrix[1].length; j++){
+			if(matrix[0][j]==0 &&  matrix[1][j]==0 && matrix[2][j]==0){
+				diagonalFilled =false;
+			}
+		}
+		return diagonalFilled;
+	}
+	
 	//TODO to be replaced with MN utility function
 	public boolean isAllZeros(double[][] matrix){
 		boolean allZeros = true;
 		if(matrix!=null){
-//			System.err.println("Matrix lengths  " + matrix[1].length);
-//			System.err.println("Matrix length extra  " + matrix.length);
 			for(int j = 0; j < matrix[1].length; j++){
 				for(int i = 0; i < matrix.length; i++){
-			if(matrix[i][j]!=0){
-				allZeros = false;
-			}
-				}
-			}
+					if(matrix[i][j]!=0){
+						allZeros = false;
+					}
+						}
+					}
 			return allZeros;
 			}
 		return allZeros;
