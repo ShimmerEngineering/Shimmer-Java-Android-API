@@ -103,9 +103,9 @@ public class Orientation3DObject {
 	//TODO MN temporary code -> needs testing 
 	//From: https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 	public void quaternianToEuler(double q0, double q1, double q2, double q3){
-		roll = Math.atan2(2*(q0*q1 + q2*q3), 1 - 2*(Math.pow(q1,2) + Math.pow(q2,2)));
-		pitch = Math.asin(2*(q0*q2 - q3*q1));
-		yaw = Math.atan2(2*(q0*q3 + q1*q2), 1- 2*(Math.pow(q2,2) + Math.pow(q3,2)));
+		roll = Math.atan2(2*(q0*q1 + q2*q3), 1 - 2*(Math.pow(q1,2) + Math.pow(q2,2))) * 180/Math.PI;
+		pitch = Math.asin(2*(q0*q2 - q3*q1)) * 180/Math.PI;
+		yaw = Math.atan2(2*(q0*q3 + q1*q2), 1- 2*(Math.pow(q2,2) + Math.pow(q3,2)) * 180/Math.PI);
 	}
 	
 //	//TODO MN temporary code -> needs testing 
@@ -119,6 +119,32 @@ public class Orientation3DObject {
 //		yaw = Math.atan2(2.0 * (q1x*q1y + q1z*q1w),(sqx - sqy - sqz + sqw));
 //		roll = Math.atan2(2.0 * (q1y*q1z + q1x*q1w),(-sqx - sqy + sqz + sqw));
 //		pitch = Math.asin(-2.0 * (q1x*q1z - q1y*q1w)/sqx + sqy + sqz + sqw); 
+//	}
+	
+//	//http://examples.oreilly.com/0636920021735/ch16/16_10/AHRS.cpp
+//	// Returns the Euler angles in radians defined with the Aerospace sequence.
+//	// See Sebastian O.H. Madwick report 
+//	// "An efficient orientation filter for inertial and intertial/magnetic sensor arrays" Chapter 2 Quaternion representation
+//	public void AHRS::getEuler(float * angles) {
+//	  float q[4]; // quaternion
+//	  getQ(q);
+//	  angles[0] = atan2(2 * q[1] * q[2] - 2 * q[0] * q[3], 2 * q[0]*q[0] + 2 * q[1] * q[1] - 1) * 180/M_PI; // psi
+//	  angles[1] = -asin(2 * q[1] * q[3] + 2 * q[0] * q[2]) * 180/M_PI; // theta
+//	  angles[2] = atan2(2 * q[2] * q[3] - 2 * q[0] * q[1], 2 * q[0] * q[0] + 2 * q[3] * q[3] - 1) * 180/M_PI; // phi
+//	}
+//
+//	public void AHRS::getYawPitchRoll(float * ypr) {
+//	  float q[4]; // quaternion
+//	  float gx, gy, gz; // estimated gravity direction
+//	  getQ(q);
+//	  
+//	  gx = 2 * (q[1]*q[3] - q[0]*q[2]);
+//	  gy = 2 * (q[0]*q[1] + q[2]*q[3]);
+//	  gz = q[0]*q[0] - q[1]*q[1] - q[2]*q[2] + q[3]*q[3];
+//	  
+//	  ypr[0] = atan2(2 * q[1] * q[2] - 2 * q[0] * q[3], 2 * q[0]*q[0] + 2 * q[1] * q[1] - 1) * 180/M_PI;
+//	  ypr[1] = atan(gx / sqrt(gy*gy + gz*gz))  * 180/M_PI;
+//	  ypr[2] = atan(gy / sqrt(gx*gx + gz*gz))  * 180/M_PI;
 //	}
 	
 	public double getYaw() {
