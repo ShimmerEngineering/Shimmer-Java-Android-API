@@ -1505,66 +1505,75 @@ public class Configuration {
 	        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 
 	        //TODO decide what to do about the below:
-//	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
-	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, new SensorDetailsRef(0, 0, ShimmerClock.GuiLabelSensors.DEVICE_PROPERTIES));
-			//TODO sort out the difference between the below and ShimmerClock.sensorShimmerPacketReception
-			// All Information required for parsing each of the channels
-			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES).mListOfChannelsRef = Arrays.asList(
-					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
-//					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
-					//temp only! JC: delete after db sync works
-//					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
-					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
-					); 
-	        
+//	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception); //YYY
+//	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, new SensorDetailsRef(0, 0, ShimmerClock.GuiLabelSensors.DEVICE_PROPERTIES)); //YYY
+//			//TODO sort out the difference between the below and ShimmerClock.sensorShimmerPacketReception  //YYY
+//			// All Information required for parsing each of the channels
+//			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES).mListOfChannelsRef = Arrays.asList(  //YYY
+//					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
+////					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
+//					//temp only! JC: delete after db sync works
+////					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
+//					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+//					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+//					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
+//					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
+//					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+//					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
+//					); //YYY
+	        aMap.putAll(ShimmerClock.mSensorMapRef);
 	        
 			// Assemble the channel map
 			// NV_SENSORS0
-	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042);
+//	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042); //YYY
+	        aMap.putAll(SensorKionixKXRB52042.mSensorMapRef);
+
 			aMap.putAll(SensorMPU9X50.mSensorMapRef);
 			aMap.putAll(SensorLSM303.mSensorMapRef);
 			aMap.putAll(SensorGSR.mSensorMapRef);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7, SensorADC.sensorADC_EXT_EXP_ADC_A7Ref);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6, SensorADC.sensorADC_EXT_EXP_ADC_A6Ref);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7, SensorADC.sensorADC_EXT_EXP_ADC_A7Ref); //YYY
+			aMap.putAll(SensorADC.mSensorMapRef);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6, SensorADC.sensorADC_EXT_EXP_ADC_A6Ref); //YYY
 			
 			// NV_SENSORS1
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP, SensorBridgeAmp.sensorBridgeAmplifierRef);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, SensorBattVoltage.sensorBattVoltageRef);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15, SensorADC.sensorADC_EXT_EXP_ADC_A15Ref);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1, SensorADC.sensorADC_INT_EXP_ADC_A1Ref);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, SensorADC.sensorADC_INT_EXP_ADC_A12Ref);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13, SensorADC.sensorADC_INT_EXP_ADC_A13Ref);
-			
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP, SensorBridgeAmp.sensorBridgeAmplifierRef); //YYY
+			aMap.putAll(SensorBridgeAmp.mSensorMapRef);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, SensorBattVoltage.sensorBattVoltageRef); //YYY
+			aMap.putAll(SensorBattVoltage.mSensorMapRef);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15, SensorADC.sensorADC_EXT_EXP_ADC_A15Ref); //YYY
+			aMap.putAll(SensorADC.mSensorMapRef);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1, SensorADC.sensorADC_INT_EXP_ADC_A1Ref); //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, SensorADC.sensorADC_INT_EXP_ADC_A12Ref); //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, SensorADC.sensorADC_INT_EXP_ADC_A12Ref); //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13, SensorADC.sensorADC_INT_EXP_ADC_A13Ref);  //YYY
+//			
 			// NV_SENSORS2
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14, SensorADC.sensorADC_INT_EXP_ADC_A14Ref);
-	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14, SensorADC.sensorADC_INT_EXP_ADC_A14Ref); //YYY
+//	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180); //YYY
+			aMap.putAll(SensorBMP180.mSensorMapRef);
 	        
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, SensorMPU9X50.sensorMpu9150TempRef); //YYY
 
 			// NV_SENSORS3				
 
 			// Derived Channels - Bridge Amp Board
-			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP, SensorBridgeAmp.sensorResistanceAmpRef);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE, SensorBridgeAmp.sensorSkinTempProbeRef);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP, SensorBridgeAmp.sensorResistanceAmpRef);  //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE, SensorBridgeAmp.sensorSkinTempProbeRef); ///YYY
 			
 
 			// Derived Channels - GSR Board
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY, SensorPPG.sensorPpgDummy);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12, SensorPPG.sensorPpgHostPPG_A12);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13, SensorPPG.sensorPpgHostPPG_A13);
-
-			// Derived Channels - Proto3 Board
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY, SensorPPG.sensorPpg1Dummy);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12, SensorPPG.sensorPpgHostPPG1_A12);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13, SensorPPG.sensorPpgHostPPG1_A13);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY, SensorPPG.sensorPpg2Dummy);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1, SensorPPG.sensorPpgHostPPG2_A1);
-			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14, SensorPPG.sensorPpgHostPPG2_A14);
+			aMap.putAll(SensorPPG.mSensorMapRef);
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY, SensorPPG.sensorPpgDummy);  //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12, SensorPPG.sensorPpgHostPPG_A12);  //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13, SensorPPG.sensorPpgHostPPG_A13);  //YYY
+//
+//			// Derived Channels - Proto3 Board
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY, SensorPPG.sensorPpg1Dummy);  //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12, SensorPPG.sensorPpgHostPPG1_A12);  //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13, SensorPPG.sensorPpgHostPPG1_A13);  //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY, SensorPPG.sensorPpg2Dummy);  //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1, SensorPPG.sensorPpgHostPPG2_A1); //YYY
+//			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14, SensorPPG.sensorPpgHostPPG2_A14);  //YYY
 			
 			aMap.putAll(SensorEXG.mSensorMapRef);
 
@@ -1627,7 +1636,8 @@ public class Configuration {
 			// KionixKXRB52042 - analog accel
 			aMap.putAll(SensorKionixKXRB52042.mChannelMapRef);
 			
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY, SensorBattVoltage.channelBattVolt);
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATTERY, SensorBattVoltage.channelBattVolt);  //YYY
+			aMap.putAll(SensorBattVoltage.mChannelMapRef);
 
 			// External and Internal ADCs
 			aMap.putAll(SensorADC.mChannelMapRef);
