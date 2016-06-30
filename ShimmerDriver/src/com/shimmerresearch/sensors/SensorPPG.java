@@ -427,6 +427,7 @@ public class SensorPPG extends AbstractSensor {
 	static {
 		 Map<String, ChannelDetails> aChannelMap = new LinkedHashMap<String, ChannelDetails>();
 		
+		// PPG - Using GSR+ board
 		aChannelMap.put(ObjectClusterSensorName.PPG_A12, SensorPPG.channelPPG_A12);
 		aChannelMap.put(ObjectClusterSensorName.PPG_A13, SensorPPG.channelPPG_A13); 
 		// PPG - Using Proto3 Deluxe TRRS Socket 1

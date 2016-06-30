@@ -10586,7 +10586,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
         	checkConfigOptionValues(configLabel);
         }
         
-		Integer sensorMapKey = Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR;
+		Integer sensorMapKey = Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR;
 		try{
 			sensorMapKey = Integer.parseInt(identifier);
 		} catch (NumberFormatException nFE){

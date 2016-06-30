@@ -1256,7 +1256,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	private Object setSensorClassSetting(String identifier, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		//TODO check sensor classes return a null if the setting is successfully found
-		Integer sensorMapkey = Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR;
+		Integer sensorMapkey = Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR;
 		try{
 			sensorMapkey = Integer.parseInt(identifier);
 		} catch(NumberFormatException eFE) {
@@ -1273,7 +1273,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	private Object getSensorClassSetting(String identifier, String configLabel) {
 		Object returnValue = null;
-		Integer sensorMapkey = Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR;
+		Integer sensorMapkey = Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR;
 		try{
 			sensorMapkey = Integer.parseInt(identifier);
 		} catch(NumberFormatException eFE) {

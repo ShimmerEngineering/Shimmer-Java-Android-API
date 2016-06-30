@@ -126,7 +126,6 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 			DatabaseChannelHandles.TIMESTAMP_SYSTEM,
-//			CHANNEL_DATA_TYPE.UINT64, 8, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.MILLISECONDS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
@@ -138,9 +137,9 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelSystemTimestampPlot = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-		"NOTAPPLICABLE",
-		CHANNEL_UNITS.MILLISECONDS,
-		Arrays.asList(CHANNEL_TYPE.CAL), false, false);
+			DatabaseChannelHandles.NONE,
+			CHANNEL_UNITS.MILLISECONDS,
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;

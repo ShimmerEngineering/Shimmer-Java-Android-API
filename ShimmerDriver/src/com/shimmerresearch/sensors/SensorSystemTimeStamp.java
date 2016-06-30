@@ -83,7 +83,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	public static final ChannelDetails cDSystemTimestampPlot = new ChannelDetails(
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-		DatabaseChannelHandles.TIMESTAMP_SYSTEM,
+		DatabaseChannelHandles.NONE,
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{

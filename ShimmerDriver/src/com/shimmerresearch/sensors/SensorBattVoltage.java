@@ -130,14 +130,14 @@ public class SensorBattVoltage extends AbstractSensor{
  			false);
   	
   	 public static final ChannelDetails channelBattVolt = new ChannelDetails(
-					ObjectClusterSensorName.BATTERY,
-					ObjectClusterSensorName.BATTERY,
-					DatabaseChannelHandles.BATTERY,
-					CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
-					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
-					true,
-					true);
+			ObjectClusterSensorName.BATTERY,
+			ObjectClusterSensorName.BATTERY,
+			DatabaseChannelHandles.BATTERY,
+			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.MILLIVOLTS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			true,
+			true);
   	 
   	 
   	public static final Map<String, ChannelDetails> mChannelMapRef;

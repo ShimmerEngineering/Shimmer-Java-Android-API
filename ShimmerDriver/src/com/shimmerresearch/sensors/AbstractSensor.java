@@ -311,11 +311,11 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public Object setConfigValueUsingConfigLabel(String configLabel, Object valueToSet){
-		return setConfigValueUsingConfigLabel(Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR, configLabel, valueToSet);
+		return setConfigValueUsingConfigLabel(Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR, configLabel, valueToSet);
 	}
 	
 	public Object getConfigValueUsingConfigLabel(String configLabel){
-		return getConfigValueUsingConfigLabel(Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR, configLabel);
+		return getConfigValueUsingConfigLabel(Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR, configLabel);
 	}
 
 	/** Quickly implemented method to print channel data to the console

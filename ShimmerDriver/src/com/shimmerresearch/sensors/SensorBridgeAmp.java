@@ -30,19 +30,19 @@ import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
 import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
 
 /**
+ * Sensor class for the Bridge Amplifier which includes the BridgeAm High & Low
+ * channels, the Philips skin temperature probe and the resistance amplifier
+ * 
  * @author Ronan McCormack
  * @author Mark Nolan
- *
  */
-
 public class SensorBridgeAmp extends AbstractSensor{
 
-
-	private static final long serialVersionUID = 2251208184040052082L; //TODO generate correct value
-
+	/** * */
+	private static final long serialVersionUID = 3440151728338729991L;
 
 	//--------- Sensor specific variables start --------------
-
+	
 	public class SDLogHeaderDerivedSensors{                  // Check this
 		public final static int BRIDGE_AMP = 1<<15;
 		public final static int RES_AMP = 1<<0;
@@ -191,6 +191,7 @@ public class SensorBridgeAmp extends AbstractSensor{
 
 	//--------- Channel info start --------------
 
+	//Bridge Amp
 	public static ChannelDetails channelBridgeAmpHigh = new ChannelDetails(
 			ObjectClusterSensorName.BRIDGE_AMP_HIGH,
 			ObjectClusterSensorName.BRIDGE_AMP_HIGH,

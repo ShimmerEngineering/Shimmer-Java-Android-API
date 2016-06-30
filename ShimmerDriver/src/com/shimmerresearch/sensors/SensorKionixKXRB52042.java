@@ -311,7 +311,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR)
+				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
 						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)){
 					TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
 					setKinematicCalibration(mapOfKinematicSensorCalibration);
@@ -334,7 +334,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 				}
 				break;
 			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVER_ANY_SENSOR)
+				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
 						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)){
 					returnValue = getKinematicCalibration();
 				}
