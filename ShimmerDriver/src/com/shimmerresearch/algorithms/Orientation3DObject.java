@@ -95,9 +95,9 @@ public class Orientation3DObject {
 			roll = 0;
 			return;
 		}
-		yaw = Math.atan2(y * s- x * z * t , 1 - (y*y+ z*z ) * t);
-		pitch = Math.asin(x * y * t + z * s) ;
-		roll = Math.atan2(x * s - y * z * t , 1 - (x*x + z*z) * t);
+		yaw = Math.atan2(y * s- x * z * t , 1 - (y*y+ z*z ) * t) * 180/Math.PI;
+		pitch = Math.asin(x * y * t + z * s)  * 180/Math.PI;
+		roll = Math.atan2(x * s - y * z * t , 1 - (x*x + z*z) * t) * 180/Math.PI;
 	}
 	
 	//TODO MN temporary code -> needs testing 
