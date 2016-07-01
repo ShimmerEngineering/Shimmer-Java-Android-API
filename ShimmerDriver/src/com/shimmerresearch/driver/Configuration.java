@@ -237,19 +237,21 @@ public class Configuration {
 			public static String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";
 			public static String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";
 			public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
-			public static String EULER_6DOF_A = "Euler_6DOF_A";
-			public static String EULER_6DOF_X = "Euler_6DOF_X";
-			public static String EULER_6DOF_Y = "Euler_6DOF_Y";
-			public static String EULER_6DOF_Z = "Euler_6DOF_Z";
-			public static String EULER_9DOF_A = "Euler_9DOF_A";
-			public static String EULER_9DOF_X = "Euler_9DOF_X";
-			public static String EULER_9DOF_Y = "Euler_9DOF_Y";
-			public static String EULER_9DOF_Z = "Euler_9DOF_Z";
+			public static String EULER_6DOF_YAW = "Euler_6DOF_Yaw";
+			public static String EULER_6DOF_PITCH = "Euler_6DOF_PITCH";
+			public static String EULER_6DOF_ROLL = "Euler_6DOF_Roll";
+			public static String EULER_9DOF_YAW = "Euler_9DOF_YAW";
+			public static String EULER_9DOF_PITCH = "Euler_9DOF_PITCH";
+			public static String EULER_9DOF_ROLL = "Euler_9DOF_Roll";
 			public static String HEART_RATE = "Heart_Rate"; //for the heart rate strap now no longer sold
-			public static String AXIS_ANGLE_A = "Axis_Angle_A";
-			public static String AXIS_ANGLE_X = "Axis_Angle_X";
-			public static String AXIS_ANGLE_Y = "Axis_Angle_Y";
-			public static String AXIS_ANGLE_Z = "Axis_Angle_Z";
+			public static String AXIS_ANGLE_6DOF_A = "Axis_Angle_A";
+			public static String AXIS_ANGLE_6DOF_X = "Axis_Angle_X";
+			public static String AXIS_ANGLE_6DOF_Y = "Axis_Angle_Y";
+			public static String AXIS_ANGLE_6DOF_Z = "Axis_Angle_Z";
+			public static String AXIS_ANGLE_9DOF_A = "Axis_Angle_A";
+			public static String AXIS_ANGLE_9DOF_X = "Axis_Angle_X";
+			public static String AXIS_ANGLE_9DOF_Y = "Axis_Angle_Y";
+			public static String AXIS_ANGLE_9DOF_Z = "Axis_Angle_Z";
 			public static String VOLT_REG = "VSenseReg";
 		}
 		
@@ -463,14 +465,12 @@ public class Configuration {
 		Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X = "Quaternion 1";
 		Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y = "Quaternion 2";
 		Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z = "Quaternion 3";
-		Shimmer3.ObjectClusterSensorName.EULER_6DOF_A = "Euler_6DOF_A";
-		Shimmer3.ObjectClusterSensorName.EULER_6DOF_X = "Euler_6DOF_X";
-		Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y = "Euler_6DOF_Y";
-		Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z = "Euler_6DOF_Z";
-		Shimmer3.ObjectClusterSensorName.EULER_9DOF_A = "Euler_9DOF_A";
-		Shimmer3.ObjectClusterSensorName.EULER_9DOF_X = "Euler_9DOF_X";
-		Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y = "Euler_9DOF_Y";
-		Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z = "Euler_9DOF_Z";
+		Shimmer3.ObjectClusterSensorName.EULER_6DOF_YAW = "Euler_6DOF_Yaw";
+		Shimmer3.ObjectClusterSensorName.EULER_6DOF_PITCH = "Euler_6DOF_Pitch";
+		Shimmer3.ObjectClusterSensorName.EULER_6DOF_ROLL = "Euler_6DOF_Roll";
+		Shimmer3.ObjectClusterSensorName.EULER_9DOF_YAW = "Euler_9DOF_Yaw";
+		Shimmer3.ObjectClusterSensorName.EULER_9DOF_PITCH = "Euler_9DOF_Pitch";
+		Shimmer3.ObjectClusterSensorName.EULER_9DOF_ROLL = "Euler_9DOF_Roll";
 		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A = "Axis Angle A";
 		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X = "Axis Angle X";
 		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y = "Axis Angle Y";
@@ -516,19 +516,24 @@ public class Configuration {
 		Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_X = "Quaternion 1";
 		Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y = "Quaternion 2";
 		Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z = "Quaternion 3";
-		Shimmer2.ObjectClusterSensorName.EULER_6DOF_A = "Euler_6DOF_A";
-		Shimmer2.ObjectClusterSensorName.EULER_6DOF_X = "Euler_6DOF_X";
-		Shimmer2.ObjectClusterSensorName.EULER_6DOF_Y = "Euler_6DOF_Y";
-		Shimmer2.ObjectClusterSensorName.EULER_6DOF_Z = "Euler_6DOF_Z";
-		Shimmer2.ObjectClusterSensorName.EULER_9DOF_A = "Euler_9DOF_A";
-		Shimmer2.ObjectClusterSensorName.EULER_9DOF_X = "Euler_9DOF_X";
-		Shimmer2.ObjectClusterSensorName.EULER_9DOF_Y = "Euler_9DOF_Y";
-		Shimmer2.ObjectClusterSensorName.EULER_9DOF_Z = "Euler_9DOF_Z";
+		Shimmer2.ObjectClusterSensorName.EULER_6DOF_YAW = "Euler_6DOF_YAW";
+		Shimmer2.ObjectClusterSensorName.EULER_6DOF_PITCH = "Euler_6DOF_PITCH";
+		Shimmer2.ObjectClusterSensorName.EULER_6DOF_ROLL = "Euler_6DOF_Roll";
+		Shimmer2.ObjectClusterSensorName.EULER_9DOF_YAW = "Euler_9DOF_YAW";
+		Shimmer2.ObjectClusterSensorName.EULER_9DOF_PITCH = "Euler_9DOF_PITCH";
+		Shimmer2.ObjectClusterSensorName.EULER_9DOF_ROLL = "Euler_9DOF_Roll";
 		Shimmer2.ObjectClusterSensorName.HEART_RATE = "Heart_Rate"; //for the heart rate strap now no longer sold
-		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_A = "Axis Angle A";
-		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_X = "Axis Angle X";
-		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Y = "Axis Angle Y";
-		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_Z = "Axis Angle Z";
+		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_6DOF_A = "Axis Angle A 6DOF";
+		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_6DOF_X = "Axis Angle X 6DOF";
+		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y = "Axis Angle Y 6DOF";
+		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z = "Axis Angle Z 6DOF";
+		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A = "Axis Angle A 9DOF";
+		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X = "Axis Angle X 9DOF";
+		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y = "Axis Angle Y 9DOF";
+		Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Z = "Axis Angle Z 9DOF";
+
+	;
+
 	}
 	
 
@@ -1166,6 +1171,8 @@ public class Configuration {
 		
 		//GUI AND EXPORT CHANNELS
 		public static class ObjectClusterSensorName{
+			public static String EULER_9DOF_Y;
+			public static String EULER_9DOF_Z;
 			public static final String SHIMMER = "Shimmer";
 			public static final String PACKET_RECEPTION_RATE_CURRENT = "Packet_Reception_Rate_Current";
 			public static final String PACKET_RECEPTION_RATE_TRIAL = "Packet_Reception_Rate_Trial";
@@ -1315,15 +1322,26 @@ public class Configuration {
 			public static String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W"; 
 			public static String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X"; 
 			public static String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y"; 
-			public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z"; 
-			public static String EULER_6DOF_A = "Euler_6DOF_A"; 
-			public static String EULER_6DOF_X = "Euler_6DOF_X"; 
-			public static String EULER_6DOF_Y = "Euler_6DOF_Y"; 
-			public static String EULER_6DOF_Z = "Euler_6DOF_Z"; 
-			public static String EULER_9DOF_A = "Euler_9DOF_A"; 
-			public static String EULER_9DOF_X = "Euler_9DOF_X"; 
-			public static String EULER_9DOF_Y = "Euler_9DOF_Y"; 
-			public static String EULER_9DOF_Z = "Euler_9DOF_Z"; 
+			public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
+			
+			//axis angle 
+			public static String AXIS_ANGLE_6DOF_A = "Axis_Angle_6DOF_A"; 
+			public static String AXIS_ANGLE_6DOF_X = "Axis_Angle_6DOF_X"; 
+			public static String AXIS_ANGLE_6DOF_Y = "Axis_Angle_6DOF_Y"; 
+			public static String AXIS_ANGLE_6DOF_Z = "Axis_Angle_6DOF_Z"; 
+			public static String AXIS_ANGLE_9DOF_A = "Axis_Angle_9DOF_A"; 
+			public static String AXIS_ANGLE_9DOF_X = "Axis_Angle_9DOF_X"; 
+			public static String AXIS_ANGLE_9DOF_Y = "Axis_Angle_9DOF_Y"; 
+			public static String AXIS_ANGLE_9DOF_Z = "Axis_Angle_9DOF_Z"; 
+			
+			//Euler
+			public static String EULER_6DOF_YAW = "Euler_6DOF_Yaw"; 
+			public static String EULER_6DOF_PITCH = "Euler_6DOF_Pitch"; 
+			public static String EULER_6DOF_ROLL = "Euler_6DOF_Roll"; 
+			public static String EULER_9DOF_YAW = "Euler_9DOF_Yaw"; 
+			public static String EULER_9DOF_PITCH = "Euler_9DOF_Pitch"; 
+			public static String EULER_9DOF_ROLL = "Euler_9DOF_Roll"; 
+			
 			//TODO: axis angle 9DOF vs 6DOF??
 			public static String AXIS_ANGLE_A = "Axis_Angle_A"; 
 			public static String AXIS_ANGLE_X = "Axis_Angle_X"; 
@@ -1678,120 +1696,120 @@ public class Configuration {
 							CHANNEL_UNITS.BEATS_PER_MINUTE,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
 			
-			//TODO move to OrientationModule?
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
-							DatabaseChannelHandles.QUARTENION_W_6DOF,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
-							DatabaseChannelHandles.QUARTENION_X_6DOF,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
-							DatabaseChannelHandles.QUARTENION_Y_6DOF,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
-							DatabaseChannelHandles.QUARTENION_Z_6DOF,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
-							DatabaseChannelHandles.QUARTENION_W_9DOF,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
-							DatabaseChannelHandles.QUARTENION_X_9DOF,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
-							DatabaseChannelHandles.QUARTENION_Y_9DOF,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
-							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
-							DatabaseChannelHandles.QUARTENION_Z_9DOF,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-						
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
-							DatabaseChannelHandles.EULER_6DOF_A,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
-							DatabaseChannelHandles.EULER_6DOF_X,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
-							DatabaseChannelHandles.EULER_6DOF_Y,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
-							DatabaseChannelHandles.EULER_6DOF_Z,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
-							DatabaseChannelHandles.EULER_9DOF_A,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
-							DatabaseChannelHandles.EULER_9DOF_X,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
-							DatabaseChannelHandles.EULER_9DOF_Y,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
-					new ChannelDetails(
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
-							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
-							DatabaseChannelHandles.EULER_9DOF_Z,
-							CHANNEL_UNITS.NO_UNITS,
-							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			//TODO move to OrientationModule?
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
+//							DatabaseChannelHandles.QUARTENION_W_6DOF,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
+//							DatabaseChannelHandles.QUARTENION_X_6DOF,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
+//							DatabaseChannelHandles.QUARTENION_Y_6DOF,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
+//							DatabaseChannelHandles.QUARTENION_Z_6DOF,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
+//							DatabaseChannelHandles.QUARTENION_W_9DOF,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
+//							DatabaseChannelHandles.QUARTENION_X_9DOF,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
+//							DatabaseChannelHandles.QUARTENION_Y_9DOF,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
+//							DatabaseChannelHandles.QUARTENION_Z_9DOF,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//						
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
+//							DatabaseChannelHandles.EULER_6DOF_A,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
+//							DatabaseChannelHandles.EULER_6DOF_X,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
+//							DatabaseChannelHandles.EULER_6DOF_Y,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
+//							DatabaseChannelHandles.EULER_6DOF_Z,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
+//							DatabaseChannelHandles.EULER_9DOF_A,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
+//							DatabaseChannelHandles.EULER_9DOF_X,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
+//							DatabaseChannelHandles.EULER_9DOF_Y,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
+//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
+//					new ChannelDetails(
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
+//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
+//							DatabaseChannelHandles.EULER_9DOF_Z,
+//							CHANNEL_UNITS.NO_UNITS,
+//							Arrays.asList(CHANNEL_TYPE.CAL)));
 
 			mChannelMapRef = Collections.unmodifiableMap(aMap);
 	    }

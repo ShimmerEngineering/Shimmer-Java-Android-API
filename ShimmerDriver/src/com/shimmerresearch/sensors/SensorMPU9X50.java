@@ -393,7 +393,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	//--------- Bluetooth commands end --------------
 	
 	//--------- Configuration options start --------------
-	public static final String[] ListofGyroRange = {"+/- 250dps","+/- 0dps","+/- 1000dps","+/- 2000dps"};
+	public static final String[] ListofGyroRange = {"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"};
 	public static final Integer[] ListofMPU9150GyroRangeConfigValues = {0,1,2,3};
 	
 	public static final String[] ListofMPU9150AccelRange = {"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
