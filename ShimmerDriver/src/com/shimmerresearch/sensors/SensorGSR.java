@@ -60,6 +60,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	public class GuiLabelConfig{
 		public static final String GSR_RANGE = "GSR Range";
+		public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
 	}
 
 	
@@ -435,7 +436,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		// TODO Auto-generated method stub
 		ActionSetting actionSetting = new ActionSetting(commType);
 		switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+			case(GuiLabelConfig.GSR_RANGE):
 				if (commType == COMMUNICATION_TYPE.BLUETOOTH){
 					
 				} else if (commType == COMMUNICATION_TYPE.DOCK){

@@ -51,11 +51,13 @@ import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.AbstractSensor;
+import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
+import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.algorithms.Orientation3DObject;
 
 /**
@@ -7141,7 +7143,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					//XXX-RS-LSM-SensorClass?
 					int nonStandardIndex = -1;
-			        if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)) {
+			        if(stringKey.equals(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)) {
 			        	if(isLSM303DigitalAccelLPM()) {
 							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM;
 			        	}
@@ -10618,7 +10620,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel) {
 		Object returnValue = null;
 		
-        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
+        if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass? 
         		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
         		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);
@@ -10655,13 +10657,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					returnValue = false;
 				}
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM)://XXX-RS-LSM-SensorClass? 
 				returnValue = isLSM303DigitalAccelLPM();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM):
 				returnValue = checkLowPowerGyro();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM)://XXX-RS-LSM-SensorClass? 
 				returnValue = checkLowPowerMag();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
@@ -10670,22 +10672,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
 //				returnValue = isInternalExpPower();
 //	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP):
 				returnValue = isMPU9150DMP();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL):
 				returnValue = isMPLEnable();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
 				returnValue = isMPLSensorFusion();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
 				returnValue = isMPLGyroCalTC();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
 				returnValue = isMPLVectCompCal();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
 				returnValue = isMPLMagDistCal();
 	        	break;
 
@@ -10694,15 +10696,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = getBluetoothBaudRate();
 	        	break;
     	
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE)://XXX-RS-LSM-SensorClass? 
 				returnValue = getAccelRange();
 	        	break;
 	        
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE):
 				returnValue = getGyroRange();
 	        	break;
 	
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE)://XXX-RS-LSM-SensorClass? 
 				//TODO check below and commented out code
 				returnValue = getMagRange();
 			
@@ -10711,11 +10713,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    							else cmBx.setSelectedIndex(getMagRange()-1);
 	    		break;
 			
-			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
 				returnValue = getPressureResolution();
 	    		break;
 	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+			case(SensorGSR.GuiLabelConfig.GSR_RANGE):
 				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
 	        	break;
 	        	
@@ -10728,7 +10730,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//consolePrintLn("Get " + configValue);
 	        	break;
 	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)://XXX-RS-LSM-SensorClass? 
 				int configValue = getLSM303DigitalAccelRate(); 
 				 
 	        	if(!isLSM303DigitalAccelLPM()) {
@@ -10744,23 +10746,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = configValue;
 	    		break;
 	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE)://XXX-RS-LSM-SensorClass? 
 				returnValue = getLSM303MagRate();
 	        	break;
 
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE):
 				returnValue = getMPU9150AccelRange();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
 				returnValue = getMPU9150MotCalCfg();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF):
 				returnValue = getMPU9150LPF();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE):
 				returnValue = getMPU9150MPLSamplingRate();
         		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE):
 				returnValue = getMPU9150MagSamplingRate();
             	break;
             	
@@ -10789,13 +10791,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
 //				returnValue = getInternalExpPower();
 //            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION):
 				returnValue = getPpgAdcSelectionGsrBoard();
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION):
 				returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION):
 				returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
 	    		break;
             	
@@ -10818,30 +10820,30 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					return 0;
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
-					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE);
+					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE);
+					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE);
+					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE);
 				}
 				break;
 			case(AbstractSensor.GuiLabelConfigCommon.RATE):
 				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
-					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE);
+					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-					return getConfigValueUsingConfigLabel(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE);
+					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE);
 				}
 				break;
 
@@ -10884,11 +10886,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
 	        	returnValue = Integer.toString(getSyncBroadcastInterval());
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE):
 				returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
 //    		    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE_HZ):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE_HZ):
 				returnValue = getMPU9150GyroAccelRateInHz();
 				break;
 	        	
@@ -10934,13 +10936,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setLowPowerGyro((boolean)valueToSet);
 				setLowPowerMag((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM)://XXX-RS-LSM-SensorClass? 
 				setLowPowerAccelWR((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM):
 				setLowPowerGyro((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_LPM)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM)://XXX-RS-LSM-SensorClass? 
 				setLowPowerMag((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
@@ -10950,22 +10952,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	setInternalExpPower((boolean)valueToSet);
 	        	break;
         	
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP):
             	setMPU9150DMP((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL):
             	setMPLEnable((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
             	setMPLSensorFusion((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
             	setMPLGyroCalTC((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
             	setMPLVectCompCal((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
             	setMPLMagDistCal((boolean)valueToSet);
 	        	break;
 
@@ -10974,23 +10976,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setBluetoothBaudRate((int)valueToSet);
 	        	break;
 		        	
-    		case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE)://XXX-RS-LSM-SensorClass? 
+    		case(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE)://XXX-RS-LSM-SensorClass? 
 				setDigitalAccelRange((int)valueToSet);
 	        	break;
 	        
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE):
 	        	setMPU9150GyroRange((int)valueToSet);
 	        	break;
 	
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RANGE)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE)://XXX-RS-LSM-SensorClass? 
 				setLSM303MagRange((int)valueToSet);
 	    		break;
 			
-			case(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION):
+			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
 				setPressureResolution((int)valueToSet);
 	    		break;
 	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE):
+			case(SensorGSR.GuiLabelConfig.GSR_RANGE):
 	    		setGSRRange((int)valueToSet);
 	        	break;
 	        	
@@ -11004,27 +11006,27 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//consolePrintLn("after set " + getExGGain());
 	        	break;
 				
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)://XXX-RS-LSM-SensorClass? 
 				setLSM303DigitalAccelRate((int)valueToSet);
 	    		break;
 	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_MAG_RATE)://XXX-RS-LSM-SensorClass? 
+			case(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE)://XXX-RS-LSM-SensorClass? 
 				setLSM303MagRate((int)valueToSet);
 	        	break;
 	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE):
 				setMPU9150AccelRange((int)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
 				setMPU9150MotCalCfg((int)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF):
 				setMPU9150LPF((int)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE):
 				setMPU9150MPLSamplingRate((int)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE):
 				setMPU9150MagSamplingRate((int)valueToSet);
 	        	break;
 	        
@@ -11058,13 +11060,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
 				setInternalExpPower((int)valueToSet);
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION):
 				setPpgAdcSelectionGsrBoard((int)valueToSet);
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION):
 				setPpg1AdcSelectionProto3DeluxeBoard((int)valueToSet);
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION):
 				setPpg2AdcSelectionProto3DeluxeBoard((int)valueToSet);
 	    		break;
 	    	//GQ
@@ -11158,7 +11160,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
         		
         		returnValue = Integer.toString(getSyncBroadcastInterval());
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE):
             	double bufDouble = 4.0; // Minimum = 4Hz
             	if(((String)valueToSet).isEmpty()) {
             		bufDouble = 4.0;
@@ -11190,7 +11192,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        	break;
 		}
 		
-        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass?
+        if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))//XXX-RS-LSM-SensorClass?
         		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
         		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);

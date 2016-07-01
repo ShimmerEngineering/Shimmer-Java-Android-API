@@ -822,15 +822,15 @@ public class Configuration {
 			public static final String SINGLE_TOUCH_START = "Single Touch Start";
 			public static final String EXPERIMENT_MASTER_SHIMMER = "Master Shimmer";
 			public static final String EXPERIMENT_SYNC_WHEN_LOGGING = "Sync When Logging";
-
-			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE;
-			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE;
-			public static final String LSM303DLHC_MAG_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE;
-			public static final String LSM303DLHC_MAG_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE;
+//
+//			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE;
+//			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE;
+//			public static final String LSM303DLHC_MAG_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE;
+//			public static final String LSM303DLHC_MAG_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE;
 			
-			public static final String PRESSURE_RESOLUTION =  SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION;
-			
-			public static final String GSR_RANGE = SensorGSR.GuiLabelConfig.GSR_RANGE;
+//			public static final String PRESSURE_RESOLUTION =  SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION;
+//			
+//			public static final String GSR_RANGE = SensorGSR.GuiLabelConfig.GSR_RANGE;
 			
 			public static final String EXG_RESOLUTION = SensorEXG.GuiLabelConfig.EXG_RESOLUTION;
 			public static final String EXG_GAIN = SensorEXG.GuiLabelConfig.EXG_GAIN;
@@ -844,39 +844,39 @@ public class Configuration {
 			public static final String EXG_RESPIRATION_DETECT_FREQ = SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ;
 			public static final String EXG_RESPIRATION_DETECT_PHASE = SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
 
-			public static final String MPU9150_GYRO_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE;
-			public static final String MPU9150_GYRO_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE;
-			public static final String MPU9150_GYRO_RATE_HZ = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE_HZ;
+//			public static final String MPU9150_GYRO_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE;
+//			public static final String MPU9150_GYRO_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE;
+//			public static final String MPU9150_GYRO_RATE_HZ = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE_HZ;
+//			
+//			public static final String MPU9150_ACCEL_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE;
+//			public static final String MPU9150_DMP_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL;
+//			public static final String MPU9150_MPL_LPF = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF;
+//			public static final String MPU9150_MPL_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE;
+//			public static final String MPU9150_MAG_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE;
+//
+//			public static final String MPU9150_DMP = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP;
+//			public static final String MPU9150_MPL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL;
+//			public static final String MPU9150_MPL_9DOF_SENSOR_FUSION = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION;
+//			public static final String MPU9150_MPL_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL;
+//			public static final String MPU9150_MPL_VECTOR_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL;
+//			public static final String MPU9150_MPL_MAG_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL;
+//
+//			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM;
+//			
+//			public static final String MPU9150_GYRO_LPM = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM;
+//			
+//			public static final String LSM303DLHC_MAG_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM;
 			
-			public static final String MPU9150_ACCEL_RANGE = SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE;
-			public static final String MPU9150_DMP_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL;
-			public static final String MPU9150_MPL_LPF = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF;
-			public static final String MPU9150_MPL_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE;
-			public static final String MPU9150_MAG_RATE = SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE;
-
-			public static final String MPU9150_DMP = SensorMPU9X50.GuiLabelConfig.MPU9150_DMP;
-			public static final String MPU9150_MPL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL;
-			public static final String MPU9150_MPL_9DOF_SENSOR_FUSION = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION;
-			public static final String MPU9150_MPL_GYRO_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL;
-			public static final String MPU9150_MPL_VECTOR_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL;
-			public static final String MPU9150_MPL_MAG_CAL = SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL;
-
-			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM;
-			
-			public static final String MPU9150_GYRO_LPM = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM;
-			
-			public static final String LSM303DLHC_MAG_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM;
-			
-			public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION;
-			public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION;
-			public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION;
-			
-			public static final String MPU9150_GYRO_DEFAULT_CALIB = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_DEFAULT_CALIB;
-			
-			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB;
-			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB;
-
-			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = SensorKionixKXRB52042.GuiLabelConfig.KXRB8_2042_ACCEL_DEFAULT_CALIB;
+//			public static final String PPG_ADC_SELECTION =  SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION;
+//			public static final String PPG1_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION;
+//			public static final String PPG2_ADC_SELECTION = SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION;
+//			
+//			public static final String MPU9150_GYRO_DEFAULT_CALIB = SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_DEFAULT_CALIB;
+//			
+//			public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB;
+//			public static final String LSM303DLHC_MAG_DEFAULT_CALIB = SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB;
+//
+//			public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = SensorKionixKXRB52042.GuiLabelConfig.KXRB8_2042_ACCEL_DEFAULT_CALIB;
 
 			public static final String TCX0 = "TCX0";
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
@@ -1936,8 +1936,8 @@ public class Configuration {
 			}
 			
 //			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.GSR.ordinal()).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
-			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION);
-			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION);
 			
 	        mSensorGroupingMapRef = Collections.unmodifiableMap(aMap);
 	    }
@@ -1992,19 +1992,20 @@ public class Configuration {
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
 			
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
-					new ConfigOptionDetailsSensor(SensorLSM303.ListofAccelRange, 
-							SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+//			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, 
+//					new ConfigOptionDetailsSensor(SensorLSM303.ListofAccelRange, 
+//							SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,SensorLSM303.configOptionAccelRange);
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE,SensorLSM303.configOptionAccelRate);
+//			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
+//					new ConfigOptionDetailsSensor(SensorLSM303.ListofLSM303DLHCAccelRate, 
+//							SensorLSM303.ListofLSM303DLHCAccelRateConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-					new ConfigOptionDetailsSensor(SensorLSM303.ListofLSM303DLHCAccelRate, 
-							SensorLSM303.ListofLSM303DLHCAccelRateConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-			//XXX-RS-LSM-SensorClass? 
-			aMap.get(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpm);
-			//XXX-RS-LSM-SensorClass? 
-			aMap.get(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues);
+//			aMap.get(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpm);
+//			//XXX-RS-LSM-SensorClass? 
+//			aMap.get(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues);
 
 			//XXX-RS-LSM-SensorClass? 
 //			if(mLowPowerAccelWR) {
@@ -2020,36 +2021,39 @@ public class Configuration {
 //												ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 //			}
 			
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofGyroRange, 
-											Configuration.Shimmer3.ListofMPU9150GyroRangeConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RANGE, 
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofGyroRange, 
+//											Configuration.Shimmer3.ListofMPU9150GyroRangeConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE, SensorMPU9X50.configOptionMpu9150GyroRange);
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE, 
-					new ConfigOptionDetailsSensor(SensorLSM303.ListofMagRange, 
-							SensorLSM303.ListofMagRangeConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+//			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE, 
+//					new ConfigOptionDetailsSensor(SensorLSM303.ListofMagRange, 
+//							SensorLSM303.ListofMagRangeConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE, 
-					new ConfigOptionDetailsSensor(SensorLSM303.ListofLSM303DLHCMagRate, 
-							SensorLSM303.ListofLSM303DLHCMagRateConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, SensorBMP180.configOptionPressureResolution);
+//			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE, 
+//					new ConfigOptionDetailsSensor(SensorLSM303.ListofLSM303DLHCMagRate, 
+//							SensorLSM303.ListofLSM303DLHCMagRateConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RANGE, SensorLSM303.configOptionMagRange);
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_RATE, SensorLSM303.configOptionMagRate);
+			aMap.put(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION, SensorBMP180.configOptionPressureResolution);
 //			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PRESSURE_RESOLUTION, 
 //					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofPressureResolution, 
 //											Configuration.Shimmer3.ListofPressureResolutionConfigValues, 
 //											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 //											CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofGSRRange, 
-											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
-			
+//			aMap.put(SensorGSR.GuiLabelConfig.GSR_RANGE, 
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofGSRRange, 
+//											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+			aMap.put(SensorGSR.GuiLabelConfig.GSR_RANGE, SensorGSR.configOptionGsrRange);
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN, 
 					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfExGGain, 
 											Configuration.Shimmer3.ListOfExGGainConfigValues, 
@@ -2114,31 +2118,37 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, Configuration.Shimmer3.ListOfExGRespirationDetectPhase64khzConfigValues);
 			
 			//MPL Options
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150AccelRange, 
-											Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
-											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
-											Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150MplRate, 
-											Configuration.Shimmer3.ListofMPU9150MplRateConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150MagRate, 
-											Configuration.Shimmer3.ListofMPU9150MagRateConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_ACCEL_RANGE, 
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150AccelRange, 
+//											Configuration.Shimmer3.ListofMPU9150AccelRangeConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE,SensorMPU9X50.configOptionMpu9150AccelRange);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL, SensorMPU9X50.configOptionMpu9150DmpGyroCal);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF, SensorMPU9X50.configOptionMpu9150MplLpf);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE, SensorMPU9X50.configOptionMpu9150MplRate);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE, SensorMPU9X50.configOptionMpu9150MagRate);
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP_GYRO_CAL, 
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150MplCalibrationOptions, 
+//											Configuration.Shimmer3.ListofMPU9150MplCalibrationOptionsConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_LPF, 
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150MplLpfOptions, 
+//											Configuration.Shimmer3.ListofMPU9150MplLpfOptionsConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_RATE, 
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150MplRate, 
+//											Configuration.Shimmer3.ListofMPU9150MplRateConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MAG_RATE, 
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofMPU9150MagRate, 
+//											Configuration.Shimmer3.ListofMPU9150MagRateConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
 
 		    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
 		    	      new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfOnOff, 
@@ -2146,22 +2156,22 @@ public class Configuration {
 				    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 			
 			//MPL CheckBoxes
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_DMP, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_GYRO_CAL, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_MPL_MAG_CAL, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP, SensorMPU9X50.configOptionMpu9150Dmp); 
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL, SensorMPU9X50.configOptionMpu9150Mpl);
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION, SensorMPU9X50.configOptionMpu9150Mpl9DofSensorFusion); 
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL, SensorMPU9X50.configOptionMpu9150MplGyroCal);
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL, SensorMPU9X50.configOptionMpu9150MplVectorCal); 
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL, SensorMPU9X50.configOptionMpu9150MplMagCal);
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
 			
 			//General Config
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_RATE, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE, SensorMPU9X50.configOptionMpu9150GyroRate); 
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
@@ -2175,10 +2185,10 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.MPU9150_GYRO_LPM, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM,SensorLSM303.configOptionAccelLpm); 
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM, SensorMPU9X50.configOptionMpu9150GyroLpm);
+//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			//XXX-RS-LSM-SensorClass? 
 			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_MAG_LPM, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
@@ -2187,9 +2197,9 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION, SensorPPG.configOptionPpgAdcSelection);
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION, SensorPPG.configOptionPpg1AdcSelection);
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION, SensorPPG.configOptionPpg2AdcSelection);
+			aMap.put(SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION, SensorPPG.configOptionPpgAdcSelection);
+			aMap.put(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION, SensorPPG.configOptionPpg1AdcSelection);
+			aMap.put(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION, SensorPPG.configOptionPpg2AdcSelection);
 	        
 	        mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
 	    }
@@ -2260,13 +2270,13 @@ public class Configuration {
 		}
 		
 		public class GuiLabelConfig{
-			public static final String SAMPLING_RATE_DIVIDER_VBATT = "VBATT Divider";
-			public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
+			public static final String SAMPLING_RATE_DIVIDER_VBATT = SensorBattVoltage.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT; //"VBATT Divider";
+			public static final String SAMPLING_RATE_DIVIDER_GSR = SensorGSR.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR; //"GSR Divider";
 			public static final String SAMPLING_RATE_DIVIDER_PPG = SensorPPG.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG; //"PPG Divider";
 			public static final String SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL = "LSM303DLHC Divider"; //XXX-RS-LSM-SensorClass?
 			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE;
 			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE;
-			public static final String GSR_RANGE = "GSR Range";
+			public static final String GSR_RANGE = SensorGSR.GuiLabelConfig.GSR_RANGE; // "GSR Range";
 			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM;
 			public static final String SAMPLING_RATE_DIVIDER_BEACON = "Beacon Divider";
 			
@@ -2283,7 +2293,7 @@ public class Configuration {
 		
 		public static class CompatibilityInfoForMaps{
 			// These can be used to enable/disble GUI options depending on what HW, FW, Expansion boards versions are present
-			private static final ShimmerVerObject svoAnyIntExpBoardAndFw = 			new ShimmerVerObject(HW_ID.SHIMMER_GQ_BLE,FW_ID.GQ_BLE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			private static final ShimmerVerObject svoAnyIntExpBoardAndFw = new ShimmerVerObject(HW_ID.SHIMMER_GQ_BLE,FW_ID.GQ_BLE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(svoAnyIntExpBoardAndFw);
 		}
 		
@@ -2396,18 +2406,19 @@ public class Configuration {
 	//		aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
 	//				new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
 	//						Configuration.ShimmerGQ.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
-	
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,   //XXX-RS-LSM-SensorClass?
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofAccelRange, 
-											Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 			
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, //XXX-RS-LSM-SensorClass?
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-											Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);     //XXX-RS-LSM-SensorClass?
-			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues); //XXX-RS-LSM-SensorClass?
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, SensorLSM303.configOptionAccelRange);
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,   //XXX-RS-LSM-SensorClass?
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofAccelRange, 
+//											Configuration.Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, SensorLSM303.configOptionAccelRate);
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, //XXX-RS-LSM-SensorClass?
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
+//											Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+//			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm);     //XXX-RS-LSM-SensorClass?
+//			aMap.get(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE).setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues); //XXX-RS-LSM-SensorClass?
 	
 			
 			//XXX-RS-LSM-SensorClass? 
@@ -2423,13 +2434,13 @@ public class Configuration {
 	//											Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
 	//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 	//		}
-			
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofGSRRange, 
-											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
-			
+			aMap.put(SensorGSR.GuiLabelConfig.GSR_RANGE, SensorGSR.configOptionGsrRange);  
+//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.GSR_RANGE, 
+//					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofGSRRange, 
+//											Configuration.Shimmer3.ListofGSRRangeConfigValues, 
+//											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//											Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+//			
 			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR, 
 					new ConfigOptionDetailsSensor(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
 											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
@@ -2462,7 +2473,7 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
 	
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_LPM,  //XXX-RS-LSM-SensorClass?
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_LPM,  //XXX-RS-LSM-SensorClass?
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
 			
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
