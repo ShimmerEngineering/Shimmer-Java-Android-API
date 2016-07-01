@@ -147,6 +147,10 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 	
 	public boolean isDiagonalFilled(double[][] matrix){
+		if(matrix==null){
+			return false;
+		}
+		
 		boolean diagonalFilled = true;
 		for(int j = 0; j < matrix[1].length; j++){
 			if(matrix[0][j]==0 &&  matrix[1][j]==0 && matrix[2][j]==0){

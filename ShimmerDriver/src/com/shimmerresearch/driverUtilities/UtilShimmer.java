@@ -685,13 +685,16 @@ public class UtilShimmer implements Serializable {
 	}
 
 	public static boolean isAllZeros(double[][] matrix){
+		if(matrix==null){
+			return false;
+		}
+
 		boolean allZeros = true;
-		
 		for(int j = 0; j < matrix[1].length; j++){
 			for(int i = 0; i < matrix.length; i++){
-		if(matrix[j][i]!=0){
-			allZeros = false;
-		}
+				if(matrix[j][i]!=0){
+					return false;
+				}
 			}
 		}
 		return allZeros;
