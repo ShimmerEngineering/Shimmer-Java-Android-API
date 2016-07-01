@@ -62,6 +62,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	transient Object orientationAlgorithm;
 	public boolean quaternionOutput= true;
 	public boolean eulerOutput = false;
+	public boolean axisAngleOutput = false;
 	protected double samplingRate;
 	protected String accelerometerSensor;
 	ORIENTATION_TYPE orientationType;
@@ -373,6 +374,18 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 //	}
 	
 	//trying to split combo box connection
+	
+	
+	public boolean isAxisAngleOutput() {
+		return axisAngleOutput;
+	}
+
+	public void setAxisAngleOutput(boolean axisAngleOutput) {
+		this.axisAngleOutput = axisAngleOutput;
+		checkIfToDisable();
+	}
+	
+	
 	public boolean isEulerOutput() {
 		return eulerOutput;
 	}
