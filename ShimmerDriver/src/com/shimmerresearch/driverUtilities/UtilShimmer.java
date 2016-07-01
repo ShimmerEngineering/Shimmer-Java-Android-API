@@ -683,5 +683,18 @@ public class UtilShimmer implements Serializable {
 		valToNudge = (valToNudge<thresholdLower? thresholdLower:valToNudge);
 		return valToNudge;
 	}
+
+	public static boolean isAllZeros(double[][] matrix){
+		boolean allZeros = true;
+		
+		for(int j = 0; j < matrix[1].length; j++){
+			for(int i = 0; i < matrix.length; i++){
+		if(matrix[j][i]!=0){
+			allZeros = false;
+		}
+			}
+		}
+		return allZeros;
+	}
 	
 }

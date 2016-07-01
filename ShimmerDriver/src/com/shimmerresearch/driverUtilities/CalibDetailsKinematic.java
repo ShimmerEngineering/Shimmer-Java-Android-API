@@ -1,6 +1,7 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +27,9 @@ public class CalibDetailsKinematic implements Serializable {
 	
 	public String mRangeString = "";
 	public int mRangeValue = 0;
-	
+
+	public long mCalibTime = 0;
+
 	//Not Driver related - consider a different approach?
 	public int guiRangeValue = 0;
 	//Not Driver related - consider a different approach?
@@ -68,6 +71,17 @@ public class CalibDetailsKinematic implements Serializable {
 		mCurrentOffsetVector = UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector);
 	}
 	
+	public void setCalibTime(long calibTime){
+		mCalibTime = calibTime;
+	}
+
+	public long getCalibTime(){
+		return mCalibTime;
+	}
+
+	public String getCalibTimeParsed(){
+		return UtilShimmer.convertMilliSecondsToDateString(mCalibTime);
+	}
 	
 	public boolean isCurrentValuesSet(){
 		if(mCurrentAlignmentMatrix!=null && mCurrentSensitivityMatrix!=null && mCurrentOffsetVector!=null){
@@ -112,7 +126,7 @@ public class CalibDetailsKinematic implements Serializable {
 	}
 	
 	public boolean isAlignmentValid(){
-	 if(isAllZeros(mCurrentAlignmentMatrix)){
+	 if(UtilShimmer.isAllZeros(mCurrentAlignmentMatrix)){
 			return false;
 		}else{
 			return true;
@@ -141,22 +155,6 @@ public class CalibDetailsKinematic implements Serializable {
 		}
 		return diagonalFilled;
 	}
-	
-	//TODO to be replaced with MN utility function
-	public boolean isAllZeros(double[][] matrix){
-		boolean allZeros = true;
-		if(matrix!=null){
-			for(int j = 0; j < matrix[1].length; j++){
-				for(int i = 0; i < matrix.length; i++){
-					if(matrix[i][j]!=0){
-						allZeros = false;
-					}
-						}
-					}
-			return allZeros;
-			}
-		return allZeros;
-	}
 
 	public String generateDebugString() {
 		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
@@ -179,4 +177,65 @@ public class CalibDetailsKinematic implements Serializable {
 		}
 		return debugString;
 	}
+
+	public void parseCalParamByteArray(byte[] bufferCalibrationParameters){
+		if(bufferCalibrationParameters.length>21){
+			//TODO pick off 8 byte timestamp and parse
+		}
+		
+		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
+		int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
+		double[] AM=new double[9];
+		for (int i=0;i<9;i++) {
+			AM[i]=((double)formattedPacket[6+i])/100;
+		}
+		double[][] alignmentMatrixMPLMag = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+		double[][] sensitivityMatrixMPLMag = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+		double[][] offsetVectorMPLMag = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+		mCurrentAlignmentMatrix = alignmentMatrixMPLMag; 			
+		mCurrentSensitivityMatrix = sensitivityMatrixMPLMag; 	
+		mCurrentOffsetVector = offsetVectorMPLMag;
+	}
+
+	public byte[] generateCalParamByteArray() {
+		if(isCurrentValuesSet()){
+			return generateCalParamByteArray(mCurrentOffsetVector, mCurrentSensitivityMatrix, mCurrentAlignmentMatrix);
+		}
+		else{
+			return generateCalParamByteArray(mDefaultOffsetVector, mDefaultSensitivityMatrix, mDefaultAlignmentMatrix);
+		}
+	}
+	
+	public byte[] generateCalParamByteArrayWithTimestamp() {
+		byte[] range = ByteBuffer.allocate(1).putLong(mRangeValue).array();
+		byte[] timestamp = ByteBuffer.allocate(8).putLong(mCalibTime).array();
+		byte[] bufferCalibParam = generateCalParamByteArray();
+		
+		byte[] bufferCalibParamWithTimestamp = new byte[range.length + bufferCalibParam.length + timestamp.length];
+		System.arraycopy(range, 0, bufferCalibParamWithTimestamp, 0, range.length);
+		System.arraycopy(timestamp, 0, bufferCalibParamWithTimestamp, range.length, timestamp.length);
+		System.arraycopy(bufferCalibParam, 0, bufferCalibParamWithTimestamp, range.length + timestamp.length, bufferCalibParam.length);
+		return bufferCalibParamWithTimestamp;
+	}
+
+	public static byte[] generateCalParamByteArray(double[][] offsetVector, double[][] sensitivityMatrix, double[][] alignmentMatrix) {
+		byte[] bufferCalibParam = new byte[21];
+		// offsetVector -> buffer offset = 0
+		for (int i=0; i<3; i++) {
+			bufferCalibParam[0+(i*2)] = (byte) ((((int)offsetVector[i][0]) >> 8) & 0xFF);
+			bufferCalibParam[0+(i*2)+1] = (byte) ((((int)offsetVector[i][0]) >> 0) & 0xFF);
+		}
+		// sensitivityMatrix -> buffer offset = 6
+		for (int i=0; i<3; i++) {
+			bufferCalibParam[6+(i*2)] = (byte) ((((int)sensitivityMatrix[i][i]) >> 8) & 0xFF);
+			bufferCalibParam[6+(i*2)+1] = (byte) ((((int)sensitivityMatrix[i][i]) >> 0) & 0xFF);
+		}
+		// alignmentMatrix -> buffer offset = 12
+		for (int i=0; i<3; i++) {
+			bufferCalibParam[12+(i*3)] = (byte) (((int)(alignmentMatrix[i][0]*100)) & 0xFF);
+			bufferCalibParam[12+(i*3)+1] = (byte) (((int)(alignmentMatrix[i][1]*100)) & 0xFF);
+			bufferCalibParam[12+(i*3)+2] = (byte) (((int)(alignmentMatrix[i][2]*100)) & 0xFF);
+		}
+		return bufferCalibParam;
+	}	
 }

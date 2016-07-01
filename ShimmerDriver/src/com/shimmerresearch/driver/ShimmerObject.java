@@ -6851,26 +6851,27 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @return the bytes array containing the LSM303DLHC Accel calibration
 	 */
-	//XXX-RS-LSM-SensorClass?
 	public byte[] generateCalParamLSM303DLHCAccel(){
-		byte[] bufferCalibrationParameters = new byte[21];
-		// offsetVector -> buffer offset = 0
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 8) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 0) & 0xFF);
-		}
-		// sensitivityMatrix -> buffer offset = 6
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 8) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 0) & 0xFF);
-		}
-		// alignmentMatrix -> buffer offset = 12
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixWRAccel[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixWRAccel[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixWRAccel[i][2]*100)) & 0xFF);
-		}
-		return bufferCalibrationParameters;
+		return CalibDetailsKinematic.generateCalParamByteArray(mOffsetVectorWRAccel, mSensitivityMatrixWRAccel, mAlignmentMatrixWRAccel); 
+
+//		byte[] bufferCalibrationParameters = new byte[21];
+//		// offsetVector -> buffer offset = 0
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorWRAccel[i][0]) >> 0) & 0xFF);
+//		}
+//		// sensitivityMatrix -> buffer offset = 6
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixWRAccel[i][i]) >> 0) & 0xFF);
+//		}
+//		// alignmentMatrix -> buffer offset = 12
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixWRAccel[i][0]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixWRAccel[i][1]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixWRAccel[i][2]*100)) & 0xFF);
+//		}
+//		return bufferCalibrationParameters;
 	}
 	
 	/**
@@ -6879,27 +6880,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @return the bytes array containing the Analog Accel Calibration
 	 */
-	//XXX-RS-AA-SensorClass?
 	public byte[] generateCalParamAnalogAccel(){
-		// Analog Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[21];
-		// offsetVector -> buffer offset = 0
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 8) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
-		}
-		// sensitivityMatrix -> buffer offset = 6
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 8) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 0) & 0xFF);
-		}
-		// alignmentMatrix -> buffer offset = 12
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
-		}
-		return bufferCalibrationParameters;
+		return CalibDetailsKinematic.generateCalParamByteArray(mOffsetVectorAnalogAccel, mSensitivityMatrixAnalogAccel, mAlignmentMatrixAnalogAccel); 
+
+//		// Analog Accel Calibration Parameters
+//		byte[] bufferCalibrationParameters = new byte[21];
+//		// offsetVector -> buffer offset = 0
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
+//		}
+//		// sensitivityMatrix -> buffer offset = 6
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 0) & 0xFF);
+//		}
+//		// alignmentMatrix -> buffer offset = 12
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][0]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
+//		}
+//		return bufferCalibrationParameters;
 	}
 	
 	/**
@@ -6909,25 +6911,27 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the bytes array containing the Gyroscope Calibration
 	 */
 	public byte[] generateCalParamGyroscope(){
-		// MPU9150 Gyroscope Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[21];
-		// offsetVector -> buffer offset = 0
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
-		}
-		// sensitivityMatrix -> buffer offset = 6
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
-		}
-		// alignmentMatrix -> buffer offset = 12
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
-		}
-		return bufferCalibrationParameters;
+		return CalibDetailsKinematic.generateCalParamByteArray(mOffsetVectorGyroscope, mSensitivityMatrixGyroscope, mAlignmentMatrixGyroscope); 
+
+//		// MPU9150 Gyroscope Calibration Parameters
+//		byte[] bufferCalibrationParameters = new byte[21];
+//		// offsetVector -> buffer offset = 0
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
+//		}
+//		// sensitivityMatrix -> buffer offset = 6
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
+//			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
+//		}
+//		// alignmentMatrix -> buffer offset = 12
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
+//		}
+//		return bufferCalibrationParameters;
 	}
 	
 	/**
@@ -6936,27 +6940,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @return the bytes array containing the Gyroscope Calibration
 	 */
-	//XXX-RS-LSM-SensorClass?
 	public byte[] generateCalParamLSM303DLHCMag(){
-		// LSM303DLHC Magnetometer Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[21];
-		// offsetVector -> buffer offset = 0
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 8) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 0) & 0xFF);
-		}
-		// sensitivityMatrix -> buffer offset = 6
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 8) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 0) & 0xFF);
-		}
-		// alignmentMatrix -> buffer offset = 12
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][2]*100)) & 0xFF);
-		}
-		return bufferCalibrationParameters;
+		return CalibDetailsKinematic.generateCalParamByteArray(mOffsetVectorMagnetometer, mSensitivityMatrixMagnetometer, mAlignmentMatrixMagnetometer); 
+		
+//		// LSM303DLHC Magnetometer Calibration Parameters
+//		byte[] bufferCalibrationParameters = new byte[21];
+//		// offsetVector -> buffer offset = 0
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorMagnetometer[i][0]) >> 0) & 0xFF);
+//		}
+//		// sensitivityMatrix -> buffer offset = 6
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixMagnetometer[i][i]) >> 0) & 0xFF);
+//		}
+//		// alignmentMatrix -> buffer offset = 12
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][0]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][1]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixMagnetometer[i][2]*100)) & 0xFF);
+//		}
+//		return bufferCalibrationParameters;
 	}
 	
 	/**
@@ -7921,7 +7926,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public boolean isUsingValidGyroParam(){
-		if(!isAllZeros(getAlignmentMatrixGyro()) && !isAllZeros(getSensitivityMatrixGyro())){
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixGyro()) && !UtilShimmer.isAllZeros(getSensitivityMatrixGyro())){
 			return true;
 		}else{
 			return false;
@@ -9722,7 +9727,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public boolean isUsingValidLNAccelParam(){
-		if(!isAllZeros(getAlignmentMatrixAccel()) && !isAllZeros(getSensitivityMatrixAccel())){
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixAccel()) && !UtilShimmer.isAllZeros(getSensitivityMatrixAccel())){
 			return true;
 		}else{
 			return false;
@@ -10009,27 +10014,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	//XXX-RS-LSM-SensorClass?
 	public boolean isUsingValidWRAccelParam(){
-		if(!isAllZeros(getAlignmentMatrixAccel()) && !isAllZeros(getSensitivityMatrixAccel())){
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixAccel()) && !UtilShimmer.isAllZeros(getSensitivityMatrixAccel())){
 			return true;
 		}else{
 			return false;
 		}
 	}
 	
-	public boolean isAllZeros(double[][] matrix){
-		boolean allZeros = true;
-		
-		for(int j = 0; j < matrix[1].length; j++){
-			for(int i = 0; i < matrix.length; i++){
-		if(matrix[j][i]!=0){
-			allZeros = false;
-		}
-			}
-		}
-		return allZeros;
-	}
-	
-
 	//XXX-RS-LSM-SensorClass?
 	public boolean isUsingDefaultMagParam(){
 		return mDefaultCalibrationParametersMag;
@@ -10037,7 +10028,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	//XXX-RS-LSM-SensorClass?
 	public boolean isUsingValidMagParam(){
-		if(!isAllZeros(getAlignmentMatrixMag()) && !isAllZeros(getSensitivityMatrixMag())){
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixMag()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMag())){
 			return true;
 		}else{
 			return false;
