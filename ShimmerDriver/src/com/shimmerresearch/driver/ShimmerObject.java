@@ -1083,6 +1083,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 
 				objectCluster.addData(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,Double.NaN);
 				uncalibratedData[iOffset] = offsetValue;
 				calibratedData[iOffset] = Double.NaN;
 				uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
