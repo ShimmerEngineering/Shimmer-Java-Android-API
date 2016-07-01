@@ -105,7 +105,7 @@ public class Orientation3DObject {
 	public void quaternianToEuler(double q0, double q1, double q2, double q3){
 		roll = Math.atan2(2*(q0*q1 + q2*q3), 1 - 2*(Math.pow(q1,2) + Math.pow(q2,2))) * 180/Math.PI;
 		pitch = Math.asin(2*(q0*q2 - q3*q1)) * 180/Math.PI;
-		yaw = Math.atan2(2*(q0*q3 + q1*q2), 1- 2*(Math.pow(q2,2) + Math.pow(q3,2)) * 180/Math.PI);
+		yaw = Math.atan2(2*(q0*q3 + q1*q2), 1 - 2*(Math.pow(q2,2) + Math.pow(q3,2))) * 180/Math.PI;
 	}
 	
 //	//TODO MN temporary code -> needs testing 
