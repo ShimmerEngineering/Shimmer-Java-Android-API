@@ -1577,6 +1577,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iexg1sta]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iexg1ch1]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iexg1ch2]=CHANNEL_UNITS.NO_UNITS;
+				
+				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
 					double calexg1ch1 = exg1ch1 *(((2.42*1000)/mEXG1CH1GainValue)/(Math.pow(2,23)-1));
 					double calexg1ch2 = exg1ch2 *(((2.42*1000)/mEXG1CH2GainValue)/(Math.pow(2,23)-1));
@@ -1645,6 +1647,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iexg2sta]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iexg2ch2]=CHANNEL_UNITS.NO_UNITS;
+				
+				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
 					double calexg2ch1 = exg2ch1 *(((2.42*1000)/mEXG2CH1GainValue)/(Math.pow(2,23)-1));
 					double calexg2ch2 = exg2ch2 *(((2.42*1000)/mEXG2CH2GainValue)/(Math.pow(2,23)-1));
@@ -1713,6 +1717,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iexg1sta]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iexg1ch1]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iexg1ch2]=CHANNEL_UNITS.NO_UNITS;
+				
+				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
 					double calexg1ch1 = exg1ch1 *(((2.42*1000)/(mEXG1CH1GainValue*2))/(Math.pow(2,15)-1));
 					double calexg1ch2 = exg1ch2 *(((2.42*1000)/(mEXG1CH2GainValue*2))/(Math.pow(2,15)-1));
@@ -1777,6 +1783,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iexg2sta]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iexg2ch2]=CHANNEL_UNITS.NO_UNITS;
+				
+				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
 					double calexg2ch1 = ((exg2ch1)) *(((2.42*1000)/(mEXG2CH1GainValue*2))/(Math.pow(2,15)-1));
 					double calexg2ch2 = ((exg2ch2)) *(((2.42*1000)/(mEXG2CH2GainValue*2))/(Math.pow(2,15)-1));
@@ -2032,12 +2040,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				calibratedDataUnits[iGyroX] = CHANNEL_UNITS.GYRO_CAL_UNIT;
 				calibratedDataUnits[iGyroY] = CHANNEL_UNITS.GYRO_CAL_UNIT;
 				calibratedDataUnits[iGyroZ] = CHANNEL_UNITS.GYRO_CAL_UNIT;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,calibratedData[iGyroX]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,calibratedData[iGyroY]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,calibratedData[iGyroZ]);
 				uncalibratedData[iGyroX] = (double)newPacketInt[iGyroX];
 				uncalibratedData[iGyroY] = (double)newPacketInt[iGyroY];
 				uncalibratedData[iGyroZ] = (double)newPacketInt[iGyroZ];
 				uncalibratedDataUnits[iGyroX] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iGyroY] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iGyroZ] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_X,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iGyroX]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Y,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iGyroY]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_MPU_MPL_Z,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iGyroZ]);
 			}
 
 			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ACCEL_MPU_MPL) > 0)){
@@ -2056,12 +2070,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				calibratedDataUnits[iAccelX] = CHANNEL_UNITS.GRAVITY;
 				calibratedDataUnits[iAccelY] = CHANNEL_UNITS.GRAVITY;
 				calibratedDataUnits[iAccelZ] = CHANNEL_UNITS.GRAVITY;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GRAVITY,calibratedData[iAccelX]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GRAVITY,calibratedData[iAccelY]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GRAVITY,calibratedData[iAccelZ]);
 				uncalibratedData[iAccelX] = (double)newPacketInt[iAccelX];
 				uncalibratedData[iAccelY] = (double)newPacketInt[iAccelX];
 				uncalibratedData[iAccelZ] = (double)newPacketInt[iAccelX];
 				uncalibratedDataUnits[iAccelX] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iAccelY] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iAccelZ] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_X,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iAccelX]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Y,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iAccelY]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.ACCEL_MPU_MPL_Z,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iAccelZ]);
 			}
 
 			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MAG_MPU_MPL) > 0)){
@@ -2074,12 +2094,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				calibratedDataUnits[iMagX] = CHANNEL_UNITS.MAG_CAL_UNIT;
 				calibratedDataUnits[iMagY] = CHANNEL_UNITS.MAG_CAL_UNIT;
 				calibratedDataUnits[iMagZ] = CHANNEL_UNITS.MAG_CAL_UNIT;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,calibratedData[iMagX]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,calibratedData[iMagY]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,calibratedData[iMagZ]);
 				uncalibratedData[iMagX] = (double)newPacketInt[iMagX];
 				uncalibratedData[iMagY] = (double)newPacketInt[iMagY];
 				uncalibratedData[iMagZ] = (double)newPacketInt[iMagZ];
 				uncalibratedDataUnits[iMagX] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iMagY] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iMagZ] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_X,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iMagX]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Y,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iMagY]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MAG_MPU_MPL_Z,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iMagZ]);
 			}
 
 			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_QUAT_6DOF) > 0)){
@@ -2095,6 +2121,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				calibratedDataUnits[iQX] = CHANNEL_UNITS.NO_UNITS;
 				calibratedDataUnits[iQY] = CHANNEL_UNITS.NO_UNITS;
 				calibratedDataUnits[iQZ] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_W,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,calibratedData[iQW]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,calibratedData[iQX]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,calibratedData[iQY]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,calibratedData[iQZ]);
 				uncalibratedData[iQW] = (double)newPacketInt[iQW];
 				uncalibratedData[iQX] = (double)newPacketInt[iQX];
 				uncalibratedData[iQY] = (double)newPacketInt[iQY];
@@ -2102,14 +2132,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iQW] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iQX] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iQY] = CHANNEL_UNITS.NO_UNITS;
-				calibratedDataUnits[iQZ] = CHANNEL_UNITS.NO_UNITS;
+				uncalibratedDataUnits[iQZ] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_W,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iQW]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_X,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iQX]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Y,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iQY]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.QUAT_MPL_6DOF_Z,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iQZ]);
 			}
 			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_TEMPERATURE) > 0)){
 				int iT = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE);
 				calibratedData[iT] = (double)newPacketInt[iT]/Math.pow(2, 16);
 				calibratedDataUnits[iT] = CHANNEL_UNITS.DEGREES_CELSUIS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,calibratedData[iT]);
 				uncalibratedData[iT] = (double)newPacketInt[iT];
 				uncalibratedDataUnits[iT] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iT]);
 			}
 			
 			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_PEDOMETER) > 0)){
@@ -2119,18 +2155,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				calibratedData[iPedoTime] = (double)newPacketInt[iPedoTime];
 				calibratedDataUnits[iPedoCnt] = CHANNEL_UNITS.NO_UNITS;
 				calibratedDataUnits[iPedoTime] = CHANNEL_UNITS.MILLISECONDS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MPL_PEDOM_CNT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,calibratedData[iPedoCnt]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MPL_PEDOM_TIME,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedData[iPedoTime]);
 				uncalibratedData[iPedoCnt] = (double)newPacketInt[iPedoCnt];
 				uncalibratedData[iPedoTime] = (double)newPacketInt[iPedoTime];
 				uncalibratedDataUnits[iPedoCnt] = CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iPedoTime] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MPL_PEDOM_CNT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iPedoCnt]);
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MPL_PEDOM_TIME,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iPedoTime]);
 			}
 			
 			if (((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.MPL_HEADING) > 0)){
 				int iH = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_HEADING);
 				calibratedData[iH] = (double)newPacketInt[iH]/Math.pow(2, 16);
 				calibratedDataUnits[iH] = CHANNEL_UNITS.DEGREES;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MPL_HEADING,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES,calibratedData[iH]);
 				uncalibratedData[iH] = (double)newPacketInt[iH];
 				uncalibratedDataUnits[iH] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MPL_HEADING,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iH]);
 			}
 
 			//TODO: separate out tap dir and cnt to two channels 
@@ -2141,8 +2183,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //				calibratedData[iTapDir] = (double)((newPacketInt[iPedoTime]>>5)&0x07);
 				calibratedData[iTap] = (double)newPacketInt[iTap];
 				calibratedDataUnits[iTap] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,calibratedData[iTap]);
 				uncalibratedData[iTap] = (double)newPacketInt[iTap];
 				uncalibratedDataUnits[iTap] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.TAPDIRANDTAPCNT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iTap]);
 			}
 			
 			//TODO: separate out motion and orientation to two channels
@@ -2151,8 +2195,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int iMotOrient = getSignalIndex(Shimmer3.ObjectClusterSensorName.MOTIONANDORIENT);
 				calibratedData[iMotOrient] = (double)newPacketInt[iMotOrient];
 				calibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MOTIONANDORIENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,calibratedData[iMotOrient]);
 				uncalibratedData[iMotOrient] = (double)newPacketInt[iMotOrient];
 				uncalibratedDataUnits[iMotOrient] = CHANNEL_UNITS.NO_UNITS;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.MOTIONANDORIENT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iMotOrient]);
 			}
 			
 			if ((fwType == FW_TYPE_SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR_FW) > 0){
