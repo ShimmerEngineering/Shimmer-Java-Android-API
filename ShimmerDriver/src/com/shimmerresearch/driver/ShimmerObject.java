@@ -57,6 +57,7 @@ import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
+import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.algorithms.Orientation3DObject;
 
 /**
@@ -10752,13 +10753,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
 //				returnValue = getInternalExpPower();
 //            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION):
 				returnValue = getPpgAdcSelectionGsrBoard();
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION):
 				returnValue = getPpg1AdcSelectionProto3DeluxeBoard();
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION):
 				returnValue = getPpg2AdcSelectionProto3DeluxeBoard();
 	    		break;
             	
@@ -11021,13 +11022,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
 				setInternalExpPower((int)valueToSet);
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION):
 				setPpgAdcSelectionGsrBoard((int)valueToSet);
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION):
 				setPpg1AdcSelectionProto3DeluxeBoard((int)valueToSet);
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+			case(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION):
 				setPpg2AdcSelectionProto3DeluxeBoard((int)valueToSet);
 	    		break;
 	    	//GQ

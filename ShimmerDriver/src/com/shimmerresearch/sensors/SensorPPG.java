@@ -286,7 +286,7 @@ public class SensorPPG extends AbstractSensor {
 			GuiLabelSensors.PPG2_DUMMY,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
 			null,
-			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION),
+			Arrays.asList(GuiLabelConfig.PPG2_ADC_SELECTION),
 			null,
 			true);
 	{
@@ -542,13 +542,13 @@ public class SensorPPG extends AbstractSensor {
 		int buf = 0;
 
 		switch(configLabel){
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION):
+			case(GuiLabelConfig.PPG_ADC_SELECTION):
 				setPpgAdcSelectionGsrBoard((int)valueToSet);
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG1_ADC_SELECTION):
+			case(GuiLabelConfig.PPG1_ADC_SELECTION):
 				setPpg1AdcSelectionProto3DeluxeBoard((int)valueToSet);
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.PPG2_ADC_SELECTION):
+			case(GuiLabelConfig.PPG2_ADC_SELECTION):
 				setPpg2AdcSelectionProto3DeluxeBoard((int)valueToSet);
 	    		break;
 			case(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG):
