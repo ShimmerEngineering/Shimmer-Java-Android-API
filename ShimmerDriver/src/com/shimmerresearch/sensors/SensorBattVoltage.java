@@ -47,8 +47,8 @@ public class SensorBattVoltage extends AbstractSensor{
 	private ShimmerBattStatusDetails shimmerBattStatusDetails = new ShimmerBattStatusDetails();
 	
 	public class GuiLabelConfig{
-		// Not in this class
-	}
+		public static final String SAMPLING_RATE_DIVIDER_VBATT = "VBATT Divider";
+		}
 	
 	public class GuiLabelSensors{
 		public static final String BATTERY = "Battery Voltage";

@@ -300,6 +300,11 @@ public class SensorLSM303 extends AbstractSensor{
 			ListofLSM303DLHCAccelRateConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	{
+		
+		configOptionAccelRate.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpm);
+		configOptionAccelRate.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues);
+	}
 	
 	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
 			ListofLSM303DLHCMagRate, 
@@ -307,11 +312,9 @@ public class SensorLSM303 extends AbstractSensor{
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	
-	public static final ConfigOptionDetailsSensor configOptionAccelRateLpm = new ConfigOptionDetailsSensor(
-			ListofLSM303DLHCAccelRateLpm, 
-			ListofLSM303DLHCAccelRateLpmConfigValues, 
-			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	public static final ConfigOptionDetailsSensor configOptionAccelLpm = new ConfigOptionDetailsSensor(
+			 ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
+	
 	//--------- Configuration options end --------------
 	
 	
@@ -441,7 +444,7 @@ public class SensorLSM303 extends AbstractSensor{
 		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_MAG_RANGE, configOptionMagRange);
 		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_RATE, configOptionAccelRate);
 		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_MAG_RATE, configOptionMagRate);
-		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_LPM, configOptionAccelRateLpm);
+		mConfigOptionsMap.put(GuiLabelConfig.LSM303DLHC_ACCEL_LPM, configOptionAccelLpm);
 	}
 	
 	@Override 
