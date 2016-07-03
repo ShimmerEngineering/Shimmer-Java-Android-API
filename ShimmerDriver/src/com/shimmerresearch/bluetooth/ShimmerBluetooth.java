@@ -1821,11 +1821,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 */
 	private void delayForBtResponse(long millis){
-		try {
-			Thread.sleep(millis);	
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		threadSleep(millis);
 	}
 	
 	/**get accel

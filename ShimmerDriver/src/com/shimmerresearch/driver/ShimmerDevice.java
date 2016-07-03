@@ -2930,6 +2930,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	
+	public void threadSleep(long millis){
+		try {
+			Thread.sleep(millis);	
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 	
 	

@@ -164,7 +164,7 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 		try {
 			byte[] rxBuf = serialPort.readBytes(numBytes, SERIAL_PORT_TIMEOUT);
 			if(this.mIsDebugMode){
-				System.out.println(mUniqueId + "\tSerial Port RX(" + rxBuf.length + ")" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+				consolePrintLn("Serial Port RX(" + rxBuf.length + ")" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
 			}
 			return rxBuf;
 		} catch (SerialPortException e) {
