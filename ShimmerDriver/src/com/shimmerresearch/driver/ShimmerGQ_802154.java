@@ -219,24 +219,22 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 
 	
-	public double calculatePacketLoss(){
-		return calculatePacketLoss(mPacketExpectedCount, mPacketReceivedCount);
-	}
-	
 	public double calculatePacketLoss(long timeDifference, double samplingRate){
 		mPacketExpectedCount = (long) ((double)((timeDifference/1000)*samplingRate));
 		return calculatePacketLoss(mPacketExpectedCount, mPacketReceivedCount);
 	}
-	
+
+	public double calculatePacketLoss(){
+		return calculatePacketLoss(mPacketExpectedCount, mPacketReceivedCount);
+	}
+
 	private double calculatePacketLoss(long packetExpectedCount, long packetReceivedCount){
 		mPacketReceptionRateCurrent = (double)((packetReceivedCount)/(double)packetExpectedCount)*100;
-		mPacketReceptionRateCurrent = limitPercentRange(mPacketReceptionRateCurrent);
+		mPacketReceptionRateCurrent = UtilShimmer.nudgeDouble(mPacketReceptionRateCurrent, 0.0, 100.0);
 		return mPacketReceptionRateCurrent;
 	}
 	
-	private double limitPercentRange(double value) {
-	    return Math.max(0.0, Math.min(value, 100.0));
-	}
+
 	
 //	@Override
 //	protected void createInfoMemLayout(){

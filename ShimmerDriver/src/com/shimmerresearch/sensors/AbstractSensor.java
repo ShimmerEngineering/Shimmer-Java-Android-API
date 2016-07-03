@@ -40,7 +40,8 @@ public abstract class AbstractSensor implements Serializable{
 		TEMPLATE("Template sensor - not a real sensor of course!"),
 		ADC("ADC"),
 		Battery("Battery"),
-		Bridge_Amplifier("Bridge Amplifier");
+		Bridge_Amplifier("Bridge Amplifier"),
+		NONIN_ONYX_II("Nonin Onyx II");
 		
 	    private final String text;
 
@@ -111,15 +112,18 @@ public abstract class AbstractSensor implements Serializable{
     protected ShimmerDevice mShimmerDevice = null;
     
 	
-	public AbstractSensor(ShimmerVerObject svo){
-		mShimmerVerObject = svo;
-		generateSensorMap(svo);
-		generateConfigOptionsMap(svo);
-		generateSensorGroupMapping(svo);
+	public AbstractSensor(SENSORS sensorType, ShimmerVerObject svo){
+		setSensorName(sensorType.toString());
+		if(svo!=null){
+			mShimmerVerObject = svo;
+			generateSensorMap(svo);
+			generateConfigOptionsMap(svo);
+			generateSensorGroupMapping(svo);
+		}
 	}
 
-	public AbstractSensor(ShimmerDevice shimmerDevice) {
-		this(shimmerDevice.getShimmerVerObject());
+	public AbstractSensor(SENSORS sensorType, ShimmerDevice shimmerDevice) {
+		this(sensorType, shimmerDevice.getShimmerVerObject());
 		this.mShimmerDevice  = shimmerDevice;
 	}
 	

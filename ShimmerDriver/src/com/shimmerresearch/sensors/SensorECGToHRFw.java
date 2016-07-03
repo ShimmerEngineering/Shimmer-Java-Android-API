@@ -88,8 +88,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	 * @param svo
 	 */
 	public SensorECGToHRFw(ShimmerVerObject svo) {
-		super(svo);
-		setSensorName(SENSORS.ECG_TO_HR.toString());
+		super(SENSORS.ECG_TO_HR, svo);
 	}
 	
 	@Override

@@ -200,8 +200,7 @@ public class SensorBMP180 extends AbstractSensor {
 	 * @param svo
 	 */
 	public SensorBMP180(ShimmerVerObject svo) {
-		super(svo);
-		setSensorName(SENSORS.BMP180.toString());
+		super(SENSORS.BMP180, svo);
 	}
 	//--------- Constructors for this class end --------------
 	

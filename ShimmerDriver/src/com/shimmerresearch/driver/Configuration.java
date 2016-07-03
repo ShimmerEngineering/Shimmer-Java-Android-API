@@ -805,6 +805,8 @@ public class Configuration {
 			
 			
 			public static final int SHIMMER_ECG_TO_HR_FW = 150;
+			
+			public static final int THIRD_PARTY_NONIN = 1000;
 		}
 
 		// Sensor Options Map

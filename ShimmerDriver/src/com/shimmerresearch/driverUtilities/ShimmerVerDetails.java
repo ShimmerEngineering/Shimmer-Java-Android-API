@@ -39,6 +39,9 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_LR = HW_ID_SR_CODES.SHIMMER_GQ_802154_LR; // Long Range
 		public static final int SHIMMER_GQ_802154_NR = HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
 		public static final int SHIMMER_4_SDK = HW_ID_SR_CODES.SHIMMER_4_SDK;
+
+		//Third party devices
+		public static final int NONIN_ONYX_II = 1000;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;

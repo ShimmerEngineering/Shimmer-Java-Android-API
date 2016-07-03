@@ -183,8 +183,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
     //--------- Constructors for this class start --------------
 	public SensorKionixKXRB52042(ShimmerVerObject svo) {
-		super(svo);
-		setSensorName(SENSORS.KIONIXKXRB52042.toString());
+		super(SENSORS.KIONIXKXRB52042, svo);
 	}
 	//--------- Constructors for this class end --------------
 	

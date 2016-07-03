@@ -425,8 +425,7 @@ public class SensorLSM303 extends AbstractSensor{
     
     //--------- Constructors for this class start --------------
     public SensorLSM303(ShimmerVerObject svo) {
-		super(svo);
-		setSensorName(SENSORS.LSM303.toString());
+		super(SENSORS.LSM303, svo);
 	}
    //--------- Constructors for this class end --------------
 

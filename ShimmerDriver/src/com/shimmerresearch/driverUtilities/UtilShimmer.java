@@ -679,10 +679,12 @@ public class UtilShimmer implements Serializable {
 	}
 
 	public static double nudgeDouble(double valToNudge, double thresholdLower, double thresholdUpper) {
-		valToNudge = (valToNudge>thresholdUpper? thresholdUpper:valToNudge);
-		valToNudge = (valToNudge<thresholdLower? thresholdLower:valToNudge);
-		return valToNudge;
+//		valToNudge = (valToNudge>thresholdUpper? thresholdUpper:valToNudge);
+//		valToNudge = (valToNudge<thresholdLower? thresholdLower:valToNudge);
+//		return valToNudge;
+	    return Math.max(thresholdLower, Math.min(thresholdUpper, 100.0));
 	}
+	
 
 	public static boolean isAllZeros(double[][] matrix){
 		if(matrix==null){

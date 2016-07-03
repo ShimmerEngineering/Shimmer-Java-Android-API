@@ -153,8 +153,7 @@ public class SensorBattVoltage extends AbstractSensor{
     
     //--------- Constructors for this class start --------------  	
 	public SensorBattVoltage(ShimmerVerObject svo) {
-		super(svo);
-		setSensorName(SENSORS.Battery.toString());
+		super(SENSORS.Battery, svo);
 	}
 	 //--------- Constructors for this class end --------------
 	

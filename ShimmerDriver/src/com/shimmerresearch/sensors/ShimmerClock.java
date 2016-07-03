@@ -252,8 +252,7 @@ public class ShimmerClock extends AbstractSensor {
 	//--------- Channel info end --------------
 
 	public ShimmerClock(ShimmerDevice shimmerDevice) {
-		super(shimmerDevice);
-		setSensorName(SENSORS.CLOCK.toString());
+		super(SENSORS.CLOCK, shimmerDevice);
 	}
 
 	@Override
@@ -266,7 +265,7 @@ public class ShimmerClock extends AbstractSensor {
 		if(svo.getFirmwareIdentifier()==FW_ID.GQ_802154){
 			//
 		}
-		else{
+		else if(svo.getFirmwareIdentifier()!=FW_ID.UNKNOWN){
 			if(svo.getFirmwareVersionCode()>=6){
 				channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 			}

@@ -804,8 +804,7 @@ public class SensorEXG extends AbstractSensor{
 	 * @param shimmerDevice
 	 */
 	public SensorEXG(ShimmerDevice shimmerDevice) {
-		super(shimmerDevice);
-		setSensorName(SENSORS.EXG.toString());
+		super(SENSORS.EXG, shimmerDevice);
 	}
 
 	@Override

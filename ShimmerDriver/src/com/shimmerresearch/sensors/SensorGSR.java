@@ -184,8 +184,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	 * @param svo
 	 */
 	public SensorGSR(ShimmerVerObject svo) {
-		super(svo);
-		setSensorName(SENSORS.GSR.toString());
+		super(SENSORS.GSR, svo);
 	}
 	//--------- Constructors for this class end --------------
 

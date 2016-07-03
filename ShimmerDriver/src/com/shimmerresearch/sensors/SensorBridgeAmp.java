@@ -260,8 +260,7 @@ public class SensorBridgeAmp extends AbstractSensor{
 	 * @param svo
 	 */
 	public SensorBridgeAmp(ShimmerVerObject svo) {
-		super(svo);
-		setSensorName(SENSORS.Bridge_Amplifier.toString());
+		super(SENSORS.Bridge_Amplifier, svo);
 	}
 
 	@Override

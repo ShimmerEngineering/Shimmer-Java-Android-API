@@ -1148,8 +1148,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 * @param svo
 	 */
 	public SensorMPU9X50(ShimmerVerObject svo){
-		super(svo);
-		setSensorName(SENSORS.MPU9X50.toString());
+		super(SENSORS.MPU9X50, svo);
 	}
 	
 	

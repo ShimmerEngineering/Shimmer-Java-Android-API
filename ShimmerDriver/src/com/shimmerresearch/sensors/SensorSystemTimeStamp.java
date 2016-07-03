@@ -103,8 +103,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	//--------- Channel info end --------------
 
 	public SensorSystemTimeStamp(ShimmerVerObject svo) {
-		super(svo);
-		setSensorName(SENSORS.SYSTEM_TIMESTAMP.toString());
+		super(SENSORS.SYSTEM_TIMESTAMP, svo);
 	}
 
 	@Override

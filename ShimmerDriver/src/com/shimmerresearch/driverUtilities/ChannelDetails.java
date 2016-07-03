@@ -21,7 +21,7 @@ public class ChannelDetails implements Serializable {
 	/* Channels are Right bit justified unless otherwise stated */
 	public enum CHANNEL_DATA_TYPE{
 		UNKOWN(0, false),
-		UINT8(8, false),
+		UINT8(1, false),
 		UINT12(2, false),
 		UINT16(2, false),
 		UINT24(3, false),

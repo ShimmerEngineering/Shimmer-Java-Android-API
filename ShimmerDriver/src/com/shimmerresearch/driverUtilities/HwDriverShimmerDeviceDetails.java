@@ -12,8 +12,15 @@ public class HwDriverShimmerDeviceDetails {
 		BASICDOCK("Dock"),
 		BASE15("Base15U"),
 		BASE6("Base6U"),
-		SPAN("Span");
+		SPAN("Span"),
 		
+		RN42("RN42"),
+		Shimmer3("Shimmer3"),
+		Shimmer4("Shimmer4"),
+		
+		Lumafit("Lumafit"),
+		NoninOnyxII("Nonin");
+
 		private String deviceLabel = "";
 		
 		DEVICE_TYPE(String deviceLabel){
@@ -164,11 +171,25 @@ public class HwDriverShimmerDeviceDetails {
             		"TOSHIBA", // Manufacturer name
                 };
             }
+            
+	        public static final String SHIMMER3 = "Shimmer3";
+	        public static final String SHIMMER4 = "Shimmer4";
+	        public static final String RN42 = "RN42";
+
             public static final String[] SHIMMER_DEVICE = new String[] {
-        		"Shimmer3",
-        		"Shimmer4",
-        		"RN42",
+            	SHIMMER3,
+            	SHIMMER4,
+            	RN42,
             };
+            
+	        public static final String MANUFACTURER_NONIN = "Nonin";
+	        public static final String MANUFACTURER_LUMAFIT = "Lumafit";
+            
+            public static final String[] THIRD_PARTY_DEVICE = new String[] {
+            	MANUFACTURER_NONIN,
+            	MANUFACTURER_LUMAFIT
+            };
+
         }
         
     }

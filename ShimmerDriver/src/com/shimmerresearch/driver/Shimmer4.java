@@ -444,7 +444,6 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void connected() {
-				// TODO Auto-generated method stub
 				byte[] instructionFW = {LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
 				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionFW);
 				byte[] instructionHW = {LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE};
@@ -453,7 +452,6 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void disconnected() {
-				// TODO Auto-generated method stub
 				setBluetoothRadioState(BT_STATE.DISCONNECTED);
 			}
 
@@ -682,9 +680,10 @@ public class Shimmer4 extends ShimmerDevice {
 		byte[] instructionLED = {LiteProtocolInstructionSet.InstructionsSet.TOGGLE_LED_COMMAND_VALUE};
 		mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionLED);
 	}
-	
+
 	@Override
 	protected void setBluetoothRadioState(BT_STATE state){
+		super.setBluetoothRadioState(state);
 
 		if (state.equals(BT_STATE.CONNECTED)){
 			setIsConnected(true);
@@ -703,9 +702,10 @@ public class Shimmer4 extends ShimmerDevice {
 			setIsInitialised(false);
 			startOperation(BT_STATE.CONNECTING,mNumberOfInfoMemReadsRequired);
 		}
-		CallbackObject callBackObject2 = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE,state, getMacIdFromUart(), getComPort());
-		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject2);
-		mBluetoothRadioState = state;		
+		
+		consolePrintLn("State change: " + mBluetoothRadioState.toString());
+		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, state, getMacIdFromUart(), getComPort());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	
 	/**

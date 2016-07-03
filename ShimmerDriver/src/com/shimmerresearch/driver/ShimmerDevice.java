@@ -1554,7 +1554,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfChannels;
 	}
 
-	public Map<String, ChannelDetails> getListOfEnabledChannelsForStreaming() {
+	public Map<String, ChannelDetails> getMapOfEnabledChannelsForStreaming() {
 		return getMapOfEnabledChannelsForStreaming(null);
 	}
 
@@ -2143,8 +2143,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return false;
 	}
 	
+	//TODO tidy up implementation of below, overwritten and handled differently in Shimmer4, ShimmerPC, NoninOnyxII
 	protected void setBluetoothRadioState(BT_STATE state){
-		
+		mBluetoothRadioState = state;
 	}
 	
 	

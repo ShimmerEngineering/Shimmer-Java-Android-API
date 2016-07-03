@@ -46,32 +46,32 @@ public class SensorPPG extends AbstractSensor {
 	protected int mSamplingDividerPpg = 0;
 	
 	
-	public class SDLogHeaderDerivedSensors{
+	public static class SDLogHeaderDerivedSensors{
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
 		public final static int PPG_12_13 = 1<<2;
 	}
 	
-	public class BTStreamDerivedSensors{
+	public static class BTStreamDerivedSensors{
 		public final static int PPG2_1_14 = 1<<4;
 		public final static int PPG1_12_13 = 1<<3;
 		public final static int PPG_12_13 = 1<<2;
 	}
 	
 
-	public class GuiLabelConfig{
+	public static class GuiLabelConfig{
 		public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
 		public static final String PPG_ADC_SELECTION = "PPG Channel";
 		public static final String PPG1_ADC_SELECTION = "Channel1";
 		public static final String PPG2_ADC_SELECTION = "Channel2";
 	}
 	
-	public class GuiLabelSensorTiles{
+	public static class GuiLabelSensorTiles{
 		public static final String PROTO3_DELUXE_SUPP = "PPG";
 	}
 
 
-	public class GuiLabelSensors{
+	public static class GuiLabelSensors{
 		//BLE
 		public static final String PPG = "PPG";
 		
@@ -88,7 +88,7 @@ public class SensorPPG extends AbstractSensor {
 	}
 
 	 
-	public static class DatabaseChannelHandles{
+	public class DatabaseChannelHandles{
 		public static final String PPG_A12 = "F5437a_PPG_A12";
 		public static final String PPG_A13 = "F5437a_PPG_A13";
 		public static final String PPG1_A12 = "F5437a_PPG1_A12";
@@ -453,8 +453,7 @@ public class SensorPPG extends AbstractSensor {
 //	}
 	
 	public SensorPPG(ShimmerDevice shimmerDevice) {
-		super(shimmerDevice);
-		setSensorName(SENSORS.PPG.toString());
+		super(SENSORS.PPG, shimmerDevice);
 	}
 
 //--------- Constructors for this class end --------------

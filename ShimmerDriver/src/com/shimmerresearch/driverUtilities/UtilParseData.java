@@ -29,20 +29,25 @@ public class UtilParseData {
 			consolePrintLnDebugging("Reversed data:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(data));
 		}
 		
-		//2) a single for loop looping over the required number of bytes
-		long maskToApply = 0;
-		for(int i=0;i<dataType.getNumBytes();i++){
-			//based on old parseData approach -> seems to be working
-			formattedData = (int)((int)(data[i] & 0xFF) | ((int)formattedData << 8));
-			//new -> not working properly
-//			formattedData = (formattedData << 8)  + data[i];
-			//new new -> seems to be working?
-//			formattedData = (formattedData << 8)  | (data[i]&0xFF);
+		if(dataType.getNumBytes()>1){
+			//2) a single for loop looping over the required number of bytes
+			long maskToApply = 0;
+			for(int i=0;i<dataType.getNumBytes();i++){
+				//based on old parseData approach -> seems to be working
+				formattedData = (int)((int)(data[i] & 0xFF) | ((int)formattedData << 8));
+				//new -> not working properly
+//				formattedData = (formattedData << 8)  + data[i];
+				//new new -> seems to be working?
+//				formattedData = (formattedData << 8)  | (data[i]&0xFF);
 
-			maskToApply = (maskToApply << 8) | 0xFF;
+				maskToApply = (maskToApply << 8) | 0xFF;
+			}
+			consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
+			formattedData &= maskToApply;
 		}
-		consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
-		formattedData &= maskToApply;
+		else{
+			formattedData = data[0];
+		}
 
 		//3) an if statement to calculate the twos complement if required
 		if(dataType.isSigned()){

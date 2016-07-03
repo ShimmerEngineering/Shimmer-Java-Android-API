@@ -100,8 +100,7 @@ public class SensorTemplate extends AbstractSensor{
 			 */
 
 			public SensorTemplate(ShimmerVerObject svo) {
-				super(svo);
-				setSensorName(SENSORS.TEMPLATE.toString());
+				super(SENSORS.TEMPLATE, svo);
 			}
 	//--------- Constructors for this class end --------------
 

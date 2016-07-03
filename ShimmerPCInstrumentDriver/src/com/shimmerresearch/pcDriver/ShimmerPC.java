@@ -537,17 +537,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void setBluetoothRadioState(BT_STATE state) {
-		
-		//TODO: below not needed any more?
-//		if (state==STATE.NONE && mIsStreaming==true){
-//			disconnect();
-//		}
-		mBluetoothRadioState = state;
-		
-//		if(mState==BT_STATE.CONNECTED){
-//			mIsConnected = true;
-//			mIsStreaming = false;
-//		}
+		super.setBluetoothRadioState(state);
+
 		if(mBluetoothRadioState==BT_STATE.CONNECTED){
 			mIsInitialised = true;
 			mIsStreaming = false;
@@ -557,14 +548,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		}		
 		else if((mBluetoothRadioState==BT_STATE.DISCONNECTED)
 				||(mBluetoothRadioState==BT_STATE.CONNECTION_LOST)
-//				||(mState==BT_STATE.NONE)
 				||(mBluetoothRadioState==BT_STATE.CONNECTION_FAILED)){
 			setIsConnected(false);
 			mIsStreaming = false;
 			mIsInitialised = false;
 		}
 		
-//		System.out.println("SetState: " + mUniqueID + "\tState:" + mState + "\tisConnected:" + mIsConnected + "\tisInitialised:" + mIsInitialised + "\tisStreaming:" + mIsStreaming);
 		consolePrintLn("State change: " + mBluetoothRadioState.toString());
 
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getBluetoothAddress(), mComPort);
