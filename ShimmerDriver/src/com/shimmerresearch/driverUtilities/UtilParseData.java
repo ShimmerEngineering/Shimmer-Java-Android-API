@@ -45,7 +45,7 @@ public class UtilParseData {
 			consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
 			formattedData &= maskToApply;
 		}
-		else{
+		else if(dataType.getNumBytes()==1){
 			formattedData = data[0];
 		}
 
