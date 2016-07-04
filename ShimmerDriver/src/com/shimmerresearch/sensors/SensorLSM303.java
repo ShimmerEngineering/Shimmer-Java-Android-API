@@ -1456,7 +1456,13 @@ public class SensorLSM303 extends AbstractSensor{
 		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3);
 		return mapOfKinematicSensorCalibration;
 	}
+	@Override
+	public void createLocalCalibMap(Map<Integer, CalibDetailsKinematic> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
+		super.createLocalCalibMap(sensorMapRef, channelMapRef);
+		mCalibMap.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibMapAccelWideRangeShimmer3);
+		mCalibMap.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3);
 
+	}
 
 	private void updateCalibMapAccelWr() {
 		int rangeValue = getAccelRange();

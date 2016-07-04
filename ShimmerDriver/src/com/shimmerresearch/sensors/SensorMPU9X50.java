@@ -1197,12 +1197,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG),
 						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			}
-			else {
+//			else {
 				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.ordinal(), new SensorGroupingDetails(
 						GuiLabelSensorTiles.GYRO,
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			}
+//			}
 
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG.ordinal(), new SensorGroupingDetails(
 					GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG,
@@ -1796,7 +1796,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	        	break;
 			
 			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
-				TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
+				TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = (TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>) valueToSet;
 				setKinematicCalibration(mapOfKinematicSensorCalibration);
 				returnValue = valueToSet;
 	    		break;
@@ -2685,14 +2685,21 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return false;
 	}
 	
-	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
-		mCalibMapGyroShimmer3.putAll(mapOfKinematicSensorCalibration);
+	private void setKinematicCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration) {
+//		mCalibMapGyroShimmer3.putAll(mapOfKinematicSensorCalibration);
 	}
 	
 	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibration() {
-		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
-		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
-		return mapOfKinematicSensorCalibration;
+//		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+//		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
+//		return mapOfKinematicSensorCalibration;
+		return mCalibMap;
+	}
+	
+	@Override
+	public void createLocalCalibMap(Map<Integer, CalibDetailsKinematic> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
+		super.createLocalCalibMap(sensorMapRef, channelMapRef);
+		mCalibMap.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
 	}
 	
 	private void updateCalibMapGyro() {
