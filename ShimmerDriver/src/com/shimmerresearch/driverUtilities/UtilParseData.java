@@ -16,6 +16,11 @@ public class UtilParseData {
 	public static long parseData(byte[] data, CHANNEL_DATA_TYPE dataType, CHANNEL_DATA_ENDIAN dataEndian){
 		long formattedData=0;
 
+		if(dataType==CHANNEL_DATA_TYPE.UNKOWN){
+			consolePrintLnDebugging("Unknown data type!");
+			return formattedData;
+		}
+		
 		consolePrintLnDebugging("Parsing:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(data) + "\twith\t" + dataType + "\t&\t" + dataEndian);
 
 		if(data.length<dataType.getNumBytes()){
