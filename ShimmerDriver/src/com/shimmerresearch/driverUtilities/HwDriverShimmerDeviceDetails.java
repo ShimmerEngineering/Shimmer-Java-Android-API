@@ -1,5 +1,8 @@
 package com.shimmerresearch.driverUtilities;
 
+import com.codeminders.hidapi.HIDDeviceInfo;
+import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
+
 
 /**Holds HW information of a connected SmartDock (used by DeviceInfo)
  * @author Mark Nolan
@@ -19,7 +22,8 @@ public class HwDriverShimmerDeviceDetails {
 		Shimmer4("Shimmer4"),
 		
 		Lumafit("Lumafit"),
-		NoninOnyxII("Nonin");
+		NoninOnyxII("Nonin"),
+		DirectTemp("DirectTemp");
 
 		private String deviceLabel = "";
 		
@@ -236,9 +240,15 @@ public class HwDriverShimmerDeviceDetails {
 	public String mShimmerDrivePath = "";
 	public int mNumberOfSlots = 1;
 	
+	public HIDDeviceInfo mHidDeviceInfo = null;
+	
     public String mFtdiSerialID = "";
 	public SPAN_VERSION mSpanVersion = SPAN_VERSION.UNKNOWN;
-	 
+
+	public HwDriverShimmerDeviceDetails() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public HwDriverShimmerDeviceDetails(String dockAssignedId, String smartDockBSLComPort, String smartDockUARTComPort, String shimmerBSLComPort, String shimmerUARTComPort, String shimmerDrivePath){
 		mDockID = dockAssignedId;
 		mSmartDockFwComPort = smartDockBSLComPort;
@@ -247,11 +257,13 @@ public class HwDriverShimmerDeviceDetails {
 		mShimmerUartComPort = shimmerUARTComPort;
 		mShimmerDrivePath = shimmerDrivePath;
 	}
-
-	public HwDriverShimmerDeviceDetails() {
-		// TODO Auto-generated constructor stub
-	}
 	
+	public HwDriverShimmerDeviceDetails(DEVICE_TYPE deviceType, HIDDeviceInfo hidDeviceInfo) {
+	    this.deviceType = deviceType;
+		mHidDeviceInfo = hidDeviceInfo;
+		mDockID = mHidDeviceInfo.getSerial_number();
+	}
+
 	public void setDeviceType(DEVICE_TYPE deviceType) {
 	    this.deviceType = deviceType;
 //	    dockTypeParsed = DOCK_LABEL[this.deviceType.ordinal()];

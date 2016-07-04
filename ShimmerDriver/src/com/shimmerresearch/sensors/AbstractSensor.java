@@ -41,7 +41,9 @@ public abstract class AbstractSensor implements Serializable{
 		ADC("ADC"),
 		Battery("Battery"),
 		Bridge_Amplifier("Bridge Amplifier"),
-		NONIN_ONYX_II("Nonin Onyx II");
+		
+		NONIN_ONYX_II("Nonin Onyx II"),
+		QTI_DIRECT_TEMP("QTI DirectTemp");
 		
 	    private final String text;
 

@@ -42,6 +42,7 @@ public class ShimmerVerDetails implements Serializable {
 
 		//Third party devices
 		public static final int NONIN_ONYX_II = 1000;
+		public static final int QTI_DIRECT_TEMP = 1001;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerRevisions;

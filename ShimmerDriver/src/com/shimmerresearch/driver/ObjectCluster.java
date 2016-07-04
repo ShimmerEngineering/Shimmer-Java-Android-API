@@ -363,7 +363,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		addUncalData(channelDetails, uncalData, indexKeeper);
 	}
 
-	@Deprecated
 	public void addData(String channelName, String channelType, String units, double data){
 		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data));
 	}
