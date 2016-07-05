@@ -432,7 +432,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	public void incrementIndexKeeper(){
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)){
-			indexKeeper++;
+			if(indexKeeper<mCalData.length){
+				indexKeeper++;
+			}
 		}
 	}
 

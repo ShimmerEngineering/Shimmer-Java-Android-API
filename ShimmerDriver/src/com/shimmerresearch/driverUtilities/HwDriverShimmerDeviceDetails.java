@@ -23,7 +23,7 @@ public class HwDriverShimmerDeviceDetails {
 		
 		Lumafit("Lumafit"),
 		NoninOnyxII("Nonin"),
-		DirectTemp("DirectTemp");
+		QtiDirectTemp("DirectTemp");
 
 		private String deviceLabel = "";
 		

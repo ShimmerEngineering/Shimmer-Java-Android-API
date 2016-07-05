@@ -2153,9 +2153,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mBluetoothRadioState;
 	}
 
+	public void connect(){
+		// TODO Auto-generated method stub
+	}
+
 	public void disconnect() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public boolean ignoreAndDisable(Integer sensorMapKey) {
