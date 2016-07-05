@@ -19,9 +19,13 @@ public class CalibDetailsKinematic extends CalibDetails {
 	public double[][] mCurrentSensitivityMatrix = null; 	
 	public double[][] mCurrentOffsetVector = null;
 
-	public double[][] mDefaultAlignmentMatrix =null;   			
+	public double[][] mDefaultAlignmentMatrix = null;   			
 	public double[][] mDefaultSensitivityMatrix = null;  	
 	public double[][] mDefaultOffsetVector = null; 
+	
+	public double[][] mEmptyAlignmentMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};  			
+	public double[][] mEmptySensitivityMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 	
+	public double[][] mEmptyOffsetVector = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 
 	
 	public String mRangeString = "";
 	public int mRangeValue = 0;
