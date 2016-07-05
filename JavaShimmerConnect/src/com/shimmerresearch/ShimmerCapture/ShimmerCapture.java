@@ -94,6 +94,9 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.sensors.SensorBMP180;
+import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.sensors.SensorLSM303;
+import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
 
@@ -976,18 +979,18 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				for (int i=0; i<samplingFreqS3.length; i++) {
 					comboBoxSamplingRate.addItem(samplingFreqS3[i]);
 				}
-				for (int j=0; j<Configuration.Shimmer3.ListofAccelRange.length; j++) {
-					comboBoxAccelRange.addItem(Configuration.Shimmer3.ListofAccelRange[j]);
+				for (int j=0; j<SensorLSM303.ListofAccelRange.length; j++) {
+					comboBoxAccelRange.addItem(SensorLSM303.ListofAccelRange[j]);
 				}
-				for (int k=0; k<Configuration.Shimmer3.ListofGyroRange.length; k++) {
+				for (int k=0; k<SensorMPU9X50.ListofGyroRange.length; k++) {
 					System.out.print("SetComboBox");
-					comboBoxGyroRange.addItem(Configuration.Shimmer3.ListofGyroRange[k]);
+					comboBoxGyroRange.addItem(SensorMPU9X50.ListofGyroRange[k]);
 				}
-				for (int l=0; l<Configuration.Shimmer3.ListofMagRange.length; l++) {
-					comboBoxMagRange.addItem(Configuration.Shimmer3.ListofMagRange[l]);
+				for (int l=0; l<SensorLSM303.ListofMagRange.length; l++) {
+					comboBoxMagRange.addItem(SensorLSM303.ListofMagRange[l]);
 				}
-				for (int m=0; m<Configuration.Shimmer3.ListofGSRRange.length; m++) {
-					comboBoxGsrRange.addItem(Configuration.Shimmer3.ListofGSRRange[m]);
+				for (int m=0; m<SensorGSR.ListofGSRRange.length; m++) {
+					comboBoxGsrRange.addItem(SensorGSR.ListofGSRRange[m]);
 				}
 				for (int n=0; n<SensorBMP180.ListofPressureResolution.length; n++) {
 					comboBoxPressureResolution.addItem(SensorBMP180.ListofPressureResolution[n]);

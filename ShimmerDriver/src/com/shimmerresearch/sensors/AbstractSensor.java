@@ -14,6 +14,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -111,6 +112,8 @@ public abstract class AbstractSensor implements Serializable{
 	public TreeMap<Integer, SensorDetails> mSensorMap = new TreeMap<Integer, SensorDetails>();
 	public HashMap<String,ConfigOptionDetailsSensor> mConfigOptionsMap = new HashMap<String,ConfigOptionDetailsSensor>();
     public LinkedHashMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
+	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>(); 
+
     protected ShimmerDevice mShimmerDevice = null;
     
 	
@@ -245,6 +248,13 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		return null;
 	}
+	
+//	public void createLocalCalibMap(Map<Integer, CalibDetailsKinematic> sensorMapRef, Map<String, ChannelDetails> channelMapRef){
+//		mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+//		
+//		
+//	}
+	
 	
 	public void createLocalSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
 		mSensorMap = new TreeMap<Integer, SensorDetails>();
