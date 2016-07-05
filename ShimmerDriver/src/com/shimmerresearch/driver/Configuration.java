@@ -476,12 +476,12 @@ public class Configuration {
 		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X = "Axis Angle X";
 		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y = "Axis Angle Y";
 		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z = "Axis Angle Z";
-		Shimmer3.ObjectClusterSensorName.PPG_A12 = "PPG_A12";
-		Shimmer3.ObjectClusterSensorName.PPG_A13 = "PPG_A13";
-		Shimmer3.ObjectClusterSensorName.PPG1_A12 = "PPG1_A12";
-		Shimmer3.ObjectClusterSensorName.PPG1_A13 = "PPG1_A13";
-		Shimmer3.ObjectClusterSensorName.PPG2_A1 = "PPG2_A1";
-		Shimmer3.ObjectClusterSensorName.PPG2_A14 = "PPG2_A14";
+		SensorPPG.ObjectClusterSensorName.PPG_A12 = "PPG_A12";
+		SensorPPG.ObjectClusterSensorName.PPG_A13 = "PPG_A13";
+		SensorPPG.ObjectClusterSensorName.PPG1_A12 = "PPG1_A12";
+		SensorPPG.ObjectClusterSensorName.PPG1_A13 = "PPG1_A13";
+		SensorPPG.ObjectClusterSensorName.PPG2_A1 = "PPG2_A1";
+		SensorPPG.ObjectClusterSensorName.PPG2_A14 = "PPG2_A14";
 		Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 		Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC = "Timestamp_Sync";
 
@@ -939,28 +939,28 @@ public class Configuration {
 		public class GuiLabelSensors{
 //			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
 			
-			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;
+//			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;
 			
-			public static final String EXT_EXP_A7 = SensorADC.GuiLabelSensors.EXT_EXP_A7;
-			public static final String EXT_EXP_A6 = SensorADC.GuiLabelSensors.EXT_EXP_A6;
-			public static final String EXT_EXP_A15 = SensorADC.GuiLabelSensors.EXT_EXP_A15;
-			public static final String INT_EXP_A12 = SensorADC.GuiLabelSensors.INT_EXP_A12;
-			public static final String INT_EXP_A13 = SensorADC.GuiLabelSensors.INT_EXP_A13;
-			public static final String INT_EXP_A14 = SensorADC.GuiLabelSensors.INT_EXP_A14;
-			public static final String INT_EXP_A1 = SensorADC.GuiLabelSensors.INT_EXP_A1;
-			
+//			public static final String EXT_EXP_A7 = SensorADC.GuiLabelSensors.EXT_EXP_A7;
+//			public static final String EXT_EXP_A6 = SensorADC.GuiLabelSensors.EXT_EXP_A6;
+//			public static final String EXT_EXP_A15 = SensorADC.GuiLabelSensors.EXT_EXP_A15;
+//			public static final String INT_EXP_A12 = SensorADC.GuiLabelSensors.INT_EXP_A12;
+//			public static final String INT_EXP_A13 = SensorADC.GuiLabelSensors.INT_EXP_A13;
+//			public static final String INT_EXP_A14 = SensorADC.GuiLabelSensors.INT_EXP_A14;
+//			public static final String INT_EXP_A1 = SensorADC.GuiLabelSensors.INT_EXP_A1;
+//			
 			public static final String BRIDGE_AMPLIFIER = SensorBridgeAmp.GuiLabelSensors.BRIDGE_AMPLIFIER;
 			public static final String RESISTANCE_AMP = SensorBridgeAmp.GuiLabelSensors.RESISTANCE_AMP;
 			public static final String SKIN_TEMP_PROBE = SensorBridgeAmp.GuiLabelSensors.SKIN_TEMP_PROBE;
 			public static final String BRAMP_HIGHGAIN = SensorBridgeAmp.GuiLabelSensors.BRAMP_HIGHGAIN;
 			public static final String BRAMP_LOWGAIN = SensorBridgeAmp.GuiLabelSensors.BRAMP_LOWGAIN;
 
-			public static final String GSR = SensorGSR.GuiLabelSensors.GSR;
+//			public static final String GSR = SensorGSR.GuiLabelSensors.GSR;
 			
 //			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
 //			public static final String MAG = SensorLSM303.GuiLabelSensors.MAG;
 
-			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
+//			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
 
 //			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO;
 //			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU;
@@ -994,15 +994,15 @@ public class Configuration {
 
 			public static final String HIGH_G_ACCEL = "200g Accel";
 
-			public static final String PPG_DUMMY = SensorPPG.GuiLabelSensors.PPG_DUMMY;
-			public static final String PPG_A12 = SensorPPG.GuiLabelSensors.PPG_A12;
-			public static final String PPG_A13 = SensorPPG.GuiLabelSensors.PPG_A13;
-			public static final String PPG1_DUMMY = SensorPPG.GuiLabelSensors.PPG1_DUMMY;
-			public static final String PPG1_A12 = SensorPPG.GuiLabelSensors.PPG1_A12;
-			public static final String PPG1_A13 = SensorPPG.GuiLabelSensors.PPG1_A13;
-			public static final String PPG2_DUMMY = SensorPPG.GuiLabelSensors.PPG2_DUMMY;
-			public static final String PPG2_A1 = SensorPPG.GuiLabelSensors.PPG2_A1;
-			public static final String PPG2_A14 = SensorPPG.GuiLabelSensors.PPG2_A14;
+//			public static final String PPG_DUMMY = SensorPPG.GuiLabelSensors.PPG_DUMMY;
+//			public static final String PPG_A12 = SensorPPG.GuiLabelSensors.PPG_A12;
+//			public static final String PPG_A13 = SensorPPG.GuiLabelSensors.PPG_A13;
+//			public static final String PPG1_DUMMY = SensorPPG.GuiLabelSensors.PPG1_DUMMY;
+//			public static final String PPG1_A12 = SensorPPG.GuiLabelSensors.PPG1_A12;
+//			public static final String PPG1_A13 = SensorPPG.GuiLabelSensors.PPG1_A13;
+//			public static final String PPG2_DUMMY = SensorPPG.GuiLabelSensors.PPG2_DUMMY;
+//			public static final String PPG2_A1 = SensorPPG.GuiLabelSensors.PPG2_A1;
+//			public static final String PPG2_A14 = SensorPPG.GuiLabelSensors.PPG2_A14;
 			
 			public static final String EMG = SensorEXG.GuiLabelSensors.EMG;
 			public static final String ECG = SensorEXG.GuiLabelSensors.ECG;
@@ -1134,12 +1134,12 @@ public class Configuration {
 			public static final String TIMESTAMP_EXPORT = "Timestamp";
 			public static final String OFFSET_TIMESTAMP = "Offset";
 	//		public static final String REAL_TIME_CLOCK = "RealTime"; --> already define for the shimmerCongig Table
-			public static final String PPG_A12 = SensorPPG.DatabaseChannelHandles.PPG_A12;
-			public static final String PPG_A13 = SensorPPG.DatabaseChannelHandles.PPG_A13;
-			public static final String PPG1_A12 = SensorPPG.DatabaseChannelHandles.PPG1_A12;
-			public static final String PPG1_A13 = SensorPPG.DatabaseChannelHandles.PPG1_A13;
-			public static final String PPG2_A1 = SensorPPG.DatabaseChannelHandles.PPG2_A1;
-			public static final String PPG2_A14 = SensorPPG.DatabaseChannelHandles.PPG2_A14;
+//			public static final String PPG_A12 = SensorPPG.DatabaseChannelHandles.PPG_A12;
+//			public static final String PPG_A13 = SensorPPG.DatabaseChannelHandles.PPG_A13;
+//			public static final String PPG1_A12 = SensorPPG.DatabaseChannelHandles.PPG1_A12;
+//			public static final String PPG1_A13 = SensorPPG.DatabaseChannelHandles.PPG1_A13;
+//			public static final String PPG2_A1 = SensorPPG.DatabaseChannelHandles.PPG2_A1;
+//			public static final String PPG2_A14 = SensorPPG.DatabaseChannelHandles.PPG2_A14;
 			
 			/** Calibrated Data Table = Raw Data Table + some processed signals **/
 			public static final String TIMESTAMP_SYSTEM = "System_Timestamp";
@@ -1308,12 +1308,12 @@ public class Configuration {
 
 			public static String EVENT_MARKER = "Event Marker";
 
-			public static String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12;
-			public static String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13;
-			public static String PPG1_A12 = SensorPPG.ObjectClusterSensorName.PPG1_A12;
-			public static String PPG1_A13 = SensorPPG.ObjectClusterSensorName.PPG1_A13;
-			public static String PPG2_A1 = SensorPPG.ObjectClusterSensorName.PPG2_A1;
-			public static String PPG2_A14 = SensorPPG.ObjectClusterSensorName.PPG2_A14;
+//			public static String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12;
+//			public static String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13;
+//			public static String PPG1_A12 = SensorPPG.ObjectClusterSensorName.PPG1_A12;
+//			public static String PPG1_A13 = SensorPPG.ObjectClusterSensorName.PPG1_A13;
+//			public static String PPG2_A1 = SensorPPG.ObjectClusterSensorName.PPG2_A1;
+//			public static String PPG2_A14 = SensorPPG.ObjectClusterSensorName.PPG2_A14;
 
 			//TODO: move to algorithms class (JC).
 			//Algorithms
