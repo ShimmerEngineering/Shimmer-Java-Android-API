@@ -646,8 +646,8 @@ public class Configuration {
 //		public static final String[] ListofPressureResolution = 			SensorBMP180.ListofPressureResolution;
 //		public static final Integer[] ListofPressureResolutionConfigValues = SensorBMP180.ListofPressureResolutionConfigValues;
 //		
-		public static final String[] ListofGSRRange = 						SensorGSR.ListofGSRRange;
-		public static final Integer[] ListofGSRRangeConfigValues = 			SensorGSR.ListofGSRRangeConfigValues;
+//		public static final String[] ListofGSRRange = 						SensorGSR.ListofGSRRange;
+//		public static final Integer[] ListofGSRRangeConfigValues = 			SensorGSR.ListofGSRRangeConfigValues;
 //
 //		public static final String[] ListOfPpgAdcSelection = 				SensorPPG.ListOfPpgAdcSelection;
 //		public static final Integer[] ListOfPpgAdcSelectionConfigValues = 	SensorPPG.ListOfPpgAdcSelectionConfigValues;
@@ -937,7 +937,7 @@ public class Configuration {
 		
 		//GUI SENSORS
 		public class GuiLabelSensors{
-			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
+//			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
 			
 			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;
 			
@@ -957,14 +957,14 @@ public class Configuration {
 
 			public static final String GSR = SensorGSR.GuiLabelSensors.GSR;
 			
-			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
-			public static final String MAG = SensorLSM303.GuiLabelSensors.MAG;
+//			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
+//			public static final String MAG = SensorLSM303.GuiLabelSensors.MAG;
 
 			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
 
-			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO;
-			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU;
-			public static final String MAG_MPU = SensorMPU9X50.GuiLabelSensors.MAG_MPU;
+//			public static final String GYRO = SensorMPU9X50.GuiLabelSensors.GYRO;
+//			public static final String ACCEL_MPU = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU;
+//			public static final String MAG_MPU = SensorMPU9X50.GuiLabelSensors.MAG_MPU;
 
 			public static final String GYRO_MPU_MPL = SensorMPU9X50.GuiLabelSensors.GYRO_MPU_MPL;
 			public static final String ACCEL_MPU_MPL = SensorMPU9X50.GuiLabelSensors.ACCEL_MPU_MPL;
