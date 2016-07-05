@@ -16,6 +16,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
@@ -2685,11 +2686,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return false;
 	}
 	
+	//TODO
 	private void setKinematicCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration) {
 //		mCalibMapGyroShimmer3.putAll(mapOfKinematicSensorCalibration);
 	}
 	
-	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibration() {
+	//TODO
+	private TreeMap<Integer, TreeMap<Integer, CalibDetails>> getKinematicCalibration() {
 //		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
 //		mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
 //		return mapOfKinematicSensorCalibration;

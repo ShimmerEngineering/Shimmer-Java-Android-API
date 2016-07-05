@@ -1,6 +1,7 @@
 package com.shimmerresearch.sensors;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
@@ -112,7 +114,7 @@ public abstract class AbstractSensor implements Serializable{
 	public TreeMap<Integer, SensorDetails> mSensorMap = new TreeMap<Integer, SensorDetails>();
 	public HashMap<String,ConfigOptionDetailsSensor> mConfigOptionsMap = new HashMap<String,ConfigOptionDetailsSensor>();
     public LinkedHashMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>(); 
+	public TreeMap<Integer, TreeMap<Integer, CalibDetails>> mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>(); 
 
     protected ShimmerDevice mShimmerDevice = null;
     
@@ -404,6 +406,48 @@ public abstract class AbstractSensor implements Serializable{
     	//USED in {SensorPPG}	
 		return sensorMapKey;
 	}
+	
+	public byte[] generateAllCalibByteArray() {
+		if(mCalibMap.isEmpty()){
+			return null;
+		}
+		
+		byte[] calibBytesAllPerSensor = new byte[]{};
+		for(Integer sensorMapKey:mCalibMap.keySet()){
+			TreeMap<Integer, CalibDetails> calMapPerSensor = mCalibMap.get(sensorMapKey);
+			SensorDetails sensorDetais = mSensorMap.get(sensorMapKey);
+			Integer calibSensorKey = sensorDetais.mSensorDetailsRef.mCalibSensorKey;
+			if(calibSensorKey!=0){
+				for(Integer range:calMapPerSensor.keySet()){
+					byte[] calibSensorKeyBytes = new byte[2];
+					calibSensorKeyBytes[0] = (byte)((calibSensorKey>>0)&0xFF);
+					calibSensorKeyBytes[1] = (byte)((calibSensorKey>>8)&0xFF);
+					
+					CalibDetails calDetailsPerRange = calMapPerSensor.get(range);		
+					byte[] calibBytesPerRange = calDetailsPerRange.generateCalParamByteArrayWithTimestamp();
+
+					//Create a new calibration param array
+					byte[] calibBytesPacketPerRange = new byte[calibSensorKeyBytes.length+calibBytesPerRange.length];
+					System.arraycopy(calibSensorKeyBytes, 0, calibBytesPacketPerRange, 0, calibSensorKeyBytes.length);
+					System.arraycopy(calibBytesPerRange, 0, calibBytesPacketPerRange, calibSensorKeyBytes.length, calibBytesPerRange.length);
+					
+					//Copy new calib param array to end of exisiting array
+					byte[] newCalibBytesAllPerSensor = new byte[calibBytesAllPerSensor.length+calibBytesPacketPerRange.length];
+					System.arraycopy(calibBytesAllPerSensor, 0, newCalibBytesAllPerSensor, 0, calibBytesAllPerSensor.length);
+					System.arraycopy(calibBytesPacketPerRange, 0, newCalibBytesAllPerSensor, calibBytesAllPerSensor.length, calibBytesPacketPerRange.length);
+					calibBytesAllPerSensor = newCalibBytesAllPerSensor;
+				}
+			}
+		}
+		return calibBytesAllPerSensor;
+	}
+	
+	public byte[] parseAllCalibByteArray(byte[] remainingBytes) {
+		// TODO Auto-generated method stub
+		return remainingBytes;
+	}
+
+	
 	//--------- Optional methods to override in Sensor Class end -------- 
 
 }

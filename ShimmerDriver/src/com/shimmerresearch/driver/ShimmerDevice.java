@@ -20,9 +20,7 @@ import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
-import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
-import com.shimmerresearch.algorithms.OrientationModule;
 import com.shimmerresearch.algorithms.OrientationModule6DOF;
 import com.shimmerresearch.algorithms.OrientationModule9DOF;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
@@ -40,7 +38,6 @@ import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.driverUtilities.UtilCalibration;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -689,36 +686,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mIsInitialised;
 	}
 	
-	public boolean isCalibrationValid() {
-		// debugging
-		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> calibrationMap = getMapOfKinematicSensorCalibration();
-		Boolean validCal = true;
-		Integer rangeCast = null;
-
-		if (calibrationMap != null) {
-			for (Integer key : calibrationMap.keySet()) {
-				TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicDetails = getMapOfKinematicSensorCalibration().get(key);
-
-				Object returnedRange = getConfigValueUsingConfigLabel(key,AbstractSensor.GuiLabelConfigCommon.RANGE);
-				if (returnedRange != null) {
-					if (returnedRange instanceof Integer) {
-						rangeCast = (Integer) returnedRange;
-					}
-
-					CalibDetailsKinematic kinematicDetails = mapOfKinematicDetails.get(rangeCast);
-					if(kinematicDetails!=null){
-						if (kinematicDetails.isCurrentValuesSet()) {
-							if (!kinematicDetails.isAllCalibrationValid()) {
-								validCal = false;
-							}
-						}
-					}
-				}
-			}
-		}
-		return validCal;
-	}
-
 	/**
 	 * @return the mHaveAttemptedToRead
 	 */
@@ -1233,26 +1200,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return returnValue;		
 	}
 	
-	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getMapOfKinematicSensorCalibration(){
-		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>(); 
-		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION);
-			if(returnVal!=null){
-				mapOfKinematicSensorCalibration.putAll((Map<Integer, TreeMap<Integer, CalibDetailsKinematic>>) returnVal);
-			}
-		}
-		return mapOfKinematicSensorCalibration;
-	}
-
-	public void setMapOfKinematicSensorCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration){
-		for(Integer sensorMapKey:mapOfKinematicSensorCalibration.keySet()){
-			AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
-			if(abstractSensor!=null){
-				abstractSensor.setConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION, mapOfKinematicSensorCalibration.get(sensorMapKey));
-			}
-		}
-	}
-
 	private Object setSensorClassSetting(String identifier, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		//TODO check sensor classes return a null if the setting is successfully found
@@ -2937,10 +2884,100 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		try {
 			Thread.sleep(millis);	
 		} catch (InterruptedException e) {
+			consolePrintLn("threadSleep ERROR");
 			e.printStackTrace();
 		}
 	}
 
+	//*************** Sensor Calibration Related Start ************************* 
+	
+	public boolean isCalibrationValid() {
+		// debugging
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> calibrationMap = getMapOfKinematicSensorCalibration();
+		Boolean validCal = true;
+		Integer rangeCast = null;
+
+		if (calibrationMap != null) {
+			Iterator<Integer> iterator = calibrationMap.keySet().iterator();
+			while(iterator.hasNext()){
+				Integer sensorMapKey = iterator.next();
+				TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicDetails = getMapOfKinematicSensorCalibration().get(sensorMapKey);
+
+				Object returnedRange = getConfigValueUsingConfigLabel(sensorMapKey,AbstractSensor.GuiLabelConfigCommon.RANGE);
+				if (returnedRange != null) {
+					if (returnedRange instanceof Integer) {
+						rangeCast = (Integer) returnedRange;
+					}
+
+					CalibDetailsKinematic kinematicDetails = mapOfKinematicDetails.get(rangeCast);
+					if(kinematicDetails!=null){
+						if (kinematicDetails.isCurrentValuesSet()) {
+							if (!kinematicDetails.isAllCalibrationValid()) {
+								validCal = false;
+							}
+						}
+					}
+				}
+			}
+		}
+		return validCal;
+	}
+	
+	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getMapOfKinematicSensorCalibration(){
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION);
+			Map<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfCalibDetails = (Map<Integer, TreeMap<Integer, CalibDetailsKinematic>>) returnVal;
+			if(returnVal!=null){
+				mapOfKinematicSensorCalibration.putAll(mapOfCalibDetails);
+			}
+		}
+		return mapOfKinematicSensorCalibration;
+	}
+
+	public void setMapOfKinematicSensorCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration){
+		Iterator<Integer> iterator = mapOfKinematicSensorCalibration.keySet().iterator();
+		while(iterator.hasNext()){
+			Integer sensorMapKey = iterator.next();
+			AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
+			if(abstractSensor!=null){
+				abstractSensor.setConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION, mapOfKinematicSensorCalibration.get(sensorMapKey));
+			}
+		}
+	}
+	
+	public byte[] generateAllCalibByteArray(){
+		byte[] calibBytesAll = new byte[]{};
+		
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			byte[] calibBytesPerSensor = abstractSensor.generateAllCalibByteArray();
+			if(calibBytesPerSensor!=null){
+				byte[] newCalibBytesAll = new byte[calibBytesAll.length+calibBytesPerSensor.length];
+				System.arraycopy(calibBytesAll, 0, newCalibBytesAll, 0, calibBytesAll.length);
+				System.arraycopy(calibBytesPerSensor, 0, newCalibBytesAll, calibBytesAll.length, calibBytesPerSensor.length);
+				calibBytesAll = newCalibBytesAll;
+			}
+		}
+		
+		return calibBytesAll;
+	}
+
+	public void parseAllCalibByteArray(byte[] calibBytesAll){
+		byte[] remainingBytes = calibBytesAll;
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			remainingBytes = abstractSensor.parseAllCalibByteArray(remainingBytes);
+		}
+	}
+
+	//*************** Sensor Calibration Related end ************************* 
+
+	
 	
 	
 }

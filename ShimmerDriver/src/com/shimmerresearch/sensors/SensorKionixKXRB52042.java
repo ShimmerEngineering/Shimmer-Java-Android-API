@@ -14,6 +14,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -55,39 +56,29 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
 
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelAnalogShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	protected TreeMap<Integer, CalibDetails> mCalibMapAccelAnalogShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
 	{
-		mCalibMapAccelAnalogShimmer3.put(0, new CalibDetailsKinematic(0, "+/- 2g",
+		mCalibMapAccelAnalogShimmer3Ref.put(0, new CalibDetailsKinematic(0, "+/- 2g",
 						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3));
 	}
 
-	//TODO commented - RS (20/5/2016): Keep in Configuration.java for now. 
-//	public class SensorBitmap{
-//		public static final int SENSOR_A_ACCEL			= 0x80;
-//	}
-//	
-	
 	public class GuiLabelConfig{
 		public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = "Low Noise Accel Default Calibration";
 	}
-	
 	
 	public class GuiLabelSensors{
 		public static final String ACCEL_LN = "Low-Noise Accelerometer";
 	}
 	
-	
 	public class GuiLabelSensorTiles{
 		public static final String LOW_NOISE_ACCEL = GuiLabelSensors.ACCEL_LN;
 	}
-
 	
 	public static class DatabaseChannelHandles{
 		public static final String LN_ACC_X = "KXRB8_2042_X";
 		public static final String LN_ACC_Y = "KXRB8_2042_Y";
 		public static final String LN_ACC_Z = "KXRB8_2042_Z";
 	}
-	
 	
 	public static class ObjectClusterSensorName{
 		public static  String ACCEL_LN_X = "Accel_LN_X";
@@ -130,7 +121,9 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			null,
 			Arrays.asList(ObjectClusterSensorName.ACCEL_LN_X,ObjectClusterSensorName.ACCEL_LN_Y,ObjectClusterSensorName.ACCEL_LN_Z));
-	
+	{
+		sensorKionixKXRB52042.mCalibSensorKey = 0x01;
+	}
 	
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -184,6 +177,9 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
     //--------- Constructors for this class start --------------
 	public SensorKionixKXRB52042(ShimmerVerObject svo) {
 		super(SENSORS.KIONIXKXRB52042, svo);
+		
+		//TODO Temp here, move to it's own method
+		mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3Ref);
 	}
 	//--------- Constructors for this class end --------------
 	
@@ -335,7 +331,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
 				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
 						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)){
-					returnValue = getKinematicCalibration();
+					returnValue = getCalibrationMapForSensor(sensorMapKey);
 				}
 				break;
 	        default:
@@ -401,48 +397,49 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	//--------- Sensor specific methods start --------------
 	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
-		mCalibMapAccelAnalogShimmer3.putAll(mapOfKinematicSensorCalibration);
+		mCalibMapAccelAnalogShimmer3Ref.putAll(mapOfKinematicSensorCalibration);
 	}
 
-	private TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getKinematicCalibration() {
-		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
-		mapOfKinematicSensorCalibration.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3);
+	private TreeMap<Integer, TreeMap<Integer, CalibDetails>> getCalibrationMapForSensor(Integer sensorMapKey) {
+		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
+		mapOfKinematicSensorCalibration.put(sensorMapKey, mCalibMap.get(sensorMapKey));
 		return mapOfKinematicSensorCalibration;
 	}
 	
 	private void updateCalibMapAccelLn() {
 		int rangeValue = 0;
-		CalibDetailsKinematic calDetails = mCalibMapAccelAnalogShimmer3.get(rangeValue);
+		CalibDetails calDetails = mCalibMapAccelAnalogShimmer3Ref.get(rangeValue);
 		if(calDetails==null){
 			String rangeString = "+/- 2g";
 			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
 		}
-		calDetails.setCurrentValues(mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
-		mCalibMapAccelAnalogShimmer3.put(rangeValue, calDetails);
+		((CalibDetailsKinematic)calDetails).setCurrentValues(mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+		mCalibMapAccelAnalogShimmer3Ref.put(rangeValue, calDetails);
 	}
 
 	private byte[] generateCalParamAnalogAccel(){
-		// Analog Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[21];
-		// offsetVector -> buffer offset = 0
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 8) & 0xFF);
-			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
-		}
-		// sensitivityMatrix -> buffer offset = 6
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 8) & 0xFF);
-			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 0) & 0xFF);
-		}
-		// alignmentMatrix -> buffer offset = 12
-		for (int i=0; i<3; i++) {
-			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][0]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
-			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
-		}
-		return bufferCalibrationParameters;
+//		// Analog Accel Calibration Parameters
+//		byte[] bufferCalibrationParameters = new byte[21];
+//		// offsetVector -> buffer offset = 0
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorAnalogAccel[i][0]) >> 0) & 0xFF);
+//		}
+//		// sensitivityMatrix -> buffer offset = 6
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 8) & 0xFF);
+//			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixAnalogAccel[i][i]) >> 0) & 0xFF);
+//		}
+//		// alignmentMatrix -> buffer offset = 12
+//		for (int i=0; i<3; i++) {
+//			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][0]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][1]*100)) & 0xFF);
+//			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixAnalogAccel[i][2]*100)) & 0xFF);
+//		}
+//		return bufferCalibrationParameters;
+		
+		return CalibDetailsKinematic.generateCalParamByteArray(mOffsetVectorAnalogAccel, mSensitivityMatrixAnalogAccel, mAlignmentMatrixAnalogAccel);
 	}
-	
 	
 	private void retrieveKinematicCalibrationParametersFromPacket(byte[] bufferCalibrationParameters,  int packetType) {
 		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"}; 

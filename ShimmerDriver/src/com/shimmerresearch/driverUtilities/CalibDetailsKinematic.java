@@ -1,9 +1,7 @@
 package com.shimmerresearch.driverUtilities;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Class that holds the calibration parameters for a particular range in a
@@ -12,7 +10,7 @@ import java.util.List;
  * @author Mark Nolan
  *
  */
-public class CalibDetailsKinematic implements Serializable {
+public class CalibDetailsKinematic extends CalibDetails {
 	
 	/** * */
 	private static final long serialVersionUID = -3556098650349506733L;
@@ -210,18 +208,6 @@ public class CalibDetailsKinematic implements Serializable {
 		}
 	}
 	
-	public byte[] generateCalParamByteArrayWithTimestamp() {
-		byte[] range = ByteBuffer.allocate(1).putLong(mRangeValue).array();
-		byte[] timestamp = ByteBuffer.allocate(8).putLong(mCalibTime).array();
-		byte[] bufferCalibParam = generateCalParamByteArray();
-		
-		byte[] bufferCalibParamWithTimestamp = new byte[range.length + bufferCalibParam.length + timestamp.length];
-		System.arraycopy(range, 0, bufferCalibParamWithTimestamp, 0, range.length);
-		System.arraycopy(timestamp, 0, bufferCalibParamWithTimestamp, range.length, timestamp.length);
-		System.arraycopy(bufferCalibParam, 0, bufferCalibParamWithTimestamp, range.length + timestamp.length, bufferCalibParam.length);
-		return bufferCalibParamWithTimestamp;
-	}
-
 	public static byte[] generateCalParamByteArray(double[][] offsetVector, double[][] sensitivityMatrix, double[][] alignmentMatrix) {
 		byte[] bufferCalibParam = new byte[21];
 		// offsetVector -> buffer offset = 0
@@ -242,4 +228,19 @@ public class CalibDetailsKinematic implements Serializable {
 		}
 		return bufferCalibParam;
 	}	
+	
+	@Override
+	public byte[] generateCalParamByteArrayWithTimestamp() {
+		byte[] rangeBytes = new byte[1];
+		rangeBytes[0] = (byte)(mRangeValue&0xFF);
+
+		byte[] timestamp = ByteBuffer.allocate(8).putLong(mCalibTime).array();
+		byte[] bufferCalibParam = generateCalParamByteArray();
+		
+		byte[] bufferCalibParamWithTimestamp = new byte[rangeBytes.length + bufferCalibParam.length + timestamp.length];
+		System.arraycopy(rangeBytes, 0, bufferCalibParamWithTimestamp, 0, rangeBytes.length);
+		System.arraycopy(timestamp, 0, bufferCalibParamWithTimestamp, rangeBytes.length, timestamp.length);
+		System.arraycopy(bufferCalibParam, 0, bufferCalibParamWithTimestamp, rangeBytes.length + timestamp.length, bufferCalibParam.length);
+		return bufferCalibParamWithTimestamp;
+	}
 }
