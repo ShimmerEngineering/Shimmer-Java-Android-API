@@ -20,11 +20,13 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 
 public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Serializable{
 
-	int mPacketSize;
-	transient List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
+	/** * */
+	private static final long serialVersionUID = -5368287098255841194L;
+	
+	public int mPacketSize;
+	public transient List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
 	public transient ByteLevelProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
 	public ByteLevelDataComm mSerialPort;
-	
 	
 	public ShimmerRadioProtocol(ByteLevelDataComm dataComm, ByteLevelProtocol radioProtocol){
 		mSerialPort = dataComm;

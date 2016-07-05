@@ -49,8 +49,6 @@ public class Shimmer4 extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 6916261534384275804L;
 	
-	public ShimmerRadioProtocol mShimmerRadioHWLiteProtocol = null;
-
 	byte[] mInfoMemBuffer;
 	private int mCurrentInfoMemAddress = 0;
 	private int mCurrentInfoMemLengthToRead = 0;

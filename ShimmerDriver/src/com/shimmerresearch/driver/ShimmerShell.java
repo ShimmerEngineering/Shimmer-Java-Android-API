@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -55,7 +56,12 @@ public class ShimmerShell extends ShimmerDevice {
 //		mTimeSyncTrainingPeriod = timeSyncTrainingPeriod;
 	}
 
-	
+	@Override
+	public void connect() {
+		super.connect();
+		
+		
+	}
 	
 	@Override
 	public ShimmerShell deepClone() {
@@ -135,5 +141,6 @@ public class ShimmerShell extends ShimmerDevice {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

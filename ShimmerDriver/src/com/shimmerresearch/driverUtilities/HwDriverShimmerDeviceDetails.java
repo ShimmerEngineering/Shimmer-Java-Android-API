@@ -18,12 +18,12 @@ public class HwDriverShimmerDeviceDetails {
 		SPAN("Span"),
 		
 		RN42("RN42"),
-		Shimmer3("Shimmer3"),
-		Shimmer4("Shimmer4"),
+		SHIMMER3("Shimmer3"),
+		SHIMMER4("Shimmer4"),
 		
-		Lumafit("Lumafit"),
-		NoninOnyxII("Nonin"),
-		QtiDirectTemp("DirectTemp");
+		LUMAFIT("Lumafit"),
+		NONIN_ONYX_II("Nonin Onyx II"),
+		QTI_DIRECTTEMP("Qti DirectTemp");
 
 		private String deviceLabel = "";
 		
