@@ -247,11 +247,11 @@ public abstract class AbstractSensor implements Serializable{
 		return null;
 	}
 	
-	public void createLocalCalibMap(Map<Integer, CalibDetailsKinematic> sensorMapRef, Map<String, ChannelDetails> channelMapRef){
-		mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
-		
-		
-	}
+//	public void createLocalCalibMap(Map<Integer, CalibDetailsKinematic> sensorMapRef, Map<String, ChannelDetails> channelMapRef){
+//		mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+//		
+//		
+//	}
 	
 	
 	public void createLocalSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {

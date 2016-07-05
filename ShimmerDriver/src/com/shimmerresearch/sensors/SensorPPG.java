@@ -788,7 +788,7 @@ public class SensorPPG extends AbstractSensor {
 		// Special case for Dummy entries in the Sensor Map
 		if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
 			mSensorMap.get(sensorMapKey).setIsEnabled(state);
-			if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
+			if(ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
 				return Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
 			}
 			else {
@@ -797,7 +797,7 @@ public class SensorPPG extends AbstractSensor {
 		}		
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
 			mSensorMap.get(sensorMapKey).setIsEnabled(state);
-			if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
+			if(ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
 				return Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
 			}
 			else {
@@ -806,7 +806,7 @@ public class SensorPPG extends AbstractSensor {
 		}		
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
 			mSensorMap.get(sensorMapKey).setIsEnabled(state);
-			if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
+			if(ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
 				return Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
 			}
 			else {

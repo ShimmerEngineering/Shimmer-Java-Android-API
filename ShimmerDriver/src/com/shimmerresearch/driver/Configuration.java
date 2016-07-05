@@ -635,25 +635,25 @@ public class Configuration {
 			"EXG2 16Bit", 
 			"Bridge Amplifier"}; 
 		
-		public static final String[] ListofAccelRange = 					SensorLSM303.ListofAccelRange;
-		public static final Integer[] ListofLSM303DLHCAccelRangeConfigValues = SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues;
-		public static final String[] ListofGyroRange = 						SensorMPU9X50.ListofGyroRange; 
-		public static final Integer[] ListofMPU9150GyroRangeConfigValues = 	SensorMPU9X50.ListofMPU9150GyroRangeConfigValues;
-		public static final String[] ListofMagRange = 						SensorLSM303.ListofMagRange;
-		public static final Integer[] ListofMagRangeConfigValues = 			SensorLSM303.ListofMagRangeConfigValues;
+//		public static final String[] ListofAccelRange = 					SensorLSM303.ListofAccelRange;
+//		public static final Integer[] ListofLSM303DLHCAccelRangeConfigValues = SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues;
+//		public static final String[] ListofGyroRange = 						SensorMPU9X50.ListofGyroRange; 
+//		public static final Integer[] ListofMPU9150GyroRangeConfigValues = 	SensorMPU9X50.ListofMPU9150GyroRangeConfigValues;
+//		public static final String[] ListofMagRange = 						SensorLSM303.ListofMagRange;
+//		public static final Integer[] ListofMagRangeConfigValues = 			SensorLSM303.ListofMagRangeConfigValues;
 
-		public static final String[] ListofPressureResolution = 			SensorBMP180.ListofPressureResolution;
-		public static final Integer[] ListofPressureResolutionConfigValues = SensorBMP180.ListofPressureResolutionConfigValues;
-		
+//		public static final String[] ListofPressureResolution = 			SensorBMP180.ListofPressureResolution;
+//		public static final Integer[] ListofPressureResolutionConfigValues = SensorBMP180.ListofPressureResolutionConfigValues;
+//		
 		public static final String[] ListofGSRRange = 						SensorGSR.ListofGSRRange;
 		public static final Integer[] ListofGSRRangeConfigValues = 			SensorGSR.ListofGSRRangeConfigValues;
-
-		public static final String[] ListOfPpgAdcSelection = 				SensorPPG.ListOfPpgAdcSelection;
-		public static final Integer[] ListOfPpgAdcSelectionConfigValues = 	SensorPPG.ListOfPpgAdcSelectionConfigValues;
-		public static final String[] ListOfPpg1AdcSelection = 				SensorPPG.ListOfPpg1AdcSelection;
-		public static final Integer[] ListOfPpg1AdcSelectionConfigValues = 	SensorPPG.ListOfPpg1AdcSelectionConfigValues;
-		public static final String[] ListOfPpg2AdcSelection = 				SensorPPG.ListOfPpg2AdcSelection;
-		public static final Integer[] ListOfPpg2AdcSelectionConfigValues = 	SensorPPG.ListOfPpg2AdcSelectionConfigValues;
+//
+//		public static final String[] ListOfPpgAdcSelection = 				SensorPPG.ListOfPpgAdcSelection;
+//		public static final Integer[] ListOfPpgAdcSelectionConfigValues = 	SensorPPG.ListOfPpgAdcSelectionConfigValues;
+//		public static final String[] ListOfPpg1AdcSelection = 				SensorPPG.ListOfPpg1AdcSelection;
+//		public static final Integer[] ListOfPpg1AdcSelectionConfigValues = 	SensorPPG.ListOfPpg1AdcSelectionConfigValues;
+//		public static final String[] ListOfPpg2AdcSelection = 				SensorPPG.ListOfPpg2AdcSelection;
+//		public static final Integer[] ListOfPpg2AdcSelectionConfigValues = 	SensorPPG.ListOfPpg2AdcSelectionConfigValues;
 
 		public static final String[] ListofDefaultEXG = 					SensorEXG.ListofDefaultEXG;
 		public static final String[] ListOfExGGain = 						SensorEXG.ListOfExGGain;
@@ -689,25 +689,25 @@ public class Configuration {
 		public static final String[] ListOfExGRate = 						SensorEXG.ListOfExGRate;
 		public static final Integer[] ListOfExGRateConfigValues = 			SensorEXG.ListOfExGRateConfigValues;
 
-		public static final String[] ListofLSM303DLHCAccelRate = 			SensorLSM303.ListofLSM303DLHCAccelRate;
-		public static final Integer[] ListofLSM303DLHCAccelRateConfigValues = SensorLSM303.ListofLSM303DLHCAccelRateConfigValues;
-		public static final String[] ListofLSM303DLHCAccelRateLpm = 		SensorLSM303.ListofLSM303DLHCAccelRateLpm;
-		public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues = SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues;
-		
-		public static final String[] ListofLSM303DLHCMagRate = 				SensorLSM303.ListofLSM303DLHCMagRate;
-		public static final Integer[] ListofLSM303DLHCMagRateConfigValues = SensorLSM303.ListofLSM303DLHCMagRateConfigValues;
+//		public static final String[] ListofLSM303DLHCAccelRate = 			SensorLSM303.ListofLSM303DLHCAccelRate;
+//		public static final Integer[] ListofLSM303DLHCAccelRateConfigValues = SensorLSM303.ListofLSM303DLHCAccelRateConfigValues;
+//		public static final String[] ListofLSM303DLHCAccelRateLpm = 		SensorLSM303.ListofLSM303DLHCAccelRateLpm;
+//		public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues = SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues;
+//		
+//		public static final String[] ListofLSM303DLHCMagRate = 				SensorLSM303.ListofLSM303DLHCMagRate;
+//		public static final Integer[] ListofLSM303DLHCMagRateConfigValues = SensorLSM303.ListofLSM303DLHCMagRateConfigValues;
 
-		public static final String[] ListofMPU9150AccelRange = 				SensorMPU9X50.ListofMPU9150AccelRange;
-		public static final Integer[] ListofMPU9150AccelRangeConfigValues = SensorMPU9X50.ListofMPU9150AccelRangeConfigValues;
-		public static final String[] ListofMPU9150MagRate = 				SensorMPU9X50.ListofMPU9150MagRate;
-		public static final Integer[] ListofMPU9150MagRateConfigValues = 	SensorMPU9X50.ListofMPU9150MagRateConfigValues;
-
-		public static final String[] ListofMPU9150MplCalibrationOptions = 	SensorMPU9X50.ListofMPU9150MplCalibrationOptions;
-		public static final Integer[] ListofMPU9150MplCalibrationOptionsConfigValues = SensorMPU9X50.ListofMPU9150MplCalibrationOptionsConfigValues;
-		public static final String[] ListofMPU9150MplLpfOptions = 			SensorMPU9X50.ListofMPU9150MplLpfOptions;
-		public static final Integer[] ListofMPU9150MplLpfOptionsConfigValues = SensorMPU9X50.ListofMPU9150MplLpfOptionsConfigValues;
-		public static final String[] ListofMPU9150MplRate = 				SensorMPU9X50.ListofMPU9150MplRate;
-		public static final Integer[] ListofMPU9150MplRateConfigValues = 	SensorMPU9X50.ListofMPU9150MplRateConfigValues;
+//		public static final String[] ListofMPU9150AccelRange = 				SensorMPU9X50.ListofMPU9150AccelRange;
+//		public static final Integer[] ListofMPU9150AccelRangeConfigValues = SensorMPU9X50.ListofMPU9150AccelRangeConfigValues;
+//		public static final String[] ListofMPU9150MagRate = 				SensorMPU9X50.ListofMPU9150MagRate;
+//		public static final Integer[] ListofMPU9150MagRateConfigValues = 	SensorMPU9X50.ListofMPU9150MagRateConfigValues;
+//
+//		public static final String[] ListofMPU9150MplCalibrationOptions = 	SensorMPU9X50.ListofMPU9150MplCalibrationOptions;
+//		public static final Integer[] ListofMPU9150MplCalibrationOptionsConfigValues = SensorMPU9X50.ListofMPU9150MplCalibrationOptionsConfigValues;
+//		public static final String[] ListofMPU9150MplLpfOptions = 			SensorMPU9X50.ListofMPU9150MplLpfOptions;
+//		public static final Integer[] ListofMPU9150MplLpfOptionsConfigValues = SensorMPU9X50.ListofMPU9150MplLpfOptionsConfigValues;
+//		public static final String[] ListofMPU9150MplRate = 				SensorMPU9X50.ListofMPU9150MplRate;
+//		public static final Integer[] ListofMPU9150MplRateConfigValues = 	SensorMPU9X50.ListofMPU9150MplRateConfigValues;
 
 		
 		public class SensorMapKey{

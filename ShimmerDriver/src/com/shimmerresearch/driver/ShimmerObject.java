@@ -643,17 +643,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelWideRangeShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
 		//TODO improve the way these are loaded - using array indexes is too hard coded?
-		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[0], 
-				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[0], Shimmer3.ListofAccelRange[0],
+		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[0], 
+				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[0], SensorLSM303.ListofAccelRange[0],
 						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel2gShimmer3, OffsetVectorWideRangeAccelShimmer3));
-		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[1], 
-				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[1], Shimmer3.ListofAccelRange[1],
+		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[1], 
+				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[1], SensorLSM303.ListofAccelRange[1],
 						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel4gShimmer3, OffsetVectorWideRangeAccelShimmer3));
-		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[2], 
-				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[2], Shimmer3.ListofAccelRange[2],
+		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[2], 
+				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[2], SensorLSM303.ListofAccelRange[2],
 						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel8gShimmer3, OffsetVectorWideRangeAccelShimmer3));
-		mCalibMapAccelWideRangeShimmer3.put(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], 
-				new CalibDetailsKinematic(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues[3], Shimmer3.ListofAccelRange[3],
+		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[3], 
+				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[3], SensorLSM303.ListofAccelRange[3],
 						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel16gShimmer3, OffsetVectorWideRangeAccelShimmer3));
 	}
 	// ----------   Wide-range accel end ---------------
@@ -687,17 +687,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
 		//TODO improve the way these are loaded - using array indexes is too hard coded?
-		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], 
-				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[0], Shimmer3.ListofGyroRange[0],
+		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], 
+				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], SensorMPU9X50.ListofGyroRange[0],
 						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro250dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], 
-				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[1], Shimmer3.ListofGyroRange[1],
+		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], 
+				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], SensorMPU9X50.ListofGyroRange[1],
 						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro500dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], 
-				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[2], Shimmer3.ListofGyroRange[2],
+		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], 
+				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], SensorMPU9X50.ListofGyroRange[2],
 						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibMapGyroShimmer3.put(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], 
-				new CalibDetailsKinematic(Shimmer3.ListofMPU9150GyroRangeConfigValues[3], Shimmer3.ListofGyroRange[3],
+		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3], 
+				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3], SensorMPU9X50.ListofGyroRange[3],
 						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
 	}
 	
@@ -759,26 +759,26 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapMagShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
 	{
 		//TODO improve the way these are loaded - using array indexes is too hard coded?
-		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[0], 
-				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[0], Shimmer3.ListofMagRange[0],
+		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[0], 
+				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[0], SensorLSM303.ListofMagRange[0],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p3GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[1], 
-				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[1], Shimmer3.ListofMagRange[1],
+		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[1], 
+				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[1], SensorLSM303.ListofMagRange[1],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p9GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[2], 
-				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[2], Shimmer3.ListofMagRange[2],
+		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[2], 
+				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[2], SensorLSM303.ListofMagRange[2],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag2p5GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[3], 
-				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[3], Shimmer3.ListofMagRange[3],
+		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[3], 
+				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[3], SensorLSM303.ListofMagRange[3],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[4], 
-				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[4], Shimmer3.ListofMagRange[4],
+		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[4], 
+				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[4], SensorLSM303.ListofMagRange[4],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4p7GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[5], 
-				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[5], Shimmer3.ListofMagRange[5],
+		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[5], 
+				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[5], SensorLSM303.ListofMagRange[5],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag5p6GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(Shimmer3.ListofMagRangeConfigValues[6], 
-				new CalibDetailsKinematic(Shimmer3.ListofMagRangeConfigValues[6], Shimmer3.ListofMagRange[6],
+		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[6], 
+				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[6], SensorLSM303.ListofMagRange[6],
 						AlignmentMatrixMagShimmer3, SensitivityMatrixMag8p1GaShimmer3, OffsetVectorMagShimmer3));
 	}
 	// ----------   Mag end ---------------
@@ -4524,7 +4524,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int rangeValue = getAccelRange();
 		CalibDetailsKinematic calDetails = mCalibMapAccelWideRangeShimmer3.get(rangeValue);
 		if(calDetails==null){
-			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofLSM303DLHCAccelRangeConfigValues, Shimmer3.ListofAccelRange, rangeValue);
+			String rangeString = getSensorRangeFromConfigValue(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, SensorLSM303.ListofAccelRange, rangeValue);
 			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
 		}
 		calDetails.setCurrentValues(mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
@@ -4535,7 +4535,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int rangeValue = getGyroRange();
 		CalibDetailsKinematic calDetails = mCalibMapGyroShimmer3.get(rangeValue);
 		if(calDetails==null){
-			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofMPU9150GyroRangeConfigValues, Shimmer3.ListofGyroRange, rangeValue);
+			String rangeString = getSensorRangeFromConfigValue(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, SensorMPU9X50.ListofGyroRange, rangeValue);
 			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
 		}
 		calDetails.setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
@@ -4546,7 +4546,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int rangeValue = mMagRange;
 		CalibDetailsKinematic calDetails = mCalibMapMagShimmer3.get(rangeValue);
 		if(calDetails==null){ //Should never be null
-			String rangeString = getSensorRangeFromConfigValue(Shimmer3.ListofMagRangeConfigValues, Shimmer3.ListofMagRange, rangeValue);
+			String rangeString = getSensorRangeFromConfigValue(SensorLSM303.ListofMagRangeConfigValues, SensorLSM303.ListofMagRange, rangeValue);
 			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
 		}
 		calDetails.setCurrentValues(mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
@@ -7280,10 +7280,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled())) {
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(true);
 				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12).isEnabled()) {
-					mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
+					mPpgAdcSelectionGsrBoard = SensorPPG.ListOfPpgAdcSelectionConfigValues[1]; // PPG_A12
 				}
 				else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13).isEnabled()) {
-					mPpgAdcSelectionGsrBoard = Configuration.Shimmer3.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
+					mPpgAdcSelectionGsrBoard = SensorPPG.ListOfPpgAdcSelectionConfigValues[0]; // PPG_A13
 	
 				}
 			}
@@ -7297,10 +7297,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled())) {
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(true);
 				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12).isEnabled()) {
-					mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
+					mPpg1AdcSelectionProto3DeluxeBoard = SensorPPG.ListOfPpg1AdcSelectionConfigValues[1]; // PPG1_A12
 				}
 				else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13).isEnabled()) {
-					mPpg1AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
+					mPpg1AdcSelectionProto3DeluxeBoard = SensorPPG.ListOfPpg1AdcSelectionConfigValues[0]; // PPG1_A13
 				}
 			}
 			else {
@@ -7312,10 +7312,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if((mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled())||(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled())) {
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(true);
 				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1).isEnabled()) {
-					mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
+					mPpg2AdcSelectionProto3DeluxeBoard = SensorPPG.ListOfPpg2AdcSelectionConfigValues[0]; // PPG2_A1
 				}
 				else if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14).isEnabled()) {
-					mPpg2AdcSelectionProto3DeluxeBoard = Configuration.Shimmer3.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
+					mPpg2AdcSelectionProto3DeluxeBoard = SensorPPG.ListOfPpg2AdcSelectionConfigValues[1]; // PPG2_A14
 				}
 			}
 			else {
@@ -7520,7 +7520,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		// Special case for Dummy entries in the Sensor Map
 		if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY) {
 			mSensorMap.get(sensorMapKey).setIsEnabled(state);
-			if(Configuration.Shimmer3.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
+			if(SensorPPG.ListOfPpgAdcSelection[mPpgAdcSelectionGsrBoard].contains("A12")) {
 				return Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12;
 			}
 			else {
@@ -7529,7 +7529,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}		
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY) {
 			mSensorMap.get(sensorMapKey).setIsEnabled(state);
-			if(Configuration.Shimmer3.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
+			if(SensorPPG.ListOfPpg1AdcSelection[mPpg1AdcSelectionProto3DeluxeBoard].contains("A12")) {
 				return Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12;
 			}
 			else {
@@ -7538,7 +7538,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}		
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY) {
 			mSensorMap.get(sensorMapKey).setIsEnabled(state);
-			if(Configuration.Shimmer3.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
+			if(SensorPPG.ListOfPpg2AdcSelection[mPpg2AdcSelectionProto3DeluxeBoard].contains("A14")) {
 				return Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14;
 			}
 			else {
