@@ -29,6 +29,7 @@ import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
@@ -58,6 +59,7 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
+import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 import com.shimmerresearch.algorithms.Orientation3DObject;
 
 /**
@@ -602,11 +604,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = SensorKionixKXRB52042.OffsetVectorLowNoiseAccelShimmer3;
 	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = SensorKionixKXRB52042.SensitivityMatrixLowNoiseAccel2gShimmer3;
 
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelAnalogShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+	protected TreeMap<Integer, CalibDetails> mCalibMapAccelAnalogShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
 	{
-		mCalibMapAccelAnalogShimmer3.put(0, new CalibDetailsKinematic(0, "+/- 2g",
+		mCalibMapAccelAnalogShimmer3Ref.put(0, new CalibDetailsKinematic(0, "+/- 2g",
 						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3));
 	}
+//	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelAnalogShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+//	{
+//		mCalibMapAccelAnalogShimmer3.put(0, new CalibDetailsKinematic(0, "+/- 2g",
+//						AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3));
+//	}
 	// ----------   Analog accel end ---------------
 	
 	//XXX-RS-LSM-SensorClass?
@@ -640,21 +647,61 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = SensorLSM303.SensitivityMatrixWideRangeAccel8gShimmer3;	
 	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = SensorLSM303.SensitivityMatrixWideRangeAccel16gShimmer3;	
 
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelWideRangeShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
-	{
-		//TODO improve the way these are loaded - using array indexes is too hard coded?
-		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[0], 
-				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[0], SensorLSM303.ListofAccelRange[0],
-						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel2gShimmer3, OffsetVectorWideRangeAccelShimmer3));
-		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[1], 
-				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[1], SensorLSM303.ListofAccelRange[1],
-						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel4gShimmer3, OffsetVectorWideRangeAccelShimmer3));
-		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[2], 
-				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[2], SensorLSM303.ListofAccelRange[2],
-						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel8gShimmer3, OffsetVectorWideRangeAccelShimmer3));
-		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[3], 
-				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[3], SensorLSM303.ListofAccelRange[3],
-						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel16gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+//	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapAccelWideRangeShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+//	{
+//		//TODO improve the way these are loaded - using array indexes is too hard coded?
+//		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[0], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[0], SensorLSM303.ListofAccelRange[0],
+//						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel2gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+//		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[1], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[1], SensorLSM303.ListofAccelRange[1],
+//						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel4gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+//		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[2], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[2], SensorLSM303.ListofAccelRange[2],
+//						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel8gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+//		mCalibMapAccelWideRangeShimmer3.put(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[3], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[3], SensorLSM303.ListofAccelRange[3],
+//						AlignmentMatrixWideRangeAccelShimmer3, SensitivityMatrixWideRangeAccel16gShimmer3, OffsetVectorWideRangeAccelShimmer3));
+//	}
+	
+	protected TreeMap<Integer, CalibDetails> mCalibMapAccelWideRangeShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
+	{	//TODO improve the way these are loaded - using array indexes is too hard coded?
+		mCalibMapAccelWideRangeShimmer3Ref.put(
+				SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[0], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[0],
+						SensorLSM303.ListofAccelRange[0],
+						AlignmentMatrixWideRangeAccelShimmer3, 
+						SensitivityMatrixWideRangeAccel2gShimmer3, 
+						OffsetVectorWideRangeAccelShimmer3)
+				);
+		mCalibMapAccelWideRangeShimmer3Ref.put(
+				SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[1], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[1], 
+						SensorLSM303.ListofAccelRange[1],
+						AlignmentMatrixWideRangeAccelShimmer3,
+						SensitivityMatrixWideRangeAccel4gShimmer3, 
+						OffsetVectorWideRangeAccelShimmer3)
+				);
+		mCalibMapAccelWideRangeShimmer3Ref.put(
+				SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[2], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[2], 
+						SensorLSM303.ListofAccelRange[2],
+						AlignmentMatrixWideRangeAccelShimmer3, 
+						SensitivityMatrixWideRangeAccel8gShimmer3, 
+						OffsetVectorWideRangeAccelShimmer3)
+				);
+		mCalibMapAccelWideRangeShimmer3Ref.put(
+				SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[3], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues[3], 
+						SensorLSM303.ListofAccelRange[3],
+						AlignmentMatrixWideRangeAccelShimmer3,
+						SensitivityMatrixWideRangeAccel16gShimmer3, 
+						OffsetVectorWideRangeAccelShimmer3)
+				);
 	}
 	// ----------   Wide-range accel end ---------------
 
@@ -684,22 +731,63 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = SensorMPU9X50.SensitivityMatrixGyro1000dpsShimmer3;
 	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = SensorMPU9X50.SensitivityMatrixGyro2000dpsShimmer3;
 
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+//	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+//	{
+//		//TODO improve the way these are loaded - using array indexes is too hard coded?
+//		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], 
+//				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], SensorMPU9X50.ListofGyroRange[0],
+//						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro250dpsShimmer3, OffsetVectorGyroShimmer3));
+//		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], 
+//				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], SensorMPU9X50.ListofGyroRange[1],
+//						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro500dpsShimmer3, OffsetVectorGyroShimmer3));
+//		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], 
+//				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], SensorMPU9X50.ListofGyroRange[2],
+//						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3));
+//		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3], 
+//				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3], SensorMPU9X50.ListofGyroRange[3],
+//						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
+//	}
+	public TreeMap<Integer, TreeMap<Integer, CalibDetails>> mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>(); 
+
+	protected TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
 	{
-		//TODO improve the way these are loaded - using array indexes is too hard coded?
-		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], 
-				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], SensorMPU9X50.ListofGyroRange[0],
-						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro250dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], 
-				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], SensorMPU9X50.ListofGyroRange[1],
-						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro500dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], 
-				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], SensorMPU9X50.ListofGyroRange[2],
-						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3));
-		mCalibMapGyroShimmer3.put(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3], 
-				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3], SensorMPU9X50.ListofGyroRange[3],
-						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
+		mCalibMapGyroShimmer3Ref.put(
+				SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], 
+				new CalibDetailsKinematic(
+						SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], 
+						SensorMPU9X50.ListofGyroRange[0],
+						AlignmentMatrixGyroShimmer3,
+						SensitivityMatrixGyro250dpsShimmer3,
+						OffsetVectorGyroShimmer3)
+				);
+		mCalibMapGyroShimmer3Ref.put(
+				SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], 
+				new CalibDetailsKinematic(
+						SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], 
+						SensorMPU9X50.ListofGyroRange[1],
+						AlignmentMatrixGyroShimmer3, 
+						SensitivityMatrixGyro500dpsShimmer3,
+						OffsetVectorGyroShimmer3)
+				);
+		mCalibMapGyroShimmer3Ref.put(
+				SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], 
+				new CalibDetailsKinematic(
+						SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], 
+						SensorMPU9X50.ListofGyroRange[2],
+						AlignmentMatrixGyroShimmer3, 
+						SensitivityMatrixGyro1000dpsShimmer3, 
+						OffsetVectorGyroShimmer3)
+				);
+		mCalibMapGyroShimmer3Ref.put(
+				SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3], 
+				new CalibDetailsKinematic(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3],
+						SensorMPU9X50.ListofGyroRange[3],
+						AlignmentMatrixGyroShimmer3, 
+						SensitivityMatrixGyro2000dpsShimmer3, 
+						OffsetVectorGyroShimmer3)
+				);
 	}
+	
 	
 	protected double mGyroOVCalThreshold = 1.2;
 	DescriptiveStatistics mGyroX;
@@ -755,32 +843,99 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = SensorLSM303.SensitivityMatrixMag4p7GaShimmer3;
 	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = SensorLSM303.SensitivityMatrixMag5p6GaShimmer3;
 	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = SensorLSM303.SensitivityMatrixMag8p1GaShimmer3;
+	
+	
+	protected TreeMap<Integer, CalibDetails> mCalibMapMagShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
+	{	//TODO improve the way these are loaded - using array indexes is too hard coded?
+		mCalibMapMagShimmer3Ref.put(
+				SensorLSM303.ListofMagRangeConfigValues[0], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofMagRangeConfigValues[0],
+						SensorLSM303.ListofMagRange[0],
+						AlignmentMatrixMagShimmer3,
+						SensitivityMatrixMag1p3GaShimmer3,
+						OffsetVectorMagShimmer3)
+				);
+		mCalibMapMagShimmer3Ref.put(
+				SensorLSM303.ListofMagRangeConfigValues[1], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofMagRangeConfigValues[1],
+						SensorLSM303.ListofMagRange[1],
+						AlignmentMatrixMagShimmer3, 
+						SensitivityMatrixMag1p9GaShimmer3,
+						OffsetVectorMagShimmer3)
+				);
+		mCalibMapMagShimmer3Ref.put(
+				SensorLSM303.ListofMagRangeConfigValues[2], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofMagRangeConfigValues[2], 
+						SensorLSM303.ListofMagRange[2],
+						AlignmentMatrixMagShimmer3,
+						SensitivityMatrixMag2p5GaShimmer3, 
+						OffsetVectorMagShimmer3)
+				);
+		mCalibMapMagShimmer3Ref.put(
+				SensorLSM303.ListofMagRangeConfigValues[3], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofMagRangeConfigValues[3],
+						SensorLSM303.ListofMagRange[3],
+						AlignmentMatrixMagShimmer3,
+						SensitivityMatrixMag4GaShimmer3,
+						OffsetVectorMagShimmer3)
+				);
+		mCalibMapMagShimmer3Ref.put(
+				SensorLSM303.ListofMagRangeConfigValues[4], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofMagRangeConfigValues[4],
+						SensorLSM303.ListofMagRange[4],
+						AlignmentMatrixMagShimmer3, 
+						SensitivityMatrixMag4p7GaShimmer3,
+						OffsetVectorMagShimmer3));
 
-	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapMagShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
-	{
-		//TODO improve the way these are loaded - using array indexes is too hard coded?
-		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[0], 
-				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[0], SensorLSM303.ListofMagRange[0],
-						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p3GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[1], 
-				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[1], SensorLSM303.ListofMagRange[1],
-						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p9GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[2], 
-				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[2], SensorLSM303.ListofMagRange[2],
-						AlignmentMatrixMagShimmer3, SensitivityMatrixMag2p5GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[3], 
-				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[3], SensorLSM303.ListofMagRange[3],
-						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[4], 
-				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[4], SensorLSM303.ListofMagRange[4],
-						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4p7GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[5], 
-				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[5], SensorLSM303.ListofMagRange[5],
-						AlignmentMatrixMagShimmer3, SensitivityMatrixMag5p6GaShimmer3, OffsetVectorMagShimmer3));
-		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[6], 
-				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[6], SensorLSM303.ListofMagRange[6],
-						AlignmentMatrixMagShimmer3, SensitivityMatrixMag8p1GaShimmer3, OffsetVectorMagShimmer3));
+		mCalibMapMagShimmer3Ref.put(
+				SensorLSM303.ListofMagRangeConfigValues[5], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofMagRangeConfigValues[5],
+						SensorLSM303.ListofMagRange[5],
+						AlignmentMatrixMagShimmer3, 
+						SensitivityMatrixMag5p6GaShimmer3,
+						OffsetVectorMagShimmer3)
+				);
+		mCalibMapMagShimmer3Ref.put(
+				SensorLSM303.ListofMagRangeConfigValues[6], 
+				new CalibDetailsKinematic(
+						SensorLSM303.ListofMagRangeConfigValues[6],
+						SensorLSM303.ListofMagRange[6],
+						AlignmentMatrixMagShimmer3, 
+						SensitivityMatrixMag8p1GaShimmer3, 
+						OffsetVectorMagShimmer3));
 	}
+
+//	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapMagShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
+//	{
+//		//TODO improve the way these are loaded - using array indexes is too hard coded?
+//		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[0], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[0], SensorLSM303.ListofMagRange[0],
+//						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p3GaShimmer3, OffsetVectorMagShimmer3));
+//		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[1], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[1], SensorLSM303.ListofMagRange[1],
+//						AlignmentMatrixMagShimmer3, SensitivityMatrixMag1p9GaShimmer3, OffsetVectorMagShimmer3));
+//		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[2], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[2], SensorLSM303.ListofMagRange[2],
+//						AlignmentMatrixMagShimmer3, SensitivityMatrixMag2p5GaShimmer3, OffsetVectorMagShimmer3));
+//		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[3], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[3], SensorLSM303.ListofMagRange[3],
+//						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4GaShimmer3, OffsetVectorMagShimmer3));
+//		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[4], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[4], SensorLSM303.ListofMagRange[4],
+//						AlignmentMatrixMagShimmer3, SensitivityMatrixMag4p7GaShimmer3, OffsetVectorMagShimmer3));
+//		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[5], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[5], SensorLSM303.ListofMagRange[5],
+//						AlignmentMatrixMagShimmer3, SensitivityMatrixMag5p6GaShimmer3, OffsetVectorMagShimmer3));
+//		mCalibMapMagShimmer3.put(SensorLSM303.ListofMagRangeConfigValues[6], 
+//				new CalibDetailsKinematic(SensorLSM303.ListofMagRangeConfigValues[6], SensorLSM303.ListofMagRange[6],
+//						AlignmentMatrixMagShimmer3, SensitivityMatrixMag8p1GaShimmer3, OffsetVectorMagShimmer3));
+//	}
 	// ----------   Mag end ---------------
 	
 	// ----------- MPU9X50 options start -------------------------
@@ -4509,48 +4664,87 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+//	private void updateCalibMapAccelLn() {
+//		int rangeValue = 0;
+//		CalibDetailsKinematic calDetails = mCalibMapAccelAnalogShimmer3.get(rangeValue);
+//		if(calDetails==null){
+//			String rangeString = "+/- 2g";
+//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+//		}
+//		calDetails.setCurrentValues(mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+//		mCalibMapAccelAnalogShimmer3.put(rangeValue, calDetails);
+//	}
 	private void updateCalibMapAccelLn() {
 		int rangeValue = 0;
-		CalibDetailsKinematic calDetails = mCalibMapAccelAnalogShimmer3.get(rangeValue);
+		CalibDetails calDetails = mCalibMapAccelAnalogShimmer3Ref.get(rangeValue);
 		if(calDetails==null){
 			String rangeString = "+/- 2g";
 			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
 		}
-		calDetails.setCurrentValues(mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
-		mCalibMapAccelAnalogShimmer3.put(rangeValue, calDetails);
+		((CalibDetailsKinematic)calDetails).setCurrentValues(mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
+		mCalibMapAccelAnalogShimmer3Ref.put(rangeValue, calDetails);
 	}
-
 	private void updateCalibMapAccelWr() {
 		int rangeValue = getAccelRange();
-		CalibDetailsKinematic calDetails = mCalibMapAccelWideRangeShimmer3.get(rangeValue);
+		CalibDetails calDetails = mCalibMapAccelWideRangeShimmer3Ref.get(rangeValue);
 		if(calDetails==null){
 			String rangeString = getSensorRangeFromConfigValue(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, SensorLSM303.ListofAccelRange, rangeValue);
 			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
 		}
-		calDetails.setCurrentValues(mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
-		mCalibMapAccelWideRangeShimmer3.put(rangeValue, calDetails);
+		((CalibDetailsKinematic) calDetails).setCurrentValues(mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
+		mCalibMapAccelWideRangeShimmer3Ref.put(rangeValue, calDetails);
 	}
-
+//	private void updateCalibMapAccelWr() {
+//		int rangeValue = getAccelRange();
+//		CalibDetailsKinematic calDetails = mCalibMapAccelWideRangeShimmer3.get(rangeValue);
+//		if(calDetails==null){
+//			String rangeString = getSensorRangeFromConfigValue(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, SensorLSM303.ListofAccelRange, rangeValue);
+//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+//		}
+//		calDetails.setCurrentValues(mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
+//		mCalibMapAccelWideRangeShimmer3.put(rangeValue, calDetails);
+//	}
 	private void updateCalibMapGyro() {
 		int rangeValue = getGyroRange();
-		CalibDetailsKinematic calDetails = mCalibMapGyroShimmer3.get(rangeValue);
+		CalibDetails calDetails = mCalibMapGyroShimmer3Ref.get(rangeValue);
 		if(calDetails==null){
 			String rangeString = getSensorRangeFromConfigValue(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, SensorMPU9X50.ListofGyroRange, rangeValue);
 			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
 		}
-		calDetails.setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
-		mCalibMapGyroShimmer3.put(rangeValue, calDetails);
+		((CalibDetailsKinematic) calDetails).setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+		mCalibMapGyroShimmer3Ref.put(rangeValue, calDetails);
 	}
+//	private void updateCalibMapGyro() {
+//		int rangeValue = getGyroRange();
+//		CalibDetailsKinematic calDetails = mCalibMapGyroShimmer3.get(rangeValue);
+//		if(calDetails==null){
+//			String rangeString = getSensorRangeFromConfigValue(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, SensorMPU9X50.ListofGyroRange, rangeValue);
+//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+//		}
+//		calDetails.setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
+//		mCalibMapGyroShimmer3.put(rangeValue, calDetails);
+//	}
+	
+//	private void updateCalibMapMag() {
+//		int rangeValue = mMagRange;
+//		CalibDetailsKinematic calDetails = mCalibMapMagShimmer3.get(rangeValue);
+//		if(calDetails==null){ //Should never be null
+//			String rangeString = getSensorRangeFromConfigValue(SensorLSM303.ListofMagRangeConfigValues, SensorLSM303.ListofMagRange, rangeValue);
+//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
+//		}
+//		calDetails.setCurrentValues(mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+//		mCalibMapMagShimmer3.put(rangeValue, calDetails);
+//	}
 	
 	private void updateCalibMapMag() {
 		int rangeValue = mMagRange;
-		CalibDetailsKinematic calDetails = mCalibMapMagShimmer3.get(rangeValue);
+		CalibDetails calDetails = mCalibMapMagShimmer3Ref.get(rangeValue);
 		if(calDetails==null){ //Should never be null
-			String rangeString = getSensorRangeFromConfigValue(SensorLSM303.ListofMagRangeConfigValues, SensorLSM303.ListofMagRange, rangeValue);
+			String rangeString = getSensorRangeFromConfigValue(SensorLSM303.ListofMagRangeConfigValues,SensorLSM303.ListofMagRange, rangeValue);
 			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
 		}
-		calDetails.setCurrentValues(mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
-		mCalibMapMagShimmer3.put(rangeValue, calDetails);
+		((CalibDetailsKinematic) calDetails).setCurrentValues(mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+		mCalibMapMagShimmer3Ref.put(rangeValue, calDetails);
 	}
 
 	public static String getSensorRangeFromConfigValue(Integer[] listOfConfigValues, String[] listOfConfigValueStrings, Integer configValueToFind){
@@ -8313,14 +8507,26 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//TODO add support for Shimmer2r if needed
 		}
 		else if(getHardwareVersion()==HW_ID.SHIMMER_3){
-			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3);
-			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
-			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibMapAccelWideRangeShimmer3);
-			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3);
+//			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3);
+//			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
+//			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibMapAccelWideRangeShimmer3);
+//			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3);
+			mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3Ref);
+			mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibMapAccelWideRangeShimmer3Ref);
+			mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3Ref);
+			mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3Ref);
 		}
 		return mapOfKinematicSensorCalibration;
 	}
+	
+	
+	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
+		mCalibMapAccelAnalogShimmer3Ref.putAll(mapOfKinematicSensorCalibration);
+		mCalibMapGyroShimmer3Ref.putAll(mapOfKinematicSensorCalibration);
 
+	}
+	
+	
 	//-------------------- PPG Start -----------------------------------
 
 	/**
@@ -10899,14 +11105,31 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    			        	break;
 //			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
 	        	
-	        default:
-	        	returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);
+	       
+			
+			default:
+//	        	returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);
+	        	returnValue = getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+
 	        	break;
 		}
 		
 		return returnValue;
 	}		
-	
+	public Object getConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel) {
+		Object returnValue = null;
+		switch(configLabel){
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
+				returnValue = getCalibrationMapForSensor(sensorMapKey);
+				break;
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+				returnValue = mCalibMap;
+	        	break;
+			default:
+				break;
+		}
+		return returnValue;
+	}
 	@Override
 	public Object setConfigValueUsingConfigLabel(String identifier, String configLabel, Object valueToSet) {
 
@@ -11199,6 +11422,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	}
 	
+	protected void setCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfSensorCalibration) {
+		for(Integer sensorMapKey:mSensorMap.keySet()){
+			TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfSensorCalibration.get(sensorMapKey);
+			if(mapOfCalibPerSensor!=null){
+				mCalibMap.put(sensorMapKey, mapOfCalibPerSensor);
+			}
+		}
+	}
+	
+	protected TreeMap<Integer, TreeMap<Integer, CalibDetails>> getCalibrationMapForSensor(Integer sensorMapKey) {
+		if(mCalibMap.containsKey(sensorMapKey)){
+			TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
+			mapOfKinematicSensorCalibration.put(sensorMapKey, mCalibMap.get(sensorMapKey));
+			return mapOfKinematicSensorCalibration;
+		}
+		return null;
+	}
 	/**
 	 * @return the mLastReceivedTimeStamp
 	 */
