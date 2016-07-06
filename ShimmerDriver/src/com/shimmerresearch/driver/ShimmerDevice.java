@@ -1140,7 +1140,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
 	      		
 	      		returnValue = Double.toString(getSamplingRateShimmer());
-			case(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
+			case(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
 				returnValue = getMapOfKinematicSensorCalibration();
 				break;
 	        default:
@@ -2930,7 +2930,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION);
+			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR);
 			Map<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfCalibDetails = (Map<Integer, TreeMap<Integer, CalibDetailsKinematic>>) returnVal;
 			if(returnVal!=null){
 				mapOfKinematicSensorCalibration.putAll(mapOfCalibDetails);
@@ -2945,7 +2945,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			Integer sensorMapKey = iterator.next();
 			AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
 			if(abstractSensor!=null){
-				abstractSensor.setConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION, mapOfKinematicSensorCalibration.get(sensorMapKey));
+				abstractSensor.setConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR, mapOfKinematicSensorCalibration.get(sensorMapKey));
 			}
 		}
 	}

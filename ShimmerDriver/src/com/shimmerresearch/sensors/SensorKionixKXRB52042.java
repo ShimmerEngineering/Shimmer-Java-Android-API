@@ -121,9 +121,9 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			null,
 			Arrays.asList(ObjectClusterSensorName.ACCEL_LN_X,ObjectClusterSensorName.ACCEL_LN_Y,ObjectClusterSensorName.ACCEL_LN_Z));
-	{
-		sensorKionixKXRB52042.mCalibSensorKey = 0x01;
-	}
+//	{
+//		sensorKionixKXRB52042.mCalibSensorKey = 0x01;
+//	}
 	
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -305,15 +305,15 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
-			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)){
-					TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
-					setKinematicCalibration(mapOfKinematicSensorCalibration);
-					returnValue = valueToSet;
-				}
-	    		break;
+//			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
+//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+//					TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
+//					setKinematicCalibration(mapOfKinematicSensorCalibration);
+//					returnValue = valueToSet;
+//				}
+//	    		break;
 	        default:
+	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
 	        	break;
 		}
 		return returnValue;
@@ -328,13 +328,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 					returnValue = 0;
 				}
 				break;
-			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION):
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL)){
-					returnValue = getCalibrationMapForSensor(sensorMapKey);
-				}
-				break;
-	        default:
+			default:
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
 				break;
 		}
 		return returnValue;
@@ -400,12 +395,6 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		mCalibMapAccelAnalogShimmer3Ref.putAll(mapOfKinematicSensorCalibration);
 	}
 
-	private TreeMap<Integer, TreeMap<Integer, CalibDetails>> getCalibrationMapForSensor(Integer sensorMapKey) {
-		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
-		mapOfKinematicSensorCalibration.put(sensorMapKey, mCalibMap.get(sensorMapKey));
-		return mapOfKinematicSensorCalibration;
-	}
-	
 	private void updateCalibMapAccelLn() {
 		int rangeValue = 0;
 		CalibDetails calDetails = mCalibMapAccelAnalogShimmer3Ref.get(rangeValue);

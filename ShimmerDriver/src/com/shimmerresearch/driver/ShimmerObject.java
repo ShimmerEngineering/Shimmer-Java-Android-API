@@ -10897,6 +10897,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    						listOFExGBytes.add(getEXG2RegisterArray());
 //    						returnValue = listOFExGBytes;
 //    			        	break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
 	        	
 	        default:
 	        	returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);

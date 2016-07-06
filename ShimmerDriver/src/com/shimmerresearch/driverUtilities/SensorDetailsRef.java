@@ -47,8 +47,8 @@ public class SensorDetailsRef implements Serializable {
 	public int mHeaderByteMask = 0;
 	public int mNumChannels = 0;
 
-	/** Unique pre-defined unique ID referring to individual sensors for use when reading/writing calibrations to the Shimmer. ID must not equal 0x00*/
-	public int mCalibSensorKey = 0x00;
+//	/** Unique pre-defined unique ID referring to individual sensors for use when reading/writing calibrations to the Shimmer. ID must not equal 0x00*/
+//	public int mCalibSensorKey = 0x00;
 
 	/**
 	 * Holds all information related individual sensor channels for dynamic GUI
