@@ -879,11 +879,7 @@ public class SensorLSM303 extends AbstractSensor{
 		return returnValue;
 	
 	}
-	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
-		mCalibMapAccelWideRangeShimmer3Ref.putAll(mapOfKinematicSensorCalibration);
-		mCalibMapMagShimmer3Ref.putAll(mapOfKinematicSensorCalibration);
 
-	}
 	
 	@Override 
 	public void setSensorSamplingRate(double samplingRateHz) {
@@ -1568,8 +1564,6 @@ public class SensorLSM303 extends AbstractSensor{
 		((CalibDetailsKinematic) calDetails).setCurrentValues(mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
 		mCalibMapMagShimmer3Ref.put(rangeValue, calDetails);
 	}
-	
-	
 	public static String getSensorRangeFromConfigValue(Integer[] listOfConfigValues, String[] listOfConfigValueStrings, Integer configValueToFind){
 		int index = Arrays.asList(listOfConfigValues).indexOf(configValueToFind);
 		if(index>=0 && listOfConfigValueStrings.length>index){
