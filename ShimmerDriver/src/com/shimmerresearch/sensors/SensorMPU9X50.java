@@ -1841,14 +1841,14 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //				returnValue = getMPU9150GyroAccelRateInHz();
 	        	break;
 			
-			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
-				TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
-				setKinematicCalibration(mapOfKinematicSensorCalibration);
-				returnValue = valueToSet;
-				}
-	    		break;
+//			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+//				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
+//						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
+//				TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
+//				setKinematicCalibration(mapOfKinematicSensorCalibration);
+//				returnValue = valueToSet;
+//				}
+//	    		break;
 
 			case(GuiLabelConfigCommon.RANGE):
 				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
@@ -1868,7 +1868,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				break;			
 			
 	        default:
-//	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
 	        	break;
 		}
 		return returnValue;
@@ -1929,19 +1929,19 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				returnValue = getMPU9150GyroAccelRateInHz();
 				break;
 				
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
-					returnValue = getCalibrationMapForSensor(sensorMapKey);
-				}
-				break;
-			
-			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
-						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
-				returnValue = getCalibrationMapForSensor(sensorMapKey);
-				}
-				break;
+//			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+//				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
+//						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
+//					returnValue = getCalibrationMapForSensor(sensorMapKey);
+//				}
+//				break;
+//			
+//			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
+//				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR)
+//						||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
+//				returnValue = getCalibrationMapForSensor(sensorMapKey);
+//				}
+//				break;
 			case(GuiLabelConfigCommon.RANGE):
 				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9150_GYRO_RANGE);
@@ -1959,8 +1959,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				}
 				break;
 				
-		    default:
-	        	break;
+			default:
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+				break;
 	    }
 
 		return returnValue;
