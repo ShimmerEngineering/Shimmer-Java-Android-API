@@ -279,10 +279,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 			HashMap<String, ConfigOptionDetailsSensor> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
 				
-				if(configOptionsMapPerSensor!=null && configOptionsMapPerSensor.keySet().size()>0){
-					
+			if(configOptionsMapPerSensor!=null && configOptionsMapPerSensor.keySet().size()>0){
 				mConfigOptionsMap.putAll(configOptionsMapPerSensor);
-					// taking out duplicates for orientation algorithm config options 
+				// taking out duplicates for orientation algorithm config options 
 //					for(String s: configOptionsMapPerSensor.keySet()){
 //						if(mConfigOptionsMap.containsKey(s)){
 //							//do nothing 
@@ -290,10 +289,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //							mConfigOptionsMap.put(s,configOptionsMapPerSensor.get(s));
 //						}				
 //					
-					
-				//	}
-				}	
-
+				
+			//	}
+			}	
 		}
 	}
 	

@@ -69,8 +69,8 @@ public abstract class AbstractSensor implements Serializable{
 	public class GuiLabelConfigCommon{
 		public static final String RATE = "Rate";
 		public static final String RANGE = "Range";
-		public static final String CALIBRATION_PER_SENSOR = "Kinematic Calibration";
-		public static final String CALIBRATION_ALL = "Kinematic Calibration all";
+		public static final String CALIBRATION_PER_SENSOR = "Calibration";
+		public static final String CALIBRATION_ALL = "Calibration all";
 	}
 	
 	// --------------- Abstract methods start ----------------

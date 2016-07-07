@@ -101,6 +101,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 	}
 	
 	public LiteProtocol(ShimmerDevice shimmerDevice){
+		//TODO device whether to go with the approach using this argument
 		super();
 	}
 
@@ -190,419 +191,425 @@ public class LiteProtocol extends ByteLevelProtocol{
 
 	
 	public class IOThread extends Thread {
-		byte[] tb ={0};
-//		byte[] newPacket=new byte[mPacketSize+1];
+		byte[] byteBuffer = {0};
 		public boolean stop = false;
 		
 		public synchronized void run() {
 			while (!stop) {
 				try {
-				//region --------- Process Instruction on stack --------- 
-				// is an instruction running ? if not proceed
-				if(!isInstructionStackLock()){
-					
-					// check instruction stack, are there any other instructions left to be executed?
-					if(!getListofInstructions().isEmpty()) {
-						if(getListofInstructions().get(0)==null) {
-							getListofInstructions().remove(0);
-							printLogDataForDebugging("Null Removed");
-						}
+					// Process Instruction on stack. is an instruction running? if not proceed
+					if(!isInstructionStackLock()){
+						processNextInstruction();
 					}
-					
-					if(!getListofInstructions().isEmpty()){
-						if(getListofInstructions().get(0)!=null) {
-							byte[] insBytes = (byte[]) getListofInstructions().get(0);
-							mCurrentCommand=insBytes[0];
-							setInstructionStackLock(true);
-							mWaitForAck=true;
-							
-							if(!mIsStreaming){
-								clearSerialBuffer();
-							}
-							//Special cases
-							if(mCurrentCommand==InstructionsSet.SET_RWC_COMMAND_VALUE){
-								// for Real-world time -> grab PC time just before
-								// writing to Shimmer
-								byte[] rtcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(System.currentTimeMillis());
-								System.arraycopy(rtcTimeArray, 0, insBytes, 1, 8);
-							}
-							//TODO: are the two stops needed here? better to wait for ack from Shimmer
-							if(mCurrentCommand==InstructionsSet.STOP_STREAMING_COMMAND_VALUE
-									|| mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE){
-								//DO NOTHING
-							} 
-							else {
-								// Overwritten for commands that aren't supported
-								// for older versions of Shimmer
-								if(mCurrentCommand==InstructionsSet.SET_SENSORS_COMMAND_VALUE
-										&& getShimmerVersion()==HW_ID.SHIMMER_2R){
-									startTimerCheckForAckOrResp(ACK_TIMER_DURATION+8);
-								}
-								else if((mCurrentCommand==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE)
-										||(mCurrentCommand==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE)
-										||(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE)){
-									startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
-								}
-								else {
-									if(mIsStreaming){
-										startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
-									}
-									else {
-										startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
-									}
-								}
-							}
-							threadSleep((int)((Math.random()+.1)*100.0));
-							writeBytes(insBytes);
-							printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(insBytes));
-	
-							//TODO: are the two stops needed here? better to wait for ack from Shimmer
-							if(mCurrentCommand==InstructionsSet.STOP_STREAMING_COMMAND_VALUE
-									|| mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE){
-								mIsStreaming=false;
-								if (mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE){
-									mIsSDLogging = false;
-								}
-								
-								if(!isShimmerBluetoothApproach){
-								//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation 
-									eventAckReceived((byte[]) getListofInstructions().get(0)); //DUMMY
-									hasStopStreaming();
-								}
-								
-								getListofInstructions().removeAll(Collections.singleton(null));
-							} 
-							else {
-								/*
-								// Overwritten for commands that aren't supported
-								// for older versions of Shimmer
-								if((mCurrentCommand==GET_FW_VERSION_COMMAND)
-										||(mCurrentCommand==GET_SAMPLING_RATE_COMMAND)
-										||(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW)){
-									startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
-								}
-								else {
-									if(mIsStreaming){
-										startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
-									}
-									else {
-										startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
-									}
-								}*/
-							}
-							
-							
-							mTransactionCompleted=false;
-						}
-					} else {
-						if (!mIsStreaming && !bytesAvailableToBeRead()){
-							threadSleep(50);
-						}
-					}
-				}
-				//endregion --------- Process Instruction on stack --------- 
 				
-				if(!mIsStreaming){
-					//region --------- Process ACK from a GET or SET command while not streaming --------- 
-					if(mWaitForAck) {
-	
-						//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss 
-						/*
-						if (Math.random()>0.9 && mIsInitialised==true){
-							if(bytesAvailableToBeRead() && mCurrentCommand!=TEST_CONNECTION_COMMAND	&& mCurrentCommand!=GET_STATUS_COMMAND	&& mCurrentCommand!= GET_VBATT_COMMAND && mCurrentCommand!=START_STREAMING_COMMAND&& mCurrentCommand!=STOP_STREAMING_COMMAND && mCurrentCommand!=SET_RWC_COMMAND && mCurrentCommand!=GET_RWC_COMMAND){
-								tb=readBytes(1);
-								tb=null;
-							}
-						}
-						*/
-						//JC TEST:: IMPORTANT TO REMOVE
-						
-						if(bytesAvailableToBeRead()){
-							tb=readBytes(1);
-							mNumberofTXRetriesCount = 0;
-							mIamAlive = true;
-							
-							//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
-							if(mCurrentCommand==InstructionsSet.STOP_STREAMING_COMMAND_VALUE 
-									|| mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE) { //due to not receiving the ack from stop streaming command we will skip looking for it.
-								stopTimerCheckForAckOrResp();
-								mIsStreaming=false;
-								mTransactionCompleted=true;
-								mWaitForAck=false;
-								
-								delayForBtResponse(200); // Wait to ensure the packet has been fully received
-								byteStack.clear();
-	
-								clearSerialBuffer();
-								
-								hasStopStreaming();					
-								getListofInstructions().remove(0);
-								getListofInstructions().removeAll(Collections.singleton(null));
-								if (mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE){
-									eventLogAndStreamStatusChanged();	
-								}
-								setInstructionStackLock(false);
-							}
-//							//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
-//							if(mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
-//								stopTimerCheckForAckOrResp();
-//								mIsStreaming=false;
-//								mIsSDLogging=false;
-//								mTransactionCompleted=true;
-//								mWaitForAck=false;
-//								
-//								delayForBtResponse(200); // Wait to ensure the packet has been fully received
-//								byteStack.clear();
-//	
-//								clearSerialBuffer();
-//								
-//								hasStopStreaming();					
-//								getListofInstructions().remove(0);
-//								getListofInstructions().removeAll(Collections.singleton(null));
-//								setInstructionStackLock(false);
-//							}
-							if(tb != null){
-								if((byte)tb[0]==(byte)InstructionsSet.ACK_COMMAND_PROCESSED_VALUE) {
-
-									mWaitForAck=false;
-									printLogDataForDebugging("Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand));
-
-									// Send status report if needed by the
-									// application and is not one of the below
-									// commands that are triggered by timers
-									if(mCurrentCommand!=InstructionsGet.GET_STATUS_COMMAND_VALUE 
-											&& mCurrentCommand!=InstructionsSet.TEST_CONNECTION_COMMAND_VALUE 
-											&& mCurrentCommand!=InstructionsSet.SET_BLINK_LED_VALUE
-											//&& mCurrentCommand!= GET_VBATT_COMMAND
-											&& mOperationUnderway){
-										sendProgressReport(new BluetoothProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mComPort));
-									}
-									
-									// Process if currentCommand is a SET command
-									if(isKnownSetCommand(mCurrentCommand)){
-										stopTimerCheckForAckOrResp(); //cancel the ack timer
-										
-										//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation
-										if(!isShimmerBluetoothApproach){
-											byte[] insBytes = getListofInstructions().get(0);
-											eventAckReceived(insBytes);
-										}
-										
-										processAckFromSetCommand(mCurrentCommand);
-										mTransactionCompleted = true;
-										setInstructionStackLock(false);
-									}
-									
-									// Process if currentCommand is a GET command
-									else if(isKnownGetCommand(mCurrentCommand)){
-										//Special cases
-										processSpecialGetCmdsAfterAck(mCurrentCommand);
-										mWaitForResponse=true;
-										getListofInstructions().remove(0);
-									}
-									
-								}
-							}
-						}
-					} 
-					//endregion --------- Process ACK from a GET or SET command while not streaming --------- 
-	
-					//region --------- Process RESPONSE while not streaming --------- 
-					else if(mWaitForResponse) {
-						//Discard first read
-						if(mFirstTime){
-//							printLogDataForDebugging("First Time read");
-//							clearSerialBuffer();
-							
-							while (availableBytes()!=0){
-								int available = availableBytes();
-								if (bytesAvailableToBeRead()){
-									tb=readBytes(1);
-									String msg = "First Time : " + Arrays.toString(tb);
-									printLogDataForDebugging(msg);
-								}
-							}
-							
-							//TODO: Check with JC on the below!!! Or just clear seriable buffer and remove need for mFirstTime
-							//Below added from original implementation -> doesn't wait for timeout on first command
-							//TODO: if keeping the below, remove "mFirstTime = false" from the TimerCheckForAckOrResp
-							stopTimerCheckForAckOrResp(); //cancel the ack timer
-							mWaitForResponse=false;
-							mTransactionCompleted=true;
-							setInstructionStackLock(false);
-							mFirstTime = false;
+					if(mIsStreaming){
+						processWhileStreaming();
+					}
+					else if(bytesAvailableToBeRead()){
+						if(mWaitForAck) {
+							processNotStreamingWaitForAck();
+						} 
+						else if(mWaitForResponse) {
+							processNotStreamingWaitForResp();
 						} 
 						
-						else if(bytesAvailableToBeRead()){
-							tb=readBytes(1);
-							mIamAlive = true;
-							
-							//Check to see whether it is a response byte
-							if(isKnownResponse(tb[0])){
-								byte responseCommand = tb[0];
-								
-								if(isShimmerBluetoothApproach){
-//									processResponseCommand(responseCommand);
-								}
-								else {
-									processResponseCommand(responseCommand, tb);
-								}
-								//JD: only stop timer after process because there are readbyte opeartions in the processresponsecommand
-								stopTimerCheckForAckOrResp(); //cancel the ack timer
-								mWaitForResponse=false;
-								mTransactionCompleted=true;
-								setInstructionStackLock(false);
-								printLogDataForDebugging("Response Received:\t\t\t" + btCommandToString(responseCommand));
-								
-								// Special case for FW_VERSION_RESPONSE because it
-								// needs to initialize the Shimmer after releasing
-								// the setInstructionStackLock
-								if(tb[0]==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
-									processFirmwareVerResponse();
-								}
-							}
-						}
-					} 
-					//endregion --------- Process RESPONSE while not streaming --------- 
-					
-					
-					//region --------- Process LogAndStream INSTREAM_CMD_RESPONSE while not streaming --------- 
-					if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
-							||getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)
-							&& !mWaitForAck 
-							&& !mWaitForResponse 
-							&& bytesAvailableToBeRead()) {
-						
-						tb=readBytes(1);
-						if(tb != null){
-							if(tb[0]==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE) {
-								printLogDataForDebugging("ACK RECEIVED , Connected State!!");
-								tb = readBytes(1);
-								if (tb!=null){ //an android fix.. not fully investigated (JC)
-									if(tb[0]==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
-										tb = readBytes(1);
-									}
-									if(tb[0]==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){
-										processInstreamResponse();
-									}
-								}
-							}
-						}
-
-						
-						clearSerialBuffer();
+						processBytesAvailableAndInstreamSupported();
 					}
-					//endregion --------- Process LogAndStream INSTREAM_CMD_RESPONSE while not streaming --------- 
-				}
-				
-				
-				//region --------- Process while streaming --------- 
-				else if(mIsStreaming){ // no need for if statement, just for readability
-					// TODO: currently reads byte-by-byte. E.g. a
-					// Shimmer with fs=1000Hz with 20 bytes payload will
-					// enter this loop 20,000 a second -> change to read all
-					// from serial and then process
-					tb = readBytes(1);
-					if(tb!=null){
-						mByteArrayOutputStream.write(tb[0]);
-						//Everytime a byte is received the timestamp is taken
-						mListofPCTimeStamps.add(System.currentTimeMillis());
-					} 
-					else {
-						printLogDataForDebugging("readbyte null");
-					}
-
-					//If there is a full packet and the subsequent sequence number of following packet
-					if(mByteArrayOutputStream.size()>=mPacketSize+2){ // +2 because there are two acks
-						mIamAlive = true;
-						byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
-						
-						//Data packet followed by another data packet
-						if(bufferTemp[0]==InstructionsSet.DATA_PACKET_VALUE 
-								&& bufferTemp[mPacketSize+1]==InstructionsSet.DATA_PACKET_VALUE){
-							//Handle the data packet
-							processDataPacket(bufferTemp);
-							clearSingleDataPacketFromBuffers(bufferTemp, mPacketSize+1);
-						} 
-						
-						//Data packet followed by an ACK (suggesting an ACK in response to a SET BT command or else a BT response command)
-						else if(bufferTemp[0]==InstructionsSet.DATA_PACKET_VALUE 
-								&& bufferTemp[mPacketSize+1]==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
-							if(mByteArrayOutputStream.size()>mPacketSize+2){
-								
-								if(bufferTemp[mPacketSize+2]==InstructionsSet.DATA_PACKET_VALUE){
-									//Firstly handle the data packet
-									processDataPacket(bufferTemp);
-									clearSingleDataPacketFromBuffers(bufferTemp, mPacketSize+2);
-									
-									//Then handle the ACK from the last SET command
-									if(isKnownSetCommand(mCurrentCommand)){
-										stopTimerCheckForAckOrResp(); //cancel the ack timer
-										mWaitForAck=false;
-										
-										processAckFromSetCommand(mCurrentCommand);
-										
-										mTransactionCompleted = true;
-										setInstructionStackLock(false);
-									}
-									printLogDataForDebugging("Ack Received for Command: \t\t\t" + btCommandToString(mCurrentCommand));
-								}
-								
-								//this is for LogAndStream support, command is transmitted and ack received
-								else if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
-										||getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)
-										&& bufferTemp[mPacketSize+2]==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){ 
-									printLogDataForDebugging("COMMAND TXed and ACK RECEIVED IN STREAM");
-									printLogDataForDebugging("INS CMD RESP");
-
-									//Firstly handle the in-stream response
-									stopTimerCheckForAckOrResp(); //cancel the ack timer
-									mWaitForResponse=false;
-									mWaitForAck=false;
-
-									processInstreamResponse();
-
-									// Need to remove here because it is an
-									// in-stream response while streaming so not
-									// handled elsewhere
-									if(getListofInstructions().size()>0){
-										getListofInstructions().remove(0);
-									}
-									
-									mTransactionCompleted=true;
-									setInstructionStackLock(false);
-
-									//Then process the Data packet
-									processDataPacket(bufferTemp);
-									clearBuffers();
-								} 
-								else {
-									printLogDataForDebugging("Unknown parsing error while streaming");
-								}
-							} 
-							if(mByteArrayOutputStream.size()>mPacketSize+2){
-								printLogDataForDebugging("Unknown packet error (check with JC):\tExpected: " + (mPacketSize+2) + "bytes but buffer contains " + mByteArrayOutputStream.size() + "bytes");
-								discardFirstBufferByte(); //throw the first byte away
-							}
-							
-						} 
-						//TODO: ACK in bufferTemp[0] not handled
-						//else if
-						else {
-							printLogDataForDebugging("Packet syncing problem:\tExpected: " + (mPacketSize+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
-							discardFirstBufferByte(); //throw the first byte away
-						}
-					} 
-				}
-				//endregion --------- Process while streaming --------- 
 				} catch (DeviceException e) {
 					// TODO Auto-generated catch block
 					stop=true;
 					e.printStackTrace();
 				}
-			} //End While loop
-		} // End run
-	} // End IOThread
+			} 
+		} 
+		
+		private void processNextInstruction() throws DeviceException {
+			// check instruction stack, are there any other instructions left to be executed?
+			if(!getListofInstructions().isEmpty()) {
+				if(getListofInstructions().get(0)==null) {
+					getListofInstructions().remove(0);
+					printLogDataForDebugging("Null Removed");
+				}
+			}
+			
+			if(!getListofInstructions().isEmpty()){
+				if(getListofInstructions().get(0)!=null) {
+					byte[] insBytes = (byte[]) getListofInstructions().get(0);
+					mCurrentCommand=insBytes[0];
+					setInstructionStackLock(true);
+					mWaitForAck=true;
+					
+					if(!mIsStreaming){
+						clearSerialBuffer();
+					}
+					//Special cases
+					if(mCurrentCommand==InstructionsSet.SET_RWC_COMMAND_VALUE){
+						// for Real-world time -> grab PC time just before
+						// writing to Shimmer
+						byte[] rtcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(System.currentTimeMillis());
+						System.arraycopy(rtcTimeArray, 0, insBytes, 1, 8);
+					}
+					//TODO: are the two stops needed here? better to wait for ack from Shimmer
+					if(mCurrentCommand==InstructionsSet.STOP_STREAMING_COMMAND_VALUE
+							|| mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE){
+						//DO NOTHING
+					} 
+					else {
+						// Overwritten for commands that aren't supported
+						// for older versions of Shimmer
+						if(mCurrentCommand==InstructionsSet.SET_SENSORS_COMMAND_VALUE
+								&& getShimmerVersion()==HW_ID.SHIMMER_2R){
+							startTimerCheckForAckOrResp(ACK_TIMER_DURATION+8);
+						}
+						else if((mCurrentCommand==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE)
+								||(mCurrentCommand==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE)
+								||(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE)){
+							startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
+						}
+						else {
+							if(mIsStreaming){
+								startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
+							}
+							else {
+								startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
+							}
+						}
+					}
+					threadSleep((int)((Math.random()+.1)*100.0));
+					writeBytes(insBytes);
+					printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(insBytes));
+
+					//TODO: are the two stops needed here? better to wait for ack from Shimmer
+					if(mCurrentCommand==InstructionsSet.STOP_STREAMING_COMMAND_VALUE
+							|| mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE){
+						mIsStreaming=false;
+						if (mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE){
+							mIsSDLogging = false;
+						}
+						
+						if(!isShimmerBluetoothApproach){
+						//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation 
+							eventAckReceived((byte[]) getListofInstructions().get(0)); //DUMMY
+							hasStopStreaming();
+						}
+						
+						getListofInstructions().removeAll(Collections.singleton(null));
+					} 
+					else {
+						/*
+						// Overwritten for commands that aren't supported
+						// for older versions of Shimmer
+						if((mCurrentCommand==GET_FW_VERSION_COMMAND)
+								||(mCurrentCommand==GET_SAMPLING_RATE_COMMAND)
+								||(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW)){
+							startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
+						}
+						else {
+							if(mIsStreaming){
+								startTimerCheckForAckOrResp(ACK_TIMER_DURATION);
+							}
+							else {
+								startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
+							}
+						}*/
+					}
+					
+					
+					mTransactionCompleted=false;
+				}
+			} else {
+				if (!mIsStreaming && !bytesAvailableToBeRead()){
+					threadSleep(50);
+				}
+			}
+		}
+
+		private void processWhileStreaming() throws DeviceException {
+			byteBuffer = readBytes(1);
+			if(byteBuffer!=null){
+				mByteArrayOutputStream.write(byteBuffer[0]);
+				//Everytime a byte is received the timestamp is taken
+				mListofPCTimeStamps.add(System.currentTimeMillis());
+			} 
+			else {
+				printLogDataForDebugging("readbyte null");
+			}
+
+			//If there is a full packet and the subsequent sequence number of following packet
+			if(mByteArrayOutputStream.size()>=mPacketSize+2){ // +2 because there are two acks
+				processPacket();
+			} 
+		}
+		
+		private void processPacket() {
+			mIamAlive = true;
+			byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
+			
+			//Data packet followed by another data packet
+			if(bufferTemp[0]==InstructionsSet.DATA_PACKET_VALUE 
+					&& bufferTemp[mPacketSize+1]==InstructionsSet.DATA_PACKET_VALUE){
+				//Handle the data packet
+				processDataPacket(bufferTemp);
+				clearSingleDataPacketFromBuffers(bufferTemp, mPacketSize+1);
+			} 
+			
+			//Data packet followed by an ACK (suggesting an ACK in response to a SET BT command or else a BT response command)
+			else if(bufferTemp[0]==InstructionsSet.DATA_PACKET_VALUE 
+					&& bufferTemp[mPacketSize+1]==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
+				if(mByteArrayOutputStream.size()>mPacketSize+2){
+					
+					if(bufferTemp[mPacketSize+2]==InstructionsSet.DATA_PACKET_VALUE){
+						//Firstly handle the data packet
+						processDataPacket(bufferTemp);
+						clearSingleDataPacketFromBuffers(bufferTemp, mPacketSize+2);
+						
+						//Then handle the ACK from the last SET command
+						if(isKnownSetCommand(mCurrentCommand)){
+							stopTimerCheckForAckOrResp(); //cancel the ack timer
+							mWaitForAck=false;
+							
+							processAckFromSetCommand(mCurrentCommand);
+							
+							mTransactionCompleted = true;
+							setInstructionStackLock(false);
+						}
+						printLogDataForDebugging("Ack Received for Command: \t\t\t" + btCommandToString(mCurrentCommand));
+					}
+					
+					//this is for LogAndStream support, command is transmitted and ack received
+					else if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
+							||getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)
+							&& bufferTemp[mPacketSize+2]==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){ 
+						printLogDataForDebugging("COMMAND TXed and ACK RECEIVED IN STREAM");
+						printLogDataForDebugging("INS CMD RESP");
+
+						//Firstly handle the in-stream response
+						stopTimerCheckForAckOrResp(); //cancel the ack timer
+						mWaitForResponse=false;
+						mWaitForAck=false;
+
+						processInstreamResponse();
+
+						// Need to remove here because it is an
+						// in-stream response while streaming so not
+						// handled elsewhere
+						if(getListofInstructions().size()>0){
+							getListofInstructions().remove(0);
+						}
+						
+						mTransactionCompleted=true;
+						setInstructionStackLock(false);
+
+						//Then process the Data packet
+						processDataPacket(bufferTemp);
+						clearBuffers();
+					} 
+					else {
+						printLogDataForDebugging("Unknown parsing error while streaming");
+					}
+				} 
+				if(mByteArrayOutputStream.size()>mPacketSize+2){
+					printLogDataForDebugging("Unknown packet error (check with JC):\tExpected: " + (mPacketSize+2) + "bytes but buffer contains " + mByteArrayOutputStream.size() + "bytes");
+					discardFirstBufferByte(); //throw the first byte away
+				}
+				
+			} 
+			//TODO: ACK in bufferTemp[0] not handled
+			//else if
+			else {
+				printLogDataForDebugging("Packet syncing problem:\tExpected: " + (mPacketSize+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
+				discardFirstBufferByte(); //throw the first byte away
+			}
+		}
+
+		/** Process ACK from a GET or SET command while not streaming */ 
+		private void processNotStreamingWaitForAck() throws DeviceException {
+			//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss 
+			/*
+			if (Math.random()>0.9 && mIsInitialised==true){
+				if(bytesAvailableToBeRead() && mCurrentCommand!=TEST_CONNECTION_COMMAND	&& mCurrentCommand!=GET_STATUS_COMMAND	&& mCurrentCommand!= GET_VBATT_COMMAND && mCurrentCommand!=START_STREAMING_COMMAND&& mCurrentCommand!=STOP_STREAMING_COMMAND && mCurrentCommand!=SET_RWC_COMMAND && mCurrentCommand!=GET_RWC_COMMAND){
+					tb=readBytes(1);
+					tb=null;
+				}
+			}
+			*/
+			//JC TEST:: IMPORTANT TO REMOVE
+			
+			if(bytesAvailableToBeRead()){
+				byteBuffer=readBytes(1);
+				mNumberofTXRetriesCount = 0;
+				mIamAlive = true;
+				
+				//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
+				if(mCurrentCommand==InstructionsSet.STOP_STREAMING_COMMAND_VALUE 
+						|| mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE) { //due to not receiving the ack from stop streaming command we will skip looking for it.
+					stopTimerCheckForAckOrResp();
+					mIsStreaming=false;
+					mTransactionCompleted=true;
+					mWaitForAck=false;
+					
+					delayForBtResponse(200); // Wait to ensure the packet has been fully received
+					byteStack.clear();
+
+					clearSerialBuffer();
+					
+					hasStopStreaming();					
+					getListofInstructions().remove(0);
+					getListofInstructions().removeAll(Collections.singleton(null));
+					if (mCurrentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE){
+						eventLogAndStreamStatusChanged();	
+					}
+					setInstructionStackLock(false);
+				}
+//				//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
+//				if(mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
+//					stopTimerCheckForAckOrResp();
+//					mIsStreaming=false;
+//					mIsSDLogging=false;
+//					mTransactionCompleted=true;
+//					mWaitForAck=false;
+//					
+//					delayForBtResponse(200); // Wait to ensure the packet has been fully received
+//					byteStack.clear();
+//
+//					clearSerialBuffer();
+//					
+//					hasStopStreaming();					
+//					getListofInstructions().remove(0);
+//					getListofInstructions().removeAll(Collections.singleton(null));
+//					setInstructionStackLock(false);
+//				}
+				if(byteBuffer != null){
+					if((byte)byteBuffer[0]==(byte)InstructionsSet.ACK_COMMAND_PROCESSED_VALUE) {
+
+						mWaitForAck=false;
+						printLogDataForDebugging("Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand));
+
+						// Send status report if needed by the
+						// application and is not one of the below
+						// commands that are triggered by timers
+						if(mCurrentCommand!=InstructionsGet.GET_STATUS_COMMAND_VALUE 
+								&& mCurrentCommand!=InstructionsSet.TEST_CONNECTION_COMMAND_VALUE 
+								&& mCurrentCommand!=InstructionsSet.SET_BLINK_LED_VALUE
+								//&& mCurrentCommand!= GET_VBATT_COMMAND
+								&& mOperationUnderway){
+							sendProgressReport(new BluetoothProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mComPort));
+						}
+						
+						// Process if currentCommand is a SET command
+						if(isKnownSetCommand(mCurrentCommand)){
+							stopTimerCheckForAckOrResp(); //cancel the ack timer
+							
+							//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation
+							if(!isShimmerBluetoothApproach){
+								byte[] insBytes = getListofInstructions().get(0);
+								eventAckReceived(insBytes);
+							}
+							
+							processAckFromSetCommand(mCurrentCommand);
+							mTransactionCompleted = true;
+							setInstructionStackLock(false);
+						}
+						
+						// Process if currentCommand is a GET command
+						else if(isKnownGetCommand(mCurrentCommand)){
+							//Special cases
+							processSpecialGetCmdsAfterAck(mCurrentCommand);
+							mWaitForResponse=true;
+							getListofInstructions().remove(0);
+						}
+						
+					}
+				}
+			}
+		}
+
+		/** Process RESPONSE while not streaming */ 
+		private void processNotStreamingWaitForResp() throws DeviceException {
+			//Discard first read
+			if(mFirstTime){
+//				printLogDataForDebugging("First Time read");
+//				clearSerialBuffer();
+				
+				while (availableBytes()!=0){
+					int available = availableBytes();
+					if (bytesAvailableToBeRead()){
+						byteBuffer=readBytes(1);
+						String msg = "First Time : " + Arrays.toString(byteBuffer);
+						printLogDataForDebugging(msg);
+					}
+				}
+				
+				//TODO: Check with JC on the below!!! Or just clear seriable buffer and remove need for mFirstTime
+				//Below added from original implementation -> doesn't wait for timeout on first command
+				//TODO: if keeping the below, remove "mFirstTime = false" from the TimerCheckForAckOrResp
+				stopTimerCheckForAckOrResp(); //cancel the ack timer
+				mWaitForResponse=false;
+				mTransactionCompleted=true;
+				setInstructionStackLock(false);
+				mFirstTime = false;
+			} 
+			
+			else if(bytesAvailableToBeRead()){
+				byteBuffer=readBytes(1);
+				mIamAlive = true;
+				
+				//Check to see whether it is a response byte
+				if(isKnownResponse(byteBuffer[0])){
+					byte responseCommand = byteBuffer[0];
+					
+					if(isShimmerBluetoothApproach){
+//						processResponseCommand(responseCommand);
+					}
+					else {
+						processResponseCommand(responseCommand, byteBuffer);
+					}
+					//JD: only stop timer after process because there are readbyte opeartions in the processresponsecommand
+					stopTimerCheckForAckOrResp(); //cancel the ack timer
+					mWaitForResponse=false;
+					mTransactionCompleted=true;
+					setInstructionStackLock(false);
+					printLogDataForDebugging("Response Received:\t\t\t" + btCommandToString(responseCommand));
+					
+					// Special case for FW_VERSION_RESPONSE because it
+					// needs to initialize the Shimmer after releasing
+					// the setInstructionStackLock
+					if(byteBuffer[0]==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
+						processFirmwareVerResponse();
+					}
+				}
+			}
+		}
+
+		/** Process LogAndStream INSTREAM_CMD_RESPONSE while not streaming */ 
+		private void processBytesAvailableAndInstreamSupported() throws DeviceException {
+			if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
+					||getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)
+					&& !mWaitForAck 
+					&& !mWaitForResponse 
+					&& bytesAvailableToBeRead()) {
+				
+				byteBuffer=readBytes(1);
+				if(byteBuffer != null){
+					if(byteBuffer[0]==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE) {
+						printLogDataForDebugging("ACK RECEIVED , Connected State!!");
+						byteBuffer = readBytes(1);
+						if (byteBuffer!=null){ //an android fix.. not fully investigated (JC)
+							if(byteBuffer[0]==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
+								byteBuffer = readBytes(1);
+							}
+							if(byteBuffer[0]==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){
+								processInstreamResponse();
+							}
+						}
+					}
+				}
+				
+				clearSerialBuffer();
+			}
+		}
+
+	}
 
 	private void processResponseCommand(byte responseCommand, byte[] tb) throws DeviceException {
 		// response have to read bytes and return the values
@@ -613,289 +620,6 @@ public class LiteProtocol extends ByteLevelProtocol{
 		byte[] response = readBytes(lengthOfResponse);
 		response = ArrayUtils.addAll(tb,response);
 		eventNewResponse(response);
-	}
-
-	private void processFirmwareVerResponse() {
-		if(isShimmerBluetoothApproach){
-//			if(getHardwareVersion()==HW_ID.SHIMMER_2R){
-//				initializeShimmer2R();
-//			} 
-//			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
-//				initializeShimmer3();
-//			}
-//			
-//			startTimerCheckIfAlive();
-//	//		readShimmerVersion();
-		}
-	}
-	
-	private void processSpecialGetCmdsAfterAck(byte mCurrentCommand) {
-		byte[] insBytes = getListofInstructions().get(0);
-		if(isShimmerBluetoothApproach){
-//			if(mCurrentCommand==InstructionsGet.GET_EXG_REGS_COMMAND_VALUE){
-//				// Need to store ExG chip number before receiving response
-//				mTempChipID = insBytes[1];
-//			}
-//			else if(mCurrentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE){
-//				// store current address/InfoMem segment
-//				mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
-//				mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
-//			}
-		}
-		else{
-			//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation 
-			eventAckReceived(insBytes);
-		}
-	}
-
-	private boolean isKnownResponse(byte response) {
-		return ((InstructionsResponse.valueOf(response&0xff)==null)? false:true);
-	}
-
-	private boolean isKnownGetCommand(byte getCmd) {
-		return ((InstructionsGet.valueOf(getCmd&0xff)==null)? false:true);
-	}
-
-	private boolean isKnownSetCommand(byte setCmd) {
-		return ((InstructionsSet.valueOf(setCmd&0xff)==null)? false:true);
-	}
-
-	private boolean bytesAvailableToBeRead() throws DeviceException {
-		return mShimmerRadio.bytesAvailableToBeRead();
-	}
-
-	private void writeBytes(byte[] insBytes) throws DeviceException {
-		mShimmerRadio.txBytes(insBytes);
-	}
-
-	private byte[] readBytes(int i) throws DeviceException {
-		return mShimmerRadio.rxBytes(i);
-	}
-
-	private byte readByte() throws DeviceException {
-		byte[] rxBytes = readBytes(1);
-		return rxBytes[0];
-	}
-
-	private int availableBytes() throws DeviceException {
-		return mShimmerRadio.availableBytes();
-	}
-	
-	private void disconnect() {
-		try {
-			mShimmerRadio.disconnect();
-		} catch (DeviceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-	}
-	
-	public void eventLogAndStreamStatusChanged(){
-		mProtocolListener.eventLogAndStreamStatusChanged();
-	}
-
-	private void isNowStreaming() {
-		mProtocolListener.isNowStreaming();
-	}
-	
-	private void hasStopStreaming() {
-		mProtocolListener.hasStopStreaming();
-	}
-
-	private void eventAckReceived(byte[] insBytes) {
-		mProtocolListener.eventAckReceived(insBytes);
-	}
-
-	private void sendProgressReport(BluetoothProgressReportPerCmd bluetoothProgressReportPerCmd) {
-		mProtocolListener.sendProgressReport(bluetoothProgressReportPerCmd);
-	}
-
-	private void eventNewResponse(byte[] response) {
-		mProtocolListener.eventNewResponse(response);
-	}
-	
-	private void eventAckInstruction(byte[] bs) {
-		mProtocolListener.eventAckInstruction(bs);
-	}
-
-	private void eventNewPacket(byte[] newPacket) {
-		mProtocolListener.eventNewPacket(newPacket);
-	}
-
-
-	private void threadSleep(long millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private String btCommandToString(byte cmd) {
-		//TODO - temp here until command ported from ShimmerBluetooth
-		InstructionsResponse instructionResponse = InstructionsResponse.valueOf(cmd&0xff); 
-		if(instructionResponse!=null){
-			return instructionResponse.name();
-		}
-		else{
-			return Byte.toString(mCurrentCommand);
-		}
-	}
-
-	public void printLogDataForDebugging(String msg){
-		mUtilShimmer.consolePrintLn(msg);
-	}
-	
-	public synchronized void startTimerCheckForAckOrResp(int seconds) {
-		//public synchronized void responseTimer(int seconds) {
-			if(mTimerCheckForAckOrResp!=null) {
-				mTimerCheckForAckOrResp.cancel();
-				mTimerCheckForAckOrResp.purge();
-				mTimerCheckForAckOrResp = null;
-			}
-			
-			printLogDataForDebugging("Waiting for ack/response for command:\t" + mCurrentCommand);
-			mTimerCheckForAckOrResp = new Timer("Shimmer_" + "_TimerCheckForResp");
-			mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
-		}
-	
-	/** Handles command response timeout
-	 *
-	 */
-	class checkForAckOrRespTask extends TimerTask {
-		
-		@Override
-		public void run() {
-			{
-				int storedFirstTime = (mFirstTime? 1:0);
-				
-				//Timeout triggered 
-				printLogDataForDebugging("Command:\t" + mCurrentCommand +" timeout");
-				if(mWaitForAck){
-					printLogDataForDebugging("Ack not received");
-				}
-				if(mWaitForResponse) {
-					printLogDataForDebugging("Response not received");
-					
-				}
-				if(mIsStreaming && getPacketReceptionRate()<100){
-					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRate()));
-				} 
-				
-				//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
-				//we will send the status changed to the GUI anyway
-				if(mCurrentCommand==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE){
-					
-					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
-					
-					mIsSDLogging = true;
-					eventLogAndStreamStatusChanged();
-					mWaitForAck=false;
-					mWaitForResponse=false;
-					
-					getListofInstructions().remove(0);
-					mTransactionCompleted = true;
-					setInstructionStackLock(false);
-					
-					return;
-				}
-				else if(mCurrentCommand==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE){
-					
-					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
-					
-					mIsSDLogging = false;
-					eventLogAndStreamStatusChanged();
-					mWaitForAck=false;
-					mWaitForResponse=false;
-					
-					getListofInstructions().remove(0);
-					mTransactionCompleted = true;
-					setInstructionStackLock(false);
-					
-					return;
-				}
-				
-
-				if(mCurrentCommand==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE){
-					
-				}
-				else if(mCurrentCommand==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE && !mIsInitialised){
-					mFirstTime=false;
-				} 
-				else if(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
-					mFirstTime=false;
-					
-				}
-
-				
-				
-				if(mIsStreaming){
-					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-					setInstructionStackLock(false);
-					getListofInstructions().clear();
-				}
-				else if(storedFirstTime==0){
-					// If the command fails to get a response, the API should
-					// assume that the connection has been lost and close the
-					// serial port cleanly.
-					
-					try {
-						if (bytesAvailableToBeRead()){
-							try {
-								readBytes(availableBytes());
-							} catch (DeviceException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					} catch (DeviceException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
-					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT){
-						disconnect();
-					} else {
-						mWaitForAck=false;
-						mWaitForResponse=false;
-						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-						setInstructionStackLock(false);
-						//this is needed because if u dc the shimmer the write call gets stuck
-						startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
-					}
-					
-					mNumberofTXRetriesCount++;
-					
-					
-					
-					
-				}
-			}
-		} //End Run
-	} //End TimerTask
-	
-	
-	
-	public void stopTimerCheckForAckOrResp(){
-		//Terminate the timer thread
-		if(mTimerCheckForAckOrResp!=null){
-			mTimerCheckForAckOrResp.cancel();
-			mTimerCheckForAckOrResp.purge();
-			mTimerCheckForAckOrResp = null;
-		}
-	}
-	
-	/**
-	 * Due to the nature of the Bluetooth SPP stack a delay has been added to
-	 * ensure the buffer is filled before it is read
-	 * 
-	 */
-	private void delayForBtResponse(long millis){
-		threadSleep(millis);
 	}
 	
 //	/**
@@ -923,14 +647,14 @@ public class LiteProtocol extends ByteLevelProtocol{
 //					lengthSettings = 5;
 //					lengthChannels = 3;
 //				}
-//            	// get Sampling rate, accel range, config setup byte0, num chans and buffer size
+//           	// get Sampling rate, accel range, config setup byte0, num chans and buffer size
 //				for (int i = 0; i < lengthSettings; i++) {
-//                    buffer.add(readByte());
-//                }
-//                // read each channel type for the num channels
-//                for (int i = 0; i < (int)buffer.get(lengthChannels); i++) {
-//                	buffer.add(readByte());
-//                }
+//                   buffer.add(readByte());
+//               }
+//               // read each channel type for the num channels
+//               for (int i = 0; i < (int)buffer.get(lengthChannels); i++) {
+//               	buffer.add(readByte());
+//               }
 //
 //				byte[] bufferInquiry = new byte[buffer.size()];
 //				for (int i = 0; i < bufferInquiry.length; i++) {
@@ -1273,6 +997,291 @@ public class LiteProtocol extends ByteLevelProtocol{
 //
 //	}
 	
+
+	private void processFirmwareVerResponse() {
+		if(isShimmerBluetoothApproach){
+//			if(getHardwareVersion()==HW_ID.SHIMMER_2R){
+//				initializeShimmer2R();
+//			} 
+//			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
+//				initializeShimmer3();
+//			}
+//			
+//			startTimerCheckIfAlive();
+//	//		readShimmerVersion();
+		}
+	}
+	
+	private void processSpecialGetCmdsAfterAck(byte mCurrentCommand) {
+		byte[] insBytes = getListofInstructions().get(0);
+		if(isShimmerBluetoothApproach){
+//			if(mCurrentCommand==InstructionsGet.GET_EXG_REGS_COMMAND_VALUE){
+//				// Need to store ExG chip number before receiving response
+//				mTempChipID = insBytes[1];
+//			}
+//			else if(mCurrentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE){
+//				// store current address/InfoMem segment
+//				mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+//				mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
+//			}
+		}
+		else{
+			//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation 
+			eventAckReceived(insBytes);
+		}
+	}
+
+	private boolean isKnownResponse(byte response) {
+		return ((InstructionsResponse.valueOf(response&0xff)==null)? false:true);
+	}
+
+	private boolean isKnownGetCommand(byte getCmd) {
+		return ((InstructionsGet.valueOf(getCmd&0xff)==null)? false:true);
+	}
+
+	private boolean isKnownSetCommand(byte setCmd) {
+		return ((InstructionsSet.valueOf(setCmd&0xff)==null)? false:true);
+	}
+
+	private boolean bytesAvailableToBeRead() throws DeviceException {
+		return mShimmerRadio.bytesAvailableToBeRead();
+	}
+
+	private void writeBytes(byte[] insBytes) throws DeviceException {
+		mShimmerRadio.txBytes(insBytes);
+	}
+
+	private byte[] readBytes(int i) throws DeviceException {
+		return mShimmerRadio.rxBytes(i);
+	}
+
+	private byte readByte() throws DeviceException {
+		byte[] rxBytes = readBytes(1);
+		return rxBytes[0];
+	}
+
+	private int availableBytes() throws DeviceException {
+		return mShimmerRadio.availableBytes();
+	}
+	
+	private void disconnect() {
+		try {
+			mShimmerRadio.disconnect();
+		} catch (DeviceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
+	public void eventLogAndStreamStatusChanged(){
+		mProtocolListener.eventLogAndStreamStatusChanged();
+	}
+
+	private void isNowStreaming() {
+		mProtocolListener.isNowStreaming();
+	}
+	
+	private void hasStopStreaming() {
+		mProtocolListener.hasStopStreaming();
+	}
+
+	private void eventAckReceived(byte[] insBytes) {
+		mProtocolListener.eventAckReceived(insBytes);
+	}
+
+	private void sendProgressReport(BluetoothProgressReportPerCmd bluetoothProgressReportPerCmd) {
+		mProtocolListener.sendProgressReport(bluetoothProgressReportPerCmd);
+	}
+
+	private void eventNewResponse(byte[] response) {
+		mProtocolListener.eventNewResponse(response);
+	}
+	
+	private void eventAckInstruction(byte[] bs) {
+		mProtocolListener.eventAckInstruction(bs);
+	}
+
+	private void eventNewPacket(byte[] newPacket) {
+		mProtocolListener.eventNewPacket(newPacket);
+	}
+
+
+	private void threadSleep(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private String btCommandToString(byte cmd) {
+		//TODO - temp here until command ported from ShimmerBluetooth
+		InstructionsResponse instructionResponse = InstructionsResponse.valueOf(cmd&0xff); 
+		if(instructionResponse!=null){
+			return instructionResponse.name();
+		}
+		else{
+			return Byte.toString(mCurrentCommand);
+		}
+	}
+
+	public void printLogDataForDebugging(String msg){
+		mUtilShimmer.consolePrintLn(msg);
+	}
+	
+	public synchronized void startTimerCheckForAckOrResp(int seconds) {
+		//public synchronized void responseTimer(int seconds) {
+			if(mTimerCheckForAckOrResp!=null) {
+				mTimerCheckForAckOrResp.cancel();
+				mTimerCheckForAckOrResp.purge();
+				mTimerCheckForAckOrResp = null;
+			}
+			
+			printLogDataForDebugging("Waiting for ack/response for command:\t" + mCurrentCommand);
+			mTimerCheckForAckOrResp = new Timer("Shimmer_" + "_TimerCheckForResp");
+			mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
+		}
+	
+	/** Handles command response timeout
+	 *
+	 */
+	class checkForAckOrRespTask extends TimerTask {
+		
+		@Override
+		public void run() {
+			{
+				int storedFirstTime = (mFirstTime? 1:0);
+				
+				//Timeout triggered 
+				printLogDataForDebugging("Command:\t" + mCurrentCommand +" timeout");
+				if(mWaitForAck){
+					printLogDataForDebugging("Ack not received");
+				}
+				if(mWaitForResponse) {
+					printLogDataForDebugging("Response not received");
+					
+				}
+				if(mIsStreaming && getPacketReceptionRate()<100){
+					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRate()));
+				} 
+				
+				//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
+				//we will send the status changed to the GUI anyway
+				if(mCurrentCommand==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE){
+					
+					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+					
+					mIsSDLogging = true;
+					eventLogAndStreamStatusChanged();
+					mWaitForAck=false;
+					mWaitForResponse=false;
+					
+					getListofInstructions().remove(0);
+					mTransactionCompleted = true;
+					setInstructionStackLock(false);
+					
+					return;
+				}
+				else if(mCurrentCommand==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE){
+					
+					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+					
+					mIsSDLogging = false;
+					eventLogAndStreamStatusChanged();
+					mWaitForAck=false;
+					mWaitForResponse=false;
+					
+					getListofInstructions().remove(0);
+					mTransactionCompleted = true;
+					setInstructionStackLock(false);
+					
+					return;
+				}
+				
+
+				if(mCurrentCommand==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE){
+					
+				}
+				else if(mCurrentCommand==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE && !mIsInitialised){
+					mFirstTime=false;
+				} 
+				else if(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
+					mFirstTime=false;
+					
+				}
+
+				
+				
+				if(mIsStreaming){
+					stopTimerCheckForAckOrResp(); //Terminate the timer thread
+					mWaitForAck=false;
+					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+					setInstructionStackLock(false);
+					getListofInstructions().clear();
+				}
+				else if(storedFirstTime==0){
+					// If the command fails to get a response, the API should
+					// assume that the connection has been lost and close the
+					// serial port cleanly.
+					
+					try {
+						if (bytesAvailableToBeRead()){
+							try {
+								readBytes(availableBytes());
+							} catch (DeviceException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					} catch (DeviceException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					stopTimerCheckForAckOrResp(); //Terminate the timer thread
+					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
+					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT){
+						disconnect();
+					} else {
+						mWaitForAck=false;
+						mWaitForResponse=false;
+						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+						setInstructionStackLock(false);
+						//this is needed because if u dc the shimmer the write call gets stuck
+						startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
+					}
+					
+					mNumberofTXRetriesCount++;
+					
+					
+					
+					
+				}
+			}
+		} //End Run
+	} //End TimerTask
+	
+	
+	
+	public void stopTimerCheckForAckOrResp(){
+		//Terminate the timer thread
+		if(mTimerCheckForAckOrResp!=null){
+			mTimerCheckForAckOrResp.cancel();
+			mTimerCheckForAckOrResp.purge();
+			mTimerCheckForAckOrResp = null;
+		}
+	}
+	
+	/**
+	 * Due to the nature of the Bluetooth SPP stack a delay has been added to
+	 * ensure the buffer is filled before it is read
+	 * 
+	 */
+	private void delayForBtResponse(long millis){
+		threadSleep(millis);
+	}
+	
+
 	private void processAckFromSetCommand(byte currentCommand) {
 		// check for null and size were put in because if Shimmer was abruptly
 		// disconnected there is sometimes indexoutofboundsexceptions

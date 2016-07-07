@@ -896,21 +896,16 @@ public class Configuration {
 			public static final String CALIBRATION_PER_SENSOR = AbstractSensor.GuiLabelConfigCommon.CALIBRATION_PER_SENSOR;
 		}
 
-		// GUI Sensor Tiles
+		/** GUI Sensor Tiles
+		 *	Order of Enum is the order in which they will be generated in the GUI
+		 */
 		public enum GuiLabelSensorTiles{
-			//XXX-RS-AA-SensorClass?
 			LOW_NOISE_ACCEL(SensorKionixKXRB52042.GuiLabelSensorTiles.LOW_NOISE_ACCEL),
 			GYRO(SensorMPU9X50.GuiLabelSensorTiles.GYRO),
-			
-			//XXX-RS-LSM-SensorClass?
 			MAG(SensorLSM303.GuiLabelSensorTiles.MAG),
-			
 			MPU(SensorMPU9X50.GuiLabelSensorTiles.MPU),
 			BATTERY_MONITORING(SensorBattVoltage.GuiLabelSensorTiles.BATTERY_MONITORING),
-			
-			//XXX-RS-LSM-SensorClass?
 			WIDE_RANGE_ACCEL(SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL),
-			
 			PRESSURE_TEMPERATURE(SensorBMP180.GuiLabelSensorTiles.PRESSURE_TEMPERATURE),
 			EXTERNAL_EXPANSION_ADC(SensorADC.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC), //"External Expansion ADCs"), //YYY
 			INTERNAL_EXPANSION_ADC(SensorADC.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC), //"Internal Expansion ADCs"), //YYY

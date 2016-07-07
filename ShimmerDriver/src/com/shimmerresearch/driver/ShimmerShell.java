@@ -25,6 +25,10 @@ public class ShimmerShell extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 3505947289367382624L;
 
+	public ShimmerShell() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/** Initialisation via dock
 	 * @param dockId
 	 * @param slotNumber
@@ -41,19 +45,6 @@ public class ShimmerShell extends ShimmerDevice {
 	public ShimmerShell(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType){
 		this(dockId, slotNumber);
 		addCommunicationRoute(connectionType);
-	}
-
-	
-	/** Initialisation via bluetooth manager
-	 * @param comPort
-	 * @param shimmerMacId
-	 * @param myName
-	 * @param timeSyncTrainingPeriod
-	 */
-	public ShimmerShell(String comPort, String shimmerMacId, String myName, int timeSyncTrainingPeriod) {
-		//TODO
-//		super(comPort, shimmerMacId, myName, true);
-//		mTimeSyncTrainingPeriod = timeSyncTrainingPeriod;
 	}
 
 	@Override
@@ -140,6 +131,10 @@ public class ShimmerShell extends ShimmerDevice {
 	public void createInfoMemLayout() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void setRadio(ShimmerRadioProtocol shimmerRadioProtocol) {
+		//TODO
 	}
 
 
