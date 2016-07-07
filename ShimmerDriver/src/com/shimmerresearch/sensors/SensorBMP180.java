@@ -30,7 +30,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
+
 
 /**
  * @author Ronan McCormack
@@ -167,9 +167,9 @@ public class SensorBMP180 extends AbstractSensor {
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
 		//TODO put into above constructor
-		channelBmp180Press.mChannelSource = CHANNEL_SOURCE.SHIMMER;
-		channelBmp180Press.mDefaultUnit = CHANNEL_UNITS.KPASCAL;
-		channelBmp180Press.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+//		channelBmp180Press.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+//		channelBmp180Press.mDefaultUncalUnit = CHANNEL_UNITS.KPASCAL;
+//		channelBmp180Press.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
 	
 	public static final ChannelDetails channelBmp180Temp = new ChannelDetails(
@@ -181,9 +181,9 @@ public class SensorBMP180 extends AbstractSensor {
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
 		//TODO put into above constructor
-		channelBmp180Temp.mChannelSource = CHANNEL_SOURCE.SHIMMER;
-		channelBmp180Temp.mDefaultUnit = CHANNEL_UNITS.DEGREES_CELSUIS;
-		channelBmp180Temp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+//		channelBmp180Temp.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+//		channelBmp180Temp.mDefaultUncalUnit = CHANNEL_UNITS.DEGREES_CELSUIS;
+//		channelBmp180Temp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
 
 	public static final Map<String, ChannelDetails> mChannelMapRef;

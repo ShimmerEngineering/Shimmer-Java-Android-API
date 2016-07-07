@@ -166,7 +166,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelGsr.mChannelSource = CHANNEL_SOURCE.SHIMMER;
-		channelGsr.mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
+		channelGsr.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
 		channelGsr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
 	

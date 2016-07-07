@@ -356,7 +356,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addCalData(ChannelDetails channelDetails, double calData, int index) {
-		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL, channelDetails.mDefaultCalibratedUnits, calData, index);
+		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL, channelDetails.mDefaultCalUnits, calData, index);
 	}
 
 	public void addUncalData(ChannelDetails channelDetails, double uncalData) {
@@ -390,7 +390,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 	
 	public void addUncalData(ChannelDetails channelDetails, double uncalData, int index) {
-		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL, channelDetails.mDefaultUnit, uncalData, index);
+		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL, channelDetails.mDefaultUncalUnit, uncalData, index);
 	}
 	
 	

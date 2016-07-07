@@ -98,23 +98,25 @@ public class ChannelDetails implements Serializable {
 	// JC: default means the original signal this channel is derived form, it
 	// can be derived from a calibrated/noncalibrated/algorithm source.
 	public CHANNEL_DATA_ENDIAN mDefaultChannelDataEndian = CHANNEL_DATA_ENDIAN.UNKOWN;
-	public String mDefaultUnit = CHANNEL_UNITS.NO_UNITS;
-	public String mDefaultCalibratedUnits = CHANNEL_UNITS.NO_UNITS; //deprecate this?
-	public List<CHANNEL_TYPE> mListOfChannelTypes = new ArrayList<CHANNEL_TYPE>();
 	
+	public String mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
+	public String mDefaultCalUnits = CHANNEL_UNITS.NO_UNITS; //deprecate this?
+
+	/** each channel if originates from a packetbytearray/sensorbytearray should have this variable defined, null indicates this channel is created within the API */
+	public CHANNEL_TYPE mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL; 
+	public List<CHANNEL_TYPE> mListOfChannelTypes = new ArrayList<CHANNEL_TYPE>();
+
 	public boolean mShowWhileStreaming = true;
 	public boolean mStoreToDatabase = true;
-	
+
 	//JC: FOR GQ
 //	public boolean mIsEnabled = true;
 	
+	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
 	public enum CHANNEL_SOURCE{
 		SHIMMER,
 		API
 	}
-	public CHANNEL_SOURCE mChannelSource = CHANNEL_SOURCE.SHIMMER;
-	/** each channel if originates from a packetbytearray/sensorbytearray should have this variable defined, null indicates this channel is created within the API */
-	public CHANNEL_TYPE mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL; 
 
 	/**
 	 * Empty constructor not used in standard Shimmer operations (GQ BLE related). 
@@ -249,7 +251,7 @@ public class ChannelDetails implements Serializable {
 	public ChannelDetails(String objectClusterName, String guiName, String defaultCalibratedUnits, List<CHANNEL_TYPE> listOfChannelTypes) {
 		mObjectClusterName = objectClusterName;
 		mGuiName = guiName;
-		mDefaultCalibratedUnits = defaultCalibratedUnits;
+		mDefaultCalUnits = defaultCalibratedUnits;
 		mListOfChannelTypes = listOfChannelTypes;
 	}
 

@@ -46,7 +46,8 @@ public abstract class AbstractSensor implements Serializable{
 		Bridge_Amplifier("Bridge Amplifier"),
 		
 		NONIN_ONYX_II("Nonin Onyx II"),
-		QTI_DIRECT_TEMP("QTI DirectTemp");
+		QTI_DIRECT_TEMP("QTI DirectTemp"),
+		BMP280("BMP280");
 		
 	    private final String text;
 
@@ -68,7 +69,7 @@ public abstract class AbstractSensor implements Serializable{
 	public class GuiLabelConfigCommon{
 		public static final String RATE = "Rate";
 		public static final String RANGE = "Range";
-		public static final String KINEMATIC_CALIBRATION = "Kinematic Calibration";
+		public static final String KINEMATIC_CALIBRATION_PER_SENSOR = "Kinematic Calibration";
 		public static final String KINEMATIC_CALIBRATION_ALL = Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL;
 	}
 	
@@ -80,7 +81,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void checkShimmerConfigBeforeConfiguring();
 
 	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
-	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimestamp);
+	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimeStamp);
 //	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
@@ -358,6 +359,21 @@ public abstract class AbstractSensor implements Serializable{
 		System.out.println(textToPrint);
 	}
 	
+	protected void setCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfSensorCalibration) {
+		for(Integer sensorMapKey:mSensorMap.keySet()){
+			TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfSensorCalibration.get(sensorMapKey);
+			if(mapOfCalibPerSensor!=null){
+				mCalibMap.put(sensorMapKey, mapOfCalibPerSensor);
+			}
+		}
+	}
+	
+	protected TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(Integer sensorMapKey) {
+		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = mCalibMap.get(sensorMapKey); 
+		return calibDetailsPerSensor;
+	}
+	
+
 	
 	//--------- Optional methods to override in Sensor Class start --------
 	/**
@@ -415,13 +431,13 @@ public abstract class AbstractSensor implements Serializable{
 		byte[] calibBytesAllPerSensor = new byte[]{};
 		for(Integer sensorMapKey:mCalibMap.keySet()){
 			TreeMap<Integer, CalibDetails> calMapPerSensor = mCalibMap.get(sensorMapKey);
-			SensorDetails sensorDetais = mSensorMap.get(sensorMapKey);
-			Integer calibSensorKey = sensorDetais.mSensorDetailsRef.mCalibSensorKey;
-			if(calibSensorKey!=0){
+//			SensorDetails sensorDetais = mSensorMap.get(sensorMapKey);
+//			Integer calibSensorKey = sensorDetais.mSensorDetailsRef.mCalibSensorKey;
+//			if(sensorMapKey!=0){
 				for(Integer range:calMapPerSensor.keySet()){
 					byte[] calibSensorKeyBytes = new byte[2];
-					calibSensorKeyBytes[0] = (byte)((calibSensorKey>>0)&0xFF);
-					calibSensorKeyBytes[1] = (byte)((calibSensorKey>>8)&0xFF);
+					calibSensorKeyBytes[0] = (byte)((sensorMapKey>>0)&0xFF);
+					calibSensorKeyBytes[1] = (byte)((sensorMapKey>>8)&0xFF);
 					
 					CalibDetails calDetailsPerRange = calMapPerSensor.get(range);		
 					byte[] calibBytesPerRange = calDetailsPerRange.generateCalParamByteArrayWithTimestamp();
@@ -437,7 +453,7 @@ public abstract class AbstractSensor implements Serializable{
 					System.arraycopy(calibBytesPacketPerRange, 0, newCalibBytesAllPerSensor, calibBytesAllPerSensor.length, calibBytesPacketPerRange.length);
 					calibBytesAllPerSensor = newCalibBytesAllPerSensor;
 				}
-			}
+//			}
 		}
 		return calibBytesAllPerSensor;
 	}
@@ -446,7 +462,36 @@ public abstract class AbstractSensor implements Serializable{
 		// TODO Auto-generated method stub
 		return remainingBytes;
 	}
+	
+	public Object setConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel, Object valueToSet) {
+		Object returnValue = null;
+		switch(configLabel){
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+				setCalibration((TreeMap<Integer, TreeMap<Integer, CalibDetails>>) valueToSet);
+				//TODO decide whether to include the below
+//				returnValue = valueToSet;
+				break;
+	        default:
+	        	break;
+		}
+		return returnValue;
+	}
+	public Object getConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel) {
+		Object returnValue = null;
+		switch(configLabel){
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
+				returnValue = getCalibrationMapForSensor(sensorMapKey);
+				break;
+			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+				returnValue = mCalibMap;
+	        	break;
+			default:
+				break;
+		}
+		return returnValue;
+	}
 
+	
 	
 	//--------- Optional methods to override in Sensor Class end -------- 
 
