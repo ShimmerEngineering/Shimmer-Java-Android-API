@@ -69,8 +69,8 @@ public abstract class AbstractSensor implements Serializable{
 	public class GuiLabelConfigCommon{
 		public static final String RATE = "Rate";
 		public static final String RANGE = "Range";
-		public static final String KINEMATIC_CALIBRATION_PER_SENSOR = "Kinematic Calibration";
-		public static final String KINEMATIC_CALIBRATION_ALL = Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL;
+		public static final String CALIBRATION_PER_SENSOR = "Kinematic Calibration";
+		public static final String CALIBRATION_ALL = "Kinematic Calibration all";
 	}
 	
 	// --------------- Abstract methods start ----------------
@@ -466,7 +466,7 @@ public abstract class AbstractSensor implements Serializable{
 	public Object setConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
-			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+			case(GuiLabelConfigCommon.CALIBRATION_ALL):
 				setCalibration((TreeMap<Integer, TreeMap<Integer, CalibDetails>>) valueToSet);
 				//TODO decide whether to include the below
 //				returnValue = valueToSet;
@@ -479,10 +479,10 @@ public abstract class AbstractSensor implements Serializable{
 	public Object getConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
-			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
+			case(GuiLabelConfigCommon.CALIBRATION_PER_SENSOR):
 				returnValue = getCalibrationMapForSensor(sensorMapKey);
 				break;
-			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+			case(GuiLabelConfigCommon.CALIBRATION_ALL):
 				returnValue = mCalibMap;
 	        	break;
 			default:

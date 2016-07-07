@@ -892,8 +892,8 @@ public class Configuration {
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 
 			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
-			public static final String KINEMATIC_CALIBRATION_ALL = "Kinematic Calibration all";
-			public static final String KINEMATIC_CALIBRATION_PER_SENSOR = "Kinematic Calibration";
+			public static final String CALIBRATION_ALL = AbstractSensor.GuiLabelConfigCommon.CALIBRATION_ALL;
+			public static final String CALIBRATION_PER_SENSOR = AbstractSensor.GuiLabelConfigCommon.CALIBRATION_PER_SENSOR;
 		}
 
 		// GUI Sensor Tiles

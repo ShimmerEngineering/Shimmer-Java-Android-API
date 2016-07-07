@@ -1141,7 +1141,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
 	      		
 	      		returnValue = Double.toString(getSamplingRateShimmer());
-			case(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
+			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
 				returnValue = getMapOfSensorCalibrationAll();
 				break;
 	        default:
@@ -1193,7 +1193,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
 	        	returnValue = getConfigTimeParsed();
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
 				returnValue = getMapOfSensorCalibrationAll();
 				break;
 	        default:
@@ -2928,34 +2928,40 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return validCal;
 	}
 
-	//MN TODO
-//	public TreeMap<Integer, TreeMap<Integer, CalibDetails>> getMapOfSensorCalibrationAllKinematic(){
-//		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfAllSensorCalibrationKinematic = TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
-//		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfAllSensorCalibration = getMapOfSensorCalibrationAll();
-//		Iterator<Integer> iteratorSensor = mapOfAllSensorCalibration.keySet().iterator();
-//		while(iteratorSensor.hasNext()){
-//			Integer sensorMapKey = iteratorSensor.next();
-//			Iterator<Integer> iterator = mapOfAllSensorCalibration.keySet().iterator();
-//			while(iterator.hasNext()){
-//				
-//			}
-//			
-//			
-//			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL);
-//			if(returnVal!=null){
-//				TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfCalibDetails = (TreeMap<Integer, TreeMap<Integer, CalibDetails>>) returnVal;
-//				mapOfKinematicSensorCalibration.putAll(mapOfCalibDetails);
-//			}
-//		}
-//		return mapOfKinematicSensorCalibration;
-//	}
+	public TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> getMapOfSensorCalibrationAllKinematic(){
+		//Get all calibration for all sensors
+		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfAllSensorCalibration = getMapOfSensorCalibrationAll();
+		
+		// Filter out just Kinematic calibration parameters
+		TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>> mapOfAllSensorCalibrationKinematic = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
+		Iterator<Integer> iteratorSensor = mapOfAllSensorCalibration.keySet().iterator();
+		while(iteratorSensor.hasNext()){
+			Integer sensorMapKey = iteratorSensor.next();
+			TreeMap<Integer, CalibDetailsKinematic> mapOfSensorCalibrationKinematic = new TreeMap<Integer, CalibDetailsKinematic>();
+			TreeMap<Integer, CalibDetails> mapOfCalibPerRange = mapOfAllSensorCalibration.get(sensorMapKey);
+			Iterator<Integer> iteratorRange = mapOfCalibPerRange.keySet().iterator();
+			while(iteratorRange.hasNext()){
+				Integer range = iteratorRange.next();
+				CalibDetails calibDetails = mapOfCalibPerRange.get(range);
+				if(calibDetails instanceof CalibDetailsKinematic){
+					mapOfSensorCalibrationKinematic.put(range, (CalibDetailsKinematic)calibDetails);
+				}
+			}
+			
+			if(!mapOfSensorCalibrationKinematic.isEmpty()){
+				mapOfAllSensorCalibrationKinematic.put(sensorMapKey, mapOfSensorCalibrationKinematic);
+			}
+
+		}
+		return mapOfAllSensorCalibrationKinematic;
+	}
 	
 	public TreeMap<Integer, TreeMap<Integer, CalibDetails>> getMapOfSensorCalibrationAll(){
 		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL);
+			Object returnVal = abstractSensor.getConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.CALIBRATION_ALL);
 			if(returnVal!=null){
 				TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfCalibDetails = (TreeMap<Integer, TreeMap<Integer, CalibDetails>>) returnVal;
 				mapOfSensorCalibration.putAll(mapOfCalibDetails);
@@ -2970,7 +2976,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			Integer sensorMapKey = iterator.next();
 			AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
 			if(abstractSensor!=null){
-				abstractSensor.setConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR, mapOfKinematicSensorCalibration.get(sensorMapKey));
+				abstractSensor.setConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.CALIBRATION_PER_SENSOR, mapOfKinematicSensorCalibration.get(sensorMapKey));
 			}
 		}
 	}

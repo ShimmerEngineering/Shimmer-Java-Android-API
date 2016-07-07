@@ -10927,10 +10927,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = getMPU9150GyroAccelRateInHz();
 				break;
 	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_PER_SENSOR):
+			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_PER_SENSOR):
 				returnValue = getMapOfSensorCalibrationPerSensor(sensorMapKey);
 				break;
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
 				returnValue = getMapOfSensorCalibrationAll();
 	        	break;
 ////List<Byte[]>
@@ -11123,13 +11123,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setSamplingDividerVBatt((int)valueToSet);
 	    		break;
 	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
 				setMapOfSensorCalibrationAll((TreeMap<Integer, TreeMap<Integer, CalibDetails>>) valueToSet);
 				//TODO decide whether to include the below
 //				returnValue = valueToSet;
 				break;
 				
-			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_PER_SENSOR):
+			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_PER_SENSOR):
 				setSensorCalibrationPerSensor(Integer.parseInt(identifier), (TreeMap<Integer, CalibDetails>) valueToSet);
 				//TODO decide whether to include the below
 //				returnValue = valueToSet;
