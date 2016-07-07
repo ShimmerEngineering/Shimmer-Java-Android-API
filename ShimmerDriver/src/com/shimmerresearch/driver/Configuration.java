@@ -74,6 +74,7 @@ import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorADC;
 //import com.shimmerresearch.pluginalgo.ECGAdaptiveModule.ObjectClusterSensorName;
 import com.shimmerresearch.sensors.SensorBMP180;
+import com.shimmerresearch.sensors.SensorBMP280;
 import com.shimmerresearch.sensors.SensorBattVoltage;
 import com.shimmerresearch.sensors.SensorBridgeAmp;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
@@ -759,7 +760,7 @@ public class Configuration {
 			public static final int SHIMMER_MPU9150_MAG = 34;
 			public static final int SHIMMER_MPU9150_TEMP = 35;
 			public static final int SHIMMER_BMP180_PRESSURE = 36;
-
+			public static final int SHIMMER_BMP280_PRESSURE = 37;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
@@ -785,6 +786,7 @@ public class Configuration {
 			public static final int SHIMMER_MPU9150_MPL_MAG = 60;
 			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = 61;
 	
+
 			//Sensors channels modified or created on the host side
 			// Combination Channels
 			public static final int HOST_ECG = 100;
@@ -923,7 +925,8 @@ public class Configuration {
 			HIGH_G_ACCEL(Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL),
 			MPU_ACCEL_GYRO_MAG(SensorMPU9X50.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG), // "MPU 9DoF"),
 			MPU_OTHER(SensorMPU9X50.GuiLabelSensorTiles.MPU_OTHER), //"MPU Other"),
-			GPS("GPS");
+			GPS("GPS"),
+			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280);
 			
 			private String tileText = "";
 			
@@ -1452,6 +1455,9 @@ public class Configuration {
 					svoShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP180 = Arrays.asList(
+					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP280 = Arrays.asList(
 					svoShimmer4Stock);  
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(

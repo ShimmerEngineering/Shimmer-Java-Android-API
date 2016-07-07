@@ -71,7 +71,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	{
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
-		channelEcgToHr.mDefaultUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
+		channelEcgToHr.mDefaultUncalUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
 		channelEcgToHr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
 	

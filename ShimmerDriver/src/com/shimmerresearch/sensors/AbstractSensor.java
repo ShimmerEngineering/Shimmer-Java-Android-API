@@ -46,7 +46,8 @@ public abstract class AbstractSensor implements Serializable{
 		Bridge_Amplifier("Bridge Amplifier"),
 		
 		NONIN_ONYX_II("Nonin Onyx II"),
-		QTI_DIRECT_TEMP("QTI DirectTemp");
+		QTI_DIRECT_TEMP("QTI DirectTemp"),
+		BMP280("BMP280");
 		
 	    private final String text;
 
@@ -80,7 +81,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void checkShimmerConfigBeforeConfiguring();
 
 	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
-	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimestamp);
+	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimeStamp);
 //	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
 	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
