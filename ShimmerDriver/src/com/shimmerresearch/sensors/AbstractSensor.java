@@ -367,13 +367,9 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
-	protected TreeMap<Integer, TreeMap<Integer, CalibDetails>> getCalibrationMapForSensor(Integer sensorMapKey) {
-		if(mCalibMap.containsKey(sensorMapKey)){
-			TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
-			mapOfKinematicSensorCalibration.put(sensorMapKey, mCalibMap.get(sensorMapKey));
-			return mapOfKinematicSensorCalibration;
-		}
-		return null;
+	protected TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(Integer sensorMapKey) {
+		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = mCalibMap.get(sensorMapKey); 
+		return calibDetailsPerSensor;
 	}
 	
 

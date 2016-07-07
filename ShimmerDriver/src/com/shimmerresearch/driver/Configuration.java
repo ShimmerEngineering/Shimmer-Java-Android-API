@@ -892,6 +892,7 @@ public class Configuration {
 
 			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
 			public static final String KINEMATIC_CALIBRATION_ALL = "Kinematic Calibration all";
+			public static final String KINEMATIC_CALIBRATION_PER_SENSOR = "Kinematic Calibration";
 		}
 
 		// GUI Sensor Tiles
