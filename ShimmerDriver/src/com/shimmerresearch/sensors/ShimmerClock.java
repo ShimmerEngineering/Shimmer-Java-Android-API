@@ -74,7 +74,9 @@ public class ShimmerClock extends AbstractSensor {
 			GuiLabelSensors.SYSTEM_TIMESTAMP,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT));
+					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT
+//					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE
+					));
 	{
 		sensorSystemTimeStampRef.mIsApiSensor = true;
 	}
@@ -139,13 +141,25 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 			DatabaseChannelHandles.NONE,
 			CHANNEL_UNITS.MILLISECONDS,
-			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
+			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
 	{
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
 //		channelSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
-    
+
+	public static final ChannelDetails channelSystemTimestampDiff = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
+			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
+			DatabaseChannelHandles.NONE,
+			CHANNEL_UNITS.MILLISECONDS,
+			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+	{
+		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
+		channelSystemTimestamp.mChannelSource = CHANNEL_SOURCE.API;
+//		channelSystemTimestamp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+	}
+
 	public static final ChannelDetails channelShimmerClock3byte = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
@@ -261,6 +275,7 @@ public class ShimmerClock extends AbstractSensor {
 		
 		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
 		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
+		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
 
 		if(svo.getFirmwareIdentifier()==FW_ID.GQ_802154){
 			//
@@ -546,6 +561,9 @@ public class ShimmerClock extends AbstractSensor {
 //						objectCluster.mSystemTimeStamp = ByteBuffer.allocate(8).putLong((long) systemTime).array();;
 //						objectCluster.addCalData(channelDetails, systemTime);
 //						objectCluster.incrementIndexKeeper();
+					}
+					else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE)){
+//						double timeDiff = objectCluster.mShimmerCalibratedTimeStamp - ;
 					}
 				}
 			}

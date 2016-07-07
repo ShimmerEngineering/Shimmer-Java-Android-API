@@ -1184,6 +1184,7 @@ public class Configuration {
 			public static String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 			public static String TIMESTAMP_SYNC = "Timestamp_Sync";
 			public static String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
+			public static String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
 
 			public static String TIMESTAMP_OFFSET = "Offset";
 
