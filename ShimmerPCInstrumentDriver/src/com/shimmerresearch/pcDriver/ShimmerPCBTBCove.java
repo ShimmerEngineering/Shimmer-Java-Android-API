@@ -472,7 +472,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	protected void logAndStreamStatusChanged() {
+	protected void eventLogAndStreamStatusChanged() {
 		
 //		if(mCurrentCommand==START_LOGGING_ONLY_COMMAND){
 //			TODO this causing a problem Shimmer Bluetooth disconnects

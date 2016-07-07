@@ -13,6 +13,7 @@ public interface ProtocolListener {
 	public void sendProgressReport(BluetoothProgressReportPerCmd progressReportPerCmd);
 	public void eventAckInstruction(byte[] bs);
 	public void eventByteResponseWhileStreaming(byte[] b);
+	public void isNowStreaming();
 	
 }
 

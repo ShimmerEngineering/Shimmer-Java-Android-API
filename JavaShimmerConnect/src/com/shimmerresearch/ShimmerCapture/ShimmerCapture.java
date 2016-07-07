@@ -86,6 +86,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -362,7 +363,12 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		btnDisconnect.setEnabled(false);
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				mShimmer.disconnect();
+				try {
+					mShimmer.disconnect();
+				} catch (DeviceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				//mShimmer = new ShimmerPC("ShimmerDevice", true);
 			}
 		});
@@ -476,7 +482,12 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		menuFile.add(menuItemQuit);
 		menuItemQuit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				mShimmer.disconnect();
+				try {
+					mShimmer.disconnect();
+				} catch (DeviceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				System.exit(0); 
 			}
 		});

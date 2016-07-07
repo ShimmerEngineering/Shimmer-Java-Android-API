@@ -80,6 +80,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -270,7 +271,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							}
 							initialize();
 						} else {
-							disconnect();
+							try {
+								disconnect();
+							} catch (DeviceException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 					catch (SerialPortException ex){
@@ -373,24 +379,14 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
+	@Deprecated //Use disconnect() instead
 	public void stop() {
-		disconnect();
-	}
-
-	@Override
-	protected void isNowStreaming() {
-		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
-		// Do something here
-		
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_START_STREAMING, getBluetoothAddress(), mComPort);
-		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-		
-		if (mIsSDLogging){
-			setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
-		} else {
-			setBluetoothRadioState(BT_STATE.STREAMING);
+		try {
+			disconnect();
+		} catch (DeviceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
 	}
 
 	@Override
@@ -430,6 +426,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 
+	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 		
 		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
@@ -472,7 +469,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	@Override
-	public synchronized void disconnect(){
+	public void disconnect() throws DeviceException {
 		stopAllTimers();
 		closeConnection();
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);
@@ -614,9 +611,26 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		startTimerReadStatus();
 		setBluetoothRadioState(BT_STATE.CONNECTED);
 	}
+	
+	@Override
+	protected void isNowStreaming() {
+		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
+		// Do something here
+		
+		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_START_STREAMING, getBluetoothAddress(), mComPort);
+		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		
+		if (mIsSDLogging){
+			setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
+		} else {
+			setBluetoothRadioState(BT_STATE.STREAMING);
+		}
+		
+	}
+
 
 	@Override
-	protected void logAndStreamStatusChanged() {
+	protected void eventLogAndStreamStatusChanged() {
 		
 //		if(mCurrentCommand==START_LOGGING_ONLY_COMMAND){
 //			TODO this causing a problem Shimmer Bluetooth disconnects

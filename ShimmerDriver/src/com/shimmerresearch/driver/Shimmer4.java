@@ -551,7 +551,7 @@ public class Shimmer4 extends ShimmerDevice {
 					mFirstPacketParsed = true;
 					setBluetoothRadioState(BT_STATE.STREAMING);
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE){
-					setBluetoothRadioState(BT_STATE.CONNECTED);
+					hasStopStreaming();
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
 					
 				} else if((instructionSent[0]&0xff)==LiteProtocolInstructionSet.InstructionsSet.SET_SENSORS_COMMAND_VALUE){
@@ -581,6 +581,32 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
+	//TODO - Copied from ShimmerPC
+	protected void hasStopStreaming() {
+		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
+				// Do something here
+		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STOP_STREAMING, getMacId(), getComPort());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		//TODO TIMERS
+//		startTimerReadStatus();
+		setBluetoothRadioState(BT_STATE.CONNECTED);
+	}
+	
+	//TODO - Copied from ShimmerPC
+	protected void isNowStreaming() {
+		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
+		// Do something here
+		
+		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_START_STREAMING, getMacId(), getComPort());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+		
+		if (mIsSDLogging){
+			setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
+		} else {
+			setBluetoothRadioState(BT_STATE.STREAMING);
+		}
+	}
+
 	public void setSetting(long sensorID, String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
 		ActionSetting actionSetting = mMapOfSensorClasses.get(sensorID).setSettings(componentName, valueToSet, commType);
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
@@ -721,14 +747,13 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	@Override
-	public void disconnect() {
+	public void disconnect() throws DeviceException {
 		super.disconnect();
 		if(mShimmerRadioHWLiteProtocol!=null){
 			try {
 				mShimmerRadioHWLiteProtocol.disconnect();
 			} catch (DeviceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw(e);
 			}
 		}
 	}
@@ -819,7 +844,7 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 
-
+	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 
 		AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);

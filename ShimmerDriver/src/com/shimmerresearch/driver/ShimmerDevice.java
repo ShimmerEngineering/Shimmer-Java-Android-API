@@ -2106,7 +2106,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO Auto-generated method stub
 	}
 
-	public void disconnect() {
+	public void disconnect() throws DeviceException {
+		stopStreaming();
 		// TODO Auto-generated method stub
 	}
 
@@ -2975,6 +2976,23 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			AbstractSensor abstractSensor = iterator.next();
 			remainingBytes = abstractSensor.parseAllCalibByteArray(remainingBytes);
 		}
+	}
+
+	public void startStreaming() {
+		if(mShimmerRadioHWLiteProtocol!=null){
+			mShimmerRadioHWLiteProtocol.startStreaming();
+		}
+	}
+
+	public void stopStreaming() {
+		if(mShimmerRadioHWLiteProtocol!=null){
+			mShimmerRadioHWLiteProtocol.stopStreaming();
+		}
+	}
+
+	public void calculatePacketReceptionRateCurrent(int intervalMs) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	//*************** Sensor Calibration Related end ************************* 

@@ -546,7 +546,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	//This features are only used in LogAndStream FW 
 	protected String mDirectoryName;
-	protected int mDirectoryNameLength;
 	@Deprecated
 	private List<String[]> mExtraSignalProperties = null;
 	

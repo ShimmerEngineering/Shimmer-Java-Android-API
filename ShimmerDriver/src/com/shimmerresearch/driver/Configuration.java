@@ -747,7 +747,6 @@ public class Configuration {
 			public static final int HOST_PPG2_A1 = 18; //Proto3 Deluxe Board
 			public static final int SHIMMER_GSR = 19;// Based on ADC1
 
-			
 			//Digital channels begin
 			public static final int SHIMMER_MPU9150_GYRO = 30;
 			/** Shimmer3 Wide-range digital accelerometer */

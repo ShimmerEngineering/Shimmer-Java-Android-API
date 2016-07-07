@@ -52,7 +52,6 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 			mSerialPort.disconnect();
 		}
 		catch (DeviceException e) {
-        	
 			throw(e);
         }
 	};
@@ -219,6 +218,12 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 
 						@Override
 						public void eventByteResponseWhileStreaming(byte[] b) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void isNowStreaming() {
 							// TODO Auto-generated method stub
 							
 						}});
