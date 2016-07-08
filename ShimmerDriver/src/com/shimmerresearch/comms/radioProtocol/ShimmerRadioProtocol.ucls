@@ -122,10 +122,10 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="13" language="java" name="com.shimmerresearch.pcSerialPort.ShimmerSerialPortJssc" 
+  <class id="13" language="java" name="com.shimmerresearch.pcSerialPort.DEPRECATEDShimmerSerialPortJssc" 
     project="ShimmerPCInstrumentDriver" 
-    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/ShimmerSerialPortJssc.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/DEPRECATEDShimmerSerialPortJssc.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="588" y="819"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      

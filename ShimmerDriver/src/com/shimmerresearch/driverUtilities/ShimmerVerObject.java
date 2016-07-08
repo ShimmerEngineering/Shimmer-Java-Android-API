@@ -54,6 +54,23 @@ public class ShimmerVerObject implements Serializable {
 	public ShimmerVerObject() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	/**Not enough to parseShimmerVerDetails
+	 * @param firmwareIdentifier
+	 * @param firmwareVersionMajor
+	 * @param firmwareVersionMinor
+	 * @param firmwareVersionInternal
+	 */
+	public ShimmerVerObject(
+			int firmwareIdentifier,
+			int firmwareVersionMajor, 
+			int firmwareVersionMinor,
+			int firmwareVersionInternal) {
+		mFirmwareIdentifier = firmwareIdentifier;
+		mFirmwareVersionMajor = firmwareVersionMajor;
+		mFirmwareVersionMinor = firmwareVersionMinor;
+		mFirmwareVersionInternal = firmwareVersionInternal;
+	}
 
 	/**
 	 * Used specifically when finding the current information from a docked
@@ -71,13 +88,13 @@ public class ShimmerVerObject implements Serializable {
 			int firmwareVersionMajor, 
 			int firmwareVersionMinor,
 			int firmwareVersionInternal) {
+		
+		this(firmwareIdentifier,
+				firmwareVersionMajor,
+				firmwareVersionMinor,
+				firmwareVersionInternal);
 
 		mHardwareVersion = hardwareVersion;
-		mFirmwareIdentifier = firmwareIdentifier;
-		mFirmwareVersionMajor = firmwareVersionMajor;
-		mFirmwareVersionMinor = firmwareVersionMinor;
-		mFirmwareVersionInternal = firmwareVersionInternal;
-
 		parseShimmerVerDetails();
 	}
 
@@ -98,14 +115,14 @@ public class ShimmerVerObject implements Serializable {
 			int firmwareVersionMinor, 
 			int firmwareVersionInternal,
 			int shimmerExpansionBoardId) {
-		
+
+		this(firmwareIdentifier,
+				firmwareVersionMajor,
+				firmwareVersionMinor,
+				firmwareVersionInternal);
+
 		mHardwareVersion = hardwareVersion;
-		mFirmwareIdentifier = firmwareIdentifier;
-		mFirmwareVersionMajor = firmwareVersionMajor;
-		mFirmwareVersionMinor = firmwareVersionMinor;
-		mFirmwareVersionInternal = firmwareVersionInternal;
 		mShimmerExpansionBoardId = shimmerExpansionBoardId;
-		
 		parseShimmerVerDetails();
 	}
 	
@@ -205,6 +222,11 @@ public class ShimmerVerObject implements Serializable {
 
 	public String getFirmwareVersionParsedJustVersionNumber() {
 		return mFirmwareVersionParsedJustVersionNumber;
+	}
+
+	public void setHardwareVersion(int hardwareVersion) {
+		mHardwareVersion = hardwareVersion;
+		parseShimmerVerDetails();
 	}
 
 	public int getHardwareVersion() {

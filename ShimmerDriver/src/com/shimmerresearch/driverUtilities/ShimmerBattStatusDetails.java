@@ -165,4 +165,8 @@ public class ShimmerBattStatusDetails implements Serializable {
 		return mChargingStatusParsed;
 	}
 
+	public String getBattVoltage() {
+		return mBattVoltageParsed;
+	}
+
 }

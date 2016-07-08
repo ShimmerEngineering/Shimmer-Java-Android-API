@@ -241,6 +241,12 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     			output.append("Ack Received: " + UtilShimmer.bytesToHexString(instructionSent));
     			output.append(newline);
     		}
+
+			@Override
+			public void eventResponseReceived(byte response, Object parsedResponse) {
+				// TODO Auto-generated method stub
+				
+			}
     	});
     }
 

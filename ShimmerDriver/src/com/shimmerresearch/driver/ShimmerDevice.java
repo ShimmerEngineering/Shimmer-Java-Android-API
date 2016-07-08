@@ -596,7 +596,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return the mBattVoltage
 	 */
 	public String getBattVoltage() {
-		return mShimmerBattStatusDetails.mBattVoltageParsed;
+		return mShimmerBattStatusDetails.getBattVoltage();
 	}
 
 	/**

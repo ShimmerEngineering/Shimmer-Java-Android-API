@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.ProtocolListener;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.ByteLevelProtocol;
@@ -73,29 +74,10 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 		
 	}
 	
-	/**Could be used by InfoMem or Expansion board memory
-	 * @param command
-	 * @param address
-	 * @param infoMemBytes
-	 */
-	public void writeMemCommand(int command, int address, byte[] infoMemBytes) {
-			
-			byte[] memLengthToWrite = new byte[]{(byte) infoMemBytes.length};
-			byte[] memAddressToWrite = ByteBuffer.allocate(2).putShort((short)(address&0xFFFF)).array();
-			ArrayUtils.reverse(memAddressToWrite);
-
-			// TODO check I'm not missing the last two bytes here because the mem
-			// address length is not being included in the length field
-			byte[] instructionBuffer = new byte[1 + memLengthToWrite.length + memAddressToWrite.length + infoMemBytes.length];
-	    	instructionBuffer[0] = (byte)command;
-			System.arraycopy(memLengthToWrite, 0, instructionBuffer, 1, memLengthToWrite.length);
-			System.arraycopy(memAddressToWrite, 0, instructionBuffer, 1 + memLengthToWrite.length, memAddressToWrite.length);
-			System.arraycopy(infoMemBytes, 0, instructionBuffer, 1 + memLengthToWrite.length + memAddressToWrite.length, infoMemBytes.length);
-			
-			mRadioProtocol.writeInstruction(instructionBuffer);
-		
+	public void writeInfoMem(int startAddress, byte[] buf, int maxMemAddress) {
+		mRadioProtocol.writeInfoMem(startAddress, buf, maxMemAddress);
 	}
-	
+
 	/**
 	 * Transmits a command to the Shimmer device to enable the sensors. To enable multiple sensors an or operator should be used (e.g. writeEnabledSensors(SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG)). Command should not be used consecutively. Valid values are SENSOR_ACCEL, SENSOR_GYRO, SENSOR_MAG, SENSOR_ECG, SENSOR_EMG, SENSOR_GSR, SENSOR_EXP_BOARD_A7, SENSOR_EXP_BOARD_A0, SENSOR_BRIDGE_AMP and SENSOR_HEART.
     SENSOR_BATT
@@ -209,8 +191,7 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 						}
 
 						@Override
-						public void sendProgressReport(
-								BluetoothProgressReportPerCmd progressReportPerCmd) {
+						public void sendProgressReport(BluetoothProgressReportPerCmd progressReportPerCmd) {
 							// TODO Auto-generated method stub
 							
 						}
@@ -231,7 +212,37 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 						public void isNowStreaming() {
 							// TODO Auto-generated method stub
 							
+						}
+
+						@Override
+						public void eventNewResponse(byte responseCommand, Object parsedResponse) {
+							
+						}
+
+						@Override
+						public void sendStatusMSGtoUI(String msg) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void startOperation(BT_STATE currentOperation) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void finishOperation(BT_STATE currentOperation) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void startOperation(BT_STATE currentOperation, int totalNumOfCmds) {
+							// TODO Auto-generated method stub
+							
 						}});
+					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -266,6 +277,61 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 		
 	}
 
+	public void toggleLed() {
+		mRadioProtocol.toggleLed();
+	}
+
+	public void readFWVersion() {
+		mRadioProtocol.readFWVersion();
+	}
+
+	public void readShimmerVersion() {
+		mRadioProtocol.readShimmerVersion();
+	}
+
+	public void readInfoMem(int address, int size, int maxMemAddress) {
+		mRadioProtocol.readInfoMem(address, size, maxMemAddress);
+	}
+
+	public void readPressureCalibrationCoefficients() {
+		mRadioProtocol.readPressureCalibrationCoefficients();
+	}
+
+	public void startTimerCheckIfAlive() {
+		mRadioProtocol.startTimerCheckIfAlive();
+	}
+
+	public void readExpansionBoardID() {
+		mRadioProtocol.readExpansionBoardID();
+	}
+
+	public void readLEDCommand() {
+		mRadioProtocol.readLEDCommand();
+	}
+
+	public void readStatusLogAndStream() {
+		mRadioProtocol.readStatusLogAndStream();
+	}
+
+	public void readBattery() {
+		mRadioProtocol.readBattery();
+	}
+
+	public void inquiry() {
+		mRadioProtocol.inquiry();
+	}
+
+	public void startTimerReadStatus() {
+		mRadioProtocol.startTimerReadStatus();
+	}
+
+	public void startTimerReadBattStatus() {
+		mRadioProtocol.startTimerReadBattStatus();
+	}
+
+	public void operationPrepare() {
+		mRadioProtocol.operationPrepare();
+	}
 	
 	
 	

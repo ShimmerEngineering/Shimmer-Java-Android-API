@@ -135,6 +135,12 @@ public class GuiRadio{
 				// TODO Auto-generated method stub
 				
 			}
+
+			@Override
+			public void eventResponseReceived(byte response, Object parsedResponse) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

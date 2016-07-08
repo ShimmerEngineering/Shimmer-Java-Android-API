@@ -8,7 +8,11 @@ public interface RadioListener {
 	
 	public void eventNewPacket(byte[] packetByteArray);
 	
+	@Deprecated
 	public void eventResponseReceived(byte[] responseBytes);
+	
+	public void eventResponseReceived(byte response, Object parsedResponse);
+	
 	
 	public void eventAckReceived(byte[] instructionSent);
 	

@@ -56,7 +56,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.pcSerialPort.SerialPortJssc;
-import com.shimmerresearch.pcSerialPort.ShimmerSerialPortJssc;
+import com.shimmerresearch.pcSerialPort.DEPRECATEDShimmerSerialPortJssc;
 
 import java.util.*;
 import java.awt.*;
@@ -72,7 +72,7 @@ public class GuiTestShimmer4 extends JPanel {
     ListSelectionModel listSelectionModel;
     String[] enumValues;
 	static ShimmerDevice mShimmer;
-	static ShimmerSerialPortJssc sspj;
+	static DEPRECATEDShimmerSerialPortJssc sspj;
 	private JTextField txtCom;
     public GuiTestShimmer4() {
         super(new BorderLayout());
@@ -150,7 +150,7 @@ public class GuiTestShimmer4 extends JPanel {
         btnConnect.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		try {
-        			sspj = new ShimmerSerialPortJssc(txtCom.getText(), txtCom.getText(), SerialPort.BAUDRATE_115200);
+        			sspj = new DEPRECATEDShimmerSerialPortJssc(txtCom.getText(), txtCom.getText(), SerialPort.BAUDRATE_115200);
         	        sspj.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
 
         				@Override
@@ -294,6 +294,12 @@ public class GuiTestShimmer4 extends JPanel {
     			output.append("Ack Received: " + UtilShimmer.bytesToHexString(instructionSent));
     			output.append(newline);
     		}
+
+			@Override
+			public void eventResponseReceived(byte response, Object parsedResponse) {
+				// TODO Auto-generated method stub
+				
+			}
     	});
     }
 

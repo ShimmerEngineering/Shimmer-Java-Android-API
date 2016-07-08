@@ -15,8 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.RawBytePacketWithPCTimeStamp;
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.IOThread;
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.ProcessingThread;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.*;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
@@ -33,6 +32,11 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 
 public class LiteProtocol extends ByteLevelProtocol{
 
+	
+	//TODO - items that I've had to comment out
+	//getFirmwareVersionCode()
+	
+	
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	protected byte mCurrentCommand;
 	
@@ -54,10 +58,6 @@ public class LiteProtocol extends ByteLevelProtocol{
 	protected boolean mDummy=false;
 	protected boolean mFirstTime=false;
 	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
-	transient protected Timer mTimerCheckForAckOrResp;								// Timer variable used when waiting for an ack or response packet
-	transient protected Timer mTimerCheckAlive;
-	transient protected Timer mTimerReadStatus;
-	transient protected Timer mTimerReadBattStatus;								// 
 	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
 	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
 	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
@@ -73,6 +73,30 @@ public class LiteProtocol extends ByteLevelProtocol{
 	protected boolean mIamAlive = false;
 	public String mMyBluetoothAddress;
 	public String mComPort;
+	private int mTempChipID;
+
+	/**
+	 * LogAndStream will try to recreate the SD config. file for each block of
+	 * InfoMem that is written - need to give it time to do so.
+	 */
+	private static final int DELAY_BETWEEN_INFOMEM_WRITES = 100;
+	/** Delay to allow LogAndStream to create SD config. file and reinitialise */
+	private static final int DELAY_AFTER_INFOMEM_WRITE = 500;
+
+	//startregion --------- TIMERS ---------
+	private int mReadStatusPeriod=5000;
+	private int mReadBattStatusPeriod=600000;	// Batt status is updated every 10 mins 
+	private int mCheckAlivePeriod=2000;
+	
+	transient protected Timer mTimerCheckForAckOrResp;								// Timer variable used when waiting for an ack or response packet
+	transient protected Timer mTimerCheckAlive;
+	transient protected Timer mTimerReadStatus;
+	transient protected Timer mTimerReadBattStatus;								// 
+	
+	private int mCountDeadConnection = 0;
+	private boolean mCheckIfConnectionisAlive = false;
+	//endregion --------- TIMERS ---------
+
 
 	//TODO Should not be here?
 	protected boolean mIsConnected = false;
@@ -88,9 +112,12 @@ public class LiteProtocol extends ByteLevelProtocol{
 	public int mFirmwareIdentifier;
 	public int mHardwareVersion;
 	
+	protected int numBytesToReadFromExpBoard=0;
+
+	
 	public UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), true);
 	
-	private boolean isShimmerBluetoothApproach = false;
+	private boolean isShimmerBluetoothApproach = true;
 	
 	public LiteProtocol(){
 		super();
@@ -98,13 +125,9 @@ public class LiteProtocol extends ByteLevelProtocol{
 	
 	public LiteProtocol(ByteLevelDataComm mSerialPort) {
 		super(mSerialPort);
+//		String uniqueId = mSerialPort.
 	}
 	
-	public LiteProtocol(ShimmerDevice shimmerDevice){
-		//TODO device whether to go with the approach using this argument
-		super();
-	}
-
 	@Override
 	public void writeInstruction(byte[] instruction){
 		getListofInstructions().add(instruction);
@@ -119,7 +142,6 @@ public class LiteProtocol extends ByteLevelProtocol{
 	public void startStreaming() {
 		writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE});
 	}
-
 	
 	/**
 	 * @return the mFirmwareIdentifier
@@ -149,6 +171,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 	/**
 	 * @param state the mInstructionStackLock to set
 	 */
+	@Override
 	public void setInstructionStackLock(boolean state) {
 		this.mInstructionStackLock = state;
 	}
@@ -570,7 +593,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 					byte responseCommand = byteBuffer[0];
 					
 					if(isShimmerBluetoothApproach){
-//						processResponseCommand(responseCommand);
+						processResponseCommand(responseCommand);
 					}
 					else {
 						processResponseCommand(responseCommand, byteBuffer);
@@ -586,7 +609,8 @@ public class LiteProtocol extends ByteLevelProtocol{
 					// needs to initialize the Shimmer after releasing
 					// the setInstructionStackLock
 					if(byteBuffer[0]==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
-						processFirmwareVerResponse();
+//						processFirmwareVerResponse();
+						eventNewResponse(byteBuffer[0], null);
 					}
 				}
 			}
@@ -633,11 +657,14 @@ public class LiteProtocol extends ByteLevelProtocol{
 		eventNewResponse(response);
 	}
 	
-//	/**
-//	 * @param responseCommand
-//	 */
-//	private void processResponseCommand(byte responseCommand) {
-//		try{
+	/**
+	 * @param responseCommand
+	 */
+	private void processResponseCommand(byte responseCommand) {
+		try{
+			if(responseCommand==0xFF){
+				//TEMP here
+			}
 //			if(responseCommand==InstructionsResponse.INQUIRY_RESPONSE_VALUE) {
 //				delayForBtResponse(500); // Wait to ensure the packet has been fully received
 //				List<Byte> buffer = new  ArrayList<Byte>();
@@ -696,21 +723,24 @@ public class LiteProtocol extends ByteLevelProtocol{
 //
 //				printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(getSamplingRateShimmer()));
 //			} 
-//			else if(responseCommand==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
-//				delayForBtResponse(200); // Wait to ensure the packet has been fully received
-//				byte[] bufferInquiry = new byte[6]; 
-//				bufferInquiry = readBytes(6);
-//				int firmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
-//				int firmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
-//				int firmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
-//				int firmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
+			else if(responseCommand==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
+				delayForBtResponse(200); // Wait to ensure the packet has been fully received
+				byte[] bufferInquiry = new byte[6]; 
+				bufferInquiry = readBytes(6);
+				int firmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
+				int firmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
+				int firmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
+				int firmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
 //				ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 //				setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
-//
-//				printLogDataForDebugging("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
-//				printLogDataForDebugging("FW Version Response Received: " + getFirmwareVersionParsed());
-//			} 
-//
+
+				ShimmerVerObject shimmerVerObject = new ShimmerVerObject(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+				eventNewResponse(responseCommand, shimmerVerObject);
+				
+				printLogDataForDebugging("FW Version Response Received. FW Code: " + shimmerVerObject.getFirmwareVersionCode());
+				printLogDataForDebugging("FW Version Response Received: " + shimmerVerObject.getFirmwareVersionParsed());
+			} 
+
 //			else if(responseCommand==InstructionsResponse.ALL_CALIBRATION_RESPONSE_VALUE) {
 //				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 //					processAccelCalReadBytes();
@@ -762,23 +792,25 @@ public class LiteProtocol extends ByteLevelProtocol{
 //					inquiryDone();
 //				}
 //			}
-//			else if(responseCommand==InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE) {
-//				delayForBtResponse(100); // Wait to ensure the packet has been fully received
-//				byte[] bufferShimmerVersion = new byte[1]; 
-//				bufferShimmerVersion = readBytes(1);
+			else if(responseCommand==InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE) {
+				delayForBtResponse(100); // Wait to ensure the packet has been fully received
+				byte[] bufferShimmerVersion = new byte[1]; 
+				bufferShimmerVersion = readBytes(1);
 //				setHardwareVersion((int)bufferShimmerVersion[0]);
-//				
-////				if(mShimmerVersion==HW_ID.SHIMMER_2R){
-////					initializeShimmer2R();
-////				} 
-////				else if(mShimmerVersion==HW_ID.SHIMMER_3) {
-////					initializeShimmer3();
-////				}
-//				
-//				printLogDataForDebugging("Shimmer Version (HW) Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
-//				
-//				readFWVersion();
-//			} 							
+				
+				eventNewResponse(responseCommand, (int)bufferShimmerVersion[0]);
+
+//				if(mShimmerVersion==HW_ID.SHIMMER_2R){
+//					initializeShimmer2R();
+//				} 
+//				else if(mShimmerVersion==HW_ID.SHIMMER_3) {
+//					initializeShimmer3();
+//				}
+				
+				printLogDataForDebugging("Shimmer Version (HW) Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
+				
+				readFWVersion();
+			}
 //			else if(responseCommand==InstructionsResponse.ACCEL_SENSITIVITY_RESPONSE_VALUE) {
 //				byte[] bufferAccelSensitivity = readBytes(1);
 //				mAccelRange=bufferAccelSensitivity[0];
@@ -871,16 +903,17 @@ public class LiteProtocol extends ByteLevelProtocol{
 //				byte[] bufferAns = readBytes(1); 
 //				mLSM303DigitalAccelRate=bufferAns[0];
 //			}
-//			else if(responseCommand==InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE){
-//				//get pressure
-//				delayForBtResponse(100); // Wait to ensure the packet has been fully received
-//				byte[] pressureResoRes = new byte[22]; 
-//				pressureResoRes = readBytes(22);
-//				mPressureCalRawParams = new byte[23];
-//				System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
-//				mPressureCalRawParams[0] = responseCommand;
+			else if(responseCommand==InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE){
+				//get pressure
+				delayForBtResponse(100); // Wait to ensure the packet has been fully received
+				byte[] pressureResoRes = new byte[22]; 
+				pressureResoRes = readBytes(22);
+				byte[] mPressureCalRawParams = new byte[23];
+				System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
+				mPressureCalRawParams[0] = responseCommand;
 //				retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseCommand);
-//			} 
+				eventNewResponse(responseCommand, pressureResoRes);
+			} 
 //			else if(responseCommand==InstructionsResponse.EXG_REGS_RESPONSE_VALUE){
 //				delayForBtResponse(300); // Wait to ensure the packet has been fully received
 //				byte[] bufferAns = readBytes(11);
@@ -895,62 +928,70 @@ public class LiteProtocol extends ByteLevelProtocol{
 //					setEXG2RegisterArray(EXG2RegisterArray);
 //				}
 //			} 
-//			else if(responseCommand==InstructionsResponse.DAUGHTER_CARD_ID_RESPONSE_VALUE) {
-//				byte[] expBoardArray = readBytes(numBytesToReadFromExpBoard+1);
-////				getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
-//				byte[] expBoardArraySplit = Arrays.copyOfRange(expBoardArray, 1, 4);
+			else if(responseCommand==InstructionsResponse.DAUGHTER_CARD_ID_RESPONSE_VALUE) {
+				byte[] expBoardArray = readBytes(numBytesToReadFromExpBoard+1);
+//				getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
+				byte[] expBoardArraySplit = Arrays.copyOfRange(expBoardArray, 1, 4);
 //				setExpansionBoardDetails(new ExpansionBoardDetails(expBoardArraySplit));
-//			}
-//			else if(responseCommand==InstructionsResponse.BAUD_RATE_RESPONSE_VALUE) {
-//				byte[] bufferBaud = readBytes(1);
-//				mBluetoothBaudRate=bufferBaud[0] & 0xFF;
-//			}
-//			else if(responseCommand==InstructionsResponse.TRIAL_CONFIG_RESPONSE_VALUE) {
-//				byte[] data = readBytes(3);
+				eventNewResponse(responseCommand, new ExpansionBoardDetails(expBoardArraySplit));
+			}
+			else if(responseCommand==InstructionsResponse.BAUD_RATE_RESPONSE_VALUE) {
+				byte[] bufferBaud = readBytes(1);
+				int mBluetoothBaudRate=bufferBaud[0] & 0xFF;
+				eventNewResponse(responseCommand, mBluetoothBaudRate);
+			}
+			else if(responseCommand==InstructionsResponse.TRIAL_CONFIG_RESPONSE_VALUE) {
+				byte[] data = readBytes(3);
 //				fillTrialShimmer3(data);
-//			}
-//			else if(responseCommand==InstructionsResponse.CENTER_RESPONSE_VALUE) {
-//				byte[] length = readBytes(1);
-//				byte[] data = readBytes(length[0]);
-//				String center = new String(data);
+				eventNewResponse(responseCommand, data);
+			}
+			else if(responseCommand==InstructionsResponse.CENTER_RESPONSE_VALUE) {
+				byte[] length = readBytes(1);
+				byte[] data = readBytes(length[0]);
+				String center = new String(data);
 //				setCenter(center);
-//			}
-//			else if(responseCommand==InstructionsResponse.SHIMMERNAME_RESPONSE_VALUE) {
-//				byte[] length = readBytes(1);
-//				byte[] data = readBytes(length[0]);
-//				String name = new String(data);
+				eventNewResponse(responseCommand, center);
+			}
+			else if(responseCommand==InstructionsResponse.SHIMMERNAME_RESPONSE_VALUE) {
+				byte[] length = readBytes(1);
+				byte[] data = readBytes(length[0]);
+				String name = new String(data);
 //				setShimmerUserAssignedName(name);
-//			}
-//			else if(responseCommand==InstructionsResponse.EXPID_RESPONSE_VALUE) {
-//				byte[] length = readBytes(1);
-//				byte[] data = readBytes(length[0]);
-//				String name = new String(data);
+				eventNewResponse(responseCommand, name);
+			}
+			else if(responseCommand==InstructionsResponse.EXPID_RESPONSE_VALUE) {
+				byte[] length = readBytes(1);
+				byte[] data = readBytes(length[0]);
+				String name = new String(data);
 //				setTrialName(name);
-//			}
-//			else if(responseCommand==InstructionsResponse.CONFIGTIME_RESPONSE_VALUE) {
-//				byte[] length = readBytes(1);
-//				byte[] data = readBytes(length[0]);
-//				String time = new String(data);
+				eventNewResponse(responseCommand, name);
+			}
+			else if(responseCommand==InstructionsResponse.CONFIGTIME_RESPONSE_VALUE) {
+				byte[] length = readBytes(1);
+				byte[] data = readBytes(length[0]);
+				String time = new String(data);
 //				if(time.isEmpty()){
 //					setConfigTime(0);
 //				} 
 //				else {
 //					setConfigTime(Long.parseLong(time));	
 //				}
-//			}
-//			else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE) {
-//				byte[] rxBuf = readBytes(8);
-//				
-//				// Parse response string
-//				rxBuf = Arrays.copyOf(rxBuf, 8);
-//				ArrayUtils.reverse(rxBuf);
-//				long responseTime = (long)(((double)(ByteBuffer.wrap(rxBuf).getLong())/32.768)); // / 1000
-//				
+				eventNewResponse(responseCommand, time);
+			}
+			else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE) {
+				byte[] rxBuf = readBytes(8);
+				
+				// Parse response string
+				rxBuf = Arrays.copyOf(rxBuf, 8);
+				ArrayUtils.reverse(rxBuf);
+				long responseTime = (long)(((double)(ByteBuffer.wrap(rxBuf).getLong())/32.768)); // / 1000
+				
 //				setLastReadRealTimeClockValue(responseTime);
-//			}
-//			else if(responseCommand==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE) {
-//				processInstreamResponse();
-//			}
+				eventNewResponse(responseCommand, responseTime);
+			}
+			else if(responseCommand==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE) {
+				processInstreamResponse();
+			}
 //			else if(responseCommand==InstructionsResponse.LSM303DLHC_ACCEL_LPMODE_RESPONSE_VALUE) {
 //				byte[] responseData = readBytes(1);
 //				mLowPowerAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
@@ -985,56 +1026,59 @@ public class LiteProtocol extends ByteLevelProtocol{
 //				byte[] responseData = readBytes(1);
 //				setInternalExpPower((int)(responseData[0]&0xFF));
 //			}
-//			else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
-//				// Get data length to read
-//				byte[] rxBuf = readBytes(1);
-//				int lengthToRead = (int)(rxBuf[0]&0xFF);
-//				rxBuf = readBytes(lengthToRead);
-//				printLogDataForDebugging("INFOMEM_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-//				
-//				//Copy to local buffer
-//				System.arraycopy(rxBuf, 0, mInfoMemBuffer, mCurrentInfoMemAddress, lengthToRead);
-//				//Update configuration when all bytes received.
+			else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
+				// Get data length to read
+				byte[] rxBuf = readBytes(1);
+				int lengthToRead = (int)(rxBuf[0]&0xFF);
+				rxBuf = readBytes(lengthToRead);
+				printLogDataForDebugging("INFOMEM_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+				
+				//Copy to local buffer
+				System.arraycopy(rxBuf, 0, mInfoMemBuffer, mCurrentInfoMemAddress, lengthToRead);
+				//Update configuration when all bytes received.
+				
+				if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mTotalInfoMemLengthToRead){
 //				if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 //					setShimmerInfoMemBytes(mInfoMemBuffer);
-//				}
-//			}
-//			else {
-//				consolePrintLn("Unhandled BT response: " + responseCommand);
-//			}
-//		} catch(DeviceException dE){
-//			
-//		}
-//
-//	}
+					eventNewResponse(responseCommand, mInfoMemBuffer);
+				}
+			}
+			else {
+				printLogDataForDebugging("Unhandled BT response: " + responseCommand);
+			}
+		} catch(DeviceException dE){
+			
+		}
+
+	}
 	
 
-	private void processFirmwareVerResponse() {
-		if(isShimmerBluetoothApproach){
-//			if(getHardwareVersion()==HW_ID.SHIMMER_2R){
-//				initializeShimmer2R();
-//			} 
-//			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
-//				initializeShimmer3();
-//			}
-//			
-//			startTimerCheckIfAlive();
-//	//		readShimmerVersion();
-		}
-	}
+//	private void processFirmwareVerResponse() {
+//		if(isShimmerBluetoothApproach){
+////			if(getHardwareVersion()==HW_ID.SHIMMER_2R){
+////				initializeShimmer2R();
+////			} 
+////			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
+////				initializeShimmer3();
+////			}
+////			
+////			startTimerCheckIfAlive();
+////	//		readShimmerVersion();
+//		}
+//	}
 	
 	private void processSpecialGetCmdsAfterAck(byte mCurrentCommand) {
 		byte[] insBytes = getListofInstructions().get(0);
 		if(isShimmerBluetoothApproach){
-//			if(mCurrentCommand==InstructionsGet.GET_EXG_REGS_COMMAND_VALUE){
-//				// Need to store ExG chip number before receiving response
-//				mTempChipID = insBytes[1];
-//			}
-//			else if(mCurrentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE){
-//				// store current address/InfoMem segment
-//				mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
-//				mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
-//			}
+			if(mCurrentCommand==InstructionsGet.GET_EXG_REGS_COMMAND_VALUE){
+				// Need to store ExG chip number before receiving response
+				mTempChipID = insBytes[1];
+			}
+			else if(mCurrentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE){
+				// store current address/InfoMem segment
+				mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+				mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
+			}
 		}
 		else{
 			//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation 
@@ -1108,6 +1152,10 @@ public class LiteProtocol extends ByteLevelProtocol{
 		mProtocolListener.eventNewResponse(response);
 	}
 	
+	private void eventNewResponse(byte responseCommand, Object parsedResponse) {
+		mProtocolListener.eventNewResponse(responseCommand, parsedResponse);
+	}
+
 	private void eventAckInstruction(byte[] bs) {
 		mProtocolListener.eventAckInstruction(bs);
 	}
@@ -1115,7 +1163,14 @@ public class LiteProtocol extends ByteLevelProtocol{
 	private void eventNewPacket(byte[] newPacket) {
 		mProtocolListener.eventNewPacket(newPacket);
 	}
+	
+	private void startOperation(BT_STATE currentOperation, int totalNumOfCmds) {
+		mProtocolListener.startOperation(currentOperation, totalNumOfCmds);
+	}
 
+	private void sendStatusMSGtoUI(String msg) {
+		mProtocolListener.sendStatusMSGtoUI(msg);
+	}
 
 	private void threadSleep(long millis) {
 		try {
@@ -1139,148 +1194,6 @@ public class LiteProtocol extends ByteLevelProtocol{
 
 	public void printLogDataForDebugging(String msg){
 		mUtilShimmer.consolePrintLn(msg);
-	}
-	
-	public synchronized void startTimerCheckForAckOrResp(int seconds) {
-		//public synchronized void responseTimer(int seconds) {
-			if(mTimerCheckForAckOrResp!=null) {
-				mTimerCheckForAckOrResp.cancel();
-				mTimerCheckForAckOrResp.purge();
-				mTimerCheckForAckOrResp = null;
-			}
-			
-			printLogDataForDebugging("Waiting for ack/response for command:\t" + mCurrentCommand);
-			mTimerCheckForAckOrResp = new Timer("Shimmer_" + "_TimerCheckForResp");
-			mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
-		}
-	
-	/** Handles command response timeout
-	 *
-	 */
-	class checkForAckOrRespTask extends TimerTask {
-		
-		@Override
-		public void run() {
-			{
-				int storedFirstTime = (mFirstTime? 1:0);
-				
-				//Timeout triggered 
-				printLogDataForDebugging("Command:\t" + mCurrentCommand +" timeout");
-				if(mWaitForAck){
-					printLogDataForDebugging("Ack not received");
-				}
-				if(mWaitForResponse) {
-					printLogDataForDebugging("Response not received");
-					
-				}
-				if(mIsStreaming && getPacketReceptionRate()<100){
-					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRate()));
-				} 
-				
-				//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
-				//we will send the status changed to the GUI anyway
-				if(mCurrentCommand==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE){
-					
-					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
-					
-					mIsSDLogging = true;
-					eventLogAndStreamStatusChanged();
-					mWaitForAck=false;
-					mWaitForResponse=false;
-					
-					getListofInstructions().remove(0);
-					mTransactionCompleted = true;
-					setInstructionStackLock(false);
-					
-					return;
-				}
-				else if(mCurrentCommand==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE){
-					
-					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
-					
-					mIsSDLogging = false;
-					eventLogAndStreamStatusChanged();
-					mWaitForAck=false;
-					mWaitForResponse=false;
-					
-					getListofInstructions().remove(0);
-					mTransactionCompleted = true;
-					setInstructionStackLock(false);
-					
-					return;
-				}
-				
-
-				if(mCurrentCommand==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE){
-					
-				}
-				else if(mCurrentCommand==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE && !mIsInitialised){
-					mFirstTime=false;
-				} 
-				else if(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
-					mFirstTime=false;
-					
-				}
-
-				
-				
-				if(mIsStreaming){
-					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					mWaitForAck=false;
-					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-					setInstructionStackLock(false);
-					getListofInstructions().clear();
-				}
-				else if(storedFirstTime==0){
-					// If the command fails to get a response, the API should
-					// assume that the connection has been lost and close the
-					// serial port cleanly.
-					
-					try {
-						if (bytesAvailableToBeRead()){
-							try {
-								readBytes(availableBytes());
-							} catch (DeviceException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					} catch (DeviceException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
-					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT){
-						disconnect();
-					} else {
-						mWaitForAck=false;
-						mWaitForResponse=false;
-						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
-						setInstructionStackLock(false);
-						//this is needed because if u dc the shimmer the write call gets stuck
-						startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
-					}
-					
-					mNumberofTXRetriesCount++;
-					
-					
-					
-					
-				}
-			}
-		} //End Run
-	} //End TimerTask
-	
-	
-	
-	public void stopTimerCheckForAckOrResp(){
-		//Terminate the timer thread
-		if(mTimerCheckForAckOrResp!=null){
-			mTimerCheckForAckOrResp.cancel();
-			mTimerCheckForAckOrResp.purge();
-			mTimerCheckForAckOrResp = null;
-		}
 	}
 	
 	/**
@@ -1342,16 +1255,16 @@ public class LiteProtocol extends ByteLevelProtocol{
 				}
 				else if(currentCommand==InstructionsSet.SET_INFOMEM_COMMAND_VALUE){
 					if(isShimmerBluetoothApproach){
-//						//SET InfoMem is automatically followed by a GET so no need to handle here
-//						
-//						//Sleep for Xsecs to allow Shimmer to process new configuration
-//						mNumOfInfoMemSetCmds -= 1;
-//						if(mNumOfInfoMemSetCmds==0){
-//							delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
-//						}
-//						else {
-//							delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
-//						}
+						//SET InfoMem is automatically followed by a GET so no need to handle here
+						
+						//Sleep for Xsecs to allow Shimmer to process new configuration
+						mNumOfInfoMemSetCmds -= 1;
+						if(mNumOfInfoMemSetCmds==0){
+							delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
+						}
+						else {
+							delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
+						}
 					}
 				}
 				
@@ -1416,7 +1329,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 	private void clearSingleDataPacketFromBuffers(byte[] bufferTemp, int packetSize) {
 		mByteArrayOutputStream.reset();
 		mByteArrayOutputStream.write(bufferTemp[packetSize]);
-//		consolePrintLn(Integer.toString(bufferTemp[mPacketSize+2]));
+//		printLogDataForDebugging(Integer.toString(bufferTemp[mPacketSize+2]));
 		for (int i=0;i<packetSize;i++){
 			mListofPCTimeStamps.remove(0);
 		}
@@ -1445,15 +1358,16 @@ public class LiteProtocol extends ByteLevelProtocol{
 			}
 			else if(inStreamResponseCommand==InstructionsResponse.STATUS_RESPONSE_VALUE){
 				if(isShimmerBluetoothApproach){
-//					byte[] responseData = readBytes(1);
+					byte[] responseData = readBytes(1);
 //					parseStatusByte(responseData[0]);
+					eventNewResponse(inStreamResponseCommand, responseData[0]);
 				}
 				
 				if(!mIsSensing){
 					if(isShimmerBluetoothApproach){
-//						if(!isInitialised()){
-//							writeRealTimeClock();
-//						}
+						if(!isInitialised()){
+							writeRealTimeClock();
+						}
 					}
 					else{
 						writeRealTimeClock();
@@ -1464,8 +1378,10 @@ public class LiteProtocol extends ByteLevelProtocol{
 			else if(inStreamResponseCommand==InstructionsResponse.VBATT_RESPONSE_VALUE) {
 				byte[] responseData = readBytes(3); 
 				if(isShimmerBluetoothApproach){
-//					setBattStatusDetails(new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]));
-//					consolePrintLn("Batt data " + getBattVoltage());
+					ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
+//					setBattStatusDetails(battStatusDetails);
+					eventNewResponse(inStreamResponseCommand, battStatusDetails);
+					printLogDataForDebugging("Batt data " + battStatusDetails.getBattVoltage());
 				}
 				else{
 					responseData = ArrayUtils.addAll(inStreamResponseCommandArray, responseData);
@@ -1480,4 +1396,657 @@ public class LiteProtocol extends ByteLevelProtocol{
 
 	}
 
+	@Override
+	public void toggleLed() {
+		byte[] instructionLED = {LiteProtocolInstructionSet.InstructionsSet.TOGGLE_LED_COMMAND_VALUE};
+		writeInstruction(instructionLED);
+	}
+
+	@Override
+	public void readFWVersion() {
+		mDummy=false;//false
+		writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsGet.GET_FW_VERSION_COMMAND_VALUE});
+	}
+
+	@Override
+	public void readShimmerVersion() {
+		mDummy=false;//false
+//		if(mFirmwareVersionParsed.equals(boilerPlateString)){
+//			mShimmerVersion = HW_ID.SHIMMER_2R; // on Shimmer2r has 
+			
+//		} 
+//		else if(mFWVersion!=1.2){
+			writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE});
+//		} 
+//			else {
+//			mListofInstructions.add(new byte[]{GET_SHIMMER_VERSION_COMMAND});
+//		}
+	}
+	
+	@Override
+	public void readPressureCalibrationCoefficients() {
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if(getFirmwareVersionCode()>1){
+				writeInstruction(new byte[]{ LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE});
+			}
+		}
+	}
+
+	@Override
+	protected void readInfoMem(int address, int size) {
+		readMemCommand(LiteProtocolInstructionSet.InstructionsGet.GET_INFOMEM_COMMAND_VALUE, address, size);
+	}
+
+	@Override
+	public void readMemCommand(int command, int address, int size) {
+		if(this.getFirmwareVersionCode()>=6){
+	    	byte[] memLengthToRead = new byte[]{(byte) size};
+	    	byte[] memAddressToRead = ByteBuffer.allocate(2).putShort((short)(address&0xFFFF)).array();
+			ArrayUtils.reverse(memAddressToRead);
+
+	    	byte[] instructionBuffer = new byte[1 + memLengthToRead.length + memAddressToRead.length];
+	    	instructionBuffer[0] = (byte)command;
+	    	System.arraycopy(memLengthToRead, 0, instructionBuffer, 1, memLengthToRead.length);
+	    	System.arraycopy(memAddressToRead, 0, instructionBuffer, 1 + memLengthToRead.length, memAddressToRead.length);
+
+			writeInstruction(instructionBuffer);
+		}
+	}
+
+	@Override
+	public void writeInfoMem(int startAddress, byte[] buf) {
+		writeMemCommand((byte)LiteProtocolInstructionSet.InstructionsSet.SET_INFOMEM_COMMAND_VALUE, startAddress, buf);
+	}
+
+	/**Could be used by InfoMem or Expansion board memory
+	 * @param command
+	 * @param address
+	 * @param infoMemBytes
+	 */
+	public void writeMemCommand(int command, int address, byte[] infoMemBytes) {
+//		if(this.getFirmwareVersionCode()>=6){
+			byte[] memLengthToWrite = new byte[]{(byte) infoMemBytes.length};
+			byte[] memAddressToWrite = ByteBuffer.allocate(2).putShort((short)(address&0xFFFF)).array();
+			ArrayUtils.reverse(memAddressToWrite);
+
+			// TODO check I'm not missing the last two bytes here because the mem
+			// address length is not being included in the length field
+			byte[] instructionBuffer = new byte[1 + memLengthToWrite.length + memAddressToWrite.length + infoMemBytes.length];
+	    	instructionBuffer[0] = (byte)command;
+			System.arraycopy(memLengthToWrite, 0, instructionBuffer, 1, memLengthToWrite.length);
+			System.arraycopy(memAddressToWrite, 0, instructionBuffer, 1 + memLengthToWrite.length, memAddressToWrite.length);
+			System.arraycopy(infoMemBytes, 0, instructionBuffer, 1 + memLengthToWrite.length + memAddressToWrite.length, infoMemBytes.length);
+			
+			writeInstruction(instructionBuffer);
+//			getListofInstructions().add(instructionBuffer);
+//		}
+	}
+
+	//region --------- OPERATIONS --------- 
+	/**
+	 * 
+	 */
+	@Override
+	public void operationPrepare(){
+		stopAllTimers();
+
+		//make sure no more instructions
+		//shouldnt matter since the configuration are being rewritten by consensys
+		//used in initializeshimmer3 (this class) and BluetoothManager class
+		getListofInstructions().clear();
+		// wait for instruction stack to clear			
+		while(getListofInstructions().size()>0); //TODO add timeout
+		// lock the instruction stack
+		setInstructionStackLock(true);
+		mOperationUnderway = true; 
+	}
+	
+	/**
+	 * 
+	 */
+	public void operationWaitForFinish(){
+		// unlock the instruction stack
+		setInstructionStackLock(false);
+		// wait for instruction stack to clear			
+		while(getListofInstructions().size()>0); //TODO add timeout
+	}
+	
+	/**
+	 * @param btState
+	 */
+	public void operationStart(BT_STATE btState){
+//		mOperationUnderway = true;
+		startOperation(btState, getListofInstructions().size());
+		//unlock instruction stack
+		setInstructionStackLock(false);
+	}
+	
+	/**
+	 * 
+	 */
+	public void operationFinished(){
+		/*
+		startTimerCheckIfAlive();
+		startTimerReadStatus();
+		startTimerReadBattStatus();
+		*/
+		mOperationUnderway = false;
+	}
+	//endregion --------- OPERATIONS --------- 
+	
+	//region --------- TIMERS --------- 
+	
+	public void stopAllTimers(){
+		stopTimerReadStatus();
+		stopTimerCheckAlive();
+		stopTimerCheckForAckOrResp();
+		stopTimerReadBattStatus();
+	}
+	
+	public void stopTimerCheckForAckOrResp(){
+		//Terminate the timer thread
+		if(mTimerCheckForAckOrResp!=null){
+			mTimerCheckForAckOrResp.cancel();
+			mTimerCheckForAckOrResp.purge();
+			mTimerCheckForAckOrResp = null;
+		}
+	}
+	
+	public synchronized void startTimerCheckForAckOrResp(int seconds) {
+	//public synchronized void responseTimer(int seconds) {
+		if(mTimerCheckForAckOrResp!=null) {
+			mTimerCheckForAckOrResp.cancel();
+			mTimerCheckForAckOrResp.purge();
+			mTimerCheckForAckOrResp = null;
+		}
+		printLogDataForDebugging("Waiting for ack/response for command:\t" + btCommandToString(mCurrentCommand));
+		mTimerCheckForAckOrResp = new Timer("Shimmer_" + getMacIdParsed() + "_TimerCheckForResp");
+		mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
+	}
+	
+	/** Handles command response timeout
+	 *
+	 */
+	class checkForAckOrRespTask extends TimerTask {
+		
+		@Override
+		public void run() {
+			{
+				int storedFirstTime = (mFirstTime? 1:0);
+				
+				//Timeout triggered 
+				printLogDataForDebugging("Command:\t" + btCommandToString(mCurrentCommand) +" timeout");
+				if(mWaitForAck){
+					printLogDataForDebugging("Ack not received");
+				}
+				if(mWaitForResponse) {
+					printLogDataForDebugging("Response not received");
+					sendStatusMSGtoUI("Response not received, please reset Shimmer Device." + mMyBluetoothAddress); //Android?
+				}
+				//TODO
+//				if(mIsStreaming && getPacketReceptionRateOverall()<100){
+//					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRateOverall()));
+//				} 
+				
+				//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
+				//we will send the status changed to the GUI anyway
+				if(mCurrentCommand==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE){
+					
+					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+					
+					mIsSDLogging = true;
+					eventLogAndStreamStatusChanged();
+					mWaitForAck=false;
+					mWaitForResponse=false;
+					
+					getListofInstructions().remove(0);
+					mTransactionCompleted = true;
+					setInstructionStackLock(false);
+					
+					return;
+				}
+				else if(mCurrentCommand==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE){
+					
+					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+					
+					mIsSDLogging = false;
+					eventLogAndStreamStatusChanged();
+					mWaitForAck=false;
+					mWaitForResponse=false;
+					
+					getListofInstructions().remove(0);
+					mTransactionCompleted = true;
+					setInstructionStackLock(false);
+					
+					return;
+				}
+				
+
+				if(mCurrentCommand==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE){
+					mFirstTime=false;
+					eventAckReceived(new byte[]{mCurrentCommand});
+//					setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0));
+//					
+////					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
+////	      	        Bundle bundle = new Bundle();
+////	      	        bundle.putString(TOAST, "Firmware Version: " +mFirmwareVersionParsed);
+////	      	        msg.setData(bundle);*/
+////					if(!mDummy){
+////						//mHandler.sendMessage(msg);
+////					}
+//					
+//					initializeBoilerPlate();
+				}
+				else if(mCurrentCommand==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE && !mIsInitialised){
+					mFirstTime=false;
+				} 
+				else if(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
+					mFirstTime=false;
+					getListofInstructions().clear();
+					readShimmerVersionDepracated();
+				}
+
+				
+				
+				if(mIsStreaming){
+					stopTimerCheckForAckOrResp(); //Terminate the timer thread
+					mWaitForAck=false;
+					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+					setInstructionStackLock(false);
+					getListofInstructions().clear();
+				}
+				else if(storedFirstTime==0){
+					// If the command fails to get a response, the API should
+					// assume that the connection has been lost and close the
+					// serial port cleanly.
+					
+					try {
+						if (bytesAvailableToBeRead()){
+							readBytes(availableBytes());
+						}
+						stopTimerCheckForAckOrResp(); //Terminate the timer thread
+						printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
+						if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT 
+								&& mCurrentCommand!=InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE 
+								&& !mIsInitialised){
+							killConnection(); //If command fail exit device	
+						} else if(mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mIsInitialised){
+							killConnection(); //If command fail exit device	
+						} else {
+							mWaitForAck=false;
+							mWaitForResponse=false;
+							mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+							setInstructionStackLock(false);
+							//this is needed because if u dc the shimmer the write call gets stuck
+							startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
+						}
+					} catch (DeviceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					mNumberofTXRetriesCount++;
+				}
+			}
+		} //End Run
+	} //End TimerTask
+	
+	private void retryTXCommand(){
+		//NOT USED
+		//NOT USED in ShimmerBluetooth either
+	}
+	
+	private void killConnection(){
+		printLogDataForDebugging("Killing Connection");
+		stop(); //If command fail exit device 
+	}
+
+	@Override
+	public void startTimerReadStatus(){
+		// if shimmer is using LogAndStream FW, stop reading its status periodically
+		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ 
+			if(mTimerReadStatus==null){ 
+				mTimerReadStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerReadStatus");
+			} else {
+				mTimerReadStatus.cancel();
+				mTimerReadStatus.purge();
+				mTimerReadStatus = null;
+			}
+			mTimerReadStatus.schedule(new readStatusTask(), mReadStatusPeriod, mReadStatusPeriod);
+		}
+	}
+	
+	public void stopTimerReadStatus(){
+		if(mTimerReadStatus!=null){
+			mTimerReadStatus.cancel();
+			mTimerReadStatus.purge();
+			mTimerReadStatus = null;
+		}
+	}
+	
+	/**
+	 * Class used to read perdiocally the shimmer status when LogAndStream FW is installed
+	 */
+	public class readStatusTask extends TimerTask {
+
+		@Override
+		public void run() {
+			if(getListofInstructions().size()==0 
+					&& !getListofInstructions().contains(new byte[]{InstructionsGet.GET_STATUS_COMMAND_VALUE})){
+				readStatusLogAndStream();
+			}
+		}
+		
+	}
+	
+	public void startTimerCheckIfAlive(){
+		if(mCheckIfConnectionisAlive){
+			if(mTimerCheckAlive==null){ 
+				mTimerCheckAlive = new Timer("Shimmer_" + getMacIdParsed() + "_TimerCheckAlive");
+			}
+			//dont really need this for log and stream since we already have the get status timer
+			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // check if Shimmer is using LogAndStream firmware
+				mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
+			} else if (getFirmwareIdentifier()==FW_ID.BTSTREAM) {
+				mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
+			}
+		}
+	}
+	
+	public void stopTimerCheckAlive(){
+		if(mTimerCheckAlive!=null){
+			mTimerCheckAlive.cancel();
+			mTimerCheckAlive.purge();
+			mTimerCheckAlive = null;
+		}
+	}
+	
+	/**
+	 * @author Lim
+	 * Used to check if the connection is alive 
+	 */
+	private class checkIfAliveTask extends TimerTask {
+		
+		@Override
+		public void run() {
+			if(mIamAlive){
+				mCountDeadConnection = 0;
+				mIamAlive=false;
+			}
+			else{
+				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM & mIsStreaming){
+					mCountDeadConnection++;
+				} else if(getFirmwareIdentifier()==FW_ID.BTSTREAM) {
+					mCountDeadConnection++;
+				}
+				if(getFirmwareVersionCode()>=6 && !mIsStreaming){
+					if(getListofInstructions().size()==0 
+							&&!getListofInstructions().contains(new byte[]{(byte) InstructionsSet.TEST_CONNECTION_COMMAND_VALUE})){
+						printLogDataForDebugging("Check Alive Task");
+						if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+							//writeTestConnectionCommand(); //dont need this because of the get status command
+						} else if (getFirmwareIdentifier()==FW_ID.BTSTREAM){
+							writeTestConnectionCommand();
+						}
+					}
+				} 
+				else {
+					printLogDataForDebugging("Check Alive Task");
+					writeLEDCommand(0);
+				}
+				if(mCountDeadConnection>5){
+//					setState(BT_STATE.NONE);
+					killConnection(); //If command fail exit device
+				}
+			} 
+		} //End Run
+	} //End TimerTask
+	
+	@Override
+	public void startTimerReadBattStatus(){
+		//Instream response only supported in LogAndStream
+		if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)&&(getFirmwareVersionCode()>=6)){
+			if(mTimerReadBattStatus==null){ 
+				mTimerReadBattStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerBattStatus");
+			}
+			mTimerReadBattStatus.schedule(new readBattStatusTask(), mReadBattStatusPeriod, mReadBattStatusPeriod);
+		}
+	}
+	
+	public void stopTimerReadBattStatus(){
+		if(mTimerReadBattStatus!=null){
+			mTimerReadBattStatus.cancel();
+			mTimerReadBattStatus.purge();
+			mTimerReadBattStatus = null;
+		}
+	}
+	
+	/**
+	 * Used to check the current battery status 
+	 */
+	private class readBattStatusTask extends TimerTask {
+		@Override
+		public void run() {
+			printLogDataForDebugging("Read Batt Task");
+			readBattery();
+		} //End Run
+	} //End TimerTask
+
+//	public synchronized void startTimerCheckForAckOrResp(int seconds) {
+//		//public synchronized void responseTimer(int seconds) {
+//		if(mTimerCheckForAckOrResp!=null) {
+//			mTimerCheckForAckOrResp.cancel();
+//			mTimerCheckForAckOrResp.purge();
+//			mTimerCheckForAckOrResp = null;
+//		}
+//
+//		printLogDataForDebugging("Waiting for ack/response for command:\t" + mCurrentCommand);
+//		mTimerCheckForAckOrResp = new Timer("Shimmer_" + "_TimerCheckForResp");
+//		mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
+//	}
+//	
+//	public void stopTimerCheckForAckOrResp(){
+//		//Terminate the timer thread
+//		if(mTimerCheckForAckOrResp!=null){
+//			mTimerCheckForAckOrResp.cancel();
+//			mTimerCheckForAckOrResp.purge();
+//			mTimerCheckForAckOrResp = null;
+//		}
+//	}
+//
+//	/** Handles command response timeout
+//	 *
+//	 */
+//	class checkForAckOrRespTask extends TimerTask {
+//		
+//		@Override
+//		public void run() {
+//			{
+//				int storedFirstTime = (mFirstTime? 1:0);
+//				
+//				//Timeout triggered 
+//				printLogDataForDebugging("Command:\t" + mCurrentCommand +" timeout");
+//				if(mWaitForAck){
+//					printLogDataForDebugging("Ack not received");
+//				}
+//				if(mWaitForResponse) {
+//					printLogDataForDebugging("Response not received");
+//					
+//				}
+//				if(mIsStreaming && getPacketReceptionRate()<100){
+//					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRate()));
+//				} 
+//				
+//				//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
+//				//we will send the status changed to the GUI anyway
+//				if(mCurrentCommand==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE){
+//					
+//					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+//					
+//					mIsSDLogging = true;
+//					eventLogAndStreamStatusChanged();
+//					mWaitForAck=false;
+//					mWaitForResponse=false;
+//					
+//					getListofInstructions().remove(0);
+//					mTransactionCompleted = true;
+//					setInstructionStackLock(false);
+//					
+//					return;
+//				}
+//				else if(mCurrentCommand==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE){
+//					
+//					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+//					
+//					mIsSDLogging = false;
+//					eventLogAndStreamStatusChanged();
+//					mWaitForAck=false;
+//					mWaitForResponse=false;
+//					
+//					getListofInstructions().remove(0);
+//					mTransactionCompleted = true;
+//					setInstructionStackLock(false);
+//					
+//					return;
+//				}
+//				
+//
+//				if(mCurrentCommand==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE){
+//					
+//				}
+//				else if(mCurrentCommand==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE && !mIsInitialised){
+//					mFirstTime=false;
+//				} 
+//				else if(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
+//					mFirstTime=false;
+//					
+//				}
+//
+//				
+//				
+//				if(mIsStreaming){
+//					stopTimerCheckForAckOrResp(); //Terminate the timer thread
+//					mWaitForAck=false;
+//					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+//					setInstructionStackLock(false);
+//					getListofInstructions().clear();
+//				}
+//				else if(storedFirstTime==0){
+//					// If the command fails to get a response, the API should
+//					// assume that the connection has been lost and close the
+//					// serial port cleanly.
+//					
+//					try {
+//						if (bytesAvailableToBeRead()){
+//							try {
+//								readBytes(availableBytes());
+//							} catch (DeviceException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//						}
+//					} catch (DeviceException e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+//					stopTimerCheckForAckOrResp(); //Terminate the timer thread
+//					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
+//					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT){
+//						disconnect();
+//					} else {
+//						mWaitForAck=false;
+//						mWaitForResponse=false;
+//						mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
+//						setInstructionStackLock(false);
+//						//this is needed because if u dc the shimmer the write call gets stuck
+//						startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
+//					}
+//					
+//					mNumberofTXRetriesCount++;
+//				}
+//			}
+//		} //End Run
+//	} //End TimerTask
+	
+	//endregion --------- TIMERS ---------
+	
+	@Override
+	public void readExpansionBoardID() {
+		if(getFirmwareVersionCode()>=5){ 
+			numBytesToReadFromExpBoard=3;
+			int offset=0;
+			writeInstruction(new byte[]{InstructionsGet.GET_DAUGHTER_CARD_ID_COMMAND_VALUE, (byte) numBytesToReadFromExpBoard, (byte) offset});
+		}
+	}
+
+	@Override
+	public void readLEDCommand() {
+		writeInstruction(new byte[]{InstructionsGet.GET_BLINK_LED_VALUE});
+	}
+	
+	public void writeLEDCommand(int command) {
+////		if(mShimmerVersion!=HW_ID.SHIMMER_3){
+//			if(isThisVerCompatibleWith(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0)){
+//	//			if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
+//			}
+//			else {
+//				writeInstruction(new byte[]{InstructionsSet.SET_BLINK_LED_VALUE, (byte)command});
+//			}
+////		}
+	}
+
+
+	@Override
+	public void readStatusLogAndStream() {
+		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // check if Shimmer is using LogAndStream firmware
+			writeInstruction(new byte[]{InstructionsGet.GET_STATUS_COMMAND_VALUE});
+			printLogDataForDebugging("Instruction added to the list");
+		}
+	}
+
+	@Override
+	public void readBattery() {
+		writeInstruction(new byte[]{(byte) InstructionsGet.GET_VBATT_COMMAND_VALUE});
+	}
+
+	@Override
+	public void inquiry() {
+		writeInstruction(new byte[]{InstructionsGet.INQUIRY_COMMAND_VALUE});
+	}
+	
+	public void writeTestConnectionCommand() {
+		if(getFirmwareVersionCode()>=6){
+			writeInstruction(new byte[]{(byte) InstructionsSet.TEST_CONNECTION_COMMAND_VALUE});
+		}
+	}
+
+	@Deprecated
+	public void readShimmerVersionDepracated(){
+		writeInstruction(new byte[]{InstructionsGet.GET_SHIMMER_VERSION_COMMAND_VALUE});
+	}
+
+	
+	
+	//TODO TEMP HERE
+	private int getFirmwareVersionCode() {
+		return 6;
+	}
+
+	//TODO TEMP HERE
+	private int getHardwareVersion() {
+		return HW_ID.SHIMMER_4_SDK;
+	}
+
+	//TODO TEMP HERE
+	private String getMacIdParsed() {
+		return "TEMP_MAC";
+	}
+
+	//TODO TEMP HERE
+	private boolean isInitialised() {
+		return mIsInitialised;
+	}
+
+
+	
 }
