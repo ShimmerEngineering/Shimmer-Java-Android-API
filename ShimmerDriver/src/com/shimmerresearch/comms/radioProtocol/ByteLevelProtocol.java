@@ -2,6 +2,7 @@ package com.shimmerresearch.comms.radioProtocol;
 
 import java.util.List;
 
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
 
 public abstract class ByteLevelProtocol {
@@ -35,6 +36,8 @@ public abstract class ByteLevelProtocol {
 	public abstract void initialize();
 	public abstract void writeInstruction(byte[] instruction);
 	public abstract void stop();
+	public abstract void stopStreaming();
+	public abstract void startStreaming();
 	public abstract List<byte []> getListofInstructions();
 	
 	public void setPacketSize(int pSize){
@@ -44,4 +47,5 @@ public abstract class ByteLevelProtocol {
 	public int getPacketSize(){
 		return mPacketSize;
 	}
+
 }

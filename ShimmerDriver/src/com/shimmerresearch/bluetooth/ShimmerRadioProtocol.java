@@ -29,11 +29,16 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 	public ByteLevelDataComm mSerialPort;
 	
 	public ShimmerRadioProtocol(ByteLevelDataComm dataComm, ByteLevelProtocol radioProtocol){
-		mSerialPort = dataComm;
-		mSerialPort.clearByteLevelDataCommListener();
-		mRadioProtocol = radioProtocol;
-		mRadioProtocol.setByteLevelDataComm(dataComm);
-		initialize();
+		if(dataComm!=null){
+			mSerialPort = dataComm;
+			mSerialPort.clearByteLevelDataCommListener();
+			
+			if(radioProtocol!=null){
+				mRadioProtocol = radioProtocol;
+				mRadioProtocol.setByteLevelDataComm(dataComm);
+			}
+			initialize();
+		}
 	}
 	
 	public void connect() throws DeviceException{
@@ -57,11 +62,11 @@ public class ShimmerRadioProtocol extends BasicProcessWithCallBack implements Se
 	};
 
 	public void stopStreaming(){
-		mRadioProtocol.writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE});
+		mRadioProtocol.stopStreaming();
 	}
 	
 	public void startStreaming(){
-		mRadioProtocol.writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE});
+		mRadioProtocol.startStreaming();
 	}
 	
 	public void startSDLogging(){

@@ -105,10 +105,21 @@ public class LiteProtocol extends ByteLevelProtocol{
 		super();
 	}
 
-
+	@Override
 	public void writeInstruction(byte[] instruction){
 		getListofInstructions().add(instruction);
 	};
+	
+	@Override
+	public void stopStreaming() {
+		writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.STOP_STREAMING_COMMAND_VALUE});
+	}
+	
+	@Override
+	public void startStreaming() {
+		writeInstruction(new byte[]{LiteProtocolInstructionSet.InstructionsSet.START_STREAMING_COMMAND_VALUE});
+	}
+
 	
 	/**
 	 * @return the mFirmwareIdentifier
