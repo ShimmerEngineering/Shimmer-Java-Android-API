@@ -1525,25 +1525,10 @@ public class Configuration {
 	    static {
 	        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 
-	        //TODO decide what to do about the below:
-//	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception); //YYY
-//	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, new SensorDetailsRef(0, 0, ShimmerClock.GuiLabelSensors.DEVICE_PROPERTIES)); //YYY
-//			//TODO sort out the difference between the below and ShimmerClock.sensorShimmerPacketReception  //YYY
-//			// All Information required for parsing each of the channels
-//			aMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES).mListOfChannelsRef = Arrays.asList(  //YYY
-//					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
-////					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
-//					//temp only! JC: delete after db sync works
-////					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-//					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-//					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
-//					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-//					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
-//					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
-//					); //YYY
-	        aMap.putAll(ShimmerClock.mSensorMapRef);
-	        
+			aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, ShimmerClock.sensorSystemTimeStampRef);
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, ShimmerClock.sensorShimmerClock);
+	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
+
 			// Assemble the channel map
 			// NV_SENSORS0
 //	        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042); //YYY
