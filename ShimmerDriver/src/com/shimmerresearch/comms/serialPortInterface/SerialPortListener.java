@@ -4,7 +4,7 @@ package com.shimmerresearch.comms.serialPortInterface;
  * @author Mark Nolan
  *
  */
-public interface ShimmerSerialEventCallback {
+public interface SerialPortListener {
 
 	public void serialPortRxEvent(int byteLength);
 	

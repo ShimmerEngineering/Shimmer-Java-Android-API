@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
+import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -49,9 +49,12 @@ public class ShimmerShell extends ShimmerDevice {
 
 	@Override
 	public void connect() {
-		super.connect();
-		
-		
+		try {
+			super.connect();
+		} catch (DeviceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -133,7 +136,7 @@ public class ShimmerShell extends ShimmerDevice {
 		
 	}
 
-	public void setRadio(ShimmerRadioProtocol shimmerRadioProtocol) {
+	public void setRadio(CommsProtocolRadio shimmerRadioProtocol) {
 		//TODO
 	}
 

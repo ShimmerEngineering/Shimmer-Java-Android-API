@@ -2371,7 +2371,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){ //in case the new command doesn't work, try the old command
 					mFirstTime=false;
 					getListofInstructions().clear();
-					readShimmerVersionDepracated();
+					readShimmerVersionDeprecated();
 				}
 
 				
@@ -2575,7 +2575,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	@Deprecated
-	public void readShimmerVersionDepracated(){
+	public void readShimmerVersionDeprecated(){
 		writeInstruction(new byte[]{GET_SHIMMER_VERSION_COMMAND});
 	}
 	

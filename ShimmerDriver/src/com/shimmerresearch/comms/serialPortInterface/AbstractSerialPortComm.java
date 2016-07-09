@@ -6,13 +6,19 @@ import java.util.List;
 
 import com.shimmerresearch.driver.DeviceException;
 
-public abstract class SerialPortComm implements ByteLevelDataComm, Serializable {
+public abstract class AbstractSerialPortComm implements InterfaceByteLevelDataComm, Serializable {
+	
 	//the timeout value for connecting with the port
     public int SERIAL_PORT_TIMEOUT = 500; // was 2000
     public String mAddress="";
     
 	transient private List<ByteLevelDataCommListener> mByteLevelDataCommListener = new ArrayList<ByteLevelDataCommListener>();
     
+	public final static class SHIMMER_UART_BAUD_RATES{
+		public final static int SHIMMER3_DOCKED = 115200;
+		public final static int SPAN = 230400;
+	}
+	
 	public void clearByteLevelDataCommListener(){
 		mByteLevelDataCommListener.clear();
 	}

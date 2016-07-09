@@ -4,7 +4,7 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class DEPRECATEDShimmerSerialPortJssc extends SerialPortJssc{
+public class DEPRECATEDShimmerSerialPortJssc extends SerialPortCommJssc{
 	
 	@Deprecated
 	public DEPRECATEDShimmerSerialPortJssc(String comPort, int baudToUse) {

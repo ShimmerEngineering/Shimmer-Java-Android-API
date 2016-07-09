@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
 
-public abstract class ByteLevelProtocol {
+public abstract class AbstractByteLevelProtocol {
 	
 	ProtocolListener mProtocolListener;
-	ByteLevelDataComm mShimmerRadio; //every radio protocol requires radio control
+	InterfaceByteLevelDataComm mShimmerRadio; //every radio protocol requires radio control
 	protected int mPacketSize = 0;
 	
 	protected int mNumOfInfoMemSetCmds;
@@ -17,20 +17,24 @@ public abstract class ByteLevelProtocol {
 	protected int mTotalInfoMemLengthToRead = 0;
 	protected int mCurrentInfoMemAddress = 0;
 	protected int mCurrentInfoMemLengthToRead = 0;
+	
+	public boolean mFirstTime=false;
+	public boolean mIamAlive = false;
+
 
 
 	/**When using this, it is required that the byteleveldatacomm is set using the serByteLevelDataComm
 	 * 
 	 */
-	public ByteLevelProtocol(){
+	public AbstractByteLevelProtocol(){
 	
 	}
 	
-	public ByteLevelProtocol(ByteLevelDataComm shimmerRadio){
+	public AbstractByteLevelProtocol(InterfaceByteLevelDataComm shimmerRadio){
 		mShimmerRadio = shimmerRadio;
 	}
 	
-	public void setByteLevelDataComm(ByteLevelDataComm shimmerRadio){
+	public void setByteLevelDataComm(InterfaceByteLevelDataComm shimmerRadio){
 		mShimmerRadio = shimmerRadio;
 	}
 	
@@ -156,5 +160,7 @@ public abstract class ByteLevelProtocol {
 	public abstract void startTimerReadBattStatus();
 
 	public abstract void operationPrepare();
+
+	public abstract void writeEnabledSensors(long enabledSensors);
 	
 }

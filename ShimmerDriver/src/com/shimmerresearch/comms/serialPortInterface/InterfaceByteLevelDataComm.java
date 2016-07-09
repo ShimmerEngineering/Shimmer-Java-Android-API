@@ -6,7 +6,7 @@ import com.shimmerresearch.driver.DeviceException;
  * @author Mark Nolan
  *
  */
-public interface ByteLevelDataComm {
+public interface InterfaceByteLevelDataComm {
 
 //	//This command should be available across all byte level radios, so the shimmer version and protocol type can be determined
 //	int GET_SHIMMER_VERSION_COMMAND = 36;
@@ -19,8 +19,6 @@ public interface ByteLevelDataComm {
 	public void clearSerialPortRxBuffer() throws DeviceException;
 	public void txBytes(byte[] buf) throws DeviceException;
 	public byte[] rxBytes(int numBytes) throws DeviceException;
-  
-	public void registerSerialPortRxEventCallback(ShimmerSerialEventCallback shimmerSerialEventCallback);
   
 	public boolean isSerialPortReaderStarted();
 //	public void sendRxCallback(byte[] packet, long timestampMs);
@@ -35,8 +33,8 @@ public interface ByteLevelDataComm {
 	public void eventDeviceConnected();
 	public void eventDeviceDisconnected();
 	
+	public void registerSerialPortRxEventCallback(SerialPortListener shimmerSerialEventCallback);
 	void setByteLevelDataCommListener(ByteLevelDataCommListener spl);
-	
 	public void clearByteLevelDataCommListener();
   
 }

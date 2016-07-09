@@ -1,4 +1,4 @@
-package com.shimmerresearch.pcSerialPort;
+package com.shimmerresearch.comms.wiredProtocol;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -7,19 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import jssc.SerialPort;
-
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
-import com.shimmerresearch.comms.wiredProtocol.DockException;
-import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
-import com.shimmerresearch.comms.wiredProtocol.ShimmerCrc;
-import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
-import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm.SHIMMER_UART_BAUD_RATES;
+import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.SerialPortListener;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
-import com.shimmerresearch.comms.wiredProtocol.UartRxPacketObject;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.MsgDock;
@@ -32,20 +25,15 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
  * @author Mark Nolan
  *
  */
-public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack implements ShimmerSerialEventCallback{
+public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBack implements SerialPortListener{
 	
-	public ByteLevelDataComm shimmerSerialPortInterface;
+	public InterfaceByteLevelDataComm mSerialPortInterface;
 	
 	/** Boolean only used if COM port is not left open */
 	private boolean mIsUARTInUse = false;
 	public String mUniqueId = "";
 	public String mComPort = "";
-	private int mBaudToUse = SerialPort.BAUDRATE_115200;
-	
-	public final static class SHIMMER_UART_BAUD_RATES{
-		public final static int SHIMMER3_DOCKED = SerialPort.BAUDRATE_115200;
-		public final static int SPAN = 230400;
-	}
+	private int mBaudToUse = SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED;
 	
 	byte[] carriedRxBuf = new byte[]{};
 
@@ -72,21 +60,22 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
     //the timeout value for connecting with the port
     protected final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
 
-	public ShimmerCommsProtocolWired(String comPort, String uniqueId, int baudToUse){
+//	public AbstractCommsProtocolWired(String comPort, String uniqueId, int baudToUse){
+	public AbstractCommsProtocolWired(String comPort, String uniqueId, int baudToUse, InterfaceByteLevelDataComm shimmerSerialPortInterface){
 		mComPort = comPort;
 		mUniqueId = uniqueId;
 		mBaudToUse = baudToUse;
 
-//		shimmerUartOs = new ShimmerComPortJssc(this, mComPort, mUniqueId, mBaudToUse);
-////		shimmerUartOs.registerRxCallback(new CallbackUartRx());
-		shimmerSerialPortInterface = new SerialPortJssc(mComPort, mUniqueId, mBaudToUse, this);
+		mSerialPortInterface = shimmerSerialPortInterface;
+		mSerialPortInterface.registerSerialPortRxEventCallback(this);
+//		shimmerSerialPortInterface = new SerialPortCommJssc(mComPort, mUniqueId, mBaudToUse, this);
 		
 		setVerbose(mVerboseMode, mIsDebugMode);
 		setThreadName(mUniqueId + "-" + this.getClass().getSimpleName());
 	}
 
-	public ShimmerCommsProtocolWired(String comPort, String uniqueId){
-		this(comPort, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED);
+	public AbstractCommsProtocolWired(String comPort, String uniqueId, InterfaceByteLevelDataComm shimmerSerialPortInterface){
+		this(comPort, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED, shimmerSerialPortInterface);
 	}
 	
 	public boolean isUARTinUse(){
@@ -94,7 +83,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 	}
 	
 	public boolean isSerialPortReaderStarted(){
-		return shimmerSerialPortInterface.isSerialPortReaderStarted();
+		return mSerialPortInterface.isSerialPortReaderStarted();
 	}
 
 	public void processShimmerGetCommandNoWait(UartComponentPropertyDetails compPropDetails, int errorCode, byte[] payload) throws DockException{
@@ -183,7 +172,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 	 */
 	public void openSafely() throws DockException {
 		try {
-			shimmerSerialPortInterface.connect();
+			mSerialPortInterface.connect();
 		} catch (DeviceException devE) {
 			DockException de = new DockException(devE);
 			closeSafely();
@@ -198,7 +187,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 	 */
 	public void closeSafely() throws DockException {
 		try {
-			shimmerSerialPortInterface.closeSafely();
+			mSerialPortInterface.closeSafely();
 		} catch (DeviceException devE) {
 			DockException de = new DockException(devE);
 			throw(de);
@@ -366,7 +355,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 		consolePrintTxPacketInfo(packetCmd, msgArg, valueBuffer);
     	byte[] txPacket = assembleTxPacket(packetCmd.toCmdByte(), msgArg, valueBuffer);
     	try {
-			shimmerSerialPortInterface.txBytes(txPacket);
+    		mSerialPortInterface.txBytes(txPacket);
 		} catch (DeviceException devE) {
 			DockException de = new DockException(devE);
 			throw(de);
@@ -521,7 +510,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 	@Override
 	public void serialPortRxEvent(int eventLength){
         try {
-        	byte[] rxBuf = shimmerSerialPortInterface.rxBytes(eventLength);
+        	byte[] rxBuf = mSerialPortInterface.rxBytes(eventLength);
         	if(mIsDebugMode){
             	consolePrintLn("serialEvent Received(" + rxBuf.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
         	}
@@ -544,7 +533,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 			// command byte. 3rd byte is just useful for data response
     		if(rxBuf.length<3){
     			int lengthToRead = 3-rxBuf.length;
-    			byte[] tempBuf = shimmerSerialPortInterface.rxBytes(lengthToRead);
+    			byte[] tempBuf = mSerialPortInterface.rxBytes(lengthToRead);
     			rxBuf = combineByteArrays(rxBuf, tempBuf);
     		}
     		
@@ -605,7 +594,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
         			}
         		}
         		else if(rxBuf.length<expectedResponseLength){
-    				byte[] data = shimmerSerialPortInterface.rxBytes(expectedResponseLength-rxBuf.length);
+    				byte[] data = mSerialPortInterface.rxBytes(expectedResponseLength-rxBuf.length);
         			packet = combineByteArrays(rxBuf, data);
         			if(mIsDebugMode && packet!=null){
             			consolePrintLn("Underflow: 1st buf(" + rxBuf.length + "):\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
@@ -778,7 +767,7 @@ public abstract class ShimmerCommsProtocolWired extends BasicProcessWithCallBack
 		mVerboseMode = verboseMode;
 		mIsDebugMode = isDebugMode;
 		mUtilShimmer.setVerboseMode(mVerboseMode);
-		shimmerSerialPortInterface.setVerboseMode(mVerboseMode, mIsDebugMode);
+		mSerialPortInterface.setVerboseMode(mVerboseMode, mIsDebugMode);
 	}
 	
 	/**

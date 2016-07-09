@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.1.10" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
   associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="com.shimmerresearch.bluetooth.ShimmerRadioProtocol" project="ShimmerDriver" 
+  <class id="1" language="java" name="com.shimmerresearch.bluetooth.ShimmerCommsProtocolRadio" project="ShimmerDriver" 
     file="/ShimmerDriver/src/com/shimmerresearch/bluetooth/ShimmerRadioProtocol.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="-390" y="118"/>    
@@ -11,8 +11,9 @@
       <operations public="true" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="com.shimmerresearch.comms.radioProtocol.ByteLevelProtocol" project="ShimmerDriver" 
-    file="/ShimmerDriver/src/com/shimmerresearch/comms/radioProtocol/ByteLevelProtocol.java" binary="false" 
+  <class id="2" language="java" name="com.shimmerresearch.comms.radioProtocol.AbstractByteLevelProtocol" 
+    project="ShimmerDriver" 
+    file="/ShimmerDriver/src/com/shimmerresearch/comms/radioProtocol/AbstractByteLevelProtocol.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="-34" y="627"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -31,10 +32,10 @@
       <operations public="true" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </interface>  
-  <interface id="4" language="java" name="com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm" 
+  <interface id="4" language="java" name="com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm" 
     project="ShimmerDriver" 
-    file="/ShimmerDriver/src/com/shimmerresearch/comms/serialPortInterface/ByteLevelDataComm.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+    file="/ShimmerDriver/src/com/shimmerresearch/comms/serialPortInterface/InterfaceByteLevelDataComm.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="788" y="195"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -112,9 +113,10 @@
       <operations public="true" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </interface>  
-  <class id="12" language="java" name="com.shimmerresearch.comms.serialPortInterface.SerialPortComm" 
-    project="ShimmerDriver" file="/ShimmerDriver/src/com/shimmerresearch/comms/serialPortInterface/SerialPortComm.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
+  <class id="12" language="java" name="com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm" 
+    project="ShimmerDriver" 
+    file="/ShimmerDriver/src/com/shimmerresearch/comms/serialPortInterface/AbstractSerialPortComm.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="785" y="535"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -133,9 +135,9 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="14" language="java" name="com.shimmerresearch.pcSerialPort.SerialPortJssc" 
+  <class id="14" language="java" name="com.shimmerresearch.pcSerialPort.SerialPortCommJssc" 
     project="ShimmerPCInstrumentDriver" 
-    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/SerialPortJssc.java" binary="false" 
+    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/SerialPortCommJssc.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="785" y="819"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -144,9 +146,9 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="15" language="java" name="com.shimmerresearch.pcSerialPort.SerialPortJssc.ShimmerUartListener" 
+  <class id="15" language="java" name="com.shimmerresearch.pcSerialPort.SerialPortCommJssc.ShimmerUartListener" 
     project="ShimmerPCInstrumentDriver" 
-    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/SerialPortJssc.java" binary="false" 
+    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/SerialPortCommJssc.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="785" y="919"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

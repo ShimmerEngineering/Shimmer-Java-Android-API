@@ -19,18 +19,16 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.*;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
-import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
 import com.shimmerresearch.driver.DeviceException;
-import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 
-public class LiteProtocol extends ByteLevelProtocol{
+public class LiteProtocol extends AbstractByteLevelProtocol{
 
 	
 	//TODO - items that I've had to comment out
@@ -56,7 +54,6 @@ public class LiteProtocol extends ByteLevelProtocol{
 	protected boolean mTransactionCompleted=true;									// Variable is used to ensure a command has finished execution prior to executing the next command (see initialize())
 	private final int ACK_TIMER_DURATION = 10; 									// Duration to wait for an ack packet (seconds)
 	protected boolean mDummy=false;
-	protected boolean mFirstTime=false;
 	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
 	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
 	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
@@ -70,9 +67,6 @@ public class LiteProtocol extends ByteLevelProtocol{
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected boolean mSendProgressReport = false;
 	protected boolean mOperationUnderway = false;
-	protected boolean mIamAlive = false;
-	public String mMyBluetoothAddress;
-	public String mComPort;
 	private int mTempChipID;
 
 	/**
@@ -99,6 +93,8 @@ public class LiteProtocol extends ByteLevelProtocol{
 
 
 	//TODO Should not be here?
+	public String mMyBluetoothAddress;
+	public String mComPort;
 	protected boolean mIsConnected = false;
 	protected boolean mIsSensing = false;
 	protected boolean mIsSDLogging = false;											// This is used to monitor whether the device is in sd log mode
@@ -123,7 +119,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 		super();
 	}
 	
-	public LiteProtocol(ByteLevelDataComm mSerialPort) {
+	public LiteProtocol(InterfaceByteLevelDataComm mSerialPort) {
 		super(mSerialPort);
 //		String uniqueId = mSerialPort.
 	}
@@ -217,6 +213,9 @@ public class LiteProtocol extends ByteLevelProtocol{
 
 	@Override
 	public void stop() {
+		mIsStreaming = false;
+		mIsInitialised = false;
+
 		if(mIOThread!=null){
 			mIOThread.stop=true;
 			mIOThread = null;
@@ -1643,7 +1642,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 				else if(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
 					mFirstTime=false;
 					getListofInstructions().clear();
-					readShimmerVersionDepracated();
+					readShimmerVersionDeprecated();
 				}
 
 				
@@ -2021,10 +2020,42 @@ public class LiteProtocol extends ByteLevelProtocol{
 	}
 
 	@Deprecated
-	public void readShimmerVersionDepracated(){
+	public void readShimmerVersionDeprecated(){
 		writeInstruction(new byte[]{InstructionsGet.GET_SHIMMER_VERSION_COMMAND_VALUE});
 	}
 
+	/**
+	 * Transmits a command to the Shimmer device to enable the sensors. To enable multiple sensors an or operator should be used (e.g. writeEnabledSensors(SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG)). Command should not be used consecutively. Valid values are SENSOR_ACCEL, SENSOR_GYRO, SENSOR_MAG, SENSOR_ECG, SENSOR_EMG, SENSOR_GSR, SENSOR_EXP_BOARD_A7, SENSOR_EXP_BOARD_A0, SENSOR_BRIDGE_AMP and SENSOR_HEART.
+    SENSOR_BATT
+	 * @param enabledSensors e.g SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG
+	 */
+	@Override
+	public void writeEnabledSensors(long enabledSensors) {
+		
+//		if(getFirmwareVersionCode()<=1){
+//			if(!sensorConflictCheck(enabledSensors)){ //sensor conflict check - not needed with new SensorMap
+//				return;
+//			} 
+//			else {
+//				enabledSensors=generateSensorBitmapForHardwareControl(enabledSensors);
+//			}
+//		}
+//			
+//		tempEnabledSensors=enabledSensors;
+
+		byte secondByte=(byte)((enabledSensors & 0xFF00)>>8);
+		byte firstByte=(byte)(enabledSensors & 0xFF);
+
+		//write(new byte[]{SET_SENSORS_COMMAND,(byte) lowByte, highByte});
+		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			byte thirdByte=(byte)((enabledSensors & 0xFF0000)>>16);
+			writeInstruction(new byte[]{InstructionsSet.SET_SENSORS_COMMAND_VALUE,(byte) firstByte,(byte) secondByte,(byte) thirdByte});
+		} 
+		else {
+			writeInstruction(new byte[]{InstructionsSet.SET_SENSORS_COMMAND_VALUE,(byte) firstByte,(byte) secondByte});
+		}
+		inquiry();
+	}
 	
 	
 	//TODO TEMP HERE
@@ -2046,6 +2077,7 @@ public class LiteProtocol extends ByteLevelProtocol{
 	private boolean isInitialised() {
 		return mIsInitialised;
 	}
+
 
 
 	

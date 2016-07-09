@@ -15,13 +15,13 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
-import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
+import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
-import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -427,7 +427,7 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	// ----------------- BT LiteProtocolInstructionSet Start ------------------
-	public void setRadio(ShimmerRadioProtocol shimmerRadioHWLiteProtocol){
+	public void setRadio(CommsProtocolRadio shimmerRadioHWLiteProtocol){
 		setShimmerRadioHWLiteProtocol(shimmerRadioHWLiteProtocol);
 		initializeRadio();
 	}
@@ -636,6 +636,33 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
+	@Override
+	public void connect() throws DeviceException {
+//		super.connect();
+		
+		setBluetoothRadioState(BT_STATE.CONNECTING);
+		
+		if(mShimmerRadioHWLiteProtocol!=null){
+			try {
+				mShimmerRadioHWLiteProtocol.connect();
+			} catch (DeviceException dE) {
+				consolePrintException(dE.getMessage(), dE.getStackTrace());
+
+				setBluetoothRadioState(BT_STATE.CONNECTION_FAILED);
+				
+				dE.printStackTrace();
+				throw(dE);
+			}
+		}
+
+
+	}
+	
+	private void consolePrintException(String message, StackTraceElement[] stackTrace) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void processFirmwareVerResponse() {
 		if(getHardwareVersion()==HW_ID.SHIMMER_2R){
 //			initializeShimmer2R();
@@ -802,14 +829,14 @@ public class Shimmer4 extends ShimmerDevice {
 	/**
 	 * @return the mShimmerRadioHWLiteProtocol
 	 */
-	public ShimmerRadioProtocol getShimmerRadioHWLiteProtocol() {
+	public CommsProtocolRadio getShimmerRadioHWLiteProtocol() {
 		return mShimmerRadioHWLiteProtocol;
 	}
 
 	/**
 	 * @param shimmerRadioHWLiteProtocol the mShimmerRadioHWLiteProtocol to set
 	 */
-	public void setShimmerRadioHWLiteProtocol(ShimmerRadioProtocol shimmerRadioHWLiteProtocol) {
+	public void setShimmerRadioHWLiteProtocol(CommsProtocolRadio shimmerRadioHWLiteProtocol) {
 		this.mShimmerRadioHWLiteProtocol = shimmerRadioHWLiteProtocol;
 	}
 	
@@ -827,7 +854,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 	public String getComPort() {
 		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
-			return ((SerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress;
+			return ((AbstractSerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress;
 		}
 		return null;
 	}

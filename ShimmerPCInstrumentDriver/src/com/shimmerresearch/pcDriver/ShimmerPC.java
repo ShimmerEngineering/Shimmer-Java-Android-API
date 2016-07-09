@@ -266,8 +266,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							mIOThread = new IOThread();
 							mIOThread.start();
 							if(mUseProcessingThread){
-							mPThread = new ProcessingThread();
-							mPThread.start();
+								mPThread = new ProcessingThread();
+								mPThread.start();
 							}
 							initialize();
 						} else {
@@ -286,8 +286,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 						closeConnection();
 						setBluetoothRadioState(BT_STATE.CONNECTION_FAILED);
 					}
-				} else {
-					
+				} 
+				else {
+					//TODO need to handle if serial po
 				}
 				
 			}

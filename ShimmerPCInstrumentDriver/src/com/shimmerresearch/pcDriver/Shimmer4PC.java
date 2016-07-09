@@ -2,11 +2,11 @@ package com.shimmerresearch.pcDriver;
 
 import jssc.SerialPort;
 
-import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
+import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Shimmer4;
-import com.shimmerresearch.pcSerialPort.SerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 
 public class Shimmer4PC extends Shimmer4{
 	

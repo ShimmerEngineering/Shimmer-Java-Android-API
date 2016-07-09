@@ -40,13 +40,13 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
+import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
-import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.Shimmer4;
@@ -55,7 +55,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.pcDriver.ShimmerPC;
-import com.shimmerresearch.pcSerialPort.SerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.pcSerialPort.DEPRECATEDShimmerSerialPortJssc;
 
 import java.util.*;
@@ -242,15 +242,15 @@ public class GuiTestShimmer4 extends JPanel {
         splitPane.add(bottomHalf);
     }
  
-    private void initializeShimmer3(ByteLevelDataComm bldc) {
-    	SerialPortJssc ssjc = (SerialPortJssc) bldc;
+    private void initializeShimmer3(InterfaceByteLevelDataComm bldc) {
+    	SerialPortCommJssc ssjc = (SerialPortCommJssc) bldc;
     	
     	
     }
     
-    private void initializeShimmer4(ByteLevelDataComm bldc) {
+    private void initializeShimmer4(InterfaceByteLevelDataComm bldc) {
     	mShimmer = new Shimmer4();
-    	((Shimmer4)mShimmer).setRadio(new ShimmerRadioProtocol(bldc,new LiteProtocol()));
+    	((Shimmer4)mShimmer).setRadio(new CommsProtocolRadio(bldc,new LiteProtocol()));
     	((Shimmer4)mShimmer).mShimmerRadioHWLiteProtocol.setRadioListener(new RadioListener(){
 
     		@Override

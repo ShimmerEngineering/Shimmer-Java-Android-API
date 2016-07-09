@@ -40,15 +40,15 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
+import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
-import com.shimmerresearch.pcSerialPort.SerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 
 import java.util.*;
 import java.awt.*;
@@ -63,7 +63,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     String newline = "\n";
     ListSelectionModel listSelectionModel;
     String[] enumValues;
-	static ShimmerRadioProtocol mSRP;
+	static CommsProtocolRadio mSRP;
     public GuiTestShimmerRadioLiteProtocol() {
         super(new BorderLayout());
         initialize();
@@ -197,7 +197,7 @@ public class GuiTestShimmerRadioLiteProtocol extends JPanel {
     }
  
     private void initialize() {
-    	mSRP = new ShimmerRadioProtocol(new SerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
+    	mSRP = new CommsProtocolRadio(new SerialPortCommJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
     	mSRP.setRadioListener(new RadioListener(){
 
     		@Override

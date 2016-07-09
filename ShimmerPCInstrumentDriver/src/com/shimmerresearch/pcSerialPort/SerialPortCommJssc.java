@@ -10,8 +10,8 @@ import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
 import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
-import com.shimmerresearch.comms.serialPortInterface.SerialPortComm;
-import com.shimmerresearch.comms.serialPortInterface.ShimmerSerialEventCallback;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
+import com.shimmerresearch.comms.serialPortInterface.SerialPortListener;
 import com.shimmerresearch.driver.DeviceException;
 //import com.shimmerresearch.comms.wiredProtocol.DeviceException;
 //import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
@@ -22,16 +22,16 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
  * @author Mark Nolan
  *
  */
-public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEventCallback, Serializable {
+public class SerialPortCommJssc extends AbstractSerialPortComm implements SerialPortListener, Serializable {
 
-	protected transient SerialPort serialPort = null;
+	protected transient SerialPort mSerialPort = null;
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
 
 	transient private ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
-	transient private ShimmerSerialEventCallback mShimmerSerialEventCallback;
+	transient private SerialPortListener mShimmerSerialEventCallback;
 	
 	/** 0 = normal speed (bad implementation), 1 = fast speed */
 	public int mTxSpeed = 1;
@@ -40,15 +40,15 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	private boolean mVerboseMode = true;
 	private UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), mVerboseMode);
 	
-	public SerialPortJssc(String comPort, String uniqueId, int baudToUse) {
+	public SerialPortCommJssc(String comPort, String uniqueId, int baudToUse) {
 		mUniqueId = uniqueId;
 		mComPort = comPort;
 		mAddress = comPort;
 		mBaudToUse = baudToUse;
-        serialPort = new SerialPort(mComPort);
+        mSerialPort = new SerialPort(mComPort);
 	}
-	
-	public SerialPortJssc(String comPort, String uniqueId, int baudToUse, ShimmerSerialEventCallback shimmerSerialEventCallback) {
+
+	public SerialPortCommJssc(String comPort, String uniqueId, int baudToUse, SerialPortListener shimmerSerialEventCallback) {
 		this(comPort, uniqueId, baudToUse);
 		registerSerialPortRxEventCallback(shimmerSerialEventCallback);
 	}
@@ -59,17 +59,28 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	@Override
 	public void connect() throws DeviceException {
         try {
+    		consolePrintLn("Connecting to COM port");
+    		
 //        	serialPort.setRTS(true);
 //        	serialPort.setDTR(false);
-            serialPort.openPort();//Open serial port
-            serialPort.setParams(
-			            		mBaudToUse, 
-			            		SerialPort.DATABITS_8, 
-			            		SerialPort.STOPBITS_1, 
-			            		SerialPort.PARITY_NONE, 
-			            		true,
-			            		false);//Set params.
-            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+    		consolePrintLn("Port open: " + mSerialPort.openPort());
+    		consolePrintLn("Params set: " + mSerialPort.setParams(
+            		mBaudToUse, 
+            		SerialPort.DATABITS_8, 
+            		SerialPort.STOPBITS_1, 
+            		SerialPort.PARITY_NONE, 
+            		true,
+            		false));//Set params.
+    		consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
+//            mSerialPort.openPort();//Open serial port
+//            mSerialPort.setParams(
+//			            		mBaudToUse, 
+//			            		SerialPort.DATABITS_8, 
+//			            		SerialPort.STOPBITS_1, 
+//			            		SerialPort.PARITY_NONE, 
+//			            		true,
+//			            		false);//Set params.
+            mSerialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
             eventDeviceConnected();
         }
         catch (SerialPortException e) {
@@ -95,9 +106,11 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	 */
 	@Override
 	public void disconnect() throws DeviceException {
-    	if(serialPort.isOpened()) {
+    	if(mSerialPort!=null && mSerialPort.isOpened()) {
 	        try {
-	        	serialPort.closePort();
+	        	mSerialPort.purgePort (1);
+	        	mSerialPort.purgePort (2);
+	        	mSerialPort.closePort();
 	        	eventDeviceDisconnected();
 			} catch (SerialPortException e) {
 	        	DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_EXCEPTON_CLOSING); 
@@ -121,7 +134,7 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	@Override
 	public void clearSerialPortRxBuffer() throws DeviceException {
     	try {
-			serialPort.purgePort(SerialPort.PURGE_RXCLEAR);
+			mSerialPort.purgePort(SerialPort.PURGE_RXCLEAR);
 		} catch (SerialPortException e) {
         	DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_EXCEPTION); 
         	de.updateDeviceException(e.getMessage(), e.getStackTrace());
@@ -139,12 +152,12 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
     	try {
         	if(mTxSpeed == 0) { // normal speed
         		for(int i = 0; i<buf.length;i++) {
-        			serialPort.writeByte(buf[i]);
-        			serialPort.purgePort(SerialPort.PURGE_TXCLEAR); // This doesn't make sense but was working for Consensys in Windows up to v0.4.0
+        			mSerialPort.writeByte(buf[i]);
+        			mSerialPort.purgePort(SerialPort.PURGE_TXCLEAR); // This doesn't make sense but was working for Consensys in Windows up to v0.4.0
         		}
         	}
         	else {  // fast speed - was causing issues with Windows but needed for OSX - Windows might be fixed now (23/03/2016)
-    			serialPort.writeBytes(buf);
+    			mSerialPort.writeBytes(buf);
         	}
 		} catch (SerialPortException e) {
         	DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_WRITING_DATA); 
@@ -162,7 +175,7 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	@Override
 	public byte[] rxBytes(int numBytes) throws DeviceException {
 		try {
-			byte[] rxBuf = serialPort.readBytes(numBytes, SERIAL_PORT_TIMEOUT);
+			byte[] rxBuf = mSerialPort.readBytes(numBytes, SERIAL_PORT_TIMEOUT);
 			if(this.mIsDebugMode){
 				consolePrintLn("Serial Port RX(" + rxBuf.length + ")" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
 			}
@@ -194,8 +207,8 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
         	mShimmerUartListener = new ShimmerUartListener(mUniqueId);
 //        	mShimmerUartListener.setVerbose(mVerboseModeUart);
             try {
-            	serialPort.setEventsMask(mask);//Set mask
-            	serialPort.addEventListener(mShimmerUartListener);//Add SerialPortEventListener
+            	mSerialPort.setEventsMask(mask);//Set mask
+            	mSerialPort.addEventListener(mShimmerUartListener);//Add SerialPortEventListener
 //        		setWaitForData(mShimmerUartListener);
         		mIsSerialPortReaderStarted = true;
             } catch (SerialPortException e) {
@@ -209,7 +222,7 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 
     public void stopSerialPortReader() throws DeviceException {
         try {
-        	serialPort.removeEventListener();
+        	mSerialPort.removeEventListener();
         } catch (SerialPortException e) {
 			DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_READER_STOP);
 			de.updateDeviceException(e.getMessage(), e.getStackTrace());
@@ -270,7 +283,7 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	}
 	
 	@Override
-	public void registerSerialPortRxEventCallback(ShimmerSerialEventCallback shimmerSerialEventCallback) {
+	public void registerSerialPortRxEventCallback(SerialPortListener shimmerSerialEventCallback) {
 		mShimmerSerialEventCallback = shimmerSerialEventCallback;
 	}
 
@@ -299,8 +312,8 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	@Override
 	public boolean bytesAvailableToBeRead() throws DeviceException {
 		try {
-			if(serialPort != null){
-				if (serialPort.getInputBufferBytesCount()!=0){
+			if(mSerialPort != null){
+				if (mSerialPort.getInputBufferBytesCount()!=0){
 					return true;
 				}
 			}
@@ -316,8 +329,8 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	@Override
 	public int availableBytes() throws DeviceException {
 		try {
-			if(serialPort != null){
-				return serialPort.getInputBufferBytesCount();
+			if(mSerialPort != null){
+				return mSerialPort.getInputBufferBytesCount();
 			}
 			else{
 				return 0;
@@ -333,17 +346,17 @@ public class SerialPortJssc extends SerialPortComm implements ShimmerSerialEvent
 	@Override
 	public boolean isConnected() {
 		// TODO Auto-generated method stub
-		return serialPort.isOpened();
+		return mSerialPort.isOpened();
 	}
 
 	@Override
 	public boolean isDisonnected() {
 		// TODO Auto-generated method stub
-		return serialPort.isOpened();
+		return mSerialPort.isOpened();
 	}
 
 	public SerialPort getSerialPort(){
-		return serialPort;
+		return mSerialPort;
 	}
 
 }

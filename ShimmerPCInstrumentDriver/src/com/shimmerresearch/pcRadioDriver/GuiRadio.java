@@ -2,13 +2,13 @@ package com.shimmerresearch.pcRadioDriver;
 
 import javax.swing.JFrame;
 
-import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
+import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.driver.DeviceException;
-import com.shimmerresearch.pcSerialPort.SerialPortJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 
 import javax.swing.JButton;
 
@@ -20,7 +20,7 @@ import jssc.SerialPort;
 public class GuiRadio{
 
 	static JFrame frame;
-	static ShimmerRadioProtocol mSRP;
+	static CommsProtocolRadio mSRP;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		initialize();
@@ -94,7 +94,7 @@ public class GuiRadio{
 		
 		
 		
-		mSRP = new ShimmerRadioProtocol(new SerialPortJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
+		mSRP = new CommsProtocolRadio(new SerialPortCommJssc("COM89", "COM89", SerialPort.BAUDRATE_115200),new LiteProtocol());
 
 		mSRP.setRadioListener(new RadioListener(){
 

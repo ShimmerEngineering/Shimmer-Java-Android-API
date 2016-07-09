@@ -23,8 +23,8 @@ import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.OrientationModule6DOF;
 import com.shimmerresearch.algorithms.OrientationModule9DOF;
-import com.shimmerresearch.bluetooth.ShimmerRadioProtocol;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.CalibDetails;
@@ -156,7 +156,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 	protected long mDerivedSensors = (long)0;	
 
-	public ShimmerRadioProtocol mShimmerRadioHWLiteProtocol = null;
+	public CommsProtocolRadio mShimmerRadioHWLiteProtocol = null;
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
@@ -2101,7 +2101,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mBluetoothRadioState;
 	}
 
-	public void connect(){
+	public void connect() throws DeviceException{
 		// TODO Auto-generated method stub
 	}
 
