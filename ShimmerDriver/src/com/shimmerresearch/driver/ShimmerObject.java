@@ -7323,8 +7323,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
 			}
 		}
+		
+		enableShimmer3Timestamps();
 	}
 	
+	private void enableShimmer3Timestamps() {
+		SensorDetails sensorDetailTimestamp = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP);
+		if(sensorDetailTimestamp!=null){
+			sensorDetailTimestamp.setIsEnabled(true);
+		}
+
+		SensorDetails sensorDetailSystemTimestamp = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP);
+		if(sensorDetailSystemTimestamp!=null){
+			sensorDetailSystemTimestamp.setIsEnabled(true);
+		}
+
+		SensorDetails sensorDetailStreamingProp = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES);
+		if(sensorDetailStreamingProp!=null){
+			sensorDetailStreamingProp.setIsEnabled(true);
+		}
+	}
+
+
 	//TODO 2016-05-18 feed below into sensor map classes
 	
 // --------------------Implemented in SensorPPG-----------------------	
