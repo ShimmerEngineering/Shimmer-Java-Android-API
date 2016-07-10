@@ -1139,8 +1139,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
 	      		
 	      		returnValue = Double.toString(getSamplingRateShimmer());
+				break;
 			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
-				returnValue = getMapOfSensorCalibrationAll();
+				setMapOfSensorCalibrationAll((TreeMap<Integer, TreeMap<Integer, CalibDetails>>) valueToSet);
 				break;
 	        default:
 	        	break;

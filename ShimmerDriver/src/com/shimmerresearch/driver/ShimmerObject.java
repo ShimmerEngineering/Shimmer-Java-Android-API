@@ -11125,8 +11125,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	    		
 			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
 				setMapOfSensorCalibrationAll((TreeMap<Integer, TreeMap<Integer, CalibDetails>>) valueToSet);
-				//TODO decide whether to include the below
-//				returnValue = valueToSet;
 				break;
 				
 			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_PER_SENSOR):
