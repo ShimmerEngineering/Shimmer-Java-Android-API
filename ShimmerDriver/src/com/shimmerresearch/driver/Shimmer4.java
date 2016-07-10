@@ -106,12 +106,19 @@ public class Shimmer4 extends ShimmerDevice {
 		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
 		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
 		
-		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
-				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED
-				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
-				){
-			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(this));
-		}
+//		if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_4_SDK){
+//			mMapOfSensorClasses.put(SENSORS.BMP280, new SensorBMP280(mShimmerVerObject));
+//		}
+//		else {
+//			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
+//		}
+		
+//		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
+//				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED
+//				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK
+//				){
+//			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(this));
+//		}
 
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED

@@ -229,7 +229,7 @@ public class SensorBMP280 extends AbstractSensor{
 			}
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP280)){
 				double calTemp = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.TEMPERATURE_BMP280),channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				calTemp = calTemp/1000;
+				calTemp = calTemp/100;
 				objectCluster.addCalData(channelDetails, calTemp, objectCluster.getIndexKeeper()-1);
 				objectCluster.incrementIndexKeeper();
 			}

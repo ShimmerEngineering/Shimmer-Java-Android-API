@@ -2059,6 +2059,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 			readConfigurationFromInfoMem();
+			readPressureCalibrationCoefficients();
 		}
 		else {
 			readSamplingRate();

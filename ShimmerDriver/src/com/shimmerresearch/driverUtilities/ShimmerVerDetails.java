@@ -81,7 +81,8 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_LR = 56;
 		public static final int SHIMMER_GQ_802154_NR = 57;
 		public static final int SHIMMER_4_SDK = 58;
-		
+//		public static final int SHIMMER_4_SDK = 53;
+
 		public static final int SHIMMER3 = 31;
 		public static final int BASE15U = 41;
 		public static final int BASE6U = 42;
