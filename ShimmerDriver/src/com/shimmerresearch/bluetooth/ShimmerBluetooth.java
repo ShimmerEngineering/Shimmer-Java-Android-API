@@ -1945,7 +1945,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(savedDockedState!=mIsDocked){
 			dockedStateChange();
 		}
-		
 	}
 	
 	private byte[] convertStackToByteArray(Stack<Byte> b,int packetSize) {

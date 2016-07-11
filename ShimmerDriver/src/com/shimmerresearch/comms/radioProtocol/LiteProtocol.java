@@ -679,7 +679,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	 */
 	private void processResponseCommand(byte responseCommand) {
 		try{
-			if(responseCommand==InstructionsResponse.INQUIRY_RESPONSE_VALUE) {
+			if(responseCommand==(InstructionsResponse.INQUIRY_RESPONSE_VALUE&0xFF)) {
 				delayForBtResponse(500); // Wait to ensure the packet has been fully received
 				List<Byte> buffer = new  ArrayList<Byte>();
 				//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss
@@ -722,7 +722,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 				eventNewResponse(responseCommand, bufferInquiry);
 			} 
 
-//			else if(responseCommand==InstructionsResponse.SAMPLING_RATE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.SAMPLING_RATE_RESPONSE_VALUE&0xFF)) {
 //				if(!mIsStreaming) {
 //					if(getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){    
 //						byte[] bufferSR = readBytes(1);
@@ -739,7 +739,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //
 //				printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(getSamplingRateShimmer()));
 //			} 
-			else if(responseCommand==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
+			else if((responseCommand&0xFF)==(InstructionsResponse.FW_VERSION_RESPONSE_VALUE&0xFF)) {
 				delayForBtResponse(200); // Wait to ensure the packet has been fully received
 				byte[] bufferInquiry = new byte[6]; 
 				bufferInquiry = readBytes(6);
@@ -758,7 +758,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 				printLogDataForDebugging("FW Version Response Received: " + shimmerVerObject.getFirmwareVersionParsed());
 			} 
 
-//			else if(responseCommand==InstructionsResponse.ALL_CALIBRATION_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.ALL_CALIBRATION_RESPONSE_VALUE&0xFF)) {
 //				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 //					processAccelCalReadBytes();
 //					processGyroCalReadBytes();
@@ -773,25 +773,25 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //					processShimmer2EcgCalReadBytes();
 //				}
 //			} 
-//			else if(responseCommand==InstructionsResponse.ACCEL_CALIBRATION_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.ACCEL_CALIBRATION_RESPONSE_VALUE&0xFF)) {
 //				processAccelCalReadBytes();
 //			}  
-//			else if(responseCommand==InstructionsResponse.GYRO_CALIBRATION_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.GYRO_CALIBRATION_RESPONSE_VALUE&0xFF)) {
 //				processGyroCalReadBytes();
 //			} 
-//			else if(responseCommand==InstructionsResponse.MAG_CALIBRATION_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.MAG_CALIBRATION_RESPONSE_VALUE&0xFF)) {
 //				processMagCalReadBytes();
 //			} 
-//			else if(responseCommand==InstructionsResponse.ECG_CALIBRATION_RESPONSE_VALUE){
+//			else if((responseCommand&0xFF)==(InstructionsResponse.ECG_CALIBRATION_RESPONSE_VALUE&0xFF)) {
 //				processShimmer2EcgCalReadBytes();
 //			} 
-//			else if(responseCommand==InstructionsResponse.EMG_CALIBRATION_RESPONSE_VALUE){
+//			else if((responseCommand&0xFF)==(InstructionsResponse.EMG_CALIBRATION_RESPONSE_VALUE&0xFF)) {
 //				processShimmer2EmgCalReadBytes();
 //			}
-//			else if(responseCommand==InstructionsResponse.LSM303DLHC_ACCEL_CALIBRATION_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.LSM303DLHC_ACCEL_CALIBRATION_RESPONSE_VALUE&0xFF)) {
 //				processLsm303dlhcAccelCalReadBytes();
 //			}  
-//			else if(responseCommand==InstructionsResponse.CONFIG_BYTE0_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.CONFIG_BYTE0_RESPONSE_VALUE&0xFF)) {
 //				if(getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){    
 //					byte[] bufferConfigByte0 = readBytes(1);
 //					mConfigByte0 = bufferConfigByte0[0] & 0xFF;
@@ -801,7 +801,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //					mConfigByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
 //				}
 //			} 
-//			else if(responseCommand==InstructionsResponse.DERIVED_CHANNEL_BYTES_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.DERIVED_CHANNEL_BYTES_RESPONSE_VALUE&0xFF)) {
 //				byte[] byteArray = readBytes(3);
 //				mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
 //				if (mEnabledSensors!=0){
@@ -809,7 +809,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //					inquiryDone();
 //				}
 //			}
-			else if(responseCommand==InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE&0xFF)) {
 				delayForBtResponse(100); // Wait to ensure the packet has been fully received
 				byte[] bufferShimmerVersion = new byte[1]; 
 				bufferShimmerVersion = readBytes(1);
@@ -828,7 +828,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 				
 				readFWVersion();
 			}
-//			else if(responseCommand==InstructionsResponse.ACCEL_SENSITIVITY_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.ACCEL_SENSITIVITY_RESPONSE_VALUE&0xFF)) {
 //				byte[] bufferAccelSensitivity = readBytes(1);
 //				mAccelRange=bufferAccelSensitivity[0];
 //				if(mDefaultCalibrationParametersAccel){
@@ -870,7 +870,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //					}
 //				}
 //			} 
-//			else if(responseCommand==InstructionsResponse.MPU9150_GYRO_RANGE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.MPU9150_GYRO_RANGE_RESPONSE_VALUE&0xFF)) {
 //				byte[] bufferGyroSensitivity = readBytes(1);
 //				mGyroRange=bufferGyroSensitivity[0];
 //				if(mDefaultCalibrationParametersGyro){
@@ -892,36 +892,36 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //					}
 //				}
 //			}
-//			else if(responseCommand==InstructionsResponse.GSR_RANGE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.GSR_RANGE_RESPONSE_VALUE&0xFF)) {
 //				byte[] bufferGSRRange = readBytes(1); 
 //				mGSRRange=bufferGSRRange[0];
 //				
 //				printLogDataForDebugging("GSR Range Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferGSRRange));
 //			} 
-			else if(responseCommand==InstructionsResponse.BLINK_LED_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.BLINK_LED_RESPONSE_VALUE&0xFF)) {
 				byte[] byteled = readBytes(1);
 //				mCurrentLEDStatus = byteled[0]&0xFF;
 				eventNewResponse(responseCommand, byteled[0]&0xFF);
 			} 
-//			else if(responseCommand==InstructionsResponse.BUFFER_SIZE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.BUFFER_SIZE_RESPONSE_VALUE&0xFF)) {
 //				byte[] byteled = readBytes(1);
 //				mBufferSize = byteled[0] & 0xFF;
 //			} 
-//			else if(responseCommand==InstructionsResponse.MAG_GAIN_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.MAG_GAIN_RESPONSE_VALUE&0xFF)) {
 //				byte[] bufferAns = readBytes(1); 
 //				mMagRange=bufferAns[0];
 //			} 
-//			else if(responseCommand==InstructionsResponse.MAG_SAMPLING_RATE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.MAG_SAMPLING_RATE_RESPONSE_VALUE&0xFF)) {
 //				byte[] bufferAns = readBytes(1); 
 //				mLSM303MagRate=bufferAns[0];
 //				
 //				printLogDataForDebugging("Mag Sampling Rate Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferAns));
 //			} 
-//			else if(responseCommand==InstructionsResponse.ACCEL_SAMPLING_RATE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.ACCEL_SAMPLING_RATE_RESPONSE_VALUE&0xFF)) {
 //				byte[] bufferAns = readBytes(1); 
 //				mLSM303DigitalAccelRate=bufferAns[0];
 //			}
-			else if(responseCommand==InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE){
+			else if((responseCommand&0xFF)==(InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE&0xFF)) {
 				//get pressure
 				delayForBtResponse(100); // Wait to ensure the packet has been fully received
 				byte[] pressureResoRes = new byte[22]; 
@@ -932,7 +932,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //				retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseCommand);
 				eventNewResponse(responseCommand, pressureResoRes);
 			} 
-//			else if(responseCommand==InstructionsResponse.EXG_REGS_RESPONSE_VALUE){
+//			else if((responseCommand&0xFF)==(InstructionsResponse.EXG_REGS_RESPONSE_VALUE&0xFF)) {
 //				delayForBtResponse(300); // Wait to ensure the packet has been fully received
 //				byte[] bufferAns = readBytes(11);
 //				if(mTempChipID==EXG_CHIP_INDEX.CHIP1.ordinal()){
@@ -946,45 +946,45 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //					setEXG2RegisterArray(EXG2RegisterArray);
 //				}
 //			} 
-			else if(responseCommand==InstructionsResponse.DAUGHTER_CARD_ID_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.DAUGHTER_CARD_ID_RESPONSE_VALUE&0xFF)) {
 				byte[] expBoardArray = readBytes(numBytesToReadFromExpBoard+1);
 //				getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
 				byte[] expBoardArraySplit = Arrays.copyOfRange(expBoardArray, 1, 4);
 //				setExpansionBoardDetails(new ExpansionBoardDetails(expBoardArraySplit));
 				eventNewResponse(responseCommand, new ExpansionBoardDetails(expBoardArraySplit));
 			}
-			else if(responseCommand==InstructionsResponse.BAUD_RATE_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.BAUD_RATE_RESPONSE_VALUE&0xFF)) {
 				byte[] bufferBaud = readBytes(1);
 				int mBluetoothBaudRate=bufferBaud[0] & 0xFF;
 				eventNewResponse(responseCommand, mBluetoothBaudRate);
 			}
-			else if(responseCommand==InstructionsResponse.TRIAL_CONFIG_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.TRIAL_CONFIG_RESPONSE_VALUE&0xFF)) {
 				byte[] data = readBytes(3);
 //				fillTrialShimmer3(data);
 				eventNewResponse(responseCommand, data);
 			}
-			else if(responseCommand==InstructionsResponse.CENTER_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.CENTER_RESPONSE_VALUE&0xFF)) {
 				byte[] length = readBytes(1);
 				byte[] data = readBytes(length[0]);
 				String center = new String(data);
 //				setCenter(center);
 				eventNewResponse(responseCommand, center);
 			}
-			else if(responseCommand==InstructionsResponse.SHIMMERNAME_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.SHIMMERNAME_RESPONSE_VALUE&0xFF)) {
 				byte[] length = readBytes(1);
 				byte[] data = readBytes(length[0]);
 				String name = new String(data);
 //				setShimmerUserAssignedName(name);
 				eventNewResponse(responseCommand, name);
 			}
-			else if(responseCommand==InstructionsResponse.EXPID_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.EXPID_RESPONSE_VALUE&0xFF)) {
 				byte[] length = readBytes(1);
 				byte[] data = readBytes(length[0]);
 				String name = new String(data);
 //				setTrialName(name);
 				eventNewResponse(responseCommand, name);
 			}
-			else if(responseCommand==InstructionsResponse.CONFIGTIME_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.CONFIGTIME_RESPONSE_VALUE&0xFF)) {
 				byte[] length = readBytes(1);
 				byte[] data = readBytes(length[0]);
 				String time = new String(data);
@@ -996,7 +996,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //				}
 				eventNewResponse(responseCommand, time);
 			}
-			else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.RWC_RESPONSE_VALUE&0xFF)) {
 				byte[] rxBuf = readBytes(8);
 				
 				// Parse response string
@@ -1007,44 +1007,44 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 //				setLastReadRealTimeClockValue(responseTime);
 				eventNewResponse(responseCommand, responseTime);
 			}
-			else if(responseCommand==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE&0xFF)) {
 				processInstreamResponse();
 			}
-//			else if(responseCommand==InstructionsResponse.LSM303DLHC_ACCEL_LPMODE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.LSM303DLHC_ACCEL_LPMODE_RESPONSE_VALUE&0xFF)) {
 //				byte[] responseData = readBytes(1);
 //				mLowPowerAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
 //			} 
-//			else if(responseCommand==InstructionsResponse.LSM303DLHC_ACCEL_HRMODE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.LSM303DLHC_ACCEL_HRMODE_RESPONSE_VALUE&0xFF)) {
 //				byte[] responseData = readBytes(1);
 //				mHighResAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
 //			} 
-//			else if(responseCommand==InstructionsResponse.MYID_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.MYID_RESPONSE_VALUE&0xFF)) {
 //				byte[] responseData = readBytes(1);
 //				mTrialId = (int)(responseData[0]&0xFF);
 //			}
-//			else if(responseCommand==InstructionsResponse.NSHIMMER_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.NSHIMMER_RESPONSE_VALUE&0xFF)) {
 //				byte[] responseData = readBytes(1);
 //				mTrialNumberOfShimmers = (int)(responseData[0]&0xFF);
 //			}
-//			else if(responseCommand==InstructionsResponse.MPU9150_SAMPLING_RATE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.MPU9150_SAMPLING_RATE_RESPONSE_VALUE&0xFF)) {
 //				byte[] responseData = readBytes(1);
 //				setMPU9150MPLSamplingRate(((int)(responseData[0]&0xFF)));
 //			}
-//			else if(responseCommand==InstructionsResponse.BMP180_PRES_RESOLUTION_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.BMP180_PRES_RESOLUTION_RESPONSE_VALUE&0xFF)) {
 //				byte[] responseData = readBytes(1);
 //				mPressureResolution = (int)(responseData[0]&0xFF);
 //			}
-//			else if(responseCommand==InstructionsResponse.BMP180_PRES_CALIBRATION_RESPONSE_VALUE) { 
+//			else if((responseCommand&0xFF)==(InstructionsResponse.BMP180_PRES_CALIBRATION_RESPONSE_VALUE&0xFF)) {
 //				//TODO: Not used
 //			}
-//			else if(responseCommand==InstructionsResponse.MPU9150_MAG_SENS_ADJ_VALS_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.MPU9150_MAG_SENS_ADJ_VALS_RESPONSE_VALUE&0xFF)) {
 //				//TODO: Not used
 //			}
-//			else if(responseCommand==InstructionsResponse.INTERNAL_EXP_POWER_ENABLE_RESPONSE_VALUE) {
+//			else if((responseCommand&0xFF)==(InstructionsResponse.INTERNAL_EXP_POWER_ENABLE_RESPONSE_VALUE&0xFF)) {
 //				byte[] responseData = readBytes(1);
 //				setInternalExpPower((int)(responseData[0]&0xFF));
 //			}
-			else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
+			else if((responseCommand&0xFF)==(InstructionsResponse.INFOMEM_RESPONSE_VALUE&0xFF)) {
 				// Get data length to read
 				byte[] rxBuf = readBytes(1);
 				int lengthToRead = (int)(rxBuf[0]&0xFF);

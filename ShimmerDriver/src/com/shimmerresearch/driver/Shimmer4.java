@@ -24,6 +24,7 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
@@ -625,8 +626,10 @@ public class Shimmer4 extends ShimmerDevice {
 				}
 				else if(responseCommand == InstructionsResponse.STATUS_RESPONSE_VALUE) {
 					consolePrintLn("STATUS RESPONSE RECEIVED");
-					//TODO
-//					parseStatusByte((byte)parsedResponse);
+					parseStatusByte((byte)parsedResponse);
+				}
+				else if(responseCommand == InstructionsResponse.VBATT_RESPONSE_VALUE) {
+					setBattStatusDetails((ShimmerBattStatusDetails)parsedResponse);
 				}
 				else if(responseCommand == InstructionsResponse.RWC_RESPONSE_VALUE) {
 					setLastReadRealTimeClockValue((long)parsedResponse);
@@ -746,11 +749,13 @@ public class Shimmer4 extends ShimmerDevice {
 		mCommsProtocolRadio.readExpansionBoardID();
 		mCommsProtocolRadio.readLEDCommand();
 
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
+		if((isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2))
+				||(isThisVerCompatibleWith(HW_ID.SHIMMER_4_SDK, FW_ID.SHIMMER4_SDK_STOCK, 0, 0, 1))){
 			mCommsProtocolRadio.readStatusLogAndStream();
 		}
 		
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9)){
+		if((isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9))
+				||(isThisVerCompatibleWith(HW_ID.SHIMMER_4_SDK, FW_ID.SHIMMER4_SDK_STOCK, 0, 0, 1))){
 			mCommsProtocolRadio.readBattery();
 		}
 		
@@ -825,33 +830,78 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
-	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
 	public void toggleLed() {
 		mCommsProtocolRadio.toggleLed();
 	}
+	
+	//TODO copied from ShimmerBluetooth
+	private void parseStatusByte(byte statusByte) {
+		Boolean savedDockedState = mIsDocked;
+		
+		mIsDocked = ((statusByte & 0x01) > 0)? true:false;
+		mIsSensing = ((statusByte & 0x02) > 0)? true:false;
+//		reserved = ((statusByte & 0x03) > 0)? true:false;
+		mIsSDLogging = ((statusByte & 0x08) > 0)? true:false;
+		mIsStreaming = ((statusByte & 0x10) > 0)? true:false; 
 
+		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
+				+ "\t" + "IsDocked = " + mIsDocked
+				+ "\t" + "IsSensing = " + mIsSensing
+				+ "\t" + "IsSDLogging = "+ mIsSDLogging
+				+ "\t" + "IsStreaming = " + mIsStreaming
+				);
+		
+		if(savedDockedState!=mIsDocked){
+			dockedStateChange();
+		}
+	}
+	
+	
+	//TODO copied from ShimmerPC
+	protected void dockedStateChange() {
+		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, getMacId(), getComPort());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, callBackObject);
+	}
+
+
+	//TODO copied from ShimmerPC
 	@Override
 	protected void setBluetoothRadioState(BT_STATE state){
 		super.setBluetoothRadioState(state);
 
-		if (state.equals(BT_STATE.CONNECTED)){
-			setIsConnected(true);
-			setIsStreaming(false);
-		} 
-		else if (state.equals(BT_STATE.DISCONNECTED)){
-			setIsConnected(false);
-			setIsStreaming(false);
-			setIsInitialised(false);
-		} 
-		else if (state.equals(BT_STATE.STREAMING)){
-			setIsStreaming(true);
-		} 
-		else if (state.equals(BT_STATE.CONNECTING)){
-			setIsConnected(true);
-			setIsInitialised(false);
-//			startOperation(BT_STATE.CONNECTING,mNumberOfInfoMemReadsRequired);
+//		if (mBluetoothRadioState.equals(BT_STATE.CONNECTED)){
+//			setIsConnected(true);
+//			setIsStreaming(false);
+//		} 
+//		else if (mBluetoothRadioState.equals(BT_STATE.DISCONNECTED)){
+//			setIsConnected(false);
+//			setIsStreaming(false);
+//			setIsInitialised(false);
+//		} 
+//		else if (mBluetoothRadioState.equals(BT_STATE.STREAMING)){
+//			setIsStreaming(true);
+//		} 
+//		else if (mBluetoothRadioState.equals(BT_STATE.CONNECTING)){
+//			setIsConnected(true);
+//			setIsInitialised(false);
+////			startOperation(BT_STATE.CONNECTING,mNumberOfInfoMemReadsRequired);
+//		}
+
+		if(mBluetoothRadioState==BT_STATE.CONNECTED){
+			mIsInitialised = true;
+			mIsStreaming = false;
 		}
-		
+		else if(mBluetoothRadioState==BT_STATE.STREAMING){
+			mIsStreaming = true;
+		}		
+		else if((mBluetoothRadioState==BT_STATE.DISCONNECTED)
+				||(mBluetoothRadioState==BT_STATE.CONNECTION_LOST)
+				||(mBluetoothRadioState==BT_STATE.CONNECTION_FAILED)){
+			setIsConnected(false);
+			mIsStreaming = false;
+			mIsInitialised = false;
+		}
+
 		consolePrintLn("State change: " + mBluetoothRadioState.toString());
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacIdFromUart(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
