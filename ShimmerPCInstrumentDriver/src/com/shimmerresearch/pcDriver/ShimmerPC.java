@@ -236,18 +236,22 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param empty  This is for forward compatibility, in the event a choice of library is offered, any string value can be entered now ~ does nothing
 	 */
 	@Override
-	public synchronized void connect(final String address, String a) {
+	public synchronized void connect(final String address, String unusedVariable) {
 		
 		Thread thread = new Thread(){
 			public void run(){
 				setBluetoothRadioState(BT_STATE.CONNECTING);
+				
+//				mMyBluetoothAddress = address;
 				mIamAlive = false;
+				getListofInstructions().clear();
+				mFirstTime=true;
+				
 				if (mSerialPort==null){
+					
 					mComPort = address;
-			//		mMyBluetoothAddress = address;
 					mSerialPort = new SerialPort(address);
-					getListofInstructions().clear();
-					mFirstTime=true;
+					
 					try {
 						consolePrintLn("Connecting to Shimmer");
 						
@@ -264,7 +268,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							setIsConnected(true);
 
 							mIOThread = new IOThread();
+							mIOThread.setName(getClass().getSimpleName()+"-"+mMyBluetoothAddress+"-"+mComPort);
 							mIOThread.start();
+							
 							if(mUseProcessingThread){
 								mPThread = new ProcessingThread();
 								mPThread.start();
@@ -494,9 +500,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			if (mIOThread != null) {
 				mIOThread.stop = true;
 				mIOThread = null;
+				
 				if(mUseProcessingThread){
-				mPThread.stop = true;
-				mPThread = null;
+					mPThread.stop = true;
+					mPThread = null;
 				}
 			}
 			mIsStreaming = false;

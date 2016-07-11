@@ -156,7 +156,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 	protected long mDerivedSensors = (long)0;	
 
-	public CommsProtocolRadio mShimmerRadioHWLiteProtocol = null;
+	public CommsProtocolRadio mCommsProtocolRadio = null;
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
@@ -3008,14 +3008,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void startStreaming() {
-		if(mShimmerRadioHWLiteProtocol!=null){
-			mShimmerRadioHWLiteProtocol.startStreaming();
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.startStreaming();
 		}
 	}
 
 	public void stopStreaming() {
-		if(mShimmerRadioHWLiteProtocol!=null){
-			mShimmerRadioHWLiteProtocol.stopStreaming();
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.stopStreaming();
 		}
 	}
 

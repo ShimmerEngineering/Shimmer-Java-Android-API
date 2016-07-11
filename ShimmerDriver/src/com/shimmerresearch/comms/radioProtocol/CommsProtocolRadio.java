@@ -76,132 +76,8 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	
 	
 	private void initialize(){
-		
 		mSerialPort.setVerboseMode(false,false);
-		
-		mSerialPort.setByteLevelDataCommListener(new ByteLevelDataCommListener(){
-
-			@Override
-			public void eventConnected() {
-				// TODO Auto-generated method stub
-				mRadioProtocol.initialize();
-				try {
-					mRadioProtocol.setProtocolListener(new ProtocolListener(){
-
-						@Override
-						public void eventAckReceived(byte[] sentInstruction) {
-							// TODO Auto-generated method stub
-							for (RadioListener rl:mRadioListenerList){
-								rl.eventAckReceived(sentInstruction);
-							}
-						}
-
-						@Override
-						public void eventNewPacket(byte[] packet) {
-							// TODO Auto-generated method stub
-							
-							for (RadioListener rl:mRadioListenerList){
-								rl.eventNewPacket(packet);
-							}
-						}
-
-						@Override
-						public void eventNewResponse(byte[] respB) {
-							// TODO Auto-generated method stub
-							
-							for (RadioListener rl:mRadioListenerList){
-								rl.eventResponseReceived(respB);
-							}
-						}
-
-						@Override
-						public void hasStopStreaming() {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void eventLogAndStreamStatusChanged() {
-							// TODO Auto-generated method stub
-							if (mSerialPort.isConnected()){
-								mRadioProtocol.setPacketSize(41);
-							}
-						}
-
-						@Override
-						public void sendProgressReport(BluetoothProgressReportPerCmd progressReportPerCmd) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void eventAckInstruction(byte[] bs) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void eventByteResponseWhileStreaming(byte[] b) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void isNowStreaming() {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void eventNewResponse(byte responseCommand, Object parsedResponse) {
-							
-						}
-
-						@Override
-						public void sendStatusMSGtoUI(String msg) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void startOperation(BT_STATE currentOperation) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void finishOperation(BT_STATE currentOperation) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void startOperation(BT_STATE currentOperation, int totalNumOfCmds) {
-							// TODO Auto-generated method stub
-							
-						}});
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				for (RadioListener rl:mRadioListenerList){
-					rl.connected();
-				}
-			}
-
-			@Override
-			public void eventDisconnected() {
-				// TODO Auto-generated method stub
-
-				for (RadioListener rl:mRadioListenerList){
-					rl.disconnected();
-				}
-			
-			}
-		});
-		
+		mSerialPort.setByteLevelDataCommListener(new RadioByteLevelListener());
 		
 		if (mSerialPort.isConnected()){
 			mSerialPort.eventDeviceConnected();
@@ -209,7 +85,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	}
 	
 	
-	public void setRadioListener(RadioListener radioListener){
+	public void addRadioListener(RadioListener radioListener){
 		mRadioListenerList.add(radioListener);
 	}
 	
@@ -219,12 +95,6 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 
 	
 	public void connect() throws DeviceException{
-		
-		//TODO temp here
-		mRadioProtocol.mIamAlive = false;
-		mRadioProtocol.getListofInstructions().clear();
-		mRadioProtocol.mFirstTime=true;
-
 		try{
 			mSerialPort.connect();
 		}
@@ -235,14 +105,19 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	};
 	
 	public void disconnect() throws DeviceException{
-		mRadioProtocol.stop();
-		try{
-			mSerialPort.disconnect();
-			mSerialPort=null;
+		if(mRadioProtocol!=null){
+			mRadioProtocol.stop();
 		}
-		catch (DeviceException e) {
-			throw(e);
-        }
+		if(mSerialPort!=null){
+			try{
+				mSerialPort.disconnect();
+			}
+			catch (DeviceException e) {
+				throw(e);
+	        } finally {
+				mSerialPort=null;
+	        }
+		}
 	};
 
 	public void stopStreaming(){
@@ -275,7 +150,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	}
 
 	public void readShimmerVersion() {
-		mRadioProtocol.readShimmerVersion();
+		mRadioProtocol.readShimmerVersionNew();
 	}
 
 	public void readInfoMem(int address, int size, int maxMemAddress) {
@@ -369,6 +244,125 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	
+	public class RadioByteLevelListener implements ByteLevelDataCommListener {
+
+		@Override
+		public void eventConnected() {
+			try {
+				mRadioProtocol.setProtocolListener(new CommsProtocolListener());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			for (RadioListener rl:mRadioListenerList){
+				rl.connected();
+			}
+
+			mRadioProtocol.initialize();
+		}
+
+		@Override
+		public void eventDisconnected() {
+			for (RadioListener rl:mRadioListenerList){
+				rl.disconnected();
+			}
+		}
+	}
+	
+	public class CommsProtocolListener implements ProtocolListener{
+
+		@Override
+		public void eventAckReceived(byte[] sentInstruction) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventAckReceived(sentInstruction);
+			}
+		}
+
+		@Override
+		public void eventNewPacket(byte[] packet) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventNewPacket(packet);
+			}
+		}
+
+		@Override
+		public void eventNewResponse(byte[] respB) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventResponseReceived(respB);
+			}
+		}
+
+		@Override
+		public void hasStopStreaming() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void eventLogAndStreamStatusChanged() {
+			if (mSerialPort.isConnected()){
+				mRadioProtocol.setPacketSize(41);
+			}
+		}
+
+		@Override
+		public void eventAckInstruction(byte[] bs) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventAckReceived(bs);
+			}
+		}
+
+		@Override
+		public void eventByteResponseWhileStreaming(byte[] b) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void isNowStreaming() {
+//			for (RadioListener rl:mRadioListenerList){
+//				rl.isNowStreaming();
+//			}
+		}
+
+		@Override
+		public void eventNewResponse(byte responseCommand, Object parsedResponse) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventResponseReceived(responseCommand, parsedResponse);
+			}
+		}
+
+		@Override
+		public void sendStatusMSGtoUI(String msg) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void startOperation(BT_STATE currentOperation, int totalNumOfCmds) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.startOperationCallback(currentOperation, totalNumOfCmds);
+			}
+		}
+
+		@Override
+		public void finishOperation(BT_STATE currentOperation) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.finishOperationCallback(currentOperation);
+			}
+		}
+		
+		@Override
+		public void sendProgressReport(BluetoothProgressReportPerCmd progressReportPerCmd) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.sendProgressReportCallback(progressReportPerCmd);
+			}
+		}
+
 	}
 	
 }

@@ -145,7 +145,7 @@ public abstract class AbstractByteLevelProtocol {
 
 	public abstract void toggleLed();
 	public abstract void readFWVersion();
-	public abstract void readShimmerVersion();
+	public abstract void readShimmerVersionNew();
 	public abstract void readPressureCalibrationCoefficients();
 
 	public abstract void setInstructionStackLock(boolean state);

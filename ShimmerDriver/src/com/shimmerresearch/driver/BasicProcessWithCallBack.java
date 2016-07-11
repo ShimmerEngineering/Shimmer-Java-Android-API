@@ -71,11 +71,13 @@ public abstract class BasicProcessWithCallBack {
 			}
 			mGUIConsumerThread.start();
 		}
+		
 		if (mWaitForData!=null){
 			mListWaitForData.add(new WaitForData(b));
 		} else {
 			mWaitForData = new WaitForData(b);
 		}
+		
 	};
 	
 	public void passCallback(Callable c) {

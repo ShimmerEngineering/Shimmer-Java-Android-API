@@ -1993,10 +1993,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		stopTimerReadStatus();
 		stopTimerCheckForAckOrResp();
-		
 		setInstructionStackLock(false);
+		
 		dummyreadSamplingRate(); // it actually acts to clear the write buffer
-		readShimmerVersion();
+		
+		readShimmerVersionNew();
 		//readFWVersion();
 		//mShimmerVersion=4;
 	}
@@ -2561,7 +2562,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		writeInstruction(new byte[]{GET_FW_VERSION_COMMAND});
 	}
 
-	public void readShimmerVersion() {
+	@Deprecated
+	public void readShimmerVersionDeprecated(){
+		writeInstruction(new byte[]{GET_SHIMMER_VERSION_COMMAND});
+	}
+
+	public void readShimmerVersionNew() {
 		mDummy=false;//false
 //		if(mFirmwareVersionParsed.equals(boilerPlateString)){
 //			mShimmerVersion = HW_ID.SHIMMER_2R; // on Shimmer2r has 
@@ -2573,11 +2579,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //			else {
 //			mListofInstructions.add(new byte[]{GET_SHIMMER_VERSION_COMMAND});
 //		}
-	}
-	
-	@Deprecated
-	public void readShimmerVersionDeprecated(){
-		writeInstruction(new byte[]{GET_SHIMMER_VERSION_COMMAND});
 	}
 	
 	public void readPressureCalibrationCoefficients() {

@@ -60,7 +60,7 @@ public class Shimmer4 extends ShimmerDevice {
 //	private int mCurrentInfoMemLengthToRead = 0;
 //	private int mNumberOfInfoMemReadsRequired = 3;
 	
-	protected boolean mSendProgressReport = false;
+	protected boolean mSendProgressReport = true;
 
 	
 	//TODO consider where to handle the below -> carried over from ShimmerObject
@@ -397,8 +397,8 @@ public class Shimmer4 extends ShimmerDevice {
 	private void updateExpectedDataPacketSize() {
 		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
 //		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.ALL);
-		if(mShimmerRadioHWLiteProtocol!=null){
-			mShimmerRadioHWLiteProtocol.mRadioProtocol.setPacketSize(expectedDataPacketSize);
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.mRadioProtocol.setPacketSize(expectedDataPacketSize);
 		}
 	}
 
@@ -434,20 +434,20 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	// ----------------- BT LiteProtocolInstructionSet Start ------------------
-	public void setRadio(CommsProtocolRadio shimmerRadioHWLiteProtocol){
-		setShimmerRadioHWLiteProtocol(shimmerRadioHWLiteProtocol);
+	public void setRadio(CommsProtocolRadio commsRadio){
+		setCommsProtocolRadio(commsRadio);
 		initializeRadio();
 	}
 
 	private void initializeRadio(){
 		mIsInitialised = false;
-		if (mShimmerRadioHWLiteProtocol!=null){ // the radio instance should be declared on a higher level and not in this class
-			mShimmerRadioHWLiteProtocol.setRadioListener(new RadioListener(){
+		if (mCommsProtocolRadio!=null){ // the radio instance should be declared on a higher level and not in this class
+			mCommsProtocolRadio.addRadioListener(new RadioListener(){
 
 			@Override
 			public void connected() {
-				mShimmerRadioHWLiteProtocol.readFWVersion();
-				mShimmerRadioHWLiteProtocol.readShimmerVersion();
+//				setBluetoothRadioState(BT_STATE.CONNECTED);
+//				initialise(hardwareVersion);
 			}
 
 			@Override
@@ -589,7 +589,13 @@ public class Shimmer4 extends ShimmerDevice {
 			@Override
 			public void eventResponseReceived(byte responseCommand, Object parsedResponse) {
 				
-				if(responseCommand == InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE) {
+				if(responseCommand == InstructionsResponse.INQUIRY_RESPONSE_VALUE) {
+					//TODO need to port from ShimmerBluetooth for legacy support
+//					interpretInqResponse((byte[])parsedResponse);
+					prepareAllAfterConfigRead();
+					inquiryDone();
+				}
+				else if(responseCommand == InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE) {
 					setHardwareVersion((int)parsedResponse);
 				}
 				else if(responseCommand == InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
@@ -607,6 +613,9 @@ public class Shimmer4 extends ShimmerDevice {
 				else if(responseCommand == InstructionsResponse.INFOMEM_RESPONSE_VALUE) {
 					setShimmerInfoMemBytes((byte[])parsedResponse);
 				}
+				else if(responseCommand == InstructionsResponse.BLINK_LED_RESPONSE_VALUE) {
+//					mCurrentLEDStatus = byteled[0]&0xFF;
+				}
 				else if(responseCommand == InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE) {
 					AbstractSensor abstractSensor = mMapOfSensorClasses.get(SENSORS.BMP180);
 					if(abstractSensor!=null && abstractSensor instanceof SensorBMP180){
@@ -623,12 +632,30 @@ public class Shimmer4 extends ShimmerDevice {
 					setLastReadRealTimeClockValue((long)parsedResponse);
 				}
 				else{
+					consolePrintLn("Unhandled Response In Shimmer4 class: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(new byte[]{responseCommand}));
+
 //					System.out.println("POSSIBLE_SENSOR_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseBytes));
 //					for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 //						abstractSensor.processResponse(responseBytes, COMMUNICATION_TYPE.BLUETOOTH);
 //					}
 				}
 			}
+
+			@Override
+			public void startOperationCallback(BT_STATE currentOperation, int totalNumOfCmds) {
+				startOperation(currentOperation, totalNumOfCmds);
+			}
+
+			@Override
+			public void finishOperationCallback(BT_STATE currentOperation) {
+				finishOperation(currentOperation);
+			}
+
+			@Override
+			public void sendProgressReportCallback(BluetoothProgressReportPerCmd progressReportPerCmd) {
+				sendProgressReport(progressReportPerCmd);
+			}
+
 
 			});
 			
@@ -645,24 +672,21 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	public void connect() throws DeviceException {
-//		super.connect();
+		clearShimmerVersionObject();
 		
 		setBluetoothRadioState(BT_STATE.CONNECTING);
-		
-		if(mShimmerRadioHWLiteProtocol!=null){
+		if(mCommsProtocolRadio!=null){
 			try {
-				mShimmerRadioHWLiteProtocol.connect();
+				mCommsProtocolRadio.connect();
 			} catch (DeviceException dE) {
 				consolePrintException(dE.getMessage(), dE.getStackTrace());
-
-				setBluetoothRadioState(BT_STATE.CONNECTION_FAILED);
-				
 				dE.printStackTrace();
+				
+				disconnect();
+				setBluetoothRadioState(BT_STATE.CONNECTION_FAILED);
 				throw(dE);
 			}
 		}
-
-
 	}
 	
 	private void consolePrintException(String message, StackTraceElement[] stackTrace) {
@@ -677,26 +701,26 @@ public class Shimmer4 extends ShimmerDevice {
 		else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
 //			initializeShimmer3();
 		}
-		else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
+		else if(getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
 			initializeShimmer4();
 		}
 		
-		mShimmerRadioHWLiteProtocol.startTimerCheckIfAlive();
+		mCommsProtocolRadio.startTimerCheckIfAlive();
 	}
 
 	
 	private void initializeShimmer4() {
-		initialise(HW_ID.SHIMMER_3);
+		initialise(HW_ID.SHIMMER_4_SDK);
 		mHaveAttemptedToReadConfig = true;
 		
 		if(mSendProgressReport){
-			mShimmerRadioHWLiteProtocol.operationPrepare();
+			mCommsProtocolRadio.operationPrepare();
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
 		
 //		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 			readConfigurationFromInfoMem();
-			mShimmerRadioHWLiteProtocol.readPressureCalibrationCoefficients();
+			mCommsProtocolRadio.readPressureCalibrationCoefficients();
 //		}
 //		else {
 //			readSamplingRate();
@@ -719,15 +743,15 @@ public class Shimmer4 extends ShimmerDevice {
 //			}
 //		}
 		
-		mShimmerRadioHWLiteProtocol.readExpansionBoardID();
-		mShimmerRadioHWLiteProtocol.readLEDCommand();
+		mCommsProtocolRadio.readExpansionBoardID();
+		mCommsProtocolRadio.readLEDCommand();
 
 		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
-			mShimmerRadioHWLiteProtocol.readStatusLogAndStream();
+			mCommsProtocolRadio.readStatusLogAndStream();
 		}
 		
 		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9)){
-			mShimmerRadioHWLiteProtocol.readBattery();
+			mCommsProtocolRadio.readBattery();
 		}
 		
 //		if(mSetupDevice){
@@ -746,23 +770,23 @@ public class Shimmer4 extends ShimmerDevice {
 //			writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
 //		} 
 //		else {
-		mShimmerRadioHWLiteProtocol.inquiry();
+		mCommsProtocolRadio.inquiry();
 //		}
 
 		if(mSendProgressReport){
 			// Just unlock instruction stack and leave logAndStream timer as
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
-			startOperation(BT_STATE.CONNECTING, mShimmerRadioHWLiteProtocol.mRadioProtocol.getListofInstructions().size());
+			startOperation(BT_STATE.CONNECTING, mCommsProtocolRadio.mRadioProtocol.getListofInstructions().size());
 			
-			mShimmerRadioHWLiteProtocol.mRadioProtocol.setInstructionStackLock(false);
+			mCommsProtocolRadio.mRadioProtocol.setInstructionStackLock(false);
 		}
 		
-		mShimmerRadioHWLiteProtocol.startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
-		mShimmerRadioHWLiteProtocol.startTimerReadBattStatus(); // if shimmer is using LogAndStream FW, read its status periodically
+		mCommsProtocolRadio.startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
+		mCommsProtocolRadio.startTimerReadBattStatus(); // if shimmer is using LogAndStream FW, read its status periodically
 	}
 
-	//TODO - Copied from ShimmerObjec
+	//TODO - Copied from ShimmerObject
 	private void initialise(int hardwareVersion) {
 		this.setHardwareVersion(hardwareVersion);
 		sensorAndConfigMapsCreate();
@@ -803,7 +827,7 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	//TODO the contents are very specific to ShimmerRadioProtocol, don't think should be in this class
 	public void toggleLed() {
-		mShimmerRadioHWLiteProtocol.toggleLed();
+		mCommsProtocolRadio.toggleLed();
 	}
 
 	@Override
@@ -829,30 +853,38 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 		
 		consolePrintLn("State change: " + mBluetoothRadioState.toString());
-		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, state, getMacIdFromUart(), getComPort());
+		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacIdFromUart(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 	}
 	
+
+	protected void inquiryDone() {
+		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacIdFromUart(), getComPort());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		isReadyForStreaming();
+	}
+
 	/**
 	 * @return the mShimmerRadioHWLiteProtocol
 	 */
 	public CommsProtocolRadio getShimmerRadioHWLiteProtocol() {
-		return mShimmerRadioHWLiteProtocol;
+		return mCommsProtocolRadio;
 	}
 
 	/**
-	 * @param shimmerRadioHWLiteProtocol the mShimmerRadioHWLiteProtocol to set
+	 * @param commsProtocolRadio the mShimmerRadioHWLiteProtocol to set
 	 */
-	public void setShimmerRadioHWLiteProtocol(CommsProtocolRadio shimmerRadioHWLiteProtocol) {
-		this.mShimmerRadioHWLiteProtocol = shimmerRadioHWLiteProtocol;
+	public void setCommsProtocolRadio(CommsProtocolRadio commsProtocolRadio) {
+		this.mCommsProtocolRadio = commsProtocolRadio;
 	}
 	
 	@Override
 	public void disconnect() throws DeviceException {
 		super.disconnect();
-		if(mShimmerRadioHWLiteProtocol!=null){
+		if(mCommsProtocolRadio!=null){
 			try {
-				mShimmerRadioHWLiteProtocol.disconnect();
+				mCommsProtocolRadio.disconnect();
+				mCommsProtocolRadio = null;
 			} catch (DeviceException e) {
 				throw(e);
 			}
@@ -860,31 +892,32 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	public String getComPort() {
-		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
-			return ((AbstractSerialPortComm) mShimmerRadioHWLiteProtocol.mSerialPort).mAddress;
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mSerialPort!=null){
+			return ((AbstractSerialPortComm) mCommsProtocolRadio.mSerialPort).mAddress;
 		}
 		return null;
 	}
 
 	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
-		if(mShimmerRadioHWLiteProtocol!=null){
-			mShimmerRadioHWLiteProtocol.writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 		}
 	}
 	
 	public void readConfigurationFromInfoMem(){
 		if(this.getFirmwareVersionCode()>=6){
+			createInfoMemLayoutObjectIfNeeded();
 //			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 			int size = mInfoMemLayout.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-			mShimmerRadioHWLiteProtocol.readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
+			mCommsProtocolRadio.readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 			
 		}
 	}
 	
 	public void writeEnabledSensors(long enabledSensors) {
-		if(mShimmerRadioHWLiteProtocol!=null && mShimmerRadioHWLiteProtocol.mSerialPort!=null){
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mSerialPort!=null){
 //			mShimmerRadioHWLiteProtocol.
-			mShimmerRadioHWLiteProtocol.writeEnabledSensors(enabledSensors);
+			mCommsProtocolRadio.writeEnabledSensors(enabledSensors);
 		}
 	}
 
@@ -903,10 +936,14 @@ public class Shimmer4 extends ShimmerDevice {
 		if(progressReportPerDevice!=null){
 			progressReportPerDevice.updateProgress(pRPC);
 			int progress = progressReportPerDevice.mProgressPercentageComplete;
+			
 			CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
 			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 			
-//			consolePrintLn("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
+			consolePrintLn("MAC:\t" + getMacId()
+					+ "\tCOM:\t" + getComPort()
+					+ "\tProgressCounter" + progressReportPerDevice.mProgressCounter 
+					+ "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
 			
 			if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
 				isReadyForStreaming();
@@ -1038,6 +1075,15 @@ public class Shimmer4 extends ShimmerDevice {
 		
 		return returnValue;
 
+	}
+
+	public boolean isReadyToConnect() {
+		if (mCommsProtocolRadio==null 
+				||mCommsProtocolRadio.mSerialPort==null
+				||!mCommsProtocolRadio.mSerialPort.isConnected()){
+			return true;
+		}
+		return false;
 	}
 
 }
