@@ -1130,7 +1130,7 @@ public class SensorLSM303 extends AbstractSensor{
 		
 		
 		//Magnetometer
-		if(packetType==MAG_CALIBRATION_RESPONSE){
+		else if(packetType==MAG_CALIBRATION_RESPONSE){
 			if(checkIfDefaulMagCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
 				mDefaultCalibrationParametersMag = true;
 				mAlignmentMatrixMagnetometer = AlignmentMatrix;

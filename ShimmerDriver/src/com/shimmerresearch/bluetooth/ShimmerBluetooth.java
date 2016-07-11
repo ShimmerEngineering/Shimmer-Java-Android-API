@@ -1762,7 +1762,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] instruction = getListofInstructions().get(0);
 					byte[] rwcTimeArray = new byte[8];
 					System.arraycopy(instruction, 1, rwcTimeArray, 0, 8);
-					long milisecondTicks = UtilShimmer.convertShimmerRtcDataBytesToSystemTime(rwcTimeArray);
+					long milisecondTicks = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeWithReverse(rwcTimeArray);
 					mShimmerRealTimeClockConFigTime = milisecondTicks;
 				}
 				else if(currentCommand==SET_CONFIGTIME_COMMAND){

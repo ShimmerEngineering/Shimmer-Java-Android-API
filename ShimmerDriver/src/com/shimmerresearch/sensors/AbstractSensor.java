@@ -463,6 +463,12 @@ public abstract class AbstractSensor implements Serializable{
 		return remainingBytes;
 	}
 	
+	public byte[] parseAllCalibByteArray(int sensorMapKey, byte b, long timestamp, byte[] calibBytes) {
+		// TODO Auto-generated method stub
+		return calibBytes;
+	}
+
+	
 	public Object setConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
@@ -490,7 +496,6 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		return returnValue;
 	}
-
 	
 	
 	//--------- Optional methods to override in Sensor Class end -------- 
