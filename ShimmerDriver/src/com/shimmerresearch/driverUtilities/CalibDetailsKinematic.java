@@ -30,8 +30,6 @@ public class CalibDetailsKinematic extends CalibDetails {
 	public String mRangeString = "";
 	public int mRangeValue = 0;
 
-	public long mCalibTime = 0;
-
 	//Not Driver related - consider a different approach?
 	public int guiRangeValue = 0;
 	//Not Driver related - consider a different approach?
@@ -71,18 +69,6 @@ public class CalibDetailsKinematic extends CalibDetails {
 		mCurrentAlignmentMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultAlignmentMatrix);
 		mCurrentSensitivityMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultSensitivityMatrix);
 		mCurrentOffsetVector = UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector);
-	}
-	
-	public void setCalibTime(long calibTime){
-		mCalibTime = calibTime;
-	}
-
-	public long getCalibTime(){
-		return mCalibTime;
-	}
-
-	public String getCalibTimeParsed(){
-		return UtilShimmer.convertMilliSecondsToDateString(mCalibTime);
 	}
 	
 	public boolean isCurrentValuesSet(){
@@ -240,11 +226,13 @@ public class CalibDetailsKinematic extends CalibDetails {
 
 		byte[] timestamp = ByteBuffer.allocate(8).putLong(mCalibTime).array();
 		byte[] bufferCalibParam = generateCalParamByteArray();
+		byte[] calibLength = new byte[]{(byte) bufferCalibParam.length};
 		
-		byte[] bufferCalibParamWithTimestamp = new byte[rangeBytes.length + bufferCalibParam.length + timestamp.length];
+		byte[] bufferCalibParamWithTimestamp = new byte[rangeBytes.length + calibLength.length + timestamp.length + bufferCalibParam.length];
 		System.arraycopy(rangeBytes, 0, bufferCalibParamWithTimestamp, 0, rangeBytes.length);
-		System.arraycopy(timestamp, 0, bufferCalibParamWithTimestamp, rangeBytes.length, timestamp.length);
-		System.arraycopy(bufferCalibParam, 0, bufferCalibParamWithTimestamp, rangeBytes.length + timestamp.length, bufferCalibParam.length);
+		System.arraycopy(calibLength, 0, bufferCalibParamWithTimestamp, rangeBytes.length, calibLength.length);
+		System.arraycopy(timestamp, 0, bufferCalibParamWithTimestamp, rangeBytes.length + calibLength.length, timestamp.length);
+		System.arraycopy(bufferCalibParam, 0, bufferCalibParamWithTimestamp, rangeBytes.length + calibLength.length + timestamp.length, bufferCalibParam.length);
 		return bufferCalibParamWithTimestamp;
 	}
 }

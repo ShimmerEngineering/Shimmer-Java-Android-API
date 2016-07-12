@@ -463,6 +463,34 @@ public abstract class AbstractSensor implements Serializable{
 		return remainingBytes;
 	}
 	
+	public boolean parseAllCalibByteArray(int sensorMapKey, int rangeValue, long calibTime, byte[] calibBytes) {
+		if(!mSensorMap.containsKey(sensorMapKey)){
+			return false;
+		}
+		
+		TreeMap<Integer, CalibDetails> mapOfSensorCalib = mCalibMap.get(sensorMapKey);
+		if(mapOfSensorCalib==null){
+			mCalibMap.put(sensorMapKey, new TreeMap<Integer, CalibDetails>());
+		}
+		
+		mapOfSensorCalib = mCalibMap.get(sensorMapKey);
+		CalibDetails calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
+		if(calibDetailsPerRange==null){
+			//TODO UNKOWN RANGE
+//			mapOfSensorCalib.put(range, new CalibDetailsKinematic(rangeValue, rangeString))
+		}
+		
+		calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
+		if(calibDetailsPerRange!=null && calibDetailsPerRange instanceof CalibDetailsKinematic){
+			calibDetailsPerRange.setCalibTime(calibTime);
+
+			((CalibDetailsKinematic)calibDetailsPerRange).parseCalParamByteArray(calibBytes);
+		}
+		
+		return true;
+	}
+
+	
 	public Object setConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
@@ -490,7 +518,6 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		return returnValue;
 	}
-
 	
 	
 	//--------- Optional methods to override in Sensor Class end -------- 

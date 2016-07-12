@@ -468,8 +468,12 @@ public class UtilShimmer implements Serializable {
 		return rtcTimeArray;
 	}
 
-	public static long convertShimmerRtcDataBytesToSystemTime(byte[] rtcTimeArray) {
+	public static long convertShimmerRtcDataBytesToSystemTimeWithReverse(byte[] rtcTimeArray) {
 		ArrayUtils.reverse(rtcTimeArray); // Big-endian by default
+		return convertShimmerRtcDataBytesToSystemTime(rtcTimeArray);
+	}
+
+	public static long convertShimmerRtcDataBytesToSystemTime(byte[] rtcTimeArray) {
 		long milisecondTicks = (long)(((double)(ByteBuffer.wrap(rtcTimeArray).getLong())/32.768));  // Convert clock ticks to milliseconds
 		return milisecondTicks;
 	}
