@@ -1,5 +1,9 @@
 package com.shimmerresearch.driver;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +18,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -63,7 +69,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static final String STRING_CONSTANT_PENDING = "Pending";
 	public static final String STRING_CONSTANT_UNKNOWN = "Unknown";
 	public static final String STRING_CONSTANT_SD_ERROR = "SD Error";
-
+	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
 	
@@ -2988,20 +2994,35 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			AbstractSensor abstractSensor = iterator.next();
 			byte[] calibBytesPerSensor = abstractSensor.generateAllCalibByteArray();
 			if(calibBytesPerSensor!=null){
-				byte[] newCalibBytesAll = new byte[calibBytesAll.length+calibBytesPerSensor.length];
-				System.arraycopy(calibBytesAll, 0, newCalibBytesAll, 0, calibBytesAll.length);
-				System.arraycopy(calibBytesPerSensor, 0, newCalibBytesAll, calibBytesAll.length, calibBytesPerSensor.length);
+				byte[] newCalibBytesAll = ArrayUtils.addAll(calibBytesAll, calibBytesPerSensor);
+//				byte[] newCalibBytesAll = new byte[calibBytesAll.length+calibBytesPerSensor.length];
+//				System.arraycopy(calibBytesAll, 0, newCalibBytesAll, 0, calibBytesAll.length);
+//				System.arraycopy(calibBytesPerSensor, 0, newCalibBytesAll, calibBytesAll.length, calibBytesPerSensor.length);
 				calibBytesAll = newCalibBytesAll;
 			}
 		}
 		
-		return calibBytesAll;
+		//TODO add two bytes for calibBytesAll.length
+		byte[] packetLength = new byte[2];
+		packetLength[0] = (byte) (calibBytesAll.length&0xFF);
+		packetLength[1] = (byte) ((calibBytesAll.length>>8)&0xFF);
+		System.out.println("Packet byte/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetLength));
+		System.out.println("calibByteAll/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytesAll));
+
+		byte[] concatBytes = ArrayUtils.addAll(packetLength,calibBytesAll);
+		System.out.println("Concat byte/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(concatBytes));
+		
+		return concatBytes;
 	}
 
 //	public void parseAllCalibByteArray(byte[] calibBytesAll, int sensorMapKey){
 	public void parseAllCalibByteArray(byte[] calibBytesAll){
-		byte[] remainingBytes = calibBytesAll;
-		
+
+		//0) Packet lENGTH
+		byte[] packetLength = Arrays.copyOfRange(calibBytesAll, 0, 2);
+
+		byte[] remainingBytes = Arrays.copyOfRange(calibBytesAll, 2, calibBytesAll.length);;
+
 		while(remainingBytes.length>12){
 			//1) parse sensorMapKey (2 bytes LSB)
 			byte[] sensorIdBytes = Arrays.copyOfRange(remainingBytes, 0, 2);
@@ -3010,28 +3031,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			
 			//2) parse range (1 byte)
 			byte[] rangeIdBytes = Arrays.copyOfRange(remainingBytes, 2, 3);
-			System.out.println("Range id Bytes - \t" + rangeIdBytes[0] + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rangeIdBytes));
+			int rangeValue = rangeIdBytes[0];
+			System.out.println("Range id Bytes - \t" + rangeValue + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rangeIdBytes));
 
 			//3) parse calib byte length (1 byte)
-			int expectedCalibLength = 21;
+//			byte[] calibLength = Arrays.copyOfRange(remainingBytes, 3, 4);
+			int calibLength = remainingBytes[3];
+//			int calibLength = parseCalibrationLength(sensorMapKey);
+			System.out.println("Calib Bytes Length - \t" + calibLength);
 
+			
 			//4) parse timestamp (8 bytes MSB/LSB?)
-			byte[] timeStampIdBytes = Arrays.copyOfRange(remainingBytes, 3, 11);
-			long timestamp = UtilShimmer.convertShimmerRtcDataBytesToSystemTime(timeStampIdBytes);
-			System.out.println("Time Stamp id Bytes - \t" + timestamp + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(timeStampIdBytes));
+			byte[] timeStampIdBytes = Arrays.copyOfRange(remainingBytes, 4, 12);
+			long calibTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTime(timeStampIdBytes);
+			System.out.println("Time Stamp id Bytes - \t" + calibTime + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(timeStampIdBytes));
 			
-			
-			int endIndex = 12+expectedCalibLength;
-			
+			int endIndex = 12+calibLength;
+			//5) parse calibration bytes (X bytes)
 			if(remainingBytes.length>endIndex){
-				//5) parse calibration bytes (X bytes)
-				byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 11, 32);
+				
+				byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 12, 33);
 				System.out.println("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
 			
 				Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 				while(iterator.hasNext()){
 					AbstractSensor abstractSensor = iterator.next();
-					remainingBytes = abstractSensor.parseAllCalibByteArray(sensorMapKey, rangeIdBytes[0], timestamp, calibBytes);
+					if(abstractSensor.parseAllCalibByteArray(sensorMapKey, rangeValue, calibTime, calibBytes)){
+						break;
+					}
 //					remainingBytes = abstractSensor.parseAllCalibByteArray(remainingBytes);
 				}
 				
@@ -3043,6 +3070,36 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 
 		}
+	}
+
+	public int parseCalibrationLength(int sensorMapKey) {
+		int calibLength = 0;
+		
+		switch (sensorMapKey){
+		case Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL:
+			calibLength = 21;
+			break;
+		case Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO:
+			calibLength = 21;
+			break;
+		case Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL:
+			calibLength = 21;
+			break;
+		case Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG:
+			calibLength = 21;
+			break;
+		case Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE:
+			calibLength=22;
+			break;
+		case Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP280_PRESSURE:
+			break;
+		default:
+			calibLength = 0;
+			}
+		System.out.println("Switch Case Bytes Length - \t" + calibLength);
+
+		return calibLength;
+		
 	}
 
 	public void startStreaming() {

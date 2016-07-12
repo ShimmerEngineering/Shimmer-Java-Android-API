@@ -463,9 +463,31 @@ public abstract class AbstractSensor implements Serializable{
 		return remainingBytes;
 	}
 	
-	public byte[] parseAllCalibByteArray(int sensorMapKey, byte b, long timestamp, byte[] calibBytes) {
-		// TODO Auto-generated method stub
-		return calibBytes;
+	public boolean parseAllCalibByteArray(int sensorMapKey, int rangeValue, long calibTime, byte[] calibBytes) {
+		if(!mSensorMap.containsKey(sensorMapKey)){
+			return false;
+		}
+		
+		TreeMap<Integer, CalibDetails> mapOfSensorCalib = mCalibMap.get(sensorMapKey);
+		if(mapOfSensorCalib==null){
+			mCalibMap.put(sensorMapKey, new TreeMap<Integer, CalibDetails>());
+		}
+		
+		mapOfSensorCalib = mCalibMap.get(sensorMapKey);
+		CalibDetails calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
+		if(calibDetailsPerRange==null){
+			//TODO UNKOWN RANGE
+//			mapOfSensorCalib.put(range, new CalibDetailsKinematic(rangeValue, rangeString))
+		}
+		
+		calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
+		if(calibDetailsPerRange!=null && calibDetailsPerRange instanceof CalibDetailsKinematic){
+			calibDetailsPerRange.setCalibTime(calibTime);
+
+			((CalibDetailsKinematic)calibDetailsPerRange).parseCalParamByteArray(calibBytes);
+		}
+		
+		return true;
 	}
 
 	

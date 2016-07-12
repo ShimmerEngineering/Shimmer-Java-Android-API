@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import sun.applet.resources.MsgAppletViewer;
+
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
@@ -1591,6 +1593,8 @@ public class SensorLSM303 extends AbstractSensor{
 		}
 		return false;
 	}	
+
+
 	//--------- Optional methods to override in Sensor Class end --------
 
 
