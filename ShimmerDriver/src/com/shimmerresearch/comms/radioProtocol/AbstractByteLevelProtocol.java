@@ -21,7 +21,47 @@ public abstract class AbstractByteLevelProtocol {
 	public boolean mFirstTime=false;
 	public boolean mIamAlive = false;
 
+	public abstract void initialize();
+	public abstract void writeInstruction(byte[] instruction);
+	public abstract void stop();
+	protected abstract void writeInfoMem(int startAddress, byte[] buf);
+	protected abstract void readInfoMem(int startAddress, int size);
+	
+	public abstract void readMemCommand(int command, int address, int size);
+	public abstract void writeMemCommand(int command, int address, byte[] infoMemBytes);
+	
+	public abstract List<byte []> getListofInstructions();
+	
 
+	public abstract void toggleLed();
+	public abstract void readFWVersion();
+	public abstract void readShimmerVersionNew();
+	public abstract void readPressureCalibrationCoefficients();
+
+	public abstract void setInstructionStackLock(boolean state);
+
+	public abstract void startTimerCheckIfAlive();
+	public abstract void readExpansionBoardID();
+	public abstract void readLEDCommand();
+	public abstract void readStatusLogAndStream();
+	public abstract void readBattery();
+	public abstract void inquiry();
+	public abstract void startTimerReadStatus();
+	public abstract void startTimerReadBattStatus();
+
+	public abstract void operationPrepare();
+
+	public abstract void writeEnabledSensors(long enabledSensors);
+
+	public abstract void startStreaming();
+	public abstract void startDataLogAndStreaming();
+	public abstract void startSDLogging();
+	public abstract void stopSDLogging();
+	public abstract void stopStreaming();
+	public abstract void stopStreamingAndLogging();
+	
+	public abstract void restartTimersIfNull();
+	
 
 	/**When using this, it is required that the byteleveldatacomm is set using the serByteLevelDataComm
 	 * 
@@ -46,19 +86,7 @@ public abstract class AbstractByteLevelProtocol {
 		}
 	}
 
-	public abstract void initialize();
-	public abstract void writeInstruction(byte[] instruction);
-	public abstract void stop();
-	public abstract void stopStreaming();
-	public abstract void startStreaming();
-	protected abstract void writeInfoMem(int startAddress, byte[] buf);
-	protected abstract void readInfoMem(int startAddress, int size);
-	
-	public abstract void readMemCommand(int command, int address, int size);
-	public abstract void writeMemCommand(int command, int address, byte[] infoMemBytes);
-	
-	public abstract List<byte []> getListofInstructions();
-	
+
 	public void setPacketSize(int pSize){
 		mPacketSize = pSize;
 	}
@@ -143,24 +171,7 @@ public abstract class AbstractByteLevelProtocol {
 	}
 	
 
-	public abstract void toggleLed();
-	public abstract void readFWVersion();
-	public abstract void readShimmerVersionNew();
-	public abstract void readPressureCalibrationCoefficients();
 
-	public abstract void setInstructionStackLock(boolean state);
 
-	public abstract void startTimerCheckIfAlive();
-	public abstract void readExpansionBoardID();
-	public abstract void readLEDCommand();
-	public abstract void readStatusLogAndStream();
-	public abstract void readBattery();
-	public abstract void inquiry();
-	public abstract void startTimerReadStatus();
-	public abstract void startTimerReadBattStatus();
-
-	public abstract void operationPrepare();
-
-	public abstract void writeEnabledSensors(long enabledSensors);
 	
 }

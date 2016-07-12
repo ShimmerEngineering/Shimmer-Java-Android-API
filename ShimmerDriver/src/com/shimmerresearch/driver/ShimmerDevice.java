@@ -461,7 +461,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		Collections.sort(mListOfAvailableCommunicationTypes);
 		
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
-			setDocked(true);
+			setIsDocked(true);
 		}
 		
 		//TODO temp here -> check if the best place for it
@@ -476,7 +476,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		Collections.sort(mListOfAvailableCommunicationTypes);
 		
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
-			setDocked(false);
+			setIsDocked(false);
 			setFirstDockRead();
 			clearDockInfo();
 		}
@@ -614,16 +614,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	/**
-	 * @return the mHaveAttemptedToRead
-	 */
-	public boolean isHaveAttemptedToRead() {
-		return haveAttemptedToRead();
-	}
-
-	/**
 	 * @param docked the mDocked to set
 	 */
-	public void setDocked(boolean docked) {
+	public void setIsDocked(boolean docked) {
 		mIsDocked = docked;
 	}
 
@@ -661,10 +654,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return
 	 */
 	public boolean isSensing(){
-		return (mIsSensing || mIsSDLogging || mIsStreaming);
+		return (mIsSensing || isSDLogging() || isStreaming());
 	}
 	
-	public void setSensing(boolean state) {
+	public void setIsSensing(boolean state) {
 		mIsSensing = state;
 	}
 	
@@ -672,7 +665,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mIsSDLogging;
 	}	
 
+	public void setIsSDLogging(boolean state){
+		mIsSDLogging = state;
+	}	
 
+	
 	/**
 	 * @param isInitialized the mSuccessfullyInitialized to set
 	 */
@@ -690,6 +687,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mHaveAttemptedToRead
 	 */
+	public boolean isHaveAttemptedToRead() {
+		return haveAttemptedToRead();
+	}
+
+	/**
+	 * @return the mHaveAttemptedToRead
+	 */
 	public boolean haveAttemptedToRead() {
 		return mHaveAttemptedToReadConfig;
 	}
@@ -697,7 +701,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param haveAttemptedToRead the mHaveAttemptedToRead to set
 	 */
-	public void setHaveAttemptedToRead(boolean haveAttemptedToRead) {
+	public void setHaveAttemptedToReadConfig(boolean haveAttemptedToRead) {
 		mHaveAttemptedToReadConfig = haveAttemptedToRead;
 	}
 
@@ -820,7 +824,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mDockID.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASICDOCK.getLabel())){
 			mDockType = DEVICE_TYPE.BASICDOCK;
 			//Below to ensure Shimmer shows as unknown in BasicDock rather then pending
-			mHaveAttemptedToReadConfig = true;
+			setHaveAttemptedToReadConfig(true);
 		}
 		else if(mDockID.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASE15.getLabel())){
 			mDockType = DEVICE_TYPE.BASE15;

@@ -201,7 +201,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract void startOperation(BT_STATE currentOperation);
 	protected abstract void finishOperation(BT_STATE currentOperation);
 	protected abstract void startOperation(BT_STATE currentOperation, int totalNumOfCmds);
-	protected abstract void eventLogAndStreamStatusChanged();
+	protected abstract void eventLogAndStreamStatusChanged(byte currentCommand);
 	protected abstract void batteryStatusChanged();
 	protected abstract byte[] readBytes(int numberofBytes);
 	protected abstract byte readByte();
@@ -759,7 +759,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					getListofInstructions().remove(0);
 					getListofInstructions().removeAll(Collections.singleton(null));
 					if (mCurrentCommand==STOP_SDBT_COMMAND){
-						eventLogAndStreamStatusChanged();	
+						eventLogAndStreamStatusChanged(mCurrentCommand);	
 					}
 					setInstructionStackLock(false);
 				}
@@ -954,7 +954,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					writeRealTimeClock();
 				}
 			}
-			eventLogAndStreamStatusChanged();
+			eventLogAndStreamStatusChanged(mCurrentCommand);
 		} 
 		else if(inStreamResponseCommand==VBATT_RESPONSE) {
 			byte[] responseData = readBytes(3); 
@@ -1468,7 +1468,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mIsStreaming=true;
 					if(currentCommand==START_SDBT_COMMAND){
 						mIsSDLogging = true;
-						eventLogAndStreamStatusChanged();
+						eventLogAndStreamStatusChanged(mCurrentCommand);
 					}
 					byteStack.clear();
 					isNowStreaming();
@@ -1477,7 +1477,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mIsStreaming=false;
 					if(currentCommand==STOP_SDBT_COMMAND) {
 						mIsSDLogging=false;
-						eventLogAndStreamStatusChanged();
+						eventLogAndStreamStatusChanged(mCurrentCommand);
 					}
 					
 					byteStack.clear();
@@ -1489,11 +1489,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 				else if(currentCommand==START_LOGGING_ONLY_COMMAND) {
 					mIsSDLogging = true;
-					eventLogAndStreamStatusChanged();
+					eventLogAndStreamStatusChanged(mCurrentCommand);
 				}
 				else if(currentCommand==STOP_LOGGING_ONLY_COMMAND) {
 					mIsSDLogging = false;
-					eventLogAndStreamStatusChanged();
+					eventLogAndStreamStatusChanged(mCurrentCommand);
 				}
 
 				else if(currentCommand==SET_SAMPLING_RATE_COMMAND) {
@@ -1929,11 +1929,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void parseStatusByte(byte statusByte){
 		Boolean savedDockedState = mIsDocked;
 		
-		mIsDocked = ((statusByte & 0x01) > 0)? true:false;
-		mIsSensing = ((statusByte & 0x02) > 0)? true:false;
+		setIsDocked(((statusByte & 0x01) > 0)? true:false);
+		setIsSensing(((statusByte & 0x02) > 0)? true:false);
 //		reserved = ((statusByte & 0x03) > 0)? true:false;
-		mIsSDLogging = ((statusByte & 0x08) > 0)? true:false;
-		mIsStreaming = ((statusByte & 0x10) > 0)? true:false; 
+		setIsSDLogging(((statusByte & 0x08) > 0)? true:false);
+		setIsStreaming(((statusByte & 0x10) > 0)? true:false); 
 
 		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
 				+ "\t" + "IsDocked = " + mIsDocked
@@ -2203,6 +2203,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	private void initialiseStreaming(){
+		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+		
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
 			readRealTimeClock();
 		}
@@ -2214,8 +2216,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else {
 			//do nothing
 		}
-		
-		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
 		
 		mPacketLossCount = 0;
 		setPacketReceptionRateOverall(100);
@@ -2324,7 +2324,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
 					
 					mIsSDLogging = true;
-					eventLogAndStreamStatusChanged();
+					eventLogAndStreamStatusChanged(mCurrentCommand);
 					mWaitForAck=false;
 					mWaitForResponse=false;
 					
@@ -2339,7 +2339,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
 					
 					mIsSDLogging = false;
-					eventLogAndStreamStatusChanged();
+					eventLogAndStreamStatusChanged(mCurrentCommand);
 					mWaitForAck=false;
 					mWaitForResponse=false;
 					
@@ -2550,6 +2550,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readBattery();
 		} //End Run
 	} //End TimerTask
+	
+	public void restartTimersIfNull() {
+		if (mTimerCheckAlive==null && mTimerReadStatus==null && mTimerReadBattStatus==null){
+        	//super.operationFinished();
+			startTimerCheckIfAlive();
+			startTimerReadStatus();
+			startTimerReadBattStatus();
+			
+        }
+	}
 	
 	//endregion --------- TIMERS ---------
 	

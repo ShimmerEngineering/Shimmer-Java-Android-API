@@ -119,6 +119,13 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	        }
 		}
 	};
+	
+	public boolean isConnected(){
+		if(mSerialPort!=null){
+			return mSerialPort.isConnected();
+		}
+		return false;
+	}
 
 	public void stopStreaming(){
 		mRadioProtocol.stopStreaming();
@@ -129,9 +136,13 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	}
 	
 	public void startSDLogging(){
-		
+		mRadioProtocol.startSDLogging();
 	}
 	
+	public void stopSDLogging() {
+		mRadioProtocol.stopSDLogging();
+	}
+
 	/**
 	 * Transmits a command to the Shimmer device to enable the sensors. To enable multiple sensors an or operator should be used (e.g. writeEnabledSensors(SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG)). Command should not be used consecutively. Valid values are SENSOR_ACCEL, SENSOR_GYRO, SENSOR_MAG, SENSOR_ECG, SENSOR_EMG, SENSOR_GSR, SENSOR_EXP_BOARD_A7, SENSOR_EXP_BOARD_A0, SENSOR_BRIDGE_AMP and SENSOR_HEART.
     SENSOR_BATT
@@ -188,7 +199,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	public void inquiry() {
 		mRadioProtocol.inquiry();
 	}
-
+	
 	public void startTimerReadStatus() {
 		mRadioProtocol.startTimerReadStatus();
 	}
@@ -251,6 +262,10 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 
 		@Override
 		public void eventConnected() {
+			for (RadioListener rl:mRadioListenerList){
+				rl.connected();
+			}
+
 			try {
 				mRadioProtocol.setProtocolListener(new CommsProtocolListener());
 			} catch (Exception e) {
@@ -258,9 +273,6 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 				e.printStackTrace();
 			}
 
-			for (RadioListener rl:mRadioListenerList){
-				rl.connected();
-			}
 
 			mRadioProtocol.initialize();
 		}
@@ -276,9 +288,9 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	public class CommsProtocolListener implements ProtocolListener{
 
 		@Override
-		public void eventAckReceived(byte[] sentInstruction) {
+		public void eventAckReceived(int lastSentInstruction) {
 			for (RadioListener rl:mRadioListenerList){
-				rl.eventAckReceived(sentInstruction);
+				rl.eventAckReceived(lastSentInstruction);
 			}
 		}
 
@@ -298,21 +310,25 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 
 		@Override
 		public void hasStopStreaming() {
-			// TODO Auto-generated method stub
-			
+			for (RadioListener rl:mRadioListenerList){
+				rl.hasStopStreamingCallback();
+			}
 		}
 
 		@Override
-		public void eventLogAndStreamStatusChanged() {
-			if (mSerialPort.isConnected()){
-				mRadioProtocol.setPacketSize(41);
+		public void eventLogAndStreamStatusChangedCallback(int lastSentInstruction) {
+//			if (mSerialPort.isConnected()){
+//			mRadioProtocol.setPacketSize(41);
+//		}
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventLogAndStreamStatusChangedCallback(lastSentInstruction);
 			}
 		}
 
 		@Override
 		public void eventAckInstruction(byte[] bs) {
 			for (RadioListener rl:mRadioListenerList){
-				rl.eventAckReceived(bs);
+//				rl.eventAckInstruction(bs);
 			}
 		}
 
@@ -324,13 +340,13 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 
 		@Override
 		public void isNowStreaming() {
-//			for (RadioListener rl:mRadioListenerList){
-//				rl.isNowStreaming();
-//			}
+			for (RadioListener rl:mRadioListenerList){
+				rl.isNowStreamingCallback();
+			}
 		}
 
 		@Override
-		public void eventNewResponse(byte responseCommand, Object parsedResponse) {
+		public void eventNewResponse(int responseCommand, Object parsedResponse) {
 			for (RadioListener rl:mRadioListenerList){
 				rl.eventResponseReceived(responseCommand, parsedResponse);
 			}
@@ -363,6 +379,72 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 			}
 		}
 
+		@Override
+		public void eventDockedStateChange() {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventDockedStateChange();
+			}
+		}
+
+		@Override
+		public void initialiseStreamingCallback() {
+			for (RadioListener rl:mRadioListenerList){
+				rl.initialiseStreamingCallback();
+			}
+		}
+
+//		@Override
+//		public void eventSyncStates(boolean isDocked, boolean isInitialised, boolean isSdLogging, boolean isSensing, boolean isStreaming, boolean haveAttemptedToRead) {
+//			for (RadioListener rl:mRadioListenerList){
+//				rl.eventSyncStates(isDocked, isInitialised, isSdLogging, isSensing, isStreaming, haveAttemptedToRead);;
+//			}
+//		}
+
+		@Override
+		public void eventSetIsDocked(boolean isDocked) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventSetIsDocked(isDocked);
+			}
+		}
+
+		@Override
+		public void eventSetIsStreaming(boolean isStreaming) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventSetIsStreaming(isStreaming);
+			}
+		}
+
+		@Override
+		public void eventSetIsSensing(boolean isSensing) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventSetIsSensing(isSensing);
+			}
+		}
+
+		@Override
+		public void eventSetIsSDLogging(boolean isSdLogging) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventSetIsSDLogging(isSdLogging);
+			}
+		}
+
+		@Override
+		public void eventSetIsInitialised(boolean isInitialised) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventSetIsInitialised(isInitialised);
+			}
+		}
+
+		@Override
+		public void eventSetHaveAttemptedToRead(boolean haveAttemptedToRead) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventSetHaveAttemptedToRead(haveAttemptedToRead);
+			}
+		}
+
+
+
 	}
+
 	
 }

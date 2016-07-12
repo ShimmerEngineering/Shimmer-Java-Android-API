@@ -4999,7 +4999,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			byte[] signalIdArray = new byte[mNChannels];
 			System.arraycopy(bufferInquiry, 4, signalIdArray, 0, mNChannels); // this is 4 because there is no config byte
 			interpretDataPacketFormat(mNChannels,signalIdArray);
-
 		}
 	}
 

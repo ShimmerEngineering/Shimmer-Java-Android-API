@@ -422,13 +422,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
         
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_FULLY_INITIALIZED, getBluetoothAddress(), mComPort);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-		if (mTimerCheckAlive==null && mTimerReadStatus==null && mTimerReadBattStatus==null){
-        	//super.operationFinished();
-			startTimerCheckIfAlive();
-			startTimerReadStatus();
-			startTimerReadBattStatus();
-			
-        }
+		
+		restartTimersIfNull();
 		setBluetoothRadioState(BT_STATE.CONNECTED);
 	}
 
@@ -638,13 +633,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 
 	@Override
-	protected void eventLogAndStreamStatusChanged() {
+	protected void eventLogAndStreamStatusChanged(byte currentCommand) {
 		
-//		if(mCurrentCommand==START_LOGGING_ONLY_COMMAND){
+//		if(currentCommand==START_LOGGING_ONLY_COMMAND){
 //			TODO this causing a problem Shimmer Bluetooth disconnects
 //			setState(BT_STATE.SDLOGGING);
 //		}
-		if(mCurrentCommand==STOP_LOGGING_ONLY_COMMAND){
+		if(currentCommand==STOP_LOGGING_ONLY_COMMAND){
 			//TODO need to query the Bluetooth connection here!
 			if(mIsStreaming){
 				setBluetoothRadioState(BT_STATE.STREAMING);
