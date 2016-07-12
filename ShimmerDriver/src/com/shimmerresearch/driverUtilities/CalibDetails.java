@@ -24,4 +24,9 @@ public abstract class CalibDetails implements Serializable {
 		return UtilShimmer.convertMilliSecondsToDateString(mCalibTime);
 	}
 
+	public boolean isCalibTimeZero(){
+		return mCalibTime == 0;
+	}
+	
+
 }

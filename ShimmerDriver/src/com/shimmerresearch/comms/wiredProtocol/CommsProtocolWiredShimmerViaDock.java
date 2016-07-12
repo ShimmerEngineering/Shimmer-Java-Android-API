@@ -90,7 +90,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		long responseTime = 0;
 		if(rxBuf.length >= 8) {
 			byte[] rwcTimeArray = Arrays.copyOf(rxBuf, 8);
-			responseTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTime(rwcTimeArray);
+			responseTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeMSB(rwcTimeArray);
 		}
 		else {
 			throw new DockException(mUniqueId, mComPort, errorCode, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS);
@@ -111,7 +111,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		long responseTime = 0;
 		if(rxBuf.length >= 8) {
 			byte[] rwcTimeArray = Arrays.copyOf(rxBuf, 8);
-			responseTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTime(rwcTimeArray);
+			responseTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeMSB(rwcTimeArray);
 		}
 		else {
 			throw new DockException(mUniqueId, mComPort, errorCode, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS);

@@ -3048,7 +3048,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			
 			//4) parse timestamp (8 bytes MSB/LSB?)
 			byte[] timeStampIdBytes = Arrays.copyOfRange(remainingBytes, 4, 12);
-			long calibTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTime(timeStampIdBytes);
+			long calibTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeLSB(timeStampIdBytes);
 			System.out.println("Time Stamp id Bytes - \t" + calibTime + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(timeStampIdBytes));
 			
 			int endIndex = 12+calibLength;

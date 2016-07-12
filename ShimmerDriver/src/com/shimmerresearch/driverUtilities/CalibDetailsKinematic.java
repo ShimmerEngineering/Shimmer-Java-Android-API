@@ -71,6 +71,7 @@ public class CalibDetailsKinematic extends CalibDetails {
 		mCurrentOffsetVector = UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector);
 	}
 	
+	
 	public boolean isCurrentValuesSet(){
 		if(mCurrentAlignmentMatrix!=null && mCurrentSensitivityMatrix!=null && mCurrentOffsetVector!=null){
 			return true;
