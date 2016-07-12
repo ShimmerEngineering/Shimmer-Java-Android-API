@@ -80,6 +80,10 @@ public class CalibDetailsKinematic extends CalibDetails {
 	public long getCalibTime(){
 		return mCalibTime;
 	}
+	
+	public boolean isCalibTimeZero(){
+		return mCalibTime == 0;
+	}
 
 	public String getCalibTimeParsed(){
 		return UtilShimmer.convertMilliSecondsToDateString(mCalibTime);
