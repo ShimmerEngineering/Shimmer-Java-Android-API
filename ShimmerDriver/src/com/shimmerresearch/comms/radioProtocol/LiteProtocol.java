@@ -1401,7 +1401,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	private void processInstreamResponse(){
 		try {
 			byte[] inStreamResponseCommandArray = readBytes(1);
-			byte inStreamResponseCommand = inStreamResponseCommandArray[0];
+			int inStreamResponseCommand = ((int)inStreamResponseCommandArray[0])&0xFF;
 			printLogDataForDebugging("In-stream received = " + btCommandToString(inStreamResponseCommand));
 
 			if(inStreamResponseCommand==InstructionsResponse.DIR_RESPONSE_VALUE){ 
@@ -1642,7 +1642,9 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	
 	@Override
 	public void startDataLogAndStreaming(){
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+		if((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
+				||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
+//		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
 			initialiseStreaming();
 			
 			//TODO: ask JC, should mByteArrayOutputStream.reset(); and mListofPCTimeStamps.clear(); be here as well? 
@@ -1651,7 +1653,9 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	}
 	
 	private void initialiseStreaming(){
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
+		if(((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
+				||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK))
+				&& getFirmwareVersionCode() >=6){
 			readRealTimeClock();
 		}
 
@@ -1712,7 +1716,9 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	@Override
 	public void stopStreamingAndLogging() {
 		// if shimmer is using LogAndStream FW, stop reading its status periodically
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ 
+		if((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
+				||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
+//		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ 
 			writeInstruction(InstructionsSet.STOP_SDBT_COMMAND_VALUE);
 			// For LogAndStream
 			stopTimerReadStatus();
@@ -1970,7 +1976,9 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 					if(getListofInstructions().size()==0 
 							&&!getListofInstructions().contains(InstructionsSet.TEST_CONNECTION_COMMAND_VALUE)){
 						printLogDataForDebugging("Check Alive Task");
-						if(getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+						if((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
+								||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
+//						if(getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
 							//writeTestConnectionCommand(); //dont need this because of the get status command
 						} 
 						else if (getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.BTSTREAM){
