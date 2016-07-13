@@ -98,11 +98,11 @@ public class SensorDetails implements Serializable{
 				ChannelDetails channelDetails = iterator.next();
 				if(channelDetails.mChannelSource==CHANNEL_SOURCE.SHIMMER){
 					dataPacketSize += channelDetails.mDefaultNumBytes;
-					System.err.println("Sensor:\t" + mSensorDetailsRef.mGuiFriendlyLabel + "\tChannel:\t" + channelDetails.mGuiName + " - BYTES SIZE:\t" + channelDetails.mDefaultNumBytes);
+//					System.err.println("Sensor:\t" + mSensorDetailsRef.mGuiFriendlyLabel + "\tChannel:\t" + channelDetails.mGuiName + " - BYTES SIZE:\t" + channelDetails.mDefaultNumBytes);
 				}
 			}
 //		}
-		System.err.println("Sensor:\t" + mSensorDetailsRef.mGuiFriendlyLabel + " - PACKET SIZE:\t" + dataPacketSize);
+//		System.err.println("Sensor:\t" + mSensorDetailsRef.mGuiFriendlyLabel + " - PACKET SIZE:\t" + dataPacketSize);
 		return dataPacketSize;
 	}
 

@@ -874,7 +874,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					}
 					else{
 						//TODO replace with consolePrintSystem
-						System.out.println(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetailsRef.mGuiFriendlyLabel);
+						consolePrintLn(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetailsRef.mGuiFriendlyLabel);
 					}
 				}
 				sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestamp);
@@ -952,7 +952,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				SensorDetails sensorDetails = iterator.next();
 				int expectedPktSize = sensorDetails.getExpectedDataPacketSize();
 				if(expectedPktSize>0){
-					System.out.println("Expected Packet size for:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\t:\t" + expectedPktSize);
+//					System.out.println("Expected Packet size for:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\t:\t" + expectedPktSize);
 					dataPacketSize += expectedPktSize;
 				}
 			}
@@ -1542,7 +1542,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		
 		if(listOfChannels.size()==0){
-			System.out.println(getMacIdFromUartParsed() + "\tNO SENSORS ENABLED");
+			consolePrintLn(getMacIdFromUartParsed() + "\tNO SENSORS ENABLED");
 		}
 		
 		return listOfChannels;
@@ -1698,7 +1698,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			return false;
 		}
 		else {
-			System.out.println("setSensorEnabledState:\t SensorMap=null");
+			consolePrintLn("setSensorEnabledState:\t SensorMap=null");
 			return false;
 		}
 	}
@@ -1870,18 +1870,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** For use when debugging */
 	protected void printSensorAndParserMaps(){
 		//For debugging
-		System.out.println("");
-		System.out.println("Enabled Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mEnabledSensors, 5));
-		System.out.println("Derived Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mDerivedSensors, 3));
+		consolePrintLn("");
+		consolePrintLn("Enabled Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mEnabledSensors, 5));
+		consolePrintLn("Derived Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mDerivedSensors, 3));
 		for(SensorDetails sensorDetails:mSensorMap.values()){
-			System.out.println("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
+			consolePrintLn("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
 		}
 		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
-				System.out.println("PARSER SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+				consolePrintLn("PARSER SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
 			}
 		}
-		System.out.println("");
+		consolePrintLn("");
 	}
 	
 	/** added special cases (e.g., for SensorEXG) */
@@ -3011,11 +3011,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		byte[] packetLength = new byte[2];
 		packetLength[0] = (byte) (calibBytesAll.length&0xFF);
 		packetLength[1] = (byte) ((calibBytesAll.length>>8)&0xFF);
-		System.out.println("Packet byte/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetLength));
-		System.out.println("calibByteAll/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytesAll));
+//		consolePrintLn("Packet byte/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetLength));
+//		consolePrintLn("calibByteAll/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytesAll));
 
 		byte[] concatBytes = ArrayUtils.addAll(packetLength,calibBytesAll);
-		System.out.println("Concat byte/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(concatBytes));
+//		consolePrintLn("Concat byte/t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(concatBytes));
 		
 		return concatBytes;
 	}
@@ -3023,57 +3023,58 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	public void parseAllCalibByteArray(byte[] calibBytesAll, int sensorMapKey){
 	public void parseAllCalibByteArray(byte[] calibBytesAll){
 
-		//0) Packet lENGTH
-		byte[] packetLength = Arrays.copyOfRange(calibBytesAll, 0, 2);
-
-		byte[] remainingBytes = Arrays.copyOfRange(calibBytesAll, 2, calibBytesAll.length);;
-
-		while(remainingBytes.length>12){
-			//1) parse sensorMapKey (2 bytes LSB)
-			byte[] sensorIdBytes = Arrays.copyOfRange(remainingBytes, 0, 2);
-			int sensorMapKey = (sensorIdBytes[1]<<8) | sensorIdBytes[0];
-			System.out.println("Sensor id Bytes - \t" + sensorMapKey + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(sensorIdBytes));
-			
-			//2) parse range (1 byte)
-			byte[] rangeIdBytes = Arrays.copyOfRange(remainingBytes, 2, 3);
-			int rangeValue = rangeIdBytes[0];
-			System.out.println("Range id Bytes - \t" + rangeValue + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rangeIdBytes));
-
-			//3) parse calib byte length (1 byte)
-//			byte[] calibLength = Arrays.copyOfRange(remainingBytes, 3, 4);
-			int calibLength = remainingBytes[3];
-//			int calibLength = parseCalibrationLength(sensorMapKey);
-			System.out.println("Calib Bytes Length - \t" + calibLength);
-
-			
-			//4) parse timestamp (8 bytes MSB/LSB?)
-			byte[] timeStampIdBytes = Arrays.copyOfRange(remainingBytes, 4, 12);
-			long calibTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeLSB(timeStampIdBytes);
-			System.out.println("Time Stamp id Bytes - \t" + calibTime + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(timeStampIdBytes));
-			
-			int endIndex = 12+calibLength;
-			//5) parse calibration bytes (X bytes)
-			if(remainingBytes.length>endIndex){
+		if(calibBytesAll.length>2){
+			//1) Packet lENGTH -> don't need here
+			byte[] packetLength = Arrays.copyOfRange(calibBytesAll, 0, 2);
+	
+			byte[] remainingBytes = Arrays.copyOfRange(calibBytesAll, 2, calibBytesAll.length);;
+			while(remainingBytes.length>12){
+				//2) parse sensorMapKey (2 bytes LSB)
+				byte[] sensorIdBytes = Arrays.copyOfRange(remainingBytes, 0, 2);
+				int sensorMapKey = (sensorIdBytes[1]<<8) | sensorIdBytes[0];
 				
-				byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 12, 33);
-				System.out.println("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
-			
-				Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
-				while(iterator.hasNext()){
-					AbstractSensor abstractSensor = iterator.next();
-					if(abstractSensor.parseAllCalibByteArray(sensorMapKey, rangeValue, calibTime, calibBytes)){
-						break;
+				//3) parse range (1 byte)
+				byte[] rangeIdBytes = Arrays.copyOfRange(remainingBytes, 2, 3);
+				int rangeValue = rangeIdBytes[0];
+	
+				//4) parse calib byte length (1 byte)
+	//			byte[] calibLength = Arrays.copyOfRange(remainingBytes, 3, 4);
+				int calibLength = remainingBytes[3];
+	//			int calibLength = parseCalibrationLength(sensorMapKey);
+				
+				//5) parse timestamp (8 bytes MSB/LSB?)
+				byte[] timeStampIdBytes = Arrays.copyOfRange(remainingBytes, 4, 12);
+				long calibTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeLSB(timeStampIdBytes);
+				
+				consolePrintLn("Sensor id Bytes - \t" + sensorMapKey + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(sensorIdBytes));
+				consolePrintLn("Range id Bytes - \t" + rangeValue + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rangeIdBytes));
+				consolePrintLn("Calib Bytes Length - \t" + calibLength);
+				consolePrintLn("Time Stamp id Bytes - \t" + calibTime + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(timeStampIdBytes));
+				
+				int endIndex = 12+calibLength;
+				//6) parse calibration bytes (X bytes)
+				if(remainingBytes.length>endIndex){
+					
+					byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 12, 33);
+					consolePrintLn("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
+				
+					Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+					while(iterator.hasNext()){
+						AbstractSensor abstractSensor = iterator.next();
+						if(abstractSensor.parseAllCalibByteArray(sensorMapKey, rangeValue, calibTime, calibBytes)){
+							break;
+						}
+	//					remainingBytes = abstractSensor.parseAllCalibByteArray(remainingBytes);
 					}
-//					remainingBytes = abstractSensor.parseAllCalibByteArray(remainingBytes);
+					
+					remainingBytes = Arrays.copyOfRange(remainingBytes, endIndex, remainingBytes.length);
+	//				consolePrintLn("Remaining Bytes - " + remainingBytes);
 				}
-				
-				remainingBytes = Arrays.copyOfRange(remainingBytes, endIndex, remainingBytes.length);
-				System.out.println("Remaining Bytes - " + remainingBytes);
+				else {
+					break;
+				}
+	
 			}
-			else {
-				break;
-			}
-
 		}
 	}
 
