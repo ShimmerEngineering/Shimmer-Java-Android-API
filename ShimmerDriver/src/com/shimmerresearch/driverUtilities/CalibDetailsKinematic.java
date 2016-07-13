@@ -225,6 +225,9 @@ public class CalibDetailsKinematic extends CalibDetails {
 		byte[] rangeBytes = new byte[1];
 		rangeBytes[0] = (byte)(mRangeValue&0xFF);
 
+		//Temp here:
+//		mCalibTime = (System.currentTimeMillis()*32768);
+		
 		byte[] timestamp = ByteBuffer.allocate(8).putLong(mCalibTime).array();
 		byte[] bufferCalibParam = generateCalParamByteArray();
 		byte[] calibLength = new byte[]{(byte) bufferCalibParam.length};
