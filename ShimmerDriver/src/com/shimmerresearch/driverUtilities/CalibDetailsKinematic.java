@@ -45,13 +45,10 @@ public class CalibDetailsKinematic extends CalibDetails {
 	public CalibDetailsKinematic(int rangeValue, String rangeString, double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
 		this(rangeValue, rangeString);
 		this.setDefaultValues(defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
-		if(rangeString.equals("+/- 250dps") || rangeString.equals("+/- 500dps") || rangeString.equals("+/- 1000dps") || rangeString.equals("+/- 2000dps")){
-		System.out.println("CalibDetailsKinematicCheckDefault");
-		System.out.println(defaultAlignmentMatrix);
-		System.out.println(defaultSensitivityMatrix);
-		System.out.println(defaultOffsetVector);
-		System.out.println("CalibDetailsKinematicCheckDefault");
-		}
+		
+//		if(rangeString.equals("+/- 250dps") || rangeString.equals("+/- 500dps") || rangeString.equals("+/- 1000dps") || rangeString.equals("+/- 2000dps")){
+//			System.out.println(generateDebugString());
+//		}
 	}
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, 
@@ -64,11 +61,8 @@ public class CalibDetailsKinematic extends CalibDetails {
 	
 	public void setCurrentValues(double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
 		this.mCurrentAlignmentMatrix = currentAlignmentMatrix;
-		System.out.println(currentAlignmentMatrix);
-		System.out.println(currentSensitivityMatrix);
-		System.out.println(currentOffsetVector);
-		System.out.println("CalibDetailsKinematicCheckcurrent");
-
+		
+//		System.out.println(generateDebugString());
 
 		this.mCurrentSensitivityMatrix = currentSensitivityMatrix;
 		this.mCurrentOffsetVector = currentOffsetVector;
