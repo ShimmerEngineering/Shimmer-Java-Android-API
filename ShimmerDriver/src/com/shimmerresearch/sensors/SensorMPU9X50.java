@@ -436,6 +436,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public static final String[] ListofGyroRange = {"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"};
 	public static final Integer[] ListofMPU9150GyroRangeConfigValues = {0,1,2,3};
 	
+	
 	public static final String[] ListofMPU9150AccelRange = {"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
 	public static final Integer[] ListofMPU9150AccelRangeConfigValues = {0,1,2,3};
 	public static final String[] ListofMPU9150MagRate = {"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
@@ -667,8 +668,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 			Arrays.asList(
 					GuiLabelConfig.MPU9150_GYRO_RANGE,
-					GuiLabelConfig.MPU9150_MPL_LPF,
 					GuiLabelConfig.MPU9150_GYRO_RATE,
+					GuiLabelConfig.MPU9150_MPL_LPF,
 					GuiLabelConfig.MPU9150_MPL_GYRO_CAL),
 			Arrays.asList(
 					ObjectClusterSensorName.GYRO_MPU_MPL_X,
@@ -1194,7 +1195,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		super(SENSORS.MPU9X50, svo);
 		//TODO Temp here, move to it's own method
 		mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3Ref);
-	
+		System.out.println("Check This");
 	}
 	
 	
@@ -2745,6 +2746,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
 	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
 		mCalibMapGyroShimmer3Ref.putAll(mapOfKinematicSensorCalibration);
+		System.out.println("Check here");
 	}
 	
 
