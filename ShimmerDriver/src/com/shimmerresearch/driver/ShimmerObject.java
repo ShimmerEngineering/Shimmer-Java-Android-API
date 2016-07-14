@@ -8377,10 +8377,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
 			mCalibMapAccelAnalogShimmer3.putAll(mapOfSensorCalibration);
 		}
-		
-		mCalibMapGyroShimmer3.putAll(mapOfSensorCalibration);
-		mCalibMapAccelWideRangeShimmer3.putAll(mapOfSensorCalibration);
-		mCalibMapMagShimmer3.putAll(mapOfSensorCalibration);
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+			mCalibMapGyroShimmer3.putAll(mapOfSensorCalibration);
+		}
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+			mCalibMapAccelWideRangeShimmer3.putAll(mapOfSensorCalibration);
+		}
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+			mCalibMapMagShimmer3.putAll(mapOfSensorCalibration);
+		}
 		
 	}
 
