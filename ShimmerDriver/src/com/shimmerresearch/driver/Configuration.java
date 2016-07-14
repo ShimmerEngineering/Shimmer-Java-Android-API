@@ -145,6 +145,9 @@ public class Configuration {
 
 		public static final String LOCAL = "local"; //used for axis-angle and madgewick quaternions    //XXX-RS-LSM-SensorClass?
 		public static final String PERCENT = "%";
+		
+		public static final String PIXEL = "px";
+		public static final String ASCII_CODE = "ASCII";
 	}	
 	
 	public enum COMMUNICATION_TYPE{
@@ -809,7 +812,8 @@ public class Configuration {
 			public static final int SHIMMER_ECG_TO_HR_FW = 150;
 			
 			public static final int THIRD_PARTY_NONIN = 1000;
-			public static final int HOST_KEYBOARD_MOUSE = 1001;
+			public static final int HOST_KEYBOARD_LISTENER = 1001;
+			public static final int HOST_MOUSE_LISTENER = 1002;
 		}
 
 		// Sensor Options Map

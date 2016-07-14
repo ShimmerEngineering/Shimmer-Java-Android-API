@@ -22,9 +22,9 @@ public class HwDriverShimmerDeviceDetails {
 		SHIMMER4("Shimmer4"),
 		
 		LUMAFIT("Lumafit"),
-		NONIN_ONYX_II("Nonin Onyx II"),
-		QTI_DIRECTTEMP("Qti DirectTemp"),
-		KEYBOARD_MOUSE("Keyboard/Mouse Listener");
+		NONIN_ONYX_II("Nonin_Onyx_II"),
+		QTI_DIRECTTEMP("Qti_DirectTemp"),
+		KEYBOARD_AND_MOUSE("KeyboardAndMouse");
 
 		private String deviceLabel = "";
 		
@@ -243,6 +243,7 @@ public class HwDriverShimmerDeviceDetails {
 	
 	public HIDDeviceInfo mHidDeviceInfo = null;
 	
+	/** Normally used to store the FTDI serial ID. */
     public String mFtdiSerialID = "";
 	public SPAN_VERSION mSpanVersion = SPAN_VERSION.UNKNOWN;
 
