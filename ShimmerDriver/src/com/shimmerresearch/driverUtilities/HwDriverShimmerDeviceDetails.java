@@ -23,7 +23,8 @@ public class HwDriverShimmerDeviceDetails {
 		
 		LUMAFIT("Lumafit"),
 		NONIN_ONYX_II("Nonin Onyx II"),
-		QTI_DIRECTTEMP("Qti DirectTemp");
+		QTI_DIRECTTEMP("Qti DirectTemp"),
+		KEYBOARD_MOUSE("Keyboard/Mouse Listener");
 
 		private String deviceLabel = "";
 		
@@ -261,7 +262,9 @@ public class HwDriverShimmerDeviceDetails {
 	public HwDriverShimmerDeviceDetails(DEVICE_TYPE deviceType, HIDDeviceInfo hidDeviceInfo) {
 	    this.deviceType = deviceType;
 		mHidDeviceInfo = hidDeviceInfo;
-		mDockID = mHidDeviceInfo.getSerial_number();
+		if(mHidDeviceInfo!=null){
+			mDockID = mHidDeviceInfo.getSerial_number();
+		}
 	}
 
 	public void setDeviceType(DEVICE_TYPE deviceType) {
@@ -286,6 +289,13 @@ public class HwDriverShimmerDeviceDetails {
 			}
 		}
 		return DEVICE_TYPE.UNKOWN;
+	}
+
+	public String getProduct_string() {
+		if(mHidDeviceInfo!=null){
+			return mHidDeviceInfo.getProduct_string();
+		}
+		return deviceType.getLabel();
 	}
 	
 }

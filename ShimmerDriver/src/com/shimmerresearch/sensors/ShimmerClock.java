@@ -88,7 +88,7 @@ public class ShimmerClock extends AbstractSensor {
 					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
 					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET));
 	{
-		sensorSystemTimeStampRef.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
+		sensorShimmerClock.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
 	}
 
 	public static final SensorDetailsRef sensorShimmerPacketReception = new SensorDetailsRef(
@@ -141,7 +141,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 			DatabaseChannelHandles.NONE,
 			CHANNEL_UNITS.MILLISECONDS,
-			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
@@ -275,7 +275,7 @@ public class ShimmerClock extends AbstractSensor {
 		
 		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
 		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
-		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
+//		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
 
 		if(svo.getFirmwareIdentifier()==FW_ID.GQ_802154){
 			//
