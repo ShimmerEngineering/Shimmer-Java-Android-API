@@ -3053,7 +3053,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				
 				int endIndex = 12+calibLength;
 				//6) parse calibration bytes (X bytes)
-				if(remainingBytes.length>endIndex){
+				if(remainingBytes.length>=endIndex){
 					
 					byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 12, 33);
 					consolePrintLn("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
@@ -3062,6 +3062,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					while(iterator.hasNext()){
 						AbstractSensor abstractSensor = iterator.next();
 						if(abstractSensor.parseAllCalibByteArray(sensorMapKey, rangeValue, calibTime, calibBytes)){
+//							consolePrintLn("SUCCESSFULLY PARSED");
 							break;
 						}
 	//					remainingBytes = abstractSensor.parseAllCalibByteArray(remainingBytes);

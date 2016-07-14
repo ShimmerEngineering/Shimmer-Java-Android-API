@@ -365,6 +365,7 @@ public abstract class AbstractSensor implements Serializable{
 			TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfSensorCalibration.get(sensorMapKey);
 			if(mapOfCalibPerSensor!=null){
 				mCalibMap.put(sensorMapKey, mapOfCalibPerSensor);
+				System.out.println("Calib make check");
 			}
 		}
 	}

@@ -896,7 +896,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mPastGSRFirstTime=true; // this is to fix a bug with SDLog v0.9
 	// ---------- GSR end ------------------
 
-	
+
 	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
 	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
 	 *  
@@ -8334,6 +8334,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, mCalibMapAccelAnalogShimmer3);
+//			updateCalibMapGyro();
 			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
 			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, mCalibMapAccelWideRangeShimmer3);
 			mapOfKinematicSensorCalibration.put(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, mCalibMapMagShimmer3);
@@ -8350,9 +8351,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
 				mapOfKinematicSensorCalibration.putAll(mCalibMapAccelAnalogShimmer3);
 			}
-			mapOfKinematicSensorCalibration.putAll(mCalibMapGyroShimmer3);
-			mapOfKinematicSensorCalibration.putAll(mCalibMapAccelWideRangeShimmer3);
-			mapOfKinematicSensorCalibration.putAll(mCalibMapMagShimmer3);
+			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+				mapOfKinematicSensorCalibration.putAll(mCalibMapAccelWideRangeShimmer3);
+			}
+			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+				mapOfKinematicSensorCalibration.putAll(mCalibMapMagShimmer3);
+			}
+			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+				mapOfKinematicSensorCalibration.putAll(mCalibMapGyroShimmer3);
+			}
 		}
 		return mapOfKinematicSensorCalibration;
 	}
