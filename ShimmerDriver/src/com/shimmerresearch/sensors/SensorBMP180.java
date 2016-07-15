@@ -296,7 +296,9 @@ public class SensorBMP180 extends AbstractSensor {
 		int bitShiftBMP180PressureResolution = 4;
 		int maskBMP180PressureResolution = 0x03;
 		setPressureResolution((mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution);
-//		System.out.println("Pressure resolution:" + mPressureResolution);
+		mPressureResolution = getPressureResolution();
+//		System.out.println("Info Mem Pressure resolution:\t" + mPressureResolution);
+//		System.out.println("Check");
 	}
 
 	@Override
@@ -478,7 +480,7 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 	
 	private void setPressureResolution(int i){
-//		System.err.println("New resolution:\t" + ListofPressureResolution[i]);
+//		System.out.println("New resolution:\t" + ListofPressureResolution[i]);
 		mPressureResolution = i;
 	}
 	
