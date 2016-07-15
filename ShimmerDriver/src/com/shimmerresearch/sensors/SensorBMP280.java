@@ -250,15 +250,18 @@ public class SensorBMP280 extends AbstractSensor{
 		int idxConfigSetupByte3 = 9;
 		int bitShiftBMP280PressureResolution = 4;
 		int maskBMP280PressureResolution = 0x03;
-		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution_BMP280 & maskBMP280PressureResolution) << bitShiftBMP280PressureResolution);		
+		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution_BMP280 & maskBMP280PressureResolution) << bitShiftBMP280PressureResolution);
+		mPressureResolution_BMP280 = getPressureResolution();
+//		System.out.println("Info Mem Pressure resolution:\t" + mPressureResolution_BMP280);
+//		System.out.println("Check");
 	}
 
 	@Override
 	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
 		int idxConfigSetupByte3 = 9;
-		int bitShiftBMP180PressureResolution = 4;
-		int maskBMP180PressureResolution = 0x03;
-		setPressureResolution((mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution);
+		int bitShiftBMP280PressureResolution = 4;
+		int maskBMP280PressureResolution = 0x03;
+		setPressureResolution((mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP280PressureResolution) & maskBMP280PressureResolution);
 //		System.out.println("Pressure resolution:" + mPressureResolution);
 		
 	}
