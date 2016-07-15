@@ -485,6 +485,10 @@ public abstract class AbstractSensor implements Serializable{
 		calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
 		if(calibDetailsPerRange!=null && calibDetailsPerRange instanceof CalibDetailsKinematic){
 			calibDetailsPerRange.setCalibTime(calibTime);
+			System.out.println("Set Calib Time");
+			System.out.println("Check");
+
+			
 
 			((CalibDetailsKinematic)calibDetailsPerRange).parseCalParamByteArray(calibBytes);
 		}

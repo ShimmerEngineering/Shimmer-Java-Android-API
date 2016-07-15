@@ -474,7 +474,8 @@ public class UtilShimmer implements Serializable {
 	}
 
 	public static long convertShimmerRtcDataBytesToSystemTimeLSB(byte[] rtcTimeArray) {
-		long milisecondTicks = (long)(((double)(ByteBuffer.wrap(rtcTimeArray).getLong())/32.768));  // Convert clock ticks to milliseconds
+		long timeWrapped = ByteBuffer.wrap(rtcTimeArray).getLong()&0xFFFFFFFFFFFFFFFFl;
+		long milisecondTicks = (long)((((double)timeWrapped)/32.768));  // Convert clock ticks to milliseconds
 		return milisecondTicks;
 	}
 

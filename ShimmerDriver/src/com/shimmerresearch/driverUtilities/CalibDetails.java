@@ -22,6 +22,8 @@ public abstract class CalibDetails implements Serializable {
 
 	public String getCalibTimeParsed(){
 		return UtilShimmer.convertMilliSecondsToDateString(mCalibTime);
+//		return UtilShimmer.convertMilliSecondsToHrMinSecString(mCalibTime);
+		
 	}
 
 	public boolean isCalibTimeZero(){

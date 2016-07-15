@@ -181,10 +181,11 @@ public class CalibDetailsKinematic extends CalibDetails {
 	}
 
 	public void parseCalParamByteArray(byte[] bufferCalibrationParameters){
-		if(bufferCalibrationParameters.length>21){
-			//TODO pick off 8 byte timestamp and parse
-		}
-		
+//		if(bufferCalibrationParameters.length>21){
+//			//TODO pick off 8 byte timestamp and parse
+//
+//		}
+//		
 		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 		int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
 		double[] AM=new double[9];
