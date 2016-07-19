@@ -51,7 +51,7 @@ public abstract void actionSettingResolver(ActionSetting ac);
  * @author JC Lim, Mark Nolan
  *
  */
-public class CommsProtocolRadio extends BasicProcessWithCallBack implements Serializable{
+public class CommsProtocolRadio extends BasicProcessWithCallBack {
 
 	/** * */
 	private static final long serialVersionUID = -5368287098255841194L;

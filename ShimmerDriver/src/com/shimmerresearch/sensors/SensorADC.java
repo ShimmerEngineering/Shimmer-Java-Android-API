@@ -330,6 +330,7 @@ public class SensorADC extends AbstractSensor {
 	//--------- Constructors for this class start --------------
 	public SensorADC(ShimmerVerObject svo) {
 		super(SENSORS.ADC, svo);
+		initialise();
 	}
 	
 	//--------- Constructors for this class end --------------
@@ -337,23 +338,21 @@ public class SensorADC extends AbstractSensor {
 	
 	//--------- Abstract methods implemented start --------------
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 //		mConfigOptionsMap.put(GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, configOptionIntExpBrdPowerBoolean);
 //		mConfigOptionsMap.put(GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, configOptionIntExpBrdPowerInteger);
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-//		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-			
-
+//		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			int groupIndexExt = Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC.ordinal();
 			mSensorGroupingMap.put(groupIndexExt, new SensorGroupingDetails(
 					GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, 

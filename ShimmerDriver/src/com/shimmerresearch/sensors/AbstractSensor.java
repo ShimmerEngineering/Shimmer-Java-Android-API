@@ -76,9 +76,9 @@ public abstract class AbstractSensor implements Serializable{
 	
 	// --------------- Abstract methods start ----------------
 	/** call either createLocalSensorMap() or createLocalSensorMapWithCustomParser() inside depending if a custom parser is needed. */
-	public abstract void generateSensorMap(ShimmerVerObject svo);
-	public abstract void generateConfigOptionsMap(ShimmerVerObject svo);
-	public abstract void generateSensorGroupMapping(ShimmerVerObject svo);
+	public abstract void generateSensorMap();
+	public abstract void generateConfigOptionsMap();
+	public abstract void generateSensorGroupMapping();
 	public abstract void checkShimmerConfigBeforeConfiguring();
 
 	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
@@ -125,15 +125,35 @@ public abstract class AbstractSensor implements Serializable{
 		setSensorName(sensorType.toString());
 		if(svo!=null){
 			mShimmerVerObject = svo;
-			generateSensorMap(svo);
-			generateConfigOptionsMap(svo);
-			generateSensorGroupMapping(svo);
 		}
 	}
 
 	public AbstractSensor(SENSORS sensorType, ShimmerDevice shimmerDevice) {
 		this(sensorType, shimmerDevice.getShimmerVerObject());
 		this.mShimmerDevice  = shimmerDevice;
+	}
+	
+	/**
+	 * Initialises all the maps in the sensor class. Contents used to be based
+	 * in the AbstractSensor contructor but this led to problems trying to
+	 * access variables in the specifc classes because they hadn't been
+	 * initialise fully yet?
+	 */
+	public void initialise(){
+		if(mShimmerVerObject!=null){
+			generateSensorMap();
+			generateConfigOptionsMap();
+			generateSensorGroupMapping();
+
+			generateCalibMap();
+			setDefaultConfigAllSensors();
+		}
+	}
+	
+	private void setDefaultConfigAllSensors() {
+		for(Integer sensorMapKey:mSensorMap.keySet()){
+			setDefaultConfigForSensor(sensorMapKey, false);
+		}
 	}
 	
 	public HashMap<String, ConfigOptionDetailsSensor> getConfigMap() {
@@ -253,13 +273,6 @@ public abstract class AbstractSensor implements Serializable{
 		return null;
 	}
 	
-//	public void createLocalCalibMap(Map<Integer, CalibDetailsKinematic> sensorMapRef, Map<String, ChannelDetails> channelMapRef){
-//		mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetailsKinematic>>();
-//		
-//		
-//	}
-	
-	
 	public void createLocalSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
 		mSensorMap = new TreeMap<Integer, SensorDetails>();
 		for(int sensorMapKey:sensorMapRef.keySet()){
@@ -360,24 +373,52 @@ public abstract class AbstractSensor implements Serializable{
 		System.out.println(textToPrint);
 	}
 	
+	
 	protected void setCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfSensorCalibration) {
+		mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
 		for(Integer sensorMapKey:mSensorMap.keySet()){
 			TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfSensorCalibration.get(sensorMapKey);
 			if(mapOfCalibPerSensor!=null){
-				mCalibMap.put(sensorMapKey, mapOfCalibPerSensor);
-				System.out.println("Calib make check");
+				addCalibrationPerSensor(sensorMapKey, mapOfCalibPerSensor);
 			}
 		}
 	}
-	
-	protected TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(Integer sensorMapKey) {
+
+	protected void addCalibrationPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		mCalibMap.put(sensorMapKey, mapOfSensorCalibration);
+//		System.out.println("Calib make check");
+	}
+
+	protected CalibDetails getCalibForSensor(int sensorMapKey, int range) {
+		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = getCalibrationMapForSensor(sensorMapKey); 
+		if(calibDetailsPerSensor!=null){
+			CalibDetails calibDetails = calibDetailsPerSensor.get(range);
+			return calibDetails;
+		}
+		return null;
+	}
+
+	protected TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(int sensorMapKey) {
+//		for(int key:mCalibMap.keySet()){
+//			System.out.println("calibKey:\t" + key);
+//		}
+//		System.out.println("sensor map " + (mCalibMap.containsKey(sensorMapKey)? "DOES":"DOES NOT") + " contain key:\t" + sensorMapKey);
+		
 		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = mCalibMap.get(sensorMapKey); 
+		
+//		System.out.println("Calib details = " + ((calibDetailsPerSensor==null)? "NULL":"VALID"));
+
 		return calibDetailsPerSensor;
 	}
 	
-
 	
 	//--------- Optional methods to override in Sensor Class start --------
+	public void generateCalibMap(){
+		mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
+    	//NOT USED IN THIS CLASS
+    	//USED in {Kinematic sensors}
+	}
+	
 	/**
 	 * Checks a specific sensor class to see if it is using it's default
 	 * calibration parameters. Used, for example, in SensorLSM, SensorMPU and
@@ -460,11 +501,13 @@ public abstract class AbstractSensor implements Serializable{
 		return calibBytesAllPerSensor;
 	}
 	
+	//TODO
 	public byte[] parseAllCalibByteArray(byte[] remainingBytes) {
 		// TODO Auto-generated method stub
 		return remainingBytes;
 	}
 	
+	//TODO
 	public boolean parseAllCalibByteArray(int sensorMapKey, int rangeValue, long calibTime, byte[] calibBytes) {
 		if(!mSensorMap.containsKey(sensorMapKey)){
 			return false;

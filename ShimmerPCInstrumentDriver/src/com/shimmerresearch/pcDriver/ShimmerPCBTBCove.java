@@ -148,7 +148,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		mLowPowerMag = enableLowPowerMag;
 		mLowPowerAccelWR = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
-		mGyroRange = gyroRange;
+		setGyroRange(gyroRange);
 		mMagRange = magRange;
 		mSetupEXG = true;
 		mEXG1RegisterArray = exg1;

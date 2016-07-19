@@ -201,27 +201,28 @@ public class SensorBMP180 extends AbstractSensor {
 	 */
 	public SensorBMP180(ShimmerVerObject svo) {
 		super(SENSORS.BMP180, svo);
+		initialise();
 	}
 	//--------- Constructors for this class end --------------
 	
 
 	//--------- Abstract methods implemented start --------------
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 	
 	
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolution); 
 	}
 	
 	
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE.ordinal();
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
@@ -459,7 +460,7 @@ public class SensorBMP180 extends AbstractSensor {
 
 	public byte[] getRawCalibrationParameters(ShimmerVerObject svo){        
 		byte[] rawcal=new byte[1];
-		if (svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			// Mag + Pressure
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			try {

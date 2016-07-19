@@ -1,12 +1,16 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 
 public class ConfigOptionDetails implements Serializable {
 	
+	/** * */
+	private static final long serialVersionUID = 8021677605649506093L;
+
 	public static enum GUI_COMPONENT_TYPE {
 		COMBOBOX,
 		CHECKBOX,
@@ -123,6 +127,12 @@ public class ConfigOptionDetails implements Serializable {
 		return mConfigValues;
 	}
 
-
+	public static String getConfigStringFromConfigValue(Integer[] listOfConfigValues, String[] listOfConfigValueStrings, Integer configValueToFind){
+		int index = Arrays.asList(listOfConfigValues).indexOf(configValueToFind);
+		if(index>=0 && listOfConfigValueStrings.length>index){
+			return listOfConfigValueStrings[index];
+		}
+		return "?";
+	}
 
 }

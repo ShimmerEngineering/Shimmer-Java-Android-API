@@ -267,21 +267,22 @@ public class ShimmerClock extends AbstractSensor {
 
 	public ShimmerClock(ShimmerDevice shimmerDevice) {
 		super(SENSORS.CLOCK, shimmerDevice);
+		initialise();
 	}
 
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
 		
 		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
 		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
 //		channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
 
-		if(svo.getFirmwareIdentifier()==FW_ID.GQ_802154){
-			//
+		if(mShimmerVerObject.isShimmerGenGq()){
+			//TODO
 		}
-		else if(svo.getFirmwareIdentifier()!=FW_ID.UNKNOWN){
-			if(svo.getFirmwareVersionCode()>=6){
+		else { //if(svo.getFirmwareIdentifier()!=FW_ID.UNKNOWN){
+			if(mShimmerVerObject.getFirmwareVersionCode()>=6){
 				channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 			}
 			else{
@@ -302,12 +303,12 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		//NOT USED IN THIS CLASS
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		//NOT USED IN THIS CLASS
 	}
 	

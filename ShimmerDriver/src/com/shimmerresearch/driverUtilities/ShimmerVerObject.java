@@ -1,11 +1,13 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.SPAN_VERSION;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorEXG.GuiLabelSensorTiles;
 
 /**
  * Holds HW, FW and expansion board infomation. Used for docked Shimmers current
@@ -248,5 +250,130 @@ public class ShimmerVerObject implements Serializable {
 	public int getFirmwareVersionCode() {
 		return mFirmwareVersionCode;
 	}
+	
+	
+	public boolean isMplSupported() {
+		return isMplSupported(getHardwareVersion(), getFirmwareIdentifier());
+	}
+
+	public static boolean isMplSupported(int hwVer, int fwId) {
+		if (((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.SDLOG))
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+			return true;
+		}
+		return false;
+	}
+	
+
+	public boolean isRtcConfigViaUartSupported() {
+		return isRtcConfigViaUartSupported(getHardwareVersion(), getFirmwareIdentifier());
+	}
+
+	public static boolean isRtcConfigViaUartSupported(int hwVer, int fwId) {
+		if (((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.SDLOG))
+				|| ((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.LOGANDSTREAM))
+				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE)&&(fwId == FW_ID.GQ_BLE))
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isConfigViaUartSupported() {
+		return isConfigViaUartSupported(getHardwareVersion(), getFirmwareIdentifier());
+	}
+	
+	public static boolean isConfigViaUartSupported(int hwVer, int fwId) {
+		if((hwVer==HW_ID.SHIMMER_3)
+				||(hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				||(hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				||(hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isSdCardAccessSupported() {
+		return isSdCardAccessSupported(getHardwareVersion(), getFirmwareIdentifier());
+	}
+	
+	public static boolean isSdCardAccessSupported(int hwVer, int fwId) {
+		if (((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.SDLOG))
+				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.LOGANDSTREAM))
+				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE) && (fwId == FW_ID.GQ_BLE))
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+			return true;
+		}
+		return false;
+	}
+
+
+	public boolean isShimmerGen2(){
+		return ShimmerVerObject.isShimmerGen2(getHardwareVersion());
+	}
+
+	public static boolean isShimmerGen2(int hwVer){
+		if (hwVer==HW_ID.SHIMMER_2 || hwVer==HW_ID.SHIMMER_2R){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isShimmerGen3(){
+		return ShimmerVerObject.isShimmer3Gen(getHardwareVersion(), getFirmwareIdentifier());
+	}
+
+	//TODO decide whether GQ belongs here or not
+	public static boolean isShimmer3Gen(int hwVer, int fwId) {
+		if((hwVer==HW_ID.SHIMMER_3 || hwVer==HW_ID.SHIMMER_GQ_BLE || hwVer==HW_ID.SHIMMER_GQ_802154_LR || hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				&&((fwId==FW_ID.BTSTREAM)||(fwId==FW_ID.SDLOG)||(fwId==FW_ID.LOGANDSTREAM)||(fwId==FW_ID.GQ_BLE))){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isShimmerGen4(){
+		return ShimmerVerObject.isShimmer4Gen(getHardwareVersion());
+	}
+
+	public static boolean isShimmer4Gen(int hwVer){
+		if(hwVer==HW_ID.SHIMMER_4_SDK){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * This needs to be performed before a check for Gen3/Gen4 etc. as they
+	 * share some entries in common.
+	 * 
+	 * @return
+	 */
+	public boolean isShimmerGenGq() {
+		return isShimmerGenGq(getHardwareVersion(), getFirmwareIdentifier());
+	}
+	
+	/**
+	 * This needs to be performed before a check for Gen3/Gen4 etc. as they
+	 * share some entries in common.
+	 * 
+	 * @param hwVer
+	 * @return
+	 */
+	public boolean isShimmerGenGq(int hwVer, int fwId) {
+		if(((hwVer==HW_ID.SHIMMER_GQ_802154_LR) || (hwVer==HW_ID.SHIMMER_GQ_802154_NR) || (hwVer==HW_ID.SHIMMER_2R_GQ))
+				&& (fwId==FW_ID.GQ_802154 || fwId==FW_ID.GQ_BLE)){
+			return true;
+		}
+		return false;
+	}
+
 
 }

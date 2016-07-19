@@ -1,5 +1,6 @@
 package com.shimmerresearch.driverUtilities;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -12,31 +13,27 @@ import com.shimmerresearch.sensors.SensorMPU9X50;
  * @author Mark Nolan
  *
  */
-public class CalibDetailsKinematic extends CalibDetails {
+public class CalibDetailsKinematic extends CalibDetails implements Serializable {
 	
 	/** * */
 	private static final long serialVersionUID = -3556098650349506733L;
 	
-	public double[][] mCurrentAlignmentMatrix = null; 			
-	public double[][] mCurrentSensitivityMatrix = null; 	
-	public double[][] mCurrentOffsetVector = null;
+	private double[][] mCurrentAlignmentMatrix = null; 			
+	private double[][] mCurrentSensitivityMatrix = null; 	
+	private double[][] mCurrentOffsetVector = null;
 
-	public double[][] mDefaultAlignmentMatrix = null;   			
-	public double[][] mDefaultSensitivityMatrix = null;  	
-	public double[][] mDefaultOffsetVector = null; 
+	private double[][] mDefaultAlignmentMatrix = null;   			
+	private double[][] mDefaultSensitivityMatrix = null;  	
+	private double[][] mDefaultOffsetVector = null; 
 	
-	public double[][] mEmptyAlignmentMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};  			
-	public double[][] mEmptySensitivityMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 	
-	public double[][] mEmptyOffsetVector = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 
+	//TODO: improve below
+	private double[][] mEmptyAlignmentMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};  			
+	private double[][] mEmptySensitivityMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 	
+	private double[][] mEmptyOffsetVector = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 
 	
 	public String mRangeString = "";
 	public int mRangeValue = 0;
 
-//	//Not Driver related - consider a different approach?
-//	public int guiRangeValue = 0;
-//	//Not Driver related - consider a different approach?
-//	public Integer[]guiRangeOptions = null;
-	
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {
 		this.mRangeValue = rangeValue;
 		this.mRangeString = rangeString;
@@ -59,6 +56,10 @@ public class CalibDetailsKinematic extends CalibDetails {
 	}
 
 	
+	public CalibDetailsKinematic(byte[] bufferCalibrationParameters) {
+		parseCalParamByteArray(bufferCalibrationParameters);
+	}
+
 	public void setCurrentValues(double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
 		this.mCurrentAlignmentMatrix = currentAlignmentMatrix;
 		
@@ -88,7 +89,7 @@ public class CalibDetailsKinematic extends CalibDetails {
 		return false;
 	}
 
-	public boolean isAllUsingDefaultParameters(){
+	public boolean isUsingDefaultParameters(){
 		if(isAlignmentUsingDefault() && isSensitivityUsingDefault() && isOffsetVectorUsingDefault()){
 			return true;
 		}
@@ -117,7 +118,7 @@ public class CalibDetailsKinematic extends CalibDetails {
 	}
 
 	public boolean isAllCalibrationValid(){
-		if((isAlignmentValid() && isSensitivityValid() && isOffsetVectorValid()) || isAllUsingDefaultParameters()){
+		if((isAlignmentValid() && isSensitivityValid() && isOffsetVectorValid()) || isUsingDefaultParameters()){
 			return true;
 		}
 		return false;
@@ -249,4 +250,57 @@ public class CalibDetailsKinematic extends CalibDetails {
 		System.arraycopy(bufferCalibParam, 0, bufferCalibParamWithTimestamp, rangeBytes.length + calibLength.length + timestamp.length, bufferCalibParam.length);
 		return bufferCalibParamWithTimestamp;
 	}
+
+	public double[][] getCurrentAlignmentMatrix() {
+		//TODO check if valid and return default if not?
+		return mCurrentAlignmentMatrix;
+	}
+
+	public double[][] getCurrentSensitivityMatrix() {
+		//TODO check if valid and return default if not?
+		return mCurrentSensitivityMatrix;
+	}
+
+	public double[][] getCurrentOffsetVector() {
+		//TODO check if valid and return default if not?
+		return mCurrentOffsetVector;
+	}
+	
+	public double[][] getEmptyOffsetVector() {
+		return mEmptyOffsetVector;
+	}
+
+	public double[][] getEmptySensitivityMatrix() {
+		return mEmptySensitivityMatrix;
+	}
+
+	public double[][] getEmptyAlignmentMatrix() {
+		return mEmptyAlignmentMatrix;
+	}
+
+	public double[][] getDefaultOffsetVector() {
+		return mDefaultOffsetVector;
+	}
+
+	public double[][] getDefaultSensitivityMatrix() {
+		return mDefaultSensitivityMatrix;
+	}
+
+	public double[][] getDefaultAlignmentMatrix() {
+		return mDefaultAlignmentMatrix;
+	}
+
+	/** Specifically used by Gyro on the fly calibration
+	 * @param mean
+	 * @param mean2
+	 * @param mean3
+	 */
+	public void updateCurrentOffsetVector(double XXmean, double XYmean, double XZmean) {
+		mCurrentOffsetVector[0][0] = XXmean;
+		mCurrentOffsetVector[1][0] = XYmean;
+		mCurrentOffsetVector[2][0] = XZmean;
+	}
+
+
+
 }

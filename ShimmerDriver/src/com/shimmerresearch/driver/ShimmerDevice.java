@@ -1321,7 +1321,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public String getSdCapacityParsed() {
 		String strPending = STRING_CONSTANT_PENDING;
 		
-		if(!isSdCardAccessSupported(this)){
+		if(!isSdCardAccessSupported()){
 			return STRING_CONSTANT_UNKNOWN;
 		}
 
@@ -1339,76 +1339,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isRtcConfigViaUartSupported() {
-		return isRtcConfigViaUartSupported(this);
-	}
-	
-	public static boolean isRtcConfigViaUartSupported(ShimmerDevice shimmerDevice) {
-		int hwVer = shimmerDevice.getHardwareVersion(); 
-		int fwId = shimmerDevice.getFirmwareIdentifier();
-		if (((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.SDLOG))
-				|| ((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.LOGANDSTREAM))
-				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE)&&(fwId == FW_ID.GQ_BLE))
-				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
-				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
-				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
-			return true;
-		}
-		return false;
+		return mShimmerVerObject.isRtcConfigViaUartSupported();
 	}
 	
 	public boolean isConfigViaUartSupported() {
-		return isConfigViaUartSupported(this);
-	}
-
-	public static boolean isConfigViaUartSupported(ShimmerDevice shimmerDevice) {
-		int hwVer = shimmerDevice.getHardwareVersion(); 
-		if((hwVer==HW_ID.SHIMMER_3)
-				||(hwVer==HW_ID.SHIMMER_GQ_802154_NR)
-				||(hwVer==HW_ID.SHIMMER_GQ_802154_LR)
-				||(hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
-			return true;
-		}
-		return false;
+		return mShimmerVerObject.isConfigViaUartSupported();
 	}
 
 	public boolean isSdCardAccessSupported() {
-		return isSdCardAccessSupported(this);
+		return mShimmerVerObject.isSdCardAccessSupported();
 	}
 
-	public static boolean isSdCardAccessSupported(ShimmerDevice shimmerDevice) {
-		int hwVer = shimmerDevice.getHardwareVersion();
-		int fwId = shimmerDevice.getFirmwareIdentifier();
-		if (((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.SDLOG))
-				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.LOGANDSTREAM))
-				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE) && (fwId == FW_ID.GQ_BLE))
-				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
-				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
-				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
-			return true;
-		}
-		return false;
+	public boolean isShimmerGen2(){
+		return mShimmerVerObject.isShimmerGen2();
 	}
 
-//	public boolean isShimmer3Gen(){
-//		if(getFirmwareIdentifier()==FW_ID.BTSTREAM 
-//				||getFirmwareIdentifier()==FW_ID.SDLOG
-//				||getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
-//				||getFirmwareIdentifier()==FW_ID.GQ_BLE){
-//			return true;
-//		}
-//		return false;
-//	}
-
-	public boolean isShimmer4Gen(){
-		if(getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-			return true;
-		}
-		return false;
+	public boolean isShimmerGen3(){
+		return mShimmerVerObject.isShimmerGen3();
 	}
 
+	public boolean isShimmerGen4(){
+		return mShimmerVerObject.isShimmerGen4();
+	}
+
+	
 	public void consolePrintLn(String message) {
 		if(mVerboseMode) {
 			Calendar rightNow = Calendar.getInstance();
@@ -3020,7 +2974,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return concatBytes;
 	}
 
-//	public void parseAllCalibByteArray(byte[] calibBytesAll, int sensorMapKey){
 	public void parseAllCalibByteArray(byte[] calibBytesAll){
 
 		if(calibBytesAll.length>2){
@@ -3058,15 +3011,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 12, 33);
 					consolePrintLn("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
 				
-					Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
-					while(iterator.hasNext()){
-						AbstractSensor abstractSensor = iterator.next();
-						if(abstractSensor.parseAllCalibByteArray(sensorMapKey, rangeValue, calibTime, calibBytes)){
-//							consolePrintLn("SUCCESSFULLY PARSED");
-							break;
-						}
-	//					remainingBytes = abstractSensor.parseAllCalibByteArray(remainingBytes);
-					}
+					parseSensorCalibBytes(sensorMapKey, rangeValue, calibTime, calibBytes);
+//					remainingBytes = abstractSensor.parseAllCalibByteArray(remainingBytes);
 					
 					remainingBytes = Arrays.copyOfRange(remainingBytes, endIndex, remainingBytes.length);
 	//				consolePrintLn("Remaining Bytes - " + remainingBytes);
@@ -3078,36 +3024,50 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 	}
-
-	public int parseCalibrationLength(int sensorMapKey) {
-		int calibLength = 0;
-		
-		switch (sensorMapKey){
-		case Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL:
-			calibLength = 21;
-			break;
-		case Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO:
-			calibLength = 21;
-			break;
-		case Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL:
-			calibLength = 21;
-			break;
-		case Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG:
-			calibLength = 21;
-			break;
-		case Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE:
-			calibLength=22;
-			break;
-		case Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP280_PRESSURE:
-			break;
-		default:
-			calibLength = 0;
+	
+	protected void parseSensorCalibBytes(int sensorMapKey, int rangeValue, long calibTime, byte[] calibBytes) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			if(abstractSensor.parseAllCalibByteArray(sensorMapKey, rangeValue, calibTime, calibBytes)){
+//				consolePrintLn("SUCCESSFULLY PARSED");
+				break;
 			}
-		System.out.println("Switch Case Bytes Length - \t" + calibLength);
-
-		return calibLength;
-		
+		}
 	}
+
+	
+//	public int parseCalibrationLength(int sensorMapKey) {
+//		int calibLength = 0;
+//		
+//		switch (sensorMapKey){
+//		case Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL:
+//			calibLength = 21;
+//			break;
+//		case Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO:
+//			calibLength = 21;
+//			break;
+//		case Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL:
+//			calibLength = 21;
+//			break;
+//		case Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG:
+//			calibLength = 21;
+//			break;
+//		case Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE:
+//			calibLength=22;
+//			break;
+//		case Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP280_PRESSURE:
+//			break;
+//		default:
+//			calibLength = 0;
+//			}
+//		System.out.println("Switch Case Bytes Length - \t" + calibLength);
+//
+//		return calibLength;
+//	}
+
+	//*************** Sensor Calibration Related end ************************* 
+
 
 	public void startStreaming() {
 		if(mCommsProtocolRadio!=null){
@@ -3125,10 +3085,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO Auto-generated method stub
 		
 	}
+	
 
-	//*************** Sensor Calibration Related end ************************* 
-
-	
-	
-	
 }

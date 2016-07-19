@@ -1270,21 +1270,21 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} 
 		else if(responseCommand==MPU9150_GYRO_RANGE_RESPONSE) {
 			byte[] bufferGyroSensitivity = readBytes(1);
-			mGyroRange=bufferGyroSensitivity[0];
+			setGyroRange(bufferGyroSensitivity[0]);
 			if(mDefaultCalibrationParametersGyro){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
 					mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
-					if(mGyroRange==0){
+					if(getGyroRange()==0){
 						mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
 					} 
-					else if(mGyroRange==1){
+					else if(getGyroRange()==1){
 						mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
 					} 
-					else if(mGyroRange==2){
+					else if(getGyroRange()==2){
 						mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
 					} 
-					else if(mGyroRange==3){
+					else if(getGyroRange()==3){
 						mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
 					}
 				}
@@ -1630,33 +1630,41 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				
 				else if(currentCommand==SET_ACCEL_CALIBRATION_COMMAND) {
-					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), ACCEL_CALIBRATION_RESPONSE);
+					byte[] calibBytes = Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length);
+					parseCalibParamFromPacketAccelAnalog(calibBytes);
+//					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), ACCEL_CALIBRATION_RESPONSE);
 				}
 				else if(currentCommand==SET_GYRO_CALIBRATION_COMMAND) {
-					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), GYRO_CALIBRATION_RESPONSE);
+					byte[] calibBytes = Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length);
+					parseCalibParamFromPacketGyro(calibBytes);
+//					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), GYRO_CALIBRATION_RESPONSE);
 				}
 				else if(currentCommand==SET_MAG_CALIBRATION_COMMAND) {
-					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), MAG_CALIBRATION_RESPONSE);
+					byte[] calibBytes = Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length);
+					parseCalibParamFromPacketMag(calibBytes);
+//					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), MAG_CALIBRATION_RESPONSE);
 				}
 				else if(currentCommand==SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND) {
-					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+					byte[] calibBytes = Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length);
+					parseCalibParamFromPacketAccelLsm(calibBytes);
+//					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
 				}
 				else if(currentCommand==SET_MPU9150_GYRO_RANGE_COMMAND) {
-					mGyroRange=(int)(((byte[])getListofInstructions().get(0))[1]);
+					setGyroRange((int)(((byte[])getListofInstructions().get(0))[1]));
 					if(mDefaultCalibrationParametersGyro){
 						if(getHardwareVersion()==HW_ID.SHIMMER_3){
 							mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
 							mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
-							if(mGyroRange==0){
+							if(getGyroRange()==0){
 								mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
 							} 
-							else if(mGyroRange==1){
+							else if(getGyroRange()==1){
 								mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
 							} 
-							else if(mGyroRange==2){
+							else if(getGyroRange()==2){
 								mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
 							} 
-							else if(mGyroRange==3){
+							else if(getGyroRange()==3){
 								mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
 							}
 						}
@@ -1859,7 +1867,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mAccelCalRawParams = new byte[22];
 		System.arraycopy(bufferCalibrationParameters, 0, mAccelCalRawParams, 1, 21);
 		mAccelCalRawParams[0] = ACCEL_CALIBRATION_RESPONSE;
-		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
+//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
+		parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters);
 	}
 
 	/**get gyro
@@ -1871,7 +1880,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mGyroCalRawParams = new byte[22];
 		System.arraycopy(bufferCalibrationParameters, 0, mGyroCalRawParams, 1, 21);
 		mGyroCalRawParams[0] = GYRO_CALIBRATION_RESPONSE;
-		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
+//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
+		parseCalibParamFromPacketGyro(bufferCalibrationParameters);
 	} 
 	
 	/**get mag
@@ -1883,7 +1893,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mMagCalRawParams = new byte[22];
 		System.arraycopy(bufferCalibrationParameters, 0, mMagCalRawParams, 1, 21);
 		mMagCalRawParams[0] = MAG_CALIBRATION_RESPONSE;
-		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
+//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
+		parseCalibParamFromPacketMag(bufferCalibrationParameters);
 	} 
 	
 	/**second accel cal params
@@ -1895,7 +1906,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mDigiAccelCalRawParams = new byte[22];
 		System.arraycopy(bufferCalibrationParameters, 0, mDigiAccelCalRawParams, 1, 21);
 		mDigiAccelCalRawParams[0] = LSM303DLHC_ACCEL_CALIBRATION_RESPONSE;
-		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+		parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters);
 	}
 	
 	/**get ECG
@@ -2101,7 +2113,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			writeGSRRange(mGSRRange);
 			writeAccelRange(mAccelRange);
-			writeGyroRange(mGyroRange);
+			writeGyroRange(getGyroRange());
 			writeMagRange(mMagRange);
 			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeInternalExpPower(1);
@@ -3038,7 +3050,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeGyroRange(int range) {
 		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			writeInstruction(new byte[]{SET_MPU9150_GYRO_RANGE_COMMAND, (byte)range});
-			mGyroRange=(int)range;
+			setGyroRange((int)range);
 		}
 	}
 

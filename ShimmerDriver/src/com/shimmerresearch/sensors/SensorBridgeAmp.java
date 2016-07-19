@@ -261,10 +261,11 @@ public class SensorBridgeAmp extends AbstractSensor{
 	 */
 	public SensorBridgeAmp(ShimmerVerObject svo) {
 		super(SENSORS.Bridge_Amplifier, svo);
+		initialise();
 	}
 
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		
 		//Update the derived sensor bit index
@@ -287,13 +288,13 @@ public class SensorBridgeAmp extends AbstractSensor{
 		}
 	}
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		// Not in this class
 	}
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER.ordinal(), sensorBridgeAmp );
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP.ordinal(), sensorBATemp);
 		}

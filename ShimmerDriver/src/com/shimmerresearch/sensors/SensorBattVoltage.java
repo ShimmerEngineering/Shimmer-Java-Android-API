@@ -154,6 +154,7 @@ public class SensorBattVoltage extends AbstractSensor{
     //--------- Constructors for this class start --------------  	
 	public SensorBattVoltage(ShimmerVerObject svo) {
 		super(SENSORS.Battery, svo);
+		initialise();
 	}
 	 //--------- Constructors for this class end --------------
 	
@@ -161,23 +162,20 @@ public class SensorBattVoltage extends AbstractSensor{
 	//--------- Abstract methods implemented start --------------
 	
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
-//		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		//Not in this class
-		
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING.ordinal(), sensorBattVoltage);
-			
 		}
 		super.updateSensorGroupingMap();
 	}
@@ -185,7 +183,6 @@ public class SensorBattVoltage extends AbstractSensor{
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
 		// Not in this class
-		
 	}
 
 	@Override

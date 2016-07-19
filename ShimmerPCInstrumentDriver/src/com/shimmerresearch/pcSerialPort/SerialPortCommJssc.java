@@ -1,6 +1,5 @@
 package com.shimmerresearch.pcSerialPort;
 
-import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
 import jssc.SerialPort;
@@ -13,25 +12,22 @@ import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortListener;
 import com.shimmerresearch.driver.DeviceException;
-//import com.shimmerresearch.comms.wiredProtocol.DeviceException;
-//import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
-//import com.shimmerresearch.comms.wiredProtocol.ShimmerCommsWired;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 /**
  * @author Mark Nolan
  *
  */
-public class SerialPortCommJssc extends AbstractSerialPortComm implements SerialPortListener, Serializable {
+public class SerialPortCommJssc extends AbstractSerialPortComm implements SerialPortListener {
 
 	protected transient SerialPort mSerialPort = null;
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
 
-	transient private ShimmerUartListener mShimmerUartListener;
+	private transient ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
-	transient private SerialPortListener mShimmerSerialEventCallback;
+	private transient SerialPortListener mShimmerSerialEventCallback;
 	
 	/** 0 = normal speed (bad implementation), 1 = fast speed */
 	public int mTxSpeed = 1;

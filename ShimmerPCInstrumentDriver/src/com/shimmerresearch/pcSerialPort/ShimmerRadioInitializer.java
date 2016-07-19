@@ -4,15 +4,15 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class DEPRECATEDShimmerSerialPortJssc extends SerialPortCommJssc{
+public class ShimmerRadioInitializer extends SerialPortCommJssc {
 	
 	@Deprecated
-	public DEPRECATEDShimmerSerialPortJssc(String comPort, int baudToUse) {
+	public ShimmerRadioInitializer(String comPort, int baudToUse) {
 		this(comPort, comPort, baudToUse);
 	}
 	
 	@Deprecated
-	public DEPRECATEDShimmerSerialPortJssc(String comPort, String uniqueId, int baudToUse) {
+	public ShimmerRadioInitializer(String comPort, String uniqueId, int baudToUse) {
 		super(comPort, uniqueId, baudToUse);
 		SERIAL_PORT_TIMEOUT = 2000; // was 2000
 	}

@@ -11,16 +11,10 @@ import java.util.Map;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
-import com.shimmerresearch.driver.InfoMemLayout;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
-import com.shimmerresearch.driver.Shimmer4;
-import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
-import com.shimmerresearch.driver.ShimmerObject.BTStream;
-import com.shimmerresearch.driver.ShimmerObject.SDLogHeader;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -29,20 +23,14 @@ import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
 
 public class SensorEXG extends AbstractSensor{
 
@@ -806,20 +794,27 @@ public class SensorEXG extends AbstractSensor{
 	 */
 	public SensorEXG(ShimmerDevice shimmerDevice) {
 		super(SENSORS.EXG, shimmerDevice);
+		initialise();
 	}
 
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 //		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 	
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 
 		int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.EXG.ordinal();
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGenGq()){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					GuiLabelSensorTiles.EXG,
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+		}
+		else if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.EXG,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG,
@@ -829,14 +824,7 @@ public class SensorEXG extends AbstractSensor{
 								Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION),
 								CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		}
-		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.EXG,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
-		}
+
 		super.updateSensorGroupingMap();
 	}
 
@@ -915,7 +903,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		mConfigOptionsMap.put(GuiLabelConfig.EXG_GAIN, configOptionExgGain);
 		mConfigOptionsMap.put(GuiLabelConfig.EXG_RESOLUTION, configOptionExgResolution);
 		mConfigOptionsMap.put(GuiLabelConfig.EXG_REFERENCE_ELECTRODE, configOptionExgRefElectrode);
@@ -1276,7 +1264,7 @@ public class SensorEXG extends AbstractSensor{
 //			}
 //		}
 //		else if(fwType == FW_TYPE_SD){
-//			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+//			if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 //				if(isEXGUsingDefaultECGConfigurationForSDFW()){
 //					//calculate the ECG Derived sensor for SD (LL-LA) and replace it for the ECG Respiration
 //					if (((mEnabledSensors & BTStream.EXG1_16BIT) > 0)){
@@ -2406,11 +2394,13 @@ public class SensorEXG extends AbstractSensor{
 		return mEXG1RateSetting;
 	}
 	
-	//TODO handle ShimmerGQ
 	private void internalCheckExgModeAndUpdateSensorMap(){
 		Map<Integer, SensorDetails> sensorMap = mShimmerDevice.getSensorMap();
 		if(sensorMap!=null){
-			if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+			if(mShimmerVerObject.isShimmerGenGq()){
+				//TODO handle ShimmerGQ
+			}
+			else if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
 	//			if((mIsExg1_24bitEnabled||mIsExg2_24bitEnabled||mIsExg1_16bitEnabled||mIsExg2_16bitEnabled)){
 	//			if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
 	//					||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
@@ -2852,12 +2842,7 @@ public class SensorEXG extends AbstractSensor{
 
 	
 	private boolean isTwoChipExg(){
-		if((mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-				||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-				||(mShimmerVerObject.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-			return false;
-		}
-		return true;
+		return !mShimmerVerObject.isShimmerGenGq();
 	}
 
 	
