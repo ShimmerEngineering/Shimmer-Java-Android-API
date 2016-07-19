@@ -53,7 +53,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
 
-	private static final int LN_ACCEL_RANGE_CONSTANT = 0;
+	public static final int LN_ACCEL_RANGE_CONSTANT = 0;
 	
 	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
 			LN_ACCEL_RANGE_CONSTANT, "+/- 2g", 

@@ -117,7 +117,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 
 	public ShimmerPCBTBCove( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
 		setSamplingRateShimmer(samplingRate);
-		mAccelRange = accelRange;
+		setAccelRange(accelRange);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
@@ -139,7 +139,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	public ShimmerPCBTBCove(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
 		mBluetoothRadioState = BT_STATE.DISCONNECTED;
 		setSamplingRateShimmer(samplingRate);
-		mAccelRange = accelRange;
+		setAccelRange(accelRange);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
@@ -149,7 +149,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		mLowPowerAccelWR = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
 		setGyroRange(gyroRange);
-		mMagRange = magRange;
+		setMagRange(magRange);
 		mSetupEXG = true;
 		mEXG1RegisterArray = exg1;
 		mEXG2RegisterArray = exg2;
@@ -167,8 +167,8 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	public ShimmerPCBTBCove(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
 		mBluetoothRadioState = BT_STATE.DISCONNECTED;
 		setSamplingRateShimmer(samplingRate);
-		mAccelRange = accelRange;
-		mMagRange = magGain;
+		setAccelRange(accelRange);
+		setMagRange(magGain);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;

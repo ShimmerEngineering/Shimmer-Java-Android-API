@@ -316,7 +316,7 @@ public class ShimmerVerObject implements Serializable {
 
 
 	public boolean isShimmerGen2(){
-		return ShimmerVerObject.isShimmerGen2(getHardwareVersion());
+		return isShimmerGen2(getHardwareVersion());
 	}
 
 	public static boolean isShimmerGen2(int hwVer){
@@ -327,7 +327,7 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public boolean isShimmerGen3(){
-		return ShimmerVerObject.isShimmer3Gen(getHardwareVersion(), getFirmwareIdentifier());
+		return isShimmer3Gen(getHardwareVersion(), getFirmwareIdentifier());
 	}
 
 	//TODO decide whether GQ belongs here or not
@@ -340,7 +340,7 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public boolean isShimmerGen4(){
-		return ShimmerVerObject.isShimmer4Gen(getHardwareVersion());
+		return isShimmer4Gen(getHardwareVersion());
 	}
 
 	public static boolean isShimmer4Gen(int hwVer){

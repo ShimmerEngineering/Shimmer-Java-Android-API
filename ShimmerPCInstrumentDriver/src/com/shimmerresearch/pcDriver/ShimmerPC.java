@@ -158,7 +158,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
 //		mState = BT_STATE.NONE;
 		mBluetoothRadioState = BT_STATE.DISCONNECTED;
-		mAccelRange = accelRange;
+		setAccelRange(accelRange);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
@@ -168,7 +168,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mLowPowerAccelWR = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
 		setGyroRange(gyroRange);
-		mMagRange = magRange;
+		setMagRange(magRange);
 		mSetupEXG = true;
 		mEXG1RegisterArray = exg1;
 		mEXG2RegisterArray = exg2;
@@ -190,8 +190,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
 //		mState = BT_STATE.NONE;
 		mBluetoothRadioState = BT_STATE.DISCONNECTED;
-		mAccelRange = accelRange;
-		mMagRange = magGain;
+		setAccelRange(accelRange);
+		setMagRange(magGain);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
@@ -209,7 +209,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
      */
     @Deprecated
 	public ShimmerPC( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
-    	mAccelRange = accelRange;
+    	setAccelRange(accelRange);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
