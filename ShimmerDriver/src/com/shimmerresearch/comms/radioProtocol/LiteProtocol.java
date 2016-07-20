@@ -293,7 +293,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 					if(mCurrentCommand==InstructionsSet.SET_RWC_COMMAND_VALUE){
 						// for Real-world time -> grab PC time just before
 						// writing to Shimmer
-						byte[] rtcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(System.currentTimeMillis());
+						byte[] rtcTimeArray = UtilShimmer.convertMilliSecondsToShimmerRtcDataBytesMSB(System.currentTimeMillis());
 						System.arraycopy(rtcTimeArray, 0, insBytes, 1, 8);
 					}
 					

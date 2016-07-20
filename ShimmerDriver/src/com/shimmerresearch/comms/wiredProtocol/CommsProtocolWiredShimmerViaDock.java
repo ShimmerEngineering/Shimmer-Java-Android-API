@@ -27,7 +27,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 	 * @return MAC address of docked Shimmer
 	 * @throws ExecutionException 
 	 */
-	public String readMacId() throws ExecutionException {
+	public String readMacId() throws DockException {
 		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_MAC_ID_GET;
 		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.MAC, errorCode);
 		
@@ -90,7 +90,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		long responseTime = 0;
 		if(rxBuf.length >= 8) {
 			byte[] rwcTimeArray = Arrays.copyOf(rxBuf, 8);
-			responseTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeMSB(rwcTimeArray);
+			responseTime = UtilShimmer.convertShimmerRtcDataBytesToMilliSecondsMSB(rwcTimeArray);
 		}
 		else {
 			throw new DockException(mUniqueId, mComPort, errorCode, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS);
@@ -111,7 +111,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		long responseTime = 0;
 		if(rxBuf.length >= 8) {
 			byte[] rwcTimeArray = Arrays.copyOf(rxBuf, 8);
-			responseTime = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeMSB(rwcTimeArray);
+			responseTime = UtilShimmer.convertShimmerRtcDataBytesToMilliSecondsMSB(rwcTimeArray);
 		}
 		else {
 			throw new DockException(mUniqueId, mComPort, errorCode, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS);
@@ -133,7 +133,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 	 * @param l the real time clock value in milliseconds UNIX time (since 1970-Jan-01 00:00:00 UTC)
 	 */
 	public long writeRealWorldClock(long miliseconds) throws ExecutionException {
-		byte[] rwcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(miliseconds);
+		byte[] rwcTimeArray = UtilShimmer.convertMilliSecondsToShimmerRtcDataBytesMSB(miliseconds);
 		
 		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_RTC_CONFIG_TIME_SET;
 		processShimmerSetCommand(UartPacketDetails.UART_COMPONENT_PROPERTY.MAIN_PROCESSOR.RTC_CFG_TIME, rwcTimeArray, errorCode);

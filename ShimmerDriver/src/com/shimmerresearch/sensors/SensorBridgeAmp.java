@@ -343,32 +343,6 @@ public class SensorBridgeAmp extends AbstractSensor{
 		return objectCluster;
 	}
 	
-	public static double processBAAdcChannel(ChannelDetails channelDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp,
-			double offset, double vRefP, double gain){
-//		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
-//		
-//		double offset = 60; double vRefP = 3; double gain = 551;  
-//		if(mEnableCalibration){
-		
-//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-
-					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-					double calData = SensorADC.calibrateU12AdcValue(unCalData, offset, vRefP, gain);
-					
-					
-//			}
-//		}
-		
-
-		return calData;
-	}
-	
-	
-	protected static double calibratePhillipsSkinTemperatureData(double uncalibratedData){
-		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
-		double y = -27.42*Math.log(x) + 56.502;
-		return y;
-	}
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
@@ -423,6 +397,28 @@ public class SensorBridgeAmp extends AbstractSensor{
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public static double processBAAdcChannel(ChannelDetails channelDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp,
+			double offset, double vRefP, double gain){
+//		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+//		
+//		double offset = 60; double vRefP = 3; double gain = 551;  
+//		if(mEnableCalibration){
+		
+//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+
+				double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				double calData = SensorADC.calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+//			}
+//		}
+		return calData;
+	}
+	
+	public static double calibratePhillipsSkinTemperatureData(double uncalibratedData){
+		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
+		double y = -27.42*Math.log(x) + 56.502;
+		return y;
 	}
 
 }	

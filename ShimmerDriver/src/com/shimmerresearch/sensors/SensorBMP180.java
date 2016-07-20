@@ -17,6 +17,8 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.CalibDetailsBmp180;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
@@ -43,17 +45,19 @@ public class SensorBMP180 extends AbstractSensor {
 	private static final long serialVersionUID = 4559709230029277863L;
 	
 	//--------- Sensor specific variables start --------------
-	public double pressTempAC1 = 408;
-	public double pressTempAC2 = -72;
-	public double pressTempAC3 = -14383;
-	public double pressTempAC4 = 332741;
-	public double pressTempAC5 = 32757;
-	public double pressTempAC6 = 23153;
-	public double pressTempB1 = 6190;
-	public double pressTempB2 = 4;
-	public double pressTempMB = -32767;
-	public double pressTempMC = -8711;
-	public double pressTempMD = 2868;
+//	public double pressTempAC1 = 408;
+//	public double pressTempAC2 = -72;
+//	public double pressTempAC3 = -14383;
+//	public double pressTempAC4 = 332741;
+//	public double pressTempAC5 = 32757;
+//	public double pressTempAC6 = 23153;
+//	public double pressTempB1 = 6190;
+//	public double pressTempB2 = 4;
+//	public double pressTempMB = -32767;
+//	public double pressTempMC = -8711;
+//	public double pressTempMD = 2868;
+	
+	CalibDetailsBmp180 mCalibDetailsBmp180 = new CalibDetailsBmp180();
 	
 	//JC HACK
 //	public double pressTempAC1 = 8489;
@@ -260,7 +264,7 @@ public class SensorBMP180 extends AbstractSensor {
 		}
 
 		//Calibration
-		double[] bmp180caldata = calibratePressureSensorData(rawDataUP, rawDataUT);
+		double[] bmp180caldata = calibratePressureSensorData(rawDataUP, rawDataUT, mCalibDetailsBmp180);
 		bmp180caldata[0] = bmp180caldata[0]/1000;
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -408,22 +412,22 @@ public class SensorBMP180 extends AbstractSensor {
 
 
 	//--------- Sensor specific methods start --------------
-	public double[] calibratePressureSensorData(double UP, double UT){
-		double X1 = (UT - pressTempAC6) * pressTempAC5 / 32768;
-		double X2 = (pressTempMC * 2048 / (X1 + pressTempMD));
+	public static double[] calibratePressureSensorData(double UP, double UT, CalibDetailsBmp180 calibDetailsBmp180){
+		double X1 = (UT - calibDetailsBmp180.pressTempAC6) * calibDetailsBmp180.pressTempAC5 / 32768;
+		double X2 = (calibDetailsBmp180.pressTempMC * 2048 / (X1 + calibDetailsBmp180.pressTempMD));
 		double B5 = X1 + X2;
 		double T = (B5 + 8) / 16;
 
 		double B6 = B5 - 4000;
-		X1 = (pressTempB2 * (Math.pow(B6,2)/ 4096)) / 2048;
-		X2 = pressTempAC2 * B6 / 2048;
+		X1 = (calibDetailsBmp180.pressTempB2 * (Math.pow(B6,2)/ 4096)) / 2048;
+		X2 = calibDetailsBmp180.pressTempAC2 * B6 / 2048;
 		double X3 = X1 + X2;
-		double B3 = (((pressTempAC1 * 4 + X3)*(1<<mPressureResolution) + 2)) / 4;
-		X1 = pressTempAC3 * B6 / 8192;
-		X2 = (pressTempB1 * (Math.pow(B6,2)/ 4096)) / 65536;
+		double B3 = (((calibDetailsBmp180.pressTempAC1 * 4 + X3)*(1<<calibDetailsBmp180.mRangeValue) + 2)) / 4;
+		X1 = calibDetailsBmp180.pressTempAC3 * B6 / 8192;
+		X2 = (calibDetailsBmp180.pressTempB1 * (Math.pow(B6,2)/ 4096)) / 65536;
 		X3 = ((X1 + X2) + 2) / 4;
-		double B4 = pressTempAC4 * (X3 + 32768) / 32768;
-		double B7 = (UP - B3) * (50000>>mPressureResolution);
+		double B4 = calibDetailsBmp180.pressTempAC4 * (X3 + 32768) / 32768;
+		double B7 = (UP - B3) * (50000>>calibDetailsBmp180.mRangeValue);
 		double p=0;
 		if (B7 < 2147483648L ){ //0x80000000
 			p = (B7 * 2) / B4;
@@ -442,19 +446,21 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 	
 	public void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, int packetType) {
-		if (packetType == BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
-			pressTempAC1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
-			pressTempAC2 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
-			pressTempAC3 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[5] & 0xFF) + ((int)(pressureResoRes[4] & 0xFF) << 8)),16);
-			pressTempAC4 = (int)((int)(pressureResoRes[7] & 0xFF) + ((int)(pressureResoRes[6] & 0xFF) << 8));
-			pressTempAC5 = (int)((int)(pressureResoRes[9] & 0xFF) + ((int)(pressureResoRes[8] & 0xFF) << 8));
-			pressTempAC6 = (int)((int)(pressureResoRes[11] & 0xFF) + ((int)(pressureResoRes[10] & 0xFF) << 8));
-			pressTempB1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[13] & 0xFF) + ((int)(pressureResoRes[12] & 0xFF) << 8)),16);
-			pressTempB2 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[15] & 0xFF) + ((int)(pressureResoRes[14] & 0xFF) << 8)),16);
-			pressTempMB = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[17] & 0xFF) + ((int)(pressureResoRes[16] & 0xFF) << 8)),16);
-			pressTempMC = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
-			pressTempMD = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
-		}
+//		if (packetType == BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
+//			pressTempAC1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
+//			pressTempAC2 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
+//			pressTempAC3 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[5] & 0xFF) + ((int)(pressureResoRes[4] & 0xFF) << 8)),16);
+//			pressTempAC4 = (int)((int)(pressureResoRes[7] & 0xFF) + ((int)(pressureResoRes[6] & 0xFF) << 8));
+//			pressTempAC5 = (int)((int)(pressureResoRes[9] & 0xFF) + ((int)(pressureResoRes[8] & 0xFF) << 8));
+//			pressTempAC6 = (int)((int)(pressureResoRes[11] & 0xFF) + ((int)(pressureResoRes[10] & 0xFF) << 8));
+//			pressTempB1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[13] & 0xFF) + ((int)(pressureResoRes[12] & 0xFF) << 8)),16);
+//			pressTempB2 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[15] & 0xFF) + ((int)(pressureResoRes[14] & 0xFF) << 8)),16);
+//			pressTempMB = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[17] & 0xFF) + ((int)(pressureResoRes[16] & 0xFF) << 8)),16);
+//			pressTempMC = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
+//			pressTempMD = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
+//		}
+		mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes);
+		mCalibDetailsBmp180.mRangeValue = getPressureResolution();
 	}
 	
 
@@ -500,47 +506,47 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	
 	public double getPressTempAC1(){
-		return pressTempAC1;
+		return mCalibDetailsBmp180.pressTempAC1;
 	}
 	
 	public double getPressTempAC2(){
-		return pressTempAC2;
+		return mCalibDetailsBmp180.pressTempAC2;
 	}
 	
 	public double getPressTempAC3(){
-		return pressTempAC3;
+		return mCalibDetailsBmp180.pressTempAC3;
 	}
 	
 	public double getPressTempAC4(){
-		return pressTempAC4;
+		return mCalibDetailsBmp180.pressTempAC4;
 	}
 	
 	public double getPressTempAC5(){
-		return pressTempAC5;
+		return mCalibDetailsBmp180.pressTempAC5;
 	}
 	
 	public double getPressTempAC6(){
-		return pressTempAC6;
+		return mCalibDetailsBmp180.pressTempAC6;
 	}
 	
 	public double getPressTempB1(){
-		return pressTempB1;
+		return mCalibDetailsBmp180.pressTempB1;
 	}
 	
 	public double getPressTempB2(){
-		return pressTempB2;
+		return mCalibDetailsBmp180.pressTempB2;
 	}
 	
 	public double getPressTempMB(){
-		return pressTempMB;
+		return mCalibDetailsBmp180.pressTempMB;
 	}
 	
 	public double getPressTempMC(){
-		return pressTempMC;
+		return mCalibDetailsBmp180.pressTempMC;
 	}
 	
 	public double getPressTempMD(){
-		return pressTempMD;
+		return mCalibDetailsBmp180.pressTempMD;
 	}
 	//--------- Sensor specific methods end --------------
 

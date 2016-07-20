@@ -466,79 +466,84 @@ public abstract class AbstractSensor implements Serializable{
 		return sensorMapKey;
 	}
 	
-	public byte[] generateAllCalibByteArray() {
-		if(mCalibMap.isEmpty()){
-			return null;
-		}
-		
-		byte[] calibBytesAllPerSensor = new byte[]{};
+//	public byte[] generateAllCalibByteArray() {
+//		if(mCalibMap.isEmpty()){
+//			return null;
+//		}
+//		
+//		byte[] calibBytesAllPerSensor = new byte[]{};
+//		for(Integer sensorMapKey:mCalibMap.keySet()){
+//			TreeMap<Integer, CalibDetails> calMapPerSensor = mCalibMap.get(sensorMapKey);
+////			SensorDetails sensorDetais = mSensorMap.get(sensorMapKey);
+////			Integer calibSensorKey = sensorDetais.mSensorDetailsRef.mCalibSensorKey;
+////			if(sensorMapKey!=0){
+//				for(Integer range:calMapPerSensor.keySet()){
+//					byte[] calibSensorKeyBytes = new byte[2];
+//					calibSensorKeyBytes[0] = (byte)((sensorMapKey>>0)&0xFF);
+//					calibSensorKeyBytes[1] = (byte)((sensorMapKey>>8)&0xFF);
+//					
+//					CalibDetails calDetailsPerRange = calMapPerSensor.get(range);		
+//					byte[] calibBytesPerRange = calDetailsPerRange.generateCalParamByteArrayWithTimestamp();
+//
+//					//Create a new calibration param array
+//					byte[] calibBytesPacketPerRange = new byte[calibSensorKeyBytes.length+calibBytesPerRange.length];
+//					System.arraycopy(calibSensorKeyBytes, 0, calibBytesPacketPerRange, 0, calibSensorKeyBytes.length);
+//					System.arraycopy(calibBytesPerRange, 0, calibBytesPacketPerRange, calibSensorKeyBytes.length, calibBytesPerRange.length);
+//					
+//					//Copy new calib param array to end of exisiting array
+//					byte[] newCalibBytesAllPerSensor = new byte[calibBytesAllPerSensor.length+calibBytesPacketPerRange.length];
+//					System.arraycopy(calibBytesAllPerSensor, 0, newCalibBytesAllPerSensor, 0, calibBytesAllPerSensor.length);
+//					System.arraycopy(calibBytesPacketPerRange, 0, newCalibBytesAllPerSensor, calibBytesAllPerSensor.length, calibBytesPacketPerRange.length);
+//					calibBytesAllPerSensor = newCalibBytesAllPerSensor;
+//				}
+////			}
+//		}
+//		return calibBytesAllPerSensor;
+//	}
+//	
+//	//TODO
+//	public boolean parseAllCalibByteArray(int sensorMapKey, int rangeValue, byte[] calibTimeBytesTicks, byte[] calibBytes) {
+//		if(!mSensorMap.containsKey(sensorMapKey)){
+//			return false;
+//		}
+//		
+//		TreeMap<Integer, CalibDetails> mapOfSensorCalib = mCalibMap.get(sensorMapKey);
+//		if(mapOfSensorCalib==null){
+//			mCalibMap.put(sensorMapKey, new TreeMap<Integer, CalibDetails>());
+//		}
+//		
+//		mapOfSensorCalib = mCalibMap.get(sensorMapKey);
+//		CalibDetails calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
+//		if(calibDetailsPerRange==null){
+//			//TODO UNKOWN RANGE
+////			mapOfSensorCalib.put(range, new CalibDetailsKinematic(rangeValue, rangeString))
+//		}
+//		
+//		calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
+//		if(calibDetailsPerRange!=null && calibDetailsPerRange instanceof CalibDetailsKinematic){
+//			calibDetailsPerRange.setCalibTimeFromMs(calibTimeBytesTicks, calibTime);
+////			System.out.println("Set Calib Time");
+////			System.out.println("Check");
+//			((CalibDetailsKinematic)calibDetailsPerRange).parseCalParamByteArray(calibBytes);
+//		}
+//		
+//		return true;
+//	}
+
+	protected void setAllCalibSensitivityScaleFactor(int sensitivityScaleFactor) {
 		for(Integer sensorMapKey:mCalibMap.keySet()){
-			TreeMap<Integer, CalibDetails> calMapPerSensor = mCalibMap.get(sensorMapKey);
-//			SensorDetails sensorDetais = mSensorMap.get(sensorMapKey);
-//			Integer calibSensorKey = sensorDetais.mSensorDetailsRef.mCalibSensorKey;
-//			if(sensorMapKey!=0){
-				for(Integer range:calMapPerSensor.keySet()){
-					byte[] calibSensorKeyBytes = new byte[2];
-					calibSensorKeyBytes[0] = (byte)((sensorMapKey>>0)&0xFF);
-					calibSensorKeyBytes[1] = (byte)((sensorMapKey>>8)&0xFF);
-					
-					CalibDetails calDetailsPerRange = calMapPerSensor.get(range);		
-					byte[] calibBytesPerRange = calDetailsPerRange.generateCalParamByteArrayWithTimestamp();
-
-					//Create a new calibration param array
-					byte[] calibBytesPacketPerRange = new byte[calibSensorKeyBytes.length+calibBytesPerRange.length];
-					System.arraycopy(calibSensorKeyBytes, 0, calibBytesPacketPerRange, 0, calibSensorKeyBytes.length);
-					System.arraycopy(calibBytesPerRange, 0, calibBytesPacketPerRange, calibSensorKeyBytes.length, calibBytesPerRange.length);
-					
-					//Copy new calib param array to end of exisiting array
-					byte[] newCalibBytesAllPerSensor = new byte[calibBytesAllPerSensor.length+calibBytesPacketPerRange.length];
-					System.arraycopy(calibBytesAllPerSensor, 0, newCalibBytesAllPerSensor, 0, calibBytesAllPerSensor.length);
-					System.arraycopy(calibBytesPacketPerRange, 0, newCalibBytesAllPerSensor, calibBytesAllPerSensor.length, calibBytesPacketPerRange.length);
-					calibBytesAllPerSensor = newCalibBytesAllPerSensor;
-				}
-//			}
+			setCalibSensitivityScaleFactor(sensorMapKey, sensitivityScaleFactor);
 		}
-		return calibBytesAllPerSensor;
-	}
-	
-	//TODO
-	public byte[] parseAllCalibByteArray(byte[] remainingBytes) {
-		// TODO Auto-generated method stub
-		return remainingBytes;
-	}
-	
-	//TODO
-	public boolean parseAllCalibByteArray(int sensorMapKey, int rangeValue, long calibTime, byte[] calibBytes) {
-		if(!mSensorMap.containsKey(sensorMapKey)){
-			return false;
-		}
-		
-		TreeMap<Integer, CalibDetails> mapOfSensorCalib = mCalibMap.get(sensorMapKey);
-		if(mapOfSensorCalib==null){
-			mCalibMap.put(sensorMapKey, new TreeMap<Integer, CalibDetails>());
-		}
-		
-		mapOfSensorCalib = mCalibMap.get(sensorMapKey);
-		CalibDetails calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
-		if(calibDetailsPerRange==null){
-			//TODO UNKOWN RANGE
-//			mapOfSensorCalib.put(range, new CalibDetailsKinematic(rangeValue, rangeString))
-		}
-		
-		calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
-		if(calibDetailsPerRange!=null && calibDetailsPerRange instanceof CalibDetailsKinematic){
-			calibDetailsPerRange.setCalibTime(calibTime);
-			System.out.println("Set Calib Time");
-			System.out.println("Check");
-
-			
-
-			((CalibDetailsKinematic)calibDetailsPerRange).parseCalParamByteArray(calibBytes);
-		}
-		
-		return true;
 	}
 
+	protected void setCalibSensitivityScaleFactor(int sensorMapKey, int sensitivityScaleFactor) {
+		TreeMap<Integer, CalibDetails> calibMapPerSensor = mCalibMap.get(sensorMapKey);
+		if(calibMapPerSensor!=null){
+			for(CalibDetails calibMapPerRange:calibMapPerSensor.values()){
+				((CalibDetailsKinematic)calibMapPerRange).setSensitivityScaleFactor(sensitivityScaleFactor);
+			}
+		}
+	}
 	
 	public Object setConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;

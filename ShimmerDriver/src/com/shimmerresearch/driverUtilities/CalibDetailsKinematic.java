@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.shimmerresearch.sensors.SensorMPU9X50;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 /**
  * Class that holds the calibration parameters for a particular range in a
@@ -26,14 +29,18 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	private double[][] mDefaultSensitivityMatrix = null;  	
 	private double[][] mDefaultOffsetVector = null; 
 	
-	//TODO: improve below
+	//TODO: improve below, needed here?
 	private double[][] mEmptyAlignmentMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};  			
 	private double[][] mEmptySensitivityMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 	
 	private double[][] mEmptyOffsetVector = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 
 	
-	public String mRangeString = "";
-	public int mRangeValue = 0;
-
+	private int mSensitivityScaleFactor = SENSITIVITY_SCALE_FACTOR.NONE;
+	public static final class SENSITIVITY_SCALE_FACTOR{
+		public static final int NONE = 1;
+		public static final int TEN = 10;
+		public static final int HUNDRED = 100;
+	}
+	
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {
 		this.mRangeValue = rangeValue;
 		this.mRangeString = rangeString;
@@ -58,6 +65,13 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	
 	public CalibDetailsKinematic(byte[] bufferCalibrationParameters) {
 		parseCalParamByteArray(bufferCalibrationParameters);
+	}
+
+	public CalibDetailsKinematic(int rangeValue, String rangeString, 
+			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector,
+			int sensitivityScaleFactor) {
+		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
+		setSensitivityScaleFactor(sensitivityScaleFactor);
 	}
 
 	public void setCurrentValues(double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
@@ -181,26 +195,32 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		return debugString;
 	}
 
+	@Override
 	public void parseCalParamByteArray(byte[] bufferCalibrationParameters){
-//		if(bufferCalibrationParameters.length>21){
-//			//TODO pick off 8 byte timestamp and parse
-//
-//		}
-//		
+		if(UtilShimmer.isAllFF(bufferCalibrationParameters)){
+			return;
+		}
+		
 		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 		int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
 		double[] AM=new double[9];
 		for (int i=0;i<9;i++) {
 			AM[i]=((double)formattedPacket[6+i])/100;
 		}
-		double[][] alignmentMatrixMPLMag = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-		double[][] sensitivityMatrixMPLMag = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-		double[][] offsetVectorMPLMag = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-		mCurrentAlignmentMatrix = alignmentMatrixMPLMag; 			
-		mCurrentSensitivityMatrix = sensitivityMatrixMPLMag; 	
-		mCurrentOffsetVector = offsetVectorMPLMag;
+		double[][] alignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+		double[][] sensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+		double[][] offsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+		
+		for(int i=0;i<=2;i++){
+			sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor;
+		}
+		
+		mCurrentAlignmentMatrix = alignmentMatrix; 			
+		mCurrentSensitivityMatrix = sensitivityMatrix; 	
+		mCurrentOffsetVector = offsetVector;
 	}
 
+	@Override
 	public byte[] generateCalParamByteArray() {
 		if(isCurrentValuesSet()){
 			return generateCalParamByteArray(mCurrentOffsetVector, mCurrentSensitivityMatrix, mCurrentAlignmentMatrix);
@@ -210,7 +230,13 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		}
 	}
 	
-	public static byte[] generateCalParamByteArray(double[][] offsetVector, double[][] sensitivityMatrix, double[][] alignmentMatrix) {
+	public byte[] generateCalParamByteArray(double[][] offsetVector, double[][] sensitivityMatrix, double[][] alignmentMatrix) {
+		
+		double[][] sensitivityMatrixToUse = UtilShimmer.deepCopyDoubleMatrix(sensitivityMatrix);
+		for(int i=0;i<=2;i++){
+			sensitivityMatrixToUse[i][i] = sensitivityMatrixToUse[i][i]*mSensitivityScaleFactor;
+		}
+		
 		byte[] bufferCalibParam = new byte[21];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
@@ -219,8 +245,8 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		}
 		// sensitivityMatrix -> buffer offset = 6
 		for (int i=0; i<3; i++) {
-			bufferCalibParam[6+(i*2)] = (byte) ((((int)sensitivityMatrix[i][i]) >> 8) & 0xFF);
-			bufferCalibParam[6+(i*2)+1] = (byte) ((((int)sensitivityMatrix[i][i]) >> 0) & 0xFF);
+			bufferCalibParam[6+(i*2)] = (byte) ((((int)sensitivityMatrixToUse[i][i]) >> 8) & 0xFF);
+			bufferCalibParam[6+(i*2)+1] = (byte) ((((int)sensitivityMatrixToUse[i][i]) >> 0) & 0xFF);
 		}
 		// alignmentMatrix -> buffer offset = 12
 		for (int i=0; i<3; i++) {
@@ -231,26 +257,6 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		return bufferCalibParam;
 	}	
 	
-	@Override
-	public byte[] generateCalParamByteArrayWithTimestamp() {
-		byte[] rangeBytes = new byte[1];
-		rangeBytes[0] = (byte)(mRangeValue&0xFF);
-
-		//Temp here:
-//		mCalibTime = (System.currentTimeMillis()*32768);
-		
-		byte[] timestamp = ByteBuffer.allocate(8).putLong(mCalibTime).array();
-		byte[] bufferCalibParam = generateCalParamByteArray();
-		byte[] calibLength = new byte[]{(byte) bufferCalibParam.length};
-		
-		byte[] bufferCalibParamWithTimestamp = new byte[rangeBytes.length + calibLength.length + timestamp.length + bufferCalibParam.length];
-		System.arraycopy(rangeBytes, 0, bufferCalibParamWithTimestamp, 0, rangeBytes.length);
-		System.arraycopy(calibLength, 0, bufferCalibParamWithTimestamp, rangeBytes.length, calibLength.length);
-		System.arraycopy(timestamp, 0, bufferCalibParamWithTimestamp, rangeBytes.length + calibLength.length, timestamp.length);
-		System.arraycopy(bufferCalibParam, 0, bufferCalibParamWithTimestamp, rangeBytes.length + calibLength.length + timestamp.length, bufferCalibParam.length);
-		return bufferCalibParamWithTimestamp;
-	}
-
 	public double[][] getCurrentAlignmentMatrix() {
 		//TODO check if valid and return default if not?
 		return mCurrentAlignmentMatrix;
@@ -299,6 +305,10 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mCurrentOffsetVector[0][0] = XXmean;
 		mCurrentOffsetVector[1][0] = XYmean;
 		mCurrentOffsetVector[2][0] = XZmean;
+	}
+
+	public void setSensitivityScaleFactor(int sensitivityScaleFactor) {
+		mSensitivityScaleFactor = sensitivityScaleFactor;
 	}
 
 
