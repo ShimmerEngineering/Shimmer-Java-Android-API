@@ -2197,6 +2197,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		initializeAlgorithms();
 	}
 	
+	public void setAllAlgorithmsDisabled(){
+		for(AbstractAlgorithm abstractAlgorithmToChange: getMapOfAlgorithmModules().values()){
+			setIsAlgorithmEnabled(abstractAlgorithmToChange.getAlgorithmName(), false);
+		}
+	}
+	
 	
 	/** check to ensure sensors that algorithm requires haven't been switched off */
 	public void algorithmRequiredSensorCheck() {
