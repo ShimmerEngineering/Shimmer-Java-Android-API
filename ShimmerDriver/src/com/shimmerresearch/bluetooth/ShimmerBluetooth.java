@@ -113,6 +113,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 8439353551730215801L;
 
 	//region --------- CLASS VARIABLES AND ABSTRACT METHODS ---------
