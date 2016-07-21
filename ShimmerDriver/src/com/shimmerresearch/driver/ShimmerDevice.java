@@ -171,7 +171,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	
-	public boolean mVerboseMode = true;
+	public boolean mVerboseMode = false;
 
 
 
