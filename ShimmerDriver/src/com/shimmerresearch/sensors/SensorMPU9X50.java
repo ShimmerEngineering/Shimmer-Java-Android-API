@@ -16,6 +16,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.CalibDetails;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.SENSITIVITY_SCALE_FACTOR;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -1731,7 +1732,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		// MPU9150 Gyroscope Calibration Parameters
 		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
 		System.arraycopy(mInfoMemBytes, idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 ,lengthGeneralCalibrationBytes);
-		parseCalibParamFromPacketGyro(bufferCalibrationParameters);
+		parseCalibParamFromPacketGyro(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 
 		// InfoMem C - Start - used by SdLog and LogAndStream
 		if(mShimmerVerObject.getFirmwareIdentifier()==FW_ID.SDLOG) {
@@ -2783,7 +2784,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //		updateCalibMapGyro();
 //	}
 	
-	public void parseCalibParamFromPacketGyro(byte[] bufferCalibrationParameters) {
+	public void parseCalibParamFromPacketGyro(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 //		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
 //		double[][] OffsetVector = calibDetailsKinematic.mCurrentOffsetVector;
 //		double[][] SensitivityMatrix = calibDetailsKinematic.mCurrentSensitivityMatrix;
@@ -2811,7 +2812,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //		mDefaultCalibrationParametersGyro = checkIfDefaultGyroCal(mOffsetVectorGyroscope, mSensitivityMatrixGyroscope, mAlignmentMatrixGyroscope);
 //		updateCalibMapGyro();
 		
-		mCurrentCalibDetailsGyro.parseCalParamByteArray(bufferCalibrationParameters);
+		mCurrentCalibDetailsGyro.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 	
 	private boolean checkIfDefaultGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {

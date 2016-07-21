@@ -17,6 +17,7 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -609,7 +610,7 @@ public class Shimmer4 extends ShimmerDevice {
 					AbstractSensor abstractSensor = mMapOfSensorClasses.get(SENSORS.BMP180);
 					if(abstractSensor!=null && abstractSensor instanceof SensorBMP180){
 						SensorBMP180 sensorBmp180 = (SensorBMP180)abstractSensor;
-						sensorBmp180.retrievePressureCalibrationParametersFromPacket((byte[])parsedResponse, responseCommand);
+						sensorBmp180.retrievePressureCalibrationParametersFromPacket((byte[])parsedResponse, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 					}
 				}
 				else if(responseCommand==InstructionsResponse.STATUS_RESPONSE_VALUE){ 

@@ -64,7 +64,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 
 	
 	public CalibDetailsKinematic(byte[] bufferCalibrationParameters) {
-		parseCalParamByteArray(bufferCalibrationParameters);
+		parseCalParamByteArray(bufferCalibrationParameters, CALIB_READ_SOURCE.UNKNOWN);
 	}
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, 
@@ -73,6 +73,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
 		setSensitivityScaleFactor(sensitivityScaleFactor);
 	}
+	
 
 	public void setCurrentValues(double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
 		this.mCurrentAlignmentMatrix = currentAlignmentMatrix;
@@ -173,51 +174,34 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		return diagonalFilled;
 	}
 
-	public String generateDebugString() {
-		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
-		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);
-		debugString += generateDebugStringPerProperty("Current Alignment", mCurrentAlignmentMatrix);
-		debugString += generateDebugStringPerProperty("Default Sensitivity", mDefaultSensitivityMatrix);
-		debugString += generateDebugStringPerProperty("CurrentSensitivity", mCurrentSensitivityMatrix);
-		debugString += generateDebugStringPerProperty("Default Offset Vector", mDefaultOffsetVector);
-		debugString += generateDebugStringPerProperty("Current Offset Vector", mCurrentOffsetVector);
-		return debugString;
-	}
-
-	private String generateDebugStringPerProperty(String property, double[][] calMatrix) {
-		String debugString = property + " =\n";
-		if(calMatrix==null){
-			debugString += "NULL\n";
-		}
-		else{
-			debugString += UtilShimmer.doubleArrayToString(calMatrix);
-		}
-		return debugString;
-	}
-
 	@Override
-	public void parseCalParamByteArray(byte[] bufferCalibrationParameters){
-		if(UtilShimmer.isAllFF(bufferCalibrationParameters)){
-			return;
+	public void parseCalParamByteArray(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource){
+		if(calibReadSource.ordinal()>getCalibReadSource().ordinal()){
+			if(UtilShimmer.isAllFF(bufferCalibrationParameters)
+					||UtilShimmer.isAllZeros(bufferCalibrationParameters)){
+				return;
+			}
+			
+			setCalibReadSource(calibReadSource);
+			
+			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
+			int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
+			double[] AM=new double[9];
+			for (int i=0;i<9;i++) {
+				AM[i]=((double)formattedPacket[6+i])/100;
+			}
+			double[][] alignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+			double[][] sensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+			double[][] offsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+			
+			for(int i=0;i<=2;i++){
+				sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor;
+			}
+			
+			mCurrentAlignmentMatrix = alignmentMatrix; 			
+			mCurrentSensitivityMatrix = sensitivityMatrix; 	
+			mCurrentOffsetVector = offsetVector;
 		}
-		
-		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
-		int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
-		double[] AM=new double[9];
-		for (int i=0;i<9;i++) {
-			AM[i]=((double)formattedPacket[6+i])/100;
-		}
-		double[][] alignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-		double[][] sensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-		double[][] offsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-		
-		for(int i=0;i<=2;i++){
-			sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor;
-		}
-		
-		mCurrentAlignmentMatrix = alignmentMatrix; 			
-		mCurrentSensitivityMatrix = sensitivityMatrix; 	
-		mCurrentOffsetVector = offsetVector;
 	}
 
 	@Override
@@ -311,6 +295,26 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mSensitivityScaleFactor = sensitivityScaleFactor;
 	}
 
+	public String generateDebugString() {
+		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
+		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Current Alignment", mCurrentAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Default Sensitivity", mDefaultSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("CurrentSensitivity", mCurrentSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("Default Offset Vector", mDefaultOffsetVector);
+		debugString += generateDebugStringPerProperty("Current Offset Vector", mCurrentOffsetVector);
+		return debugString;
+	}
 
+	private String generateDebugStringPerProperty(String property, double[][] calMatrix) {
+		String debugString = property + " =\n";
+		if(calMatrix==null){
+			debugString += "NULL\n";
+		}
+		else{
+			debugString += UtilShimmer.doubleArrayToString(calMatrix);
+		}
+		return debugString;
+	}
 
 }

@@ -323,8 +323,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 					return true;
 				}
 			}
-
-		} catch (SerialPortException ex) {
+		} catch (SerialPortException | NullPointerException ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 
 			connectionLost();
@@ -341,8 +340,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			else{
 				return 0;
 			}
-			
-		} catch (SerialPortException ex) {
+		} catch (SerialPortException | NullPointerException ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
 			return 0;
@@ -351,10 +349,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void writeBytes(byte[] data) {
-		// TODO Auto-generated method stub
 		try {
-			mSerialPort.writeBytes(data);
-		} catch (SerialPortException ex) {
+			if(mSerialPort != null){
+				mSerialPort.writeBytes(data);
+			}
+		} catch (SerialPortException | NullPointerException ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
 		}
@@ -362,23 +361,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected byte[] readBytes(int numberofBytes) {
-		// TODO Auto-generated method stub
 		try {
 			if(mSerialPort != null){
-				if (mSerialPort.isOpened())
-				{
+				if (mSerialPort.isOpened()){
 					return(mSerialPort.readBytes(numberofBytes));
 				} else {
 					System.out.println("ALERT!!");
 				}
 			}
-		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
-			connectionLost();
-			e.printStackTrace();
-		}
-		catch (NullPointerException e) {
-			// TODO Auto-generated catch block
+		} catch (SerialPortException | NullPointerException e) {
 			connectionLost();
 			e.printStackTrace();
 		}

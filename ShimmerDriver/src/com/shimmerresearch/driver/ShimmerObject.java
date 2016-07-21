@@ -31,6 +31,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.CalibDetails;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.CalibDetailsBmp180;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -4160,8 +4161,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mPacketSize=packetSize;
 	}
 
-	protected void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, int packetType) {
-		if (packetType == BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
+	protected void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
 //			pressTempAC1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
 //			pressTempAC2 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
 //			pressTempAC3 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[5] & 0xFF) + ((int)(pressureResoRes[4] & 0xFF) << 8)),16);
@@ -4174,9 +4174,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			pressTempMC = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
 //			pressTempMD = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
 			
-			mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes);
+			mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes, calibReadSource);
 			mCalibDetailsBmp180.mRangeValue = getPressureResolution();
-		}
 	}
 	
 	/**
@@ -5954,22 +5953,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			byte[] bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
 			// Analog Accel Calibration Parameters
 			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
-			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters);
+			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 			
 			// MPU9150 Gyroscope Calibration Parameters
 			bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
 			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
-			parseCalibParamFromPacketGyro(bufferCalibrationParameters);
+			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 			
 			// LSM303DLHC Magnetometer Calibration Parameters
 			bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
 			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
-			parseCalibParamFromPacketMag(bufferCalibrationParameters);
+			parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 
 			// LSM303DLHC Digital Accel Calibration Parameters
 			bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
 			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
-			parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters);
+			parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 
 			//TODO: decide what to do
 			// BMP180 Pressure Calibration Parameters
@@ -7859,16 +7858,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void retrieveKinematicCalibrationParametersFromPacket(byte[] bufferCalibrationParameters, int packetType) {
 
 		if (packetType==ACCEL_CALIBRATION_RESPONSE){
-			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters);
+			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.SD_HEADER);
 		}
 		else if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE){
-			parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters);
+			parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.SD_HEADER);
 		}
 		else if(packetType==GYRO_CALIBRATION_RESPONSE){
-			parseCalibParamFromPacketGyro(bufferCalibrationParameters);
+			parseCalibParamFromPacketGyro(bufferCalibrationParameters, CALIB_READ_SOURCE.SD_HEADER);
 		}
 		else if(packetType==MAG_CALIBRATION_RESPONSE){
-			parseCalibParamFromPacketMag(bufferCalibrationParameters);
+			parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.SD_HEADER);
 		}
 
 //		if (packetType==ACCEL_CALIBRATION_RESPONSE 
@@ -8022,7 +8021,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		}
 	}
 	
-	public void parseCalibParamFromPacketGyro(byte[] bufferCalibrationParameters) {
+	public void parseCalibParamFromPacketGyro(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 //		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
 //		double[][] OffsetVector = calibDetailsKinematic.getCurrentOffsetVector();
 //		double[][] SensitivityMatrix = calibDetailsKinematic.getCurrentSensitivityMatrix();
@@ -8050,10 +8049,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		mDefaultCalibrationParametersGyro = checkIfDefaultGyroCal(mOffsetVectorGyroscope, mSensitivityMatrixGyroscope, mAlignmentMatrixGyroscope);
 //		updateCalibMapGyro();
 		
-		mCurrentCalibDetailsGyro.parseCalParamByteArray(bufferCalibrationParameters);
+		mCurrentCalibDetailsGyro.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
-	public void parseCalibParamFromPacketAccelAnalog(byte[] bufferCalibrationParameters) {
+	public void parseCalibParamFromPacketAccelAnalog(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 //		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
 //		double[][] OffsetVector = calibDetailsKinematic.getCurrentOffsetVector();
 //		double[][] SensitivityMatrix = calibDetailsKinematic.getCurrentSensitivityMatrix();
@@ -8086,10 +8085,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		mDefaultCalibrationParametersAccel = checkIfDefaultAccelCal(mOffsetVectorAnalogAccel, mSensitivityMatrixAnalogAccel, mAlignmentMatrixAnalogAccel);
 //		updateCalibMapAccelLn();
 		
-		mCurrentCalibDetailsAccelLn.parseCalParamByteArray(bufferCalibrationParameters);
+		mCurrentCalibDetailsAccelLn.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
-	public void parseCalibParamFromPacketAccelLsm(byte[] bufferCalibrationParameters) {
+	public void parseCalibParamFromPacketAccelLsm(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 //		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
 //		double[][] OffsetVector = calibDetailsKinematic.getCurrentOffsetVector();
 //		double[][] SensitivityMatrix = calibDetailsKinematic.getCurrentSensitivityMatrix();
@@ -8107,10 +8106,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		mDefaultCalibrationParametersDigitalAccel = checkIfDefaultWideRangeAccelCal(mOffsetVectorWRAccel, mSensitivityMatrixWRAccel, mAlignmentMatrixWRAccel);
 //		updateCalibMapAccelWr();
 		
-		mCurrentCalibDetailsAccelWr.parseCalParamByteArray(bufferCalibrationParameters);
+		mCurrentCalibDetailsAccelWr.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
-	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters) {
+	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 //		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
 //		double[][] OffsetVector = calibDetailsKinematic.getCurrentOffsetVector();
 //		double[][] SensitivityMatrix = calibDetailsKinematic.getCurrentSensitivityMatrix();
@@ -8151,7 +8150,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		mDefaultCalibrationParametersMag = checkIfDefaulMagCal(mOffsetVectorMagnetometer, mSensitivityMatrixMagnetometer, mAlignmentMatrixMagnetometer);
 //		updateCalibMapMag();
 		
-		mCurrentCalibDetailsMag.parseCalParamByteArray(bufferCalibrationParameters);
+		mCurrentCalibDetailsMag.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
 //	private void updateCalibMapAccelLn() {
@@ -11716,7 +11715,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setSamplingDividerLsm303dlhcAccel(response[0]);
 		}
 		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
-			parseCalibParamFromPacketAccelLsm(response);
+			parseCalibParamFromPacketAccelLsm(response, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 		}
 		else if(cPD==UART_COMPONENT_PROPERTY.GSR.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ

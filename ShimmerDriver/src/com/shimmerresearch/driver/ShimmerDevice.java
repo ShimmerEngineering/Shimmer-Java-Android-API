@@ -35,6 +35,7 @@ import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.CalibDetails;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
@@ -2947,7 +2948,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public byte[] generateAllCalibByteArray(){
+	public byte[] generateCalibDump(){
 		byte[] calibBytesAll = new byte[]{};
 		
 //		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
@@ -2964,7 +2965,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		for(Integer sensorMapKey:mapOfAllCalib.keySet()){
 			TreeMap<Integer, CalibDetails> calibMapPerSensor = mapOfAllCalib.get(sensorMapKey);
 			for(CalibDetails calibPerRange:calibMapPerSensor.values()){
-				byte[] calibBytesPerSensor = calibPerRange.generateCalParamByteArrayWithTimestamp();
+				byte[] calibBytesPerSensor = calibPerRange.generateCalibDump();
 				if(calibBytesPerSensor!=null){
 					byte[] calibSensorKeyBytes = new byte[2];
 					calibSensorKeyBytes[0] = (byte)((sensorMapKey>>0)&0xFF);
@@ -3000,7 +3001,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * 
 	 * @param calibBytesAll
 	 */
-	public void parseAllCalibByteArray(byte[] calibBytesAll){
+	public void parseCalibByteDump(byte[] calibBytesAll, CALIB_READ_SOURCE calibReadSource){
 
 		mCalibBytes = calibBytesAll;
 		
@@ -3029,6 +3030,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				byte[] calibTimeBytesTicks = Arrays.copyOfRange(remainingBytes, 4, 12);
 				
 				//Debugging
+				consolePrintLn("");
 				consolePrintLn("Sensor id Bytes - \t" + sensorMapKey + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(sensorIdBytes));
 				consolePrintLn("Range id Bytes - \t" + rangeValue + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rangeIdBytes));
 				consolePrintLn("Calib Bytes Length - \t" + calibLength);
@@ -3040,7 +3042,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 12, endIndex);
 					consolePrintLn("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
 
-					parseSensorCalibBytes(sensorMapKey, rangeValue, calibTimeBytesTicks, calibBytes);
+					parseCalibByteDumpPerSensor(sensorMapKey, rangeValue, calibTimeBytesTicks, calibBytes, calibReadSource);
 					remainingBytes = Arrays.copyOfRange(remainingBytes, endIndex, remainingBytes.length);
 //					consolePrintLn("Remaining Bytes - " + remainingBytes);
 				}
@@ -3052,13 +3054,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-//	/** Overwritten in ShimmerObject for Shimmer3 support
-//	 * @param sensorMapKey
-//	 * @param rangeValue
-//	 * @param calibTime
-//	 * @param calibBytes
-//	 */
-//	protected void parseSensorCalibBytes(int sensorMapKey, int rangeValue, long calibTime, byte[] calibBytes) {
+	protected void parseCalibByteDumpPerSensor(int sensorMapKey, int rangeValue, byte[] calibTimeBytesTicks, byte[] calibBytes, CALIB_READ_SOURCE calibReadSource) {
 //		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 //		while(iterator.hasNext()){
 //			AbstractSensor abstractSensor = iterator.next();
@@ -3067,15 +3063,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //				break;
 //			}
 //		}
-//	}
-	
-	protected void parseSensorCalibBytes(int sensorMapKey, int rangeValue, byte[] calibTimeBytesTicks, byte[] calibBytes) {
+		
 		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfAllCalib = getMapOfSensorCalibrationAll();
 		TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfAllCalib.get(sensorMapKey);
 		if(mapOfCalibPerSensor!=null){
 			CalibDetails calibDetails = mapOfCalibPerSensor.get(rangeValue);
 			if(calibDetails!=null){
-				calibDetails.parseCalParamByteArray(calibTimeBytesTicks, calibBytes);
+				calibDetails.parseCalibDump(calibTimeBytesTicks, calibBytes, calibReadSource);
 //				consolePrintLn("SUCCESSFULLY PARSED");
 			}
 		}

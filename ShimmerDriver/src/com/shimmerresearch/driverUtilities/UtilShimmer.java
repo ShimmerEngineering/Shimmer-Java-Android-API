@@ -461,41 +461,41 @@ public class UtilShimmer implements Serializable {
 	}
 }
 
-	/**Used by the RTC sent over Bluetooth/Dock comms
-	 * @param milliseconds
-	 * @return
-	 */
-	public static byte[] convertMilliSecondsToShimmerRtcDataBytesMSB(long milliseconds) {
-		byte[] rtcTimeArray = convertMilliSecondsToShimmerRtcDataBytesLSB(milliseconds);
-		ArrayUtils.reverse(rtcTimeArray); // Big-endian by default
-		return rtcTimeArray;
-	}
-
-	/**Used in by the RTCs in the calibration Dump file
+	/**Used by the RTC sent over Bluetooth/Dock comms and calibration Dump file
 	 * @param milliseconds
 	 * @return
 	 */
 	public static byte[] convertMilliSecondsToShimmerRtcDataBytesLSB(long milliseconds) {
+		byte[] rtcTimeArray = convertMilliSecondsToShimmerRtcDataBytesMSB(milliseconds);
+		ArrayUtils.reverse(rtcTimeArray); // Big-endian by default
+		return rtcTimeArray;
+	}
+
+	/** 
+	 * @param milliseconds
+	 * @return
+	 */
+	public static byte[] convertMilliSecondsToShimmerRtcDataBytesMSB(long milliseconds) {
 		long milisecondTicks = (long)(((double)milliseconds) * 32.768); // Convert miliseconds to clock ticks
 		byte[] rtcTimeArray = ByteBuffer.allocate(8).putLong(milisecondTicks).array();
 		return rtcTimeArray;
 	}
 
-	/**Used by the RTC sent over Bluetooth/Dock comms
-	 * @param rtcTimeArray
-	 * @return
-	 */
-	public static long convertShimmerRtcDataBytesToMilliSecondsMSB(byte[] rtcTimeArray) {
-		byte[] reversedArray = ArrayUtils.addAll(rtcTimeArray, null); //Create a clone
-		ArrayUtils.reverse(reversedArray); // Big-endian by default
-		return convertShimmerRtcDataBytesToMilliSecondsLSB(reversedArray);
-	}
-
-	/**Used in by the RTCs in the calibration Dump file
+	/**Used by the RTC sent over Bluetooth/Dock comms and calibration Dump file
 	 * @param rtcTimeArray
 	 * @return
 	 */
 	public static long convertShimmerRtcDataBytesToMilliSecondsLSB(byte[] rtcTimeArray) {
+		byte[] reversedArray = ArrayUtils.addAll(rtcTimeArray, null); //Create a clone
+		ArrayUtils.reverse(reversedArray); // Big-endian by default
+		return convertShimmerRtcDataBytesToMilliSecondsMSB(reversedArray);
+	}
+
+	/**
+	 * @param rtcTimeArray
+	 * @return
+	 */
+	public static long convertShimmerRtcDataBytesToMilliSecondsMSB(byte[] rtcTimeArray) {
 		long timeWrapped = ByteBuffer.wrap(rtcTimeArray).getLong();
 		long milisecondTicks = (long)((((double)timeWrapped)/32.768));  // Convert clock ticks to milliseconds
 		return milisecondTicks;
@@ -732,6 +732,15 @@ public class UtilShimmer implements Serializable {
 	public static boolean isAllFF(byte[] bufferCalibrationParameters) {
 		for(byte myByte:bufferCalibrationParameters){
 			if(myByte!=(byte)0xFF){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean isAllZeros(byte[] bufferCalibrationParameters) {
+		for(byte myByte:bufferCalibrationParameters){
+			if(myByte!=(byte)0x00){
 				return false;
 			}
 		}

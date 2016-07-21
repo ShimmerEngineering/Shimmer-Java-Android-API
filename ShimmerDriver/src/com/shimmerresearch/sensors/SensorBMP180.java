@@ -27,6 +27,7 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
@@ -384,7 +385,7 @@ public class SensorBMP180 extends AbstractSensor {
 			if(responseBytes[0]!=LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
 				byte[] pressureResoRes = new byte[22]; 
 				System.arraycopy(responseBytes, 1, pressureResoRes, 0, 22);
-				retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseBytes[0]);
+				retrievePressureCalibrationParametersFromPacket(pressureResoRes, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 			}
 		}
 	}
@@ -445,7 +446,7 @@ public class SensorBMP180 extends AbstractSensor {
 		return caldata;
 	}
 	
-	public void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, int packetType) {
+	public void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
 //		if (packetType == BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
 //			pressTempAC1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
 //			pressTempAC2 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[3] & 0xFF) + ((int)(pressureResoRes[2] & 0xFF) << 8)),16);
@@ -459,7 +460,7 @@ public class SensorBMP180 extends AbstractSensor {
 //			pressTempMC = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[19] & 0xFF) + ((int)(pressureResoRes[18] & 0xFF) << 8)),16);
 //			pressTempMD = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
 //		}
-		mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes);
+		mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes, calibReadSource);
 		mCalibDetailsBmp180.mRangeValue = getPressureResolution();
 	}
 	

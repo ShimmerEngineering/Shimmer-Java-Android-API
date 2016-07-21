@@ -15,6 +15,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.CalibDetails;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -297,7 +298,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
+	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 //		int idxAnalogAccelCalibration = 31;
 		//fix for newer firmware -> see InfomemLayoutShimmer3
 		int idxAnalogAccelCalibration =		34;
@@ -306,7 +307,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		//Accel Calibration Parameters
 		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
 		System.arraycopy(mInfoMemBytes, idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
-		parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters);	
+		parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);	
 	}
 
 
@@ -427,7 +428,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		return mCurrentCalibDetailsAccelLn.generateCalParamByteArray();
 	}
 	
-	public void parseCalibParamFromPacketAccelAnalog(byte[] bufferCalibrationParameters) {
+	public void parseCalibParamFromPacketAccelAnalog(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 //		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
 //		double[][] OffsetVector = calibDetailsKinematic.mCurrentOffsetVector;
 //		double[][] SensitivityMatrix = calibDetailsKinematic.mCurrentSensitivityMatrix;
@@ -460,7 +461,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 //			
 ////		mDefaultCalibrationParametersAccel = checkIfDefaultAccelCal(mOffsetVectorAnalogAccel, mSensitivityMatrixAnalogAccel, mAlignmentMatrixAnalogAccel);
 		
-		mCurrentCalibDetailsAccelLn.parseCalParamByteArray(bufferCalibrationParameters);
+		mCurrentCalibDetailsAccelLn.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 	
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {

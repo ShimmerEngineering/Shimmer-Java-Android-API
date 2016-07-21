@@ -23,6 +23,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilCalibration;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -794,13 +795,13 @@ public class SensorLSM303 extends AbstractSensor{
 		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
 		System.arraycopy(mInfoMemBytes, idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
 //		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
-		parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters);
+		parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 		
 		// LSM303DLHC Magnetometer Calibration Parameters
 		bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
 		System.arraycopy(mInfoMemBytes, idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
 //		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
-		parseCalibParamFromPacketMag(bufferCalibrationParameters);
+		parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 	}
 
 	
@@ -1215,7 +1216,7 @@ public class SensorLSM303 extends AbstractSensor{
 //		}
 //	}
 	
-	public void parseCalibParamFromPacketAccelLsm(byte[] bufferCalibrationParameters) {
+	public void parseCalibParamFromPacketAccelLsm(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 //		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
 //		double[][] OffsetVector = calibDetailsKinematic.mCurrentOffsetVector;
 //		double[][] SensitivityMatrix = calibDetailsKinematic.mCurrentSensitivityMatrix;
@@ -1233,10 +1234,10 @@ public class SensorLSM303 extends AbstractSensor{
 //		mDefaultCalibrationParametersDigitalAccel = checkIfDefaultWideRangeAccelCal(mOffsetVectorWRAccel, mSensitivityMatrixWRAccel, mAlignmentMatrixWRAccel);
 //		updateCalibMapAccelWr();
 		
-		mCurrentCalibDetailsAccelWr.parseCalParamByteArray(bufferCalibrationParameters);
+		mCurrentCalibDetailsAccelWr.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
-	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters) {
+	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 //		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
 //		double[][] OffsetVector = calibDetailsKinematic.mCurrentOffsetVector;
 //		double[][] SensitivityMatrix = calibDetailsKinematic.mCurrentSensitivityMatrix;
@@ -1277,7 +1278,7 @@ public class SensorLSM303 extends AbstractSensor{
 //		mDefaultCalibrationParametersMag = checkIfDefaulMagCal(mOffsetVectorMagnetometer, mSensitivityMatrixMagnetometer, mAlignmentMatrixMagnetometer);
 //		updateCalibMapMag();
 		
-		mCurrentCalibDetailsMag.parseCalParamByteArray(bufferCalibrationParameters);
+		mCurrentCalibDetailsMag.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 	
 	
