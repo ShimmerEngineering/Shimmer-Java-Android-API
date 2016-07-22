@@ -34,7 +34,7 @@ public interface InterfaceByteLevelDataComm {
 	public void eventDeviceDisconnected();
 	
 	public void registerSerialPortRxEventCallback(SerialPortListener shimmerSerialEventCallback);
-	void setByteLevelDataCommListener(ByteLevelDataCommListener spl);
+	void addByteLevelDataCommListener(ByteLevelDataCommListener spl);
 	public void clearByteLevelDataCommListener();
   
 }

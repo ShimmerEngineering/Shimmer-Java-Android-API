@@ -26,7 +26,6 @@ public abstract class AbstractSerialPortComm implements InterfaceByteLevelDataCo
     
 	@Override
 	public void eventDeviceConnected() {
-		// TODO Auto-generated method stub
 		if (mByteLevelDataCommListener.size()!=0){
 			for (ByteLevelDataCommListener commListerner:mByteLevelDataCommListener){
 				commListerner.eventConnected();
@@ -36,7 +35,6 @@ public abstract class AbstractSerialPortComm implements InterfaceByteLevelDataCo
 
 	@Override
 	public void eventDeviceDisconnected() {
-		// TODO Auto-generated method stub
 		if (mByteLevelDataCommListener.size()!=0){
 			for (ByteLevelDataCommListener commListerner:mByteLevelDataCommListener){
 				commListerner.eventDisconnected();
@@ -45,8 +43,7 @@ public abstract class AbstractSerialPortComm implements InterfaceByteLevelDataCo
 	}
 
 	@Override
-	public void setByteLevelDataCommListener(ByteLevelDataCommListener spl) {
-		// TODO Auto-generated method stub
+	public void addByteLevelDataCommListener(ByteLevelDataCommListener spl) {
 		mByteLevelDataCommListener.add(spl);
 	}
 }

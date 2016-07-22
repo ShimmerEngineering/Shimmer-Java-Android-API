@@ -232,6 +232,8 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 			mIOThread.stop=true;
 			mIOThread = null;
 		}
+		
+		//TODO feed this up the levels so that the com port will can be closed
 	}
 
 	

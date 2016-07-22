@@ -4,15 +4,15 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class ShimmerRadioInitializer extends SerialPortCommJssc {
+public class ShimmerRadioInitializerPc extends SerialPortCommJssc {
 	
 	@Deprecated
-	public ShimmerRadioInitializer(String comPort, int baudToUse) {
+	public ShimmerRadioInitializerPc(String comPort, int baudToUse) {
 		this(comPort, comPort, baudToUse);
 	}
 	
 	@Deprecated
-	public ShimmerRadioInitializer(String comPort, String uniqueId, int baudToUse) {
+	public ShimmerRadioInitializerPc(String comPort, String uniqueId, int baudToUse) {
 		super(comPort, uniqueId, baudToUse);
 		SERIAL_PORT_TIMEOUT = 2000; // was 2000
 	}

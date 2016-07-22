@@ -77,7 +77,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 	
 	private void initialize(){
 		mCommsInterface.setVerboseMode(false,false);
-		mCommsInterface.setByteLevelDataCommListener(new RadioByteLevelListener());
+		mCommsInterface.addByteLevelDataCommListener(new RadioByteLevelListener());
 		
 		if (mCommsInterface.isConnected()){
 			mCommsInterface.eventDeviceConnected();
