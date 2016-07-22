@@ -9,7 +9,7 @@ import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
 public abstract class AbstractByteLevelProtocol {
 	
 	ProtocolListener mProtocolListener;
-	InterfaceByteLevelDataComm mShimmerRadio; //every radio protocol requires radio control
+	InterfaceByteLevelDataComm mCommsInterface; //every radio protocol requires radio control
 	protected int mPacketSize = 0;
 	
 	protected int mNumOfInfoMemSetCmds;
@@ -67,15 +67,15 @@ public abstract class AbstractByteLevelProtocol {
 	 * 
 	 */
 	public AbstractByteLevelProtocol(){
-	
 	}
 	
-	public AbstractByteLevelProtocol(InterfaceByteLevelDataComm shimmerRadio){
-		mShimmerRadio = shimmerRadio;
+	public AbstractByteLevelProtocol(InterfaceByteLevelDataComm commsInterface){
+		mCommsInterface = commsInterface;
 	}
 	
-	public void setByteLevelDataComm(InterfaceByteLevelDataComm shimmerRadio){
-		mShimmerRadio = shimmerRadio;
+	
+	public void setByteLevelDataComm(InterfaceByteLevelDataComm commsInterface){
+		mCommsInterface = commsInterface;
 	}
 	
 	public void setProtocolListener(ProtocolListener protocolListener) throws Exception{

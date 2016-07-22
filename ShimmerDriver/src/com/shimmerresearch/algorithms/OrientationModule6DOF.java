@@ -357,9 +357,10 @@ public class OrientationModule6DOF extends OrientationModule{
 	public OrientationModule6DOF(AlgorithmDetails algorithmDetails, double samplingRate) {
 		// TODO Auto-generated constructor stub
 		mAlgorithmDetails = algorithmDetails;
+		mAlgorithmName = algorithmDetails.mAlgorithmName;
+		
 		mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
 		mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
-		mAlgorithmName = algorithmDetails.mAlgorithmName;
 //		mAlgorithmGroupingName = "6DOF";
 
 		this.samplingRate = samplingRate;
