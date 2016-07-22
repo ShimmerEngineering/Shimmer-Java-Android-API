@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.driver.Configuration;
@@ -488,8 +490,10 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 	
 	private void setPressureResolution(int i){
-//		System.out.println("New resolution:\t" + ListofPressureResolution[i]);
-		mPressureResolution = i;
+		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
+//			System.out.println("New resolution:\t" + ListofPressureResolution[i]);
+			mPressureResolution = i;
+		}
 	}
 	
 	private int getPressureResolution(){

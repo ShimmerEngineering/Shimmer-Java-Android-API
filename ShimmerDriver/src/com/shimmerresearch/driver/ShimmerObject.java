@@ -7547,7 +7547,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public void setPressureResolution(int i){
-		mPressureResolution = i;
+		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
+			mPressureResolution = i;
+		}
 	}
 	
 	public void setGSRRange(int i){
@@ -10037,9 +10039,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public void setDigitalAccelRange(int i){
-		mAccelRange = i;
-		updateCurrentAccelLnCalibInUse();
-		updateCurrentAccelWrCalibInUse();
+		if(isShimmerGen2() || ArrayUtils.contains(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, i)){
+			mAccelRange = i;
+			updateCurrentAccelLnCalibInUse(); // this needs to be here for Shimmer2/2r
+			updateCurrentAccelWrCalibInUse();
+		}
 	}
 
 	
@@ -10634,11 +10638,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
 	 */
 	protected void setMPU9150AccelRange(int i) {
-		if(checkIfAnyMplChannelEnabled()){
-			i=0; // 2g
+		if(ArrayUtils.contains(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, i)){
+			if(checkIfAnyMplChannelEnabled()){
+				i=0; // 2g
+			}
+			mMPU9150AccelRange = i;
 		}
-		
-		mMPU9150AccelRange = i;
 	}
 
 	/**

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
@@ -2445,17 +2446,19 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 	
 	protected void setMPU9150GyroRange(int i){
-//		//Gyro rate can not be set to 250dps when DMP is on
-//		if((checkIfAnyMplChannelEnabled()) && (i==0)){
-//			i=1;
-//		}
-		
-		if(checkIfAnyMplChannelEnabled()){
-			i=3; // 2000dps
+		if(ArrayUtils.contains(ListofMPU9150GyroRangeConfigValues, i)){
+//			//Gyro rate can not be set to 250dps when DMP is on
+//			if((checkIfAnyMplChannelEnabled()) && (i==0)){
+//				i=1;
+//			}
+			
+			if(checkIfAnyMplChannelEnabled()){
+				i=3; // 2000dps
+			}
+			
+			mGyroRange = i;
+			updateCurrentGyroCalibInUse();
 		}
-		
-		mGyroRange = i;
-		updateCurrentGyroCalibInUse();
 	}
 
 	/**

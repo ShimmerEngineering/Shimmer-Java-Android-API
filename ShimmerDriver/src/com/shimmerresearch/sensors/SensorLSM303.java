@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
@@ -1434,8 +1436,10 @@ public class SensorLSM303 extends AbstractSensor{
 		
 	
 	public void setLSM303AccelRange(int valueToSet){
-		mAccelRange = valueToSet;
-		updateCurrentAccelWrCalibInUse();
+		if(ArrayUtils.contains(ListofLSM303DLHCAccelRangeConfigValues, valueToSet)){
+			mAccelRange = valueToSet;
+			updateCurrentAccelWrCalibInUse();
+		}
 	}
 
 
@@ -1449,8 +1453,10 @@ public class SensorLSM303 extends AbstractSensor{
 	
 
 	public void setLSM303MagRange(int valueToSet){
-		mMagRange = valueToSet;
-		updateCurrentAccelWrCalibInUse();
+		if(ArrayUtils.contains(ListofMagRangeConfigValues, valueToSet)){
+			mMagRange = valueToSet;
+			updateCurrentAccelWrCalibInUse();
+		}
 	}
 	
 	
