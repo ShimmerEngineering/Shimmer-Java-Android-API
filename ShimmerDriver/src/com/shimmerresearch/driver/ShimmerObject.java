@@ -254,6 +254,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int ECG2HR_CHIP2_CH2 = 1<<12;
 		public final static int ECG2HR_HRV_TIME_DOMAIN = 1<<11;
 		public final static int ECG2HR_HRV_FREQ_DOMAIN = 1<<10;
+		
+		// ----------------------------------------------------------		
+		public final static int EMG_PROCESSING = 1<<8;
+				
 // ----------- Now implemented in SensorPPG -------------------------		
 		public final static int PPG_TO_HR2_1_14 = 1<<7;
 		public final static int PPG_TO_HR1_12_13 = 1<<6;
