@@ -84,8 +84,11 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
+import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorSTC3100.GuiLabelSensors;
+import com.shimmerresearch.sensors.SensorSTC3100.ObjectClusterSensorName;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
@@ -106,6 +109,7 @@ public class Configuration {
 		public static final String NO_UNITS = "no_units";
 		public static final String MILLISECONDS = "ms";
 		public static final String SECONDS = "s";
+		public static final String MINUTES = "min";
 		public static final String METER = "m";
 		public static final String METER_PER_SECOND = "m/s";
 		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";  //XXX-RS-LSM-SensorClass?
@@ -121,6 +125,8 @@ public class Configuration {
 		public static final String KOHMS_PER_SECOND = "kOhms/s";
 		public static final String KOHMS_SECONDS = "kOhm.s";
 		public static final String MILLIVOLTS = "mV";
+		public static final String MILLIAMPS= "mA";
+		public static final String MILLIAMP_HOUR = "mAh";
 		public static final String BEATS_PER_MINUTE = "BPM";
 		public static final String KPASCAL = "kPa";
 		public static final String DEGREES_CELSUIS = "Degrees Celsius";
@@ -787,7 +793,16 @@ public class Configuration {
 			public static final int SHIMMER_MPU9150_MPL_ACCEL = 59;
 			public static final int SHIMMER_MPU9150_MPL_MAG = 60;
 			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = 61;
-	
+			
+			// STC3100 Channels
+			public static final int SHIMMER_STC3100 = 62;
+//			public static final int SHIMMER_STC3100_VOLTAGE = 62;
+//			public static final int SHIMMER_STC3100_CURRENT = 63;
+//			public static final int SHIMMER_STC3100_TEMP = 64;
+//			public static final int SHIMMER_STC3100_CHARGE = 65;
+//			public static final int SHIMMER_STC3100_BATTERY_PERCENTAGE = 66;
+//			public static final int SHIMMER_STC3100_TIME_REMAINING = 67;
+			
 
 			//Sensors channels modified or created on the host side
 			// Combination Channels
@@ -925,8 +940,8 @@ public class Configuration {
 			MPU_ACCEL_GYRO_MAG(SensorMPU9X50.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG), // "MPU 9DoF"),
 			MPU_OTHER(SensorMPU9X50.GuiLabelSensorTiles.MPU_OTHER), //"MPU Other"),
 			GPS("GPS"),
-			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280);
-			
+			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280),
+			STC3100_MONITORING (SensorSTC3100.GuiLabelSensorTiles.STC3100_MONITORING);
 			private String tileText = "";
 			
 			GuiLabelSensorTiles(String text){
