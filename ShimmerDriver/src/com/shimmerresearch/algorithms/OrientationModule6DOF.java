@@ -352,60 +352,15 @@ public class OrientationModule6DOF extends OrientationModule{
 
 	}
 
-	public ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster){
-
-
-		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-			if(isEulerOutput()){
-				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_YAW_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getYaw());
-				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_PITCH_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getPitch());
-				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_ROLL_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getRoll());
-			}
-			if(isQuaternionOutput()){
-				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_W_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionW());
-				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_X_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionX());
-				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_Y_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionY());
-				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_Z_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionZ());
-			}
-			if(isAxisAngleOutput()){
-				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_A_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getTheta());
-				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_X_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleX());
-				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleY());
-				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleZ());
-			}
-			
-		}
-		else if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
-			if(isEulerOutput()){
-				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_YAW_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getYaw());
-				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_PITCH_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getPitch());
-				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_ROLL_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getRoll());
-			}
-			if(isQuaternionOutput()){
-				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_W_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionW());
-				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_X_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionX());
-				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_Y_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionY());
-				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_Z_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionZ());
-			}
-			if(isAxisAngleOutput()){
-				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_A_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getTheta());
-				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_X_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleX());
-				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleY());
-				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleZ());
-			}
-			
-		}
-
-		return objectCluster;
-	}
-
+	
 
 	public OrientationModule6DOF(AlgorithmDetails algorithmDetails, double samplingRate) {
 		// TODO Auto-generated constructor stub
 		mAlgorithmDetails = algorithmDetails;
+		mAlgorithmName = algorithmDetails.mAlgorithmName;
+		
 		mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
 		mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
-		mAlgorithmName = algorithmDetails.mAlgorithmName;
 //		mAlgorithmGroupingName = "6DOF";
 
 		this.samplingRate = samplingRate;
@@ -418,6 +373,47 @@ public class OrientationModule6DOF extends OrientationModule{
 
 	}
 
+	@Override
+	public void setGeneralAlgorithmName() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setFilteringOption() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setMinSamplingRateForAlgorithm() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setSupportedVerInfo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void generateConfigOptionsMap() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void generateAlgorithmGroupingMap() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	@Override
 	public void initialize() throws Exception {
 
@@ -597,8 +593,53 @@ public class OrientationModule6DOF extends OrientationModule{
 		}
 	}
 
+	public ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster){
 
 
+		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
+			if(isEulerOutput()){
+				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_YAW_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getYaw());
+				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_PITCH_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getPitch());
+				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_ROLL_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getRoll());
+			}
+			if(isQuaternionOutput()){
+				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_W_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionW());
+				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_X_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionX());
+				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_Y_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionY());
+				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_Z_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionZ());
+			}
+			if(isAxisAngleOutput()){
+				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_A_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getTheta());
+				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_X_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleX());
+				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleY());
+				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleZ());
+			}
+			
+		}
+		else if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
+			if(isEulerOutput()){
+				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_YAW_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getYaw());
+				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_PITCH_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getPitch());
+				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_ROLL_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getRoll());
+			}
+			if(isQuaternionOutput()){
+				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_W_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionW());
+				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_X_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionX());
+				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_Y_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionY());
+				objectCluster.addData(ObjectClusterSensorName.QUAT_MADGE_6DOF_Z_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getQuaternionZ());
+			}
+			if(isAxisAngleOutput()){
+				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_A_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getTheta());
+				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_X_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleX());
+				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleY());
+				objectCluster.addData(ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z_WR,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getAngleZ());
+			}
+			
+		}
+
+		return objectCluster;
+	}
+	
 }
 
 

@@ -454,6 +454,7 @@ public class SensorPPG extends AbstractSensor {
 	
 	public SensorPPG(ShimmerDevice shimmerDevice) {
 		super(SENSORS.PPG, shimmerDevice);
+		initialise();
 	}
 
 //--------- Constructors for this class end --------------
@@ -461,7 +462,7 @@ public class SensorPPG extends AbstractSensor {
 
 //--------- Abstract methods implemented start --------------
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		//TODO either use createLocalSensorMap or fill in the "processDataCustom" method
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		
@@ -486,25 +487,22 @@ public class SensorPPG extends AbstractSensor {
 				sensorPpg.mDerivedSensorBitmapID = derivedSensorBitmapID;
 			}
 		}
-
 	}
-
 	 
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		mConfigOptionsMap.clear();
 		mConfigOptionsMap.put(GuiLabelConfig.PPG_ADC_SELECTION , configOptionPpgAdcSelection); 
 		mConfigOptionsMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, configOptionPpg1AdcSelection); 
 		mConfigOptionsMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, configOptionPpg2AdcSelection); 
 //		mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
 	}
-
 	
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_DELUXE_SUPP.ordinal();
 		
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGen4()){
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.PROTO3_DELUXE_SUPP,
 					Arrays.asList(
@@ -628,7 +626,8 @@ public class SensorPPG extends AbstractSensor {
 	//--------- Sensor specific methods start --------------
 	
 	public boolean checkIfSensorEnabled(int sensorMapKey){
-		if (getHardwareVersion() == HW_ID.SHIMMER_3) {
+		//TODO update for proper Shimmer4 sensors
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			//Used for Shimmer GSR hardware
 			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY){
 				if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12))||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13)))

@@ -51,24 +51,24 @@ public abstract void actionSettingResolver(ActionSetting ac);
  * @author JC Lim, Mark Nolan
  *
  */
-public class CommsProtocolRadio extends BasicProcessWithCallBack implements Serializable{
+public class CommsProtocolRadio extends BasicProcessWithCallBack {
 
 	/** * */
 	private static final long serialVersionUID = -5368287098255841194L;
 	
 	public int mPacketSize;
 	public transient List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
-	public transient AbstractByteLevelProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
-	public InterfaceByteLevelDataComm mSerialPort;
+	public transient AbstractByteLevelProtocol mCommsProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
+	public InterfaceByteLevelDataComm mCommsInterface;
 	
-	public CommsProtocolRadio(InterfaceByteLevelDataComm dataComm, AbstractByteLevelProtocol radioProtocol){
-		if(dataComm!=null){
-			mSerialPort = dataComm;
-			mSerialPort.clearByteLevelDataCommListener();
+	public CommsProtocolRadio(InterfaceByteLevelDataComm commsInterface, AbstractByteLevelProtocol commsProtocol){
+		if(commsInterface!=null){
+			mCommsInterface = commsInterface;
+			mCommsInterface.clearByteLevelDataCommListener();
 			
-			if(radioProtocol!=null){
-				mRadioProtocol = radioProtocol;
-				mRadioProtocol.setByteLevelDataComm(dataComm);
+			if(commsProtocol!=null){
+				mCommsProtocol = commsProtocol;
+				mCommsProtocol.setByteLevelDataComm(commsInterface);
 			}
 			initialize();
 		}
@@ -76,11 +76,11 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	
 	
 	private void initialize(){
-		mSerialPort.setVerboseMode(false,false);
-		mSerialPort.setByteLevelDataCommListener(new RadioByteLevelListener());
+		mCommsInterface.setVerboseMode(false,false);
+		mCommsInterface.setByteLevelDataCommListener(new RadioByteLevelListener());
 		
-		if (mSerialPort.isConnected()){
-			mSerialPort.eventDeviceConnected();
+		if (mCommsInterface.isConnected()){
+			mCommsInterface.eventDeviceConnected();
 		}
 	}
 	
@@ -96,7 +96,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	
 	public void connect() throws DeviceException{
 		try{
-			mSerialPort.connect();
+			mCommsInterface.connect();
 		}
 		catch (DeviceException dE) {
 			disconnect();
@@ -105,42 +105,42 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	};
 	
 	public void disconnect() throws DeviceException{
-		if(mRadioProtocol!=null){
-			mRadioProtocol.stop();
+		if(mCommsProtocol!=null){
+			mCommsProtocol.stop();
 		}
-		if(mSerialPort!=null){
+		if(mCommsInterface!=null){
 			try{
-				mSerialPort.disconnect();
+				mCommsInterface.disconnect();
 			}
 			catch (DeviceException e) {
 				throw(e);
 	        } finally {
-				mSerialPort=null;
+				mCommsInterface=null;
 	        }
 		}
 	};
 	
 	public boolean isConnected(){
-		if(mSerialPort!=null){
-			return mSerialPort.isConnected();
+		if(mCommsInterface!=null){
+			return mCommsInterface.isConnected();
 		}
 		return false;
 	}
 
 	public void stopStreaming(){
-		mRadioProtocol.stopStreaming();
+		mCommsProtocol.stopStreaming();
 	}
 	
 	public void startStreaming(){
-		mRadioProtocol.startStreaming();
+		mCommsProtocol.startStreaming();
 	}
 	
 	public void startSDLogging(){
-		mRadioProtocol.startSDLogging();
+		mCommsProtocol.startSDLogging();
 	}
 	
 	public void stopSDLogging() {
-		mRadioProtocol.stopSDLogging();
+		mCommsProtocol.stopSDLogging();
 	}
 
 	/**
@@ -149,67 +149,67 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 	 * @param enabledSensors e.g SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG
 	 */
 	public void writeEnabledSensors(long enabledSensors) {
-		mRadioProtocol.writeEnabledSensors(enabledSensors);
+		mCommsProtocol.writeEnabledSensors(enabledSensors);
 	}
 
 	public void toggleLed() {
-		mRadioProtocol.toggleLed();
+		mCommsProtocol.toggleLed();
 	}
 
 	public void readFWVersion() {
-		mRadioProtocol.readFWVersion();
+		mCommsProtocol.readFWVersion();
 	}
 
 	public void readShimmerVersion() {
-		mRadioProtocol.readShimmerVersionNew();
+		mCommsProtocol.readShimmerVersionNew();
 	}
 
 	public void readInfoMem(int address, int size, int maxMemAddress) {
-		mRadioProtocol.readInfoMem(address, size, maxMemAddress);
+		mCommsProtocol.readInfoMem(address, size, maxMemAddress);
 	}
 	
 	public void writeInfoMem(int startAddress, byte[] buf, int maxMemAddress) {
-		mRadioProtocol.writeInfoMem(startAddress, buf, maxMemAddress);
+		mCommsProtocol.writeInfoMem(startAddress, buf, maxMemAddress);
 	}
 
 	public void readPressureCalibrationCoefficients() {
-		mRadioProtocol.readPressureCalibrationCoefficients();
+		mCommsProtocol.readPressureCalibrationCoefficients();
 	}
 
 	public void startTimerCheckIfAlive() {
-		mRadioProtocol.startTimerCheckIfAlive();
+		mCommsProtocol.startTimerCheckIfAlive();
 	}
 
 	public void readExpansionBoardID() {
-		mRadioProtocol.readExpansionBoardID();
+		mCommsProtocol.readExpansionBoardID();
 	}
 
 	public void readLEDCommand() {
-		mRadioProtocol.readLEDCommand();
+		mCommsProtocol.readLEDCommand();
 	}
 
 	public void readStatusLogAndStream() {
-		mRadioProtocol.readStatusLogAndStream();
+		mCommsProtocol.readStatusLogAndStream();
 	}
 
 	public void readBattery() {
-		mRadioProtocol.readBattery();
+		mCommsProtocol.readBattery();
 	}
 
 	public void inquiry() {
-		mRadioProtocol.inquiry();
+		mCommsProtocol.inquiry();
 	}
 	
 	public void startTimerReadStatus() {
-		mRadioProtocol.startTimerReadStatus();
+		mCommsProtocol.startTimerReadStatus();
 	}
 
 	public void startTimerReadBattStatus() {
-		mRadioProtocol.startTimerReadBattStatus();
+		mCommsProtocol.startTimerReadBattStatus();
 	}
 
 	public void operationPrepare() {
-		mRadioProtocol.operationPrepare();
+		mCommsProtocol.operationPrepare();
 	}
 	
 	
@@ -267,14 +267,14 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack implements Seri
 			}
 
 			try {
-				mRadioProtocol.setProtocolListener(new CommsProtocolListener());
+				mCommsProtocol.setProtocolListener(new CommsProtocolListener());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 
-			mRadioProtocol.initialize();
+			mCommsProtocol.initialize();
 		}
 
 		@Override

@@ -185,43 +185,41 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	 */
 	public SensorGSR(ShimmerVerObject svo) {
 		super(SENSORS.GSR, svo);
+		initialise();
 	}
 	//--------- Constructors for this class end --------------
 
 	
 	//--------- Abstract methods implemented start --------------
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 
 	
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		mConfigOptionsMap.put(GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
 	}
 
 	
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		
 		int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.GSR.ordinal();
 		
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 
-				|| svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGenGq()){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					GuiLabelSensorTiles.GSR,
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+		}
+		else if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.GSR,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
 							//TODO PPG not working here because it's not contained within this sensor class
 								Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
-		}
-		else if((svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR)
-				||(svo.mHardwareVersion==HW_ID.SHIMMER_2R_GQ)){
-			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.GSR,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
 		}
 		super.updateSensorGroupingMap();	
@@ -248,7 +246,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 				}
 				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+					if (mShimmerVerObject.isShimmerGen2()){
 						p1 = 0.0373;
 						p2 = -24.9915;
 
@@ -259,7 +257,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 						p2 = -24.9915;
 					}
 				} else if (mGSRRange==1 || newGSRRange==1) {
-					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+					if (mShimmerVerObject.isShimmerGen2()){
 						p1 = 0.0054;
 						p2 = -3.5194;
 					} else {
@@ -269,7 +267,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 						p2 = -3.5194;
 					}
 				} else if (mGSRRange==2 || newGSRRange==2) {
-					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+					if (mShimmerVerObject.isShimmerGen2()){
 						p1 = 0.0015;
 						p2 = -1.0163;
 					} else {
@@ -279,7 +277,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 						p2 = -1.0163;
 					}
 				} else if (mGSRRange==3 || newGSRRange==3) {
-					if (mShimmerVerObject.mHardwareVersion!=HW_ID.SHIMMER_3){
+					if (mShimmerVerObject.isShimmerGen2()){
 						p1 = 4.5580e-04;
 						p2 = -0.3014;
 					} else {

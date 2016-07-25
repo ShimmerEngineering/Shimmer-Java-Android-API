@@ -1024,7 +1024,8 @@ public class Configuration {
 			ORIENTATION_6DOF("6DOF"),  
 			ECG_TO_HR("ECG-to-HR"),
 			PPG_TO_HR("PPG-to-HR"),
-			HRV_ECG("HRV");
+			HRV_ECG("HRV"),
+			EMG("EMG Processing");
 
 			private String tileText = "";
 			

@@ -120,8 +120,8 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 		super();
 	}
 	
-	public LiteProtocol(InterfaceByteLevelDataComm mSerialPort) {
-		super(mSerialPort);
+	public LiteProtocol(InterfaceByteLevelDataComm commsInterface) {
+		super(commsInterface);
 //		String uniqueId = mSerialPort.
 	}
 	
@@ -293,7 +293,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 					if(mCurrentCommand==InstructionsSet.SET_RWC_COMMAND_VALUE){
 						// for Real-world time -> grab PC time just before
 						// writing to Shimmer
-						byte[] rtcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(System.currentTimeMillis());
+						byte[] rtcTimeArray = UtilShimmer.convertMilliSecondsToShimmerRtcDataBytesLSB(System.currentTimeMillis());
 						System.arraycopy(rtcTimeArray, 0, insBytes, 1, 8);
 					}
 					
@@ -1129,15 +1129,15 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	}
 
 	private boolean bytesAvailableToBeRead() throws DeviceException {
-		return mShimmerRadio.bytesAvailableToBeRead();
+		return mCommsInterface.bytesAvailableToBeRead();
 	}
 
 	private void writeBytes(byte[] insBytes) throws DeviceException {
-		mShimmerRadio.txBytes(insBytes);
+		mCommsInterface.txBytes(insBytes);
 	}
 
 	private byte[] readBytes(int i) throws DeviceException {
-		return mShimmerRadio.rxBytes(i);
+		return mCommsInterface.rxBytes(i);
 	}
 
 	private byte readByte() throws DeviceException {
@@ -1146,12 +1146,12 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	}
 
 	private int availableBytes() throws DeviceException {
-		return mShimmerRadio.availableBytes();
+		return mCommsInterface.availableBytes();
 	}
 	
 	private void disconnect() {
 		try {
-			mShimmerRadio.disconnect();
+			mCommsInterface.disconnect();
 		} catch (DeviceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

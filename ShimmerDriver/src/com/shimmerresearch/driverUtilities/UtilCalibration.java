@@ -1,11 +1,14 @@
 package com.shimmerresearch.driverUtilities;
+
+import java.util.Arrays;
+
 /** 
  * @author Ruud Stolk
  * @author Mark Nolan
  * 
  */
 public class UtilCalibration {
-	
+
 	/**  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
     in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
     C = [R^(-1)] .[K^(-1)] .([U]-[B])
@@ -33,6 +36,18 @@ public class UtilCalibration {
 		}
 		
 		return ansdata;
+	}
+	
+	/**
+	 * @param data
+	 * @param calibDetails
+	 * @return
+	 */
+	public static double[] calibrateInertialSensorData(double[] data, CalibDetailsKinematic calibDetails) {
+		return calibrateInertialSensorData(data, 
+				calibDetails.getCurrentAlignmentMatrix(), 
+				calibDetails.getCurrentSensitivityMatrix(), 
+				calibDetails.getCurrentOffsetVector());
 	}
 	
 	public static double[][] matrixInverse3x3(double[][] data) {
@@ -101,5 +116,23 @@ public class UtilCalibration {
 			}
 		}
 		return resultant;
+	}
+
+	public static boolean isCalibrationEqual(
+			double[][] alignmentMatrixToTest, 
+			double[][] offsetVectorToTest, 
+			double[][] sensitivityMatrixToTest, 
+			double[][] alignmentVectorToCompare,
+			double[][] offsetVectorToCompare, 
+			double[][] sensitivityVectorToCompare) {
+
+		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
+		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
+		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
+
+		if(alignmentPass&&offsetPass&&sensitivityPass){
+			return true;
+		}
+		return false;
 	}
 }

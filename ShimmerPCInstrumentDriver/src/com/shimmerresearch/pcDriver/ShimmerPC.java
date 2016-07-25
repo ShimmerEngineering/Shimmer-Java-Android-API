@@ -158,7 +158,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
 //		mState = BT_STATE.NONE;
 		mBluetoothRadioState = BT_STATE.DISCONNECTED;
-		mAccelRange = accelRange;
+		setAccelRange(accelRange);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
@@ -167,8 +167,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mLowPowerMag = enableLowPowerMag;
 		mLowPowerAccelWR = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
-		mGyroRange = gyroRange;
-		mMagRange = magRange;
+		setGyroRange(gyroRange);
+		setMagRange(magRange);
 		mSetupEXG = true;
 		mEXG1RegisterArray = exg1;
 		mEXG2RegisterArray = exg2;
@@ -190,8 +190,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
 //		mState = BT_STATE.NONE;
 		mBluetoothRadioState = BT_STATE.DISCONNECTED;
-		mAccelRange = accelRange;
-		mMagRange = magGain;
+		setAccelRange(accelRange);
+		setMagRange(magGain);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
@@ -209,7 +209,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
      */
     @Deprecated
 	public ShimmerPC( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
-    	mAccelRange = accelRange;
+    	setAccelRange(accelRange);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
@@ -323,8 +323,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 					return true;
 				}
 			}
-
-		} catch (SerialPortException ex) {
+		} catch (SerialPortException | NullPointerException ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 
 			connectionLost();
@@ -341,8 +340,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			else{
 				return 0;
 			}
-			
-		} catch (SerialPortException ex) {
+		} catch (SerialPortException | NullPointerException ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
 			return 0;
@@ -351,10 +349,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void writeBytes(byte[] data) {
-		// TODO Auto-generated method stub
 		try {
-			mSerialPort.writeBytes(data);
-		} catch (SerialPortException ex) {
+			if(mSerialPort != null){
+				mSerialPort.writeBytes(data);
+			}
+		} catch (SerialPortException | NullPointerException ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
 		}
@@ -362,23 +361,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected byte[] readBytes(int numberofBytes) {
-		// TODO Auto-generated method stub
 		try {
 			if(mSerialPort != null){
-				if (mSerialPort.isOpened())
-				{
+				if (mSerialPort.isOpened()){
 					return(mSerialPort.readBytes(numberofBytes));
 				} else {
 					System.out.println("ALERT!!");
 				}
 			}
-		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
-			connectionLost();
-			e.printStackTrace();
-		}
-		catch (NullPointerException e) {
-			// TODO Auto-generated catch block
+		} catch (SerialPortException | NullPointerException e) {
 			connectionLost();
 			e.printStackTrace();
 		}

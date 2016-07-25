@@ -31,6 +31,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
+@Deprecated
 public class SensorSystemTimeStamp extends AbstractSensor {
 
 	/** * */
@@ -104,20 +105,21 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 	public SensorSystemTimeStamp(ShimmerVerObject svo) {
 		super(SENSORS.SYSTEM_TIMESTAMP, svo);
+		initialise();
 	}
 
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 	
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		// NOT NEEDED BECAUSE NOT DISPLAYED ON GUI CONFIG PANEL
 	}
 
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		// NOT NEEDED BECAUSE NO CONFIGURATION OPTIONS NEEDED
 	}
 

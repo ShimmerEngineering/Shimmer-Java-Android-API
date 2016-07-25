@@ -101,6 +101,8 @@ public class SensorTemplate extends AbstractSensor{
 
 			public SensorTemplate(ShimmerVerObject svo) {
 				super(SENSORS.TEMPLATE, svo);
+				/**initialise() Must be called after the constructor*/ 
+				initialise();
 			}
 	//--------- Constructors for this class end --------------
 
@@ -123,7 +125,7 @@ public class SensorTemplate extends AbstractSensor{
 			 *	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
 			 */
 			@Override
-			public void generateSensorMap(ShimmerVerObject svo) {
+			public void generateSensorMap() {
 			/** 
 			 *  call one of the two methods:
 			 *  
@@ -135,7 +137,7 @@ public class SensorTemplate extends AbstractSensor{
 			}
 		
 			@Override
-			public void generateConfigOptionsMap(ShimmerVerObject svo) {
+			public void generateConfigOptionsMap() {
 			/**
 			 *  put all the Config Options on mConfigOptionsMap:
 			 *  
@@ -146,11 +148,11 @@ public class SensorTemplate extends AbstractSensor{
 			}
 		
 			@Override
-			public void generateSensorGroupMapping(ShimmerVerObject svo) {
+			public void generateSensorGroupMapping() {
 			/**
 			 *  put all the Sensor Grouping Details on mSensorGroupingMap and call updateSensorGroupingMap() :
 			 *  
-			 *  		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+			 *  		if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
 			 *				mSensorGroupingMap.put(GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(
 			 *						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
 			 *						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));

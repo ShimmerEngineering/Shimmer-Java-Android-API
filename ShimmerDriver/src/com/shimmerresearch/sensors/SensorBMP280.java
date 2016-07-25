@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -180,26 +182,26 @@ public class SensorBMP280 extends AbstractSensor{
     
 	public SensorBMP280(ShimmerVerObject svo) {
 		super(SENSORS.BMP280, svo);
+		initialise();
 	}
 	
    //--------- Constructors for this class end --------------
 
 
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 	}
 
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION_BMP280, configOptionPressureResolutionBMP280);
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-//		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280.ordinal();
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280,
@@ -358,8 +360,10 @@ public class SensorBMP280 extends AbstractSensor{
 	
 	
 	private void setPressureResolution(int i){
-//		System.err.println("New resolution:\t" + ListofPressureResolution[i]);
-		mPressureResolution_BMP280 = i;
+		if(ArrayUtils.contains(ListofPressureResolutionConfigValuesBMP280, i)){
+//			System.err.println("New resolution:\t" + ListofPressureResolution[i]);
+			mPressureResolution_BMP280 = i;
+		}
 	}
 	
 	private int getPressureResolution() {

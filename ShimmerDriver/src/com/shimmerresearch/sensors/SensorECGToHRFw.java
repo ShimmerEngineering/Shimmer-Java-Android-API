@@ -89,10 +89,11 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	 */
 	public SensorECGToHRFw(ShimmerVerObject svo) {
 		super(SENSORS.ECG_TO_HR, svo);
+		initialise();
 	}
 	
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		
 		//Update the derived sensor bit index
@@ -103,13 +104,13 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
+	public void generateSensorGroupMapping() {
+		//NOT USED IN THIS CLASS
 	}
 
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
-		// TODO Auto-generated method stub
+	public void generateConfigOptionsMap() {
+		//NOT USED IN THIS CLASS
 	}
 
 	@Override

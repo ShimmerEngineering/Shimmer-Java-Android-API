@@ -1,12 +1,9 @@
 package com.shimmerresearch.comms.serialPortInterface;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shimmerresearch.driver.DeviceException;
-
-public abstract class AbstractSerialPortComm implements InterfaceByteLevelDataComm, Serializable {
+public abstract class AbstractSerialPortComm implements InterfaceByteLevelDataComm {
 	
 	//the timeout value for connecting with the port
     public int SERIAL_PORT_TIMEOUT = 500; // was 2000

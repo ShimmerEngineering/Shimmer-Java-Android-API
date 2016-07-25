@@ -1,11 +1,13 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.SPAN_VERSION;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.SensorEXG.GuiLabelSensorTiles;
 
 /**
  * Holds HW, FW and expansion board infomation. Used for docked Shimmers current
@@ -38,18 +40,28 @@ public class ShimmerVerObject implements Serializable {
 	//TODO handle SPAN_VERSION for SPANs? It is obtained from the PlatformHwManager
 	//public SPAN_VERSION hardwareVersion = SPAN_VERSION.UNKNOWN;
 	
-    /** byte order of the Version Response Data Packet
-    *
-    */
-   private enum VerReponsePacketOrder {
-       hwVer,
-       fwVerLSB,
-       fwVerMSB,
-       fwMajorLSB,
-       fwMajorMSB,
-       fwMinor,
-       fwRevision
-   }
+//    /** byte order of the Version Response Data Packet for a 7 byte ver response */
+//   private enum VerReponsePacketOrderLegacy {
+//       hwVer,
+//       fwVerLSB,
+//       fwVerMSB,
+//       fwMajorLSB,
+//       fwMajorMSB,
+//       fwMinor,
+//       fwRevision
+//   }
+//   
+//   /** byte order of the Version Response Data Packet for an 8 byte ver response */
+//   private enum VerReponsePacketOrder {
+//       hwVerLSB,
+//       hwVerMSB,
+//       fwVerLSB,
+//       fwVerMSB,
+//       fwMajorLSB,
+//       fwMajorMSB,
+//       fwMinor,
+//       fwRevision
+//   }
    
 	public ShimmerVerObject() {
 		// TODO Auto-generated constructor stub
@@ -133,16 +145,54 @@ public class ShimmerVerObject implements Serializable {
 	 * 
 	 */
 	public ShimmerVerObject(byte[] byteArray) {
-		if(byteArray.length >= 7) {
-			mHardwareVersion = byteArray[VerReponsePacketOrder.hwVer.ordinal()];
-			mFirmwareIdentifier = (byteArray[VerReponsePacketOrder.fwVerLSB.ordinal()]) | (byteArray[VerReponsePacketOrder.fwVerMSB.ordinal()]<<8);
-			mFirmwareVersionMajor = (byteArray[VerReponsePacketOrder.fwMajorLSB.ordinal()]) | (byteArray[(int)VerReponsePacketOrder.fwMajorMSB.ordinal()]<<8);
-			mFirmwareVersionMinor = byteArray[VerReponsePacketOrder.fwMinor.ordinal()];
-			mFirmwareVersionInternal = byteArray[VerReponsePacketOrder.fwRevision.ordinal()];
+		parseVersionByteArray(byteArray);
+	}
+	
+	public void parseVersionByteArray(byte[] byteArray) {
+		if((byteArray.length == 7) || (byteArray.length == 8)){
+//			mHardwareVersion = byteArray[VerReponsePacketOrderLegacy.hwVer.ordinal()];
+//			mFirmwareIdentifier = (byteArray[VerReponsePacketOrderLegacy.fwVerLSB.ordinal()]) | (byteArray[VerReponsePacketOrderLegacy.fwVerMSB.ordinal()]<<8);
+//			mFirmwareVersionMajor = (byteArray[VerReponsePacketOrderLegacy.fwMajorLSB.ordinal()]) | (byteArray[(int)VerReponsePacketOrderLegacy.fwMajorMSB.ordinal()]<<8);
+//			mFirmwareVersionMinor = byteArray[VerReponsePacketOrderLegacy.fwMinor.ordinal()];
+//			mFirmwareVersionInternal = byteArray[VerReponsePacketOrderLegacy.fwRevision.ordinal()];
+//			parseShimmerVerDetails();
+			
+			int index = 0;
+			if(byteArray.length == 7) {
+				mHardwareVersion = byteArray[index++]&0xFF;
+			}
+			else if(byteArray.length == 8) {
+				mHardwareVersion = (byteArray[index++] | (byteArray[index++]<<8))&0xFFFF;
+			}
+			
+			mFirmwareIdentifier = ((byteArray[index++]) | (byteArray[index++]<<8))&0xFFFF;
+			mFirmwareVersionMajor = ((byteArray[index++]) | (byteArray[index++]<<8))&0xFFFF;
+			mFirmwareVersionMinor = byteArray[index++]&0xFF;
+			mFirmwareVersionInternal = byteArray[index++]&0xFF;
+			
 			parseShimmerVerDetails();
 		}
 	}
 	
+	public byte[] generateVersionByteArrayNew() {
+		byte[] byteArray = new byte[8];
+		
+		int index = 0;
+		byteArray[index++] = (byte) (mHardwareVersion&0xFF);
+		byteArray[index++] = (byte) ((mHardwareVersion>>8)&0xFF);
+
+		byteArray[index++] = (byte) (mFirmwareIdentifier&0xFF);
+		byteArray[index++] = (byte) ((mFirmwareIdentifier>>8)&0xFF);
+
+		byteArray[index++] = (byte) (mFirmwareVersionMajor&0xFF);
+		byteArray[index++] = (byte) ((mFirmwareVersionMajor>>8)&0xFF);
+
+		byteArray[index++] = (byte) (mFirmwareVersionMinor&0xFF);
+		byteArray[index++] = (byte) (mFirmwareVersionInternal&0xFF);
+		
+		return byteArray;
+	}
+
 	private void parseShimmerVerDetails() {
 		if(mHardwareVersion!=HW_ID.UNKNOWN){
 			if (ShimmerVerDetails.mMapOfShimmerRevisions.containsKey(mHardwareVersion)) {
@@ -175,12 +225,15 @@ public class ShimmerVerObject implements Serializable {
 			// Handle FW version code.
 			mFirmwareVersionCode = -1;
 			
-			if(mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR || mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR || mHardwareVersion==HW_ID.SHIMMER_4_SDK){
-				mFirmwareVersionCode = 6;
+			if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,6,5))
+					|| mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+				mFirmwareVersionCode = 7;
 			}
 			else if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,7,3))
 					||(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,5,4))
-					||(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SDLOG,0,11,5))){
+					||(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SDLOG,0,11,5))
+					|| mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR 
+					|| mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR){
 				mFirmwareVersionCode = 6;
 			}
 			else if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0))
@@ -248,5 +301,130 @@ public class ShimmerVerObject implements Serializable {
 	public int getFirmwareVersionCode() {
 		return mFirmwareVersionCode;
 	}
+	
+	
+	public boolean isMplSupported() {
+		return isMplSupported(getHardwareVersion(), getFirmwareIdentifier());
+	}
+
+	public static boolean isMplSupported(int hwVer, int fwId) {
+		if (((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.SDLOG))
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+			return true;
+		}
+		return false;
+	}
+	
+
+	public boolean isRtcConfigViaUartSupported() {
+		return isRtcConfigViaUartSupported(getHardwareVersion(), getFirmwareIdentifier());
+	}
+
+	public static boolean isRtcConfigViaUartSupported(int hwVer, int fwId) {
+		if (((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.SDLOG))
+				|| ((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.LOGANDSTREAM))
+				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE)&&(fwId == FW_ID.GQ_BLE))
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isConfigViaUartSupported() {
+		return isConfigViaUartSupported(getHardwareVersion(), getFirmwareIdentifier());
+	}
+	
+	public static boolean isConfigViaUartSupported(int hwVer, int fwId) {
+		if((hwVer==HW_ID.SHIMMER_3)
+				||(hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				||(hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				||(hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isSdCardAccessSupported() {
+		return isSdCardAccessSupported(getHardwareVersion(), getFirmwareIdentifier());
+	}
+	
+	public static boolean isSdCardAccessSupported(int hwVer, int fwId) {
+		if (((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.SDLOG))
+				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.LOGANDSTREAM))
+				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE) && (fwId == FW_ID.GQ_BLE))
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
+				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+			return true;
+		}
+		return false;
+	}
+
+
+	public boolean isShimmerGen2(){
+		return isShimmerGen2(getHardwareVersion());
+	}
+
+	public static boolean isShimmerGen2(int hwVer){
+		if (hwVer==HW_ID.SHIMMER_2 || hwVer==HW_ID.SHIMMER_2R){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isShimmerGen3(){
+		return isShimmer3Gen(getHardwareVersion(), getFirmwareIdentifier());
+	}
+
+	//TODO decide whether GQ belongs here or not
+	public static boolean isShimmer3Gen(int hwVer, int fwId) {
+		if((hwVer==HW_ID.SHIMMER_3 || hwVer==HW_ID.SHIMMER_GQ_BLE || hwVer==HW_ID.SHIMMER_GQ_802154_LR || hwVer==HW_ID.SHIMMER_GQ_802154_NR)
+				&&((fwId==FW_ID.BTSTREAM)||(fwId==FW_ID.SDLOG)||(fwId==FW_ID.LOGANDSTREAM)||(fwId==FW_ID.GQ_BLE))){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isShimmerGen4(){
+		return isShimmer4Gen(getHardwareVersion());
+	}
+
+	public static boolean isShimmer4Gen(int hwVer){
+		if(hwVer==HW_ID.SHIMMER_4_SDK){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * This needs to be performed before a check for Gen3/Gen4 etc. as they
+	 * share some entries in common.
+	 * 
+	 * @return
+	 */
+	public boolean isShimmerGenGq() {
+		return isShimmerGenGq(getHardwareVersion(), getFirmwareIdentifier());
+	}
+	
+	/**
+	 * This needs to be performed before a check for Gen3/Gen4 etc. as they
+	 * share some entries in common.
+	 * 
+	 * @param hwVer
+	 * @return
+	 */
+	public boolean isShimmerGenGq(int hwVer, int fwId) {
+		if(((hwVer==HW_ID.SHIMMER_GQ_802154_LR) || (hwVer==HW_ID.SHIMMER_GQ_802154_NR) || (hwVer==HW_ID.SHIMMER_2R_GQ))
+				&& (fwId==FW_ID.GQ_802154 || fwId==FW_ID.GQ_BLE)){
+			return true;
+		}
+		return false;
+	}
+
 
 }

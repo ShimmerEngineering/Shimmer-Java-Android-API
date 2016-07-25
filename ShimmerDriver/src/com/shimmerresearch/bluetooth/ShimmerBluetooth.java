@@ -81,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +102,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -217,10 +219,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected int mTempIntValue;												// A temporary variable used to store Integer value, used mainly to store a value while waiting for an acknowledge packet (e.g. when writeGRange() is called, the range is stored temporarily and used to update GSRRange when the acknowledge packet is received.
 	protected long tempEnabledSensors;											// This stores the enabled sensors
 	private int mTempChipID;
-	private int mCurrentInfoMemAddress = 0;
-	private int mCurrentInfoMemLengthToRead = 0;
+	private int mCurrentMemAddress = 0;
+	private int mCurrentMemLengthToRead = 0;
+	private int mCalibDumpSize = 0;
+	private static final int MAX_CALIB_DUMP_MAX = 4096;
 	
-	private byte[] mInfoMemBuffer;
+	private byte[] mMemBuffer;
+	private byte[] mCalibDumpBuffer;
 
 	protected boolean mSync=true;												// Variable to keep track of sync
 	protected boolean mSetupEXG = false;
@@ -306,6 +311,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(GET_CONFIGTIME_COMMAND, 		new BtCommandDetails(GET_CONFIGTIME_COMMAND, "GET_CONFIGTIME_COMMAND", CONFIGTIME_RESPONSE));
         aMap.put(GET_DIR_COMMAND, 				new BtCommandDetails(GET_DIR_COMMAND, "GET_DIR_COMMAND", DIR_RESPONSE));
         aMap.put(GET_INFOMEM_COMMAND, 			new BtCommandDetails(GET_INFOMEM_COMMAND, "GET_INFOMEM_COMMAND", INFOMEM_RESPONSE));
+        aMap.put(GET_CALIB_DUMP_COMMAND, 		new BtCommandDetails(GET_CALIB_DUMP_COMMAND, "GET_CALIB_DUMP_COMMAND", RSP_CALIB_DUMP_COMMAND));
         aMap.put(GET_RWC_COMMAND, 				new BtCommandDetails(GET_RWC_COMMAND, "GET_RWC_COMMAND", RWC_RESPONSE));
         aMap.put(GET_VBATT_COMMAND, 			new BtCommandDetails(GET_VBATT_COMMAND, "GET_VBATT_COMMAND", VBATT_RESPONSE));
         
@@ -366,6 +372,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(SET_NSHIMMER_COMMAND, 			new BtCommandDetails(SET_NSHIMMER_COMMAND, "SET_NSHIMMER_COMMAND"));
         aMap.put(SET_CONFIGTIME_COMMAND, 		new BtCommandDetails(SET_CONFIGTIME_COMMAND, "SET_CONFIGTIME_COMMAND"));
         aMap.put(SET_INFOMEM_COMMAND, 			new BtCommandDetails(SET_INFOMEM_COMMAND, "SET_INFOMEM_COMMAND"));
+        aMap.put(SET_CALIB_DUMP_COMMAND, 		new BtCommandDetails(SET_CALIB_DUMP_COMMAND, "SET_CALIB_DUMP_COMMAND"));
+        aMap.put(UPD_CALIB_DUMP_COMMAND, 		new BtCommandDetails(UPD_CALIB_DUMP_COMMAND, "UPD_CALIB_DUMP_COMMAND"));
+        aMap.put(UPD_SDLOG_CFG_COMMAND, 		new BtCommandDetails(UPD_SDLOG_CFG_COMMAND, "UPD_SDLOG_CFG_COMMAND"));
         aMap.put(SET_CRC_COMMAND, 				new BtCommandDetails(SET_CRC_COMMAND, "SET_CRC_COMMAND"));
         aMap.put(SET_RWC_COMMAND, 				new BtCommandDetails(SET_RWC_COMMAND, "SET_RWC_COMMAND"));
         
@@ -419,6 +428,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(DIR_RESPONSE, 					new BtCommandDetails(DIR_RESPONSE, "DIR_RESPONSE", 1)); 											// first byte indicates length to subsequently read
         aMap.put(INSTREAM_CMD_RESPONSE, 		new BtCommandDetails(INSTREAM_CMD_RESPONSE, "INSTREAM_CMD_RESPONSE", 1)); 							// first byte indicates what in-stream command it is
         aMap.put(INFOMEM_RESPONSE, 				new BtCommandDetails(INFOMEM_RESPONSE, "INFOMEM_RESPONSE", -1)); 									// Unhandled
+        aMap.put(RSP_CALIB_DUMP_COMMAND, 		new BtCommandDetails(RSP_CALIB_DUMP_COMMAND, "RSP_CALIB_DUMP_COMMAND", -1));							// first+second bytes indicate length to subsequently read
         aMap.put(RWC_RESPONSE, 					new BtCommandDetails(RWC_RESPONSE, "RWC_RESPONSE", 8));
         aMap.put(VBATT_RESPONSE, 				new BtCommandDetails(VBATT_RESPONSE, "VBATT_RESPONSE", 3));
         
@@ -463,7 +473,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	DataProcessing mDataProcessing;
 
-	private int mNumOfInfoMemSetCmds = 0;
+	private int mNumOfMemSetCmds = 0;
 
 	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
 	public static final int MSG_IDENTIFIER_DEVICE_PAIRED = 8;
@@ -555,7 +565,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					if(mCurrentCommand==SET_RWC_COMMAND){
 						// for Real-world time -> grab PC time just before
 						// writing to Shimmer
-						byte[] rtcTimeArray = UtilShimmer.convertSystemTimeToShimmerRtcDataBytes(System.currentTimeMillis());
+						byte[] rtcTimeArray = UtilShimmer.convertMilliSecondsToShimmerRtcDataBytesLSB(System.currentTimeMillis());
 						System.arraycopy(rtcTimeArray, 0, insBytes, 1, 8);
 					}
 					//TODO: are the two stops needed here? better to wait for ack from Shimmer
@@ -793,6 +803,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						if(mCurrentCommand!=GET_STATUS_COMMAND 
 								&& mCurrentCommand!=TEST_CONNECTION_COMMAND 
 								&& mCurrentCommand!=SET_BLINK_LED 
+								&& mCurrentCommand!=GET_CALIB_DUMP_COMMAND 
 								//&& mCurrentCommand!= GET_VBATT_COMMAND
 								&& mOperationUnderway){
 							sendProgressReport(new BluetoothProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mComPort));
@@ -914,20 +925,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return mBtSetCommandMap.containsKey(setCmd);
 	}
 	
-	private void processSpecialGetCmdsAfterAck(byte mCurrentCommand) {
+	private void processSpecialGetCmdsAfterAck(byte currentCommand) {
 		byte[] insBytes = getListofInstructions().get(0);
 
 		//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation 
 //		eventAckReceived(insBytes);
 		
-		if(mCurrentCommand==GET_EXG_REGS_COMMAND){
+		if(currentCommand==GET_EXG_REGS_COMMAND){
 			// Need to store ExG chip number before receiving response
 			mTempChipID = insBytes[1];
 		}
-		else if(mCurrentCommand==GET_INFOMEM_COMMAND){
+		else if(currentCommand==GET_INFOMEM_COMMAND || currentCommand==GET_CALIB_DUMP_COMMAND){
 			// store current address/InfoMem segment
-			mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
-			mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
+			mCurrentMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+			mCurrentMemLengthToRead = (insBytes[1]&0xFF);
 		}
 	}
 	
@@ -1228,67 +1239,67 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} 							
 		else if(responseCommand==ACCEL_SENSITIVITY_RESPONSE) {
 			byte[] bufferAccelSensitivity = readBytes(1);
-			mAccelRange=bufferAccelSensitivity[0];
-			if(mDefaultCalibrationParametersAccel){
-				if(getHardwareVersion()!=HW_ID.SHIMMER_3){
-					if(getAccelRange()==0){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
-					} 
-					else if(getAccelRange()==1){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
-					} 
-					else if(getAccelRange()==2){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
-					} 
-					else if(getAccelRange()==3){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
-					}
-				} 
-				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
-					if(getAccelRange()==0){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
-					} 
-					else if(getAccelRange()==1){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					} 
-					else if(getAccelRange()==2){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					} 
-					else if(getAccelRange()==3){
-						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-					}
-				}
-			}
+			setAccelRange(bufferAccelSensitivity[0]);
+//			if(mDefaultCalibrationParametersAccel){
+//				if(getHardwareVersion()!=HW_ID.SHIMMER_3){
+//					if(getAccelRange()==0){
+//						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
+//					} 
+//					else if(getAccelRange()==1){
+//						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
+//					} 
+//					else if(getAccelRange()==2){
+//						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
+//					} 
+//					else if(getAccelRange()==3){
+//						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
+//					}
+//				} 
+//				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
+//					if(getAccelRange()==0){
+//						mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
+//						mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
+//						mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
+//					} 
+//					else if(getAccelRange()==1){
+//						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
+//						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+//						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+//					} 
+//					else if(getAccelRange()==2){
+//						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
+//						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+//						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+//					} 
+//					else if(getAccelRange()==3){
+//						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
+//						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
+//						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
+//					}
+//				}
+//			}
 		} 
 		else if(responseCommand==MPU9150_GYRO_RANGE_RESPONSE) {
 			byte[] bufferGyroSensitivity = readBytes(1);
-			mGyroRange=bufferGyroSensitivity[0];
-			if(mDefaultCalibrationParametersGyro){
-				if(getHardwareVersion()==HW_ID.SHIMMER_3){
-					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
-					mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
-					if(mGyroRange==0){
-						mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
-					} 
-					else if(mGyroRange==1){
-						mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
-					} 
-					else if(mGyroRange==2){
-						mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
-					} 
-					else if(mGyroRange==3){
-						mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
-					}
-				}
-			}
+			setGyroRange(bufferGyroSensitivity[0]);
+//			if(mDefaultCalibrationParametersGyro){
+//				if(getHardwareVersion()==HW_ID.SHIMMER_3){
+//					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
+//					mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
+//					if(getGyroRange()==0){
+//						mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
+//					} 
+//					else if(getGyroRange()==1){
+//						mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
+//					} 
+//					else if(getGyroRange()==2){
+//						mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
+//					} 
+//					else if(getGyroRange()==3){
+//						mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
+//					}
+//				}
+//			}
 		}
 		else if(responseCommand==GSR_RANGE_RESPONSE) {
 			byte[] bufferGSRRange = readBytes(1); 
@@ -1306,7 +1317,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} 
 		else if(responseCommand==MAG_GAIN_RESPONSE) {
 			byte[] bufferAns = readBytes(1); 
-			mMagRange=bufferAns[0];
+			setMagRange(bufferAns[0]);
 		} 
 		else if(responseCommand==MAG_SAMPLING_RATE_RESPONSE) {
 			byte[] bufferAns = readBytes(1); 
@@ -1326,7 +1337,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mPressureCalRawParams = new byte[23];
 			System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
 			mPressureCalRawParams[0] = responseCommand;
-			retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseCommand);
+			retrievePressureCalibrationParametersFromPacket(pressureResoRes,CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 		} 
 		else if(responseCommand==EXG_REGS_RESPONSE){
 			delayForBtResponse(300); // Wait to ensure the packet has been fully received
@@ -1440,11 +1451,45 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			printLogDataForDebugging("INFOMEM_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
 			
 			//Copy to local buffer
-			System.arraycopy(rxBuf, 0, mInfoMemBuffer, mCurrentInfoMemAddress, lengthToRead);
+//			System.arraycopy(rxBuf, 0, mMemBuffer, mCurrentMemAddress, lengthToRead);
+			mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
 			//Update configuration when all bytes received.
-			if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
-				setShimmerInfoMemBytes(mInfoMemBuffer);
+			if((mCurrentMemAddress+mCurrentMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
+				setShimmerInfoMemBytes(mMemBuffer);
+				mMemBuffer = new byte[]{};
 			}
+		}
+		else if(responseCommand==RSP_CALIB_DUMP_COMMAND) {
+			byte[] rxBuf = readBytes(3);
+			int currentMemLength = rxBuf[0]&0xFF;
+			//Memory is currently read sequentially so no need to use the below at the moment.
+			int currentMemOffset = ((rxBuf[2]&0xFF)<<8) | (rxBuf[1]&0xFF);
+			
+			//For debugging
+			byte[] rxBufFull = rxBuf;
+			
+			rxBuf = readBytes(currentMemLength);
+			mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
+
+			//For debugging
+			rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
+			printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
+			
+			if(mCurrentMemAddress==0){
+				//First read
+				mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
+				
+				if(mCalibDumpSize>mCurrentMemLengthToRead){
+					readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
+					rePioritiseReadCalibDumpInstructions();
+				}
+			}
+			
+			if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
+				parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
+				mCalibDumpBuffer = new byte[]{};
+			}
+			
 		}
 		else {
 			consolePrintLn("Unhandled BT response: " + responseCommand);
@@ -1580,87 +1625,95 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				
 				
 				else if(currentCommand==SET_ACCEL_SENSITIVITY_COMMAND) {
-					mAccelRange=(int)(((byte[])getListofInstructions().get(0))[1]);
-					if(mDefaultCalibrationParametersAccel){
-						if(getHardwareVersion()!=HW_ID.SHIMMER_3){
-							if(getAccelRange()==0){
-								mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
-							} 
-							else if(getAccelRange()==1){
-								mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
-							}
-							else if(getAccelRange()==2){
-								mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
-							} 
-							else if(getAccelRange()==3){
-								mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
-							}
-						} 
-						else if(getHardwareVersion()==HW_ID.SHIMMER_3){
-							mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-							mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-							mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
-						}
-					}
-
-					if(mDefaultCalibrationParametersDigitalAccel){
-						if(getHardwareVersion()==HW_ID.SHIMMER_3){
-							if(getAccelRange()==1){
-								mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-								mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-								mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-							} 
-							else if(getAccelRange()==2){
-								mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-								mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-								mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-							} 
-							else if(getAccelRange()==3){
-								mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-								mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-								mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-							} 
-							else if(getAccelRange()==0){
-								mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel2gShimmer3;
-								mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
-								mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
-							}
-						}
-					}
+					setAccelRange((int)(((byte[])getListofInstructions().get(0))[1]));
+//					if(mDefaultCalibrationParametersAccel){
+//						if(getHardwareVersion()!=HW_ID.SHIMMER_3){
+//							if(getAccelRange()==0){
+//								mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
+//							} 
+//							else if(getAccelRange()==1){
+//								mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
+//							}
+//							else if(getAccelRange()==2){
+//								mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
+//							} 
+//							else if(getAccelRange()==3){
+//								mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
+//							}
+//						} 
+//						else if(getHardwareVersion()==HW_ID.SHIMMER_3){
+//							mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
+//							mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
+//							mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
+//						}
+//					}
+//
+//					if(mDefaultCalibrationParametersDigitalAccel){
+//						if(getHardwareVersion()==HW_ID.SHIMMER_3){
+//							if(getAccelRange()==1){
+//								mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
+//								mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+//								mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+//							} 
+//							else if(getAccelRange()==2){
+//								mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
+//								mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+//								mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+//							} 
+//							else if(getAccelRange()==3){
+//								mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
+//								mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+//								mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+//							} 
+//							else if(getAccelRange()==0){
+//								mSensitivityMatrixWRAccel = SensitivityMatrixWideRangeAccel2gShimmer3;
+//								mAlignmentMatrixWRAccel = AlignmentMatrixWideRangeAccelShimmer3;
+//								mOffsetVectorWRAccel = OffsetVectorWideRangeAccelShimmer3;
+//							}
+//						}
+//					}
 				} 
 				
 				else if(currentCommand==SET_ACCEL_CALIBRATION_COMMAND) {
-					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), ACCEL_CALIBRATION_RESPONSE);
+					byte[] calibBytes = Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length);
+					parseCalibParamFromPacketAccelAnalog(calibBytes, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+//					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), ACCEL_CALIBRATION_RESPONSE);
 				}
 				else if(currentCommand==SET_GYRO_CALIBRATION_COMMAND) {
-					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), GYRO_CALIBRATION_RESPONSE);
+					byte[] calibBytes = Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length);
+					parseCalibParamFromPacketGyro(calibBytes, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+//					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), GYRO_CALIBRATION_RESPONSE);
 				}
 				else if(currentCommand==SET_MAG_CALIBRATION_COMMAND) {
-					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), MAG_CALIBRATION_RESPONSE);
+					byte[] calibBytes = Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length);
+					parseCalibParamFromPacketMag(calibBytes, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+//					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), MAG_CALIBRATION_RESPONSE);
 				}
 				else if(currentCommand==SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND) {
-					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+					byte[] calibBytes = Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length);
+					parseCalibParamFromPacketAccelLsm(calibBytes, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+//					retrieveKinematicCalibrationParametersFromPacket(Arrays.copyOfRange(getListofInstructions().get(0), 1, getListofInstructions().get(0).length), LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
 				}
 				else if(currentCommand==SET_MPU9150_GYRO_RANGE_COMMAND) {
-					mGyroRange=(int)(((byte[])getListofInstructions().get(0))[1]);
-					if(mDefaultCalibrationParametersGyro){
-						if(getHardwareVersion()==HW_ID.SHIMMER_3){
-							mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
-							mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
-							if(mGyroRange==0){
-								mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
-							} 
-							else if(mGyroRange==1){
-								mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
-							} 
-							else if(mGyroRange==2){
-								mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
-							} 
-							else if(mGyroRange==3){
-								mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
-							}
-						}
-					}
+					setGyroRange((int)(((byte[])getListofInstructions().get(0))[1]));
+//					if(mDefaultCalibrationParametersGyro){
+//						if(getHardwareVersion()==HW_ID.SHIMMER_3){
+//							mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
+//							mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
+//							if(getGyroRange()==0){
+//								mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
+//							} 
+//							else if(getGyroRange()==1){
+//								mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
+//							} 
+//							else if(getGyroRange()==2){
+//								mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
+//							} 
+//							else if(getGyroRange()==3){
+//								mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
+//							}
+//						}
+//					}
 				} 
 				else if(currentCommand==SET_MAG_SAMPLING_RATE_COMMAND){
 					mLSM303MagRate = mTempIntValue;
@@ -1692,34 +1745,34 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
 				}
 				else if(currentCommand==SET_MAG_GAIN_COMMAND){
-					mMagRange=(int)((byte [])getListofInstructions().get(0))[1];
-					if(mDefaultCalibrationParametersMag){
-						if(getHardwareVersion()==HW_ID.SHIMMER_3){
-							mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
-							mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
-							if(mMagRange==1){
-								mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer3;
-							} 
-							else if(mMagRange==2){
-								mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer3;
-							} 
-							else if(mMagRange==3){
-								mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer3;
-							} 
-							else if(mMagRange==4){
-								mSensitivityMatrixMagnetometer = SensitivityMatrixMag4GaShimmer3;
-							} 
-							else if(mMagRange==5){
-								mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer3;
-							} 
-							else if(mMagRange==6){
-								mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer3;
-							} 
-							else if(mMagRange==7){
-								mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer3;
-							}
-						}
-					}
+					setMagRange((int)((byte [])getListofInstructions().get(0))[1]);
+//					if(mDefaultCalibrationParametersMag){
+//						if(getHardwareVersion()==HW_ID.SHIMMER_3){
+//							mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
+//							mOffsetVectorMagnetometer = OffsetVectorMagShimmer3;
+//							if(getMagRange()==1){
+//								mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer3;
+//							} 
+//							else if(getMagRange()==2){
+//								mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer3;
+//							} 
+//							else if(getMagRange()==3){
+//								mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer3;
+//							} 
+//							else if(getMagRange()==4){
+//								mSensitivityMatrixMagnetometer = SensitivityMatrixMag4GaShimmer3;
+//							} 
+//							else if(getMagRange()==5){
+//								mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer3;
+//							} 
+//							else if(getMagRange()==6){
+//								mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer3;
+//							} 
+//							else if(getMagRange()==7){
+//								mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer3;
+//							}
+//						}
+//					}
 				}
 				else if(currentCommand==SET_ECG_CALIBRATION_COMMAND){
 					byte[] instruction = getListofInstructions().get(0);
@@ -1763,8 +1816,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byte[] instruction = getListofInstructions().get(0);
 					byte[] rwcTimeArray = new byte[8];
 					System.arraycopy(instruction, 1, rwcTimeArray, 0, 8);
-					long milisecondTicks = UtilShimmer.convertShimmerRtcDataBytesToSystemTimeMSB(rwcTimeArray);
-					mShimmerRealTimeClockConFigTime = milisecondTicks;
+					long milliseconds = UtilShimmer.convertShimmerRtcDataBytesToMilliSecondsLSB(rwcTimeArray);
+					mShimmerRealTimeClockConFigTime = milliseconds;
 				}
 				else if(currentCommand==SET_CONFIGTIME_COMMAND){
 					byte[] instruction =getListofInstructions().get(0);
@@ -1815,12 +1868,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(currentCommand==RESET_CALIBRATION_VALUE_COMMAND){
 					//TODO: do something?
 				}
-				else if(currentCommand==SET_INFOMEM_COMMAND){
+				else if(currentCommand==SET_INFOMEM_COMMAND || currentCommand==SET_CALIB_DUMP_COMMAND){
 					//SET InfoMem is automatically followed by a GET so no need to handle here
 					
 					//Sleep for Xsecs to allow Shimmer to process new configuration
-					mNumOfInfoMemSetCmds -= 1;
-					if(mNumOfInfoMemSetCmds==0){
+					mNumOfMemSetCmds -= 1;
+					if(mNumOfMemSetCmds==0){
 						delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
 					}
 					else {
@@ -1859,7 +1912,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mAccelCalRawParams = new byte[22];
 		System.arraycopy(bufferCalibrationParameters, 0, mAccelCalRawParams, 1, 21);
 		mAccelCalRawParams[0] = ACCEL_CALIBRATION_RESPONSE;
-		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
+//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
+		parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 	}
 
 	/**get gyro
@@ -1871,7 +1925,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mGyroCalRawParams = new byte[22];
 		System.arraycopy(bufferCalibrationParameters, 0, mGyroCalRawParams, 1, 21);
 		mGyroCalRawParams[0] = GYRO_CALIBRATION_RESPONSE;
-		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
+//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
+		parseCalibParamFromPacketGyro(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 	} 
 	
 	/**get mag
@@ -1883,7 +1938,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mMagCalRawParams = new byte[22];
 		System.arraycopy(bufferCalibrationParameters, 0, mMagCalRawParams, 1, 21);
 		mMagCalRawParams[0] = MAG_CALIBRATION_RESPONSE;
-		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
+//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
+		parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 	} 
 	
 	/**second accel cal params
@@ -1895,7 +1951,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mDigiAccelCalRawParams = new byte[22];
 		System.arraycopy(bufferCalibrationParameters, 0, mDigiAccelCalRawParams, 1, 21);
 		mDigiAccelCalRawParams[0] = LSM303DLHC_ACCEL_CALIBRATION_RESPONSE;
-		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+		parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 	}
 	
 	/**get ECG
@@ -2008,7 +2065,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readCalibrationParameters("Magnetometer");
 		readCalibrationParameters("Gyroscope");
 		if(mSetupDevice && getHardwareVersion()!=4){
-			writeAccelRange(mAccelRange);
+			writeAccelRange(getAccelRange());
 			writeGSRRange(mGSRRange);
 			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeEnabledSensors(mSetEnabledSensors);
@@ -2030,8 +2087,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readConfigByte0();
 		readCalibrationParameters("All");
 		if(mSetupDevice){
-			writeMagRange(mMagRange); //set to default Shimmer mag gain
-			writeAccelRange(mAccelRange);
+			writeMagRange(getMagRange()); //set to default Shimmer mag gain
+			writeAccelRange(getAccelRange());
 			writeGSRRange(mGSRRange);
 			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeEnabledSensors(mSetEnabledSensors);
@@ -2093,6 +2150,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readBattery();
 		}
 		
+		// Only read calibration dump over bluetooth if the Shimmer is not
+		// docked as the Shimmer won't have access to the SD card
+		if(!isDocked()){
+			readCalibrationDump();
+		}
+		
 		if(mSetupDevice){
 			//writeAccelRange(mDigitalAccelRange);
 			if(mSetupEXG){
@@ -2100,9 +2163,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mSetupEXG = false;
 			}
 			writeGSRRange(mGSRRange);
-			writeAccelRange(mAccelRange);
-			writeGyroRange(mGyroRange);
-			writeMagRange(mMagRange);
+			writeAccelRange(getAccelRange());
+			writeGyroRange(getGyroRange());
+			writeMagRange(getMagRange());
 			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeInternalExpPower(1);
 //			setContinuousSync(mContinousSync);
@@ -2809,7 +2872,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void writeAccelRange(int range) {
 		writeInstruction(new byte[]{SET_ACCEL_SENSITIVITY_COMMAND, (byte)range});
-		mAccelRange=(int)range;
+		setAccelRange((int)range);
 		
 	}
 	
@@ -3038,7 +3101,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeGyroRange(int range) {
 		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			writeInstruction(new byte[]{SET_MPU9150_GYRO_RANGE_COMMAND, (byte)range});
-			mGyroRange=(int)range;
+			setGyroRange((int)range);
 		}
 	}
 
@@ -3533,6 +3596,49 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //		}
 	}
     
+	public void readCalibrationDump(){
+		if(this.getFirmwareVersionCode()>=7){
+			mCalibDumpSize = 0;
+			mCalibDumpBuffer = new byte[]{};
+			readCalibrationDump(0, 128);
+		}
+	}
+
+	private void readCalibrationDump(int address, int size){
+		if(this.getFirmwareVersionCode()>=7){
+			readMem(GET_CALIB_DUMP_COMMAND, address, size, MAX_CALIB_DUMP_MAX); //some max number
+		}
+	}
+
+	public void rePioritiseReadCalibDumpInstructions(){
+		List<byte[]> listOfInstructions = new ArrayList<byte[]>();
+
+		//This for loop will prioritse the GET_CALIB_DUMP_COMMAND
+		Iterator<byte[]> iterator = mListofInstructions.iterator();
+		while(iterator.hasNext()){
+			byte[] instruction = iterator.next();
+			if(instruction[0]==GET_CALIB_DUMP_COMMAND){
+				listOfInstructions.add(instruction);
+				iterator.remove();
+			}
+		}
+		
+		if(listOfInstructions.size()>0){
+			mListofInstructions.addAll(0, listOfInstructions);
+		}
+	}
+
+
+	public void writeCalibrationDump(){
+		writeCalibrationDump(mCalibBytes);
+	}
+
+	public void writeCalibrationDump(byte[] calibDump){
+		if(this.getFirmwareVersionCode()>=7){
+			writeMem(SET_CALIB_DUMP_COMMAND, 0, calibDump, MAX_CALIB_DUMP_MAX);
+		}
+	}
+
 	public void readConfigurationFromInfoMem(){
 		if(this.getFirmwareVersionCode()>=6){
 //			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
@@ -3540,10 +3646,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 		}
 	}
-	
+
 	public void readInfoMem(int address, int size, int maxMemAddress){
+		readMem(GET_INFOMEM_COMMAND, address, size, maxMemAddress);
+	}
+
+	public void readMem(int command, int address, int size, int maxMemAddress){
 		if(this.getFirmwareVersionCode()>=6){
-			mInfoMemBuffer = new byte[size];
+//			mMemBuffer = new byte[size];
+			mMemBuffer = new byte[]{};
 
 			if (size > (maxMemAddress - address + 1)) {
 //				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE);
@@ -3565,7 +3676,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 
 					byte[] rxBuf = new byte[] {};
-					readInfoMem(currentStartAddr, currentPacketNumBytes);
+					readMemBlock(command, currentStartAddr, currentPacketNumBytes);
 					
 					currentBytePointer += currentPacketNumBytes;
 					numBytesRemaining -= currentPacketNumBytes;
@@ -3576,8 +3687,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	private void readInfoMem(int currentStartAddr, int currentPacketNumBytes){
-		readMemCommand(GET_INFOMEM_COMMAND, currentStartAddr, currentPacketNumBytes);
+	private void readMemBlock(int command, int currentStartAddr, int currentPacketNumBytes){
+		readMemCommand(command, currentStartAddr, currentPacketNumBytes);
 	}
 
 	
@@ -3607,9 +3718,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, buf, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 		}
 	}
-	
+
 	public void writeInfoMem(int startAddress, byte[] buf, int maxMemAddress){
-		this.mNumOfInfoMemSetCmds  = 0;
+		if(this.getFirmwareVersionCode()>=6){
+			writeMem(SET_INFOMEM_COMMAND, startAddress, buf, maxMemAddress);
+		}
+	}
+
+	public void writeMem(int command, int startAddress, byte[] buf, int maxMemAddress){
+		this.mNumOfMemSetCmds  = 0;
 		
 		if(this.getFirmwareVersionCode()>=6){
 			int address = startAddress;
@@ -3634,8 +3751,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 					byte[] infoSegBuf = Arrays.copyOfRange(buf, currentBytePointer, currentBytePointer + currentPacketNumBytes);
 
-					writeMemCommand(SET_INFOMEM_COMMAND, currentStartAddr, infoSegBuf);
-					mNumOfInfoMemSetCmds += 1;
+					writeMemCommand(command, currentStartAddr, infoSegBuf);
+					mNumOfMemSetCmds += 1;
 
 					currentStartAddr += currentPacketNumBytes;
 					numBytesRemaining -= currentPacketNumBytes;
@@ -4719,7 +4836,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void writeInstruction(byte[] instruction){
-		getListofInstructions().add(instruction);
+		mListofInstructions.add(instruction);
+	};
+
+	public void writeInstructionFirst(byte[] instruction){
+		mListofInstructions.add(0, instruction);
 	};
 	
 	/**

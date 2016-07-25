@@ -1,6 +1,7 @@
 package com.shimmerresearch.algorithms;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public abstract class AbstractAlgorithm extends BasicProcessWithCallBack implements Serializable{
 	
@@ -104,6 +106,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public AlgorithmDetails mAlgorithmDetails;
 	protected double mMinSamplingRateForAlgorithhm = 0.0;
 	
+	/** this is to specify what fw version/hardware should be allowed to use the algorithm */
+	public static final List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
+
 	/**
      * @deprecated
      * This method is to be replaced by the channeldetails object, see mListofChannelDetails
@@ -130,14 +135,35 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public ALGORITHM_RESULT_TYPE mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
 	public ALGORITHM_INPUT_TYPE mAlgorithmInputType = ALGORITHM_INPUT_TYPE.ALGORITHM_INPUT_TYPE_SINGLE_OBJECT_CLUSTER;
 		
+	/** The mConfigOptionsMap is used to generate the GUI and provide specific
+	 * algorithm settings to users, take note that for combo box there is an
+	 * extra string array of values which need to be declared as options for the
+	 * comobobox */
 	public HashMap<String,ConfigOptionDetailsAlgorithm> mConfigOptionsMap = new HashMap<String,ConfigOptionDetailsAlgorithm>();//Define the gui to be generated
 	public HashMap<String, AlgorithmDetails> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetails>();//Defines algorithm requirements
 	
 	public TreeMap<Integer, SensorGroupingDetails> mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
+	
+	//General methods used during algorithm initialisation
+	public abstract void setGeneralAlgorithmName();
+	public abstract void setFilteringOption();
+	public abstract void setMinSamplingRateForAlgorithm();
+	/** This Identifies what version (firmware/hardware) specific algorithm settings should be limited to which is declared in mConfigMap.*/
+	public abstract void setSupportedVerInfo();
+	/** The mConfigOptionsMap is used to generate the GUI and provide specific
+	 * algorithm settings to users, take note that for combo box there is an
+	 * extra string array of values which need to be declared as options for the
+	 * comobobox */
+	public abstract void generateConfigOptionsMap();
+	public abstract void generateAlgorithmGroupingMap();
+	
+	public abstract void initialize() throws Exception;
+	public abstract void reset() throws Exception;
+	
 	public abstract Object getSettings(String componentName);
-	public abstract Object getDefaultSettings(String componentName);
 //	public abstract void setSettings(String componentName, Object valueToSet) throws Exception;
 	public abstract void setSettings(String componentName, Object valueToSet);
+	public abstract Object getDefaultSettings(String componentName);
 	
 	/** Takes in a single data object and processes the data, the standard way of using this is through the use of ObjectCluster. NOTE: The processing time should never be longer than the Shimmer sampling period, as the method will hold up the thread calling it
 	 * @param object
@@ -146,10 +172,10 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	 */
 	public abstract AlgorithmResultObject processDataRealTime(ObjectCluster object) throws Exception;
 	
+	/** currently just used by Gait and Balance. MN: not sure if this is actually needed*/
 	public abstract AlgorithmResultObject processDataPostCapture(Object object) throws Exception;
 	
-	public abstract void reset() throws Exception;
-	public abstract void initialize() throws Exception;
+	/** currently just used by Gait and Balance.*/
 	public abstract String printBatchMetrics();
 	
 	/** For event driven algorithm implementation. Event Driven Algorithm is best to be used for algorithms whose processing duration is longer than the Shimmer's sampling rate. It can also be used for algorithms which do not require real time results.
@@ -158,6 +184,28 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	 */
 	public abstract void eventDataReceived(ShimmerMsg shimmerMSG);
 	
+
+	
+	
+	public AbstractAlgorithm(){
+		setGeneralAlgorithmName();
+		setFilteringOption();
+		setMinSamplingRateForAlgorithm();
+		setSupportedVerInfo();
+		generateConfigOptionsMap();
+		generateAlgorithmGroupingMap();
+	}
+	
+	
+	public AbstractAlgorithm(AlgorithmDetails algorithmDetails) {
+		super();
+		
+		mAlgorithmDetails = algorithmDetails;
+//		setSignalName(algorithmDetails.mAlgorithmName);
+		mAlgorithmName = algorithmDetails.mAlgorithmName;
+		mAlgorithmGroupingName = algorithmDetails.mAlgorithmName;
+		mAlgorithmChannelsMap.put(mAlgorithmName, mAlgorithmDetails);
+	}
 	
 	public String getAlgorithmName() {
 		return mAlgorithmName;

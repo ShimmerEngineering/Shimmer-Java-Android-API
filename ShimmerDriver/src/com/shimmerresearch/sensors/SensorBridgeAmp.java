@@ -261,10 +261,11 @@ public class SensorBridgeAmp extends AbstractSensor{
 	 */
 	public SensorBridgeAmp(ShimmerVerObject svo) {
 		super(SENSORS.Bridge_Amplifier, svo);
+		initialise();
 	}
 
 	@Override
-	public void generateSensorMap(ShimmerVerObject svo) {
+	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		
 		//Update the derived sensor bit index
@@ -287,13 +288,13 @@ public class SensorBridgeAmp extends AbstractSensor{
 		}
 	}
 	@Override
-	public void generateConfigOptionsMap(ShimmerVerObject svo) {
+	public void generateConfigOptionsMap() {
 		// Not in this class
 	}
 	@Override
-	public void generateSensorGroupMapping(ShimmerVerObject svo) {
+	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		if(svo.mHardwareVersion==HW_ID.SHIMMER_3 || svo.mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER.ordinal(), sensorBridgeAmp );
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP.ordinal(), sensorBATemp);
 		}
@@ -342,32 +343,6 @@ public class SensorBridgeAmp extends AbstractSensor{
 		return objectCluster;
 	}
 	
-	public static double processBAAdcChannel(ChannelDetails channelDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp,
-			double offset, double vRefP, double gain){
-//		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
-//		
-//		double offset = 60; double vRefP = 3; double gain = 551;  
-//		if(mEnableCalibration){
-		
-//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-
-					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-					double calData = SensorADC.calibrateU12AdcValue(unCalData, offset, vRefP, gain);
-					
-					
-//			}
-//		}
-		
-
-		return calData;
-	}
-	
-	
-	protected static double calibratePhillipsSkinTemperatureData(double uncalibratedData){
-		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
-		double y = -27.42*Math.log(x) + 56.502;
-		return y;
-	}
 	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
@@ -422,6 +397,28 @@ public class SensorBridgeAmp extends AbstractSensor{
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public static double processBAAdcChannel(ChannelDetails channelDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp,
+			double offset, double vRefP, double gain){
+//		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+//		
+//		double offset = 60; double vRefP = 3; double gain = 551;  
+//		if(mEnableCalibration){
+		
+//			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+
+				double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				double calData = SensorADC.calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+//			}
+//		}
+		return calData;
+	}
+	
+	public static double calibratePhillipsSkinTemperatureData(double uncalibratedData){
+		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
+		double y = -27.42*Math.log(x) + 56.502;
+		return y;
 	}
 
 }	

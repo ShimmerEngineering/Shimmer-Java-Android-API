@@ -205,6 +205,15 @@ public class SensorDetails implements Serializable{
 			}
 		}
 	}
+
+	public void getLenghtOfCalibBytes() {
+		// TODO Auto-generated method stub
+		
+	}
+
+//	public int getLengthOfCalibBytes() {
+//		return mSensorDetailsRef.mLengthOfCalibBytes;
+//	}
 	
 
 }
