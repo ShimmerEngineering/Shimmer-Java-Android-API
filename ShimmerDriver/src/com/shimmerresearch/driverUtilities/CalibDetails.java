@@ -82,5 +82,10 @@ public abstract class CalibDetails implements Serializable {
 	public CALIB_READ_SOURCE getCalibReadSource() {
 		return mCalibReadSource;
 	}
+	
+	public void resetToDefaultParametersCommon() {
+		setCalibTimeMs(0);
+//		setCalibReadSource(CALIB_READ_SOURCE.USER_MODIFIED);
+	}
 
 }

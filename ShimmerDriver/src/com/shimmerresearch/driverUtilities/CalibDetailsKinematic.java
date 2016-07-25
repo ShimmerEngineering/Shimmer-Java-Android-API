@@ -88,7 +88,8 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 
 	@Override
 	public void resetToDefaultParameters(){
-		setCalibTimeMs(0);
+		super.resetToDefaultParametersCommon();
+		
 		mCurrentAlignmentMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultAlignmentMatrix);
 		mCurrentSensitivityMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultSensitivityMatrix);
 		mCurrentOffsetVector = UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector);
@@ -194,11 +195,6 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			
 			for(int i=0;i<=2;i++){
 				sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor;
-				
-				//Debugging rounding issue with gyro sensitivity
-//				if((mRangeValue==2 || mRangeValue==3) && mSensitivityScaleFactor==SENSITIVITY_SCALE_FACTOR.HUNDRED){
-//					System.err.println("Parsed NEW:\t" + sensitivityMatrix[i][i]);
-//				}
 			}
 			
 			mCurrentAlignmentMatrix = alignmentMatrix; 			
@@ -219,21 +215,21 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	
 	public byte[] generateCalParamByteArray(double[][] offsetVector, double[][] sensitivityMatrix, double[][] alignmentMatrix) {
 		
+		//Scale the sensitivity if needed
 		double[][] sensitivityMatrixToUse = UtilShimmer.deepCopyDoubleMatrix(sensitivityMatrix);
 		for(int i=0;i<=2;i++){
 			sensitivityMatrixToUse[i][i] = Math.round(sensitivityMatrixToUse[i][i]*mSensitivityScaleFactor);
-
-			//Debugging rounding issue with gyro sensitivity
-//			if((mRangeValue==2 || mRangeValue==3) && mSensitivityScaleFactor==SENSITIVITY_SCALE_FACTOR.HUNDRED){
-//				System.err.println("ORIGINAL:\t" + sensitivityMatrix[i][i] + "\tNew:\t" + sensitivityMatrixToUse[i][i]);
-//			}
 		}
 
+		//Scale the alignment by 100
 		double[][] alignmentMatrixToUse = UtilShimmer.deepCopyDoubleMatrix(alignmentMatrix);
 		for(int i=0;i<=2;i++){
-			alignmentMatrixToUse[i][i] = Math.round(alignmentMatrixToUse[i][i]*100.0);
+			alignmentMatrixToUse[i][0] = Math.round(alignmentMatrixToUse[i][0]*100.0);
+			alignmentMatrixToUse[i][1] = Math.round(alignmentMatrixToUse[i][1]*100.0);
+			alignmentMatrixToUse[i][2] = Math.round(alignmentMatrixToUse[i][2]*100.0);
 		}
 		
+		//Generate the calibration bytes
 		byte[] bufferCalibParam = new byte[21];
 		// offsetVector -> buffer offset = 0
 		for (int i=0; i<3; i++) {
