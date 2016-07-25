@@ -37,6 +37,7 @@ import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.SensorPPG;
+import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.ShimmerClock;
 
 public class Shimmer4 extends ShimmerDevice {
@@ -97,6 +98,8 @@ public class Shimmer4 extends ShimmerDevice {
 		mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
 		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
 		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.STC3100, new SensorSTC3100(mShimmerVerObject));
+
 		
 //		if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_4_SDK){
 //			mMapOfSensorClasses.put(SENSORS.BMP280, new SensorBMP280(mShimmerVerObject));

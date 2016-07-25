@@ -48,7 +48,8 @@ public abstract class AbstractSensor implements Serializable{
 		NONIN_ONYX_II("Nonin Onyx II"),
 		QTI_DIRECT_TEMP("QTI DirectTemp"),
 		KEYBOARD_MOUSE("Keyboard/Mouse Listener"),
-		BMP280("BMP280");
+		BMP280("BMP280"),
+		STC3100("STC3100");
 		
 	    private final String text;
 
