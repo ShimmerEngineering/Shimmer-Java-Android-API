@@ -471,18 +471,21 @@ final public class ObjectCluster implements Cloneable,Serializable{
 				if (fc.mDataObject.size()>0){
 					dcb.addAllDataArray(fc.mDataObject);
 				}
+				dcb.setUnit(fc.mUnits);
 				fcb.getMutableFormatMap().put(fc.mFormat, dcb.build());
 			}
 			mObjectClusterBuilder.getMutableDataMap().put(channelName, fcb.build());
-			mObjectClusterBuilder.setBluetoothAddress(mBluetoothAddress);
-			mObjectClusterBuilder.setName(mMyName);
-			mObjectClusterBuilder.setCalibratedTimeStamp(mShimmerCalibratedTimeStamp);
-			ByteBuffer bb = ByteBuffer.allocate(8);
-	    	bb.put(mSystemTimeStamp);
-	    	bb.flip();
-	    	long systemTimeStamp = bb.getLong();
-			mObjectClusterBuilder.setSystemTime(systemTimeStamp);
 		}
+		if(mBluetoothAddress!=null)
+			mObjectClusterBuilder.setBluetoothAddress(mBluetoothAddress);
+		if(mMyName!=null)
+			mObjectClusterBuilder.setName(mMyName);
+		mObjectClusterBuilder.setCalibratedTimeStamp(mShimmerCalibratedTimeStamp);
+		ByteBuffer bb = ByteBuffer.allocate(8);
+    	bb.put(mSystemTimeStamp);
+    	bb.flip();
+    	long systemTimeStamp = bb.getLong();
+		mObjectClusterBuilder.setSystemTime(systemTimeStamp);
 		return mObjectClusterBuilder.build();
 	}
 	
