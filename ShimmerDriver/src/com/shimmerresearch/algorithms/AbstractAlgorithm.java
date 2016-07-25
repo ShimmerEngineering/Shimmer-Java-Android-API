@@ -89,6 +89,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	//This identifies what inputs are required for the signal, and the corresponding gui option (e.g. checkbox, textbox)
 	/** AKA ObjectClusterName */
 	public String mAlgorithmName;
+	@Deprecated
 	public String mAlgorithmGroupingName;
 	protected String mTrialName;
 	
@@ -188,6 +189,11 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	
 	public AbstractAlgorithm(){
+		setGeneralAlgorithmName();
+		setFilteringOption();
+		setMinSamplingRateForAlgorithm();
+		setSupportedVerInfo();
+		
 		setupAlgorithm();
 	}
 	
@@ -202,10 +208,6 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	private void setupAlgorithm() {
-		setGeneralAlgorithmName();
-		setFilteringOption();
-		setMinSamplingRateForAlgorithm();
-		setSupportedVerInfo();
 		generateConfigOptionsMap();
 		generateAlgorithmGroupingMap();
 	}
