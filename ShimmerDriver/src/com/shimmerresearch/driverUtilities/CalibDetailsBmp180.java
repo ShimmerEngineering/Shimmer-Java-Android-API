@@ -48,4 +48,10 @@ public class CalibDetailsBmp180 extends CalibDetails {
 		}
 	}
 
+	@Override
+	public void resetToDefaultParameters() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

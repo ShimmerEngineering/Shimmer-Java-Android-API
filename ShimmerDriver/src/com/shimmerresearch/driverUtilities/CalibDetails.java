@@ -27,7 +27,7 @@ public abstract class CalibDetails implements Serializable {
 
 	public abstract byte[] generateCalParamByteArray();
 	public abstract void parseCalParamByteArray(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource);
-	
+	public abstract void resetToDefaultParameters();
 	
 	public void setCalibTimeMs(long calibTimeMs){
 		mCalibTimeMs = calibTimeMs;
@@ -64,7 +64,7 @@ public abstract class CalibDetails implements Serializable {
 		long calibTimeMs = UtilShimmer.convertShimmerRtcDataBytesToMilliSecondsLSB(calibTimeBytesTicks);
 		
 		// Parse in order of priority
-		if(calibTimeMs>getCalibTimeMs() || calibReadSource.ordinal()>getCalibReadSource().ordinal()){
+		if(calibTimeMs>getCalibTimeMs() || calibReadSource.ordinal()>=getCalibReadSource().ordinal()){
 			if(UtilShimmer.isAllFF(bufferCalibrationParameters)
 					||UtilShimmer.isAllZeros(bufferCalibrationParameters)){
 				return;

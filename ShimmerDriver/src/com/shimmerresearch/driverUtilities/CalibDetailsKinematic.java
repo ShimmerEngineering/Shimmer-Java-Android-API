@@ -34,11 +34,11 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	private double[][] mEmptySensitivityMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 	
 	private double[][] mEmptyOffsetVector = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 
 	
-	private int mSensitivityScaleFactor = SENSITIVITY_SCALE_FACTOR.NONE;
+	private double mSensitivityScaleFactor = SENSITIVITY_SCALE_FACTOR.NONE;
 	public static final class SENSITIVITY_SCALE_FACTOR{
-		public static final int NONE = 1;
-		public static final int TEN = 10;
-		public static final int HUNDRED = 100;
+		public static final double NONE = 1.0;
+		public static final double TEN = 10.0;
+		public static final double HUNDRED = 100.0;
 	}
 	
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {
@@ -49,10 +49,6 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
 		this(rangeValue, rangeString);
 		this.setDefaultValues(defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
-		
-//		if(rangeString.equals("+/- 250dps") || rangeString.equals("+/- 500dps") || rangeString.equals("+/- 1000dps") || rangeString.equals("+/- 2000dps")){
-//			System.out.println(generateDebugString());
-//		}
 	}
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, 
@@ -69,7 +65,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, 
 			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector,
-			int sensitivityScaleFactor) {
+			double sensitivityScaleFactor) {
 		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
 		setSensitivityScaleFactor(sensitivityScaleFactor);
 	}
@@ -90,7 +86,9 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		this.mDefaultOffsetVector = defaultOffsetVector;
 	}
 
+	@Override
 	public void resetToDefaultParameters(){
+		setCalibTimeMs(0);
 		mCurrentAlignmentMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultAlignmentMatrix);
 		mCurrentSensitivityMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultSensitivityMatrix);
 		mCurrentOffsetVector = UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector);
@@ -176,7 +174,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 
 	@Override
 	public void parseCalParamByteArray(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource){
-		if(calibReadSource.ordinal()>getCalibReadSource().ordinal()){
+		if(calibReadSource.ordinal()>=getCalibReadSource().ordinal()){
 			if(UtilShimmer.isAllFF(bufferCalibrationParameters)
 					||UtilShimmer.isAllZeros(bufferCalibrationParameters)){
 				return;
@@ -196,6 +194,11 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			
 			for(int i=0;i<=2;i++){
 				sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor;
+				
+				//Debugging rounding issue with gyro sensitivity
+//				if((mRangeValue==2 || mRangeValue==3) && mSensitivityScaleFactor==SENSITIVITY_SCALE_FACTOR.HUNDRED){
+//					System.err.println("Parsed NEW:\t" + sensitivityMatrix[i][i]);
+//				}
 			}
 			
 			mCurrentAlignmentMatrix = alignmentMatrix; 			
@@ -218,7 +221,17 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		
 		double[][] sensitivityMatrixToUse = UtilShimmer.deepCopyDoubleMatrix(sensitivityMatrix);
 		for(int i=0;i<=2;i++){
-			sensitivityMatrixToUse[i][i] = sensitivityMatrixToUse[i][i]*mSensitivityScaleFactor;
+			sensitivityMatrixToUse[i][i] = Math.round(sensitivityMatrixToUse[i][i]*mSensitivityScaleFactor);
+
+			//Debugging rounding issue with gyro sensitivity
+//			if((mRangeValue==2 || mRangeValue==3) && mSensitivityScaleFactor==SENSITIVITY_SCALE_FACTOR.HUNDRED){
+//				System.err.println("ORIGINAL:\t" + sensitivityMatrix[i][i] + "\tNew:\t" + sensitivityMatrixToUse[i][i]);
+//			}
+		}
+
+		double[][] alignmentMatrixToUse = UtilShimmer.deepCopyDoubleMatrix(alignmentMatrix);
+		for(int i=0;i<=2;i++){
+			alignmentMatrixToUse[i][i] = Math.round(alignmentMatrixToUse[i][i]*100.0);
 		}
 		
 		byte[] bufferCalibParam = new byte[21];
@@ -234,9 +247,9 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		}
 		// alignmentMatrix -> buffer offset = 12
 		for (int i=0; i<3; i++) {
-			bufferCalibParam[12+(i*3)] = (byte) (((int)(alignmentMatrix[i][0]*100)) & 0xFF);
-			bufferCalibParam[12+(i*3)+1] = (byte) (((int)(alignmentMatrix[i][1]*100)) & 0xFF);
-			bufferCalibParam[12+(i*3)+2] = (byte) (((int)(alignmentMatrix[i][2]*100)) & 0xFF);
+			bufferCalibParam[12+(i*3)] = (byte) (((int)(alignmentMatrixToUse[i][0])) & 0xFF);
+			bufferCalibParam[12+(i*3)+1] = (byte) (((int)(alignmentMatrixToUse[i][1])) & 0xFF);
+			bufferCalibParam[12+(i*3)+2] = (byte) (((int)(alignmentMatrixToUse[i][2])) & 0xFF);
 		}
 		return bufferCalibParam;
 	}	
@@ -291,7 +304,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mCurrentOffsetVector[2][0] = XZmean;
 	}
 
-	public void setSensitivityScaleFactor(int sensitivityScaleFactor) {
+	public void setSensitivityScaleFactor(double sensitivityScaleFactor) {
 		mSensitivityScaleFactor = sensitivityScaleFactor;
 	}
 

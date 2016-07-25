@@ -2966,8 +2966,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfAllCalib = getMapOfSensorCalibrationAll();
 		for(Integer sensorMapKey:mapOfAllCalib.keySet()){
 			TreeMap<Integer, CalibDetails> calibMapPerSensor = mapOfAllCalib.get(sensorMapKey);
-			for(CalibDetails calibPerRange:calibMapPerSensor.values()){
-				byte[] calibBytesPerSensor = calibPerRange.generateCalibDump();
+			for(CalibDetails calibDetailsPerRange:calibMapPerSensor.values()){
+				byte[] calibBytesPerSensor = calibDetailsPerRange.generateCalibDump();
 				if(calibBytesPerSensor!=null){
 					byte[] calibSensorKeyBytes = new byte[2];
 					calibSensorKeyBytes[0] = (byte)((sensorMapKey>>0)&0xFF);
@@ -2976,6 +2976,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					
 					byte[] newCalibBytesAll = ArrayUtils.addAll(calibBytesAll, calibBytesPerSensor);
 					calibBytesAll = newCalibBytesAll;
+				}
+				
+				//Debugging
+				if(calibDetailsPerRange instanceof CalibDetailsKinematic){
+					System.out.println(((CalibDetailsKinematic)calibDetailsPerRange).generateDebugString());
 				}
 			}
 		}
@@ -3069,10 +3074,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfAllCalib = getMapOfSensorCalibrationAll();
 		TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfAllCalib.get(sensorMapKey);
 		if(mapOfCalibPerSensor!=null){
-			CalibDetails calibDetails = mapOfCalibPerSensor.get(rangeValue);
-			if(calibDetails!=null){
-				calibDetails.parseCalibDump(calibTimeBytesTicks, calibBytes, calibReadSource);
-//				consolePrintLn("SUCCESSFULLY PARSED");
+			CalibDetails calibDetailsPerRange = mapOfCalibPerSensor.get(rangeValue);
+			if(calibDetailsPerRange!=null){
+				calibDetailsPerRange.parseCalibDump(calibTimeBytesTicks, calibBytes, calibReadSource);
+				
+				//Debugging
+				if(calibDetailsPerRange instanceof CalibDetailsKinematic){
+					System.out.println(((CalibDetailsKinematic)calibDetailsPerRange).generateDebugString());
+				}
 			}
 		}
 	}

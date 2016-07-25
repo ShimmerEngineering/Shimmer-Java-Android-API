@@ -536,7 +536,7 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 
-	protected void setCalibSensitivityScaleFactor(int sensorMapKey, int sensitivityScaleFactor) {
+	protected void setCalibSensitivityScaleFactor(int sensorMapKey, double sensitivityScaleFactor) {
 		TreeMap<Integer, CalibDetails> calibMapPerSensor = mCalibMap.get(sensorMapKey);
 		if(calibMapPerSensor!=null){
 			for(CalibDetails calibMapPerRange:calibMapPerSensor.values()){
