@@ -588,6 +588,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
 		mExpansionBoardDetails  = eBD;
+		sensorAndConfigMapsCreate();
 	}
 
 	

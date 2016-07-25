@@ -7095,55 +7095,51 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setDefaultShimmerName();
 			}
 
-			//XXX-RS-LSM-SensorClass
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
 				setDefaultLsm303dlhcAccelSensorConfig(false);
-
-				//XXX-RS-LSM-SensorClass
-				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
-					setDefaultLsm303dlhcMagSensorConfig(false);
-				}
-				//YYY-MPU-Class
-				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){ 
-					setDefaultMpu9150GyroSensorConfig(false);
-				}
-				//YYY-MPU-Class
-				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)){
-					setDefaultMpu9150AccelSensorConfig(false);
-				}
-				//YYY-MPU-Class
-				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
-					setMPU9150MagRateFromFreq(getSamplingRateShimmer());
-				}
-				//YYY-BMP-Class
-				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
-					setDefaultBmp180PressureSensorConfig(false);
-				}
-				//YYY-GSR-Class
-				if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)) {
-					setDefaultGsrSensorConfig(false);
-				}
-				//YYY-EXG-Class
-				if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
-						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
-						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
-						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM))
-						&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) ){
-					//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
-					//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
-					//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
-					//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
-					//				if(!checkIfOtherExgChannelEnabled()) {
-					setDefaultECGConfiguration(getSamplingRateShimmer());
-					//				}
-				}
-				if(!checkIfAnyMplChannelEnabled()) {
-					setDefaultMpu9150MplSensorConfig(false);
-				}
-
-				checkIfInternalExpBrdPowerIsNeeded();
-				//			checkIfMPLandDMPIsNeeded();
 			}
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
+				setDefaultLsm303dlhcMagSensorConfig(false);
+			}
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){ 
+				setDefaultMpu9150GyroSensorConfig(false);
+			}
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)){
+				setDefaultMpu9150AccelSensorConfig(false);
+			}
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
+				setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+			}
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
+				setDefaultBmp180PressureSensorConfig(false);
+			}
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)) {
+				setDefaultGsrSensorConfig(false);
+			}
+			
+			if(!SensorEXG.checkIsAnyExgChannelEnabled(mSensorMap)){
+				clearExgConfig();
+			}
+//			if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
+//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
+//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
+//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM))
+//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) ){
+////					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
+////					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
+////					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
+////					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
+////				if(!checkIfOtherExgChannelEnabled()) {
+//				setDefaultECGConfiguration(getSamplingRateShimmer());
+////				clearExgConfig();
+////				}
+//			}
+			if(!checkIfAnyMplChannelEnabled()) {
+				setDefaultMpu9150MplSensorConfig(false);
+			}
+
+			checkIfInternalExpBrdPowerIsNeeded();
+//			checkIfMPLandDMPIsNeeded();
 		}
 		
 	}
@@ -7237,7 +7233,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else {
-				if(!SensorEXG.checkIfOtherExgChannelEnabled(mSensorMap)) {
+				if(!SensorEXG.checkIsAnyExgChannelEnabled(mSensorMap)) {
 //					System.err.println("CLEAR EXG CHANNEL");
 					clearExgConfig();
 				}

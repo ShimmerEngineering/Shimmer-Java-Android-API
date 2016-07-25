@@ -1398,27 +1398,28 @@ public class SensorEXG extends AbstractSensor{
 	
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-//		// If Shimmer name is default, update with MAC ID if available.
-//		if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
-//			setDefaultShimmerName();
-//			}
-		if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
-				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
-				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
-				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM))
-				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) ){
-			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
-			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
-			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
-			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
-			//				if(!checkIfOtherExgChannelEnabled()) {
-			
-			
-			
-//			setDefaultECGConfiguration(getSamplingRateShimmer());
-			setDefaultECGConfiguration(mMaxSetShimmerSamplingRate);
-			//				}
+//		if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
+//				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
+//				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
+//				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM))
+//				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) ){
+//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
+//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
+//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
+//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
+//			//				if(!checkIfOtherExgChannelEnabled()) {
+//			
+//			
+//			
+////			setDefaultECGConfiguration(getSamplingRateShimmer());
+////			setDefaultECGConfiguration(mMaxSetShimmerSamplingRate);
+//			//				}
+//		}
+		
+		if(!SensorEXG.checkIsAnyExgChannelEnabled(mSensorMap)){
+			clearExgConfig();
 		}
+
 	}
 
 	//-------------------- ExG from ShimmerObject Start -----------------------------------
@@ -1855,7 +1856,7 @@ public class SensorEXG extends AbstractSensor{
 		}
 	}
 	
-	public static boolean checkIfOtherExgChannelEnabled(Map<Integer,SensorDetails> sensorEnabledMap) {
+	public static boolean checkIsAnyExgChannelEnabled(Map<Integer,SensorDetails> sensorEnabledMap) {
 		for(Integer sensorMapKey:sensorEnabledMap.keySet()) {
 			if(sensorEnabledMap.get(sensorMapKey).isEnabled()) {
 				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
@@ -2652,7 +2653,7 @@ public class SensorEXG extends AbstractSensor{
 				}
 			}
 			else {
-				if(!checkIfOtherExgChannelEnabled(mShimmerDevice.getSensorMap())) {
+				if(!checkIsAnyExgChannelEnabled(mShimmerDevice.getSensorMap())) {
 //					System.err.println("CLEAR EXG CHANNEL");
 					clearExgConfig();
 				}

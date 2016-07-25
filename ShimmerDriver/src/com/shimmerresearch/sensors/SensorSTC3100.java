@@ -44,10 +44,10 @@ public class SensorSTC3100 extends AbstractSensor{
 	
 	public class GuiLabelConfig{
 		public static final String STC3100_SENSOR = "STC3100 Sensor";
-		}
+	}
 	
 	public class GuiLabelSensors{
-		public static final String STC3100 = "STC3100";
+		public static final String STC3100 = "Battery Monitor (STC3100)";
 	}
 	
 	public class GuiLabelSensorTiles{
@@ -61,12 +61,12 @@ public class SensorSTC3100 extends AbstractSensor{
 	
 	
 	public static class ObjectClusterSensorName{
-		public static  String STC_VOLTAGE = "STC3100 Voltage";
-		public static  String STC_CURRENT = "STC3100 Current";
-		public static  String STC_TEMP = "STC3100 Temperature";
-		public static  String STC_CHARGE = "STC3100 Charge";
-		public static  String STC_BATERY_PERCENTAGE = "STC3100 Battery Percentage";
-		public static  String STC_TIME_REMAINING = "STC3100 Time Remaining";
+		public static  String STC_VOLTAGE = "STC3100_Voltage";
+		public static  String STC_CURRENT = "STC3100_Current";
+		public static  String STC_TEMP = "STC3100_Temperature";
+		public static  String STC_CHARGE = "STC3100_Charge";
+		public static  String STC_BATERY_PERCENTAGE = "STC3100_Battery_Percentage";
+		public static  String STC_TIME_REMAINING = "STC3100_Time_Remaining";
 		
 		
 	}
