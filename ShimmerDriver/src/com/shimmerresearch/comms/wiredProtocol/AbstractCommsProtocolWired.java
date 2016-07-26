@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm.SHIMMER_UART_BAUD_RATES;
-import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortListener;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -27,7 +27,7 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
  */
 public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBack implements SerialPortListener{
 	
-	public InterfaceByteLevelDataComm mSerialPortInterface;
+	public InterfaceSerialPortHal mSerialPortInterface;
 	
 	/** Boolean only used if COM port is not left open */
 	private boolean mIsUARTInUse = false;
@@ -61,7 +61,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
     protected final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
 
 //	public AbstractCommsProtocolWired(String comPort, String uniqueId, int baudToUse){
-	public AbstractCommsProtocolWired(String comPort, String uniqueId, int baudToUse, InterfaceByteLevelDataComm shimmerSerialPortInterface){
+	public AbstractCommsProtocolWired(String comPort, String uniqueId, int baudToUse, InterfaceSerialPortHal shimmerSerialPortInterface){
 		mComPort = comPort;
 		mUniqueId = uniqueId;
 		mBaudToUse = baudToUse;
@@ -74,7 +74,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 		setThreadName(mUniqueId + "-" + this.getClass().getSimpleName());
 	}
 
-	public AbstractCommsProtocolWired(String comPort, String uniqueId, InterfaceByteLevelDataComm shimmerSerialPortInterface){
+	public AbstractCommsProtocolWired(String comPort, String uniqueId, InterfaceSerialPortHal shimmerSerialPortInterface){
 		this(comPort, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED, shimmerSerialPortInterface);
 	}
 	

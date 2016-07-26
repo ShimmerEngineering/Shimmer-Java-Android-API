@@ -112,7 +112,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	 * @param shimmerVersionObject the FW and HW details of the devices
 	 */
 	public ShimmerGQ_802154(ShimmerVerObject sVO) {
-		super.setShimmerVersionObject(sVO);
+		super.setShimmerVersionInfoAndCreateSensorMap(sVO);
 	}
 
 	/**

@@ -3,7 +3,7 @@ package com.shimmerresearch.comms.serialPortInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractSerialPortComm implements InterfaceByteLevelDataComm {
+public abstract class AbstractSerialPortComm implements InterfaceSerialPortHal {
 	
 	//the timeout value for connecting with the port
     public int SERIAL_PORT_TIMEOUT = 500; // was 2000

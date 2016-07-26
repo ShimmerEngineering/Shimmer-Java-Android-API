@@ -387,7 +387,7 @@ public class Shimmer4 extends ShimmerDevice {
 		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
 //		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.ALL);
 		if(mCommsProtocolRadio!=null){
-			mCommsProtocolRadio.mCommsProtocol.setPacketSize(expectedDataPacketSize);
+			mCommsProtocolRadio.mRadioProtocol.setPacketSize(expectedDataPacketSize);
 		}
 	}
 
@@ -442,6 +442,7 @@ public class Shimmer4 extends ShimmerDevice {
 			@Override
 			public void disconnected() {
 				setBluetoothRadioState(BT_STATE.DISCONNECTED);
+				mCommsProtocolRadio = null;
 			}
 
 			@Override
@@ -590,8 +591,8 @@ public class Shimmer4 extends ShimmerDevice {
 						ShimmerVerObject shimmerVerObject = (ShimmerVerObject)parsedResponse;
 						shimmerVerObject.setHardwareVersion(getHardwareVersion());
 						//TODO check with ShimmerBluetooth
-//						setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
-						setShimmerVersionObject(shimmerVerObject);
+						setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
+//						setShimmerVersionObject(shimmerVerObject);
 					}
 					else {
 						processFirmwareVerResponse();
@@ -961,9 +962,9 @@ public class Shimmer4 extends ShimmerDevice {
 			// Just unlock instruction stack and leave logAndStream timer as
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
-			startOperation(BT_STATE.CONNECTING, mCommsProtocolRadio.mCommsProtocol.getListofInstructions().size());
+			startOperation(BT_STATE.CONNECTING, mCommsProtocolRadio.mRadioProtocol.getListofInstructions().size());
 			
-			mCommsProtocolRadio.mCommsProtocol.setInstructionStackLock(false);
+			mCommsProtocolRadio.mRadioProtocol.setInstructionStackLock(false);
 		}
 		
 		mCommsProtocolRadio.startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
@@ -1104,13 +1105,6 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 
-	public String getComPort() {
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsInterface!=null){
-			return ((AbstractSerialPortComm) mCommsProtocolRadio.mCommsInterface).mAddress;
-		}
-		return null;
-	}
-
 	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
@@ -1128,26 +1122,26 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	public void writeEnabledSensors(long enabledSensors) {
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsInterface!=null){
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
 //			mShimmerRadioHWLiteProtocol.
 			mCommsProtocolRadio.writeEnabledSensors(enabledSensors);
 		}
 	}
 	
 	public void inquiry() {
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsInterface!=null){
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
 			mCommsProtocolRadio.inquiry();
 		}
 	}
 
 	public void startSDLogging() {
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsInterface!=null){
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
 			mCommsProtocolRadio.startSDLogging();
 		}
 	}
 
 	public void stopSDLogging() {
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsInterface!=null){
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
 			mCommsProtocolRadio.stopSDLogging();
 		}
 	}
@@ -1237,8 +1231,8 @@ public class Shimmer4 extends ShimmerDevice {
 
 
 	private void restartTimersIfNull() {
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsProtocol!=null){
-			mCommsProtocolRadio.mCommsProtocol.restartTimersIfNull();
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null){
+			mCommsProtocolRadio.mRadioProtocol.restartTimersIfNull();
 		}
 	}
 	
@@ -1333,8 +1327,8 @@ public class Shimmer4 extends ShimmerDevice {
 
 	public boolean isReadyToConnect() {
 		if (mCommsProtocolRadio==null 
-				||mCommsProtocolRadio.mCommsInterface==null
-				||!mCommsProtocolRadio.mCommsInterface.isConnected()){
+				||mCommsProtocolRadio.mRadioHal==null
+				||!mCommsProtocolRadio.mRadioHal.isConnected()){
 			return true;
 		}
 		return false;
@@ -1344,48 +1338,48 @@ public class Shimmer4 extends ShimmerDevice {
 	@Override
 	public void setIsDocked(boolean state) {
 		super.setIsDocked(state);
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsProtocol!=null && mCommsProtocolRadio.mCommsProtocol instanceof LiteProtocol){
-			((LiteProtocol)(mCommsProtocolRadio.mCommsProtocol)).mIsDocked = state;
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
+			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mIsDocked = state;
 		}
 	}
 
 	@Override
 	public void setIsInitialised(boolean state) {
 		super.setIsInitialised(state);
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsProtocol!=null && mCommsProtocolRadio.mCommsProtocol instanceof LiteProtocol){
-			((LiteProtocol)(mCommsProtocolRadio.mCommsProtocol)).mIsInitialised = state;
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
+			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mIsInitialised = state;
 		}
 	}
 
 	@Override
 	public void setIsSensing(boolean state) {
 		super.setIsSensing(state);
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsProtocol!=null && mCommsProtocolRadio.mCommsProtocol instanceof LiteProtocol){
-			((LiteProtocol)(mCommsProtocolRadio.mCommsProtocol)).mIsSensing = state;
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
+			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mIsSensing = state;
 		}
 	}
 
 	@Override
 	public void setIsStreaming(boolean state) {
 		super.setIsStreaming(state);
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsProtocol!=null && mCommsProtocolRadio.mCommsProtocol instanceof LiteProtocol){
-			((LiteProtocol)(mCommsProtocolRadio.mCommsProtocol)).mIsStreaming = state;
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
+			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mIsStreaming = state;
 		}
 	}
 	
 	@Override
 	public void setIsSDLogging(boolean state) {
 		super.setIsSDLogging(state);
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsProtocol!=null && mCommsProtocolRadio.mCommsProtocol instanceof LiteProtocol){
-			((LiteProtocol)(mCommsProtocolRadio.mCommsProtocol)).mIsSDLogging = state;
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
+			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mIsSDLogging = state;
 		}
 	}
 	
 	@Override
 	public void setHaveAttemptedToReadConfig(boolean state) {
 		super.setHaveAttemptedToReadConfig(state);
-		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mCommsProtocol!=null && mCommsProtocolRadio.mCommsProtocol instanceof LiteProtocol){
-			((LiteProtocol)(mCommsProtocolRadio.mCommsProtocol)).mHaveAttemptedToReadConfig = state;
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
+			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mHaveAttemptedToReadConfig = state;
 		}
 	}
 	

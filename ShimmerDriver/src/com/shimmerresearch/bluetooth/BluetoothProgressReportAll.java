@@ -64,13 +64,7 @@ public class BluetoothProgressReportAll implements Serializable {
 		
 		mMapOfOperationProgressInfo.clear();
 		for(ShimmerDevice shimmer:lso){
-			String comPort = "";
-			if(shimmer instanceof ShimmerBluetooth){
-				comPort = ((ShimmerBluetooth)shimmer).getComPort();
-			}
-			else if(shimmer instanceof Shimmer4){
-				comPort = ((Shimmer4)shimmer).getComPort();
-			}
+			String comPort = shimmer.getComPort();
 			mMapOfOperationProgressInfo.put(comPort, new BluetoothProgressReportPerDevice(shimmer, currentOperationBtState, 1));
 		}
 		updateProgressTotal();

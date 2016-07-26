@@ -3,13 +3,12 @@ package com.shimmerresearch.comms.radioProtocol;
 import java.util.Arrays;
 import java.util.List;
 
-import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 
-public abstract class AbstractByteLevelProtocol {
+public abstract class AbstractCommsProtocol {
 	
-	ProtocolListener mProtocolListener;
-	InterfaceByteLevelDataComm mCommsInterface; //every radio protocol requires radio control
+	protected ProtocolListener mProtocolListener;
+	protected InterfaceSerialPortHal mCommsInterface; //every radio protocol requires radio control
 	protected int mPacketSize = 0;
 	
 	protected int mNumOfInfoMemSetCmds;
@@ -23,7 +22,7 @@ public abstract class AbstractByteLevelProtocol {
 
 	public abstract void initialize();
 	public abstract void writeInstruction(byte[] instruction);
-	public abstract void stop();
+	public abstract void stopProtocol();
 	protected abstract void writeInfoMem(int startAddress, byte[] buf);
 	protected abstract void readInfoMem(int startAddress, int size);
 	
@@ -66,15 +65,14 @@ public abstract class AbstractByteLevelProtocol {
 	/**When using this, it is required that the byteleveldatacomm is set using the serByteLevelDataComm
 	 * 
 	 */
-	public AbstractByteLevelProtocol(){
+	public AbstractCommsProtocol(){
 	}
 	
-	public AbstractByteLevelProtocol(InterfaceByteLevelDataComm commsInterface){
-		mCommsInterface = commsInterface;
+	public AbstractCommsProtocol(InterfaceSerialPortHal commsInterface){
+		setByteLevelDataComm(commsInterface);
 	}
 	
-	
-	public void setByteLevelDataComm(InterfaceByteLevelDataComm commsInterface){
+	public void setByteLevelDataComm(InterfaceSerialPortHal commsInterface){
 		mCommsInterface = commsInterface;
 	}
 	

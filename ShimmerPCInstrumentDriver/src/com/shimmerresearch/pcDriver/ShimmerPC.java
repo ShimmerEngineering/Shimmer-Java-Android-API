@@ -248,20 +248,20 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				mFirstTime=true;
 				
 				if (mSerialPort==null){
-					
 					mComPort = address;
 					mSerialPort = new SerialPort(address);
 					
 					try {
-						consolePrintLn("Connecting to Shimmer");
-						
+						consolePrintLn("Connecting to Shimmer on " + address);
 						consolePrintLn("Port open: " + mSerialPort.openPort());
 						consolePrintLn("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
 						consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
+						
 						if (mIOThread != null) { 
 							mIOThread = null;
 							mPThread = null;
 						}
+						
 						if (mSerialPort.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
 //						if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
 //							setState(BT_STATE.CONNECTED);

@@ -6,7 +6,7 @@ import com.shimmerresearch.driver.DeviceException;
  * @author Mark Nolan
  *
  */
-public interface InterfaceByteLevelDataComm {
+public interface InterfaceSerialPortHal {
 
 //	//This command should be available across all byte level radios, so the shimmer version and protocol type can be determined
 //	int GET_SHIMMER_VERSION_COMMAND = 36;

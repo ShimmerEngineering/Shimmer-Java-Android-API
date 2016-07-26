@@ -28,6 +28,7 @@ import com.shimmerresearch.algorithms.OrientationModule6DOF;
 import com.shimmerresearch.algorithms.OrientationModule9DOF;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.CalibDetails;
@@ -162,7 +163,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 	protected long mDerivedSensors = (long)0;	
 
-	public CommsProtocolRadio mCommsProtocolRadio = null;
+	public transient CommsProtocolRadio mCommsProtocolRadio = null;
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
@@ -208,13 +209,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void setShimmerVersionObject(ShimmerVerObject sVO) {
 		mShimmerVerObject = sVO;
-		sensorAndConfigMapsCreate();
-		
-//		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
-//			addCommunicationRoute(COMMUNICATION_TYPE.SD);
-//		}
 	}
 	
+	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
+		setShimmerVersionObject(hwfw);
+		sensorAndConfigMapsCreate();
+	}
+
+	public void clearShimmerVersionInfo() {
+		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
+	}
+
 	//TODO draft code
 	private void updateSensorDetailsWithCommsTypes() {
 		if(mMapOfSensorClasses!=null){
@@ -1850,7 +1855,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public List<SensorDetails> getListOfEnabledSensors(){
 		List<SensorDetails> listOfEnabledSensors = new ArrayList<SensorDetails>();
-		for (SensorDetails sED : mSensorMap.values()) {
+		for (SensorDetails sED:mSensorMap.values()) {
 			if (sED.isEnabled()) {
 				listOfEnabledSensors.add(sED);
 			}
@@ -3100,11 +3105,26 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			mCommsProtocolRadio.stopStreaming();
 		}
 	}
+	
+	public String getComPort() {
+		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
+			return ((AbstractSerialPortComm) mCommsProtocolRadio.mRadioHal).mAddress;
+		}
+		return "";
+	}
 
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+	public void updateThreadName() {
+		String macId = getMacIdParsed();
+		String newThreadName = this.getClass().getSimpleName(); 
+		if(!macId.isEmpty()){
+			newThreadName += "-" + macId;
+		}
+		setThreadName(newThreadName);
+	}
 
 }

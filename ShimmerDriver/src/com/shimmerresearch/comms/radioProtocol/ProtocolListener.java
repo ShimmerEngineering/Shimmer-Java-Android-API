@@ -36,7 +36,7 @@ public interface ProtocolListener {
 	public void eventSetIsInitialised(boolean isInitialised);
 	public void eventSetHaveAttemptedToRead(boolean haveAttemptedToRead);
 
-	
+	public void eventKillConnectionRequest();
 	
 	
 }

@@ -7527,7 +7527,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
-	}	
+	}
+	
 // YYY - Implemented in SensorBattVoltage
 	/**
 	 * @return the mSamplingDividerVBatt
@@ -7560,7 +7561,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mShimmerInfoMemBytes generated from an empty byte array. This is called to generate the InfoMem bytes for writing to the Shimmer.
 	 */
-	protected byte[] generateShimmerInfoMemBytes() {
+	protected byte[] generateInfoMemBytesForWritingToShimmer() {
 //		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
 		return infoMemByteArrayGenerate(true);
 	}
@@ -11625,18 +11626,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		ShimmerVerObject sVOFwId = new ShimmerVerObject(getHardwareVersion(), getFirmwareIdentifier(), firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 		setShimmerVersionObject(sVOFwId);
 	}
-
-
-
-	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
-		setShimmerVersionObject(hwfw);
-		sensorAndConfigMapsCreate();
-	}
-
-	public void clearShimmerVersionInfo() {
-		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
-	}
-	
 
 
 	// --------------- Set Methods End --------------------------

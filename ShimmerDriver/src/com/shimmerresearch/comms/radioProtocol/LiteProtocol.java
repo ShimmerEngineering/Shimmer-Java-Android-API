@@ -19,7 +19,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.*;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
-import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
@@ -28,45 +28,29 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 
-public class LiteProtocol extends AbstractByteLevelProtocol{
+public class LiteProtocol extends AbstractCommsProtocol{
 
-	
-	//TODO - items that I've had to comment out
-	//getFirmwareVersionCode()
-	
-	
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	protected int mCurrentCommand;
 	
-//	/**
-//	 * LogAndStream will try to recreate the SD config. file for each block of
-//	 * InfoMem that is written - need to give it time to do so.
-//	 */
-//	private static final int DELAY_BETWEEN_INFOMEM_WRITES = 100;
-//	/** Delay to allow LogAndStream to create SD config. file and reinitialise */
-//	private static final int DELAY_AFTER_INFOMEM_WRITE = 500;
-//	private int mNumOfInfoMemSetCmds = 0;
-
 	transient protected IOThread mIOThread;
-	private boolean mInstructionStackLock = false;
-	protected boolean mWaitForAck=false;                                          // This indicates whether the device is waiting for an acknowledge packet from the Shimmer Device  
-	protected boolean mWaitForResponse=false; 									// This indicates whether the device is waiting for a response packet from the Shimmer Device 
-	protected boolean mTransactionCompleted=true;									// Variable is used to ensure a command has finished execution prior to executing the next command (see initialize())
-	private final int ACK_TIMER_DURATION = 10; 									// Duration to wait for an ack packet (seconds)
-	protected boolean mDummy=false;
 	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
-	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
-	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
-	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
-	protected double mPacketReceptionRate = 100;
-	protected double mPacketReceptionRateCurrent = 100;
-	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
+	private boolean mInstructionStackLock = false;
+	
+	protected boolean mWaitForAck = false;                                          // This indicates whether the device is waiting for an acknowledge packet from the Shimmer Device  
+	protected boolean mWaitForResponse = false; 									// This indicates whether the device is waiting for a response packet from the Shimmer Device 
+	protected boolean mTransactionCompleted = true;									// Variable is used to ensure a command has finished execution prior to executing the next command (see initialize())
+	private final int ACK_TIMER_DURATION = 10; 									// Duration to wait for an ack packet (seconds)
+	protected boolean mDummy = false;
+	
+	//Used in the ShimmerBluetooth processing thread but has not been ported to the LiteProtocol yet
+//	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
+	
 	List<Long> mListofPCTimeStamps = new ArrayList<Long>();
-	private int mNumberofTXRetriesCount=1;
+	private int mNumberofTXRetriesCount = 1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected boolean mOperationUnderway = false;
-	private int mTempChipID;
 
 	/**
 	 * LogAndStream will try to recreate the SD config. file for each block of
@@ -90,12 +74,28 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	private boolean mCheckIfConnectionisAlive = true;
 	//endregion --------- TIMERS ---------
 
+	//Local copy of 
+	public int mHardwareVersion;
+	private ShimmerVerObject mShimmerVerObject;
+
+	public UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), true);
+
+	private boolean isShimmerBluetoothApproach = true;
+
+	
 
 	//TODO Should not be here?
 	public String mMyBluetoothAddress;
 	public String mComPort;
+	private int mTempChipID;
 	
-	//States -> these need to be synced with the same booleans in the parent device
+//	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
+//	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
+//	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
+//	protected double mPacketReceptionRate = 100;
+//	protected double mPacketReceptionRateCurrent = 100;
+
+	//States -> Should not be here? these need to be synced with the same booleans in the parent device
 	public boolean mIsSensing = false;
 	public boolean mIsSDLogging = false;											// This is used to monitor whether the device is in sd log mode
 	public boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
@@ -107,23 +107,23 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	protected String mDirectoryName;
 	protected int numBytesToReadFromExpBoard=0;
 	
-	//Local copy of 
-	public int mHardwareVersion;
-	private ShimmerVerObject mShimmerVerObject;
 
 	
-	public UtilShimmer mUtilShimmer = new UtilShimmer(getClass().getSimpleName(), true);
-	
-	private boolean isShimmerBluetoothApproach = true;
-	
+	/**
+	 * Constructor
+	 */
 	public LiteProtocol(){
 		super();
 	}
 	
-	public LiteProtocol(InterfaceByteLevelDataComm commsInterface) {
+	/** Constructor
+	 * @param commsInterface
+	 */
+	public LiteProtocol(InterfaceSerialPortHal commsInterface) {
 		super(commsInterface);
 //		String uniqueId = mSerialPort.
 	}
+	
 	
 	private void writeInstruction(int commandValue) {
 		writeInstruction(new byte[]{(byte) (commandValue&0xFF)});
@@ -197,9 +197,9 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 		}		
 	}
 	
-	public double getPacketReceptionRate(){
-		return mPacketReceptionRate;
-	}
+//	public double getPacketReceptionRate(){
+//		return mPacketReceptionRate;
+//	}
 
 	@Override
 	public void initialize() {
@@ -224,7 +224,7 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	}
 
 	@Override
-	public void stop() {
+	public void stopProtocol() {
 		setIsStreaming(false);
 		setIsInitialised(false);
 
@@ -232,8 +232,6 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 			mIOThread.stop=true;
 			mIOThread = null;
 		}
-		
-		//TODO feed this up the levels so that the com port will can be closed
 	}
 
 	
@@ -479,7 +477,14 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 			//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss 
 			/*
 			if (Math.random()>0.9 && mIsInitialised==true){
-				if(bytesAvailableToBeRead() && mCurrentCommand!=TEST_CONNECTION_COMMAND	&& mCurrentCommand!=GET_STATUS_COMMAND	&& mCurrentCommand!= GET_VBATT_COMMAND && mCurrentCommand!=START_STREAMING_COMMAND&& mCurrentCommand!=STOP_STREAMING_COMMAND && mCurrentCommand!=SET_RWC_COMMAND && mCurrentCommand!=GET_RWC_COMMAND){
+				if(bytesAvailableToBeRead() 
+						&& mCurrentCommand!=TEST_CONNECTION_COMMAND	
+						&& mCurrentCommand!=GET_STATUS_COMMAND	
+						&& mCurrentCommand!= GET_VBATT_COMMAND 
+						&& mCurrentCommand!=START_STREAMING_COMMAND
+						&& mCurrentCommand!=STOP_STREAMING_COMMAND 
+						&& mCurrentCommand!=SET_RWC_COMMAND 
+						&& mCurrentCommand!=GET_RWC_COMMAND){
 					tb=readBytes(1);
 					tb=null;
 				}
@@ -691,7 +696,14 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 				//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss
 				/*
 				if (Math.random()>0.5 && mIsInitialised==true){
-					if(bytesAvailableToBeRead() && mCurrentCommand!=TEST_CONNECTION_COMMAND	&& mCurrentCommand!=GET_STATUS_COMMAND	&& mCurrentCommand!= GET_VBATT_COMMAND && mCurrentCommand!=START_STREAMING_COMMAND&& mCurrentCommand!=STOP_STREAMING_COMMAND && mCurrentCommand!=SET_RWC_COMMAND && mCurrentCommand!=GET_RWC_COMMAND){
+					if(bytesAvailableToBeRead() 
+							&& mCurrentCommand!=TEST_CONNECTION_COMMAND	
+							&& mCurrentCommand!=GET_STATUS_COMMAND	
+							&& mCurrentCommand!= GET_VBATT_COMMAND 
+							&& mCurrentCommand!=START_STREAMING_COMMAND
+							&& mCurrentCommand!=STOP_STREAMING_COMMAND 
+							&& mCurrentCommand!=SET_RWC_COMMAND 
+							&& mCurrentCommand!=GET_RWC_COMMAND){
 						readByte();
 					}
 				}
@@ -1635,7 +1647,8 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 	public void startStreaming() {
 		//mCurrentLEDStatus=-1;	
 		
-		initialiseStreaming();
+		//TODO TODO TODO TODO put back in, just removed because SDK doesn't support it yet
+//		initialiseStreaming();
 
 		mByteArrayOutputStream.reset();
 		mListofPCTimeStamps.clear();
@@ -1664,6 +1677,8 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
 
 		mProtocolListener.initialiseStreamingCallback();
+		System.out.println("initialiseStreamingCallback:\tRETURNED");
+
 //		//provides a callback for users to initialize their algorithms when start streaming is called
 //		if(mDataProcessing!=null){
 //			mDataProcessing.InitializeProcessData();
@@ -1884,14 +1899,10 @@ public class LiteProtocol extends AbstractByteLevelProtocol{
 		} //End Run
 	} //End TimerTask
 	
-	private void retryTXCommand(){
-		//NOT USED
-		//NOT USED in ShimmerBluetooth either
-	}
-	
 	private void killConnection(){
 		printLogDataForDebugging("Killing Connection");
-		stop(); //If command fail exit device 
+//		stop(); //If command fail exit device
+		mProtocolListener.eventKillConnectionRequest();
 	}
 
 	@Override

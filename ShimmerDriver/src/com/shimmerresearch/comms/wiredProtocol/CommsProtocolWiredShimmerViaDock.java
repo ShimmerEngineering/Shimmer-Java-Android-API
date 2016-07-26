@@ -3,7 +3,7 @@ package com.shimmerresearch.comms.wiredProtocol;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
-import com.shimmerresearch.comms.serialPortInterface.InterfaceByteLevelDataComm;
+import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
@@ -18,7 +18,7 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
  */
 public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired {
 
-	public CommsProtocolWiredShimmerViaDock(String comPort, String uniqueId, InterfaceByteLevelDataComm serialPortInterface){
+	public CommsProtocolWiredShimmerViaDock(String comPort, String uniqueId, InterfaceSerialPortHal serialPortInterface){
 		super(comPort, uniqueId, serialPortInterface);
 		serialPortInterface.registerSerialPortRxEventCallback(this);
 	}
