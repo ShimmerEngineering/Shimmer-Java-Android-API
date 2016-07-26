@@ -1,18 +1,14 @@
 package com.shimmerresearch.bluetooth;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-
-
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.driver.Shimmer4;
 import com.shimmerresearch.driver.ShimmerDevice;
-//import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
-import com.shimmerresearch.driver.ShimmerObject;
 
 /** Hold progress details per device for Bluetooth activity.
  * @author mnolan
@@ -188,7 +184,27 @@ public class BluetoothProgressReportPerDevice implements Serializable {
 	}
 
 
+	/**Performs a deep copy of ProgressDetailsAll by Serializing
+	 * @return ProgressDetailsAll the deep copy of the current ProgressDetailsAll
+	 * @see java.io.Serializable
+	 */
+	public BluetoothProgressReportPerDevice deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
 
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (BluetoothProgressReportPerDevice) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	
 }

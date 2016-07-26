@@ -46,4 +46,9 @@ public abstract class AbstractSerialPortComm implements InterfaceSerialPortHal {
 	public void addByteLevelDataCommListener(ByteLevelDataCommListener spl) {
 		mByteLevelDataCommListener.add(spl);
 	}
+	
+	@Override
+	public void setTimeout(int timeout) {
+		SERIAL_PORT_TIMEOUT = timeout;
+	}
 }

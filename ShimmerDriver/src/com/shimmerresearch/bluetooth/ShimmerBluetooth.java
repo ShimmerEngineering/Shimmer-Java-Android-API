@@ -178,7 +178,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected int numBytesToReadFromExpBoard=0;
 	
 	private boolean mUseInfoMemConfigMethod = false;
-	protected String mComPort = "";
+
 	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
 	List<Long> mListofPCTimeStamps = new ArrayList<Long>();
 	
@@ -813,7 +813,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 								&& mCurrentCommand!=GET_CALIB_DUMP_COMMAND 
 								//&& mCurrentCommand!= GET_VBATT_COMMAND
 								&& mOperationUnderway){
-							sendProgressReport(new BluetoothProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, mComPort));
+							sendProgressReport(new BluetoothProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, getComPort()));
 						}
 						
 						// Process if currentCommand is a SET command
@@ -3650,6 +3650,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeCalibrationDump(byte[] calibDump){
 		if(this.getFirmwareVersionCode()>=7){
 			writeMem(SET_CALIB_DUMP_COMMAND, 0, calibDump, MAX_CALIB_DUMP_MAX);
+			readCalibrationDump();
 		}
 	}
 
@@ -3736,6 +3737,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeInfoMem(int startAddress, byte[] buf, int maxMemAddress){
 		if(this.getFirmwareVersionCode()>=6){
 			writeMem(SET_INFOMEM_COMMAND, startAddress, buf, maxMemAddress);
+			readConfigurationFromInfoMem();
 		}
 	}
 
@@ -3775,14 +3777,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		
-		// Thread sleeps for 1s when ACK from SET_INFOMEM_COMMAND is received so
-		// it is safe to cue the below here to allow Shimmer time to process
-		// configuration
-//		readInfoMem(startAddress, buf.length);
-		readConfigurationFromInfoMem();
-		
-//		writeEnabledSensors(mEnabledSensors);
-//		inquiry();
+//		// Thread sleeps for 1s when ACK from SET_INFOMEM_COMMAND is received so
+//		// it is safe to cue the below here to allow Shimmer time to process
+//		// configuration
+////		readInfoMem(startAddress, buf.length);
+//		readConfigurationFromInfoMem();
+//		
+////		writeEnabledSensors(mEnabledSensors);
+////		inquiry();
 	}
     
 	/**Could be used by InfoMem or Expansion board memory
@@ -4955,13 +4957,5 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //		mVerboseMode = verboseMode;
 //	}
 	
-	@Override
-	public String getComPort(){
-		return mComPort;
-	}
-	
-	public void setComPort(String comport){
-		mComPort = comport;
-	}
 	
 }

@@ -180,13 +180,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			byte[] buffer;
 			try {
 				buffer = readBytes(availableBytes());
-			
-			printLogDataForDebugging("Discarding:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(buffer));
+				printLogDataForDebugging("Discarding:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(buffer));
 			} catch (DeviceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		
 		while (availableBytes()!=0){
 			int available = availableBytes();
 			if (bytesAvailableToBeRead()){
@@ -260,11 +260,12 @@ public class LiteProtocol extends AbstractCommsProtocol{
 						
 						processBytesAvailableAndInstreamSupported();
 					}
-				} catch (DeviceException e) {
+				} catch (DeviceException dE) {
 					// TODO Auto-generated catch block
-					stop=true;
-					e.printStackTrace();
+//					stop=true;
 					
+					killConnection(dE);
+//					e.printStackTrace();
 					//TODO send event up the ladder
 				}
 			} 
@@ -467,7 +468,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			//TODO: ACK in bufferTemp[0] not handled
 			//else if
 			else {
-				printLogDataForDebugging("Packet syncing problem:\tExpected: " + (mPacketSize+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
+				printLogDataForDebugging("Packet syncing problem, could not lock on to data steam. \nExpected: " + (mPacketSize+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
 				discardFirstBufferByte(); //throw the first byte away
 			}
 		}
@@ -1163,15 +1164,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		return mCommsInterface.availableBytes();
 	}
 	
-	private void disconnect() {
-		try {
-			mCommsInterface.disconnect();
-		} catch (DeviceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-	}
-	
 	public void eventLogAndStreamStatusChanged(int currentCommand){
 		mProtocolListener.eventLogAndStreamStatusChangedCallback(currentCommand);
 	}
@@ -1621,6 +1613,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	/**
 	 * @param btState
 	 */
+	@Override
 	public void operationStart(BT_STATE btState){
 //		mOperationUnderway = true;
 		startOperation(btState, getListofInstructions().size());
@@ -1647,8 +1640,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	public void startStreaming() {
 		//mCurrentLEDStatus=-1;	
 		
-		//TODO TODO TODO TODO put back in, just removed because SDK doesn't support it yet
-//		initialiseStreaming();
+		initialiseStreaming();
 
 		mByteArrayOutputStream.reset();
 		mListofPCTimeStamps.clear();
@@ -1671,7 +1663,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		if(((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
 				||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK))
 				&& getFirmwareVersionCode() >=6){
-			readRealTimeClock();
+			//TODO TODO TODO TODO put back in, just removed because SDK doesn't support it yet
+//			readRealTimeClock();
 		}
 
 		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
@@ -1900,9 +1893,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	} //End TimerTask
 	
 	private void killConnection(){
+		killConnection(null);
+	}
+
+	private void killConnection(DeviceException dE){
 		printLogDataForDebugging("Killing Connection");
 //		stop(); //If command fail exit device
-		mProtocolListener.eventKillConnectionRequest();
+		mProtocolListener.eventKillConnectionRequest(dE);
 	}
 
 	@Override
@@ -2318,7 +2315,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	 */
 	public void setIsDocked(boolean docked) {
 		mIsDocked = docked;
-		mProtocolListener.eventSetIsDocked(mIsDocked);
+		if(mProtocolListener!=null){
+			mProtocolListener.eventSetIsDocked(mIsDocked);
+		}
 	}
 
 	/**
@@ -2337,7 +2336,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 
 	public void setIsStreaming(boolean state) {
 		mIsStreaming = state;
-		mProtocolListener.eventSetIsStreaming(mIsStreaming);
+		if(mProtocolListener!=null){
+			mProtocolListener.eventSetIsStreaming(mIsStreaming);
+		}
 	}
 
 	/**Only used for LogAndStream
@@ -2349,7 +2350,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	
 	public void setIsSensing(boolean state) {
 		mIsSensing = state;
-		mProtocolListener.eventSetIsSensing(mIsSensing);
+		if(mProtocolListener!=null){
+			mProtocolListener.eventSetIsSensing(mIsSensing);
+		}
 	}
 	
 	public boolean isSDLogging(){
@@ -2358,7 +2361,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 
 	public void setIsSDLogging(boolean state){
 		mIsSDLogging = state;
-		mProtocolListener.eventSetIsSDLogging(mIsSDLogging);
+		if(mProtocolListener!=null){
+			mProtocolListener.eventSetIsSDLogging(mIsSDLogging);
+		}
 	}	
 
 
@@ -2367,7 +2372,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	 */
 	public void setIsInitialised(boolean isInitialized) {
 		mIsInitialised = isInitialized;
-		mProtocolListener.eventSetIsInitialised(mIsInitialised);
+		if(mProtocolListener!=null){
+			mProtocolListener.eventSetIsInitialised(mIsInitialised);
+		}
 	}
 	
 	/**
@@ -2389,7 +2396,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	 */
 	public void setHaveAttemptedToRead(boolean haveAttemptedToRead) {
 		mHaveAttemptedToReadConfig = haveAttemptedToRead;
-		mProtocolListener.eventSetHaveAttemptedToRead(mHaveAttemptedToReadConfig);
+		if(mProtocolListener!=null){
+			mProtocolListener.eventSetHaveAttemptedToRead(mHaveAttemptedToReadConfig);
+		}
 	}
 	
 	//***********************************

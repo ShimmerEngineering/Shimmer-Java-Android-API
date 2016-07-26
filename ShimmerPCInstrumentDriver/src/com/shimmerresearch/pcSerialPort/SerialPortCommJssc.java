@@ -331,7 +331,6 @@ public class SerialPortCommJssc extends AbstractSerialPortComm implements Serial
 			else{
 				return 0;
 			}
-			
 		} catch (SerialPortException ex) {
 			DeviceException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_PORT_EXCEPTION); 
         	de.updateDeviceException(ex.getMessage(), ex.getStackTrace());

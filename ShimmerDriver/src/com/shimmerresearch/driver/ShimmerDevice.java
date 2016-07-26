@@ -1,6 +1,8 @@
 package com.shimmerresearch.driver;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -163,6 +165,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 	protected long mDerivedSensors = (long)0;	
 
+	protected String mComPort = "";
 	public transient CommsProtocolRadio mCommsProtocolRadio = null;
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	
@@ -2064,6 +2067,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	//TODO tidy up implementation of below, overwritten and handled differently in Shimmer4, ShimmerPC, NoninOnyxII
 	protected void setBluetoothRadioState(BT_STATE state){
+		consolePrintLn("State change: " + mBluetoothRadioState.toString());
 		mBluetoothRadioState = state;
 	}
 	
@@ -2985,9 +2989,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 				
 				//Debugging
-				if(calibDetailsPerRange instanceof CalibDetailsKinematic){
-					System.out.println(((CalibDetailsKinematic)calibDetailsPerRange).generateDebugString());
-				}
+//				if(calibDetailsPerRange instanceof CalibDetailsKinematic){
+//					System.out.println(((CalibDetailsKinematic)calibDetailsPerRange).generateDebugString());
+//				}
 			}
 		}
 
@@ -3042,18 +3046,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				//5) parse timestamp (8 bytes MSB/LSB?)
 				byte[] calibTimeBytesTicks = Arrays.copyOfRange(remainingBytes, 4, 12);
 				
-				//Debugging
-				consolePrintLn("");
-				consolePrintLn("Sensor id Bytes - \t" + sensorMapKey + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(sensorIdBytes));
-				consolePrintLn("Range id Bytes - \t" + rangeValue + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rangeIdBytes));
-				consolePrintLn("Calib Bytes Length - \t" + calibLength);
-				consolePrintLn("Time Stamp id Bytes - \t" + UtilShimmer.convertShimmerRtcDataBytesToMilliSecondsLSB(calibTimeBytesTicks) + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibTimeBytesTicks));
+//				//Debugging
+//				consolePrintLn("");
+//				consolePrintLn("Sensor id Bytes - \t" + sensorMapKey + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(sensorIdBytes));
+//				consolePrintLn("Range id Bytes - \t" + rangeValue + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rangeIdBytes));
+//				consolePrintLn("Calib Bytes Length - \t" + calibLength);
+//				consolePrintLn("Time Stamp id Bytes - \t" + UtilShimmer.convertShimmerRtcDataBytesToMilliSecondsLSB(calibTimeBytesTicks) + "\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibTimeBytesTicks));
 				
 				int endIndex = 12+calibLength;
 				//6) parse calibration bytes (X bytes)
 				if(remainingBytes.length>=endIndex){
 					byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 12, endIndex);
-					consolePrintLn("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
+					
+//					//Debugging
+//					consolePrintLn("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
 
 					parseCalibByteDumpPerSensor(sensorMapKey, rangeValue, calibTimeBytesTicks, calibBytes, calibReadSource);
 					remainingBytes = Arrays.copyOfRange(remainingBytes, endIndex, remainingBytes.length);
@@ -3085,9 +3091,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				calibDetailsPerRange.parseCalibDump(calibTimeBytesTicks, calibBytes, calibReadSource);
 				
 				//Debugging
-				if(calibDetailsPerRange instanceof CalibDetailsKinematic){
-					System.out.println(((CalibDetailsKinematic)calibDetailsPerRange).generateDebugString());
-				}
+//				if(calibDetailsPerRange instanceof CalibDetailsKinematic){
+//					System.out.println(((CalibDetailsKinematic)calibDetailsPerRange).generateDebugString());
+//				}
 			}
 		}
 	}
@@ -3108,9 +3114,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public String getComPort() {
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
-			return ((AbstractSerialPortComm) mCommsProtocolRadio.mRadioHal).mAddress;
+			setComPort(((AbstractSerialPortComm) mCommsProtocolRadio.mRadioHal).mAddress); 
 		}
-		return "";
+		return mComPort;
+	}
+	
+	/** Only supported in ShimmerPCMSS currently*/
+	public void setComPort(String comPort){
+		mComPort = comPort;
 	}
 
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
@@ -3125,6 +3136,23 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			newThreadName += "-" + macId;
 		}
 		setThreadName(newThreadName);
+	}
+	
+	protected void consolePrintException(String message, StackTraceElement[] stackTrace) {
+		consolePrintLn("Exception!");
+		System.out.println(message);
+		
+		Exception e = new Exception();
+		e.setStackTrace(stackTrace);
+		//create new StringWriter object
+		StringWriter sWriter = new StringWriter();
+		//create PrintWriter for StringWriter
+		PrintWriter pWriter = new PrintWriter(sWriter);
+		//now print the stacktrace to PrintWriter we just created
+		e.printStackTrace(pWriter);
+		//use toString method to get stacktrace to String from StringWriter object
+		String strStackTrace = sWriter.toString();
+		System.out.println(strStackTrace);
 	}
 
 }

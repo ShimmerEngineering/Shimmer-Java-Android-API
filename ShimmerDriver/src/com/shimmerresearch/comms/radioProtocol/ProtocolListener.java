@@ -3,6 +3,7 @@ package com.shimmerresearch.comms.radioProtocol;
 
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.DeviceException;
 
 public interface ProtocolListener {
 
@@ -36,7 +37,7 @@ public interface ProtocolListener {
 	public void eventSetIsInitialised(boolean isInitialised);
 	public void eventSetHaveAttemptedToRead(boolean haveAttemptedToRead);
 
-	public void eventKillConnectionRequest();
+	public void eventKillConnectionRequest(DeviceException dE);
 	
 	
 }

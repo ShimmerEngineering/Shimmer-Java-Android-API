@@ -2,6 +2,7 @@ package com.shimmerresearch.comms.radioProtocol;
 
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.DeviceException;
 
 public interface RadioListener {
 
@@ -33,5 +34,6 @@ public interface RadioListener {
 	public void eventSetIsSDLogging(boolean isSdLogging);
 	public void eventSetIsInitialised(boolean isInitialised);
 	public void eventSetHaveAttemptedToRead(boolean haveAttemptedToRead);
+	public void eventError(DeviceException dE);
 
 }

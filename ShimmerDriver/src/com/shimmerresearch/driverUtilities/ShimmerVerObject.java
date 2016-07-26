@@ -35,6 +35,7 @@ public class ShimmerVerObject implements Serializable {
 	public String mFirmwareVersionParsed = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 	public String mFirmwareVersionParsedJustVersionNumber = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 
+	//TODO MNtoMN: below is a bad implementation, consider using ExpansionBoardDetails 
 	public int mShimmerExpansionBoardId = 0;
 	
 	//TODO handle SPAN_VERSION for SPANs? It is obtained from the PlatformHwManager
@@ -359,7 +360,8 @@ public class ShimmerVerObject implements Serializable {
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
 				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+//				|| (hwVer==HW_ID.SHIMMER_4_SDK)
+				){
 			return true;
 		}
 		return false;

@@ -3,7 +3,9 @@ package com.shimmerresearch.comms.radioProtocol;
 import java.util.Arrays;
 import java.util.List;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
+import com.shimmerresearch.driver.DeviceException;
 
 public abstract class AbstractCommsProtocol {
 	
@@ -49,6 +51,7 @@ public abstract class AbstractCommsProtocol {
 	public abstract void startTimerReadBattStatus();
 
 	public abstract void operationPrepare();
+	public abstract void operationStart(BT_STATE configuring);
 
 	public abstract void writeEnabledSensors(long enabledSensors);
 
@@ -76,11 +79,11 @@ public abstract class AbstractCommsProtocol {
 		mCommsInterface = commsInterface;
 	}
 	
-	public void setProtocolListener(ProtocolListener protocolListener) throws Exception{
+	public void setProtocolListener(ProtocolListener protocolListener) throws DeviceException{
 		if (mProtocolListener==null){
 			mProtocolListener = protocolListener;
 		} else {
-			throw new Exception("Only One Listener Allowed");
+			throw new DeviceException("Only One Listener Allowed");
 		}
 	}
 
@@ -167,9 +170,6 @@ public abstract class AbstractCommsProtocol {
 			}
 //		}
 	}
-	
-
-
 
 	
 }

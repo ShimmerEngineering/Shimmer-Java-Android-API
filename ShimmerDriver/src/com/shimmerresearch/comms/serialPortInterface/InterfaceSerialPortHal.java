@@ -36,5 +36,6 @@ public interface InterfaceSerialPortHal {
 	public void registerSerialPortRxEventCallback(SerialPortListener shimmerSerialEventCallback);
 	void addByteLevelDataCommListener(ByteLevelDataCommListener spl);
 	public void clearByteLevelDataCommListener();
+	public void setTimeout(int timeout);
   
 }

@@ -66,6 +66,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		if(radioInterface!=null){
 			mRadioHal = radioInterface;
 			mRadioHal.clearByteLevelDataCommListener();
+			mRadioHal.setTimeout(2000);
 			
 			if(radioProtocol!=null){
 				mRadioProtocol = radioProtocol;
@@ -114,6 +115,8 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 				mRadioHal.disconnect();
 			}
 			catch (DeviceException e) {
+				//TODO
+				eventError(e);
 				throw(e);
 	        } finally {
 	        	//TODO 2016/07/26 Not sure if this should be here
@@ -174,6 +177,11 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		mRadioProtocol.writeInfoMem(startAddress, buf, maxMemAddress);
 	}
 
+	//TODO add support for Shimmer4
+	public void writeCalibrationDump(byte[] calibDump) {
+//		mRadioProtocol.writeCalibrationDump(calibDump);
+	}
+
 	public void readPressureCalibrationCoefficients() {
 		mRadioProtocol.readPressureCalibrationCoefficients();
 	}
@@ -214,6 +222,15 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		mRadioProtocol.operationPrepare();
 	}
 	
+	public void operationStart(BT_STATE configuring) {
+		mRadioProtocol.operationStart(configuring);
+	}
+
+	public void setPacketSize(int expectedDataPacketSize) {
+		if(mRadioProtocol!=null){
+			mRadioProtocol.setPacketSize(expectedDataPacketSize);
+		}
+	}
 	
 //	@Override
 //	protected void connectionLost() {
@@ -270,9 +287,9 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 
 			try {
 				mRadioProtocol.setProtocolListener(new CommsProtocolListener());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (DeviceException e) {
+				//TODO
+				eventError(e);
 			}
 
 
@@ -448,18 +465,23 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		}
 
 		@Override
-		public void eventKillConnectionRequest() {
+		public void eventKillConnectionRequest(DeviceException dE) {
+			eventError(dE);
+			
 			try {
 				disconnect();
 			} catch (DeviceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//TODO
+				eventError(e);
 			}
 		}
 
-
-
 	}
 
+	public void eventError(DeviceException dE){
+		for (RadioListener rl:mRadioListenerList){
+			rl.eventError(dE);
+		}
+	}
 	
 }

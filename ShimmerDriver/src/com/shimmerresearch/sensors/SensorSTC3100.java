@@ -14,11 +14,14 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.SensorBattVoltage.GuiLabelSensorTiles;
@@ -130,110 +133,124 @@ public class SensorSTC3100 extends AbstractSensor{
 	
   //--------- Channel info start --------------
   	
- 	 public static final ChannelDetails channelSTMVoltage = new ChannelDetails(
-			ObjectClusterSensorName.STC_VOLTAGE,
-			ObjectClusterSensorName.STC_VOLTAGE,
-			ObjectClusterSensorName.STC_VOLTAGE,
-			CHANNEL_UNITS.MILLIVOLTS,
-			Arrays.asList(CHANNEL_TYPE.UNCAL),
-			true,
-			false);
- 	 
-	 public static final ChannelDetails channelSTMCurrent = new ChannelDetails(
-				ObjectClusterSensorName.STC_CURRENT,
-				ObjectClusterSensorName.STC_CURRENT,
-				ObjectClusterSensorName.STC_CURRENT,
-				CHANNEL_UNITS.MILLIAMPS,
-				Arrays.asList(CHANNEL_TYPE.UNCAL),
-				true,
-				false);
-	
-	 public static final ChannelDetails channelSTMTemp = new ChannelDetails(
-				ObjectClusterSensorName.STC_TEMP,
-				ObjectClusterSensorName.STC_TEMP,
-				ObjectClusterSensorName.STC_TEMP,
-				CHANNEL_UNITS.DEGREES_CELSUIS,
-				Arrays.asList(CHANNEL_TYPE.UNCAL),
-				true,
-				false);
+    public static final ChannelDetails channelSTMVoltage = new ChannelDetails(
+    		ObjectClusterSensorName.STC_VOLTAGE,
+    		ObjectClusterSensorName.STC_VOLTAGE,
+    		ObjectClusterSensorName.STC_VOLTAGE,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		true,
+    		false);
+
+    public static final ChannelDetails channelSTMCurrent = new ChannelDetails(
+    		ObjectClusterSensorName.STC_CURRENT,
+    		ObjectClusterSensorName.STC_CURRENT,
+    		ObjectClusterSensorName.STC_CURRENT,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.MILLIAMPS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		true,
+    		false);
+
+    public static final ChannelDetails channelSTMTemp = new ChannelDetails(
+    		ObjectClusterSensorName.STC_TEMP,
+    		ObjectClusterSensorName.STC_TEMP,
+    		ObjectClusterSensorName.STC_TEMP,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.DEGREES_CELSUIS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		true,
+    		false);
+
+    public static final ChannelDetails channelSTMCharge = new ChannelDetails(
+    		ObjectClusterSensorName.STC_CHARGE,
+    		ObjectClusterSensorName.STC_CHARGE,
+    		ObjectClusterSensorName.STC_CHARGE,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.MILLIAMP_HOUR,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		true,
+    		false);
+
+    public static final ChannelDetails channelSTMBatteryPercentage = new ChannelDetails(
+    		ObjectClusterSensorName.STC_BATERY_PERCENTAGE,
+    		ObjectClusterSensorName.STC_BATERY_PERCENTAGE,
+    		ObjectClusterSensorName.STC_BATERY_PERCENTAGE,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.PERCENT,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		true,
+    		false);
+
+    public static final ChannelDetails channelSTMTimeRemaining = new ChannelDetails(
+    		ObjectClusterSensorName.STC_TIME_REMAINING,
+    		ObjectClusterSensorName.STC_TIME_REMAINING,
+    		ObjectClusterSensorName.STC_TIME_REMAINING,
+			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
+    		CHANNEL_UNITS.MINUTES,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		true,
+    		false);
+
+    // Derived Channels
+    public static final ChannelDetails channelDerivedSTMCharge = new ChannelDetails(
+    		ObjectClusterSensorName.DERIVED_STC_CHARGE,
+    		ObjectClusterSensorName.DERIVED_STC_CHARGE,
+    		ObjectClusterSensorName.DERIVED_STC_CHARGE,
+    		CHANNEL_UNITS.MILLIAMP_HOUR,
+    		Arrays.asList(CHANNEL_TYPE.CAL),
+    		true,
+    		false);
+    {
+    	channelDerivedSTMCharge.mChannelSource = CHANNEL_SOURCE.API;
+    }
+
+    public static final ChannelDetails channelDeriveSTMBatteryPercentage = new ChannelDetails(
+    		ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
+    		ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
+    		ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
+    		CHANNEL_UNITS.PERCENT,
+    		Arrays.asList(CHANNEL_TYPE.CAL),
+    		true,
+    		false);
+    {
+    	channelDeriveSTMBatteryPercentage.mChannelSource = CHANNEL_SOURCE.API;
+    }
+
+    public static final ChannelDetails channelDerivedSTMTimeRemaining = new ChannelDetails(
+    		ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
+    		ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
+    		ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
+    		CHANNEL_UNITS.MINUTES,
+    		Arrays.asList(CHANNEL_TYPE.CAL),
+    		true,
+    		false);
+    {
+    	channelDerivedSTMTimeRemaining.mChannelSource = CHANNEL_SOURCE.API;
+    }
 	 
-	 public static final ChannelDetails channelSTMCharge = new ChannelDetails(
-				ObjectClusterSensorName.STC_CHARGE,
-				ObjectClusterSensorName.STC_CHARGE,
-				ObjectClusterSensorName.STC_CHARGE,
-				CHANNEL_UNITS.MILLIAMP_HOUR,
-				Arrays.asList(CHANNEL_TYPE.UNCAL),
-				true,
-				false);
-	 
-	 public static final ChannelDetails channelSTMBatteryPercentage = new ChannelDetails(
-				ObjectClusterSensorName.STC_BATERY_PERCENTAGE,
-				ObjectClusterSensorName.STC_BATERY_PERCENTAGE,
-				ObjectClusterSensorName.STC_BATERY_PERCENTAGE,
-				CHANNEL_UNITS.PERCENT,
-				Arrays.asList(CHANNEL_TYPE.UNCAL),
-				true,
-				false);
-	 
-	 public static final ChannelDetails channelSTMTimeRemaining = new ChannelDetails(
-				ObjectClusterSensorName.STC_TIME_REMAINING,
-				ObjectClusterSensorName.STC_TIME_REMAINING,
-				ObjectClusterSensorName.STC_TIME_REMAINING,
-				CHANNEL_UNITS.MINUTES,
-				Arrays.asList(CHANNEL_TYPE.UNCAL),
-				true,
-				false);
-	 
-	 // Derived Channels
-	 public static final ChannelDetails channelDerivedSTMCharge = new ChannelDetails(
-				ObjectClusterSensorName.DERIVED_STC_CHARGE,
-				ObjectClusterSensorName.DERIVED_STC_CHARGE,
-				ObjectClusterSensorName.DERIVED_STC_CHARGE,
-				CHANNEL_UNITS.MILLIAMP_HOUR,
-				Arrays.asList(CHANNEL_TYPE.CAL),
-				true,
-				false);
-	 
-	 public static final ChannelDetails channelDeriveSTMBatteryPercentage = new ChannelDetails(
-				ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
-				ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
-				ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
-				CHANNEL_UNITS.PERCENT,
-				Arrays.asList(CHANNEL_TYPE.CAL),
-				true,
-				false);
-	 
-	 public static final ChannelDetails channelDerivedSTMTimeRemaining = new ChannelDetails(
-				ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
-				ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
-				ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
-				CHANNEL_UNITS.MINUTES,
-				Arrays.asList(CHANNEL_TYPE.CAL),
-				true,
-				false);
-	 
-	   public static final Map<String, ChannelDetails> mChannelMapRef;
-	    static {
-	        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-	        aMap.put(ObjectClusterSensorName.STC_VOLTAGE, channelSTMVoltage);
-	        aMap.put(ObjectClusterSensorName.STC_CURRENT, channelSTMCurrent);
-	        aMap.put(ObjectClusterSensorName.STC_TEMP, channelSTMTemp );
-	        aMap.put(ObjectClusterSensorName.STC_CHARGE, channelSTMCharge);
-	        aMap.put(ObjectClusterSensorName.STC_BATERY_PERCENTAGE, channelSTMBatteryPercentage);
-	        aMap.put(ObjectClusterSensorName.STC_TIME_REMAINING, channelSTMTimeRemaining);
-	        aMap.put(ObjectClusterSensorName.DERIVED_STC_CHARGE, channelDerivedSTMCharge);
-	        aMap.put(ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE, channelSTMBatteryPercentage);
-	        aMap.put(ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING, channelDerivedSTMTimeRemaining);
-	        
-			mChannelMapRef = Collections.unmodifiableMap(aMap);
-	    }
+    public static final Map<String, ChannelDetails> mChannelMapRef;
+    static {
+    	Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+    	aMap.put(ObjectClusterSensorName.STC_VOLTAGE, channelSTMVoltage);
+    	aMap.put(ObjectClusterSensorName.STC_CURRENT, channelSTMCurrent);
+    	aMap.put(ObjectClusterSensorName.STC_TEMP, channelSTMTemp );
+    	aMap.put(ObjectClusterSensorName.STC_CHARGE, channelSTMCharge);
+    	aMap.put(ObjectClusterSensorName.STC_BATERY_PERCENTAGE, channelSTMBatteryPercentage);
+    	aMap.put(ObjectClusterSensorName.STC_TIME_REMAINING, channelSTMTimeRemaining);
+    	aMap.put(ObjectClusterSensorName.DERIVED_STC_CHARGE, channelDerivedSTMCharge);
+    	aMap.put(ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE, channelDeriveSTMBatteryPercentage);
+    	aMap.put(ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING, channelDerivedSTMTimeRemaining);
+
+    	mChannelMapRef = Collections.unmodifiableMap(aMap);
+    }
 	    
 	  //--------- Channel info end --------------
 	 
 	public SensorSTC3100(ShimmerVerObject svo) {
 		super(SENSORS.STC3100, svo);
-			initialise();
-		
+		initialise();
 	}
 
 	@Override
@@ -244,8 +261,7 @@ public class SensorSTC3100 extends AbstractSensor{
 
 	@Override
 	public void generateConfigOptionsMap() {
-		// Not in this class
-		
+		//No configuration options.
 	}
 
 	@Override
@@ -283,45 +299,44 @@ public class SensorSTC3100 extends AbstractSensor{
 
 				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_VOLTAGE)){
 					setBattCurrentVoltage(calData);
-					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-9);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-6);
 				}			     
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_CURRENT)){
 					setBattCurrent(calData);
-					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-8);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-5);
 				}
 
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_TEMP)){
 					setBattTemp(calData);
-					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-7);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-4);
 				}
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_CHARGE)){
 					setBattCurrentCharge(calData);
-					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-6);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-3);
 				}
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_BATERY_PERCENTAGE)){
-					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-5);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-2);
 				}
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_TIME_REMAINING)){
-					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-4);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-1);
 				}
 			}
 			//SW derived
-			else if ((channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_CHARGE))
-					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE))
-					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING))){
-
-				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_CHARGE)){
-					calculateBattInitialCharge();
-					objectCluster.addCalData(channelDetails, mBattInitialCharge,objectCluster.getIndexKeeper()-3);
-				}
-				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE)){
-					calculateBattPercentage();
-					objectCluster.addCalData(channelDetails, mBattPercentage,objectCluster.getIndexKeeper()-2);
-				}
-				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING)){
-					setBattTimeRemaining();
-					objectCluster.addCalData(channelDetails, mBattTimeRemaining,objectCluster.getIndexKeeper()-1);
-				}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_CHARGE)){
+				calculateBattInitialCharge();
+				objectCluster.addCalData(channelDetails, mBattInitialCharge);
+				objectCluster.incrementIndexKeeper();
+			}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE)){
+				calculateBattPercentage();
+				objectCluster.addCalData(channelDetails, mBattPercentage);
+				objectCluster.incrementIndexKeeper();
+			}
+			else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING)){
+				calculateBattTimeRemaining();
+				objectCluster.addCalData(channelDetails, mBattTimeRemaining);
+				objectCluster.incrementIndexKeeper();
+				
 			}
 		}
 		return objectCluster;
@@ -423,7 +438,7 @@ public class SensorSTC3100 extends AbstractSensor{
 		mBattTemperature = calData;
 	}
 
-	private void setBattTimeRemaining() {
+	private void calculateBattTimeRemaining() {
 		mBattTimeRemaining = 60*((mBattInitialCharge+mBattCurrentCharge)/mBattCurrent);
 	}
 
