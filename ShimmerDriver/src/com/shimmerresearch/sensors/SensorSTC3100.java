@@ -40,7 +40,22 @@ public class SensorSTC3100 extends AbstractSensor{
 	private static final long serialVersionUID = 9001303055918168581L;
 	
 	//--------- Sensor specific variables start --------------
+	public static final double BATT_CHARGE_CAPACITY = 0.45;        //Ah
+	public static final double BATT_MAX_VOLTAGE = 4.167;
+	public double mBattInitialCharge = 0;            //mAh
+	
+	//RAW channels
+	public double mBattCurrentVoltage = 0;           //mV
+	public double mBattCurrent = 0;                  //mA
+	public double mBattTemperature = 0;				// degrees C
 
+	public double mBattCurrentCharge = 0;            //mAh
+
+	public double mBattPercentage = 0;
+	public double mBattTimeRemaining =0;             //mins
+	
+	public String mBattPercentageParsed = "";
+	
 	
 	public class GuiLabelConfig{
 		public static final String STC3100_SENSOR = "STC3100 Sensor";
@@ -68,6 +83,11 @@ public class SensorSTC3100 extends AbstractSensor{
 		public static  String STC_BATERY_PERCENTAGE = "STC3100_Battery_Percentage";
 		public static  String STC_TIME_REMAINING = "STC3100_Time_Remaining";
 		
+		// Derived Channels
+		public static  String DERIVED_STC_CHARGE = "Derived STC3100_Charge";
+		public static  String DERIVED_STC_BATTERY_PERCENTAGE = "Derived STC3100_Battery_Percentage";
+		public static  String DERIVED_STC_TIME_REMAINING = "Derived STC3100_Time_Remaining";
+		
 		
 	}
 	//--------- Sensor specific variables end --------------
@@ -89,7 +109,10 @@ public class SensorSTC3100 extends AbstractSensor{
   					ObjectClusterSensorName.STC_TEMP,
   					ObjectClusterSensorName.STC_CHARGE,
   					ObjectClusterSensorName.STC_BATERY_PERCENTAGE,
-  					ObjectClusterSensorName.STC_TIME_REMAINING));
+  					ObjectClusterSensorName.STC_TIME_REMAINING,
+  					ObjectClusterSensorName.DERIVED_STC_CHARGE,
+  					ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
+  					ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING));
     
   	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -161,15 +184,47 @@ public class SensorSTC3100 extends AbstractSensor{
 				true,
 				false);
 	 
+	 // Derived Channels
+	 public static final ChannelDetails channelDerivedSTMCharge = new ChannelDetails(
+				ObjectClusterSensorName.DERIVED_STC_CHARGE,
+				ObjectClusterSensorName.DERIVED_STC_CHARGE,
+				ObjectClusterSensorName.DERIVED_STC_CHARGE,
+				CHANNEL_UNITS.MILLIAMP_HOUR,
+				Arrays.asList(CHANNEL_TYPE.CAL),
+				true,
+				false);
+	 
+	 public static final ChannelDetails channelDeriveSTMBatteryPercentage = new ChannelDetails(
+				ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
+				ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
+				ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE,
+				CHANNEL_UNITS.PERCENT,
+				Arrays.asList(CHANNEL_TYPE.CAL),
+				true,
+				false);
+	 
+	 public static final ChannelDetails channelDerivedSTMTimeRemaining = new ChannelDetails(
+				ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
+				ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
+				ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING,
+				CHANNEL_UNITS.MINUTES,
+				Arrays.asList(CHANNEL_TYPE.CAL),
+				true,
+				false);
+	 
 	   public static final Map<String, ChannelDetails> mChannelMapRef;
 	    static {
 	        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
 	        aMap.put(ObjectClusterSensorName.STC_VOLTAGE, channelSTMVoltage);
 	        aMap.put(ObjectClusterSensorName.STC_CURRENT, channelSTMCurrent);
 	        aMap.put(ObjectClusterSensorName.STC_TEMP, channelSTMTemp );
-	        aMap.put(ObjectClusterSensorName.STC_CHARGE, channelSTMCharge );
-	        aMap.put(ObjectClusterSensorName.STC_BATERY_PERCENTAGE, channelSTMBatteryPercentage );
+	        aMap.put(ObjectClusterSensorName.STC_CHARGE, channelSTMCharge);
+	        aMap.put(ObjectClusterSensorName.STC_BATERY_PERCENTAGE, channelSTMBatteryPercentage);
 	        aMap.put(ObjectClusterSensorName.STC_TIME_REMAINING, channelSTMTimeRemaining);
+	        aMap.put(ObjectClusterSensorName.DERIVED_STC_CHARGE, channelDerivedSTMCharge);
+	        aMap.put(ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE, channelSTMBatteryPercentage);
+	        aMap.put(ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING, channelDerivedSTMTimeRemaining);
+	        
 			mChannelMapRef = Collections.unmodifiableMap(aMap);
 	    }
 	    
@@ -213,45 +268,62 @@ public class SensorSTC3100 extends AbstractSensor{
 			long pctimeStamp) {
 		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pctimeStamp);
 		double unCalData = 0; double calData = 0;
-		for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_VOLTAGE)){
-		     unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.STC_VOLTAGE), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-		     calData = unCalData/100;
-		     objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-6);
-				objectCluster.incrementIndexKeeper();
-			}
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_CURRENT)){
-			     unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.STC_CURRENT), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			     calData = unCalData/100;
-			     objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-5);
-				 objectCluster.incrementIndexKeeper();
-				}
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_TEMP)){
-			     unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.STC_TEMP), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			     calData = unCalData/100;
-			     objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-4);
-				 objectCluster.incrementIndexKeeper();
-				}
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_CHARGE)){
-			     unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.STC_CHARGE), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			     calData = unCalData/100;
-			     objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-3);
-				 objectCluster.incrementIndexKeeper();
-				}
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_BATERY_PERCENTAGE)){
-			     unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.STC_BATERY_PERCENTAGE), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			     calData = unCalData/100;
-			     objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-2);
-				 objectCluster.incrementIndexKeeper();
-				}
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_TIME_REMAINING)){
-			     unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.STC_TIME_REMAINING), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-			     calData = unCalData/100;
-			     objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-1);
-				 objectCluster.incrementIndexKeeper();
-				}
-		}
 		
+		for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+
+			if ((channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_VOLTAGE))
+					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_CURRENT))
+					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_TEMP))
+					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_CHARGE))
+					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_BATERY_PERCENTAGE))
+					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_TIME_REMAINING))){
+
+				unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				calData = unCalData/100;
+
+				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_VOLTAGE)){
+					setBattCurrentVoltage(calData);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-9);
+				}			     
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_CURRENT)){
+					setBattCurrent(calData);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-8);
+				}
+
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_TEMP)){
+					setBattTemp(calData);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-7);
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_CHARGE)){
+					setBattCurrentCharge(calData);
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-6);
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_BATERY_PERCENTAGE)){
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-5);
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.STC_TIME_REMAINING)){
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-4);
+				}
+			}
+			//SW derived
+			else if ((channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_CHARGE))
+					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE))
+					||(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING))){
+
+				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_CHARGE)){
+					calculateBattInitialCharge();
+					objectCluster.addCalData(channelDetails, mBattInitialCharge,objectCluster.getIndexKeeper()-3);
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_BATTERY_PERCENTAGE)){
+					calculateBattPercentage();
+					objectCluster.addCalData(channelDetails, mBattPercentage,objectCluster.getIndexKeeper()-2);
+				}
+				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.DERIVED_STC_TIME_REMAINING)){
+					setBattTimeRemaining();
+					objectCluster.addCalData(channelDetails, mBattTimeRemaining,objectCluster.getIndexKeeper()-1);
+				}
+			}
+		}
 		return objectCluster;
 	}
 
@@ -319,6 +391,47 @@ public class SensorSTC3100 extends AbstractSensor{
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void setBattCurrentVoltage(double calData) {
+		mBattCurrentVoltage = calData;
+	}
+	private void setBattCurrentCharge(double calData) {
+		mBattCurrentCharge = calData;
+	}
+	private void calculateBattInitialCharge() {
+		mBattInitialCharge = BATT_CHARGE_CAPACITY*(mBattCurrentVoltage/BATT_MAX_VOLTAGE);
+	}
+	private void calculateBattPercentage() {
+		mBattPercentage = 100*((mBattInitialCharge+mBattCurrentCharge)/BATT_CHARGE_CAPACITY);
+		
+		if (mBattPercentage > 100) {
+			mBattPercentage = 100.0;
+        }
+        else if (mBattPercentage < 0) {
+        	mBattPercentage = 0.0;
+        }
+
+		mBattPercentageParsed = String.format("%,.1f",mBattPercentage) + "%";
+	}
+
+	private void setBattCurrent(double calData) {
+		mBattCurrent = calData;
+		
+	}
+	private void setBattTemp(double calData) {
+		mBattTemperature = calData;
+	}
+
+	private void setBattTimeRemaining() {
+		mBattTimeRemaining = 60*((mBattInitialCharge+mBattCurrentCharge)/mBattCurrent);
+	}
+
+	private double getBattPercentage() {
+		return mBattPercentage;
+	}
+	public String getBattPercentageParsed() {
+		return mBattPercentageParsed;
 	}
 
 }

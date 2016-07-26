@@ -11,9 +11,8 @@ import java.util.Locale;
  *
  */
 public class ShimmerBattStatusDetails implements Serializable {
-	/**
-	 * 
-	 */
+	
+	/****/
 	private static final long serialVersionUID = -1108374309087845014L;
 	
 	public int mChargingStatusRaw = 0;
