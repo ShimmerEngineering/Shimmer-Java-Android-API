@@ -169,12 +169,12 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		mRadioProtocol.readShimmerVersionNew();
 	}
 
-	public void readInfoMem(int address, int size, int maxMemAddress) {
-		mRadioProtocol.readInfoMem(address, size, maxMemAddress);
+	public void readInfoMem(int startAddress, int size, int maxMemAddress) {
+		mRadioProtocol.readInfoMem(startAddress, size);
 	}
 	
 	public void writeInfoMem(int startAddress, byte[] buf, int maxMemAddress) {
-		mRadioProtocol.writeInfoMem(startAddress, buf, maxMemAddress);
+		mRadioProtocol.writeInfoMem(startAddress, buf);
 	}
 
 	//TODO add support for Shimmer4

@@ -219,11 +219,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected int mTempIntValue;												// A temporary variable used to store Integer value, used mainly to store a value while waiting for an acknowledge packet (e.g. when writeGRange() is called, the range is stored temporarily and used to update GSRRange when the acknowledge packet is received.
 	protected long tempEnabledSensors;											// This stores the enabled sensors
 	private int mTempChipID;
+	
 	private int mCurrentMemAddress = 0;
 	private int mCurrentMemLengthToRead = 0;
 	private int mCalibDumpSize = 0;
-	private static final int MAX_CALIB_DUMP_MAX = 4096;
-	
 	private byte[] mMemBuffer;
 	private byte[] mCalibDumpBuffer;
 
@@ -1467,6 +1466,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//Copy to local buffer
 //			System.arraycopy(rxBuf, 0, mMemBuffer, mCurrentMemAddress, lengthToRead);
 			mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
+			
 			//Update configuration when all bytes received.
 			if((mCurrentMemAddress+mCurrentMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 				setShimmerInfoMemBytes(mMemBuffer);
@@ -3650,7 +3650,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeCalibrationDump(byte[] calibDump){
 		if(this.getFirmwareVersionCode()>=7){
 			writeMem(SET_CALIB_DUMP_COMMAND, 0, calibDump, MAX_CALIB_DUMP_MAX);
-			readCalibrationDump();
+			readCalibrationDump(0, calibDump.length);
 		}
 	}
 

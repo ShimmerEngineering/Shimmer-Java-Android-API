@@ -13,12 +13,14 @@ public abstract class AbstractCommsProtocol {
 	protected InterfaceSerialPortHal mCommsInterface; //every radio protocol requires radio control
 	protected int mPacketSize = 0;
 	
-	protected int mNumOfInfoMemSetCmds;
-	protected byte[] mInfoMemBuffer;
+	protected int mNumOfMemSetCmds;
+	protected byte[] mMemBuffer;
+	protected byte[] mCalibDumpBuffer;
 	protected int mTotalInfoMemLengthToRead = 0;
-	protected int mCurrentInfoMemAddress = 0;
-	protected int mCurrentInfoMemLengthToRead = 0;
-	
+	protected int mCurrentMemAddress = 0;
+	protected int mCurrentMemLengthToRead = 0;
+	protected int mCalibDumpSize = 0;
+
 	public boolean mFirstTime=false;
 	public boolean mIamAlive = false;
 
@@ -96,8 +98,8 @@ public abstract class AbstractCommsProtocol {
 		return mPacketSize;
 	}
 
-	public void writeInfoMem(int startAddress, byte[] buf, int maxMemAddress){
-		this.mNumOfInfoMemSetCmds  = 0;
+	public void writeMem(int command, int startAddress, byte[] buf, int maxMemAddress){
+		this.mNumOfMemSetCmds  = 0;
 		
 //		if(this.getFirmwareVersionCode()>=6){
 			int address = startAddress;
@@ -122,8 +124,8 @@ public abstract class AbstractCommsProtocol {
 
 					byte[] infoSegBuf = Arrays.copyOfRange(buf, currentBytePointer, currentBytePointer + currentPacketNumBytes);
 
-					writeInfoMem(currentStartAddr, infoSegBuf);
-					mNumOfInfoMemSetCmds += 1;
+					writeMemCommand(command, currentStartAddr, infoSegBuf);
+					mNumOfMemSetCmds += 1;
 
 					currentStartAddr += currentPacketNumBytes;
 					numBytesRemaining -= currentPacketNumBytes;
@@ -134,11 +136,11 @@ public abstract class AbstractCommsProtocol {
 		
 	}
 	
-	public void readInfoMem(int address, int size, int maxMemAddress){
+	public void readMem(int command, int address, int size, int maxMemAddress){
 //		if(this.getFirmwareVersionCode()>=6){
-			mInfoMemBuffer = new byte[size];
+//			mMemBuffer = new byte[size];
 			this.mTotalInfoMemLengthToRead = size;
-
+			mMemBuffer = new byte[]{};
 
 			if (size > (maxMemAddress - address + 1)) {
 //				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE);
@@ -160,7 +162,7 @@ public abstract class AbstractCommsProtocol {
 					}
 
 					byte[] rxBuf = new byte[] {};
-					readInfoMem(currentStartAddr, currentPacketNumBytes);
+					readMemCommand(command, currentStartAddr, currentPacketNumBytes);
 					
 					currentBytePointer += currentPacketNumBytes;
 					numBytesRemaining -= currentPacketNumBytes;

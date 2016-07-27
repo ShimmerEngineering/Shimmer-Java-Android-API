@@ -601,6 +601,9 @@ public class Shimmer4 extends ShimmerDevice {
 				else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE){ 
 					setShimmerInfoMemBytes((byte[])parsedResponse);
 				}
+//				else if(responseCommand==InstructionsResponse.RSP_CALIB_DUMP_COMMAND){
+//					parseCalibByteDump((byte[])parsedResponse, CALIB_READ_SOURCE.RADIO_DUMP);
+//				}
 				else if(responseCommand==InstructionsResponse.BLINK_LED_RESPONSE_VALUE){ 
 //					mCurrentLEDStatus = byteled[0]&0xFF;
 				}

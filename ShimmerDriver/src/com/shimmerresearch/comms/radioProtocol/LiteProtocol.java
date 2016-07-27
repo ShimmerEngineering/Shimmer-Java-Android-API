@@ -5,26 +5,24 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
-import com.shimmerresearch.bluetooth.RawBytePacketWithPCTimeStamp;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.*;
-import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
-import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 
@@ -106,7 +104,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	//TODO Should not be here
 	protected String mDirectoryName;
 	protected int numBytesToReadFromExpBoard=0;
-	
+	private static final int MAX_CALIB_DUMP_MAX = 4096;
+
 
 	
 	/**
@@ -1069,15 +1068,49 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				printLogDataForDebugging("INFOMEM_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
 				
 				//Copy to local buffer
-				System.arraycopy(rxBuf, 0, mInfoMemBuffer, mCurrentInfoMemAddress, lengthToRead);
+//				System.arraycopy(rxBuf, 0, mMemBuffer, mCurrentMemAddress, lengthToRead);
+				mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
+
 				//Update configuration when all bytes received.
-				
-				if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mTotalInfoMemLengthToRead){
-//				if((mCurrentInfoMemAddress+mCurrentInfoMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
+				if((mCurrentMemAddress+mCurrentMemLengthToRead)==mTotalInfoMemLengthToRead){
+//				if((mCurrentMemAddress+mCurrentMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
 //					setShimmerInfoMemBytes(mInfoMemBuffer);
-					eventNewResponse(responseCommand, mInfoMemBuffer);
+					eventNewResponse(responseCommand, mMemBuffer);
 				}
 			}
+//			else if(responseCommand==InstructionsResponse.RSP_CALIB_DUMP_COMMAND) {
+//				rxBuf = readBytes(3);
+//				int currentMemLength = rxBuf[0]&0xFF;
+//				//Memory is currently read sequentially so no need to use the below at the moment.
+//				int currentMemOffset = ((rxBuf[2]&0xFF)<<8) | (rxBuf[1]&0xFF);
+//				
+//				//For debugging
+//				byte[] rxBufFull = rxBuf;
+//				
+//				rxBuf = readBytes(currentMemLength);
+//				mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
+//
+//				//For debugging
+//				rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
+//				printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
+//				
+//				if(mCurrentMemAddress==0){
+//					//First read
+//					mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
+//					
+//					if(mCalibDumpSize>mCurrentMemLengthToRead){
+//						readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
+//						rePioritiseReadCalibDumpInstructions();
+//					}
+//				}
+//				
+//				if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
+////					parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
+//					eventNewResponse(responseCommand, mCalibDumpBuffer);
+//					mCalibDumpBuffer = new byte[]{};
+//				}
+//				
+//			}
 			else{
 				printLogDataForDebugging("Unhandled BT response: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(new byte[]{(byte) responseCommand}));
 			}
@@ -1111,10 +1144,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				// Need to store ExG chip number before receiving response
 				mTempChipID = insBytes[1];
 			}
-			else if(currentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE){
+			else if(currentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE){// || currentCommand==InstructionsGet.GET_CALIB_DUMP_COMMAND){
 				// store current address/InfoMem segment
-				mCurrentInfoMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
-				mCurrentInfoMemLengthToRead = (insBytes[1]&0xFF);
+				mCurrentMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+				mCurrentMemLengthToRead = (insBytes[1]&0xFF);
 			}
 		}
 		else{
@@ -1311,8 +1344,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 						//SET InfoMem is automatically followed by a GET so no need to handle here
 						
 						//Sleep for Xsecs to allow Shimmer to process new configuration
-						mNumOfInfoMemSetCmds -= 1;
-						if(mNumOfInfoMemSetCmds==0){
+						mNumOfMemSetCmds -= 1;
+						if(mNumOfMemSetCmds==0){
 							delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
 						}
 						else {
@@ -1531,6 +1564,38 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 
+	private void readCalibrationDump(int address, int size){
+//		if(this.getFirmwareVersionCode()>=7){
+//			readMem(InstructionsGet.GET_CALIB_DUMP_COMMAND, address, size, MAX_CALIB_DUMP_MAX); //some max number
+//		}
+	}
+
+	public void rePioritiseReadCalibDumpInstructions(){
+//		List<byte[]> listOfInstructions = new ArrayList<byte[]>();
+//
+//		//This for loop will prioritse the GET_CALIB_DUMP_COMMAND
+//		Iterator<byte[]> iterator = mListofInstructions.iterator();
+//		while(iterator.hasNext()){
+//			byte[] instruction = iterator.next();
+//			if(instruction[0]==InstructionsGet.GET_CALIB_DUMP_COMMAND){
+//				listOfInstructions.add(instruction);
+//				iterator.remove();
+//			}
+//		}
+//		
+//		if(listOfInstructions.size()>0){
+//			mListofInstructions.addAll(0, listOfInstructions);
+//		}
+	}
+
+
+	public void writeCalibrationDump(byte[] calibDump){
+//		if(this.getFirmwareVersionCode()>=7){
+//			writeMem(InstructionsSet.SET_CALIB_DUMP_COMMAND, 0, calibDump, MAX_CALIB_DUMP_MAX);
+//			readCalibrationDump(0, calibDump.length);
+//		}
+	}
+	
 	@Override
 	protected void readInfoMem(int address, int size) {
 		readMemCommand(InstructionsGet.GET_INFOMEM_COMMAND_VALUE, address, size);

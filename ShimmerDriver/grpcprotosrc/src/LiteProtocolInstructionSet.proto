@@ -64,8 +64,7 @@ message LiteProtocolInstructionSet {
 		STOP_LOGGING_ONLY_COMMAND				= 0x93;
 		TEST_CONNECTION_COMMAND            	= 0x96;
 		STOP_SDBT_COMMAND 						= 0x97;
-		
-			
+		SET_CALIB_DUMP_COMMAND					= 0x98;
   	}
   	
    enum InstructionsGet {
@@ -115,6 +114,7 @@ message LiteProtocolInstructionSet {
 		GET_INFOMEM_COMMAND   					= 0x8E;		
 		GET_RWC_COMMAND                        = 0x91;		
 		GET_VBATT_COMMAND                      = 0x95;
+		GET_CALIB_DUMP_COMMAND					= 0x9A;
 	}
   
   	enum InstructionsResponse {
@@ -164,5 +164,6 @@ message LiteProtocolInstructionSet {
 		INFOMEM_RESPONSE      					= 0x8D [(response_size) = -1];
 		RWC_RESPONSE                           = 0x90 [(response_size) = 8];
 		VBATT_RESPONSE                         = 0x94 [(response_size) = 3];
+		RSP_CALIB_DUMP_COMMAND					= 0x99 [(response_size) = -1];
   	}
 }

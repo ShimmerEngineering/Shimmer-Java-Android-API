@@ -70,6 +70,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static final String STRING_CONSTANT_UNKNOWN = "Unknown";
 	public static final String STRING_CONSTANT_SD_ERROR = "SD Error";
 	
+	protected static final int MAX_CALIB_DUMP_MAX = 4096;
+	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
 	
