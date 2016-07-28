@@ -1,4 +1,9 @@
+//import "C:/Users/Lim/git/Shimmer-Java-Android-API/ShimmerDriver/grpcprotosrc/src/LiteProtocolInstructionSet.proto";
+
 syntax = "proto3";
+import "src/LiteProtocolInstructionSet.proto";
+
+import "google/protobuf/descriptor.proto";
 
 option csharp_namespace = "com.shimmerresearch.grpc";
 option java_package = "com.shimmerresearch.grpc";
