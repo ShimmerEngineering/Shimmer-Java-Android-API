@@ -51,6 +51,10 @@ public class UtilCalibration {
 	}
 	
 	public static double[][] matrixInverse3x3(double[][] data) {
+		if(data==null){
+			return null;
+		}
+			
 		double a,b,c,d,e,f,g,h,i;
 		a=data[0][0];
 		b=data[0][1];
@@ -78,6 +82,10 @@ public class UtilCalibration {
 	}
 	
 	public static double[][] matrixMinus(double[][] a ,double[][] b) {
+		if(a==null || b==null){
+			return null;
+		}
+		
 		int aRows = a.length,
 				aColumns = a[0].length,
 				bRows = b.length,
@@ -97,6 +105,10 @@ public class UtilCalibration {
 	}
 	
 	public static double[][] matrixMultiplication(double[][] a, double[][] b) {
+		if(a==null || b==null){
+			return null;
+		}
+		
 		int aRows = a.length,
 				aColumns = a[0].length,
 				bRows = b.length,

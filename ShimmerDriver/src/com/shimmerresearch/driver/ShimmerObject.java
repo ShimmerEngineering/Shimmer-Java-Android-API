@@ -727,7 +727,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	DescriptiveStatistics mGyroZRaw;
 	protected boolean mEnableOntheFlyGyroOVCal = false;
 
-	//Shimmer2/2r Calibration - Default values
+	//Shimmer2/2r Calibration - Default values (LPR450AL = X+Y axes, LPY450AL = X axis)
 	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
 	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
