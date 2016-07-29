@@ -934,9 +934,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void processSpecialGetCmdsAfterAck(byte currentCommand) {
 		byte[] insBytes = getListofInstructions().get(0);
 
-		//TODO 2016-07-06 MN removed to make consistent with ShimmerBluetooth implementation 
-//		eventAckReceived(insBytes);
-		
 		if(currentCommand==GET_EXG_REGS_COMMAND){
 			// Need to store ExG chip number before receiving response
 			mTempChipID = insBytes[1];
@@ -1882,7 +1879,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(currentCommand==RESET_CALIBRATION_VALUE_COMMAND){
 					//TODO: do something?
 				}
-				else if(currentCommand==SET_INFOMEM_COMMAND || currentCommand==SET_CALIB_DUMP_COMMAND){
+				else if(currentCommand==SET_INFOMEM_COMMAND 
+						|| currentCommand==SET_CALIB_DUMP_COMMAND){
 					//SET InfoMem is automatically followed by a GET so no need to handle here
 					
 					//Sleep for Xsecs to allow Shimmer to process new configuration

@@ -1077,39 +1077,39 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					eventNewResponse(responseCommand, mMemBuffer);
 				}
 			}
-//			else if(responseCommand==InstructionsResponse.RSP_CALIB_DUMP_COMMAND) {
-//				rxBuf = readBytes(3);
-//				int currentMemLength = rxBuf[0]&0xFF;
-//				//Memory is currently read sequentially so no need to use the below at the moment.
-//				int currentMemOffset = ((rxBuf[2]&0xFF)<<8) | (rxBuf[1]&0xFF);
-//				
-//				//For debugging
-//				byte[] rxBufFull = rxBuf;
-//				
-//				rxBuf = readBytes(currentMemLength);
-//				mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
-//
-//				//For debugging
-//				rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
-//				printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
-//				
-//				if(mCurrentMemAddress==0){
-//					//First read
-//					mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
-//					
-//					if(mCalibDumpSize>mCurrentMemLengthToRead){
-//						readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
-//						rePioritiseReadCalibDumpInstructions();
-//					}
-//				}
-//				
-//				if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
-////					parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
-//					eventNewResponse(responseCommand, mCalibDumpBuffer);
-//					mCalibDumpBuffer = new byte[]{};
-//				}
-//				
-//			}
+			else if(responseCommand==InstructionsResponse.RSP_CALIB_DUMP_COMMAND_VALUE) {
+				rxBuf = readBytes(3);
+				int currentMemLength = rxBuf[0]&0xFF;
+				//Memory is currently read sequentially so no need to use the below at the moment.
+				int currentMemOffset = ((rxBuf[2]&0xFF)<<8) | (rxBuf[1]&0xFF);
+				
+				//For debugging
+				byte[] rxBufFull = rxBuf;
+				
+				rxBuf = readBytes(currentMemLength);
+				mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
+
+				//For debugging
+				rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
+				printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
+				
+				if(mCurrentMemAddress==0){
+					//First read
+					mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
+					
+					if(mCalibDumpSize>mCurrentMemLengthToRead){
+						readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
+						rePioritiseReadCalibDumpInstructions();
+					}
+				}
+				
+				if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
+//					parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
+					eventNewResponse(responseCommand, mCalibDumpBuffer);
+					mCalibDumpBuffer = new byte[]{};
+				}
+				
+			}
 			else{
 				printLogDataForDebugging("Unhandled BT response: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(new byte[]{(byte) responseCommand}));
 			}
@@ -1143,7 +1143,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				// Need to store ExG chip number before receiving response
 				mTempChipID = insBytes[1];
 			}
-			else if(currentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE){// || currentCommand==InstructionsGet.GET_CALIB_DUMP_COMMAND){
+			else if(currentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE || currentCommand==InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE){
 				// store current address/InfoMem segment
 				mCurrentMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
 				mCurrentMemLengthToRead = (insBytes[1]&0xFF);
@@ -1338,18 +1338,17 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					setIsSDLogging(false);
 					eventLogAndStreamStatusChanged(mCurrentCommand);
 				}
-				else if(currentCommand==InstructionsSet.SET_INFOMEM_COMMAND_VALUE){
-					if(isShimmerBluetoothApproach){
-						//SET InfoMem is automatically followed by a GET so no need to handle here
-						
-						//Sleep for Xsecs to allow Shimmer to process new configuration
-						mNumOfMemSetCmds -= 1;
-						if(mNumOfMemSetCmds==0){
-							delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
-						}
-						else {
-							delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
-						}
+				else if(currentCommand==InstructionsSet.SET_INFOMEM_COMMAND_VALUE 
+						|| currentCommand==InstructionsSet.SET_CALIB_DUMP_COMMAND_VALUE){
+					//SET InfoMem is automatically followed by a GET so no need to handle here
+					
+					//Sleep for Xsecs to allow Shimmer to process new configuration
+					mNumOfMemSetCmds -= 1;
+					if(mNumOfMemSetCmds==0){
+						delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
+					}
+					else {
+						delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
 					}
 				}
 				else{
@@ -1564,35 +1563,35 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 
 	private void readCalibrationDump(int address, int size){
-//		if(this.getFirmwareVersionCode()>=7){
-//			readMem(InstructionsGet.GET_CALIB_DUMP_COMMAND, address, size, MAX_CALIB_DUMP_MAX); //some max number
-//		}
+		if(this.getFirmwareVersionCode()>=7){
+			readMem(InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE, address, size, MAX_CALIB_DUMP_MAX); //some max number
+		}
 	}
 
 	public void rePioritiseReadCalibDumpInstructions(){
-//		List<byte[]> listOfInstructions = new ArrayList<byte[]>();
-//
-//		//This for loop will prioritse the GET_CALIB_DUMP_COMMAND
-//		Iterator<byte[]> iterator = mListofInstructions.iterator();
-//		while(iterator.hasNext()){
-//			byte[] instruction = iterator.next();
-//			if(instruction[0]==InstructionsGet.GET_CALIB_DUMP_COMMAND){
-//				listOfInstructions.add(instruction);
-//				iterator.remove();
-//			}
-//		}
-//		
-//		if(listOfInstructions.size()>0){
-//			mListofInstructions.addAll(0, listOfInstructions);
-//		}
+		List<byte[]> listOfInstructions = new ArrayList<byte[]>();
+
+		//This for loop will prioritse the GET_CALIB_DUMP_COMMAND
+		Iterator<byte[]> iterator = mListofInstructions.iterator();
+		while(iterator.hasNext()){
+			byte[] instruction = iterator.next();
+			if(instruction[0]==InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE){
+				listOfInstructions.add(instruction);
+				iterator.remove();
+			}
+		}
+		
+		if(listOfInstructions.size()>0){
+			mListofInstructions.addAll(0, listOfInstructions);
+		}
 	}
 
 
 	public void writeCalibrationDump(byte[] calibDump){
-//		if(this.getFirmwareVersionCode()>=7){
-//			writeMem(InstructionsSet.SET_CALIB_DUMP_COMMAND, 0, calibDump, MAX_CALIB_DUMP_MAX);
-//			readCalibrationDump(0, calibDump.length);
-//		}
+		if(this.getFirmwareVersionCode()>=7){
+			writeMem(InstructionsSet.SET_CALIB_DUMP_COMMAND_VALUE, 0, calibDump, MAX_CALIB_DUMP_MAX);
+			readCalibrationDump(0, calibDump.length);
+		}
 	}
 	
 	@Override
@@ -1727,8 +1726,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		if(((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
 				||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK))
 				&& getFirmwareVersionCode() >=6){
-			//TODO TODO TODO TODO put back in, just removed because SDK doesn't support it yet
-//			readRealTimeClock();
+			readRealTimeClock();
 		}
 
 		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
