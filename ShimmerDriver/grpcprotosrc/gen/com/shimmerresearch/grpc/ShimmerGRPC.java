@@ -4296,13 +4296,15 @@ public final class ShimmerGRPC {
       "\014DataMapEntry\022\013\n\003key\030\001 \001(\t\0229\n\005value\030\002 \001(" +
       "\0132*.shimmerGRPC.ObjectCluster2.FormatClu",
       "ster2:\0028\001\"7\n\021CommunicationType\022\006\n\002BT\020\000\022\006" +
-      "\n\002SD\020\001\022\022\n\016Radio_802_15_4\020\0022\237\001\n\rShimmerSe" +
+      "\n\002SD\020\001\022\022\n\016Radio_802_15_4\020\0022\353\001\n\rShimmerSe" +
       "rver\022@\n\010SayHello\022\031.shimmerGRPC.HelloRequ" +
       "est\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGetDat" +
       "aStream\022\032.shimmerGRPC.StreamRequest\032\033.sh" +
-      "immerGRPC.ObjectCluster2\"\0000\001BB\n\030com.shim" +
-      "merresearch.grpcB\013ShimmerGRPC\252\002\030com.shim" +
-      "merresearch.grpcb\006proto3"
+      "immerGRPC.ObjectCluster2\"\0000\001\022J\n\016SendData" +
+      "Stream\022\033.shimmerGRPC.ObjectCluster2\032\027.sh" +
+      "immerGRPC.HelloReply\"\000(\001BB\n\030com.shimmerr" +
+      "esearch.grpcB\013ShimmerGRPC\252\002\030com.shimmerr" +
+      "esearch.grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

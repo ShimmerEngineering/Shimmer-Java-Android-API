@@ -17,6 +17,8 @@ service ShimmerServer {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   
   rpc GetDataStream(StreamRequest) returns (stream ObjectCluster2) {}
+  
+  rpc SendDataStream(stream ObjectCluster2) returns (HelloReply){}
 }
 
 // The request message containing the user's name.
