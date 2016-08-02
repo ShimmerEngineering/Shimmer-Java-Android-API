@@ -104,8 +104,8 @@ public class SerialPortCommJssc extends AbstractSerialPortComm implements Serial
 	public void disconnect() throws DeviceException {
     	if(mSerialPort!=null && mSerialPort.isOpened()) {
 	        try {
-	        	mSerialPort.purgePort (1);
-	        	mSerialPort.purgePort (2);
+	        	mSerialPort.purgePort(1);
+	        	mSerialPort.purgePort(2);
 	        	mSerialPort.closePort();
 	        	eventDeviceDisconnected();
 			} catch (SerialPortException e) {
