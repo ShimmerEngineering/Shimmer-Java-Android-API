@@ -80,6 +80,13 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
 	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
 
+	public static final String OldCalRangeWR2g = "accel_wr_2g";
+	public static final String OldCalRangeWR4g = "accel_wr_4g";
+	public static final String OldCalRangeWR8g = "accel_wr_8g";
+	public static final String OldCalRangeWR16g = "accel_wr_16g";
+	
+	
+	
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
 			ListofLSM303DLHCAccelRangeConfigValues[0],
 			ListofAccelRange[0],
@@ -183,6 +190,15 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final double[][] SensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
 	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
 	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
+	
+	public static final String OldCalRangeMag1p3Ga = "mag_13ga";
+	public static final String OldCalRangeMag1p9Ga = "mag_19ga";
+	public static final String OldCalRangeMag2p5Ga = "mag_25ga";
+	public static final String OldCalRangeMag4Ga = "mag_4ga";
+	public static final String OldCalRangeMag4p7Ga = "mag_47ga";
+	public static final String OldCalRangeMag5p6Ga = "mag_56ga";
+	public static final String OldCalRangeMag8p1Ga = "mag_81ga";
+
 
 	private CalibDetailsKinematic calibDetailsMag1p3 = new CalibDetailsKinematic(
 			ListofMagRangeConfigValues[0],

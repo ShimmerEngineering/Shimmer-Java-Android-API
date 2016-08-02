@@ -120,6 +120,11 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
 	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
 	
+	public static final String OldCalRangeGyro250dps = "gyro_250dps";
+	public static final String OldCalRangeGyro500dps = "gyro_500dps";
+	public static final String OldCalRangeGyro1000dps = "gyro_1000ps";
+	public static final String OldCalRangeGyro2000dps = "gyro_2000dps";
+	
 	private CalibDetailsKinematic calibDetailsGyro250 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[0], 
 			ListofGyroRange[0],
