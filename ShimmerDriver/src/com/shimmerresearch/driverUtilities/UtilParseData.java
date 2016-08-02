@@ -39,11 +39,13 @@ public class UtilParseData {
 			long maskToApply = 0;
 			for(int i=0;i<dataType.getNumBytes();i++){
 				//based on old parseData approach -> seems to be working
-				formattedData = (int)((int)(data[i] & 0xFF) | ((int)formattedData << 8));
+//				formattedData = (int)((int)(data[i] & 0xFF) | ((int)formattedData << 8));
 				//new -> not working properly
 //				formattedData = (formattedData << 8)  + data[i];
 				//new new -> seems to be working?
 //				formattedData = (formattedData << 8)  | (data[i]&0xFF);
+				
+				formattedData = (formattedData << 8) | (((long)(data[i])) & 0xFF);
 
 				maskToApply = (maskToApply << 8) | 0xFF;
 			}
@@ -51,7 +53,7 @@ public class UtilParseData {
 			formattedData &= maskToApply;
 		}
 		else if(dataType.getNumBytes()==1){
-			formattedData = data[0];
+			formattedData = data[0] & 0xFF;
 		}
 
 		//3) an if statement to calculate the twos complement if required

@@ -809,7 +809,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						if(mCurrentCommand!=GET_STATUS_COMMAND 
 								&& mCurrentCommand!=TEST_CONNECTION_COMMAND 
 								&& mCurrentCommand!=SET_BLINK_LED 
-								&& mCurrentCommand!=GET_CALIB_DUMP_COMMAND 
+//								&& mCurrentCommand!=GET_CALIB_DUMP_COMMAND 
 								//&& mCurrentCommand!= GET_VBATT_COMMAND
 								&& mOperationUnderway){
 							sendProgressReport(new BluetoothProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, getComPort()));

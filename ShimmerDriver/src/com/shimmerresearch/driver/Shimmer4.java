@@ -92,7 +92,7 @@ public class Shimmer4 extends ShimmerDevice {
 		mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
 		mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
 		mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(mShimmerVerObject));
+		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(this));
 		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
 		
 		//TODO push version checking into the sensor classes

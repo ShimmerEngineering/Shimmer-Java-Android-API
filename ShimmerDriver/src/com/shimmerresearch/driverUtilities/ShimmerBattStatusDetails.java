@@ -3,6 +3,8 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 import java.util.Locale;
 
+import com.shimmerresearch.sensors.SensorADC;
+
 /**
  * Holds the Shimmer's Battery charging information (state, voltage and
  * percentage charge) received from communication with the Shimmer's UART.
@@ -15,14 +17,15 @@ public class ShimmerBattStatusDetails implements Serializable {
 	/****/
 	private static final long serialVersionUID = -1108374309087845014L;
 	
-	public int mChargingStatusRaw = 0;
+	private int mBattAdcValue = 0;
+	
+	private int mChargingStatusRaw = 0;
 	private String mChargingStatusParsed = "";
 	private CHARGING_STATUS mChargingStatus = CHARGING_STATUS.UNKNOWN;
-	public int mBattAdcValue = 0;
-	public String mBattVoltageParsed = "";
-	public double mBattVoltage = 0.0;
-	public Double mEstimatedChargePercentage = 0.0;
-	public String mEstimatedChargePercentageParsed = "";
+	private String mBattVoltageParsed = "";
+	private double mBattVoltage = 0.0;
+	private Double mEstimatedChargePercentage = 0.0;
+	private String mEstimatedChargePercentageParsed = "";
 	
 	public enum CHARGING_STATUS{
 		UNKNOWN("Unknown"),
@@ -76,7 +79,8 @@ public class ShimmerBattStatusDetails implements Serializable {
 
 		// Calibration method copied from
 		// com.shimmerresearch.driver.ShimmerObject.calibrateU12AdcValue
-		double calibratedData=((double)battAdcValue-0.0)*(((3.0*1000.0)/1.0)/4095.0);
+		double calibratedData = SensorADC.calibrateU12AdcValue(mBattAdcValue, 0.0, 3.0, 1.0);
+//		double calibratedData=((double)mBattAdcValue-0.0)*(((3.0*1000.0)/1.0)/4095.0);
 		//double calibratedData = calibrateU12AdcValue((double)battAdcValue, 0.0, 3.0, 1.0);
 		mBattVoltage = ((calibratedData * 1.988)) / 1000;
         
@@ -84,16 +88,16 @@ public class ShimmerBattStatusDetails implements Serializable {
         	mChargingStatus = CHARGING_STATUS.CHECKING;
             adcVoltageError = true;
         }
-        else if((chargingStatus & 0xFF) == CHARGING_STATUS_BYTE.SUSPENDED) {
+        else if((mChargingStatusRaw & 0xFF) == CHARGING_STATUS_BYTE.SUSPENDED) {
         	mChargingStatus = CHARGING_STATUS.SUSPENDED;
         }
-        else if ((chargingStatus & 0xFF) == CHARGING_STATUS_BYTE.FULLY_CHARGED) {
+        else if ((mChargingStatusRaw & 0xFF) == CHARGING_STATUS_BYTE.FULLY_CHARGED) {
         	mChargingStatus = CHARGING_STATUS.FULLY_CHARGED;
         }
-        else if ((chargingStatus & 0xFF) == CHARGING_STATUS_BYTE.PRECONDITIONING) {
+        else if ((mChargingStatusRaw & 0xFF) == CHARGING_STATUS_BYTE.PRECONDITIONING) {
             mChargingStatus = CHARGING_STATUS.CHARGING;
         }
-        else if ((chargingStatus & 0xFF) == CHARGING_STATUS_BYTE.BAD_BATTERY) {
+        else if ((mChargingStatusRaw & 0xFF) == CHARGING_STATUS_BYTE.BAD_BATTERY) {
         	mChargingStatus = CHARGING_STATUS.BAD_BATTERY;
         }
         else {
@@ -103,7 +107,7 @@ public class ShimmerBattStatusDetails implements Serializable {
         if(adcVoltageError == false) {
         	processBattPercentage(mBattVoltage);
         	
-            if ((chargingStatus&0xFF) != 0xC0) {// Bad battery
+            if ((mChargingStatusRaw&0xFF) != 0xC0) {// Bad battery
 //            	mEstimatedChargePercentage = String.format(Locale.UK, "%,.1f",battPercentage) + "%";
             	mEstimatedChargePercentageParsed = String.format("%,.1f",mEstimatedChargePercentage) + "%";
             }
@@ -164,8 +168,20 @@ public class ShimmerBattStatusDetails implements Serializable {
 		return mChargingStatusParsed;
 	}
 
-	public String getBattVoltage() {
+	public double getBattVoltage() {
+		return mBattVoltage;
+	}
+
+	public String getBattVoltageParsed() {
 		return mBattVoltageParsed;
+	}
+
+	public double getEstimatedChargePercentage() {
+		return mEstimatedChargePercentage;
+	}
+
+	public String getEstimatedChargePercentageParsed() {
+		return mEstimatedChargePercentageParsed;
 	}
 
 }

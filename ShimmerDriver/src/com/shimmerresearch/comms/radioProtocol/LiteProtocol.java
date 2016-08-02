@@ -1484,7 +1484,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
 //					setBattStatusDetails(battStatusDetails);
 					eventNewResponse(inStreamResponseCommand, battStatusDetails);
-					printLogDataForDebugging("Batt data " + battStatusDetails.getBattVoltage());
+					printLogDataForDebugging("Batt data " + battStatusDetails.getBattVoltageParsed());
 				}
 				else{
 					responseData = ArrayUtils.addAll(inStreamResponseCommandArray, responseData);
