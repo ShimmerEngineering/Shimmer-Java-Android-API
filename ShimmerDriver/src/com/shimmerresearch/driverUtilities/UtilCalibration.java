@@ -21,6 +21,11 @@ public class UtilCalibration {
 		n = Number of Samples
 	 */
 	public static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
+		if(data==null || AM==null || SM==null || OV==null){
+			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in input data");
+			return null;
+		}
+
 		double [][] data2d=new double [3][1];
 		data2d[0][0]=data[0];
 		data2d[1][0]=data[1];
