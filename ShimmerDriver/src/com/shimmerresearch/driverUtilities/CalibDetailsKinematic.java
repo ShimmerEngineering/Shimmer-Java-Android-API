@@ -251,18 +251,24 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}	
 	
 	public double[][] getCurrentAlignmentMatrix() {
-		//TODO check if valid and return default if not?
-		return mCurrentAlignmentMatrix;
+		if(mCurrentAlignmentMatrix!=null)
+			return mCurrentAlignmentMatrix;
+		else
+			return getDefaultAlignmentMatrix();
 	}
 
 	public double[][] getCurrentSensitivityMatrix() {
-		//TODO check if valid and return default if not?
-		return mCurrentSensitivityMatrix;
+		if(mCurrentSensitivityMatrix!=null)
+			return mCurrentSensitivityMatrix;
+		else
+			return getDefaultSensitivityMatrix();
 	}
 
 	public double[][] getCurrentOffsetVector() {
-		//TODO check if valid and return default if not?
-		return mCurrentOffsetVector;
+		if(mCurrentOffsetVector!=null)
+			return mCurrentOffsetVector;
+		else
+			return getDefaultOffsetVector();
 	}
 	
 	public double[][] getEmptyOffsetVector() {
