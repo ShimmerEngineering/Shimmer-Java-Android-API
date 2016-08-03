@@ -21,6 +21,24 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	/** * */
 	private static final long serialVersionUID = -3556098650349506733L;
 	
+	public class CALIB_KINEMATIC_PARAM{
+		public static final String OFFSET_B0 = "b0";
+		public static final String OFFSET_B1 = "b1";
+		public static final String OFFSET_B2 = "b2";
+		public static final String SENSITIVITY_K0 = "k0";
+		public static final String SENSITIVITY_K1 = "k1";
+		public static final String SENSITIVITY_K2 = "k2";
+		public static final String ALIGNMENT_R00 = "r00";
+		public static final String ALIGNMENT_R01 = "r01";
+		public static final String ALIGNMENT_R02 = "r02";
+		public static final String ALIGNMENT_R10 = "r10";
+		public static final String ALIGNMENT_R11 = "r11";
+		public static final String ALIGNMENT_R12 = "r12";
+		public static final String ALIGNMENT_R20 = "r20";
+		public static final String ALIGNMENT_R21 = "r21";
+		public static final String ALIGNMENT_R22 = "r22";
+	}
+	
 	private double[][] mCurrentAlignmentMatrix = null; 			
 	private double[][] mCurrentSensitivityMatrix = null; 	
 	private double[][] mCurrentOffsetVector = null;
@@ -295,9 +313,42 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	 * @param mean3
 	 */
 	public void updateCurrentOffsetVector(double XXmean, double XYmean, double XZmean) {
+		if(mCurrentOffsetVector==null){
+			mCurrentOffsetVector = new double[3][3];
+		}
+		
 		mCurrentOffsetVector[0][0] = XXmean;
 		mCurrentOffsetVector[1][0] = XYmean;
 		mCurrentOffsetVector[2][0] = XZmean;
+	}
+	public void updateCurrentSensitivityMatrix(double XXmean, double XYmean, double XZmean) {
+		if(mCurrentSensitivityMatrix==null){
+			mCurrentSensitivityMatrix = new double[3][3];
+		}
+		
+		mCurrentSensitivityMatrix[0][0] = XXmean;
+		mCurrentSensitivityMatrix[1][1] = XYmean;
+		mCurrentSensitivityMatrix[2][2] = XZmean;
+	}
+	public void updateCurrentAlignmentMatrix(double XXmean, double XYmean, double XZmean, 
+			double YXmean, double YYmean, double YZmean,
+			double ZXmean, double ZYmean, double ZZmean) {
+		
+		if(mCurrentAlignmentMatrix==null){
+			mCurrentAlignmentMatrix = new double[3][3];
+		}
+		
+		mCurrentAlignmentMatrix[0][0] = XXmean;
+		mCurrentAlignmentMatrix[0][1] = XYmean;
+		mCurrentAlignmentMatrix[0][2] = XZmean;
+		
+		mCurrentAlignmentMatrix[1][0] = YXmean;
+		mCurrentAlignmentMatrix[1][1] = YYmean;
+		mCurrentAlignmentMatrix[1][2] = YZmean;
+		
+		mCurrentAlignmentMatrix[2][0] = ZXmean;
+		mCurrentAlignmentMatrix[2][1] = ZYmean;
+		mCurrentAlignmentMatrix[2][2] = ZZmean;
 	}
 
 	public void setSensitivityScaleFactor(double sensitivityScaleFactor) {

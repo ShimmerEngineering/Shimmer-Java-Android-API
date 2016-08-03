@@ -22,6 +22,7 @@ import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.SENSITIVITY_SCALE_FACTOR;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
+import com.shimmerresearch.driverUtilities.OldCalDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -119,11 +120,17 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public static final double[][] SensitivityMatrixGyro500dpsShimmer3 = {{65.5,0,0},{0,65.5,0},{0,0,65.5}};
 	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
 	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
-	
-	public static final String OldCalRangeGyro250dps = "gyro_250dps";
-	public static final String OldCalRangeGyro500dps = "gyro_500dps";
-	public static final String OldCalRangeGyro1000dps = "gyro_1000ps";
-	public static final String OldCalRangeGyro2000dps = "gyro_2000dps";
+		
+    public static final Map<String, OldCalDetails> mOldCalRangeMap;
+    static {
+        Map<String, OldCalDetails> aMap = new LinkedHashMap<String, OldCalDetails>();
+        aMap.put("gyro_250dps", new OldCalDetails("gyro_250dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 0));
+        aMap.put("gyro_500dps", new OldCalDetails("gyro_500dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 1));
+        aMap.put("gyro_1000ps", new OldCalDetails("gyro_1000ps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 2));
+        aMap.put("gyro_2000dps", new OldCalDetails("gyro_2000dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 3));
+
+        mOldCalRangeMap = Collections.unmodifiableMap(aMap);
+    }
 	
 	private CalibDetailsKinematic calibDetailsGyro250 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[0], 

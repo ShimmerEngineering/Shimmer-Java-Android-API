@@ -20,6 +20,7 @@ import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
+import com.shimmerresearch.driverUtilities.OldCalDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -80,12 +81,27 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final double[][] SensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
 	public static final double[][] SensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
 
-	public static final String OldCalRangeWR2g = "accel_wr_2g";
-	public static final String OldCalRangeWR4g = "accel_wr_4g";
-	public static final String OldCalRangeWR8g = "accel_wr_8g";
-	public static final String OldCalRangeWR16g = "accel_wr_16g";
+
 	
-	
+    public static final Map<String, OldCalDetails> mOldCalRangeMap;
+    static {
+        Map<String, OldCalDetails> aMap = new LinkedHashMap<String, OldCalDetails>();
+        aMap.put("accel_wr_2g", new OldCalDetails("accel_wr_2g", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 0));
+        aMap.put("accel_wr_4g", new OldCalDetails("accel_wr_4g", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 1));
+        aMap.put("accel_wr_8g", new OldCalDetails("accel_wr_8g", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 2));
+        aMap.put("accel_wr_16g", new OldCalDetails("accel_wr_16g", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 3));
+        
+        aMap.put("mag_13ga", new OldCalDetails("mag_13ga", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 1));
+        aMap.put("mag_19ga", new OldCalDetails("mag_19ga", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 2));
+        aMap.put("mag_25ga", new OldCalDetails("mag_25ga", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 3));
+        aMap.put("mag_4ga",  new OldCalDetails("mag_4ga",  Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 4));
+        aMap.put("mag_47ga", new OldCalDetails("mag_47ga", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 5));
+        aMap.put("mag_56ga", new OldCalDetails("mag_56ga", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 6));
+        aMap.put("mag_81ga", new OldCalDetails("mag_81ga", Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 7));
+
+        mOldCalRangeMap = Collections.unmodifiableMap(aMap);
+    }
+
 	
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
 			ListofLSM303DLHCAccelRangeConfigValues[0],
@@ -191,13 +207,7 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final double[][] SensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
 	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
 	
-	public static final String OldCalRangeMag1p3Ga = "mag_13ga";
-	public static final String OldCalRangeMag1p9Ga = "mag_19ga";
-	public static final String OldCalRangeMag2p5Ga = "mag_25ga";
-	public static final String OldCalRangeMag4Ga = "mag_4ga";
-	public static final String OldCalRangeMag4p7Ga = "mag_47ga";
-	public static final String OldCalRangeMag5p6Ga = "mag_56ga";
-	public static final String OldCalRangeMag8p1Ga = "mag_81ga";
+	
 
 
 	private CalibDetailsKinematic calibDetailsMag1p3 = new CalibDetailsKinematic(

@@ -18,6 +18,7 @@ import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.OldCalDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -56,6 +57,13 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	public static final int LN_ACCEL_RANGE_CONSTANT = 0;
 	public static final String OldCalRangeLN2g = "accel_ln_2g";
+	
+    public static final Map<String, OldCalDetails> mOldCalRangeMap;
+    static {
+        Map<String, OldCalDetails> aMap = new LinkedHashMap<String, OldCalDetails>();
+        aMap.put("accel_ln_2g", new OldCalDetails("accel_ln_2g", Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_CONSTANT));
+        mOldCalRangeMap = Collections.unmodifiableMap(aMap);
+    }
 
 	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
 			LN_ACCEL_RANGE_CONSTANT, "+/- 2g", 
