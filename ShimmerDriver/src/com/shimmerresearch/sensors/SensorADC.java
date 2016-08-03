@@ -103,7 +103,7 @@ public class SensorADC extends AbstractSensor {
 //--------- Bluetooth commands end --------------
 	
 	//--------- Configuration options start --------------
-	public static final String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
+//	public static final String[] ListofCompatibleSensors={"Low Noise Accelerometer","Wide Range Accelerometer","Gyroscope","Magnetometer","Battery Voltage","External ADC A7","External ADC A6","External ADC A15","Internal ADC A1","Internal ADC A12","Internal ADC A13","Internal ADC A14","Pressure","GSR","EXG1","EXG2","EXG1 16Bit","EXG2 16Bit", "Bridge Amplifier"}; 
 
 	
 //	public static final String[] ListOfPpgAdcSelection= SensorPPG.ListOfPpgAdcSelection; //{"Int A13","Int A12"};
@@ -396,12 +396,10 @@ public class SensorADC extends AbstractSensor {
 		if(mEnableCalibration){
 			int index = sensorDetails.mListOfChannels.size();
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-
-					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-					double calData = calibrateU12AdcValue(unCalData, offset, vRefP, gain);
-					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
-					index--;
-					
+				double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+				double calData = calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+				objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
+				index--;
 			}
 		}
 		

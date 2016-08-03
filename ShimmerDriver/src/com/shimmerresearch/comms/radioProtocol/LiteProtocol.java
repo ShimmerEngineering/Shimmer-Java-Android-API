@@ -205,13 +205,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		getListofInstructions().clear();
 		mFirstTime=true;
 
-		if (mIOThread != null) { 
-			mIOThread = null;
-		}
-
-		mIOThread = new IOThread();
-		mIOThread.setName(getClass().getSimpleName()+"-"+mMyBluetoothAddress+"-"+mComPort);
-		mIOThread.start();
+		startThread();
 		
 		stopTimerReadStatus();
 		stopTimerCheckForAckOrResp();
@@ -219,6 +213,16 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		
 		dummyreadSamplingRate(); // it actually acts to clear the write buffer
 		readShimmerVersionNew();
+	}
+
+	private void startThread() {
+		if (mIOThread != null) { 
+			mIOThread = null;
+		}
+
+		mIOThread = new IOThread();
+		mIOThread.setName(getClass().getSimpleName()+"-"+mMyBluetoothAddress+"-"+mComPort);
+		mIOThread.start();
 	}
 
 	@Override
@@ -1480,7 +1484,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
 //					setBattStatusDetails(battStatusDetails);
 					eventNewResponse(inStreamResponseCommand, battStatusDetails);
-					printLogDataForDebugging("Batt data " + battStatusDetails.getBattVoltage());
+					printLogDataForDebugging("Batt data " + battStatusDetails.getBattVoltageParsed());
 				}
 				else{
 					responseData = ArrayUtils.addAll(inStreamResponseCommandArray, responseData);
@@ -1596,7 +1600,12 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	
 	@Override
 	protected void readInfoMem(int address, int size) {
-		readMemCommand(InstructionsGet.GET_INFOMEM_COMMAND_VALUE, address, size);
+		readMem(InstructionsGet.GET_INFOMEM_COMMAND_VALUE, address, size, 512); //some max number
+	}
+
+	@Override
+	public void writeInfoMem(int startAddress, byte[] buf) {
+		writeMem(InstructionsSet.SET_INFOMEM_COMMAND_VALUE, startAddress, buf, 512); //some max number
 	}
 
 	@Override
@@ -1615,10 +1624,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 
-	@Override
-	public void writeInfoMem(int startAddress, byte[] buf) {
-		writeMemCommand(InstructionsSet.SET_INFOMEM_COMMAND_VALUE, startAddress, buf);
-	}
 
 	/**Could be used by InfoMem or Expansion board memory
 	 * @param command

@@ -613,21 +613,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return the mBattVoltage
 	 */
 	public String getBattVoltage() {
-		return mShimmerBattStatusDetails.getBattVoltage();
+		return mShimmerBattStatusDetails.getBattVoltageParsed();
 	}
 
 	/**
 	 * @return the mEstimatedChargePercentageParsed
 	 */
 	public String getEstimatedChargePercentageParsed() {
-		return mShimmerBattStatusDetails.mEstimatedChargePercentageParsed;
+		return mShimmerBattStatusDetails.getEstimatedChargePercentageParsed();
 	}
 	
 	/**
 	 * @return the mEstimatedChargePercentage
 	 */
 	public Double getEstimatedChargePercentage() {
-		return mShimmerBattStatusDetails.mEstimatedChargePercentage;
+		return mShimmerBattStatusDetails.getEstimatedChargePercentage();
 	}
 	
 	/**

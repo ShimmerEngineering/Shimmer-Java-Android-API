@@ -44,7 +44,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	/** GQ BLE */
 	protected int mSamplingDividerVBatt = 0;
 
-	private ShimmerBattStatusDetails shimmerBattStatusDetails = new ShimmerBattStatusDetails();
+	private ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails();
 	
 	public class GuiLabelConfig{
 		public static final String SAMPLING_RATE_DIVIDER_VBATT = "VBATT Divider";
@@ -95,8 +95,8 @@ public class SensorBattVoltage extends AbstractSensor{
 	
   	//--------- Sensor info start --------------
   	public static final SensorDetailsRef sensorBattVoltageRef = new SensorDetailsRef(
-  			0x2000, 
-  			0x2000, 
+  			0x20<<8, 
+  			0x20<<8, 
   			GuiLabelSensors.BATTERY,
   			null,
   			null,
@@ -122,7 +122,7 @@ public class SensorBattVoltage extends AbstractSensor{
   	
   	 public static final ChannelDetails channelBattPercentage = new ChannelDetails(
  			ObjectClusterSensorName.BATT_PERCENTAGE,
- 			ObjectClusterSensorName.BATT_PERCENTAGE,
+ 			"Battery Percent",
  			ObjectClusterSensorName.BATT_PERCENTAGE,
  			CHANNEL_UNITS.PERCENT,
  			Arrays.asList(CHANNEL_TYPE.CAL),
@@ -152,6 +152,11 @@ public class SensorBattVoltage extends AbstractSensor{
   	// -----------Channel info end ------
     
     //--------- Constructors for this class start --------------  	
+	public SensorBattVoltage(ShimmerDevice shimmerDevice) {
+		super(SENSORS.Battery, shimmerDevice);
+		initialise();
+	}
+
 	public SensorBattVoltage(ShimmerVerObject svo) {
 		super(SENSORS.Battery, svo);
 		initialise();
@@ -186,29 +191,36 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] rawData, COMMUNICATION_TYPE commType,ObjectCluster objectCluster, boolean isTimeSyncEnabled,
-			long pcTimeStamp) {
-
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
-		if (mEnableCalibration){
+		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+
+//		if(mEnableCalibration){
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATTERY)){
-				objectCluster = SensorADC.processMspAdcChannel(sensorDetails, rawData, commType, objectCluster, isTimeSyncEnabled, pcTimeStamp);
+//					objectCluster = SensorADC.processMspAdcChannel(sensorDetails, rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+				
+					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					double offset = 0; double vRefP = 3; double gain = 1; 
+					double calData = SensorADC.calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+					calData *= 1.988;
+					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-1);
+					
+					getShimmerBattStatusDetails().processBattPercentage(calData/1000);
 				}
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATT_PERCENTAGE)){
-					double calData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.BATTERY), CHANNEL_TYPE.CAL.toString())).mData;
-
-					shimmerBattStatusDetails.processBattPercentage(calData);
-					
-					objectCluster.addCalData(channelDetails, shimmerBattStatusDetails.mEstimatedChargePercentage);
-					
-					System.err.println(shimmerBattStatusDetails.mEstimatedChargePercentageParsed);
+					objectCluster.addCalData(channelDetails, getShimmerBattStatusDetails().getEstimatedChargePercentage());
 					objectCluster.incrementIndexKeeper();
 				}
 			}
-		}
-		
-		return null;
+//		}
+
+//		System.err.println(
+//				getShimmerBattStatusDetails().getBattVoltage()
+//				+ "\t" + getShimmerBattStatusDetails().getEstimatedChargePercentage() 
+//				+ "\t" + getShimmerBattStatusDetails().getEstimatedChargePercentageParsed());
+
+		return objectCluster;
 	}
 
 	@Override
@@ -294,7 +306,14 @@ public class SensorBattVoltage extends AbstractSensor{
 		return mSamplingDividerVBatt;
 	}
 
-	
+	private ShimmerBattStatusDetails getShimmerBattStatusDetails(){
+		if(mShimmerDevice!=null){
+			return mShimmerDevice.mShimmerBattStatusDetails;
+		}
+		else{
+			return mShimmerBattStatusDetails;
+		}
+	}
 
 
 }

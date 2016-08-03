@@ -1538,6 +1538,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.addData(Shimmer3.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBatt]);
 					mVSenseBattMA.addValue(calibratedData[iBatt]);
 					checkBattery();
+					
+					mShimmerBattStatusDetails.processBattPercentage(calibratedData[iBatt]/1000);
 				}
 			}
 			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A7) > 0) 
@@ -2470,8 +2472,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			
 			if(fwType == FW_TYPE_BT){
-				objectCluster.addData(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.mEstimatedChargePercentage);
-				calibratedData[additionalChannelsOffset] = (double)mShimmerBattStatusDetails.mEstimatedChargePercentage;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.getEstimatedChargePercentage());
+				calibratedData[additionalChannelsOffset] = (double)mShimmerBattStatusDetails.getEstimatedChargePercentage();
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
 				uncalibratedData[additionalChannelsOffset] = Double.NaN;
 				uncalibratedDataUnits[additionalChannelsOffset] = "";
