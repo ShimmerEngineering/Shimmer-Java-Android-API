@@ -57,6 +57,15 @@ public class ShimmerServerGrpc {
               "shimmerGRPC.ShimmerServer", "SendDataStream"),
           io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()),
           io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()));
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.File,
+      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> METHOD_SEND_FILE_STREAM =
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING,
+          generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "SendFileStream"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.File.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()));
 
   /**
    * Creates a new async stub that supports all call types for the service
@@ -99,6 +108,9 @@ public class ShimmerServerGrpc {
     }
 
     /**
+     * <pre>
+     *Client asking for data
+     * </pre>
      */
     public void getDataStream(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> responseObserver) {
@@ -106,10 +118,20 @@ public class ShimmerServerGrpc {
     }
 
     /**
+     * <pre>
+     *Client sending data
+     * </pre>
      */
     public io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> sendDataStream(
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
       return asyncUnimplementedStreamingCall(METHOD_SEND_DATA_STREAM, responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.File> sendFileStream(
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
+      return asyncUnimplementedStreamingCall(METHOD_SEND_FILE_STREAM, responseObserver);
     }
 
     @java.lang.Override public io.grpc.ServerServiceDefinition bindService() {
@@ -135,6 +157,13 @@ public class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2,
                 com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>(
                   this, METHODID_SEND_DATA_STREAM)))
+          .addMethod(
+            METHOD_SEND_FILE_STREAM,
+            asyncClientStreamingCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.File,
+                com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>(
+                  this, METHODID_SEND_FILE_STREAM)))
           .build();
     }
   }
@@ -172,6 +201,9 @@ public class ShimmerServerGrpc {
     }
 
     /**
+     * <pre>
+     *Client asking for data
+     * </pre>
      */
     public void getDataStream(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> responseObserver) {
@@ -180,11 +212,22 @@ public class ShimmerServerGrpc {
     }
 
     /**
+     * <pre>
+     *Client sending data
+     * </pre>
      */
     public io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> sendDataStream(
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
       return asyncClientStreamingCall(
           getChannel().newCall(METHOD_SEND_DATA_STREAM, getCallOptions()), responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.File> sendFileStream(
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
+      return asyncClientStreamingCall(
+          getChannel().newCall(METHOD_SEND_FILE_STREAM, getCallOptions()), responseObserver);
     }
   }
 
@@ -220,6 +263,9 @@ public class ShimmerServerGrpc {
     }
 
     /**
+     * <pre>
+     *Client asking for data
+     * </pre>
      */
     public java.util.Iterator<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> getDataStream(
         com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request) {
@@ -264,6 +310,7 @@ public class ShimmerServerGrpc {
   private static final int METHODID_SAY_HELLO = 0;
   private static final int METHODID_GET_DATA_STREAM = 1;
   private static final int METHODID_SEND_DATA_STREAM = 2;
+  private static final int METHODID_SEND_FILE_STREAM = 3;
 
   private static class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -303,6 +350,9 @@ public class ShimmerServerGrpc {
         case METHODID_SEND_DATA_STREAM:
           return (io.grpc.stub.StreamObserver<Req>) serviceImpl.sendDataStream(
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>) responseObserver);
+        case METHODID_SEND_FILE_STREAM:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.sendFileStream(
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -313,7 +363,8 @@ public class ShimmerServerGrpc {
     return new io.grpc.ServiceDescriptor(SERVICE_NAME,
         METHOD_SAY_HELLO,
         METHOD_GET_DATA_STREAM,
-        METHOD_SEND_DATA_STREAM);
+        METHOD_SEND_DATA_STREAM,
+        METHOD_SEND_FILE_STREAM);
   }
 
 }
