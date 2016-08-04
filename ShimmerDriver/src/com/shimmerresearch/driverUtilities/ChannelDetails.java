@@ -74,7 +74,7 @@ public class ChannelDetails implements Serializable {
 
 	    public long getMinVal(){
 	    	if(isSigned){
-	    		return UtilParseData.calculatetwoscomplement((0x01<<numBits), numBits);
+	    		return UtilParseData.calculatetwoscomplement((0x01<<(numBits-1)), numBits);
 	    	}
 	    	else{
 	    		return 0;
