@@ -214,7 +214,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			for(int i=0;i<=2;i++){
 				sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor;
 			}
-			
+
 			mCurrentAlignmentMatrix = alignmentMatrix; 			
 			mCurrentSensitivityMatrix = sensitivityMatrix; 	
 			mCurrentOffsetVector = offsetVector;
@@ -320,7 +320,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	 */
 	public void updateCurrentOffsetVector(double XXmean, double XYmean, double XZmean) {
 		if(mCurrentOffsetVector==null){
-			mCurrentOffsetVector = new double[3][3];
+			mCurrentOffsetVector = new double[3][1];
 		}
 		
 		mCurrentOffsetVector[0][0] = XXmean;
@@ -360,15 +360,19 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	public void setSensitivityScaleFactor(double sensitivityScaleFactor) {
 		mSensitivityScaleFactor = sensitivityScaleFactor;
 	}
+	
+	public double getSensitivityScaleFactor() {
+		return mSensitivityScaleFactor;
+	}
 
 	public String generateDebugString() {
 		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
 		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);
-		debugString += generateDebugStringPerProperty("Current Alignment", mCurrentAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Current Alignment", getCurrentAlignmentMatrix());//mCurrentAlignmentMatrix);
 		debugString += generateDebugStringPerProperty("Default Sensitivity", mDefaultSensitivityMatrix);
-		debugString += generateDebugStringPerProperty("CurrentSensitivity", mCurrentSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("CurrentSensitivity", getCurrentSensitivityMatrix());//mCurrentSensitivityMatrix);
 		debugString += generateDebugStringPerProperty("Default Offset Vector", mDefaultOffsetVector);
-		debugString += generateDebugStringPerProperty("Current Offset Vector", mCurrentOffsetVector);
+		debugString += generateDebugStringPerProperty("Current Offset Vector", getCurrentOffsetVector());//mCurrentOffsetVector);
 		return debugString;
 	}
 

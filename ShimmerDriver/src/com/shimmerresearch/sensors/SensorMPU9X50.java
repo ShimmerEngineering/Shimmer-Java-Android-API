@@ -137,25 +137,29 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ListofGyroRange[0],
 			AlignmentMatrixGyroShimmer3,
 			SensitivityMatrixGyro250dpsShimmer3,
-			OffsetVectorGyroShimmer3);
+			OffsetVectorGyroShimmer3,
+			SENSITIVITY_SCALE_FACTOR.HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro500 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[1], 
 			ListofGyroRange[1],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro500dpsShimmer3,
-			OffsetVectorGyroShimmer3);
+			OffsetVectorGyroShimmer3,
+			SENSITIVITY_SCALE_FACTOR.HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro1000 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[2], 
 			ListofGyroRange[2],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro1000dpsShimmer3, 
-			OffsetVectorGyroShimmer3);
+			OffsetVectorGyroShimmer3,
+			SENSITIVITY_SCALE_FACTOR.HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro2000 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[3],
 			ListofGyroRange[3],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro2000dpsShimmer3, 
-			OffsetVectorGyroShimmer3);
+			OffsetVectorGyroShimmer3,
+			SENSITIVITY_SCALE_FACTOR.HUNDRED);
 
 //	private TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
 //	protected TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
