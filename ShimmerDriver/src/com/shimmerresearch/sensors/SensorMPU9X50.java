@@ -19,7 +19,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
-import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.SENSITIVITY_SCALE_FACTOR;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.OldCalDetails;
@@ -1231,7 +1231,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		super(SENSORS.MPU9X50, svo);
 		initialise();
 		
-		setCalibSensitivityScaleFactor(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, SENSITIVITY_SCALE_FACTOR.HUNDRED);
+		setCalibSensitivityScaleFactor(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	}
 	
 	//--------- Abstract methods implemented start --------------

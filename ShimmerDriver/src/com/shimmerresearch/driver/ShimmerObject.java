@@ -46,7 +46,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilCalibration;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
-import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.SENSITIVITY_SCALE_FACTOR;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -751,28 +751,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3,
 			SensorMPU9X50.SensitivityMatrixGyro250dpsShimmer3,
 			SensorMPU9X50.OffsetVectorGyroShimmer3,
-			SENSITIVITY_SCALE_FACTOR.HUNDRED);
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro500 = new CalibDetailsKinematic(
 			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], 
 			SensorMPU9X50.ListofGyroRange[1],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro500dpsShimmer3,
 			SensorMPU9X50.OffsetVectorGyroShimmer3,
-			SENSITIVITY_SCALE_FACTOR.HUNDRED);
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro1000 = new CalibDetailsKinematic(
 			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], 
 			SensorMPU9X50.ListofGyroRange[2],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro1000dpsShimmer3, 
 			SensorMPU9X50.OffsetVectorGyroShimmer3,
-			SENSITIVITY_SCALE_FACTOR.HUNDRED);
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro2000 = new CalibDetailsKinematic(
 			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3],
 			SensorMPU9X50.ListofGyroRange[3],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro2000dpsShimmer3, 
 			SensorMPU9X50.OffsetVectorGyroShimmer3,
-			SENSITIVITY_SCALE_FACTOR.HUNDRED);
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	
 	protected TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetails>(); 
 	{
@@ -7450,47 +7450,47 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public double getPressTempAC1(){
-		return mCalibDetailsBmp180.pressTempAC1;
+		return mCalibDetailsBmp180.AC1;
 	}
 	
 	public double getPressTempAC2(){
-		return mCalibDetailsBmp180.pressTempAC2;
+		return mCalibDetailsBmp180.AC2;
 	}
 	
 	public double getPressTempAC3(){
-		return mCalibDetailsBmp180.pressTempAC3;
+		return mCalibDetailsBmp180.AC3;
 	}
 	
 	public double getPressTempAC4(){
-		return mCalibDetailsBmp180.pressTempAC4;
+		return mCalibDetailsBmp180.AC4;
 	}
 	
 	public double getPressTempAC5(){
-		return mCalibDetailsBmp180.pressTempAC5;
+		return mCalibDetailsBmp180.AC5;
 	}
 	
 	public double getPressTempAC6(){
-		return mCalibDetailsBmp180.pressTempAC6;
+		return mCalibDetailsBmp180.AC6;
 	}
 	
 	public double getPressTempB1(){
-		return mCalibDetailsBmp180.pressTempB1;
+		return mCalibDetailsBmp180.B1;
 	}
 	
 	public double getPressTempB2(){
-		return mCalibDetailsBmp180.pressTempB2;
+		return mCalibDetailsBmp180.B2;
 	}
 	
 	public double getPressTempMB(){
-		return mCalibDetailsBmp180.pressTempMB;
+		return mCalibDetailsBmp180.MB;
 	}
 	
 	public double getPressTempMC(){
-		return mCalibDetailsBmp180.pressTempMC;
+		return mCalibDetailsBmp180.MC;
 	}
 	
 	public double getPressTempMD(){
-		return mCalibDetailsBmp180.pressTempMD;
+		return mCalibDetailsBmp180.MD;
 	}
 
 

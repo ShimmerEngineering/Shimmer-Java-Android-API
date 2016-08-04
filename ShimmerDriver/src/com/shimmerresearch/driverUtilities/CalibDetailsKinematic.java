@@ -1,13 +1,9 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.shimmerresearch.sensors.SensorMPU9X50;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 /**
  * Class that holds the calibration parameters for a particular range in a
@@ -52,16 +48,43 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	private double[][] mEmptySensitivityMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 	
 	private double[][] mEmptyOffsetVector = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 
 	
-	private double mSensitivityScaleFactor = SENSITIVITY_SCALE_FACTOR.NONE;
-	public static final class SENSITIVITY_SCALE_FACTOR{
-		public static final double NONE = 1.0;
-		public static final double TEN = 10.0;
-		public static final double HUNDRED = 100.0;
+	public enum CALIBRATION_SCALE_FACTOR{
+		NONE(1.0),
+		TEN(10.0),
+		ONE_HUNDRED(100.0);
+		
+		double scaleFactor = 1.0;
+		private CALIBRATION_SCALE_FACTOR(double scaleFactor) {
+			this.scaleFactor = scaleFactor;
+		}
 	}
+	//TODO offset scale factor currently not used
+	private CALIBRATION_SCALE_FACTOR mOffsetScaleFactor = CALIBRATION_SCALE_FACTOR.NONE;
+	private CALIBRATION_SCALE_FACTOR mSensitivityScaleFactor = CALIBRATION_SCALE_FACTOR.NONE;
+	private CALIBRATION_SCALE_FACTOR mAlignmentScaleFactor = CALIBRATION_SCALE_FACTOR.ONE_HUNDRED;
+	
+	private CHANNEL_DATA_TYPE mAlignmentDataType = CHANNEL_DATA_TYPE.INT8; 
+	public double mAlignmentMax = 0.0;
+	public double mAlignmentMin = 0.0;
+	public int mAlignmentPrecision = 2;
+	
+	private CHANNEL_DATA_TYPE mSensitivityDataType = CHANNEL_DATA_TYPE.INT16; 
+	public double mSensitivityMax = 0.0;
+	public double mSensitivityMin = 0.0;  
+	public int mSensitivityPrecision = 0;
+	
+	private CHANNEL_DATA_TYPE mOffsetDataType = CHANNEL_DATA_TYPE.INT16; 
+	public double mOffsetMax = 0.0;
+	public double mOffsetMin = 0.0;  
+	public int mOffsetPrecision = 0;
 	
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {
 		this.mRangeValue = rangeValue;
 		this.mRangeString = rangeString;
+		
+		updateOffsetMaxMin();
+		updateSensitivityMaxMin();
+		updateAlignmentMaxMin();
 	}
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
@@ -76,26 +99,28 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		this.setCurrentValues(currentAlignmentMatrix, currentSensitivityMatrix, currentOffsetVector);
 	}
 
+	public CalibDetailsKinematic(int rangeValue, String rangeString, 
+			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector,
+			CALIBRATION_SCALE_FACTOR sensitivityScaleFactor) {
+		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
+		setSensitivityScaleFactor(sensitivityScaleFactor);
+	}
+
 	
+	/**NOT CURRENTLY USED and could cause problems unless used for a specific purpose as the defaults param etc. will not be set
+	 * @param bufferCalibrationParameters
+	 */
 	public CalibDetailsKinematic(byte[] bufferCalibrationParameters) {
 		parseCalParamByteArray(bufferCalibrationParameters, CALIB_READ_SOURCE.UNKNOWN);
 	}
 
-	public CalibDetailsKinematic(int rangeValue, String rangeString, 
-			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector,
-			double sensitivityScaleFactor) {
-		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
-		setSensitivityScaleFactor(sensitivityScaleFactor);
-	}
-	
 
 	public void setCurrentValues(double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
-		this.mCurrentAlignmentMatrix = currentAlignmentMatrix;
+		setCurrentAlignmentMatrix(currentAlignmentMatrix);
+		setCurrentSensitivityMatrix(currentSensitivityMatrix);
+		setCurrentOffsetVector(currentOffsetVector);
 		
 //		System.out.println(generateDebugString());
-
-		this.mCurrentSensitivityMatrix = currentSensitivityMatrix;
-		this.mCurrentOffsetVector = currentOffsetVector;
 	}
 
 	public void setDefaultValues(double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
@@ -108,9 +133,9 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	public void resetToDefaultParameters(){
 		super.resetToDefaultParametersCommon();
 		
-		mCurrentAlignmentMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultAlignmentMatrix);
-		mCurrentSensitivityMatrix = UtilShimmer.deepCopyDoubleMatrix(mDefaultSensitivityMatrix);
-		mCurrentOffsetVector = UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector);
+		setCurrentAlignmentMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultAlignmentMatrix));
+		setCurrentSensitivityMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultSensitivityMatrix));
+		setCurrentOffsetVector(UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector));
 	}
 	
 	
@@ -205,19 +230,19 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
 			double[] AM=new double[9];
 			for (int i=0;i<9;i++) {
-				AM[i]=((double)formattedPacket[6+i])/100;
+				AM[i]=((double)formattedPacket[6+i])/mAlignmentScaleFactor.scaleFactor;
 			}
 			double[][] alignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
 			double[][] sensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
 			double[][] offsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
 			
 			for(int i=0;i<=2;i++){
-				sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor;
+				sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor.scaleFactor;
 			}
 			
-			mCurrentAlignmentMatrix = alignmentMatrix; 			
-			mCurrentSensitivityMatrix = sensitivityMatrix; 	
-			mCurrentOffsetVector = offsetVector;
+			setCurrentAlignmentMatrix(alignmentMatrix);
+			setCurrentSensitivityMatrix(sensitivityMatrix); 	
+			setCurrentOffsetVector(offsetVector);
 		}
 	}
 
@@ -236,15 +261,15 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		//Scale the sensitivity if needed
 		double[][] sensitivityMatrixToUse = UtilShimmer.deepCopyDoubleMatrix(sensitivityMatrix);
 		for(int i=0;i<=2;i++){
-			sensitivityMatrixToUse[i][i] = Math.round(sensitivityMatrixToUse[i][i]*mSensitivityScaleFactor);
+			sensitivityMatrixToUse[i][i] = Math.round(sensitivityMatrixToUse[i][i]*mSensitivityScaleFactor.scaleFactor);
 		}
 
 		//Scale the alignment by 100
 		double[][] alignmentMatrixToUse = UtilShimmer.deepCopyDoubleMatrix(alignmentMatrix);
 		for(int i=0;i<=2;i++){
-			alignmentMatrixToUse[i][0] = Math.round(alignmentMatrixToUse[i][0]*100.0);
-			alignmentMatrixToUse[i][1] = Math.round(alignmentMatrixToUse[i][1]*100.0);
-			alignmentMatrixToUse[i][2] = Math.round(alignmentMatrixToUse[i][2]*100.0);
+			alignmentMatrixToUse[i][0] = Math.round(alignmentMatrixToUse[i][0]*mAlignmentScaleFactor.scaleFactor);
+			alignmentMatrixToUse[i][1] = Math.round(alignmentMatrixToUse[i][1]*mAlignmentScaleFactor.scaleFactor);
+			alignmentMatrixToUse[i][2] = Math.round(alignmentMatrixToUse[i][2]*mAlignmentScaleFactor.scaleFactor);
 		}
 		
 		//Generate the calibration bytes
@@ -313,54 +338,122 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		return mDefaultAlignmentMatrix;
 	}
 
-	/** Specifically used by Gyro on the fly calibration
+	/** For example used by Gyro on the fly calibration
 	 * @param mean
 	 * @param mean2
 	 * @param mean3
 	 */
 	public void updateCurrentOffsetVector(double XXmean, double XYmean, double XZmean) {
-		if(mCurrentOffsetVector==null){
-			mCurrentOffsetVector = new double[3][3];
-		}
-		
-		mCurrentOffsetVector[0][0] = XXmean;
-		mCurrentOffsetVector[1][0] = XYmean;
-		mCurrentOffsetVector[2][0] = XZmean;
+		double[][] newArray = new double[3][3];
+		newArray[0][0] = XXmean;
+		newArray[1][0] = XYmean;
+		newArray[2][0] = XZmean;
+		setCurrentOffsetVector(newArray);
 	}
+	
+	private void setCurrentOffsetVector(double[][] newArray) {
+		mCurrentOffsetVector = UtilShimmer.nudgeDoubleArray(mOffsetMax, mOffsetMin, mOffsetPrecision, newArray);
+//		mCurrentOffsetVector = newArray;
+	}
+
 	public void updateCurrentSensitivityMatrix(double XXmean, double XYmean, double XZmean) {
-		if(mCurrentSensitivityMatrix==null){
-			mCurrentSensitivityMatrix = new double[3][3];
-		}
-		
-		mCurrentSensitivityMatrix[0][0] = XXmean;
-		mCurrentSensitivityMatrix[1][1] = XYmean;
-		mCurrentSensitivityMatrix[2][2] = XZmean;
+		double[][] newArray = new double[3][3];
+		newArray[0][0] = XXmean;
+		newArray[1][1] = XYmean;
+		newArray[2][2] = XZmean;
+		setCurrentSensitivityMatrix(newArray);
 	}
-	public void updateCurrentAlignmentMatrix(double XXmean, double XYmean, double XZmean, 
+
+	private void setCurrentSensitivityMatrix(double[][] newArray) {
+		mCurrentSensitivityMatrix = UtilShimmer.nudgeDoubleArray(mSensitivityMax, mSensitivityMin, mSensitivityPrecision, newArray);
+//		mCurrentSensitivityMatrix = newArray;
+	}
+
+	public void updateCurrentAlignmentMatrix(
+			double XXmean, double XYmean, double XZmean, 
 			double YXmean, double YYmean, double YZmean,
 			double ZXmean, double ZYmean, double ZZmean) {
 		
-		if(mCurrentAlignmentMatrix==null){
-			mCurrentAlignmentMatrix = new double[3][3];
-		}
+		double[][] newMatrix = new double[3][3];
+		newMatrix[0][0] = XXmean;
+		newMatrix[0][1] = XYmean;
+		newMatrix[0][2] = XZmean;
 		
-		mCurrentAlignmentMatrix[0][0] = XXmean;
-		mCurrentAlignmentMatrix[0][1] = XYmean;
-		mCurrentAlignmentMatrix[0][2] = XZmean;
+		newMatrix[1][0] = YXmean;
+		newMatrix[1][1] = YYmean;
+		newMatrix[1][2] = YZmean;
 		
-		mCurrentAlignmentMatrix[1][0] = YXmean;
-		mCurrentAlignmentMatrix[1][1] = YYmean;
-		mCurrentAlignmentMatrix[1][2] = YZmean;
+		newMatrix[2][0] = ZXmean;
+		newMatrix[2][1] = ZYmean;
+		newMatrix[2][2] = ZZmean;
 		
-		mCurrentAlignmentMatrix[2][0] = ZXmean;
-		mCurrentAlignmentMatrix[2][1] = ZYmean;
-		mCurrentAlignmentMatrix[2][2] = ZZmean;
+		setCurrentAlignmentMatrix(newMatrix);
 	}
 
-	public void setSensitivityScaleFactor(double sensitivityScaleFactor) {
-		mSensitivityScaleFactor = sensitivityScaleFactor;
+	private void setCurrentAlignmentMatrix(double[][] newArray) {
+		mCurrentAlignmentMatrix = UtilShimmer.nudgeDoubleArray(mAlignmentMax, mAlignmentMin, mAlignmentPrecision, newArray);
+//		mCurrentAlignmentMatrix = newMatrix;
 	}
 
+	public void setSensitivityScaleFactor(CALIBRATION_SCALE_FACTOR scaleFactor) {
+		mSensitivityScaleFactor = scaleFactor;
+		setSensitivityPrecision(calculatePrecision(mSensitivityScaleFactor.scaleFactor));
+	}
+
+	private void setSensitivityPrecision(int precision) {
+		mSensitivityPrecision = precision;
+		updateSensitivityMaxMin();
+	}
+
+	public void setAlignmentScaleFactor(CALIBRATION_SCALE_FACTOR scaleFactor) {
+		mAlignmentScaleFactor = scaleFactor;
+		setAlignmentPrecision(calculatePrecision(mAlignmentScaleFactor.scaleFactor));
+	}
+
+	private void setAlignmentPrecision(int precision) {
+		mAlignmentPrecision = precision;
+		updateAlignmentMaxMin();
+	}
+
+	public void setOffsetScaleFactor(CALIBRATION_SCALE_FACTOR scaleFactor) {
+		mOffsetScaleFactor = scaleFactor;
+		setOffsetPrecision(calculatePrecision(mOffsetScaleFactor.scaleFactor));
+	}
+
+	private void setOffsetPrecision(int precision) {
+		mOffsetPrecision = precision;
+		updateOffsetMaxMin();
+	}
+
+	private static int calculatePrecision(double scaleFactor) {
+		int length = (int)(Math.log10(scaleFactor)+1);
+		return length-1;
+	}
+
+	private void updateOffsetMaxMin() {
+		mOffsetMax = mOffsetDataType.getMaxVal()/mOffsetScaleFactor.scaleFactor;
+		mOffsetMax = UtilShimmer.applyPrecisionCorrection(mOffsetMax, mOffsetPrecision);
+		
+		mOffsetMin = mOffsetDataType.getMinVal()/mOffsetScaleFactor.scaleFactor;
+		mOffsetMin = UtilShimmer.applyPrecisionCorrection(mOffsetMin, mOffsetPrecision);
+	}
+
+	private void updateSensitivityMaxMin() {
+		mSensitivityMax = mSensitivityDataType.getMaxVal()/mSensitivityScaleFactor.scaleFactor;
+		mSensitivityMax = UtilShimmer.applyPrecisionCorrection(mSensitivityMax, mSensitivityPrecision);
+		
+		mSensitivityMin = mSensitivityDataType.getMinVal()/mSensitivityScaleFactor.scaleFactor;
+		mSensitivityMin = UtilShimmer.applyPrecisionCorrection(mSensitivityMin, mSensitivityPrecision);
+	}
+
+	private void updateAlignmentMaxMin() {
+		mAlignmentMax = mAlignmentDataType.getMaxVal()/mAlignmentScaleFactor.scaleFactor;
+		mAlignmentMax = UtilShimmer.applyPrecisionCorrection(mAlignmentMax, mAlignmentPrecision);
+		
+		mAlignmentMin = mAlignmentDataType.getMinVal()/mAlignmentScaleFactor.scaleFactor;
+		mAlignmentMin = UtilShimmer.applyPrecisionCorrection(mAlignmentMin, mAlignmentPrecision);
+	}
+	
 	public String generateDebugString() {
 		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
 		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);

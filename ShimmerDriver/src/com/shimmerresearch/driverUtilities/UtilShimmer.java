@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -705,11 +706,28 @@ public class UtilShimmer implements Serializable {
 		return returnString;
 	}
 
-	public static double nudgeDouble(double valToNudge, double thresholdLower, double thresholdUpper) {
-//		valToNudge = (valToNudge>thresholdUpper? thresholdUpper:valToNudge);
-//		valToNudge = (valToNudge<thresholdLower? thresholdLower:valToNudge);
+	public static double[][] nudgeDoubleArray(double maxVal, double minVal, int precision, double[][] newArray) {
+		for(int x=0;x<newArray.length;x++){
+			for(int y=0;y<newArray[x].length;y++){
+				//nudge into range
+				newArray[x][y] = UtilShimmer.nudgeDouble(newArray[x][y], minVal, maxVal);
+				//correct the precision
+				newArray[x][y] = applyPrecisionCorrection(newArray[x][y], precision);
+			}
+		}
+		return newArray;
+	}
+	
+	public static double applyPrecisionCorrection(double value, int precision) {
+		return new BigDecimal(value).setScale(precision, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+
+
+	public static double nudgeDouble(double valToNudge, double minVal, double maxVal) {
+//		valToNudge = (valToNudge>maxVal? maxVal:valToNudge);
+//		valToNudge = (valToNudge<minVal? minVal:valToNudge);
 //		return valToNudge;
-	    return Math.max(thresholdLower, Math.min(thresholdUpper, 100.0));
+	    return Math.max(minVal, Math.min(maxVal, valToNudge));
 	}
 	
 
