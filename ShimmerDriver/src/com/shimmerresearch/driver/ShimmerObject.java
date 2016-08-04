@@ -780,6 +780,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCalibMapGyroShimmer3.put(calibDetailsGyro500.mRangeValue, calibDetailsGyro500);
 		mCalibMapGyroShimmer3.put(calibDetailsGyro1000.mRangeValue, calibDetailsGyro1000);
 		mCalibMapGyroShimmer3.put(calibDetailsGyro2000.mRangeValue, calibDetailsGyro2000);
+//		mCalibMapGyroShimmer3.put(calibDetailsGyro250.mRangeValue, calibDetailsGyro250);
+//		mCalibMapGyroShimmer3.put(calibDetailsGyro500.mRangeValue, calibDetailsGyro500);
+//		mCalibMapGyroShimmer3.put(calibDetailsGyro1000.mRangeValue, calibDetailsGyro1000);
+//		mCalibMapGyroShimmer3.put(calibDetailsGyro2000.mRangeValue, calibDetailsGyro2000);
 	}
 	
 	public CalibDetailsKinematic mCurrentCalibDetailsGyro = null;

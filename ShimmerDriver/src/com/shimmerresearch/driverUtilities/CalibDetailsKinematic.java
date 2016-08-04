@@ -344,7 +344,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	 * @param mean3
 	 */
 	public void updateCurrentOffsetVector(double XXmean, double XYmean, double XZmean) {
-		double[][] newArray = new double[3][3];
+		double[][] newArray = new double[3][1];
 		newArray[0][0] = XXmean;
 		newArray[1][0] = XYmean;
 		newArray[2][0] = XZmean;
@@ -445,6 +445,10 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mSensitivityMin = mSensitivityDataType.getMinVal()/mSensitivityScaleFactor.scaleFactor;
 		mSensitivityMin = UtilShimmer.applyPrecisionCorrection(mSensitivityMin, mSensitivityPrecision);
 	}
+	
+	public double getSensitivityScaleFactor() {
+		return mSensitivityScaleFactor.scaleFactor;
+	}
 
 	private void updateAlignmentMaxMin() {
 		mAlignmentMax = mAlignmentDataType.getMaxVal()/mAlignmentScaleFactor.scaleFactor;
@@ -457,11 +461,11 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	public String generateDebugString() {
 		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
 		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);
-		debugString += generateDebugStringPerProperty("Current Alignment", mCurrentAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Current Alignment", getCurrentAlignmentMatrix());//mCurrentAlignmentMatrix);
 		debugString += generateDebugStringPerProperty("Default Sensitivity", mDefaultSensitivityMatrix);
-		debugString += generateDebugStringPerProperty("CurrentSensitivity", mCurrentSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("CurrentSensitivity", getCurrentSensitivityMatrix());//mCurrentSensitivityMatrix);
 		debugString += generateDebugStringPerProperty("Default Offset Vector", mDefaultOffsetVector);
-		debugString += generateDebugStringPerProperty("Current Offset Vector", mCurrentOffsetVector);
+		debugString += generateDebugStringPerProperty("Current Offset Vector", getCurrentOffsetVector());//mCurrentOffsetVector);
 		return debugString;
 	}
 

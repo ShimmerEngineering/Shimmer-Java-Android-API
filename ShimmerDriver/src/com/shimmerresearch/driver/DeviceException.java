@@ -69,12 +69,14 @@ public class DeviceException extends ExecutionException {
 //			id = mDockID;
 //		}
 		String errorCode = "Unknown Error";
-		if(mMapOfErrorCodes.containsKey(mErrorCode)) {
-			errorCode = mMapOfErrorCodes.get(mErrorCode);
-		}
 		String lowLevelErrorCode = "Unknown Error";
-		if(mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
-			lowLevelErrorCode = mMapOfErrorCodes.get(mErrorCodeLowLevel);
+		if(mMapOfErrorCodes!=null){
+			if(mMapOfErrorCodes.containsKey(mErrorCode)) {
+				errorCode = mMapOfErrorCodes.get(mErrorCode);
+			}
+			if(mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
+				lowLevelErrorCode = mMapOfErrorCodes.get(mErrorCodeLowLevel);
+			}
 		}
 		String exceptionInfo = "";
 		if(mExceptionMsg!=null && !mExceptionMsg.isEmpty()) {
